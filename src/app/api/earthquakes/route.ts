@@ -12,7 +12,7 @@ export async function GET(request: Request) {
     month: '2592000',
   };
 
-  const startTime = Math.floor(Date.now() / 1000) - parseInt(timeframes[timeframe] || timeframes.week);
+  const startTime = new Date(Date.now() - parseInt(timeframes[timeframe] || timeframes.week) * 1000).toISOString().split('.')[0];
 
   const url = `https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=${startTime}&minmagnitude=${minMagnitude}&orderby=magnitude&limit=${limit}`;
 
