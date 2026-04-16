@@ -8,9 +8,9 @@
 - **Canal:** @AlertasViajero
 - **Repo:** https://github.com/mcasrom/viaje-con-inteligencia
 
-### Credenciales
-- **Telegram Token:** `TOKEN_REMOVED`
-- **Channel ID:** `-1003764932977`
+### Credenciales (en variables de entorno Vercel)
+- **Telegram Token:** `TELEGRAM_BOT_TOKEN`
+- **Channel ID:** `TELEGRAM_CHANNEL_ID`
 
 ### Funcionalidades
 - Mapa de riesgos 28 países
