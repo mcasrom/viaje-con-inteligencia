@@ -17,13 +17,18 @@ export async function GET(request: Request) {
   const url = `https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=${startTime}&minmagnitude=${minMagnitude}&orderby=magnitude&limit=${limit}`;
 
   try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 15000);
+
     const response = await fetch(url, {
-      headers: { 'User-Agent': 'ViajeConInteligencia/1.0' },
-      next: { revalidate: 300 },
+      headers: { 'User-Agent': 'ViajeConInteligencia/1.0 (contact@viajeconinteligencia.com)' },
+      signal: controller.signal,
     });
 
+    clearTimeout(timeout);
+
     if (!response.ok) {
-      throw new Error('USGS API error');
+      throw new Error(`USGS API error: ${response.status}`);
     }
 
     const data = await response.json();
@@ -47,10 +52,10 @@ export async function GET(request: Request) {
       source: 'USGS',
       updated: new Date().toISOString(),
     });
-  } catch (error) {
-    console.error('Earthquake API error:', error);
+  } catch (error: any) {
+    console.error('Earthquake API error:', error.message || error);
     return NextResponse.json(
-      { error: 'Failed to fetch earthquake data' },
+      { error: error.message || 'Failed to fetch earthquake data', url },
       { status: 500 }
     );
   }
