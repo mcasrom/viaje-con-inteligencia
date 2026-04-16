@@ -16,7 +16,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({
       response,
-      model: 'mixtral-8x7b-32768',
+      model: 'llama-3.1-8b-instant',
       timestamp: new Date().toISOString(),
     });
   } catch (error) {
