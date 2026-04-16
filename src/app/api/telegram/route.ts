@@ -208,7 +208,34 @@ Responda em português, de forma clara e útil. Máximo 500 caracteres.`;
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { message, callback_query } = body;
+    const { message, callback_query, inline_query } = body;
+    
+    if (inline_query) {
+      const query = (inline_query.query || '').trim();
+      if (query.length > 0) {
+        const paisesModule = await import('@/data/paises');
+        const matches = Object.values(paisesModule.paisesData).filter(p =>
+          p.nombre.toLowerCase().includes(query.toLowerCase()) ||
+          p.capital.toLowerCase().includes(query.toLowerCase())
+        );
+        
+        const results = matches.slice(0, 5).map((pais) => ({
+          type: 'article',
+          id: pais.codigo,
+          title: `${pais.bandera} ${pais.nombre}`,
+          description: `${pais.capital} - ${pais.nivelRiesgo === 'sin-riesgo' ? '🟢 Sin riesgo' : pais.nivelRiesgo === 'bajo' ? '🟡 Riesgo bajo' : pais.nivelRiesgo === 'medio' ? '🟠 Riesgo medio' : '🔴 Riesgo alto'}`,
+          input_message_content: {
+            message_text: formatCountryInfo(pais.codigo),
+            parse_mode: 'Markdown',
+          },
+        }));
+        
+        await answerInlineQuery(inline_query.id, results);
+      } else {
+        await answerInlineQuery(inline_query.id, []);
+      }
+      return NextResponse.json({ ok: true });
+    }
     
     if (!message && !callback_query) {
       return NextResponse.json({ ok: true });
@@ -226,6 +253,14 @@ export async function POST(request: NextRequest) {
     }
     
     const state = getUserState(chatId);
+    
+    const currencyResult = processCurrencyCommand(text);
+    if (currencyResult) {
+      await sendMessage(chatId, currencyResult, {
+        reply_markup: t.menu()
+      });
+      return NextResponse.json({ ok: true });
+    }
     
     if (text === '/start') {
       resetUserState(chatId);
@@ -420,6 +455,77 @@ export async function GET() {
   return NextResponse.json({ 
     status: 'Telegram Bot API endpoint',
     usage: 'POST updates here',
-    commands: ['/start', '/pais', '/alertas', '/cambio', '/checklist', '/premium', '/help']
+    commands: ['/start', '/pais', '/alertas', '/cambio', '/checklist', '/premium', '/help', '/salir'],
+    features: ['inline_search', 'currency_converter']
   });
+}
+
+async function answerInlineQuery(inlineQueryId: string, results: any[]) {
+  if (!TELEGRAM_BOT_TOKEN) return;
+  
+  try {
+    await fetch(`${TELEGRAM_API}/answerInlineQuery`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        inline_query_id: inlineQueryId,
+        results: results,
+        cache_time: 300,
+      }),
+    });
+  } catch (error) {
+    console.error('Inline query error:', error);
+  }
+}
+
+function convertCurrency(amount: number, from: string, to: string): string | null {
+  const rates: Record<string, Record<string, number>> = {
+    EUR: { USD: 1.08, GBP: 0.85, JPY: 162, MXN: 17.8, THB: 38, IDR: 17000, VND: 26000, AUD: 1.65, CAD: 1.47, BRL: 5.4, COP: 4100, PEN: 4.0, CLP: 980, ARS: 870, INR: 90, CNY: 7.8, KRW: 1430, SGD: 1.35, AED: 4.0, ZAR: 19, EGP: 33, MAD: 10.5, KES: 155 },
+    USD: { EUR: 0.93, GBP: 0.79, JPY: 150, MXN: 16.5, THB: 35, IDR: 15700, VND: 24000, AUD: 1.53, CAD: 1.36, BRL: 5.0, COP: 3800, PEN: 3.7, CLP: 910, ARS: 805, INR: 83, CNY: 7.2, KRW: 1320, SGD: 1.25, AED: 3.67, ZAR: 17.6, EGP: 30.5, MAD: 9.7, KES: 143 },
+    GBP: { EUR: 1.18, USD: 1.27 },
+  };
+  
+  const fromUpper = from.toUpperCase();
+  const toUpper = to.toUpperCase();
+  
+  if (fromUpper === toUpper) return amount.toFixed(2);
+  
+  let rate: number;
+  
+  if (rates[fromUpper]?.[toUpper]) {
+    rate = rates[fromUpper][toUpper];
+  } else if (rates[fromUpper]?.EUR && rates[toUpper]?.EUR) {
+    const toEur = 1 / rates[fromUpper].EUR;
+    const fromEur = rates[toUpper].EUR;
+    rate = toEur * fromEur;
+  } else if (rates[fromUpper]?.USD && rates[toUpper]?.USD) {
+    const toUsd = 1 / rates[fromUpper].USD;
+    const fromUsd = rates[toUpper].USD;
+    rate = toUsd * fromUsd;
+  } else {
+    return null;
+  }
+  
+  return (amount * rate).toFixed(2);
+}
+
+function processCurrencyCommand(text: string): string | null {
+  const match = text.match(/\/cambio\s+(\d+(?:\.\d+)?)\s+(\w{3})\s+(\w{3})/i);
+  if (!match) return null;
+  
+  const amount = parseFloat(match[1]);
+  const from = match[2].toUpperCase();
+  const to = match[3].toUpperCase();
+  
+  const result = convertCurrency(amount, from, to);
+  
+  if (result === null) {
+    return `❌ No puedo convertir ${from} a ${to}.\n\nMonedas disponibles: EUR, USD, GBP, JPY, MXN, THB, AUD, CAD, BRL, INR, CNY, KRW, SGD, VND, IDR, AED, ZAR, PHP, MYR`;
+  }
+  
+  const flag = { USD: '🇺🇸', EUR: '🇪🇺', GBP: '🇬🇧', JPY: '🇯🇵', MXN: '🇲🇽', THB: '🇹🇭', AUD: '🇦🇺', CAD: '🇨🇦', BRL: '🇧🇷', INR: '🇮🇳', CNY: '🇨🇳', KRW: '🇰🇷', SGD: '🇸🇬', VND: '🇻🇳', IDR: '🇮🇩', AED: '🇦🇪', ZAR: '🇿🇦', PHP: '🇵🇭', MYR: '🇲🇾' };
+  
+  return `💱 *Conversión de Moneda*\n\n` +
+    `${amount} ${from} = ${result} ${to}\n\n` +
+    `📊 Tasa orientativa. Verifica en tu entidad.`;
 }
