@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { paisesData, getLabelRiesgo, NivelRiesgo } from '@/data/paises';
-import { AlertTriangle, ArrowRight, Globe, Search, ClipboardList, Star } from 'lucide-react';
+import { AlertTriangle, ArrowRight, Globe, Search, ClipboardList, Star, BookOpen } from 'lucide-react';
 
 const paises = Object.values(paisesData);
 const continentes = ['Todos', ...new Set(paises.map(p => p.continente))];
@@ -74,6 +74,13 @@ export default function MapaMundial() {
             </div>
             
             <div className="flex items-center gap-2">
+              <Link 
+                href="/blog" 
+                className="flex items-center gap-2 px-3 py-2 text-slate-300 hover:text-white transition-colors"
+              >
+                <BookOpen className="w-4 h-4" />
+                <span className="hidden md:inline">Blog</span>
+              </Link>
               <Link 
                 href="/checklist" 
                 className="flex items-center gap-2 px-3 py-2 text-slate-300 hover:text-white transition-colors"
