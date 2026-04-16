@@ -55,7 +55,7 @@ npm install
 # 3. Crear archivo de variables entorno
 cat > .env.local << 'EOF'
 TELEGRAM_BOT_TOKEN=tu_token_aqui
-TELEGRAM_CHANNEL_ID=-1003764932977
+TELEGRAM_CHANNEL_ID=tu_channel_id_aqui
 EOF
 
 # 4. Ejecutar desarrollo
@@ -77,8 +77,8 @@ npm run lint         # Verificar código
 
 | Variable | Descripción | Ejemplo |
 |----------|-------------|---------|
-| `TELEGRAM_BOT_TOKEN` | Token del bot de Telegram | `8760282273:AAGF...` |
-| `TELEGRAM_CHANNEL_ID` | ID del canal | `-1003764932977` |
+| `TELEGRAM_BOT_TOKEN` | Token del bot de Telegram | `123456789:ABCdefGHI...` |
+| `TELEGRAM_CHANNEL_ID` | ID del canal | `-1001234567890` |
 
 ## 🚢 Despliegue
 
