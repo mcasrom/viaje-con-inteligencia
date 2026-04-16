@@ -114,7 +114,7 @@ export function generateWeeklyDigest(): string {
   message += `💡 *Consejo de la semana:*\n`;
   message += `Antes de viajar, verifica siempre los requisitos actualizados `;
   message += `en la web oficial del MAEC.\n\n`;
-  message += `🤖 @AlertasViajeroBot | 🌐 viaje-con-inteligencia.vercel.app`;
+  message += `🤖 @ViajeConInteligenciaBot | 🌐 viaje-con-inteligencia.vercel.app`;
   
   return message;
 }

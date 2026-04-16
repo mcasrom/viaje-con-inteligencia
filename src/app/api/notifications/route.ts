@@ -88,7 +88,7 @@ export async function POST(request: NextRequest) {
         const testMsg = `🧪 *Test de conexión*\n\n` +
           `Conexión con Viaje con Inteligencia: ✓\n` +
           `Fecha: ${new Date().toLocaleString('es-ES')}\n\n` +
-          `🤖 @AlertasViajeroBot`;
+          `🤖 @ViajeConInteligenciaBot`;
         const testSent = await sendToChannel(testMsg);
         return NextResponse.json({ success: testSent });
 

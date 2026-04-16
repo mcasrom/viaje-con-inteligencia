@@ -93,8 +93,8 @@ export default function RootLayout({
                     </a>
                   </li>
                   <li>
-                    <a href="https://t.me/AlertasViajeroBot" target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-white transition-colors">
-                      @AlertasViajeroBot
+                    <a href="https://t.me/ViajeConInteligenciaBot" target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-white transition-colors">
+                      @ViajeConInteligenciaBot
                     </a>
                   </li>
                 </ul>

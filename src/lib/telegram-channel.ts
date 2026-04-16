@@ -60,7 +60,7 @@ export async function sendRiskUpdate(): Promise<boolean> {
   `📊 *Resumen Global:*\n` +
   `• 🟢 Sin riesgo: ${sinRiesgo.length} países\n` +
   `• 🟡 Riesgo bajo: ${riesgoBajo.length} países\n\n` +
-  `Verifica siempre la info en @AlertasViajeroBot`;
+  `Verifica siempre la info en @ViajeConInteligenciaBot`;
 
   return sendTelegramMessage(message);
 }

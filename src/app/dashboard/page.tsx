@@ -92,7 +92,7 @@ export default function DashboardPage() {
                 Tu acceso premium incluye el bot conversacional con IA.
               </p>
               <a
-                href="https://t.me/AlertasViajeroBot"
+                href="https://t.me/ViajeConInteligenciaBot"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"

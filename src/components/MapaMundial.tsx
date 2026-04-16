@@ -99,7 +99,7 @@ export default function MapaMundial() {
                 <span>{t('nav.premium')}</span>
               </Link>
               <a
-                href="https://t.me/AlertasViajeroBot"
+                href="https://t.me/ViajeConInteligenciaBot"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-2 px-3 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
