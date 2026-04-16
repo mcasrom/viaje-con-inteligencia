@@ -40,7 +40,7 @@ Responde en español, en formato markdown. Sé conciso pero útil.`;
           content: prompt,
         },
       ],
-      model: 'mixtral-8x7b-32768',
+      model: 'llama-3.1-8b-instant',
       temperature: 0.7,
       max_tokens: 4096,
     });
@@ -82,7 +82,7 @@ Responde SOLO con el JSON, sin explicaciones adicionales.`;
           content: prompt,
         },
       ],
-      model: 'mixtral-8x7b-32768',
+      model: 'llama-3.1-8b-instant',
       temperature: 0.3,
       max_tokens: 1024,
     });
@@ -133,7 +133,7 @@ Responde en español, de forma clara y útil. Si no sabes algo, dilo honestament
         ...(history ? [{ role: 'user' as const, content: history }] : []),
         { role: 'user', content: message },
       ],
-      model: 'mixtral-8x7b-32768',
+      model: 'llama-3.1-8b-instant',
       temperature: 0.7,
       max_tokens: 2048,
     });
