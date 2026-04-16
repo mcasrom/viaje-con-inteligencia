@@ -139,8 +139,8 @@ Responde en español, de forma clara y útil. Si no sabes algo, dilo honestament
     });
 
     return chatCompletion.choices[0]?.message?.content || 'No pude procesar tu mensaje.';
-  } catch (error) {
-    console.error('Groq API error:', error);
-    return 'Error de conexión. Por favor, intenta de nuevo.';
+  } catch (error: any) {
+    console.error('Groq API error:', error?.message || error?.error || error);
+    return `Error de conexión: ${error?.message || 'verifica GROQ_API_KEY'}`;
   }
 }
