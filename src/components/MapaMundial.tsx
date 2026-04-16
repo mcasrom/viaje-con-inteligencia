@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { paisesData, getLabelRiesgo, NivelRiesgo } from '@/data/paises';
 import { AlertTriangle, ArrowRight, Globe, Search, ClipboardList, Star } from 'lucide-react';
@@ -8,11 +8,38 @@ import { AlertTriangle, ArrowRight, Globe, Search, ClipboardList, Star } from 'l
 const paises = Object.values(paisesData);
 const continentes = ['Todos', ...new Set(paises.map(p => p.continente))];
 
+interface CountryRatings {
+  [key: string]: { average: number; count: number };
+}
+
 export default function MapaMundial() {
   const [hoveredCountry, setHoveredCountry] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedContinente, setSelectedContinente] = useState('Todos');
   const [selectedRiesgo, setSelectedRiesgo] = useState<NivelRiesgo | 'Todos'>('Todos');
+  const [ratings, setRatings] = useState<CountryRatings>({});
+
+  useEffect(() => {
+    fetch('/api/reviews')
+      .then(res => res.json())
+      .then(data => {
+        if (data.byCountry) {
+          const ratingsMap: CountryRatings = {};
+          Object.entries(data.byCountry).forEach(([country, count]) => {
+            const countryReviews = data.reviews?.filter((r: any) => r.country === country) || [];
+            if (countryReviews.length > 0) {
+              const sum = countryReviews.reduce((acc: number, r: any) => acc + r.rating, 0);
+              ratingsMap[country] = {
+                average: Math.round((sum / countryReviews.length) * 10) / 10,
+                count: countryReviews.length,
+              };
+            }
+          });
+          setRatings(ratingsMap);
+        }
+      })
+      .catch(console.error);
+  }, []);
 
   const riesgoColors: Record<NivelRiesgo, { bg: string; text: string; border: string; light: string }> = {
     'sin-riesgo': { bg: 'bg-green-500', text: 'text-green-400', border: 'border-green-500', light: 'bg-green-500/20' },
@@ -171,6 +198,12 @@ export default function MapaMundial() {
               onMouseEnter={() => setHoveredCountry(pais.codigo)}
               onMouseLeave={() => setHoveredCountry(null)}
             >
+              {ratings[pais.codigo] && (
+                <div className="absolute top-2 right-2 bg-yellow-500 text-slate-900 px-2 py-0.5 rounded-full text-xs font-bold flex items-center gap-1">
+                  <Star className="w-3 h-3 fill-current" />
+                  {ratings[pais.codigo].average}
+                </div>
+              )}
               <div className="text-center">
                 <span className="text-4xl mb-2 block">{pais.bandera}</span>
                 <h3 className="text-white font-semibold">{pais.nombre}</h3>
