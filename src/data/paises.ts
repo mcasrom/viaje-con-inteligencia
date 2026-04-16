@@ -1926,6 +1926,470 @@ export const paisesData: Record<string, DatoPais> = {
     ],
     bandera: '🇹🇷',
     mapaCoordenadas: [38.9637, 35.2433]
+  },
+
+  id: {
+    codigo: 'id',
+    nombre: 'Indonesia (Bali)',
+    capital: 'Yakarta',
+    continente: 'Asia',
+    idioma: 'Indonesio',
+    moneda: 'Rupia indonesia (IDR)',
+    tipoCambio: '1 EUR ≈ 17000 IDR',
+    zonaHoraria: 'UTC+7 a +9',
+    conduccion: 'izquierda',
+    poblacion: '275 millones',
+    pib: '1.3 billones USD',
+    indicadores: { ipc: '3.5%', indicePrecios: 'Muy bajo' },
+    voltaje: '230V / 50Hz',
+    prefijoTelefono: '+62',
+    nivelRiesgo: 'bajo',
+    ultimoInforme: 'Marzo 2026',
+    contactos: [
+      {
+        tipo: 'Embajada',
+        nombre: 'Embajada de España en Yakarta',
+        direccion: 'Jalan Profesor Mohammed Adnan Wiranata 61-63, Yakarta 10350',
+        telefono: '+62 21 3190 6455',
+        email: 'emb.yakarta@maec.es',
+        horario: 'Lunes a viernes 8:30-15:00'
+      }
+    ],
+    requerimientos: [
+      { categoria: 'Documentación', icon: '📄', items: ['Pasaporte válido 6 meses', 'Visado turístico 30 días', 'Boleto de salida'] },
+      { categoria: 'Sanitario', icon: '🏥', items: ['Vacuna fiebre amarilla si vienes de zona endémica', 'Seguro médico obligatorio', 'Dengue presente'] },
+      { categoria: 'General', icon: 'ℹ️', items: ['Moneda: Rupia', 'Tarjetas en ciudades', 'Efectivo en mercados'] }
+    ],
+    queHacer: [
+      'Visitar Borobudur al amanecer',
+      'Disfrutar las playas de Bali',
+      'Bucear en Komodo',
+      'Explorar templos hinduistas',
+      'Visitar arrozales de Tegallalang'
+    ],
+    queNoHacer: [
+      'No toques la cabeza de los locales',
+      'No señalices con el dedo',
+      'No entres descalzo a templos',
+      'No bebas agua del grifo',
+      'No subas al Monte Agung sin guía'
+    ],
+    diarios: [
+      { nombre: 'The Jakarta Post', url: 'https://www.thejakartapost.com' },
+      { nombre: 'Bali Discovery', url: 'https://www.balidiscovery.com' }
+    ],
+    urlsUtiles: [
+      { nombre: 'Turismo Indonesia', url: 'https://www.indonesia.travel' },
+      { nombre: 'MAEC - Indonesia', url: 'https://www.exteriores.gob.es/Embajadas/Yakarta' }
+    ],
+    bandera: '🇮🇩',
+    mapaCoordenadas: [-0.7893, 113.9213]
+  },
+
+  kh: {
+    codigo: 'kh',
+    nombre: 'Camboya',
+    capital: 'Phnom Penh',
+    continente: 'Asia',
+    idioma: 'Jemer',
+    moneda: 'Riel camboyano (KHR)',
+    tipoCambio: '1 EUR ≈ 4400 KHR',
+    zonaHoraria: 'UTC+7',
+    conduccion: 'derecha',
+    poblacion: '17 millones',
+    pib: '29.5 billones USD',
+    indicadores: { ipc: '2.5%', indicePrecios: 'Muy bajo' },
+    voltaje: '230V / 50Hz',
+    prefijoTelefono: '+855',
+    nivelRiesgo: 'medio',
+    ultimoInforme: 'Marzo 2026',
+    contactos: [
+      {
+        tipo: 'Embajada',
+        nombre: 'Embajada de España en Bangkok (acreditada)',
+        direccion: '990 Rama IV Road, Bangkok, Tailandia',
+        telefono: '+66 2 635 6260',
+        email: 'emb.bangkok@maec.es',
+        horario: 'Lunes a viernes 9:00-14:00'
+      }
+    ],
+    requerimientos: [
+      { categoria: 'Documentación', icon: '📄', items: ['Pasaporte válido 6 meses', 'Visado e-visa 30 días', 'Certificado fiebre amarilla'] },
+      { categoria: 'Sanitario', icon: '🏥', items: ['Vacuna fiebre amarilla recomendada', 'Profilaxis malaria zonas rurales', 'Seguro médico esencial'] },
+      { categoria: 'General', icon: 'ℹ️', items: ['Moneda: Dólares USD aceptados', 'Clima tropical', 'Pobreza en zonas rurales'] }
+    ],
+    queHacer: [
+      'Visitar Angkor Wat al amanecer',
+      'Explorar Mercado Ruso de Phnom Penh',
+      'Ir a las playas de Sihanoukville',
+      'Probar amok de pescado',
+      'Visitar Killing Fields'
+    ],
+    queNoHacer: [
+      'No toques la cabeza de los camboyanos',
+      'No señales con el dedo',
+      'No toques el hombro de mujeres',
+      'No fotografíes mendigos ni niños',
+      'No aceptes ofertas demasiado buenas'
+    ],
+    diarios: [
+      { nombre: 'Khmer Times', url: 'https://www.khmertimeskh.com' },
+      { nombre: 'Cambodia Daily', url: 'https://www.cambodiadaily.com' }
+    ],
+    urlsUtiles: [
+      { nombre: 'Turismo Camboya', url: 'https://www.tourismcambodia.com' },
+      { nombre: 'Visado Camboya', url: 'https://www.evisa.gov.kh' }
+    ],
+    bandera: '🇰🇭',
+    mapaCoordenadas: [12.5657, 104.9910]
+  },
+
+  la: {
+    codigo: 'la',
+    nombre: 'Laos',
+    capital: 'Vientián',
+    continente: 'Asia',
+    idioma: 'Lao',
+    moneda: 'Kip laosiano (LAK)',
+    tipoCambio: '1 EUR ≈ 21000 LAK',
+    zonaHoraria: 'UTC+7',
+    conduccion: 'derecha',
+    poblacion: '7.5 millones',
+    pib: '15.7 billones USD',
+    indicadores: { ipc: '4.2%', indicePrecios: 'Muy bajo' },
+    voltaje: '230V / 50Hz',
+    prefijoTelefono: '+856',
+    nivelRiesgo: 'bajo',
+    ultimoInforme: 'Marzo 2026',
+    contactos: [
+      {
+        tipo: 'Embajada',
+        nombre: 'Embajada de España en Bangkok (acreditada)',
+        direccion: '990 Rama IV Road, Bangkok, Tailandia',
+        telefono: '+66 2 635 6260',
+        email: 'emb.bangkok@maec.es',
+        horario: 'Lunes a viernes 9:00-14:00'
+      }
+    ],
+    requerimientos: [
+      { categoria: 'Documentación', icon: '📄', items: ['Pasaporte válido 6 meses', 'Visado turístico 30 días', 'Registro policial en hoteles'] },
+      { categoria: 'Sanitario', icon: '🏥', items: ['Profilaxis malaria zonas rurales', 'Vacunas hepatitis recomendadas', 'Seguro médico obligatorio'] },
+      { categoria: 'General', icon: 'ℹ️', items: ['Moneda: Kip y USD aceptados', 'Clima tropical monzónico', 'País tranquilo y seguro'] }
+    ],
+    queHacer: [
+      'Visitar Pagodas de Luang Prabang',
+      'Navegar por el Mekong',
+      'Ver la ceremonia del Tak Bat',
+      'Visitar Cascadas de Kuang Si',
+      'Explorar la meseta de Bolaven'
+    ],
+    queNoHacer: [
+      'No toques objetos religiosos con la cabeza',
+      'No señales a personas con el dedo',
+      'No te vistas inapropiadamente en templos',
+      'No compres antigüedades sin permiso',
+      'No discutas sobre política'
+    ],
+    diarios: [
+      { nombre: 'Vientián Times', url: 'https://www.vientianetimes.la' },
+      { nombre: 'Lao News', url: 'https://www.laotourism.go.la' }
+    ],
+    urlsUtiles: [
+      { nombre: 'Turismo Laos', url: 'https://www.laotourism.go.la' },
+      { nombre: 'Visado Laos', url: 'https://www.laoevisa.gov.la' }
+    ],
+    bandera: '🇱🇦',
+    mapaCoordenadas: [19.8563, 102.4955]
+  },
+
+  mm: {
+    codigo: 'mm',
+    nombre: 'Myanmar',
+    capital: 'Naipyidó',
+    continente: 'Asia',
+    idioma: 'Birmano',
+    moneda: 'Kyat birmano (MMK)',
+    tipoCambio: '1 EUR ≈ 2800 MMK',
+    zonaHoraria: 'UTC+6:30',
+    conduccion: 'derecha',
+    poblacion: '54 millones',
+    pib: '65 billones USD',
+    indicadores: { ipc: '5.8%', indicePrecios: 'Medio' },
+    voltaje: '230V / 50Hz',
+    prefijoTelefono: '+95',
+    nivelRiesgo: 'medio',
+    ultimoInforme: 'Marzo 2026',
+    contactos: [
+      {
+        tipo: 'Embajada',
+        nombre: 'Embajada de España en Bangkok (acreditada)',
+        direccion: '990 Rama IV Road, Bangkok, Tailandia',
+        telefono: '+66 2 635 6260',
+        email: 'emb.bangkok@maec.es',
+        horario: 'Lunes a viernes 9:00-14:00'
+      }
+    ],
+    requerimientos: [
+      { categoria: 'Documentación', icon: '📄', items: ['Pasaporte válido 6 meses', 'E-visa 28 días', 'Permiso zonas restringidas'] },
+      { categoria: 'Sanitario', icon: '🏥', items: ['Vacunas recomendadas estándar', 'Profilaxis malaria zonas rurales', 'Seguro con evacuación'] },
+      { categoria: 'General', icon: 'ℹ️', items: ['Moneda: Kyat y USD', 'Sitios restringidos por conflicto', 'Situación política inestable'] }
+    ],
+    queHacer: [
+      'Visitar Pagodas de Bagan',
+      'Ver Golden Rock de Kyaiktiyo',
+      'Explorar el Lago Inle',
+      'Visitar Mandalay',
+      'Conocer Yangon'
+    ],
+    queNoHacer: [
+      'No toques la cabeza de nadie',
+      'No señales con el pie',
+      'No votes a los monjes',
+      'No fotografíes militares',
+      'No viajes a zonas de conflicto'
+    ],
+    diarios: [
+      { nombre: 'Myanmar Times', url: 'https://www.mmtimes.com' },
+      { nombre: 'Eleven Media', url: 'https://elevenmediagroup.com' }
+    ],
+    urlsUtiles: [
+      { nombre: 'Turismo Myanmar', url: 'https://tourismmyanmar.org' },
+      { nombre: 'MAEC - Recomendaciones', url: 'https://www.exteriores.gob.es' }
+    ],
+    bandera: '🇲🇲',
+    mapaCoordenadas: [21.9162, 95.9560]
+  },
+
+  my: {
+    codigo: 'my',
+    nombre: 'Malasia',
+    capital: 'Kuala Lumpur',
+    continente: 'Asia',
+    idioma: 'Malayo',
+    moneda: 'Ringgit malayo (MYR)',
+    tipoCambio: '1 EUR ≈ 5 MYR',
+    zonaHoraria: 'UTC+8',
+    conduccion: 'izquierda',
+    poblacion: '33 millones',
+    pib: '373 billones USD',
+    indicadores: { ipc: '2.5%', indicePrecios: 'Medio' },
+    voltaje: '240V / 50Hz',
+    prefijoTelefono: '+60',
+    nivelRiesgo: 'bajo',
+    ultimoInforme: 'Marzo 2026',
+    contactos: [
+      {
+        tipo: 'Embajada',
+        nombre: 'Embajada de España en Kuala Lumpur',
+        direccion: 'No 199, Jalan Tun Razak, 50400 Kuala Lumpur',
+        telefono: '+60 3 2166 6300',
+        email: 'emb.kualalumpur@maec.es',
+        horario: 'Lunes a viernes 9:00-16:00'
+      }
+    ],
+    requerimientos: [
+      { categoria: 'Documentación', icon: '📄', items: ['Pasaporte válido 6 meses', 'Visado no requerido hasta 90 días', 'Boleto de salida'] },
+      { categoria: 'Sanitario', icon: '🏥', items: ['Vacunas estándar actualizadas', 'Seguro médico recomendado', 'Malaria rara en ciudades'] },
+      { categoria: 'General', icon: 'ℹ️', items: ['Multicultural: malayo, chino, indio', 'Comida callejera excelente', 'KLIA obligatorio en ciertas zonas'] }
+    ],
+    queHacer: [
+      'Visitar Torres Petronas',
+      'Explorar George Town, Penang',
+      'Ver las Cuevas de Batu',
+      'Ir a las playas de Langkawi',
+      'Probar nasi lemak'
+    ],
+    queNoHacer: [
+      'No critiques la monarquía',
+      'No muestres afecto público',
+      'No fotografíes sin permiso en templos',
+      'No te vistas inapropiadamente',
+      'No introduzcas alimentos no halal'
+    ],
+    diarios: [
+      { nombre: 'The Star', url: 'https://www.thestar.com.my' },
+      { nombre: 'Malay Mail', url: 'https://www.malaymail.com' }
+    ],
+    urlsUtiles: [
+      { nombre: 'Turismo Malasia', url: 'https://www.malaysia.travel' },
+      { nombre: 'MAEC - Malasia', url: 'https://www.exteriores.gob.es/Embajadas/KualaLumpur' }
+    ],
+    bandera: '🇲🇾',
+    mapaCoordenadas: [4.2105, 101.9758]
+  },
+
+  ph: {
+    codigo: 'ph',
+    nombre: 'Filipinas',
+    capital: 'Manila',
+    continente: 'Asia',
+    idioma: 'Filipino, Inglés',
+    moneda: 'Peso filipino (PHP)',
+    tipoCambio: '1 EUR ≈ 60 PHP',
+    zonaHoraria: 'UTC+8',
+    conduccion: 'derecha',
+    poblacion: '110 millones',
+    pib: '404 billones USD',
+    indicadores: { ipc: '4.2%', indicePrecios: 'Medio' },
+    voltaje: '220V / 60Hz',
+    prefijoTelefono: '+63',
+    nivelRiesgo: 'bajo',
+    ultimoInforme: 'Marzo 2026',
+    contactos: [
+      {
+        tipo: 'Embajada',
+        nombre: 'Embajada de España en Manila',
+        direccion: '8th Floor, Pacific Star Building, Makati City, Manila',
+        telefono: '+63 2 8812 5393',
+        email: 'emb.manila@maec.es',
+        horario: 'Lunes a viernes 8:00-16:00'
+      }
+    ],
+    requerimientos: [
+      { categoria: 'Documentación', icon: '📄', items: ['Pasaporte válido 6 meses', 'Visado no requerido hasta 30 días', 'Boleto de salida'] },
+      { categoria: 'Sanitario', icon: '🏥', items: ['Vacunas estándar actualizadas', 'Seguro médico obligatorio', 'Cuidado con dengue'] },
+      { categoria: 'General', icon: 'ℹ️', items: ['7,000+ islas', 'Tagalo e inglés oficiales', 'Clima tropical'] }
+    ],
+    queHacer: [
+      'Bucear en Palawan',
+      'Visitar Chocolate Hills en Bohol',
+      'Explorar Boracay',
+      'Ver el Monte Mayón',
+      'Ir a Siargao'
+    ],
+    queNoHacer: [
+      'No aceptes invitaos de desconocidos',
+      'No critiques al gobierno',
+      'No muestres afecto público excesivo',
+      'No visites Mindanao sin precauciones',
+      'No ignores advisories locales'
+    ],
+    diarios: [
+      { nombre: 'Philippine Daily Inquirer', url: 'https://www.inquirer.net' },
+      { nombre: 'Manila Bulletin', url: 'https://mb.com.ph' }
+    ],
+    urlsUtiles: [
+      { nombre: 'Turismo Filipinas', url: 'https://philippines.travel' },
+      { nombre: 'MAEC - Filipinas', url: 'https://www.exteriores.gob.es/Embajadas/Manila' }
+    ],
+    bandera: '🇵🇭',
+    mapaCoordenadas: [12.8797, 121.7740]
+  },
+
+  np: {
+    codigo: 'np',
+    nombre: 'Nepal',
+    capital: 'Katmandú',
+    continente: 'Asia',
+    idioma: 'Nepalí',
+    moneda: 'Rupia nepalesa (NPR)',
+    tipoCambio: '1 EUR ≈ 135 NPR',
+    zonaHoraria: 'UTC+5:45',
+    conduccion: 'izquierda',
+    poblacion: '30 millones',
+    pib: '36 billones USD',
+    indicadores: { ipc: '4.8%', indicePrecios: 'Bajo' },
+    voltaje: '230V / 50Hz',
+    prefijoTelefono: '+977',
+    nivelRiesgo: 'bajo',
+    ultimoInforme: 'Marzo 2026',
+    contactos: [
+      {
+        tipo: 'Embajada',
+        nombre: 'Embajada de España en Nueva Delhi (acreditada)',
+        direccion: '12, Aurangzeb Road, Nueva Delhi, India',
+        telefono: '+91 11 4123 8100',
+        email: 'emb.nuevadelhi@maec.es',
+        horario: 'Lunes a viernes 9:00-17:00'
+      }
+    ],
+    requerimientos: [
+      { categoria: 'Documentación', icon: '📄', items: ['Pasaporte válido 6 meses', 'Visa on arrival o e-visa', 'Permiso TIMS para trekking'] },
+      { categoria: 'Sanitario', icon: '🏥', items: ['Vacunas hepatitis A, tifoidea', 'Profilaxis malaria no necesaria', 'Seguro evacuación esencial'] },
+      { categoria: 'General', icon: 'ℹ️', items: ['Altitude sickness en trekking', 'Mejor temporada: oct-nov, mar-may', 'Permiso trekking obligatorio'] }
+    ],
+    queHacer: [
+      'Trekking al Campo Base del Everest',
+      'Visitar templos de Katmandú',
+      'Salida del sol en Sarankot',
+      'Safari en Chitwan',
+      'Visitar Lhasa desde Nepal'
+    ],
+    queNoHacer: [
+      'No toques a nadie con el pie izquierdo',
+      'No gires la espalda a budas',
+      'No trekkees solo en zonas remotas',
+      'No bebas agua no embotellada',
+      'No ignores el mal de altura'
+    ],
+    diarios: [
+      { nombre: 'The Kathmandu Post', url: 'https://kathmandupost.com' },
+      { nombre: 'Nepal News', url: 'https://nepalnews.com' }
+    ],
+    urlsUtiles: [
+      { nombre: 'Turismo Nepal', url: 'https://welcomenepal.com' },
+      { nombre: 'TAAN Trekking', url: 'https://www.taan.org.np' }
+    ],
+    bandera: '🇳🇵',
+    mapaCoordenadas: [28.3949, 84.1240]
+  },
+
+  lk: {
+    codigo: 'lk',
+    nombre: 'Sri Lanka',
+    capital: 'Sri Jayawardenepura Kotte',
+    continente: 'Asia',
+    idioma: 'Singalés, Tamil',
+    moneda: 'Rupia de Sri Lanka (LKR)',
+    tipoCambio: '1 EUR ≈ 360 LKR',
+    zonaHoraria: 'UTC+5:30',
+    conduccion: 'izquierda',
+    poblacion: '22 millones',
+    pib: '85 billones USD',
+    indicadores: { ipc: '4.5%', indicePrecios: 'Medio' },
+    voltaje: '230V / 50Hz',
+    prefijoTelefono: '+94',
+    nivelRiesgo: 'bajo',
+    ultimoInforme: 'Marzo 2026',
+    contactos: [
+      {
+        tipo: 'Embajada',
+        nombre: 'Embajada de España en Colombo',
+        direccion: '25, Sir James Peiris Mawatha, Colombo 2',
+        telefono: '+94 11 269 4699',
+        email: 'emb.colombo@maec.es',
+        horario: 'Lunes a viernes 8:30-15:30'
+      }
+    ],
+    requerimientos: [
+      { categoria: 'Documentación', icon: '📄', items: ['Pasaporte válido 6 meses', 'ETA (Electronic Travel Authorization)', 'Boleto de salida'] },
+      { categoria: 'Sanitario', icon: '🏥', items: ['Vacunas estándar actualizadas', 'Dengue presente', 'Seguro médico obligatorio'] },
+      { categoria: 'General', icon: 'ℹ️', items: ['Clima tropical', 'Tsunamis históricamente', 'Comida picante típica'] }
+    ],
+    queHacer: [
+      'Visitar Sigiriya (Roca del León)',
+      'Temple of the Tooth en Kandy',
+      'Safari en Yala',
+      'Tomar té en Nuwara Eliya',
+      'Playas de Mirissa'
+    ],
+    queNoHacer: [
+      'No toques la cabeza de los cingales',
+      'No señales con el pie',
+      'No votes a budas',
+      'No discutas de política',
+      'No ignores avisos de tsunami'
+    ],
+    diarios: [
+      { nombre: 'Daily Mirror', url: 'https://www.dailymirror.lk' },
+      { nombre: 'The Island', url: 'https://www.island.lk' }
+    ],
+    urlsUtiles: [
+      { nombre: 'Turismo Sri Lanka', url: 'https://srilanka.travel' },
+      { nombre: 'MAEC - Sri Lanka', url: 'https://www.exteriores.gob.es/Embajadas/Colombo' }
+    ],
+    bandera: '🇱🇰',
+    mapaCoordenadas: [7.8731, 80.7718]
   }
 };
 
