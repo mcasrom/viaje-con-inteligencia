@@ -10,6 +10,7 @@ import {
   Plane, Info, Flag, Users, Clock3, Zap, Car, MapPinned
 } from 'lucide-react';
 import { notFound } from 'next/navigation';
+import Reviews from '@/components/Reviews';
 
 export default function DetallePais() {
   const params = useParams();
@@ -293,7 +294,7 @@ export default function DetallePais() {
           </div>
         </div>
 
-        <div className="bg-blue-900/30 border border-blue-700/50 rounded-xl p-6">
+        <div className="bg-blue-900/30 border border-blue-700/50 rounded-xl p-6 mb-8">
           <h3 className="text-lg font-semibold text-blue-300 mb-3 flex items-center gap-2">
             <Plane className="w-5 h-5" />
             Recomendación Final
@@ -305,6 +306,8 @@ export default function DetallePais() {
             cobertura médica completa y revisar las recomendaciones de viaje del Ministerio de Asuntos Exteriores.
           </p>
         </div>
+
+        <Reviews countryCode={codigo} countryName={pais.nombre} />
       </main>
 
       <footer className="bg-slate-800 border-t border-slate-700 py-6 mt-12">
