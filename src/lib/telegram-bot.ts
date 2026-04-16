@@ -1,14 +1,15 @@
 import { paisesData, getPaisPorCodigo, getLabelRiesgo } from '@/data/paises';
 
 interface UserState {
-  step: 'initial' | 'selecting_country' | 'viewing_country';
+  step: 'initial' | 'selecting_country' | 'viewing_country' | 'ai_chat';
   selectedCountry?: string;
+  chatHistory?: { role: 'user' | 'assistant'; content: string }[];
 }
 
 const userStates: Record<number, UserState> = {};
 
 export function getUserState(chatId: number): UserState {
-  return userStates[chatId] || { step: 'initial' };
+  return userStates[chatId] || { step: 'initial', chatHistory: [] };
 }
 
 export function setUserState(chatId: number, state: UserState): void {
@@ -24,6 +25,7 @@ export function getMainKeyboard() {
     reply_markup: {
       keyboard: [
         [{ text: '🌍 Buscar país' }],
+        [{ text: '🤖 Chat IA' }],
         [{ text: '⚠️ Alertas de riesgo' }, { text: '🏦 Tipo cambio' }],
         [{ text: '📋 Checklist viaje' }],
         [{ text: '⭐ Premium' }],
