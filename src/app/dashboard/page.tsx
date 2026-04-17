@@ -302,7 +302,7 @@ const handleAuth = async (e: React.FormEvent) => {
           </p>
           
           <a 
-            href="https://t.me/AlertasViajeroBot?start=login"
+            href="https://t.me/ViajeConInteligenciaBot?start=login"
             className="block mt-4 text-center py-3 bg-[#0088cc] text-white rounded-lg font-bold hover:bg-[#0077b3] transition-colors"
           >
             Iniciar sesión con Telegram

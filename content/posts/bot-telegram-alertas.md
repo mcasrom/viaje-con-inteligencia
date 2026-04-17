@@ -54,7 +54,7 @@ Consulta tasas de cambio actualizadas para planificar tu presupuesto.
 
 ## Cómo usar el bot
 
-1. **Abre Telegram** y busca `@AlertasViajeroBot`
+1. **Abre Telegram** y busca `@ViajeConInteligenciaBot`
 2. **Inicia conversación** con `/start`
 3. **Explora los comandos** disponibles
 4. **Recibe alertas** automáticamente si estás suscrito
@@ -75,4 +75,4 @@ Consulta tasas de cambio actualizadas para planificar tu presupuesto.
 
 El bot de Telegram es tu compañero de viaje ideal. Úsalo antes y durante tus viajes para estar siempre informado y seguro.
 
-**Prueba el bot ahora:** [@AlertasViajeroBot](https://t.me/AlertasViajeroBot)
+**Prueba el bot ahora:** [@ViajeConInteligenciaBot](https://t.me/ViajeConInteligenciaBot)

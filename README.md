@@ -10,7 +10,7 @@ Tu asistente de viajes seguros. Mapa interactivo de riesgos por país según MAE
 
 - **🗺️ Mapa de Riesgos**: 28 países con niveles de riesgo según MAEC
 - **📋 Checklist Imprimible**: +80 items organizados por categorías
-- **🤖 Bot Telegram**: @AlertasViajero para alertas en tiempo real
+- **🤖 Bot Telegram**: @ViajeConInteligenciaBot para alertas en tiempo real
 - **⭐ Premium**: Plan freemium con funciones avanzadas
 - **📚 Metodología**: Explicación transparente de cómo se clasifican los riesgos
 
