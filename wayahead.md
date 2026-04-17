@@ -33,7 +33,9 @@
 - [ ] Botón ver más → web
 
 ## Premium/Subscriptions
-- [x] Monitor de conflictos (GDELT API)
+- [x] Monitor de conflictos (NewsMCP API)
+- [x] Tags en posts
+- [x] Posts relacionados automático
 - [ ] Stripe conectar
 - [ ] Página gestión suscripción
 

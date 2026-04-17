@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
+import fs from 'fs';
+import path from 'path';
 import {
   getUserState,
   setUserState,
@@ -15,6 +17,28 @@ import {
 
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || '';
 const TELEGRAM_API = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}`;
+
+const STATS_FILE = path.join(process.cwd(), 'telegram-stats.json');
+
+function loadStats() {
+  try {
+    if (fs.existsSync(STATS_FILE)) {
+      return JSON.parse(fs.readFileSync(STATS_FILE, 'utf8'));
+    }
+  } catch {}
+  return { starts: 0, commands: {}, lastActive: null };
+}
+
+function saveStats(stats: any) {
+  fs.writeFileSync(STATS_FILE, JSON.stringify(stats, null, 2));
+}
+
+function trackStart(chatId: number) {
+  const stats = loadStats();
+  stats.starts += 1;
+  stats.lastActive = new Date().toISOString();
+  saveStats(stats);
+}
 
 interface TelegramKeyboard {
   reply_markup?: {
@@ -264,6 +288,7 @@ export async function POST(request: NextRequest) {
     
     if (text === '/start') {
       resetUserState(chatId);
+      trackStart(chatId);
       await sendMessage(chatId, t.welcome(firstName), {
         reply_markup: t.menu()
       });
