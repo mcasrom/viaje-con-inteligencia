@@ -69,7 +69,7 @@ export default function Testimonios() {
           <h2 className="text-3xl font-bold text-white mb-3">
             Lo que dicen nuestros viajeros
           </h2>
-          <p className="text-slate-400">
+          <p className="text-slate-300 text-lg">
             Miles de viajeros confían en Viaje con Inteligencia para viajar seguros
           </p>
         </div>
