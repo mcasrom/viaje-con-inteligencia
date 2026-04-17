@@ -47,7 +47,8 @@ async function trackCommand(chatId: number, command: string) {
 
 interface TelegramKeyboard {
   reply_markup?: {
-    keyboard: { text: string }[][];
+    keyboard?: { text: string }[][];
+    inline_keyboard?: { text: string; callback_data?: string }[][];
     resize_keyboard?: boolean;
   };
 }
@@ -524,7 +525,19 @@ export async function POST(request: NextRequest) {
       if (query) {
         const result = searchCountry(query);
         if (result) {
-          await sendMessage(chatId, result, {
+          // Try to get weather too
+          const paisesModule = await import('@/data/paises');
+          const country = Object.values(paisesModule.paisesData).find(
+            p => result.includes(p.nombre)
+          );
+          let fullInfo = result;
+          if (country) {
+            const weather = await getWeatherForCountry(country.codigo);
+            if (weather) {
+              fullInfo += '\n\n' + weather;
+            }
+          }
+          await sendMessage(chatId, fullInfo, {
             reply_markup: t.menu()
           });
         } else {
@@ -551,20 +564,18 @@ export async function POST(request: NextRequest) {
     
     if (text.startsWith('/clima ') || text.startsWith('/weather ')) {
       const query = text.replace(/^\/(clima|weather)\s+/i, '').trim();
-      const pais = searchCountry(query);
-      if (pais) {
-        const codigo = Object.values(paisesData).find(p => 
-          p.nombre.toLowerCase().includes(query.toLowerCase()) ||
-          p.codigo.toLowerCase() === query.toLowerCase()
-        )?.codigo;
-        
-        if (codigo) {
-          const weather = await getWeatherForCountry(codigo);
-          if (weather) {
-            await sendMessage(chatId, weather, { reply_markup: t.menu() });
-          } else {
-            await sendMessage(chatId, '❌ No se pudo obtener el clima.', { reply_markup: t.menu() });
-          }
+      const paisesModule = await import('@/data/paises');
+      const country = Object.values(paisesModule.paisesData).find(
+        (p) => p.nombre.toLowerCase().includes(query.toLowerCase()) ||
+               p.codigo.toLowerCase() === query.toLowerCase()
+      );
+      
+      if (country) {
+        const weather = await getWeatherForCountry(country.codigo);
+        if (weather) {
+          await sendMessage(chatId, weather, { reply_markup: t.menu() });
+        } else {
+          await sendMessage(chatId, '❌ No se pudo obtener el clima.', { reply_markup: t.menu() });
         }
       } else {
         await sendMessage(chatId, '❌ País no encontrado.', { reply_markup: t.menu() });
