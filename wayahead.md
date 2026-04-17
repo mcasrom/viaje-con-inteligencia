@@ -1,8 +1,11 @@
 # Pendiente - Viaje con Inteligencia
 
+## ⚠️ Acción requerida (Supabase)
+- [ ] Ejecutar schema SQL (tablas bot_stats, bot_commands)
+
 ## Supabase
-- [x] Configurar Supabase (schema listo, esperar rate limit o alternativa)
-- [x] Probar login email mágico
+- [x] Configurar Supabase
+- [x] Probar login email mágico (fix aplicado)
 - [ ] Verificar favoritos y dashboard
 
 ## Añadir países (10-15 nuevos)
@@ -20,11 +23,13 @@
 - [x] Mascotas en avión
 - [x] Equipaje de mano
 - [x] Derechos del viajero UE
+- [x] Tags en posts
+- [x] Posts relacionados automático
 - [ ] Guía visados por país
 - [ ] Emergencias en extranjero
 - [ ] Estafas turísticas
 - [ ] Roaming internacional
-- [ ] WiFi/Internet en viajes: SIM, eSIM, roaming
+- [ ] WiFi/Internet en viajes
 
 ## Bot Telegram
 - [x] Tracking de uso (stats en Supabase)
