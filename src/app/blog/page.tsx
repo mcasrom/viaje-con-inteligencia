@@ -3,6 +3,15 @@ import { ArrowLeft, Calendar, Clock, BookOpen } from 'lucide-react';
 
 const articulos = [
   {
+    slug: 'aduanas-aeropuerto',
+    title: 'Pasar la aduana en el aeropuerto sin problemas',
+    excerpt: 'Guía completa para viajeros jóvenes. Consejos reales, errores comunes y recomendaciones para cruzar cualquier control fronterizo.',
+    date: '17 de Abril, 2026',
+    readTime: '7 min',
+    category: 'Básicos',
+    image: '🛃',
+  },
+  {
     slug: 'como-viajar-seguro-japon',
     title: 'Guía completa para viajar seguro a Japón',
     excerpt: 'Todo lo que necesitas saber sobre seguridad, cultura y precauciones para tu viaje a Japón.',
@@ -12,7 +21,7 @@ const articulos = [
     image: '🇯🇵',
   },
   {
-    slug: ' checklist-viaje-imprescindible',
+    slug: 'checklist-viaje-imprescindible',
     title: 'Checklist de viaje: Los 10 errores que debes evitar',
     excerpt: 'Los errores más comunes que cometen los viajeros y cómo evitarlos para un viaje sin problemas.',
     date: '12 de Abril, 2026',

@@ -104,6 +104,35 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJxxx...
 - Open Graph image (1200x630)
 - Metadata actualizada
 
+### Footer / About
+- Bio del autor con traducciones ES/EN/PT
+- Enlace a metodología MAEC
+
+---
+
+## 📝 Blog - Posts planificados
+
+### Requisitos para posts SEO:
+- [ ] Mínimo **1000 palabras** por post
+- [ ] Keywords en título, primer párrafo, H2/H3
+- [ ] Meta description atractiva (150-160 chars)
+- [ ] Enlaces internos a otras páginas del sitio
+- [ ] Datos estructurados (JSON-LD)
+- [ ] Imágenes con alt text optimizado
+
+### Posts en preparación:
+- [🔄] **Aduanas en viajes internacionales** - Guía completa de declaración y restricciones
+
+### Ideas para futuros posts:
+- [ ] Guía completa de visados por país
+- [ ] Seguro de viaje: qué saber antes de contratar
+- [ ] Cómo actuar ante emergencias en el extranjero
+- [ ] Equipaje de mano: normas actualizadas por airline
+- [ ] Consejos para evitar estafas turísticas
+- [ ] Moneda y tipos de cambio: guía práctica
+- [ ] Roaming internacional: opciones para no pagar de más
+- [ ] Derechos del viajero en la UE
+
 ---
 
 ## 📧 Contacto
