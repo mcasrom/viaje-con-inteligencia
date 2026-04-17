@@ -1,73 +1,10 @@
 import Link from 'next/link';
 import { ArrowLeft, Calendar, Clock, BookOpen } from 'lucide-react';
-
-const articulos = [
-  {
-    slug: 'aduanas-aeropuerto',
-    title: 'Pasar la aduana en el aeropuerto sin problemas',
-    excerpt: 'Guía completa para viajeros jóvenes. Consejos reales, errores comunes y recomendaciones para cruzar cualquier control fronterizo.',
-    date: '17 de Abril, 2026',
-    readTime: '7 min',
-    category: 'Básicos',
-    image: '🛃',
-  },
-  {
-    slug: 'como-viajar-seguro-japon',
-    title: 'Guía completa para viajar seguro a Japón',
-    excerpt: 'Todo lo que necesitas saber sobre seguridad, cultura y precauciones para tu viaje a Japón.',
-    date: '15 de Abril, 2026',
-    readTime: '8 min',
-    category: 'Destinos',
-    image: '🇯🇵',
-  },
-  {
-    slug: 'checklist-viaje-imprescindible',
-    title: 'Checklist de viaje: Los 10 errores que debes evitar',
-    excerpt: 'Los errores más comunes que cometen los viajeros y cómo evitarlos para un viaje sin problemas.',
-    date: '12 de Abril, 2026',
-    readTime: '5 min',
-    category: 'Consejos',
-    image: '✈️',
-  },
-  {
-    slug: 'seguro-viaje-obligatorio',
-    title: '¿Por qué un seguro de viaje es obligatorio?',
-    excerpt: 'Casos reales donde un seguro de viaje marcó la diferencia entre un susto y una tragedia.',
-    date: '8 de Abril, 2026',
-    readTime: '6 min',
-    category: 'Seguros',
-    image: '🛡️',
-  },
-  {
-    slug: 'zonas-riesgo-mexico',
-    title: 'México: Cómo identificar zonas de riesgo',
-    excerpt: 'Mapa actualizado de zonas a evitar y recomendaciones del MAEC para viajar seguro.',
-    date: '5 de Abril, 2026',
-    readTime: '7 min',
-    category: 'Destinos',
-    image: '🇲🇽',
-  },
-  {
-    slug: 'documentos-viaje-internacional',
-    title: 'Documentos esenciales para viajes internacionales',
-    excerpt: 'Pasaporte, visados, seguros y más: todo lo que necesitas documentar antes de partir.',
-    date: '1 de Abril, 2026',
-    readTime: '4 min',
-    category: 'Básicos',
-    image: '📄',
-  },
-  {
-    slug: 'bot-telegram-alertas',
-    title: 'Cómo el bot de Telegram puede salvarte en el extranjero',
-    excerpt: 'Funciones secretas del bot que muy pocos conocen y que pueden ser cruciales en emergencias.',
-    date: '28 de Marzo, 2026',
-    readTime: '3 min',
-    category: 'Tecnología',
-    image: '🤖',
-  },
-];
+import { getAllPosts } from '@/lib/posts';
 
 export default function BlogPage() {
+  const posts = getAllPosts();
+
   return (
     <div className="min-h-screen bg-slate-900">
       <header className="bg-slate-800 border-b border-slate-700">
@@ -94,35 +31,35 @@ export default function BlogPage() {
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {articulos.map((articulo) => (
+          {posts.map((post) => (
             <Link
-              key={articulo.slug}
-              href={`/blog/${articulo.slug}`}
+              key={post.slug}
+              href={`/blog/${post.slug}`}
               className="bg-slate-800 rounded-xl border border-slate-700 overflow-hidden hover:border-blue-500 transition-colors group"
             >
               <div className="h-32 bg-gradient-to-br from-slate-700 to-slate-800 flex items-center justify-center">
-                <span className="text-6xl">{articulo.image}</span>
+                <span className="text-6xl">{post.image}</span>
               </div>
               <div className="p-6">
                 <div className="flex items-center gap-2 mb-3">
                   <span className="px-2 py-1 bg-blue-500/20 text-blue-400 text-xs font-medium rounded">
-                    {articulo.category}
+                    {post.category}
                   </span>
                 </div>
                 <h2 className="text-lg font-bold text-white mb-2 group-hover:text-blue-400 transition-colors">
-                  {articulo.title}
+                  {post.title}
                 </h2>
                 <p className="text-slate-400 text-sm mb-4 line-clamp-2">
-                  {articulo.excerpt}
+                  {post.excerpt}
                 </p>
                 <div className="flex items-center gap-4 text-slate-500 text-xs">
                   <span className="flex items-center gap-1">
                     <Calendar className="w-3 h-3" />
-                    {articulo.date}
+                    {new Date(post.date).toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' })}
                   </span>
                   <span className="flex items-center gap-1">
                     <Clock className="w-3 h-3" />
-                    {articulo.readTime}
+                    {post.readTime}
                   </span>
                 </div>
               </div>
