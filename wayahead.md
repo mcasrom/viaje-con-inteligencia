@@ -1,12 +1,9 @@
 # Pendiente - Viaje con Inteligencia
 
-## ⚠️ Acción requerida (Supabase)
-- [ ] Ejecutar schema SQL (tablas bot_stats, bot_commands)
-
 ## Supabase
 - [x] Configurar Supabase
-- [x] Probar login email mágico (fix aplicado)
-- [ ] Verificar favoritos y dashboard
+- [x] Ejecutar schema SQL (tablas bot_stats, bot_commands)
+- [ ] Verificar login y favoritos en producción
 
 ## Añadir países (10-15 nuevos)
 - [ ] Indonesia 🇮🇩

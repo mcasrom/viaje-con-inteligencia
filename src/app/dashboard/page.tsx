@@ -109,6 +109,8 @@ export default function DashboardPage() {
     setAuthLoading(true);
     setNotification(null);
 
+    console.log('Enviando login para:', email);
+
     try {
       const response = await fetch('/api/auth/login', {
         method: 'POST',
@@ -117,6 +119,7 @@ export default function DashboardPage() {
       });
 
       const data = await response.json();
+      console.log('Respuesta login:', response.status, data);
 
       if (response.ok) {
         setNotification({ 
@@ -125,10 +128,12 @@ export default function DashboardPage() {
         });
         setEmail('');
       } else {
+        console.error('Error del servidor:', data);
         setNotification({ type: 'error', message: data.error || 'Error al enviar enlace' });
       }
-    } catch {
-      setNotification({ type: 'error', message: 'Error de conexión' });
+    } catch (err: any) {
+      console.error('Error login:', err);
+      setNotification({ type: 'error', message: err.message || 'Error de conexión' });
     } finally {
       setAuthLoading(false);
     }
