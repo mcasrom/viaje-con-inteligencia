@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useSearchParams, useRouter } from 'next/navigation';
+import { createClient } from '@supabase/supabase-js';
 import { 
   ArrowLeft, Heart, MapPin, AlertTriangle, Trash2, 
   Plus, Mail, LogOut, Crown, Bell, Settings, Loader2,
@@ -9,6 +11,12 @@ import {
 } from 'lucide-react';
 import { paisesData, getLabelRiesgo } from '@/data/paises';
 import WeatherWidget from '@/components/WeatherWidget';
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
+const supabaseClient = supabaseUrl && supabaseAnonKey 
+  ? createClient(supabaseUrl, supabaseAnonKey) 
+  : null;
 
 interface User {
   id: string;
@@ -43,6 +51,32 @@ export default function DashboardPage() {
       loadFavorites();
     }
   }, [user]);
+
+  useEffect(() => {
+    const handleMagicLink = async () => {
+      const params = new URLSearchParams(window.location.search);
+      const token = params.get('token');
+      const type = params.get('type');
+      
+      if (token && type === 'email_confirm' && supabaseClient) {
+        try {
+          const { error } = await supabaseClient.auth.exchangeCodeForSession(token);
+          if (!error) {
+            params.delete('token');
+            params.delete('type');
+            window.history.replaceState({}, '', `${window.location.pathname}?${params.toString()}`);
+            checkUser();
+          } else {
+            console.error('Error exchanging code:', error);
+          }
+        } catch (err) {
+          console.error('Magic link error:', err);
+        }
+      }
+    };
+    
+    handleMagicLink();
+  }, []);
 
   const checkUser = async () => {
     try {
