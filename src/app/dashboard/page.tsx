@@ -127,12 +127,15 @@ export default function DashboardPage() {
     }
   };
 
-  const handleAuth = async (e: React.FormEvent) => {
+const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
+    e.stopPropagation();
+    
+    console.log('handleAuth llamado, email:', email);
+    alert('Enviando login para: ' + email);
+    
     setAuthLoading(true);
     setNotification(null);
-
-    console.log('Enviando login para:', email);
 
     try {
       const response = await fetch('/api/auth/login', {
@@ -142,7 +145,8 @@ export default function DashboardPage() {
       });
 
       const data = await response.json();
-      console.log('Respuesta login:', response.status, data);
+      console.log('Respuesta:', response.status, data);
+      alert('Respuesta: ' + response.status + ' - ' + JSON.stringify(data));
 
       if (response.ok) {
         setNotification({ 
@@ -151,11 +155,10 @@ export default function DashboardPage() {
         });
         setEmail('');
       } else {
-        console.error('Error del servidor:', response.status, data);
         setNotification({ type: 'error', message: data.error || 'Error al enviar enlace' });
       }
     } catch (err: any) {
-      console.error('Error login:', err);
+      console.error('Error:', err);
       setNotification({ type: 'error', message: err.message || 'Error de conexión' });
     } finally {
       setAuthLoading(false);
