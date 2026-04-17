@@ -238,14 +238,16 @@ Responda em português, de forma clara e útil. Máximo 500 caracteres.`;
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
+    console.log('Request body keys:', Object.keys(body));
     const { message, callback_query, inline_query } = body;
     
     // Handle callback queries (inline keyboard buttons)
     if (callback_query) {
+      console.log('Callback query received:', callback_query);
       const chatId = callback_query.message?.chat?.id;
       const data = callback_query.data;
-      const lang = callback_query.query?.language_code?.startsWith('en') ? 'en' : 
-                   callback_query.query?.language_code?.startsWith('pt') ? 'pt' : 'es';
+      const lang = callback_query.message?.chat?.language_code?.startsWith('en') ? 'en' : 
+                   callback_query.message?.chat?.language_code?.startsWith('pt') ? 'pt' : 'es';
       const t = translations[lang];
       
       if (data?.startsWith('country_')) {
