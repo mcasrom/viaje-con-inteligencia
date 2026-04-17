@@ -44,7 +44,7 @@ const PLANS = [
 export default function PremiumPage() {
   const [loading, setLoading] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<'itinerary' | 'chat' | 'seismos'>('seismos');
+  const [activeTab, setActiveTab] = useState<'itinerary' | 'chat' | 'seismos' | 'conflicts'>('seismos');
   const [itineraryLoading, setItineraryLoading] = useState(false);
   const [itineraryResult, setItineraryResult] = useState<string>('');
   const [chatMessages, setChatMessages] = useState<{role: string; content: string}[]>([]);
@@ -52,6 +52,8 @@ export default function PremiumPage() {
   const [chatLoading, setChatLoading] = useState(false);
   const [seismos, setSeismos] = useState<any[]>([]);
   const [seismosLoading, setSeismosLoading] = useState(false);
+  const [conflicts, setConflicts] = useState<any[]>([]);
+  const [conflictsLoading, setConflictsLoading] = useState(false);
 
   const handleSubscribe = async (priceId: string) => {
     setLoading(priceId);
@@ -150,6 +152,19 @@ export default function PremiumPage() {
       setSeismos([]);
     } finally {
       setSeismosLoading(false);
+    }
+  };
+
+  const loadConflicts = async () => {
+    setConflictsLoading(true);
+    try {
+      const response = await fetch('/api/conflicts?maxrecords=15');
+      const data = await response.json();
+      setConflicts(data.conflicts || []);
+    } catch (err) {
+      setConflicts([]);
+    } finally {
+      setConflictsLoading(false);
     }
   };
 
@@ -256,6 +271,17 @@ export default function PremiumPage() {
                   Sismos
                 </button>
                 <button
+                  onClick={() => { setActiveTab('conflicts'); loadConflicts(); }}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors ${
+                    activeTab === 'conflicts'
+                      ? 'bg-red-500 text-white'
+                      : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
+                  }`}
+                >
+                  <AlertTriangle className="w-4 h-4" />
+                  Conflictos
+                </button>
+                <button
                   onClick={() => setActiveTab('itinerary')}
                   className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors ${
                     activeTab === 'itinerary'
@@ -317,6 +343,51 @@ export default function PremiumPage() {
                           {eq.tsunami === 1 && (
                             <span className="px-2 py-1 bg-red-900 text-red-300 text-xs rounded">Tsunami</span>
                           )}
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-center py-8 text-slate-400">
+                      <p>Haz clic en "Actualizar" para cargar datos</p>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {activeTab === 'conflicts' && (
+                <div>
+                  <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                    <AlertTriangle className="w-5 h-5 text-red-500" />
+                    Monitor de Conflictos Activos
+                  </h3>
+                  <div className="mb-4">
+                    <button
+                      onClick={loadConflicts}
+                      disabled={conflictsLoading}
+                      className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 transition-colors"
+                    >
+                      {conflictsLoading ? 'Cargando...' : 'Actualizar'}
+                    </button>
+                  </div>
+                  <p className="text-slate-400 text-sm mb-4">
+                    Datos en tiempo real de GDELT Project - Últimas noticias de conflictos violentos
+                  </p>
+                  {conflicts.length > 0 ? (
+                    <div className="space-y-2 max-h-96 overflow-y-auto">
+                      {conflicts.map((conflict: any, idx: number) => (
+                        <div key={idx} className="bg-slate-700/50 rounded-lg p-3">
+                          <p className="text-white text-sm font-medium">{conflict.title}</p>
+                          <p className="text-slate-400 text-xs mt-1">
+                            {new Date(conflict.date).toLocaleDateString('es-ES')} • {conflict.domain}
+                          </p>
+                          <a 
+                            href={conflict.url} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="text-blue-400 text-xs hover:underline mt-1 block"
+                          >
+                            Ver fuente →
+                          </a>
                         </div>
                       ))}
                     </div>
