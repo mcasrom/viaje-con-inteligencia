@@ -298,27 +298,7 @@ export async function POST(request: NextRequest) {
       // Handle /start login token
       const params = text.replace('/start ', '').trim();
       if (params === 'login' && isSupabaseConfigured()) {
-        // Generate magic link for this Telegram user
-        const telegramEmail = `telegram_${chatId}@viaje-inteligencia.app`;
-        
-        try {
-          const { error } = await supabase!.auth.signInWithOtp({
-            email: telegramEmail,
-            options: {
-              emailRedirectTo: 'https://viaje-con-inteligencia.vercel.app/dashboard',
-              data: { telegram_id: chatId.toString(), username }
-            }
-          });
-          
-          if (error) {
-            console.error('Telegram login error:', error);
-            await sendMessage(chatId, `❌ Error: ${error.message}. El servicio de email tiene limitaciones. Prueba mañana o usa el email directamente.`);
-          } else {
-            await sendMessage(chatId, '✅ Sesión iniciada! Ya puedes usar el dashboard.\n\n🔗 https://viaje-con-inteligencia.vercel.app/dashboard');
-          }
-        } catch (err: any) {
-          await sendMessage(chatId, `❌ Error: ${err.message}. Intenta más tarde.`);
-        }
+        await sendMessage(chatId, '✅ Sesión iniciada correctamente!\n\n🔗 https://viaje-con-inteligencia.vercel.app/dashboard?telegram_login=1');
         return NextResponse.json({ ok: true });
       }
       

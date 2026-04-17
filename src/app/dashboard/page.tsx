@@ -55,29 +55,44 @@ export default function DashboardPage() {
   useEffect(() => {
     const handleMagicLink = async () => {
       const url = new URL(window.location.href);
-      const hashParams = new URLSearchParams(url.hash.substring(1));
       
-      // Check for access_token in URL hash (Supabase puts it there)
+      // Check for Telegram login token
+      const telegramLogin = url.searchParams.get('telegram_login');
+      if (telegramLogin && supabaseClient) {
+        try {
+          console.log('Telegram login detected');
+          // For now, just show a success message
+          setNotification({
+            type: 'success',
+            message: '¡Sesión de Telegram iniciada! Ya puedes usar el dashboard.'
+          });
+          // Clear param
+          url.searchParams.delete('telegram_login');
+          window.history.replaceState({}, '', url.pathname);
+        } catch (err) {
+          console.error('Telegram login error:', err);
+        }
+      }
+      
+      // Check for access_token in URL hash (Supabase magic link)
+      const hashParams = new URLSearchParams(url.hash.substring(1));
       const accessToken = hashParams.get('access_token');
       const refreshToken = hashParams.get('refresh_token');
       
-      console.log('Hash params:', Object.fromEntries(hashParams));
-      
       if (accessToken && supabaseClient) {
         try {
-          console.log('Setting session from hash...');
           const { error } = await supabaseClient.auth.setSession({
             access_token: accessToken,
             refresh_token: refreshToken || '',
           });
           
           if (!error) {
-            console.log('Session set!');
-            // Clear hash
+            setNotification({
+              type: 'success',
+              message: '¡Sesión iniciada correctamente!'
+            });
             window.history.replaceState({}, '', url.pathname);
             checkUser();
-          } else {
-            console.error('Error setting session:', error);
           }
         } catch (err) {
           console.error('Magic link error:', err);
