@@ -24,6 +24,7 @@
 - [ ] Emergencias en extranjero
 - [ ] Estafas turísticas
 - [ ] Roaming internacional
+- [ ] WiFi/Internet en viajes: SIM, eSIM, roaming
 
 ## Bot Telegram
 - [ ] Inline keyboards
@@ -36,6 +37,6 @@
 - [ ] Página gestión suscripción
 
 ## SEO técnico
-- [ ] Sitemap.xml dinámico
-- [ ] Robots.txt
-- [ ] Schema.org posts (JSON-LD)
+- [x] robots.txt
+- [x] sitemap.xml dinámico
+- [x] Schema.org posts (JSON-LD)

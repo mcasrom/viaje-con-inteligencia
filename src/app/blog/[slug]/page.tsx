@@ -116,8 +116,27 @@ export default async function ArticuloPage({ params }: PageProps) {
               Compartir
             </button>
           </div>
-        </article>
-      </main>
+</article>
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{
+              __html: JSON.stringify({
+                '@context': 'https://schema.org',
+                '@type': 'BlogPosting',
+                headline: post.title,
+                image: [post.image],
+                datePublished: post.date,
+                dateModified: post.date,
+                author: {
+                  '@type': 'Person',
+                  name: post.author,
+                },
+                description: post.excerpt,
+                keywords: post.keywords,
+              }),
+            }}
+          />
+        </main>
     </div>
   );
 }

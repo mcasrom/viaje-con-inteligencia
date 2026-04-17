@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://viaje-con-inteligencia.vercel.app/sitemap.xml
