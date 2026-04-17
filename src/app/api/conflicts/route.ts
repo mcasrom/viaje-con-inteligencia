@@ -2,9 +2,9 @@ import { NextResponse } from 'next/server';
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
-  const maxrecords = searchParams.get('maxrecords') || '20';
+  const limit = searchParams.get('limit') || '15';
 
-  const url = `https://api.gdeltproject.org/api/v2/doc/doc?query=(VIOLENT%20OR%20CONFLICT%20OR%20WAR%20OR%20CLASH)&mode=artlist&maxrecords=${maxrecords}&format=json&sort=DateDesc`;
+  const url = `https://newsmcp.io/v1/news/?topics=politics,military&per_page=${limit}`;
 
   try {
     const controller = new AbortController();
@@ -18,25 +18,25 @@ export async function GET(request: Request) {
     clearTimeout(timeout);
 
     if (!response.ok) {
-      throw new Error(`GDELT API error: ${response.status}`);
+      throw new Error(`NewsMCP API error: ${response.status}`);
     }
 
     const data = await response.json();
 
-    const conflicts = (data.articles || []).map((article: any) => ({
-      id: article.seen_id || Math.random().toString(36),
-      title: article.title,
-      url: article.url,
-      domain: article.domain,
-      date: article.seendate,
-      country: article.country,
-      language: article.language,
+    const conflicts = (data.events || []).map((event: any) => ({
+      id: event.id,
+      title: event.summary?.substring(0, 150) + (event.summary?.length > 150 ? '...' : ''),
+      url: event.entries?.[0]?.url || '#',
+      domain: event.entries?.[0]?.domain || 'news',
+      date: event.last_seen_at,
+      country: event.geo?.[0] || 'global',
+      impact: event.impact_score,
     }));
 
     return NextResponse.json({
       count: conflicts.length,
       conflicts,
-      source: 'GDELT',
+      source: 'NewsMCP',
       updated: new Date().toISOString(),
     });
   } catch (error: any) {
