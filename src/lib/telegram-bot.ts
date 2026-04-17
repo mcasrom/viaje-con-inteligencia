@@ -1,5 +1,7 @@
 import { paisesData, getPaisPorCodigo, getLabelRiesgo } from '@/data/paises';
 
+const OPEN_METEO_API = 'https://api.open-meteo.com/v1/forecast';
+
 interface UserState {
   step: 'initial' | 'selecting_country' | 'viewing_country' | 'ai_chat';
   selectedCountry?: string;
@@ -25,7 +27,7 @@ export function getMainKeyboard() {
     reply_markup: {
       keyboard: [
         [{ text: '🌍 Buscar país' }],
-        [{ text: '🤖 Chat IA' }],
+        [{ text: '🌤️ Clima' }, { text: '🤖 Chat IA' }],
         [{ text: '⚠️ Alertas de riesgo' }, { text: '🏦 Tipo cambio' }],
         [{ text: '📋 Checklist viaje' }],
         [{ text: '⭐ Premium' }],
@@ -96,9 +98,10 @@ export function formatCountryInfo(codigo: string): string {
     });
   }
   
-  message += `\n━━━━━━━━━━━━━━━━━━━━\n`;
+message += `\n━━━━━━━━━━━━━━━━━━━━\n`;
   message += `🔗 *Más info:* /pais_${pais.codigo}`;
-  
+  message += `\n🌐 [Ver en web](https://viaje-con-inteligencia.vercel.app/pais/${pais.codigo})`;
+   
   return message;
 }
 
@@ -238,4 +241,34 @@ export function searchCountry(query: string): string | null {
   }
   
   return null;
+}
+
+export async function getWeatherForCountry(codigo: string): Promise<string | null> {
+  const pais = getPaisPorCodigo(codigo);
+  if (!pais) return null;
+  
+  const coords = pais.mapaCoordenadas;
+  try {
+    const res = await fetch(
+      `${OPEN_METEO_API}?latitude=${coords[0]}&longitude=${coords[1]}&current=temperature_2m,weather_code,wind_speed_10m&timezone=auto`
+    );
+    const data = await res.json();
+    
+    const temp = data.current?.temperature_2m;
+    const wind = data.current?.wind_speed_10m;
+    const code = data.current?.weather_code;
+    
+    const weatherEmoji: Record<string, string> = {
+      '0': '☀️', '1': '🌤️', '2': '⛅', '3': '☁️',
+      '45': '🌫️', '48': '🌫️', '51': '🌧️', '53': '🌧️', '55': '🌧️',
+      '61': '🌧️', '63': '🌧️', '65': '🌧️', '71': '🌨️', '73': '🌨️', '75': '🌨️',
+      '80': '🌧️', '81': '🌧️', '82': '🌧️', '95': '⛈️', '96': '⛈️', '99': '⛈️'
+    };
+    
+    const emoji = weatherEmoji[code?.toString()] || '🌡️';
+    
+    return `${emoji} *Clima actual:*\n• Temperatura: ${temp}°C\n• Viento: ${wind} km/h\n• ${pais.capital}`;
+  } catch {
+    return null;
+  }
 }

@@ -11,7 +11,8 @@ import {
   getTipoCambioInfo,
   getChecklistPreview,
   getPremiumInfo,
-  searchCountry
+  searchCountry,
+  getWeatherForCountry
 } from '@/lib/telegram-bot';
 
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || '';
@@ -69,7 +70,7 @@ const translations = {
     aiThinking: () => '🤖 Pensando...',
     aiExit: () => 'Volviendo al menú principal.',
     notUnderstood: () => '🤖 No entendí. Usa los botones o prueba:\n• Escribe un país (ej: "Japón")\n• /help para ayuda',
-    help: () => `*📚 Comandos disponibles:*\n\n/start - Iniciar bot\n/pais [nombre] - Info de un país\n/chat o /ia - Chat con IA\n/alertas - Ver riesgos\n/cambio - Tipos de cambio\n/checklist - Preview checklist\n/premium - Info premium\n/lang - Cambiar idioma (EN/ES/PT)\n/help - Esta ayuda`,
+    help: () => `*📚 Comandos disponibles:*\n\n/start - Iniciar bot\n/pais [nombre] - Info de un país\n/clima [país] - Ver clima actual\n/chat o /ia - Chat con IA\n/alertas - Ver riesgos\n/cambio - Tipos de cambio\n/checklist - Preview checklist\n/premium - Info premium\n/lang - Cambiar idioma (EN/ES/PT)\n/help - Esta ayuda`,
     aiNotAvailable: () => '🤖 IA no disponible. Configure GROQ_API_KEY en Vercel para activar el chat IA.',
     aiError: () => '🤖 Error de IA. Intenta de nuevo.',
     aiConnectionError: () => '🤖 Error de conexión con IA. Intenta de nuevo.',
@@ -322,6 +323,13 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ ok: true });
     }
     
+    if (text === '🌤️ Clima' || text === '🌤️ Weather') {
+      await sendMessage(chatId, '🌤️ *Clima por país*\n\n_escribe: /clima [nombre del país]_\n\nejem: /clima Francia', {
+        reply_markup: t.menu()
+      });
+      return NextResponse.json({ ok: true });
+    }
+    
     if (text === '⚠️ Alertas de riesgo' || text === '⚠️ Risk alerts' || text === '⚠️ Alertas de risco') {
       await sendMessage(chatId, getAlertasRiesgo(), {
         reply_markup: t.menu()
@@ -454,6 +462,29 @@ export async function POST(request: NextRequest) {
       await sendMessage(chatId, getAlertasRiesgo(), {
         reply_markup: t.menu()
       });
+      return NextResponse.json({ ok: true });
+    }
+    
+    if (text.startsWith('/clima ') || text.startsWith('/weather ')) {
+      const query = text.replace(/^\/(clima|weather)\s+/i, '').trim();
+      const pais = searchCountry(query);
+      if (pais) {
+        const codigo = Object.values(paisesData).find(p => 
+          p.nombre.toLowerCase().includes(query.toLowerCase()) ||
+          p.codigo.toLowerCase() === query.toLowerCase()
+        )?.codigo;
+        
+        if (codigo) {
+          const weather = await getWeatherForCountry(codigo);
+          if (weather) {
+            await sendMessage(chatId, weather, { reply_markup: t.menu() });
+          } else {
+            await sendMessage(chatId, '❌ No se pudo obtener el clima.', { reply_markup: t.menu() });
+          }
+        }
+      } else {
+        await sendMessage(chatId, '❌ País no encontrado.', { reply_markup: t.menu() });
+      }
       return NextResponse.json({ ok: true });
     }
     
