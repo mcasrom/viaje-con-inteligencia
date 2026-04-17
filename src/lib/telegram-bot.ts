@@ -201,7 +201,7 @@ export function getPremiumInfo(): string {
   
   message += `*🚀 Pago único lifetime: 49.99€*\n\n`;
   
-  message += `🔗 https://viajeconinteligencia.com/premium\n\n`;
+  message += `🔗 https://viaje-con-inteligencia.vercel.app/premium\n\n`;
   
   message += `_Usa /start para volver al inicio_`;
   
