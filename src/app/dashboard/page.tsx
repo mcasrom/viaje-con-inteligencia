@@ -54,40 +54,27 @@ export default function DashboardPage() {
 
   useEffect(() => {
     const handleMagicLink = async () => {
-      const params = new URLSearchParams(window.location.search);
-      const hashParams = new URLSearchParams(window.location.hash.substring(1));
+      const url = new URL(window.location.href);
+      const hashParams = new URLSearchParams(url.hash.substring(1));
       
-      // Check URL params
-      const token = params.get('token') || params.get('access_token');
-      const type = params.get('type') || 'email_confirm';
+      // Check for access_token in URL hash (Supabase puts it there)
+      const accessToken = hashParams.get('access_token');
+      const refreshToken = hashParams.get('refresh_token');
       
-      console.log('URL params:', Object.fromEntries(params));
       console.log('Hash params:', Object.fromEntries(hashParams));
       
-      if (token && supabaseClient) {
+      if (accessToken && supabaseClient) {
         try {
-          console.log('Exchanging token:', token.substring(0, 20) + '...');
-          
-          // Try different approaches
-          let error = null;
-          
-          // First try: exchangeCodeForSession (for verification tokens)
-          if (params.get('code')) {
-            const result = await supabaseClient.auth.exchangeCodeForSession(params.get('code')!);
-            error = result.error;
-          } else if (token) {
-            // For magic links, set session directly
-            const result = await supabaseClient.auth.setSession({
-              access_token: token,
-              refresh_token: params.get('refresh_token') || hashParams.get('refresh_token') || '',
-            });
-            error = result.error;
-          }
+          console.log('Setting session from hash...');
+          const { error } = await supabaseClient.auth.setSession({
+            access_token: accessToken,
+            refresh_token: refreshToken || '',
+          });
           
           if (!error) {
-            console.log('Session set successfully!');
-            // Clear URL params
-            window.history.replaceState({}, '', window.location.pathname);
+            console.log('Session set!');
+            // Clear hash
+            window.history.replaceState({}, '', url.pathname);
             checkUser();
           } else {
             console.error('Error setting session:', error);
@@ -129,11 +116,6 @@ export default function DashboardPage() {
 
 const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
-    e.stopPropagation();
-    
-    console.log('handleAuth llamado, email:', email);
-    alert('Enviando login para: ' + email);
-    
     setAuthLoading(true);
     setNotification(null);
 
@@ -145,8 +127,6 @@ const handleAuth = async (e: React.FormEvent) => {
       });
 
       const data = await response.json();
-      console.log('Respuesta:', response.status, data);
-      alert('Respuesta: ' + response.status + ' - ' + JSON.stringify(data));
 
       if (response.ok) {
         setNotification({ 
@@ -158,7 +138,6 @@ const handleAuth = async (e: React.FormEvent) => {
         setNotification({ type: 'error', message: data.error || 'Error al enviar enlace' });
       }
     } catch (err: any) {
-      console.error('Error:', err);
       setNotification({ type: 'error', message: err.message || 'Error de conexión' });
     } finally {
       setAuthLoading(false);
@@ -321,6 +300,13 @@ const handleAuth = async (e: React.FormEvent) => {
           <p className="text-center text-slate-500 text-sm mt-6">
             También puedes usar el bot de Telegram para acceder
           </p>
+          
+          <a 
+            href="https://t.me/AlertasViajeroBot?start=login"
+            className="block mt-4 text-center py-3 bg-[#0088cc] text-white rounded-lg font-bold hover:bg-[#0077b3] transition-colors"
+          >
+            Iniciar sesión con Telegram
+          </a>
         </main>
       </div>
     );

@@ -291,9 +291,31 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ ok: true });
     }
     
-    if (text === '/start') {
+    if (text === '/start' || text.startsWith('/start ')) {
       resetUserState(chatId);
       trackStart(chatId, username || undefined, firstName || undefined);
+      
+      // Handle /start login token
+      const params = text.replace('/start ', '').trim();
+      if (params === 'login' && isSupabaseConfigured()) {
+        // Generate magic link for this Telegram user
+        const telegramEmail = `telegram_${chatId}@viaje-inteligencia.app`;
+        const { error } = await supabase!.auth.signInWithOtp({
+          email: telegramEmail,
+          options: {
+            emailRedirectTo: 'https://viaje-con-inteligencia.vercel.app/dashboard',
+            data: { telegram_id: chatId.toString(), username }
+          }
+        });
+        
+        if (error) {
+          await sendMessage(chatId, '❌ Error al iniciar sesión. Intenta más tarde.');
+        } else {
+          await sendMessage(chatId, '✅ Sesión iniciada! Ya puedes usar el dashboard.\n\n🔗 https://viaje-con-inteligencia.vercel.app/dashboard');
+        }
+        return NextResponse.json({ ok: true });
+      }
+      
       await sendMessage(chatId, t.welcome(firstName), {
         reply_markup: t.menu()
       });
