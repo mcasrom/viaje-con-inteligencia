@@ -57,6 +57,55 @@ git push
 
 ---
 
+## 📝 Tareas Supabase (pendientes de configurar)
+
+### Paso 1: Crear proyecto en supabase.com
+1. Ir a https://supabase.com y crear nuevo proyecto
+2. Esperar a que termine el setup (2-3 min)
+
+### Paso 2: Ejecutar schema
+1. En Supabase Dashboard → SQL Editor
+2. Copiar contenido de `supabase-schema.sql`
+3. Ejecutar
+
+### Paso 3: Añadir variables en Vercel
+```
+NEXT_PUBLIC_SUPABASE_URL=https://xxxx.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJxxx...
+```
+
+### Paso 4: Configurar Auth en Supabase
+1. Authentication → Providers → Email: activar
+2. Authentication → URL Configuration:
+   - Site URL: https://viaje-con-inteligencia.vercel.app
+   - Redirect URLs: https://viaje-con-inteligencia.vercel.app/dashboard
+
+---
+
+## 📊 Funcionalidades implementadas hoy
+
+### Dashboard (/dashboard)
+- Login/registro por email (magico)
+- Lista favoritos con clima
+- Botón favorito en páginas de país
+
+### API Auth
+- /api/auth/user - Usuario actual
+- /api/auth/login - Enviar enlace mágico
+- /api/auth/logout - Cerrar sesión
+- /api/auth/favorites - CRUD favoritos
+
+### Clima (Open-Meteo - gratis, sin API key)
+- Widget en páginas de país (7 días)
+- Widget compacto en favoritos del dashboard
+
+### SEO
+- Favicon SVG personalizado
+- Open Graph image (1200x630)
+- Metadata actualizada
+
+---
+
 ## 📧 Contacto
 - **M.Castillo:** mybloggingnotes@gmail.com
 - **Autor:** M.Castillo

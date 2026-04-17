@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { paisesData, getLabelRiesgo, NivelRiesgo } from '@/data/paises';
-import { AlertTriangle, ArrowRight, Globe, Search, ClipboardList, Star, BookOpen } from 'lucide-react';
+import { AlertTriangle, ArrowRight, Globe, Search, ClipboardList, Star, BookOpen, RefreshCw } from 'lucide-react';
 import LanguageSelector from './LanguageSelector';
 import { useI18n } from '@/lib/i18n';
 
@@ -73,6 +73,12 @@ export default function MapaMundial() {
               <div>
                 <h1 className="text-2xl font-bold text-white">Viaje con Inteligencia</h1>
                 <p className="text-blue-400 text-sm font-medium">Riesgo Zero</p>
+              </div>
+              <div className="hidden md:flex items-center gap-2 px-3 py-1.5 bg-slate-800 rounded-full border border-slate-700">
+                <RefreshCw className="w-3.5 h-3.5 text-slate-400" />
+                <span className="text-xs text-slate-400">
+                  Datos MAEC: {new Date().toLocaleDateString('es-ES', { month: 'short', year: 'numeric' })}
+                </span>
               </div>
             </div>
             

@@ -9,7 +9,7 @@ import {
   AlertTriangle, DollarSign, Globe, Newspaper, 
   ExternalLink, Building2, CheckCircle2, XCircle, 
   Plane, Info, Flag, Users, Clock3, Zap, Car, MapPinned,
-  Heart, Loader2, CheckCircle
+  Heart, Loader2, CheckCircle, RefreshCw
 } from 'lucide-react';
 import { notFound } from 'next/navigation';
 import Reviews from '@/components/Reviews';
@@ -137,9 +137,20 @@ export default function DetallePais() {
               {config.description}
             </p>
           </div>
-          <p className="text-slate-500 text-sm mt-4">
-            Actualizado según MAEC: {pais.ultimoInforme}
-          </p>
+          <div className="mt-4 flex items-center gap-4">
+            <div className="flex items-center gap-2 px-3 py-1.5 bg-slate-700/50 rounded-full">
+              <RefreshCw className="w-4 h-4 text-slate-400" />
+              <span className="text-slate-400 text-sm">
+                Datos MAEC: {pais.ultimoInforme}
+              </span>
+            </div>
+            <div className="flex items-center gap-2 px-3 py-1.5 bg-slate-700/50 rounded-full">
+              <Clock className="w-4 h-4 text-slate-400" />
+              <span className="text-slate-400 text-sm">
+                Actualizado: {new Date().toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' })}
+              </span>
+            </div>
+          </div>
         </div>
 
         <div className="grid md:grid-cols-3 gap-6 mb-8">
