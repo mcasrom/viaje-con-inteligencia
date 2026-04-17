@@ -42,13 +42,18 @@ export function getCountryKeyboard() {
   const keyboard: { text: string }[][] = [];
   
   for (let i = 0; i < countries.length; i += 2) {
-    const row: { text: string }[] = [{ text: `${countries[i].codigo.toUpperCase()}` }];
+    const row: { text: string }[] = [];
+    // Show country code + first 6 letters of name
+    row.push({ text: `${countries[i].codigo.toUpperCase()}` });
     if (countries[i + 1]) {
       row.push({ text: `${countries[i + 1].codigo.toUpperCase()}` });
     }
     keyboard.push(row);
   }
   
+  // Add row with example full names
+  keyboard.push([{ text: 'ES - España' }, { text: 'FR - Francia' }]);
+  keyboard.push([{ text: 'DE - Alemania' }, { text: 'IT - Italia' }]);
   keyboard.push([{ text: '« Volver' }]);
   
   return {

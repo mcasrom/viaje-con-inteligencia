@@ -65,7 +65,7 @@ const translations = {
         [{ text: '⭐ Premium' }],
       ],
     }),
-    selectCountry: () => '🔍 *Selecciona un país*\n\nElige un destino para ver información detallada:',
+    selectCountry: () => '🔍 *Selecciona un país*\n\n_Escribe el código (ej: ES, FR, DE) o elige de los ejemplos abajo._',
     back: () => 'Volviendo al menú principal.',
     aiIntro: () => `🤖 *Chat con IA*\n\nPregúntame lo que quieras sobre viajes, países, seguridad, recomendaciones...\n\nEjemplos:\n• "¿Es seguro viajar a Japón?"\n• "Planifica un viaje a Thailandia"\n• "¿Qué vacunas necesito para Bali?"\n\nEscribe /salir para volver al menú.`,
     aiThinking: () => '🤖 Pensando...',
@@ -412,32 +412,15 @@ export async function POST(request: NextRequest) {
     }
     
     if (state.step === 'selecting_country' && text) {
-      console.log('Selecting country, text:', text);
-      
       const paisesModule = await import('@/data/paises');
       const allCountries = Object.values(paisesModule.paisesData);
       
-      // Try country code first (ES, FR, DE, etc.)
-      let country = allCountries.find(
-        (p) => p.codigo.toLowerCase() === text.toLowerCase()
+      // Extract country code - handle "ES - España" or just "ES"
+      let code = text.split(' ')[0].split('-')[0].trim().toUpperCase();
+      
+      const country = allCountries.find(
+        (p) => p.codigo.toLowerCase() === code.toLowerCase()
       );
-      
-      // Try exact name match
-      if (!country) {
-        country = allCountries.find(
-          (p) => p.nombre.toLowerCase() === text.toLowerCase()
-        );
-      }
-      
-      // Try partial name match
-      if (!country) {
-        country = allCountries.find(
-          (p) => p.nombre.toLowerCase().includes(text.toLowerCase()) ||
-                 text.toLowerCase().includes(p.nombre.toLowerCase())
-        );
-      }
-      
-      console.log('Found:', country?.nombre);
       
       if (country) {
         resetUserState(chatId);
@@ -449,7 +432,7 @@ export async function POST(request: NextRequest) {
         await sendMessage(chatId, info, getMainKeyboard());
         return NextResponse.json({ ok: true });
       } else {
-        await sendMessage(chatId, '❌ País no encontrado. Prueba con el código (ej: ES, FR, DE).', getCountryKeyboard());
+        await sendMessage(chatId, '❌ Código no válido. Prueba: ES, FR, DE, IT, US, etc.', getCountryKeyboard());
         return NextResponse.json({ ok: true });
       }
     }
