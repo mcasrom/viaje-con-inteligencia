@@ -291,13 +291,14 @@ export async function POST(request: NextRequest) {
     }
     
     // ALWAYS check if it's a 2-letter country code first (works from any state)
-    console.log('Checking country code:', text);
-    if (text.length === 2 && /^[A-Za-z]{2}$/.test(text)) {
+    console.log('Checking country code:', text, 'length:', text.length);
+    const upperText = text.toUpperCase();
+    if (text.length === 2 && /^[A-Za-z]{2}$/.test(upperText)) {
       try {
         const paisesModule = await import('@/data/paises');
         const allPaises = Object.values(paisesModule.paisesData);
         const country = allPaises.find(
-          p => p.codigo.toUpperCase() === text.toUpperCase()
+          p => p.codigo.toUpperCase() === upperText
         );
         console.log('Found country:', country?.nombre);
         if (country) {
