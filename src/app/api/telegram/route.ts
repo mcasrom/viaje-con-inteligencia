@@ -437,19 +437,47 @@ export async function POST(request: NextRequest) {
       }
     }
     
-    // Also handle direct country search from any state
-    if (text && !text.startsWith('/') && !text.match(/^[^\w\s]+ $/)) {
-      // Skip if it looks like a keyboard button with only flag
-      const searchText = text.replace(/^[^\w\s]+ /, '').trim();
-      
+    // Also handle direct country search from any state - country names directly typed
+    // Skip commands but handle country name queries
+    if (text && !text.startsWith('/') && state.step === 'initial') {
       const paisesModule = await import('@/data/paises');
       const country = Object.values(paisesModule.paisesData).find(
-        (p) => p.nombre.toLowerCase().includes(searchText.toLowerCase()) ||
-               p.capital.toLowerCase().includes(searchText.toLowerCase()) ||
-               p.codigo.toLowerCase() === searchText.toLowerCase()
+        (p) => p.nombre.toLowerCase().includes(text.toLowerCase()) ||
+               p.capital.toLowerCase().includes(text.toLowerCase()) ||
+               p.codigo.toLowerCase() === text.toLowerCase()
       );
       if (country) {
         const weather = await getWeatherForCountry(country.codigo);
+        let info = formatCountryInfo(country.codigo);
+        if (weather) {
+          info += '\n\n' + weather;
+        }
+        await sendMessage(chatId, info, getMainKeyboard());
+        return NextResponse.json({ ok: true });
+      }
+    }
+    
+    // Also handle /pais command style like /España
+    if (text.startsWith('/') && text.length > 2 && !['/start', '/help', '/clima', '/cambio', '/checklist', '/premium', '/salir', '/alertas'].includes(text.split(' ')[0].toLowerCase())) {
+      const query = text.replace('/', '').trim();
+      const paisesModule = await import('@/data/paises');
+      const country = Object.values(paisesModule.paisesData).find(
+        (p) => p.nombre.toLowerCase().includes(query.toLowerCase()) ||
+               p.codigo.toLowerCase() === query.toLowerCase()
+      );
+      if (country) {
+        const weather = await getWeatherForCountry(country.codigo);
+        let info = formatCountryInfo(country.codigo);
+        if (weather) {
+          info += '\n\n' + weather;
+        }
+        await sendMessage(chatId, info, getMainKeyboard());
+        return NextResponse.json({ ok: true });
+      }
+    }
+    
+    // Handle /pais command (official)
+    if (text.startsWith('/pais') || text.startsWith('/country')) {
         let info = formatCountryInfo(country.codigo);
         if (weather) {
           info += '\n\n' + weather;
