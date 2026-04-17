@@ -290,60 +290,29 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ ok: true });
     }
     
-    // ALWAYS check if it's a 2-letter country code first (works from any state)
-    console.log('Checking country code:', text, 'length:', text.length);
+// FIRST: Check for country code (works from ANY state, even selecting_country)
+    console.log('First check for country:', text);
     const upperText = text.toUpperCase();
     if (text.length === 2 && /^[A-Za-z]{2}$/.test(upperText)) {
-      try {
-        const paisesModule = await import('@/data/paises');
-        const allPaises = Object.values(paisesModule.paisesData);
-        const country = allPaises.find(
-          p => p.codigo.toUpperCase() === upperText
-        );
-        console.log('Found country:', country?.nombre);
-        if (country) {
-          const weather = await getWeatherForCountry(country.codigo);
-          let info = formatCountryInfo(country.codigo);
-          if (weather) info += '\n\n' + weather;
-          await sendMessage(chatId, info, getMainKeyboard());
-          return NextResponse.json({ ok: true });
-        } else {
-          await sendMessage(chatId, `❌ Código "${text}" no encontrado. Prueba: ES, FR, DE, IT, US, JP...`, getCountryKeyboard());
-          return NextResponse.json({ ok: true });
-        }
-      } catch (e) {
-        console.error('Error finding country:', e);
+      const paisesModule = await import('@/data/paises');
+      const allPaises = Object.values(paisesModule.paisesData);
+      const country = allPaises.find(p => p.codigo.toUpperCase() === upperText);
+      console.log('Found:', country?.nombre);
+      if (country) {
+        const weather = await getWeatherForCountry(country.codigo);
+        let info = formatCountryInfo(country.codigo);
+        if (weather) info += '\n\n' + weather;
+        await sendMessage(chatId, info, getMainKeyboard());
+        return NextResponse.json({ ok: true });
       }
     }
     
-    // Try finding any country by name (regardless of state)
+    // Also check by name
     if (text && !text.startsWith('/')) {
-      try {
-        const paisesModule = await import('@/data/paises');
-        const country = Object.values(paisesModule.paisesData).find(
-          p => p.nombre.toLowerCase().includes(text.toLowerCase()) ||
-               p.codigo.toLowerCase() === text.toLowerCase() ||
-               p.capital.toLowerCase().includes(text.toLowerCase())
-        );
-        if (country) {
-          console.log('Found by name:', country.nombre);
-          const weather = await getWeatherForCountry(country.codigo);
-          let info = formatCountryInfo(country.codigo);
-          if (weather) info += '\n\n' + weather;
-          await sendMessage(chatId, info, getMainKeyboard());
-          return NextResponse.json({ ok: true });
-        }
-      } catch (e) {
-        console.error('Error by name:', e);
-      }
-    }
-    
-    // Also check "ES - España" format
-    if (text.includes(' - ')) {
-      const code = text.split(' - ')[0].trim().toUpperCase();
       const paisesModule = await import('@/data/paises');
       const country = Object.values(paisesModule.paisesData).find(
-        p => p.codigo.toUpperCase() === code
+        p => p.nombre.toLowerCase().includes(text.toLowerCase()) ||
+             p.codigo.toLowerCase() === text.toLowerCase()
       );
       if (country) {
         const weather = await getWeatherForCountry(country.codigo);
@@ -354,6 +323,7 @@ export async function POST(request: NextRequest) {
       }
     }
     
+    // THEN check state
     const state = getUserState(chatId);
     
     const currencyResult = processCurrencyCommand(text);
