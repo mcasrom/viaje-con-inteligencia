@@ -27,6 +27,7 @@
 - [ ] WiFi/Internet en viajes: SIM, eSIM, roaming
 
 ## Bot Telegram
+- [x] Tracking de uso (stats en Supabase)
 - [ ] Inline keyboards
 - [ ] Integrar clima Open-Meteo
 - [ ] Mensajes enriquecidos

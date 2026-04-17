@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import fs from 'fs';
-import path from 'path';
+import { supabase, isSupabaseConfigured } from '@/lib/supabase';
 import {
   getUserState,
   setUserState,
@@ -18,26 +17,31 @@ import {
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || '';
 const TELEGRAM_API = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}`;
 
-const STATS_FILE = path.join(process.cwd(), 'telegram-stats.json');
-
-function loadStats() {
-  try {
-    if (fs.existsSync(STATS_FILE)) {
-      return JSON.parse(fs.readFileSync(STATS_FILE, 'utf8'));
-    }
-  } catch {}
-  return { starts: 0, commands: {}, lastActive: null };
+async function trackStart(chatId: number, username?: string, firstName?: string) {
+  if (!isSupabaseConfigured()) return;
+  
+  const { error } = await supabase!.from('bot_stats').upsert({
+    chat_id: chatId,
+    username,
+    first_name: firstName,
+    started_at: new Date().toISOString(),
+    last_active: new Date().toISOString(),
+  }, { onConflict: 'chat_id' });
+  
+  if (error) console.error('Track start error:', error);
 }
 
-function saveStats(stats: any) {
-  fs.writeFileSync(STATS_FILE, JSON.stringify(stats, null, 2));
-}
-
-function trackStart(chatId: number) {
-  const stats = loadStats();
-  stats.starts += 1;
-  stats.lastActive = new Date().toISOString();
-  saveStats(stats);
+async function trackCommand(chatId: number, command: string) {
+  if (!isSupabaseConfigured()) return;
+  
+  await supabase!.from('bot_commands').insert({
+    chat_id: chatId,
+    command,
+  });
+  
+  await supabase!.from('bot_stats').update({
+    last_active: new Date().toISOString(),
+  }).eq('chat_id', chatId);
 }
 
 interface TelegramKeyboard {
@@ -268,6 +272,7 @@ export async function POST(request: NextRequest) {
     const chatId = message?.chat?.id || callback_query?.message?.chat?.id;
     const text = message?.text || '';
     const firstName = message?.chat?.first_name || 'traveler';
+    const username = message?.chat?.username;
     const lang: Lang = (message?.chat?.language_code?.startsWith('en') ? 'en' : 
                          message?.chat?.language_code?.startsWith('pt') ? 'pt' : 'es') as Lang;
     const t = translations[lang];
@@ -288,7 +293,7 @@ export async function POST(request: NextRequest) {
     
     if (text === '/start') {
       resetUserState(chatId);
-      trackStart(chatId);
+      trackStart(chatId, username || undefined, firstName || undefined);
       await sendMessage(chatId, t.welcome(firstName), {
         reply_markup: t.menu()
       });

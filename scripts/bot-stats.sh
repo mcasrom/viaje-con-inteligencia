@@ -3,15 +3,7 @@ echo "📊 Stats del Bot Telegram - Viaje con Inteligencia"
 echo "=================================================="
 echo ""
 
-STATS_FILE="telegram-stats.json"
-
-if [ -f "$STATS_FILE" ]; then
-  echo "📈 Usage Stats:"
-  cat "$STATS_FILE" | python3 -m json.tool 2>/dev/null || cat "$STATS_FILE"
-else
-  echo "❌ No stats file found. El bot no ha registrado ningún /start aún."
-  echo "   Los stats se crean cuando alguien usa /start"
-fi
+curl -s "https://viaje-con-inteligencia.vercel.app/api/bot-stats" 2>/dev/null | python3 -m json.tool 2>/dev/null || echo "⚠️ API no disponible (verificar si Supabase está configurado)"
 
 echo ""
 echo "📝 Comandos disponibles:"
