@@ -4,7 +4,7 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const maxrecords = searchParams.get('maxrecords') || '20';
 
-  const url = `https://api.gdeltproject.org/api/v2/doc/doc?query=VIOLENT%20OR%20CONFLICT%20OR%20WAR%20OR%20CLASH&mode=artlist&maxrecords=${maxrecords}&format=json&sort=DateDesc`;
+  const url = `https://api.gdeltproject.org/api/v2/doc/doc?query=(VIOLENT%20OR%20CONFLICT%20OR%20WAR%20OR%20CLASH)&mode=artlist&maxrecords=${maxrecords}&format=json&sort=DateDesc`;
 
   try {
     const controller = new AbortController();
