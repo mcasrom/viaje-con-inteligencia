@@ -405,18 +405,32 @@ export async function POST(request: NextRequest) {
     }
     
     if (state.step === 'selecting_country' && text) {
-      const countryMatch = text.match(/^[^\w\s]+ (.+)$/);
-      if (countryMatch) {
-        const countryName = countryMatch[1].toLowerCase();
-        const paisesModule = await import('@/data/paises');
-        const country = Object.values(paisesModule.paisesData).find(
-          (p) => p.nombre.toLowerCase() === countryName
-        );
-        if (country) {
-          resetUserState(chatId);
-          await sendMessage(chatId, formatCountryInfo(country.codigo), getMainKeyboard());
-          return NextResponse.json({ ok: true });
-        }
+      const paisesModule = await import('@/data/paises');
+      const country = Object.values(paisesModule.paisesData).find(
+        (p) => p.nombre.toLowerCase().includes(text.toLowerCase()) ||
+               p.codigo.toLowerCase() === text.toLowerCase()
+      );
+      if (country) {
+        resetUserState(chatId);
+        await sendMessage(chatId, formatCountryInfo(country.codigo), getMainKeyboard());
+        return NextResponse.json({ ok: true });
+      } else {
+        await sendMessage(chatId, '❌ País no encontrado. Prueba con otro nombre.', getCountryKeyboard());
+        return NextResponse.json({ ok: true });
+      }
+    }
+    
+    // Also handle direct country search from any state
+    if (text && !text.startsWith('/')) {
+      const paisesModule = await import('@/data/paises');
+      const country = Object.values(paisesModule.paisesData).find(
+        (p) => p.nombre.toLowerCase().includes(text.toLowerCase()) ||
+               p.capital.toLowerCase().includes(text.toLowerCase()) ||
+               p.codigo.toLowerCase() === text.toLowerCase()
+      );
+      if (country) {
+        await sendMessage(chatId, formatCountryInfo(country.codigo), getMainKeyboard());
+        return NextResponse.json({ ok: true });
       }
     }
     
