@@ -238,6 +238,7 @@ Responda em português, de forma clara e útil. Máximo 500 caracteres.`;
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
+    console.log('=== Tg request:', Object.keys(body));
     const { message, callback_query, inline_query } = body;
     
     // Handle inline keyboards (callback queries)
