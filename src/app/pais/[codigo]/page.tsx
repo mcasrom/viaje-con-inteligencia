@@ -1,13 +1,15 @@
 'use client';
 
 import { useParams, useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { getPaisPorCodigo } from '@/data/paises';
 import { 
   ArrowLeft, MapPin, Phone, Mail, Clock, FileText, 
   AlertTriangle, DollarSign, Globe, Newspaper, 
   ExternalLink, Building2, CheckCircle2, XCircle, 
-  Plane, Info, Flag, Users, Clock3, Zap, Car, MapPinned
+  Plane, Info, Flag, Users, Clock3, Zap, Car, MapPinned,
+  Heart, Loader2, CheckCircle
 } from 'lucide-react';
 import { notFound } from 'next/navigation';
 import Reviews from '@/components/Reviews';
@@ -18,6 +20,45 @@ export default function DetallePais() {
   const router = useRouter();
   const codigo = params.codigo as string;
   const pais = getPaisPorCodigo(codigo);
+  const [isFavorite, setIsFavorite] = useState(false);
+  const [favLoading, setFavLoading] = useState(false);
+
+  useEffect(() => {
+    checkFavorite();
+  }, [codigo]);
+
+  const checkFavorite = async () => {
+    try {
+      const res = await fetch('/api/auth/user');
+      if (res.ok) {
+        const data = await res.json();
+        if (data.user) {
+          const favRes = await fetch('/api/auth/favorites');
+          const favData = await favRes.json();
+          setIsFavorite(favData.favorites?.some((f: any) => f.country_code === codigo) || false);
+        }
+      }
+    } catch {}
+  };
+
+  const toggleFavorite = async () => {
+    setFavLoading(true);
+    try {
+      if (isFavorite) {
+        await fetch(`/api/auth/favorites?countryCode=${codigo}`, { method: 'DELETE' });
+        setIsFavorite(false);
+      } else {
+        await fetch('/api/auth/favorites', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ countryCode: codigo }),
+        });
+        setIsFavorite(true);
+      }
+    } catch {} finally {
+      setFavLoading(false);
+    }
+  };
 
   if (!pais) {
     notFound();
@@ -36,13 +77,36 @@ export default function DetallePais() {
   return (
     <div className="min-h-screen bg-slate-900">
       <header className="bg-slate-800/80 backdrop-blur-sm border-b border-slate-700 sticky top-0 z-50">
-        <div className="max-w-6xl mx-auto px-6 py-4">
+        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
           <button 
             onClick={() => router.back()}
             className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors"
           >
             <ArrowLeft className="w-5 h-5" />
             <span>Volver al mapa</span>
+          </button>
+          <button
+            onClick={toggleFavorite}
+            disabled={favLoading}
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
+              isFavorite 
+                ? 'bg-red-500/20 text-red-400 hover:bg-red-500/30' 
+                : 'bg-slate-700 text-slate-400 hover:text-white hover:bg-slate-600'
+            }`}
+          >
+            {favLoading ? (
+              <Loader2 className="w-5 h-5 animate-spin" />
+            ) : isFavorite ? (
+              <>
+                <CheckCircle className="w-5 h-5" />
+                <span>En favoritos</span>
+              </>
+            ) : (
+              <>
+                <Heart className="w-5 h-5" />
+                <span>Añadir a favoritos</span>
+              </>
+            )}
           </button>
         </div>
       </header>
