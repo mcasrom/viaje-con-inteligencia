@@ -289,6 +289,37 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ ok: true });
     }
     
+    // ALWAYS check if it's a 2-letter country code first (works from any state)
+    if (text.length === 2 && /^[A-Za-z]{2}$/.test(text)) {
+      const paisesModule = await import('@/data/paises');
+      const country = Object.values(paisesModule.paisesData).find(
+        p => p.codigo.toUpperCase() === text.toUpperCase()
+      );
+      if (country) {
+        const weather = await getWeatherForCountry(country.codigo);
+        let info = formatCountryInfo(country.codigo);
+        if (weather) info += '\n\n' + weather;
+        await sendMessage(chatId, info, getMainKeyboard());
+        return NextResponse.json({ ok: true });
+      }
+    }
+    
+    // Also check "ES - España" format
+    if (text.includes(' - ')) {
+      const code = text.split(' - ')[0].trim().toUpperCase();
+      const paisesModule = await import('@/data/paises');
+      const country = Object.values(paisesModule.paisesData).find(
+        p => p.codigo.toUpperCase() === code
+      );
+      if (country) {
+        const weather = await getWeatherForCountry(country.codigo);
+        let info = formatCountryInfo(country.codigo);
+        if (weather) info += '\n\n' + weather;
+        await sendMessage(chatId, info, getMainKeyboard());
+        return NextResponse.json({ ok: true });
+      }
+    }
+    
     const state = getUserState(chatId);
     
     const currencyResult = processCurrencyCommand(text);
