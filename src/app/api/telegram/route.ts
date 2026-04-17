@@ -290,17 +290,47 @@ export async function POST(request: NextRequest) {
     }
     
     // ALWAYS check if it's a 2-letter country code first (works from any state)
+    console.log('Checking country code:', text);
     if (text.length === 2 && /^[A-Za-z]{2}$/.test(text)) {
-      const paisesModule = await import('@/data/paises');
-      const country = Object.values(paisesModule.paisesData).find(
-        p => p.codigo.toUpperCase() === text.toUpperCase()
-      );
-      if (country) {
-        const weather = await getWeatherForCountry(country.codigo);
-        let info = formatCountryInfo(country.codigo);
-        if (weather) info += '\n\n' + weather;
-        await sendMessage(chatId, info, getMainKeyboard());
-        return NextResponse.json({ ok: true });
+      try {
+        const paisesModule = await import('@/data/paises');
+        const allPaises = Object.values(paisesModule.paisesData);
+        const country = allPaises.find(
+          p => p.codigo.toUpperCase() === text.toUpperCase()
+        );
+        console.log('Found country:', country?.nombre);
+        if (country) {
+          const weather = await getWeatherForCountry(country.codigo);
+          let info = formatCountryInfo(country.codigo);
+          if (weather) info += '\n\n' + weather;
+          await sendMessage(chatId, info, getMainKeyboard());
+          return NextResponse.json({ ok: true });
+        } else {
+          await sendMessage(chatId, `❌ Código "${text}" no encontrado. Prueba: ES, FR, DE, IT, US, JP...`, getCountryKeyboard());
+          return NextResponse.json({ ok: true });
+        }
+      } catch (e) {
+        console.error('Error finding country:', e);
+      }
+    }
+    
+    // ALSO search by country name
+    if (text && !text.startsWith('/')) {
+      try {
+        const paisesModule = await import('@/data/paises');
+        const country = Object.values(paisesModule.paisesData).find(
+          p => p.nombre.toLowerCase().includes(text.toLowerCase()) ||
+               p.codigo.toLowerCase() === text.toLowerCase()
+        );
+        if (country) {
+          const weather = await getWeatherForCountry(country.codigo);
+          let info = formatCountryInfo(country.codigo);
+          if (weather) info += '\n\n' + weather;
+          await sendMessage(chatId, info, getMainKeyboard());
+          return NextResponse.json({ ok: true });
+        }
+      } catch (e) {
+        console.error('Error finding country:', e);
       }
     }
     
