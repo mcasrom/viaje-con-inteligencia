@@ -1,4 +1,5 @@
 ---
+tags: [seguro, viaje, obligatorio]
 title: "Guía completa para viajar seguro a Japón"
 slug: "como-viajar-seguro-japon"
 date: "2026-04-15"

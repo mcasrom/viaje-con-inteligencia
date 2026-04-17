@@ -1,4 +1,5 @@
 ---
+tags: [aduana, aeropuerto, fronteras]
 title: "Pasar la aduana en el aeropuerto sin problemas: guía completa para viajeros jóvenes"
 slug: "aduanas-aeropuerto"
 date: "2026-04-17"

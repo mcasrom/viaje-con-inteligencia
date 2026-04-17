@@ -1,4 +1,5 @@
 ---
+tags: [seguro, viaje, obligatorio]
 title: "México: Cómo identificar zonas de riesgo"
 slug: "zonas-riesgo-mexico"
 date: "2026-04-05"

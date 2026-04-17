@@ -1,7 +1,7 @@
 import Link from 'next/link';
-import { ArrowLeft, Calendar, Clock, Share2 } from 'lucide-react';
+import { ArrowLeft, Calendar, Clock, Share2, Tag } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
-import { getPostBySlug, getPostSlugs } from '@/lib/posts';
+import { getPostBySlug, getPostSlugs, getRelatedPosts } from '@/lib/posts';
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -90,19 +90,34 @@ export default async function ArticuloPage({ params }: PageProps) {
             </div>
           </div>
 
-          <div className="bg-slate-800 rounded-xl p-6 border border-slate-700 mb-8">
-            <h3 className="text-white font-semibold mb-4">📚 Artículos relacionados</h3>
-            <div className="grid md:grid-cols-2 gap-4">
-              <Link href="/pais/es" className="p-4 bg-slate-700/50 rounded-lg hover:bg-slate-700 transition-colors">
-                <p className="text-blue-400 text-sm mb-1">Guía del país</p>
-                <p className="text-white font-medium">Requisitos para entrar en España</p>
-              </Link>
-              <Link href="/checklist" className="p-4 bg-slate-700/50 rounded-lg hover:bg-slate-700 transition-colors">
-                <p className="text-blue-400 text-sm mb-1">Herramienta</p>
-                <p className="text-white font-medium">Checklist completo para tu viaje</p>
-              </Link>
+          {post.tags && post.tags.length > 0 && (
+            <div className="flex flex-wrap gap-2 mb-8">
+              <Tag className="w-4 h-4 text-slate-400 mt-1" />
+              {post.tags.map((tag: string) => (
+                <span key={tag} className="px-3 py-1 bg-slate-700/50 text-slate-300 text-sm rounded-full">
+                  #{tag}
+                </span>
+              ))}
             </div>
-          </div>
+          )}
+
+          {(() => {
+            const relatedPosts = getRelatedPosts(slug, 3);
+            if (relatedPosts.length === 0) return null;
+            return (
+              <div className="bg-slate-800 rounded-xl p-6 border border-slate-700 mb-8">
+                <h3 className="text-white font-semibold mb-4">📚 Artículos relacionados</h3>
+                <div className="grid md:grid-cols-{Math.min(relatedPosts.length, 3)} gap-4">
+                  {relatedPosts.map((related) => (
+                    <Link key={related.slug} href={`/blog/${related.slug}`} className="p-4 bg-slate-700/50 rounded-lg hover:bg-slate-700 transition-colors">
+                      <p className="text-blue-400 text-sm mb-1">{related.category}</p>
+                      <p className="text-white font-medium">{related.title}</p>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            );
+          })()}
 
           <div className="flex items-center justify-between">
             <Link

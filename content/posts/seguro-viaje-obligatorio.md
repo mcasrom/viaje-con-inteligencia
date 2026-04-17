@@ -1,4 +1,5 @@
 ---
+tags: [equipaje, avion, maleta]
 title: "¿Por qué un seguro de viaje es obligatorio?"
 slug: "seguro-viaje-obligatorio"
 date: "2026-04-08"

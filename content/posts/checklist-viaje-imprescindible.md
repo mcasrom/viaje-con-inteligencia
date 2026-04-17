@@ -1,4 +1,5 @@
 ---
+tags: [equipaje, avion, maleta]
 title: "Checklist de viaje: Los 10 errores que debes evitar"
 slug: "checklist-viaje-imprescindible"
 date: "2026-04-12"

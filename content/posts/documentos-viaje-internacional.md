@@ -1,4 +1,5 @@
 ---
+tags: [seguro, viaje, obligatorio]
 title: "Documentos esenciales para viajes internacionales"
 slug: "documentos-viaje-internacional"
 date: "2026-04-01"

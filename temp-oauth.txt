@@ -1,0 +1,10 @@
+OAuth App - GitHub
+
+Application name:
+viaje-con-inteligencia
+
+Homepage URL:
+https://viaje-con-inteligencia.vercel.app
+
+Authorization callback URL:
+https://nczkvsnuafkwtmgokiuo.supabase.co/auth/v1/callback

@@ -1,8 +1,8 @@
 # Pendiente - Viaje con Inteligencia
 
 ## Supabase
-- [ ] Configurar Supabase (schema listo, esperar rate limit o alternativa)
-- [ ] Probar login email mágico
+- [x] Configurar Supabase (schema listo, esperar rate limit o alternativa)
+- [x] Probar login email mágico
 - [ ] Verificar favoritos y dashboard
 
 ## Añadir países (10-15 nuevos)
@@ -33,6 +33,7 @@
 - [ ] Botón ver más → web
 
 ## Premium/Subscriptions
+- [x] Monitor de conflictos (GDELT API)
 - [ ] Stripe conectar
 - [ ] Página gestión suscripción
 

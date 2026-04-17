@@ -1,0 +1,4 @@
+# Environment Variables para Vercel
+
+NEXT_PUBLIC_SUPABASE_URL = https://nczkvsnuafkwtmgokiuo.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY = sb_publishable_0EcXV2Mys6bAEutDGrBBqg_IyjjE8gU

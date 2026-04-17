@@ -1,4 +1,5 @@
 ---
+tags: [seguro, viaje, obligatorio]
 title: "Cómo el bot de Telegram puede salvarte en el extranjero"
 slug: "bot-telegram-alertas"
 date: "2026-03-28"
