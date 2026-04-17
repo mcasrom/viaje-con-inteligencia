@@ -405,14 +405,22 @@ export async function POST(request: NextRequest) {
     }
     
     if (state.step === 'selecting_country' && text) {
+      // Extract country name from keyboard button (e.g., "🇪🇸 España" -> "España")
+      const countryName = text.replace(/^[^\w\s]+ /, '').trim();
+      
       const paisesModule = await import('@/data/paises');
       const country = Object.values(paisesModule.paisesData).find(
-        (p) => p.nombre.toLowerCase().includes(text.toLowerCase()) ||
-               p.codigo.toLowerCase() === text.toLowerCase()
+        (p) => p.nombre.toLowerCase().includes(countryName.toLowerCase()) ||
+               p.codigo.toLowerCase() === countryName.toLowerCase()
       );
       if (country) {
         resetUserState(chatId);
-        await sendMessage(chatId, formatCountryInfo(country.codigo), getMainKeyboard());
+        const weather = await getWeatherForCountry(country.codigo);
+        let info = formatCountryInfo(country.codigo);
+        if (weather) {
+          info += '\n\n' + weather;
+        }
+        await sendMessage(chatId, info, getMainKeyboard());
         return NextResponse.json({ ok: true });
       } else {
         await sendMessage(chatId, '❌ País no encontrado. Prueba con otro nombre.', getCountryKeyboard());
@@ -421,15 +429,23 @@ export async function POST(request: NextRequest) {
     }
     
     // Also handle direct country search from any state
-    if (text && !text.startsWith('/')) {
+    if (text && !text.startsWith('/') && !text.match(/^[^\w\s]+ $/)) {
+      // Skip if it looks like a keyboard button with only flag
+      const searchText = text.replace(/^[^\w\s]+ /, '').trim();
+      
       const paisesModule = await import('@/data/paises');
       const country = Object.values(paisesModule.paisesData).find(
-        (p) => p.nombre.toLowerCase().includes(text.toLowerCase()) ||
-               p.capital.toLowerCase().includes(text.toLowerCase()) ||
-               p.codigo.toLowerCase() === text.toLowerCase()
+        (p) => p.nombre.toLowerCase().includes(searchText.toLowerCase()) ||
+               p.capital.toLowerCase().includes(searchText.toLowerCase()) ||
+               p.codigo.toLowerCase() === searchText.toLowerCase()
       );
       if (country) {
-        await sendMessage(chatId, formatCountryInfo(country.codigo), getMainKeyboard());
+        const weather = await getWeatherForCountry(country.codigo);
+        let info = formatCountryInfo(country.codigo);
+        if (weather) {
+          info += '\n\n' + weather;
+        }
+        await sendMessage(chatId, info, getMainKeyboard());
         return NextResponse.json({ ok: true });
       }
     }
