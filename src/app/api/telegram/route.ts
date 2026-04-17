@@ -238,39 +238,11 @@ Responda em português, de forma clara e útil. Máximo 500 caracteres.`;
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    console.log('Request body keys:', Object.keys(body));
     const { message, callback_query, inline_query } = body;
     
-    // Handle callback queries (inline keyboard buttons)
+    // Handle inline keyboards (callback queries)
     if (callback_query) {
-      console.log('Callback query received:', callback_query);
-      const chatId = callback_query.message?.chat?.id;
-      const data = callback_query.data;
-      const lang = callback_query.message?.chat?.language_code?.startsWith('en') ? 'en' : 
-                   callback_query.message?.chat?.language_code?.startsWith('pt') ? 'pt' : 'es';
-      const t = translations[lang];
-      
-      if (data?.startsWith('country_')) {
-        const codigo = data.replace('country_', '');
-        resetUserState(chatId);
-        const weather = await getWeatherForCountry(codigo);
-        let info = formatCountryInfo(codigo);
-        if (weather) {
-          info += '\n\n' + weather;
-        }
-        await sendMessage(chatId, info, getMainKeyboard());
-        await answerCallbackQuery(callback_query.id);
-        return NextResponse.json({ ok: true });
-      }
-      
-      if (data === 'menu_main') {
-        resetUserState(chatId);
-        await sendMessage(chatId, t.back(), getMainKeyboard());
-        await answerCallbackQuery(callback_query.id);
-        return NextResponse.json({ ok: true });
-      }
-      
-      await answerCallbackQuery(callback_query.id);
+      // We switched to regular keyboard, handle any legacy callbacks
       return NextResponse.json({ ok: true });
     }
     
@@ -445,22 +417,19 @@ export async function POST(request: NextRequest) {
       const paisesModule = await import('@/data/paises');
       const allCountries = Object.values(paisesModule.paisesData);
       
-      // Try exact match first
+      // Try country code first (ES, FR, DE, etc.)
       let country = allCountries.find(
-        (p) => p.nombre.toLowerCase() === text.toLowerCase()
+        (p) => p.codigo.toLowerCase() === text.toLowerCase()
       );
       
-      // Try with flag prefix removed
-      if (!country && text.includes(' ')) {
-        const parts = text.split(' ');
-        const searchName = parts.slice(1).join(' '); // Remove flag
+      // Try exact name match
+      if (!country) {
         country = allCountries.find(
-          (p) => p.nombre.toLowerCase() === searchName.toLowerCase() ||
-                 p.nombre.toLowerCase().includes(searchName.toLowerCase())
+          (p) => p.nombre.toLowerCase() === text.toLowerCase()
         );
       }
       
-      // Try partial match
+      // Try partial name match
       if (!country) {
         country = allCountries.find(
           (p) => p.nombre.toLowerCase().includes(text.toLowerCase()) ||
@@ -480,7 +449,7 @@ export async function POST(request: NextRequest) {
         await sendMessage(chatId, info, getMainKeyboard());
         return NextResponse.json({ ok: true });
       } else {
-        await sendMessage(chatId, '❌ País no encontrado. Prueba de nuevo.', getCountryKeyboard());
+        await sendMessage(chatId, '❌ País no encontrado. Prueba con el código (ej: ES, FR, DE).', getCountryKeyboard());
         return NextResponse.json({ ok: true });
       }
     }

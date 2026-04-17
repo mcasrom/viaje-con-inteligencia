@@ -38,28 +38,23 @@ export function getMainKeyboard() {
 }
 
 export function getCountryKeyboard() {
-  const countries = Object.values(paisesData).slice(0, 20);
-  const buttons: { text: string; callback_data: string }[][] = [];
+  const countries = Object.values(paisesData).slice(0, 16);
+  const keyboard: { text: string }[][] = [];
   
   for (let i = 0; i < countries.length; i += 2) {
-    const row: { text: string; callback_data: string }[] = [{ 
-      text: `${countries[i].bandera} ${countries[i].nombre}`, 
-      callback_data: `country_${countries[i].codigo}` 
-    }];
+    const row: { text: string }[] = [{ text: `${countries[i].codigo.toUpperCase()}` }];
     if (countries[i + 1]) {
-      row.push({ 
-        text: `${countries[i + 1].bandera} ${countries[i + 1].nombre}`, 
-        callback_data: `country_${countries[i + 1].codigo}` 
-      });
+      row.push({ text: `${countries[i + 1].codigo.toUpperCase()}` });
     }
-    buttons.push(row);
+    keyboard.push(row);
   }
   
-  buttons.push([{ text: '« Volver', callback_data: 'menu_main' }]);
+  keyboard.push([{ text: '« Volver' }]);
   
   return {
     reply_markup: {
-      inline_keyboard: buttons,
+      keyboard,
+      resize_keyboard: true,
     },
   };
 }
