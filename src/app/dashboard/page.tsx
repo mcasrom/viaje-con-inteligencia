@@ -122,7 +122,6 @@ export default function DashboardPage() {
       console.log('Respuesta login:', response.status, data);
 
       if (response.ok) {
-        console.log('Login exitoso, mostrando notificación...');
         setNotification({ 
           type: 'success', 
           message: 'Revisa tu email para iniciar sesión' 
@@ -130,9 +129,7 @@ export default function DashboardPage() {
         setEmail('');
       } else {
         console.error('Error del servidor:', response.status, data);
-        const msg = data.error || `Error ${response.status}: Error al enviar enlace`;
-        alert('ERROR: ' + msg); // Debug
-        setNotification({ type: 'error', message: msg });
+        setNotification({ type: 'error', message: data.error || 'Error al enviar enlace' });
       }
     } catch (err: any) {
       console.error('Error login:', err);
