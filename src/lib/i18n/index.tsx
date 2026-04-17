@@ -219,6 +219,26 @@ const translations: Translation = {
     en: 'Data based on official MAEC information',
     pt: 'Dados baseados em informações oficiais do MAEC',
   },
+  'footer.aboutProject': {
+    es: 'Sobre el proyecto',
+    en: 'About the project',
+    pt: 'Sobre o projeto',
+  },
+  'footer.bio.p1': {
+    es: 'Soy M. Castillo y este es un proyecto personal donde exploro cómo la inteligencia artificial puede aplicarse al turismo de forma práctica.',
+    en: "I'm M. Castillo and this is a personal project where I explore how artificial intelligence can be applied to tourism in a practical way.",
+    pt: 'Sou M. Castillo e este é um projeto pessoal onde exploro como a inteligência artificial pode ser aplicada ao turismo de forma prática.',
+  },
+  'footer.bio.p2': {
+    es: 'Desde España, desarrollo herramientas que combinan automatización y análisis para simplificar la planificación de viajes. No es un producto corporativo, sino una iniciativa independiente.',
+    en: 'From Spain, I develop tools that combine automation and analysis to simplify travel planning. This is not a corporate product, but an independent initiative.',
+    pt: 'Da Espanha, desenvolvo ferramentas que combinam automação e análise para simplificar o planejamento de viagens. Não é um produto corporativo, mas uma iniciativa independente.',
+  },
+  'footer.bio.p3': {
+    es: 'El objetivo es claro: crear soluciones útiles, simples y accesibles que ayuden a viajar mejor, reduciendo tiempo, coste y complejidad.',
+    en: 'The goal is clear: create useful, simple, and accessible solutions that help people travel better, reducing time, cost, and complexity.',
+    pt: 'O objetivo é claro: criar soluções úteis, simples e acessíveis que ajudem a viajar melhor, reduzindo tempo, custo e complexidade.',
+  },
   
   // Testimonials
   'testimonials.title': {
