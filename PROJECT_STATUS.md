@@ -4,8 +4,8 @@
 
 ### URLs
 - **Web:** https://viaje-con-inteligencia.vercel.app
-- **Bot Telegram:** https://t.me/AlertasViajeroBot
-- **Canal:** @AlertasViajero
+- **Bot Telegram:** https://t.me/ViajeConInteligenciaBot
+- **Admin-bot stats:** https://viaje-con-inteligencia.vercel.app/admin/bot-stats
 - **Repo:** https://github.com/mcasrom/viaje-con-inteligencia
 
 ### Core Features
@@ -157,5 +157,5 @@ cd ~/viaje-con-inteligencia && npm install
 
 - Países: 28
 - Posts blog: 7
-- Suscriptores canal: ---
+- Usuarios bot: 1 (ver /admin/bot-stats)
 - Backups disponibles: GitHub Releases

@@ -30,10 +30,10 @@
 
 ## Bot Telegram
 - [x] Tracking de uso (stats en Supabase)
-- [ ] Inline keyboards
-- [ ] Integrar clima Open-Meteo
-- [ ] Mensajes enriquecidos
-- [ ] Botón ver más → web
+- [x] Integrar clima Open-Meteo (/clima comando)
+- [x] Mensajes enriquecidos
+- [x] Comandos de país via código (ES, FR, DE)
+- [x] Página de estadísticas /admin/bot-stats
 
 ## Premium/Subscriptions
 - [x] Monitor de conflictos (NewsMCP API)
