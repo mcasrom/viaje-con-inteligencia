@@ -316,15 +316,17 @@ export async function POST(request: NextRequest) {
       }
     }
     
-    // ALSO search by country name
+    // Try finding any country by name (regardless of state)
     if (text && !text.startsWith('/')) {
       try {
         const paisesModule = await import('@/data/paises');
         const country = Object.values(paisesModule.paisesData).find(
           p => p.nombre.toLowerCase().includes(text.toLowerCase()) ||
-               p.codigo.toLowerCase() === text.toLowerCase()
+               p.codigo.toLowerCase() === text.toLowerCase() ||
+               p.capital.toLowerCase().includes(text.toLowerCase())
         );
         if (country) {
+          console.log('Found by name:', country.nombre);
           const weather = await getWeatherForCountry(country.codigo);
           let info = formatCountryInfo(country.codigo);
           if (weather) info += '\n\n' + weather;
@@ -332,7 +334,7 @@ export async function POST(request: NextRequest) {
           return NextResponse.json({ ok: true });
         }
       } catch (e) {
-        console.error('Error finding country:', e);
+        console.error('Error by name:', e);
       }
     }
     
