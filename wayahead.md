@@ -1,9 +1,10 @@
 # Pendiente - Viaje con Inteligencia
 
-## Supabase
+## Supabase (pendiente rate limit)
 - [x] Configurar Supabase
 - [x] Ejecutar schema SQL (tablas bot_stats, bot_commands)
-- [ ] Verificar login y favoritos en producción
+- [ ] Login emailmgico (rate limit superado? probar mañana)
+- [ ] Verificar favoritos y dashboard
 
 ## Añadir países (10-15 nuevos)
 - [ ] Indonesia 🇮🇩
@@ -25,14 +26,14 @@
 - [ ] Guía visados por país
 - [ ] Emergencias en extranjero
 - [ ] Estafas turísticas
-- [ ] Roaming internacional
-- [ ] WiFi/Internet en viajes
+- [ ] Roaming internacional (mañana)
+- [ ] WiFi/Internet en viajes (mañana)
 
 ## Bot Telegram
 - [x] Tracking de uso (stats en Supabase)
 - [x] Integrar clima Open-Meteo (/clima comando)
 - [x] Mensajes enriquecidos
-- [x] Comandos de país via código (ES, FR, DE)
+- [ ] Buscar país por código ES, FR (arreglar maana)
 - [x] Página de estadísticas /admin/bot-stats
 
 ## Premium/Subscriptions
