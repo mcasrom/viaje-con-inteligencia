@@ -1,140 +1,133 @@
 # Viaje con Inteligencia - Estado del Proyecto
 
-## ✅ Completado
+## ✅ Completado (Sprint 1)
 
 ### URLs
 - **Web:** https://viaje-con-inteligencia.vercel.app
-- **Bot Telegram:** https://t.me/AlertasViajeroBot  
+- **Bot Telegram:** https://t.me/AlertasViajeroBot
 - **Canal:** @AlertasViajero
 - **Repo:** https://github.com/mcasrom/viaje-con-inteligencia
 
-### Credenciales (en variables de entorno Vercel)
-- **Telegram Token:** `TELEGRAM_BOT_TOKEN`
-- **Channel ID:** `TELEGRAM_CHANNEL_ID`
-
-### Funcionalidades
+### Core Features
 - Mapa de riesgos 28 países
 - Detalle por país (embajadas, requisitos, qué hacer/no hacer)
 - Checklist imprimible (8 categorías, 80+ items)
 - Bot Telegram con comandos
 - Panel admin alertas
-- Páginas: Premium, Legal, Metodología MAEC
-- Disclaimer y aviso legal
-- Footer con copyright M.Castillo
-
-### Webhook Telegram
-Configurado: `https://viaje-con-inteligencia.vercel.app/api/telegram`
-
----
-
-## 📋 Para Continuar
-
-```bash
-# Clonar repo
-git clone https://github.com/mcasrom/viaje-con-inteligencia.git
-cd viaje-con-inteligencia
-npm install
-
-# Desarrollo
-npm run dev
-
-# Hacer cambios, guardar
-git add . && git commit -m "tu cambio"
-git push
-# Vercel despliega automáticamente
-```
-
----
-
-## 🚀 Posibles Mejoras
-
-- [ ] Añadir más países (50+)
-- [ ] Integrar IA para recomendaciones
-- [ ] Sistema de pagos Stripe para Premium
-- [ ] RSS feed MAEC para alertas automáticas
-- [ ] App móvil
-- [ ] Traducciones (EN, PT, FR)
-
----
-
-## 📝 Tareas Supabase (pendientes de configurar)
-
-### Paso 1: Crear proyecto en supabase.com
-1. Ir a https://supabase.com y crear nuevo proyecto
-2. Esperar a que termine el setup (2-3 min)
-
-### Paso 2: Ejecutar schema
-1. En Supabase Dashboard → SQL Editor
-2. Copiar contenido de `supabase-schema.sql`
-3. Ejecutar
-
-### Paso 3: Añadir variables en Vercel
-```
-NEXT_PUBLIC_SUPABASE_URL=https://xxxx.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJxxx...
-```
-
-### Paso 4: Configurar Auth en Supabase
-1. Authentication → Providers → Email: activar
-2. Authentication → URL Configuration:
-   - Site URL: https://viaje-con-inteligencia.vercel.app
-   - Redirect URLs: https://viaje-con-inteligencia.vercel.app/dashboard
-
----
-
-## 📊 Funcionalidades implementadas hoy
-
-### Dashboard (/dashboard)
-- Login/registro por email (magico)
-- Lista favoritos con clima
-- Botón favorito en páginas de país
-
-### API Auth
-- /api/auth/user - Usuario actual
-- /api/auth/login - Enviar enlace mágico
-- /api/auth/logout - Cerrar sesión
-- /api/auth/favorites - CRUD favoritos
-
-### Clima (Open-Meteo - gratis, sin API key)
-- Widget en páginas de país (7 días)
-- Widget compacto en favoritos del dashboard
+- Clima (Open-Meteo API - 7 días)
+- Dashboard con favoritos (requiere Supabase)
+- Footer con bio del autor (ES/EN/PT)
 
 ### SEO
 - Favicon SVG personalizado
 - Open Graph image (1200x630)
-- Metadata actualizada
+- Metadata completa
+- Timestamps de actualización
 
-### Footer / About
-- Bio del autor con traducciones ES/EN/PT
-- Enlace a metodología MAEC
+### Blog
+- Sistema de posts con estructura SEO
+- Primer post: "Aduanas en el aeropuerto" (1000+ palabras)
+
+### Páginas
+- Home (/), País (/pais/[codigo])
+- Premium (/premium) - 4.99€/mes, 19.99€/año
+- Checklist (/checklist)
+- Blog (/blog), Post (/blog/[slug])
+- Dashboard (/dashboard)
+- Legal (/legal), Metodología (/metodologia)
 
 ---
 
-## 📝 Blog - Posts planificados
+## 📋 Sprint 2 - Way Ahead
 
-### Requisitos para posts SEO:
-- [ ] Mínimo **1000 palabras** por post
-- [ ] Keywords en título, primer párrafo, H2/H3
-- [ ] Meta description atractiva (150-160 chars)
-- [ ] Enlaces internos a otras páginas del sitio
-- [ ] Datos estructurados (JSON-LD)
-- [ ] Imágenes con alt text optimizado
+### 🔴 Prioridad Alta
 
-### Posts en preparación:
-- [🔄] **Aduanas en viajes internacionales** - Guía completa de declaración y restricciones
+#### 1. Supabase (Backend)
+- [ ] Configurar proyecto Supabase
+- [ ] Ejecutar schema SQL
+- [ ] Activar variables en Vercel
+- [ ] Probar login/registro
+- [ ] Verificar favoritos
 
-### Ideas para futuros posts:
-- [ ] Guía completa de visados por país
-- [ ] Seguro de viaje: qué saber antes de contratar
-- [ ] Cómo actuar ante emergencias en el extranjero
-- [ ] Equipaje de mano: normas actualizadas por airline
-- [ ] Consejos para evitar estafas turísticas
-- [ ] Moneda y tipos de cambio: guía práctica
-- [ ] Roaming internacional: opciones para no pagar de más
-- [ ] Derechos del viajero en la UE
+#### 2. Optimización Bot Telegram
+- [ ] Revisar flujo de comandos
+- [ ] Añadir inline keyboards
+- [ ] Integrar weather API en bot
+- [ ] Mensajes dinámicos con datos reales
+- [ ] Botón de "Ver más"链接 a web
+
+#### 3. Blog - Más contenido
+- [ ] Post: Guía completa de visados
+- [ ] Post: Seguro de viaje
+- [ ] Post: Equipaje de mano
+- [ ] Post: Derechos del viajero UE
+
+### 🟡 Prioridad Media
+
+#### 4. Expansión de países
+- [ ] Añadir 10-15 países más (Latam, Asia)
+- [ ] Actualizar coordenadas para clima
+
+#### 5. Premium Features
+- [ ] Página de gestión de suscripción
+- [ ] Historial de alertas guardadas
+- [ ] Configuración de notificaciones
+
+#### 6. SEO Técnico
+- [ ] Sitemap.xml dinámico
+- [ ] Robots.txt
+- [ ] Schema.org para posts
+- [ ] Canonical URLs
+
+### 🟢 Prioridad Baja
+
+- [ ] App móvil (React Native)
+- [ ] PWA (Progressive Web App)
+- [ ] Newsletter integración
+- [ ] Analytics avanzado
+
+---
+
+## 📝 Configuración Supabase (Pendiente)
+
+```bash
+# 1. Crear proyecto en https://supabase.com
+
+# 2. Ejecutar en SQL Editor:
+#    Copiar contenido de supabase-schema.sql
+
+# 3. Variables en Vercel:
+NEXT_PUBLIC_SUPABASE_URL=https://xxxx.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJxxx...
+
+# 4. Auth config en Supabase:
+#    Authentication → Email → Activar
+#    Site URL: https://viaje-con-inteligencia.vercel.app
+#    Redirect: https://viaje-con-inteligencia.vercel.app/dashboard
+```
+
+---
+
+## 🚀 Deploy
+
+```bash
+git clone https://github.com/mcasrom/viaje-con-inteligencia.git
+cd viaje-con-inteligencia
+npm install
+npm run dev
+```
 
 ---
 
 ## 📧 Contacto
 - **M.Castillo:** mybloggingnotes@gmail.com
-- **Autor:** M.Castillo
+- **Telegram Bot:** @AlertasViajeroBot
+
+---
+
+## 📊 Stats (Actualizar manualmente)
+
+- Países: 28
+- Posts blog: 1
+- Suscriptores canal: ---
+- Usuarios registrados: ---
