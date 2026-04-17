@@ -532,12 +532,20 @@ export async function POST(request: NextRequest) {
     
     // Handle /pais command (official)
     if (text.startsWith('/pais') || text.startsWith('/country')) {
-        let info = formatCountryInfo(country.codigo);
-        if (weather) {
-          info += '\n\n' + weather;
+      const query = text.replace('/pais', '').replace('/country', '').trim();
+      if (query) {
+        const paisesModule = await import('@/data/paises');
+        const country = Object.values(paisesModule.paisesData).find(
+          (p) => p.nombre.toLowerCase().includes(query.toLowerCase()) ||
+                 p.codigo.toLowerCase() === query.toLowerCase()
+        );
+        if (country) {
+          const weather = await getWeatherForCountry(country.codigo);
+          let info = formatCountryInfo(country.codigo);
+          if (weather) info += '\n\n' + weather;
+          await sendMessage(chatId, info, getMainKeyboard());
+          return NextResponse.json({ ok: true });
         }
-        await sendMessage(chatId, info, getMainKeyboard());
-        return NextResponse.json({ ok: true });
       }
     }
     
