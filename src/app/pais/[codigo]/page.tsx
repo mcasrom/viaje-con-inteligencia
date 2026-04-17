@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { notFound } from 'next/navigation';
 import Reviews from '@/components/Reviews';
+import WeatherWidget from '@/components/WeatherWidget';
 
 export default function DetallePais() {
   const params = useParams();
@@ -150,7 +151,13 @@ export default function DetallePais() {
           </div>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-8 mb-8">
+        <WeatherWidget 
+          lat={pais.mapaCoordenadas[0]} 
+          lon={pais.mapaCoordenadas[1]} 
+          countryName={pais.nombre}
+        />
+
+        <div className="grid lg:grid-cols-2 gap-8 mb-8 mt-8">
           <div className="bg-slate-800 rounded-xl p-6 border border-slate-700">
             <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
               <Building2 className="w-6 h-6 text-blue-400" />
