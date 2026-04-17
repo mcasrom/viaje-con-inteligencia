@@ -25,11 +25,11 @@ const PLANS = [
   {
     id: 'yearly',
     name: 'Premium Anual',
-    price: '49.99',
+    price: '19.99',
     period: 'año',
     priceId: process.env.NEXT_PUBLIC_STRIPE_PRICE_YEARLY || 'price_yearly_placeholder',
     popular: true,
-    savings: 'Ahorra 16€',
+    savings: 'Ahorra 40€',
     features: [
       'Todo lo del plan Premium Mensual',
       'Acceso prioritario a nuevas funciones',

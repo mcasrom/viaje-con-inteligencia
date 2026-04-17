@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { generateWeeklyDigest } from '@/lib/alerts-system';
 
+const LAST_RUN_KEY = 'last_weekly_digest';
+
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const TELEGRAM_CHANNEL_ID = process.env.TELEGRAM_CHANNEL_ID;
 
@@ -45,6 +47,7 @@ export async function GET(request: Request) {
       success: sent,
       message: 'Digest semanal enviado',
       timestamp: new Date().toISOString(),
+      last_run: new Date().toISOString(),
     });
   } catch (error) {
     console.error('[Cron] Error:', error);

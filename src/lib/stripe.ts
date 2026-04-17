@@ -19,7 +19,7 @@ export const PLANS = {
   },
   yearly: {
     name: 'Premium Anual',
-    price: 4999, // cents (49.99€)
+    price: 1999, // cents (19.99€)
     interval: 'year' as const,
     priceId: process.env.STRIPE_PRICE_YEARLY || '',
   },

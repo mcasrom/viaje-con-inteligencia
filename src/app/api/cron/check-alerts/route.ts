@@ -79,6 +79,7 @@ export async function GET(request: Request) {
         changes: changes.length,
         details: changes,
         timestamp: new Date().toISOString(),
+        last_run: new Date().toISOString(),
       });
     }
     
@@ -88,6 +89,7 @@ export async function GET(request: Request) {
       changes: 0,
       message: 'Sin cambios en niveles de riesgo',
       timestamp: new Date().toISOString(),
+      last_run: new Date().toISOString(),
     });
   } catch (error) {
     console.error('[Cron] Error:', error);

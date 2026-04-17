@@ -199,7 +199,7 @@ export function getPremiumInfo(): string {
   message += `• 📱 Notificaciones Telegram\n`;
   message += `• 🎫 Acceso prioritario nuevos países\n\n`;
   
-  message += `*🚀 Pago único lifetime: 49.99€*\n\n`;
+  message += `*🚀 Pago único lifetime: 19.99€*\n\n`;
   
   message += `🔗 https://viaje-con-inteligencia.vercel.app/premium\n\n`;
   
