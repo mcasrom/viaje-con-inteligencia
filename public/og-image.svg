@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0f172a"/>
+      <stop offset="100%" style="stop-color:#1e3a5f"/>
+    </linearGradient>
+    <linearGradient id="globeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3b82f6"/>
+      <stop offset="100%" style="stop-color:#1d4ed8"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bgGrad)"/>
+
+  <rect x="50" y="50" width="1100" height="530" rx="20" fill="none" stroke="#334155" stroke-width="2" opacity="0.5"/>
+
+  <circle cx="600" cy="280" r="180" fill="url(#globeGrad)" stroke="#60a5fa" stroke-width="4"/>
+  <ellipse cx="600" cy="280" rx="180" ry="80" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.2"/>
+  <ellipse cx="600" cy="280" rx="80" ry="180" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.2"/>
+  <line x1="420" y1="280" x2="780" y2="280" stroke="#ffffff" stroke-width="2" opacity="0.2"/>
+
+  <circle cx="550" cy="230" r="8" fill="#fbbf24"/>
+  <circle cx="620" cy="260" r="6" fill="#fbbf24"/>
+  <circle cx="580" cy="310" r="7" fill="#fbbf24"/>
+  <circle cx="640" cy="220" r="5" fill="#fbbf24"/>
+
+  <path d="M520 250 Q600 200 680 250" fill="#22c55e" opacity="0.8"/>
+  <path d="M500 320 Q600 380 700 320" fill="#22c55e" opacity="0.6"/>
+
+  <text x="600" y="80" font-family="Arial, sans-serif" font-size="42" font-weight="bold" fill="#ffffff" text-anchor="middle">Viaje con Inteligencia</text>
+  <text x="600" y="520" font-family="Arial, sans-serif" font-size="28" fill="#94a3b8" text-anchor="middle">Mapa de Riesgos de Viaje</text>
+  <text x="600" y="560" font-family="Arial, sans-serif" font-size="20" fill="#64748b" text-anchor="middle">Información oficial MAEC | 28 países</text>
+
+  <circle cx="200" cy="150" r="6" fill="#22c55e"/>
+  <text x="220" y="155" font-family="Arial, sans-serif" font-size="16" fill="#22c55e">Sin riesgo</text>
+  <circle cx="350" cy="150" r="6" fill="#eab308"/>
+  <text x="370" y="155" font-family="Arial, sans-serif" font-size="16" fill="#eab308">Riesgo bajo</text>
+  <circle cx="500" cy="150" r="6" fill="#f97316"/>
+  <text x="520" y="155" font-family="Arial, sans-serif" font-size="16" fill="#f97316">Riesgo medio</text>
+  <circle cx="660" cy="150" r="6" fill="#ef4444"/>
+  <text x="680" y="155" font-family="Arial, sans-serif" font-size="16" fill="#ef4444">Riesgo alto</text>
+  <circle cx="810" cy="150" r="6" fill="#1f2937"/>
+  <text x="830" y="155" font-family="Arial, sans-serif" font-size="16" fill="#9ca3af">Riesgo muy alto</text>
+
+  <rect x="950" y="200" width="150" height="40" rx="8" fill="#22c55e"/>
+  <text x="1025" y="226" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#ffffff" text-anchor="middle">PREMIUM</text>
+</svg>

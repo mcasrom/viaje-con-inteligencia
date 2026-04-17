@@ -19,10 +19,18 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Viaje con Inteligencia | Riesgo Zero",
     description: "Mapa de riesgos de viaje por país. Información oficial MAEC. Embajadas, requisitos y consejos para viajar seguro.",
-    url: "https://viajeconinteligencia.com",
+    url: "https://viaje-con-inteligencia.vercel.app",
     siteName: "Viaje con Inteligencia",
     locale: "es_ES",
     type: "website",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Viaje con Inteligencia - Mapa de Riesgos",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
@@ -54,7 +62,9 @@ export default function RootLayout({
   return (
     <html lang="es">
       <head>
-        <link rel="canonical" href="https://viajeconinteligencia.com" />
+        <link rel="canonical" href="https://viaje-con-inteligencia.vercel.app" />
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+        <link rel="apple-touch-icon" href="/favicon.svg" />
         <meta name="theme-color" content="#0f172a" />
       </head>
       <body className={`${geistSans.variable} antialiased`}>
