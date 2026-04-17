@@ -125,9 +125,37 @@ npm run dev
 
 ---
 
+## 💾 Sistema de Backup
+
+### GitHub Actions (Automático)
+- **Frecuencia:** Cada domingo a las 8:00 UTC
+- **Ubicación:** GitHub Releases (tag: backup-YYYY-MM-DD)
+- **Rotación:** Mantiene últimos 8 backups
+- **Contenido:** Código fuente comprimido + manifest
+
+### Script Local (Manual)
+```bash
+# Ejecutar backup manual
+./scripts/backup.sh
+
+# Configuración:
+# - Directorio: ~/viaje-con-inteligencia-backups
+# - Máximo backups: 8
+# - Excluye: node_modules, .git, .env, .next
+```
+
+### Restauración
+```bash
+# Extraer backup
+tar -xzf backup_YYYY-MM-DD_HHMMSS.tar.gz -C ~/viaje-con-inteligencia
+cd ~/viaje-con-inteligencia && npm install
+```
+
+---
+
 ## 📊 Stats (Actualizar manualmente)
 
 - Países: 28
-- Posts blog: 1
+- Posts blog: 7
 - Suscriptores canal: ---
-- Usuarios registrados: ---
+- Backups disponibles: GitHub Releases

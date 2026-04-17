@@ -1,0 +1,110 @@
+name: Weekly Backup
+
+on:
+  schedule:
+    - cron: '0 8 * * 0'  # Domingos a las 8:00 UTC
+  workflow_dispatch:  # También ejecutable manualmente
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Create backup filename
+        id: date
+        run: echo "date=$(date +%Y-%m-%d)" >> $GITHUB_OUTPUT
+
+      - name: Create backup directory
+        run: mkdir -p backups
+
+      - name: Create database backup script
+        run: |
+          cat > backups/backup-db.sh << 'EOF'
+          # Script para backup de Supabase (si está configurado)
+          # Requiere: SUPABASE_DB_URL en secrets
+          if [ -n "$SUPABASE_DB_URL" ]; then
+            pg_dump "$SUPABASE_DB_URL" > "backups/db-$DATE.sql"
+          fi
+          EOF
+
+      - name: Create project backup
+        run: |
+          DATE=${{ steps.date.outputs.date }}
+          
+          # Crear archivo de backup excluding node_modules, .git, etc.
+          tar --exclude='node_modules' \
+              --exclude='.git' \
+              --exclude='.next' \
+              --exclude='backups' \
+              --exclude='*.log' \
+              --exclude='.env*' \
+              --exclude='coverage' \
+              --exclude='.vercel' \
+              -czf "backups/project-$DATE.tar.gz" .
+          
+          # Crear lista de archivos importantes
+          tar -tzf "backups/project-$DATE.tar.gz" | head -100 > "backups/manifest-$DATE.txt"
+          
+          # Mostrar tamaño
+          ls -lh backups/
+
+      - name: Upload backup to releases
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: backup-${{ steps.date.outputs.date }}
+          release_name: Backup semanal ${{ steps.date.outputs.date }}
+          body: |
+            Backup automático semanal del proyecto Viaje con Inteligencia.
+            
+            Contenido:
+            - Código fuente (comprimido)
+            - Manifest de archivos
+            
+            Fecha: ${{ steps.date.outputs.date }}
+            Runs: ${{ github.run_number }}
+          assets: |
+            backups/project-*.tar.gz
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Cleanup old backups
+        run: |
+          # Obtener todos los tags de backup ordenados por fecha
+          tags=$(git tag -l 'backup-*' --sort=-creatordate)
+          
+          # Mantener solo los últimos 8 backups
+          count=0
+          max_backups=8
+          
+          for tag in $tags; do
+            count=$((count + 1))
+            if [ $count -gt $max_backups ]; then
+              echo "Eliminando backup antiguo: $tag"
+              git push --delete origin "$tag"
+            fi
+          done
+          
+          echo "Backups retention: manteniendo últimos $max_backups"
+
+      - name: Notification
+        if: always()
+        run: |
+          if [ "${{ job.status }}" == "success" ]; then
+            echo "✅ Backup completado exitosamente"
+          else
+            echo "❌ Backup fallido - revisar logs"
+          fi
