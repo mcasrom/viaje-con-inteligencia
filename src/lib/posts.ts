@@ -41,14 +41,14 @@ export function getPostBySlug(slug: string): Post | null {
     return {
       slug,
       content,
-      title: data.title || '',
+      title: data.title || data.description || '',
       date: data.date || '',
       author: data.author || '',
-      category: data.category || '',
-      readTime: data.readTime || '',
+      category: data.category || data.categories?.[0] || '',
+      readTime: data.readTime || data.readingTime || '',
       image: data.image || '',
-      keywords: data.keywords || '',
-      excerpt: data.excerpt || '',
+      keywords: data.keywords || data.description || '',
+      excerpt: data.excerpt || data.description || '',
       tags: data.tags || [],
     };
   } catch {
