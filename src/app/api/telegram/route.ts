@@ -415,26 +415,49 @@ export async function POST(request: NextRequest) {
       const paisesModule = await import('@/data/paises');
       const allCountries = Object.values(paisesModule.paisesData);
       
-      // Extract country code - handle "ES - España" or just "ES"
-      let code = text.split(' ')[0].split('-')[0].trim().toUpperCase();
+      // Check if it's exactly 2 letters (country code)
+      if (text.length === 2 && /^[A-Za-z]{2}$/.test(text)) {
+        const code = text.toUpperCase();
+        const country = allCountries.find(p => p.codigo.toUpperCase() === code);
+        
+        if (country) {
+          resetUserState(chatId);
+          const weather = await getWeatherForCountry(country.codigo);
+          let info = formatCountryInfo(country.codigo);
+          if (weather) info += '\n\n' + weather;
+          await sendMessage(chatId, info, getMainKeyboard());
+          return NextResponse.json({ ok: true });
+        }
+      }
       
-      const country = allCountries.find(
-        (p) => p.codigo.toLowerCase() === code.toLowerCase()
-      );
+      // Also try the - format
+      if (text.includes(' - ')) {
+        const code = text.split(' - ')[0].trim().toUpperCase();
+        const country = allCountries.find(p => p.codigo.toUpperCase() === code);
+        
+        if (country) {
+          resetUserState(chatId);
+          const weather = await getWeatherForCountry(country.codigo);
+          let info = formatCountryInfo(country.codigo);
+          if (weather) info += '\n\n' + weather;
+          await sendMessage(chatId, info, getMainKeyboard());
+          return NextResponse.json({ ok: true });
+        }
+      }
       
+      // Try name search
+      const country = allCountries.find(p => p.nombre.toLowerCase().includes(text.toLowerCase()));
       if (country) {
         resetUserState(chatId);
         const weather = await getWeatherForCountry(country.codigo);
         let info = formatCountryInfo(country.codigo);
-        if (weather) {
-          info += '\n\n' + weather;
-        }
+        if (weather) info += '\n\n' + weather;
         await sendMessage(chatId, info, getMainKeyboard());
         return NextResponse.json({ ok: true });
-      } else {
-        await sendMessage(chatId, '❌ Código no válido. Prueba: ES, FR, DE, IT, US, etc.', getCountryKeyboard());
-        return NextResponse.json({ ok: true });
       }
+      
+      await sendMessage(chatId, '❌ No encontrado. Prueba: ES, FR, DE, US...', getCountryKeyboard());
+      return NextResponse.json({ ok: true });
     }
     
     // Also handle direct country search from any state - country names directly typed
