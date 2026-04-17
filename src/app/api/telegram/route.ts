@@ -300,18 +300,24 @@ export async function POST(request: NextRequest) {
       if (params === 'login' && isSupabaseConfigured()) {
         // Generate magic link for this Telegram user
         const telegramEmail = `telegram_${chatId}@viaje-inteligencia.app`;
-        const { error } = await supabase!.auth.signInWithOtp({
-          email: telegramEmail,
-          options: {
-            emailRedirectTo: 'https://viaje-con-inteligencia.vercel.app/dashboard',
-            data: { telegram_id: chatId.toString(), username }
-          }
-        });
         
-        if (error) {
-          await sendMessage(chatId, '❌ Error al iniciar sesión. Intenta más tarde.');
-        } else {
-          await sendMessage(chatId, '✅ Sesión iniciada! Ya puedes usar el dashboard.\n\n🔗 https://viaje-con-inteligencia.vercel.app/dashboard');
+        try {
+          const { error } = await supabase!.auth.signInWithOtp({
+            email: telegramEmail,
+            options: {
+              emailRedirectTo: 'https://viaje-con-inteligencia.vercel.app/dashboard',
+              data: { telegram_id: chatId.toString(), username }
+            }
+          });
+          
+          if (error) {
+            console.error('Telegram login error:', error);
+            await sendMessage(chatId, `❌ Error: ${error.message}. El servicio de email tiene limitaciones. Prueba mañana o usa el email directamente.`);
+          } else {
+            await sendMessage(chatId, '✅ Sesión iniciada! Ya puedes usar el dashboard.\n\n🔗 https://viaje-con-inteligencia.vercel.app/dashboard');
+          }
+        } catch (err: any) {
+          await sendMessage(chatId, `❌ Error: ${err.message}. Intenta más tarde.`);
         }
         return NextResponse.json({ ok: true });
       }
