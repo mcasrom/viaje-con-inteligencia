@@ -55,19 +55,42 @@ export default function DashboardPage() {
   useEffect(() => {
     const handleMagicLink = async () => {
       const params = new URLSearchParams(window.location.search);
-      const token = params.get('token');
-      const type = params.get('type');
+      const hashParams = new URLSearchParams(window.location.hash.substring(1));
       
-      if (token && type === 'email_confirm' && supabaseClient) {
+      // Check URL params
+      const token = params.get('token') || params.get('access_token');
+      const type = params.get('type') || 'email_confirm';
+      
+      console.log('URL params:', Object.fromEntries(params));
+      console.log('Hash params:', Object.fromEntries(hashParams));
+      
+      if (token && supabaseClient) {
         try {
-          const { error } = await supabaseClient.auth.exchangeCodeForSession(token);
+          console.log('Exchanging token:', token.substring(0, 20) + '...');
+          
+          // Try different approaches
+          let error = null;
+          
+          // First try: exchangeCodeForSession (for verification tokens)
+          if (params.get('code')) {
+            const result = await supabaseClient.auth.exchangeCodeForSession(params.get('code')!);
+            error = result.error;
+          } else if (token) {
+            // For magic links, set session directly
+            const result = await supabaseClient.auth.setSession({
+              access_token: token,
+              refresh_token: params.get('refresh_token') || hashParams.get('refresh_token') || '',
+            });
+            error = result.error;
+          }
+          
           if (!error) {
-            params.delete('token');
-            params.delete('type');
-            window.history.replaceState({}, '', `${window.location.pathname}?${params.toString()}`);
+            console.log('Session set successfully!');
+            // Clear URL params
+            window.history.replaceState({}, '', window.location.pathname);
             checkUser();
           } else {
-            console.error('Error exchanging code:', error);
+            console.error('Error setting session:', error);
           }
         } catch (err) {
           console.error('Magic link error:', err);
