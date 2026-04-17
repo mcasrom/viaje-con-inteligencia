@@ -370,7 +370,7 @@ export default function PremiumPage() {
                     </button>
                   </div>
                   <p className="text-slate-400 text-sm mb-4">
-                    Datos en tiempo real de GDELT Project - Últimas noticias de conflictos violentos
+                    Datos en tiempo real de NewsMCP - Últimas noticias geopolíticas
                   </p>
                   {conflicts.length > 0 ? (
                     <div className="space-y-2 max-h-96 overflow-y-auto">
