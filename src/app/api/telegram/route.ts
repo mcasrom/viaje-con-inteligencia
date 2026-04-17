@@ -58,7 +58,7 @@ const translations = {
     menu: () => ({
       keyboard: [
         [{ text: '🌍 Buscar país' }],
-        [{ text: '🤖 Chat IA' }],
+        [{ text: '🌤️ Clima' }, { text: '🤖 Chat IA' }],
         [{ text: '⚠️ Alertas de riesgo' }, { text: '🏦 Tipo cambio' }],
         [{ text: '📋 Checklist viaje' }],
         [{ text: '⭐ Premium' }],
@@ -239,6 +239,38 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { message, callback_query, inline_query } = body;
     
+    // Handle callback queries (inline keyboard buttons)
+    if (callback_query) {
+      const chatId = callback_query.message?.chat?.id;
+      const data = callback_query.data;
+      const lang = callback_query.query?.language_code?.startsWith('en') ? 'en' : 
+                   callback_query.query?.language_code?.startsWith('pt') ? 'pt' : 'es';
+      const t = translations[lang];
+      
+      if (data?.startsWith('country_')) {
+        const codigo = data.replace('country_', '');
+        resetUserState(chatId);
+        const weather = await getWeatherForCountry(codigo);
+        let info = formatCountryInfo(codigo);
+        if (weather) {
+          info += '\n\n' + weather;
+        }
+        await sendMessage(chatId, info, getMainKeyboard());
+        await answerCallbackQuery(callback_query.id);
+        return NextResponse.json({ ok: true });
+      }
+      
+      if (data === 'menu_main') {
+        resetUserState(chatId);
+        await sendMessage(chatId, t.back(), getMainKeyboard());
+        await answerCallbackQuery(callback_query.id);
+        return NextResponse.json({ ok: true });
+      }
+      
+      await answerCallbackQuery(callback_query.id);
+      return NextResponse.json({ ok: true });
+    }
+    
     if (inline_query) {
       const query = (inline_query.query || '').trim();
       if (query.length > 0) {
@@ -405,14 +437,36 @@ export async function POST(request: NextRequest) {
     }
     
     if (state.step === 'selecting_country' && text) {
-      // Extract country name from keyboard button (e.g., "🇪🇸 España" -> "España")
-      const countryName = text.replace(/^[^\w\s]+ /, '').trim();
+      console.log('Selecting country, text:', text);
       
       const paisesModule = await import('@/data/paises');
-      const country = Object.values(paisesModule.paisesData).find(
-        (p) => p.nombre.toLowerCase().includes(countryName.toLowerCase()) ||
-               p.codigo.toLowerCase() === countryName.toLowerCase()
+      const allCountries = Object.values(paisesModule.paisesData);
+      
+      // Try exact match first
+      let country = allCountries.find(
+        (p) => p.nombre.toLowerCase() === text.toLowerCase()
       );
+      
+      // Try with flag prefix removed
+      if (!country && text.includes(' ')) {
+        const parts = text.split(' ');
+        const searchName = parts.slice(1).join(' '); // Remove flag
+        country = allCountries.find(
+          (p) => p.nombre.toLowerCase() === searchName.toLowerCase() ||
+                 p.nombre.toLowerCase().includes(searchName.toLowerCase())
+        );
+      }
+      
+      // Try partial match
+      if (!country) {
+        country = allCountries.find(
+          (p) => p.nombre.toLowerCase().includes(text.toLowerCase()) ||
+                 text.toLowerCase().includes(p.nombre.toLowerCase())
+        );
+      }
+      
+      console.log('Found:', country?.nombre);
+      
       if (country) {
         resetUserState(chatId);
         const weather = await getWeatherForCountry(country.codigo);
@@ -423,7 +477,7 @@ export async function POST(request: NextRequest) {
         await sendMessage(chatId, info, getMainKeyboard());
         return NextResponse.json({ ok: true });
       } else {
-        await sendMessage(chatId, '❌ País no encontrado. Prueba con otro nombre.', getCountryKeyboard());
+        await sendMessage(chatId, '❌ País no encontrado. Prueba de nuevo.', getCountryKeyboard());
         return NextResponse.json({ ok: true });
       }
     }
@@ -574,6 +628,23 @@ async function answerInlineQuery(inlineQueryId: string, results: any[]) {
     });
   } catch (error) {
     console.error('Inline query error:', error);
+  }
+}
+
+async function answerCallbackQuery(callbackQueryId: string, text?: string) {
+  if (!TELEGRAM_BOT_TOKEN) return;
+  
+  try {
+    await fetch(`${TELEGRAM_API}/answerCallbackQuery`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        callback_query_id: callbackQueryId,
+        text: text,
+      }),
+    });
+  } catch (error) {
+    console.error('Callback query error:', error);
   }
 }
 

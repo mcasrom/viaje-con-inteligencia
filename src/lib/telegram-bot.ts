@@ -39,22 +39,27 @@ export function getMainKeyboard() {
 
 export function getCountryKeyboard() {
   const countries = Object.values(paisesData).slice(0, 20);
-  const keyboard: { text: string }[][] = [];
+  const buttons: { text: string; callback_data: string }[][] = [];
   
   for (let i = 0; i < countries.length; i += 2) {
-    const row: { text: string }[] = [{ text: `${countries[i].bandera} ${countries[i].nombre}` }];
+    const row: { text: string; callback_data: string }[] = [{ 
+      text: `${countries[i].bandera} ${countries[i].nombre}`, 
+      callback_data: `country_${countries[i].codigo}` 
+    }];
     if (countries[i + 1]) {
-      row.push({ text: `${countries[i + 1].bandera} ${countries[i + 1].nombre}` });
+      row.push({ 
+        text: `${countries[i + 1].bandera} ${countries[i + 1].nombre}`, 
+        callback_data: `country_${countries[i + 1].codigo}` 
+      });
     }
-    keyboard.push(row);
+    buttons.push(row);
   }
   
-  keyboard.push([{ text: '« Volver' }]);
+  buttons.push([{ text: '« Volver', callback_data: 'menu_main' }]);
   
   return {
     reply_markup: {
-      keyboard,
-      resize_keyboard: true,
+      inline_keyboard: buttons,
     },
   };
 }
