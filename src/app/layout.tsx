@@ -18,14 +18,14 @@ export const metadata: Metadata = {
   publisher: "Viaje con Inteligencia",
   openGraph: {
     title: "Viaje con Inteligencia | Riesgo Zero",
-    description: "Mapa de riesgos de viaje por país. Información oficial MAEC. Embajadas, requisitos y consejos para viajar seguro.",
+    description: "Mapa interactivo de riesgos de viaje por país. Información oficial MAEC. Embajadas, requisitos y consejos para viajar seguro.",
     url: "https://viaje-con-inteligencia.vercel.app",
     siteName: "Viaje con Inteligencia",
     locale: "es_ES",
     type: "website",
     images: [
       {
-        url: "/og-image.png",
+        url: "/preview_favicon.jpg",
         width: 1200,
         height: 630,
         alt: "Viaje con Inteligencia - Mapa de Riesgos",
@@ -35,7 +35,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Viaje con Inteligencia | Riesgo Zero",
-    description: "Mapa de riesgos de viaje por país según MAEC.",
+    description: "Mapa interactivo de riesgos de viaje por país según MAEC.",
     creator: "@mybloggingnotes",
   },
   robots: {
@@ -63,9 +63,10 @@ export default function RootLayout({
     <html lang="es">
       <head>
         <link rel="canonical" href="https://viaje-con-inteligencia.vercel.app" />
-        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-        <link rel="apple-touch-icon" href="/favicon.svg" />
+        <link rel="icon" href="/favicon.jpg" type="image/jpeg" sizes="32x32" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.jpg" />
         <meta name="theme-color" content="#0f172a" />
+        <meta name="thumbnail" content="/preview_favicon.jpg" />
       </head>
       <body className={`${geistSans.variable} antialiased`}>
         <Providers>

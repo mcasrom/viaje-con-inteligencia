@@ -1,7 +1,7 @@
 ---
 title: "Equipaje de mano: guía completa y restricciones de las principales aerolíneas"
 description: "Todo lo que puedes llevar en el equipaje de mano: líquidos, electrónica, medicamentos y objetos prohibido. Tallas permitidas por compañía aérea."
-date: 2026-04-17
+date: "2026-04-17"
 slug: equipaje-mano-aerolineas-restricciones
 image: https://images.unsplash.com/photo-1565026057447-bc90a3dceb87?w=800
 author: Miguel Castillo

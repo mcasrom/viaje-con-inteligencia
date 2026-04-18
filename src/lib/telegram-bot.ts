@@ -192,26 +192,27 @@ export function getPremiumInfo(): string {
   let message = `*⭐ Viaje con Inteligencia PREMIUM*\n`;
   message += `━━━━━━━━━━━━━━━━━━━━\n\n`;
   
-  message += `*Gratis:*\n`;
-  message += `• Mapa riesgos 28 países\n`;
-  message += `• Info básica embajadas\n`;
-  message += `• Consejos generales\n\n`;
+  message += `*Planes disponibles:*\n\n`;
   
-  message += `*⭐ Premium (4.99€/mes):*\n`;
-  message += `• 🤖 IA personalizada\n`;
-  message += `• 📊 Análisis profundo país\n`;
-  message += `• ⚡ Alertas en tiempo real\n`;
+  message += `*Mensual (4.99€/mes):*\n`;
+  message += `• 🤖 Chat IA Groq\n`;
+  message += `• 📊 Análisis profundo\n`;
+  message += `• ⚡ Alertas tiempo real\n`;
   message += `• 📋 Checklist completo\n`;
-  message += `• 🗺️ Itinerario inteligente\n`;
-  message += `• 💰 Predicción gastos\n`;
-  message += `• 📱 Notificaciones Telegram\n`;
-  message += `• 🎫 Acceso prioritario nuevos países\n\n`;
+  message += `• 🗺️ Itinerario IA\n`;
+  message += `• 📱 Notificaciones Telegram\n\n`;
   
-  message += `*🚀 Pago único lifetime: 19.99€*\n\n`;
+  message += `*Anual (19.99€/año):*\n`;
+  message += `• Todo lo anterior\n`;
+  message += `• 🎫 Acceso prioritario\n`;
+  message += `• 💰 Ahorra 60%\n\n`;
   
-  message += `🔗 https://viaje-con-inteligencia.vercel.app/premium\n\n`;
+  message += `━━━━━━━━━━━━━━━━━━━━\n\n`;
+  message += `🔗 * WEB:* https://viaje-con-inteligencia.vercel.app/premium\n\n`;
   
-  message += `_Usa /start para volver al inicio_`;
+  message += `💡 *Acceder:* Envía /start login para vincular tu cuenta o crea una en la web.\n\n`;
+  
+  message += `_Usa /start para volver al menú_`;
   
   return message;
 }

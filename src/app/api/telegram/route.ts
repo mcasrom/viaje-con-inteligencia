@@ -450,10 +450,11 @@ export async function POST(request: NextRequest) {
       const paisesModule = await import('@/data/paises');
       const allCountries = Object.values(paisesModule.paisesData);
       
-      // Check if it's exactly 2 letters (country code)
-      if (text.length === 2 && /^[A-Za-z]{2}$/.test(text)) {
-        const code = text.toUpperCase();
-        const country = allCountries.find(p => p.codigo.toUpperCase() === code);
+      const cleanText = text.trim().toUpperCase();
+      
+      // Check if it's 2 letters (country code) - ES, FR, US, etc.
+      if (/^[A-Z]{2}$/.test(cleanText)) {
+        const country = allCountries.find(p => p.codigo.toUpperCase() === cleanText);
         
         if (country) {
           resetUserState(chatId);
@@ -465,7 +466,7 @@ export async function POST(request: NextRequest) {
         }
       }
       
-      // Also try the - format
+      // Also try the "ES - España" format
       if (text.includes(' - ')) {
         const code = text.split(' - ')[0].trim().toUpperCase();
         const country = allCountries.find(p => p.codigo.toUpperCase() === code);
@@ -480,8 +481,13 @@ export async function POST(request: NextRequest) {
         }
       }
       
-      // Try name search
-      const country = allCountries.find(p => p.nombre.toLowerCase().includes(text.toLowerCase()));
+      // Try by name (España, Francia, Germany, etc.)
+      const searchText = text.toLowerCase().trim();
+      let country = allCountries.find(p => 
+        p.nombre.toLowerCase().includes(searchText) ||
+        p.codigo.toLowerCase() === searchText
+      );
+      
       if (country) {
         resetUserState(chatId);
         const weather = await getWeatherForCountry(country.codigo);
@@ -491,7 +497,58 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ ok: true });
       }
       
-      await sendMessage(chatId, '❌ No encontrado. Prueba: ES, FR, DE, US...', getCountryKeyboard());
+      // Also search for alternative names (España -> Spain, Alemania -> Germany)
+      const altNames: Record<string, string> = {
+        'spain': 'es', 'españa': 'es',
+        'france': 'fr', 'francia': 'fr',
+        'germany': 'de', 'alemania': 'de',
+        'italy': 'it', 'italia': 'it',
+        'portugal': 'pt',
+        'uk': 'gb', 'reino unido': 'gb',
+        'united kingdom': 'gb',
+        'japan': 'jp', 'japón': 'jp',
+        'usa': 'us', 'eeuu': 'us', 'estados unidos': 'us',
+        'mexico': 'mx',
+        'argentina': 'ar',
+        'brasil': 'br',
+        'china': 'cn',
+        'thailand': 'th', 'tailandia': 'th',
+        'vietnam': 'vn',
+        'india': 'in',
+        'australia': 'au',
+        'morocco': 'ma', 'marruecos': 'ma',
+        'egypt': 'eg', 'egipcio': 'eg',
+        'south africa': 'za',
+        'turkey': 'tr', 'turquía': 'tr',
+        'greece': 'gr', 'grecia': 'gr',
+        'netherlands': 'nl', 'holanda': 'nl',
+        'belgium': 'be', 'bélgica': 'be',
+        'switzerland': 'ch', 'suiza': 'ch',
+        'austria': 'at',
+        'poland': 'pl', 'polonia': 'pl',
+        'norway': 'no', 'noruega': 'no',
+        'sweden': 'se', 'suecia': 'se',
+        'finland': 'fi', 'finlandia': 'fi',
+        'denmark': 'dk', 'dinamarca': 'dk',
+        'ireland': 'ie', 'irlanda': 'ie',
+        'canada': 'ca',
+        'brazil': 'br',
+      };
+      
+      const altCode = altNames[searchText];
+      if (altCode) {
+        country = allCountries.find(p => p.codigo.toLowerCase() === altCode);
+        if (country) {
+          resetUserState(chatId);
+          const weather = await getWeatherForCountry(country.codigo);
+          let info = formatCountryInfo(country.codigo);
+          if (weather) info += '\n\n' + weather;
+          await sendMessage(chatId, info, getMainKeyboard());
+          return NextResponse.json({ ok: true });
+        }
+      }
+      
+      await sendMessage(chatId, '❌ No encontrado. Prueba: ES, España, FR, Francia, DE, Alemania...', getCountryKeyboard());
       return NextResponse.json({ ok: true });
     }
     

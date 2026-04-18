@@ -56,22 +56,57 @@ export default function DashboardPage() {
     const handleMagicLink = async () => {
       const url = new URL(window.location.href);
       
+      // Check for success parameter (Stripe or other)
+      const success = url.searchParams.get('success');
+      if (success === 'true') {
+        setNotification({
+          type: 'success',
+          message: '¡Operación completada!'
+        });
+        url.searchParams.delete('success');
+        window.history.replaceState({}, '', url.pathname);
+      }
+      
+      // Check for canceled parameter
+      const canceled = url.searchParams.get('canceled');
+      if (canceled === 'true') {
+        setNotification({
+          type: 'error',
+          message: 'Operación cancelada'
+        });
+        url.searchParams.delete('canceled');
+        window.history.replaceState({}, '', url.pathname);
+      }
+      
       // Check for Telegram login token
       const telegramLogin = url.searchParams.get('telegram_login');
       if (telegramLogin && supabaseClient) {
         try {
           console.log('Telegram login detected');
-          // For now, just show a success message
           setNotification({
             type: 'success',
             message: '¡Sesión de Telegram iniciada! Ya puedes usar el dashboard.'
           });
-          // Clear param
           url.searchParams.delete('telegram_login');
           window.history.replaceState({}, '', url.pathname);
         } catch (err) {
           console.error('Telegram login error:', err);
+          setNotification({
+            type: 'error',
+            message: 'Error al iniciar sesión con Telegram'
+          });
         }
+      }
+      
+      // Check for error parameter
+      const error = url.searchParams.get('error');
+      if (error) {
+        setNotification({
+          type: 'error',
+          message: error
+        });
+        url.searchParams.delete('error');
+        window.history.replaceState({}, '', url.pathname);
       }
       
       // Check for access_token in URL hash (Supabase magic link)
@@ -81,21 +116,32 @@ export default function DashboardPage() {
       
       if (accessToken && supabaseClient) {
         try {
-          const { error } = await supabaseClient.auth.setSession({
+          const { error: sessionError } = await supabaseClient.auth.setSession({
             access_token: accessToken,
             refresh_token: refreshToken || '',
           });
           
-          if (!error) {
+          if (sessionError) {
+            console.error('Session error:', sessionError);
+            setNotification({
+              type: 'error',
+              message: 'Error al establecer sesión'
+            });
+          } else {
             setNotification({
               type: 'success',
               message: '¡Sesión iniciada correctamente!'
             });
-            window.history.replaceState({}, '', url.pathname);
             checkUser();
           }
+          // Clear hash
+          window.history.replaceState({}, '', url.pathname);
         } catch (err) {
           console.error('Magic link error:', err);
+          setNotification({
+            type: 'error',
+            message: 'Error al iniciar sesión'
+          });
         }
       }
     };

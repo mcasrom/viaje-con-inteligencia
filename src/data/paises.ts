@@ -2390,6 +2390,974 @@ export const paisesData: Record<string, DatoPais> = {
     ],
     bandera: '🇱🇰',
     mapaCoordenadas: [7.8731, 80.7718]
+  },
+  sa: {
+    codigo: 'sa',
+    nombre: 'Arabia Saudita',
+    capital: 'Riad',
+    continente: 'Asia',
+    idioma: 'Árabe',
+    moneda: 'Riyal saudí (SAR)',
+    tipoCambio: '1 EUR ≈ 3.75 SAR',
+    zonaHoraria: 'UTC+3',
+    conduccion: 'derecha',
+    poblacion: '36 millones',
+    pib: '1.1 billones USD',
+    indicadores: { ipc: '2.2%', indicePrecios: 'Medio' },
+    voltaje: '220V / 60Hz',
+    prefijoTelefono: '+966',
+    nivelRiesgo: 'medio',
+    ultimoInforme: 'Marzo 2026',
+    contactos: [
+      {
+        tipo: 'Ministerio',
+        nombre: 'Ministerio de Asuntos Exteriores',
+        direccion: 'Calle Al-Masdar, Riad',
+        telefono: '+966 11 403 8888',
+        email: 'mfa@mfa.gov.sa',
+        horario: 'Domingo a jueves 8:00-16:00'
+      }
+    ],
+    requerimientos: [
+      { categoria: 'Documentación', icon: '📄', items: ['Pasaporte válido 6 meses', 'eVisa obligatorio', 'Seguro médico obligatorio'] },
+      { categoria: 'Sanitario', icon: '🏥', items: ['Clima desértico extremo', 'No hay enfermedades endémicas', 'Urgencias: 997'] },
+      { categoria: 'General', icon: 'ℹ️', items: ['Moneda: Riyal saudí', 'Horario comercial: 8:00-16:00', 'Mujeres pueden conducir'] }
+    ],
+    queHacer: [
+      'Visitar Al-Masjid an-Nabawi en Medina',
+      'Explorar las ruinas de Hegra en AlUla',
+      'Ver el skyline de Riyadh',
+      'Disfrutar del desierto en Empty Quarter',
+      'Visitar el Museo Nacional'
+    ],
+    queNoHacer: [
+      'No bebes alcohol (ilegal)',
+      'No beses en público',
+      'No vistas ropa indecente',
+      'No fotografíes personas sin permiso',
+      'No comas durante Ramadán en público'
+    ],
+    diarios: [
+      { nombre: 'Arab News', url: 'https://www.arabnews.com' },
+      { nombre: 'The Saudi Gazette', url: 'https://www.saudigazette.com' }
+    ],
+    urlsUtiles: [
+      { nombre: 'Turismo Saudi', url: 'https://visitsaudi.com' },
+      { nombre: 'eVisa Saudi', url: 'https://evisa.saudi-arabiainfo.com' }
+    ],
+    bandera: '🇸🇦',
+    mapaCoordenadas: [24.7136, 46.6753]
+  },
+  qa: {
+    codigo: 'qa',
+    nombre: 'Catar',
+    capital: 'Doha',
+    continente: 'Asia',
+    idioma: 'Árabe',
+    moneda: 'Riyal catarí (QAR)',
+    tipoCambio: '1 EUR ≈ 3.65 QAR',
+    zonaHoraria: 'UTC+3',
+    conduccion: 'derecha',
+    poblacion: '2.9 millones',
+    pib: '185 mil millones USD',
+    indicadores: { ipc: '2.5%', indicePrecios: 'Alto' },
+    voltaje: '240V / 50Hz',
+    prefijoTelefono: '+974',
+    nivelRiesgo: 'bajo',
+    ultimoInforme: 'Marzo 2026',
+    contactos: [
+      {
+        tipo: 'Ministerio',
+        nombre: 'Ministerio de Asuntos Exteriores',
+        direccion: 'Corniche, Doha',
+        telefono: '+974 4013 3333',
+        email: 'mfa@qatar.gov.qa',
+        horario: 'Domingo a jueves 7:00-15:00'
+      }
+    ],
+    requerimientos: [
+      { categoria: 'Documentación', icon: '📄', items: ['Pasaporte válido 6 meses', 'Visa gratuita o eVisa', 'Boleto de salida'] },
+      { categoria: 'Sanitario', icon: '🏥', items: ['Hospitales de clase mundial', 'No hay malaria', 'Urgencias: 999'] },
+      { categoria: 'General', icon: 'ℹ️', items: ['Moneda: QAR (fijo al USD)', 'Comida halal', 'Alcohol solo en hoteles'] }
+    ],
+    queHacer: [
+      'Visitar el Museo de Arte Islámico',
+      'Pasear por Souq Waqif',
+      'Ver el skyline de West Bay',
+      'Ir al Katara Cultural Village',
+      'Disfrutar de la Corniche'
+    ],
+    queNoHacer: [
+      'No beses en público',
+      'No bebas alcohol en público',
+      'Nolleves droga (castigo severo)',
+      'No vistassin licencia de alcohol',
+      'No discutas de política'
+    ],
+    diarios: [
+      { nombre: 'The Peninsula', url: 'https://www.peninsula.com' },
+      { nombre: 'Gulf Times', url: 'https://www.gulftimes.com' }
+    ],
+    urlsUtiles: [
+      { nombre: 'Visit Qatar', url: 'https://visitqatar.com' },
+      { nombre: 'Qatar Airways', url: 'https://qatarairways.com' }
+    ],
+    bandera: '🇶🇦',
+    mapaCoordenadas: [25.2854, 51.531]
+  },
+  jo: {
+    codigo: 'jo',
+    nombre: 'Jordania',
+    capital: 'Amán',
+    continente: 'Asia',
+    idioma: 'Árabe',
+    moneda: 'Dinar jordano (JOD)',
+    tipoCambio: '1 EUR ≈ 0.71 JOD',
+    zonaHoraria: 'UTC+3',
+    conduccion: 'derecha',
+    poblacion: '11 millones',
+    pib: '48 mil millones USD',
+    indicadores: { ipc: '3.1%', indicePrecios: 'Medio' },
+    voltaje: '230V / 50Hz',
+    prefijoTelefono: '+962',
+    nivelRiesgo: 'bajo',
+    ultimoInforme: 'Marzo 2026',
+    contactos: [
+      {
+        tipo: 'Embajada',
+        nombre: 'Ministerio de Asuntos Exteriores',
+        direccion: 'Calle Rainbow, Amán',
+        telefono: '+962 6 464 4460',
+        email: 'mfa@fm.gov.jo',
+        horario: 'Domingo a jueves 8:00-18:00'
+      }
+    ],
+    requerimientos: [
+      { categoria: 'Documentación', icon: '📄', items: ['Pasaporte válido 6 meses', 'Visa on arrival (40 JOD) o eVisa', 'Jordan Pass recomendado'] },
+      { categoria: 'Sanitario', icon: '🏥', items: ['Hospitales decentes', 'Vaccunas al día', 'Urgencias: 911'] },
+      { categoria: 'General', icon: 'ℹ️', items: ['Dinar jordano', 'Puntuación en propinas', 'Mujeres viajen con cuidado'] }
+    ],
+    queHacer: [
+      'Visitar Petra (maravilla mundial)',
+      'Nadar en el Mar Muerto',
+      'Explorar Wadi Rum',
+      'Visitar Jerash (ruinas romanas)',
+      'Ver el castillo de Qasr Amra'
+    ],
+    queNoHacer: [
+      'No fotografíes militares',
+      'No冬至en zonas militares',
+      'No bebas alcohol en público',
+      'No ignores normas de vestimenta',
+      'No demuestres afecto en público'
+    ],
+    diarios: [
+      { nombre: 'The Jordan Times', url: 'https://www.jordantimes.com' },
+      { nombre: 'Royanews', url: 'https://www.royanews.com' }
+    ],
+    urlsUtiles: [
+      { nombre: 'Jordan Pass', url: 'https://jordanpass.jo' },
+      { nombre: 'Turismo Jordania', url: 'https://visitjordan.com' }
+    ],
+    bandera: '🇯🇴',
+    mapaCoordenadas: [31.9454, 35.9284]
+  },
+  om: {
+    codigo: 'om',
+    nombre: 'Omán',
+    capital: 'Mascate',
+    continente: 'Asia',
+    idioma: 'Árabe',
+    moneda: 'Rial omaní (OMR)',
+    tipoCambio: '1 EUR ≈ 0.42 OMR',
+    zonaHoraria: 'UTC+4',
+    conduccion: 'derecha',
+    poblacion: '5.2 millones',
+    pib: '110 mil millones USD',
+    indicadores: { ipc: '1.5%', indicePrecios: 'Alto' },
+    voltaje: '240V / 50Hz',
+    prefijoTelefono: '+968',
+    nivelRiesgo: 'sin-riesgo',
+    ultimoInforme: 'Marzo 2026',
+    contactos: [
+      {
+        tipo: 'Ministerio',
+        nombre: 'Ministerio de Asuntos Exteriores',
+        direccion: 'Calle Sultan Qaboos, Mascate',
+        telefono: '+968 24 245 000',
+        email: 'mofa@mofa.gov.om',
+        horario: 'Domingo a jueves 7:30-14:30'
+      }
+    ],
+    requerimientos: [
+      { categoria: 'Documentación', icon: '📄', items: ['Pasaporte válido 6 meses', 'eVisa online', 'Reserva de hotel'] },
+      { categoria: 'Sanitario', icon: '🏥', items: ['Hospitales modernos', 'Calor extremo', 'Urgencias: 9999'] },
+      { categoria: 'General', icon: 'ℹ️', items: ['Rial omaní (fijo al USD)', 'Muy seguro', 'Hospitalidad当地'] }
+    ],
+    queHacer: [
+      'Visitar la Gran Mezquita de Sultán Qaboos',
+      'Explorar fortalezas antiguas',
+      'Ir a Wadi Ghul (grand canyon de Omán)',
+      'Ver tortugas en Ras Al Jinz',
+      'Cruzar el desierto en Wahiba Sands'
+    ],
+    queNoHacer: [
+      'No bebas alcohol (importación ilegal)',
+      'No vistassin licencia de alcohol',
+      'No hagass fotos a mujeres',
+      'No ignores el Ramadán',
+      'No discutas de política'
+    ],
+    diarios: [
+      { nombre: 'Times of Oman', url: 'https://www.timesofoman.com' },
+      { nombre: 'Oman Daily', url: 'https://www.omandaily.com' }
+    ],
+    urlsUtiles: [
+      { nombre: 'Turismo Omán', url: 'https://omantourism.gov.om' },
+      { nombre: 'eVisa Omán', url: 'https://evisa.rop.gov.om' }
+    ],
+    bandera: '🇴🇲',
+    mapaCoordenadas: [23.588, 58.3829]
+  },
+  tz: {
+    codigo: 'tz',
+    nombre: 'Tanzania',
+    capital: 'Dodoma',
+    continente: 'África',
+    idioma: 'Swahili, Inglés',
+    moneda: 'Chelín tanzano (TZS)',
+    tipoCambio: '1 EUR ≈ 2700 TZS',
+    zonaHoraria: 'UTC+3',
+    conduccion: 'izquierda',
+    poblacion: '67 millones',
+    pib: '78 mil millones USD',
+    indicadores: { ipc: '3.5%', indicePrecios: 'Bajo' },
+    voltaje: '230V / 50Hz',
+    prefijoTelefono: '+255',
+    nivelRiesgo: 'bajo',
+    ultimoInforme: 'Marzo 2026',
+    contactos: [
+      {
+        tipo: 'Embajada',
+        nombre: 'Embajada de España en Dar es Salaam',
+        direccion: 'Kalibu Road, Masaki',
+        telefono: '+255 22 260 0580',
+        email: 'emb.dar@maec.es',
+        horario: 'Lunes a viernes 8:00-15:30'
+      }
+    ],
+    requerimientos: [
+      { categoria: 'Documentación', icon: '📄', items: ['Pasaporte válido 6 meses', 'eVisa ($50) o visa on arrival', 'Vacuna fiebre amarilla (si viene de zona endémica)'] },
+      { categoria: 'Sanitario', icon: '🏥', items: ['Malaria presente (profilaxis recomendada)', 'Hospitales limitados fuera de ciudades', 'Urgencias: 111'] },
+      { categoria: 'General', icon: 'ℹ️', items: [' chelín tanzano', 'Gorilas en montañas', 'Safari en Serengeti'] }
+    ],
+    queHacer: [
+      'Safari en Serengeti (migración de ñus)',
+      'Ver crater de Ngorongoro',
+      'Trekking en Kilimanjaro',
+      'Ir a Zanzibar (playas)',
+      'Ver gorilas en Mahale'
+    ],
+    queNoHacer: [
+      'No toques animales salvajes',
+      'No bebas agua del grifo',
+      'No ignores consejos de malaria',
+      'No fotografíes sin permiso',
+      'No discutas de política étnica'
+    ],
+    diarios: [
+      { nombre: 'The Citizen', url: 'https://www.citizen.co.tz' },
+      { nombre: 'Daily News', url: 'https://dailynews.co.tz' }
+    ],
+    urlsUtiles: [
+      { nombre: 'Turismo Tanzania', url: 'https://tanzaniatourism.go.tz' },
+      { nombre: 'eVisa Tanzania', url: 'https:// immigrants.gov.tw' }
+    ],
+    bandera: '🇹🇿',
+    mapaCoordenadas: [-6.369, 34.8888]
+  },
+  ve: {
+    codigo: 've',
+    nombre: 'Venezuela',
+    capital: 'Caracas',
+    continente: 'América',
+    idioma: 'Español',
+    moneda: 'Bolívar (VES)',
+    tipoCambio: '1 EUR ≈ 40 VES',
+    zonaHoraria: 'UTC-4',
+    conduccion: 'derecha',
+    poblacion: '28 millones',
+    pib: '180 mil millones USD',
+    indicadores: { ipc: '30%', indicePrecios: 'Muy alto' },
+    voltaje: '120V / 60Hz',
+    prefijoTelefono: '+58',
+    nivelRiesgo: 'alto',
+    ultimoInforme: 'Marzo 2026',
+    contactos: [
+      {
+        tipo: 'Embajada',
+        nombre: 'Embajada de España en Caracas',
+        direccion: 'Avda. Principal de La Castellana, Caracas',
+        telefono: '+58 212 555 0100',
+        email: 'emb.caracas@maec.es',
+        horario: 'Lunes a viernes 8:00-16:00'
+      }
+    ],
+    requerimientos: [
+      { categoria: 'Documentación', icon: '📄', items: ['Pasaporte válido 6 meses', 'Sin visa para españoles (90 días)', 'Boleto de salida'] },
+      { categoria: 'Sanitario', icon: '🏥', items: ['Hospitales limitados', 'Agua embotellada recomendada', 'Urgencias: 112'] },
+      { categoria: 'General', icon: 'ℹ️', items: ['Bolívar', 'Inflación alta', 'Cambio informal'] }
+    ],
+    queHacer: [
+      'Visitar Los Roques',
+      'Playa El Agua en Margarita',
+      'Roraima tepuy',
+      'Salto Ángel',
+      'Colonia Tovar'
+    ],
+    queNoHacer: [
+      'No critiques al gobierno',
+      'No muestres dinero en público',
+      'No uses dólares americanos',
+      'No conduzcas de noche',
+      'No ignores avisos de embajada'
+    ],
+    diarios: [
+      { nombre: 'El Nacional', url: 'https://elnacional.com' },
+      { nombre: 'Runrunes', url: 'https://runrunes.com' }
+    ],
+    urlsUtiles: [
+      { nombre: 'Embajada España', url: 'https://www.exteriores.gob.es/embajadas/caracas' }
+    ],
+    bandera: '🇻🇪',
+    mapaCoordenadas: [10.4806, -66.9036]
+  },
+  ec: {
+    codigo: 'ec',
+    nombre: 'Ecuador',
+    capital: 'Quito',
+    continente: 'América',
+    idioma: 'Español',
+    moneda: 'Dólar estadounidense (USD)',
+    tipoCambio: '1 USD = 0.92 EUR',
+    zonaHoraria: 'UTC-5',
+    conduccion: 'derecha',
+    poblacion: '18 millones',
+    pib: '110 mil millones USD',
+    indicadores: { ipc: '2.3%', indicePrecios: 'Medio' },
+    voltaje: '120V / 60Hz',
+    prefijoTelefono: '+593',
+    nivelRiesgo: 'bajo',
+    ultimoInforme: 'Marzo 2026',
+    contactos: [
+      {
+        tipo: 'Embajada',
+        nombre: 'Embajada de España en Quito',
+        direccion: 'Av. de los Shyris, Quito',
+        telefono: '+593 2 382 0100',
+        email: 'emb.quito@maec.es',
+        horario: 'Lunes a viernes 8:00-16:00'
+      }
+    ],
+    requerimientos: [
+      { categoria: 'Documentación', icon: '📄', items: ['Pasaporte válido 6 meses', 'Sin visa para españoles (90 días)', 'Boleto de salida'] },
+      { categoria: 'Sanitario', icon: '🏥', items: ['Amazónica: malaria presente', 'Vacuna fiebre amarilla recomendada', 'Urgencias: 911'] },
+      { categoria: 'General', icon: 'ℹ️', items: ['Dólar estadounidense', 'Clima varied por altitud', 'Propina 10%'] }
+    ],
+    queHacer: [
+      'Visitar islas Galápagos',
+      'Subir al Cotopaxi',
+      'Mercado de Otavalo',
+      'Ciudad colonial de Quito',
+      'Baños de agua santa'
+    ],
+    queNoHacer: [
+      'No bebas agua del grifo',
+      'No ignores zonas de seguridad',
+      'No acerques a animales salvajes',
+      'No discutas de políticas',
+      'No conduzcas de noche en carreteras'
+    ],
+    diarios: [
+      { nombre: 'El Comercio', url: 'https://elcomercio.com' },
+      { nombre: 'El Universo', url: 'https://eluniverso.com' }
+    ],
+    urlsUtiles: [
+      { nombre: 'Turismo Ecuador', url: 'https://ecuador.travel' },
+      { nombre: 'Galápagos', url: 'https://galapagos.gob.ec' }
+    ],
+    bandera: '🇪🇨',
+    mapaCoordenadas: [-0.1807, -78.4678]
+  },
+  is: {
+    codigo: 'is',
+    nombre: 'Islandia',
+    capital: 'Reikiavik',
+    continente: 'Europa',
+    idioma: 'Islandés, Inglés',
+    moneda: 'Corona islandesa (ISK)',
+    tipoCambio: '1 EUR ≈ 150 ISK',
+    zonaHoraria: 'UTC+0',
+    conduccion: 'derecha',
+    poblacion: '380.000',
+    pib: '25 mil millones USD',
+    indicadores: { ipc: '4.5%', indicePrecios: 'Alto' },
+    voltaje: '230V / 50Hz',
+    prefijoTelefono: '+354',
+    nivelRiesgo: 'sin-riesgo',
+    ultimoInforme: 'Marzo 2026',
+    contactos: [
+      {
+        tipo: 'Embajada',
+        nombre: 'Embajada de España en Reikiavik',
+        direccion: 'Hverholt 3, Reikiavik',
+        telefono: '+354 552 4000',
+        email: 'emb.reikiavik@maec.es',
+        horario: 'Lunes a viernes 9:00-16:00'
+      }
+    ],
+    requerimientos: [
+      { categoria: 'Documentación', icon: '📄', items: ['Pasaporte o DNI vigente', 'Sin visa (españoles UE)', 'Seguro de viaje recomendado'] },
+      { categoria: 'Sanitario', icon: '🏥', items: ['Sistema sanitario público', 'Hospitales modernos', 'Urgencias: 112'] },
+      { categoria: 'General', icon: 'ℹ️', items: ['Corona islandesa', 'Clima muy frío', 'Agradable y seguro'] }
+    ],
+    queHacer: [
+      'Ver auroras boreales',
+      'Relax en Blue Lagoon',
+      'Cascadas de Skógafoss',
+      'Glaciares de Vatnajökull',
+      'Caminata en Landmannalaugar'
+    ],
+    queNoHacer: [
+      'No conduzcas fuera de carreteras',
+      'No te acerques a glaciares sin guía',
+      'No ignoressubes de hielo',
+      'No pesques sin licencia',
+      'No hagas fogo fuera de áreas'
+    ],
+    diarios: [
+      { nombre: 'Morgunblaðið', url: 'https://mbl.is' },
+      { nombre: 'Fréttablaðið', url: 'https://frettabladid.is' }
+    ],
+    urlsUtiles: [
+      { nombre: 'Turismo Islandia', url: 'https://visiticeland.com' },
+      { nombre: 'Road Guide', url: 'https://road.is' }
+    ],
+    bandera: '🇮🇸',
+    mapaCoordenadas: [64.1466, -21.9426]
+  },
+  ie: {
+    codigo: 'ie',
+    nombre: 'Irlanda',
+    capital: 'Dublín',
+    continente: 'Europa',
+    idioma: 'Inglés, Irlandés',
+    moneda: 'Euro (EUR)',
+    tipoCambio: '1 EUR = 1 EUR',
+    zonaHoraria: 'UTC+0',
+    conduccion: 'izquierda',
+    poblacion: '5 millones',
+    pib: '530 mil millones USD',
+    indicadores: { ipc: '5%', indicePrecios: 'Medio-Alto' },
+    voltaje: '230V / 50Hz',
+    prefijoTelefono: '+353',
+    nivelRiesgo: 'sin-riesgo',
+    ultimoInforme: 'Marzo 2026',
+    contactos: [
+      {
+        tipo: 'Embajada',
+        nombre: 'Embajada de España en Dublín',
+        direccion: 'A42-44 Hume Street, Dublín 2',
+        telefono: '+353 1 637 5100',
+        email: 'emb.dublin@maec.es',
+        horario: 'Lunes a viernes 9:00-12:30'
+      }
+    ],
+    requerimientos: [
+      { categoria: 'Documentación', icon: '📄', items: ['Pasaporte o DNI vigente', 'Sin visa (españoles UE)', 'Boleto de vuelta'] },
+      { categoria: 'Sanitario', icon: '🏥', items: ['Sistema HSE público', 'Hospitales modernos', 'Urgencias: 112 o 999'] },
+      { categoria: 'General', icon: 'ℹ️', items: ['Euro', 'Clima Lluvioso', 'Propina 10-15%'] }
+    ],
+    queHacer: [
+      'Ver el Castillode Dublín',
+      'Pub Crawl en Temple Bar',
+      'Acantilados de Moher',
+      'Anillo de Kerry',
+      'Islas de Aran'
+    ],
+    queNoHacer: [
+      'No conduzcassin licencia internacional',
+      'No ignores las lluvias',
+      'No discutas de política',
+      'No entres a pubs sin saber horarios',
+      'No ignores las señales de tráfico'
+    ],
+    diarios: [
+      { nombre: 'The Irish Times', url: 'https://irishtimes.com' },
+      { nombre: 'Independent', url: 'https://independent.ie' }
+    ],
+    urlsUtiles: [
+      { nombre: 'Turismo Irlanda', url: 'https://ireland.com' },
+      { nombre: 'Embajada España', url: 'https://www.exteriores.gob.es/embajadas/dublin' }
+    ],
+    bandera: '🇮🇪',
+    mapaCoordenadas: [53.3498, -6.2603]
+  },
+  pl: {
+    codigo: 'pl',
+    nombre: 'Polonia',
+    capital: 'Varsovia',
+    continente: 'Europa',
+    idioma: 'Polaco, Inglés',
+    moneda: 'Złoty (PLN)',
+    tipoCambio: '1 EUR ≈ 4.30 PLN',
+    zonaHoraria: 'UTC+1',
+    conduccion: 'derecha',
+    poblacion: '38 millones',
+    pib: '800 mil millones USD',
+    indicadores: { ipc: '4%', indicePrecios: 'Bajo' },
+    voltaje: '230V / 50Hz',
+    prefijoTelefono: '+48',
+    nivelRiesgo: 'sin-riesgo',
+    ultimoInforme: 'Marzo 2026',
+    contactos: [
+      {
+        tipo: 'Embajada',
+        nombre: 'Embajada de España en Varsovia',
+        direccion: 'ul. Mysia 5, Varsovia',
+        telefono: '+48 22 628 0400',
+        email: 'emb.varsovia@maec.es',
+        horario: 'Lunes a viernes 9:00-16:00'
+      }
+    ],
+    requerimientos: [
+      { categoria: 'Documentación', icon: '📄', items: ['Pasaporte o DNI vigente', 'Sin visa (españoles UE)', 'Seguro recomendado'] },
+      { categoria: 'Sanitario', icon: '🏥', items: ['Sistema público NFZ', 'Hospitales modernos', 'Urgencias: 112'] },
+      { categoria: 'General', icon: 'ℹ️', items: ['Złoty', 'Clima continental', 'Barato comparado UE'] }
+    ],
+    queHacer: [
+      'Visitar Plaza del Mercado de Cracovia',
+      'Auschwitz Birkenau',
+      'Ciudad Vieja de Varsovia',
+      'Castillo de Malbork',
+      'Montañas Tatra'
+    ],
+    queNoHacer: [
+      'No ignores el passado histórico',
+      'No hagas gestos ofensivos',
+      'No discutas de política',
+      'No conduzcas borracho',
+      'No ignores zonas historical'
+    ],
+    diarios: [
+      { nombre: 'Gazeta Wyborcza', url: 'https://wyborcza.pl' },
+      { nombre: 'Polski Radio', url: 'https://pr.gov.pl' }
+    ],
+    urlsUtiles: [
+      { nombre: 'Turismo Polonia', url: 'https://poland.travel' },
+      { nombre: 'Embajada España', url: 'https://www.exteriores.gob.es/embajadas/varsovia' }
+    ],
+    bandera: '🇵🇱',
+    mapaCoordenadas: [52.2297, 21.0122]
+  },
+  cz: {
+    codigo: 'cz',
+    nombre: 'República Checa',
+    capital: 'Praga',
+    continente: 'Europa',
+    idioma: 'Checo, Inglés',
+    moneda: 'Koruna (CZK)',
+    tipoCambio: '1 EUR ≈ 25 CZK',
+    zonaHoraria: 'UTC+1',
+    conduccion: 'derecha',
+    poblacion: '10.5 millones',
+    pib: '290 mil millones USD',
+    indicadores: { ipc: '3.5%', indicePrecios: 'Medio' },
+    voltaje: '230V / 50Hz',
+    prefijoTelefono: '+420',
+    nivelRiesgo: 'sin-riesgo',
+    ultimoInforme: 'Marzo 2026',
+    contactos: [
+      {
+        tipo: 'Embajada',
+        nombre: 'Embajada de España en Praga',
+        direccion: 'Malostranské nábřeží 12, Praga',
+        telefono: '+420 257 400 111',
+        email: 'emb.praga@maec.es',
+        horario: 'Lunes a viernes 9:00-16:00'
+      }
+    ],
+requerimientos: [
+      { categoria: 'Documentación', icon: '📄', items: ['Pasaporte o DNI vigente', 'Sin visa (españoles UE)', 'Seguro recomendado'] },
+      { categoria: 'Sanitario', icon: '🏥', items: ['Sistema público', 'Hospitales modernos', 'Urgencias: 112'] },
+      { categoria: 'General', icon: 'ℹ️', items: ['Forint', 'Spas célebre', 'Baratísimo'] }
+    ],
+    queHacer: [
+      'Ver Puente de Carlos',
+      'Castillo de Praga',
+      'Plaza de la Ciudad Vieja',
+      'Barrio Judío',
+      'Cuevas de Karlštejn'
+    ],
+    queNoHacer: [
+      'No ignores turística crowded',
+      'No discutas de política',
+      'No bebas excesivamente',
+      'No ignores precios turismo',
+      'No tomes taxis sin acordar precio'
+    ],
+    diarios: [
+      { nombre: 'Deník', url: 'https://denik.cz' },
+      { nombre: 'iDNES', url: 'https://idnes.cz' }
+    ],
+    urlsUtiles: [
+      { nombre: 'Turismo Praga', url: 'https://prague.eu' },
+      { nombre: 'Embajada España', url: 'https://www.exteriores.gob.es/embajadas/praga' }
+    ],
+    bandera: '🇨🇿',
+    mapaCoordenadas: [50.0755, 14.4378]
+  },
+  hu: {
+    codigo: 'hu',
+    nombre: 'Hungría',
+    capital: 'Budapest',
+    continente: 'Europa',
+    idioma: 'Húngaro, Inglés',
+    moneda: 'Forint (HUF)',
+    tipoCambio: '1 EUR ≈ 400 HUF',
+    zonaHoraria: 'UTC+1',
+    conduccion: 'derecha',
+    poblacion: '9.6 millones',
+    pib: '190 mil millones USD',
+    indicadores: { ipc: '4.5%', indicePrecios: 'Bajo' },
+    voltaje: '230V / 50Hz',
+    prefijoTelefono: '+36',
+    nivelRiesgo: 'sin-riesgo',
+    ultimoInforme: 'Marzo 2026',
+    contactos: [
+      {
+        tipo: 'Embajada',
+        nombre: 'Embajada de España en Budapest',
+        direccion: 'Istenhegyi út 24/A, Budapest',
+        telefono: '+36 1 224 7500',
+        email: 'emb.budapest@maec.es',
+        horario: 'Lunes a viernes 9:00-16:00'
+      }
+    ],
+    requerimientos: [
+      { categoria: 'Documentación', icon: '📄', items: ['Pasaporte o DNI vigente', 'Sin visa (españoles UE)', 'Boleto de vuelta'] },
+      { categoria: 'Sanitario', icon: '🏥', items: ['Sistema público', 'Hospitales modernos', 'Urgencias: 112'] },
+      { categoria: 'General', icon: 'ℹ️', items: ['Forint', 'Spas célebre', 'Baratísimo'] }
+    ],
+    queHacer: [
+      'Baño en thermal baths',
+      'Ver Parlamento',
+      'Castillo de Buda',
+      'Bario judío',
+      'Ferry a Hajógyar'
+    ],
+    queNoHacer: [
+      'No ignores historia',
+      'No bebas agua del Danubio',
+      'No discutas de política',
+      'No ignores antis',
+      'No tomes taxis sin acuerdo'
+    ],
+    diarios: [
+      { nombre: 'Népszava', url: 'https://nepszava.hu' },
+      { nombre: 'Magyar Hírlap', url: 'https://magyarhirlap.hu' }
+    ],
+    urlsUtiles: [
+      { nombre: 'Turismo Budapest', url: 'https://visitbudapest.com' },
+      { nombre: 'Spas Budapest', url: 'https://spasbudapest.com' }
+    ],
+    bandera: '🇭🇺',
+    mapaCoordenadas: [47.4979, 19.0402]
+  },
+  at: {
+    codigo: 'at',
+    nombre: 'Austria',
+    capital: 'Viena',
+    continente: 'Europa',
+    idioma: 'Alemán, Inglés',
+    moneda: 'Euro (EUR)',
+    tipoCambio: '1 EUR = 1 EUR',
+    zonaHoraria: 'UTC+1',
+    conduccion: 'derecha',
+    poblacion: '9 millones',
+    pib: '515 mil millones USD',
+    indicadores: { ipc: '3%', indicePrecios: 'Alto' },
+    voltaje: '230V / 50Hz',
+    prefijoTelefono: '+43',
+    nivelRiesgo: 'sin-riesgo',
+    ultimoInforme: 'Marzo 2026',
+    contactos: [
+      {
+        tipo: 'Ministerio',
+        nombre: 'Ministerio de Asuntos Exteriores',
+        direccion: 'Ballhausplatz 2, Viena',
+        telefono: '+43 50115 0',
+        email: 'info@bmaa.gv.at',
+        horario: 'Lunes a viernes 8:00-17:00'
+      }
+    ],
+    requerimientos: [
+      { categoria: 'Documentación', icon: '📄', items: ['Pasaporte o DNI vigente', 'Sin visa (españoles UE)', 'Seguro recomendado'] },
+      { categoria: 'Sanitario', icon: '🏥', items: ['Sistema público', 'Hospitales excellents', 'Urgencias: 144'] },
+      { categoria: 'General', icon: 'ℹ️', items: ['Euro', 'Alps majestuoso', 'Música classical'] }
+    ],
+    queHacer: [
+      'Visitar Palacio de Schönbrunn',
+      'Ópera de Viena',
+      'Salzbourg (festival)',
+      'Esquí en Alpes',
+      'Cuevas de hielo'
+    ],
+    queNoHacer: [
+      'No ignores zonas pedestrian',
+      'No hagas ruido en domingos',
+      'No discutas de política',
+      'No conduzcas sin neige',
+      'No ignores horarios tiendas'
+    ],
+    diarios: [
+      { nombre: 'Der Standard', url: 'https://derstandard.at' },
+      { nombre: 'Kurier', url: 'https://kurier.at' }
+    ],
+    urlsUtiles: [
+      { nombre: 'Turismo Austria', url: 'https://austria.info' },
+      { nombre: 'Viena', url: 'https://vienna.info' }
+    ],
+    bandera: '🇦🇹',
+    mapaCoordenadas: [48.2082, 16.3738]
+  },
+  be: {
+    codigo: 'be',
+    nombre: 'Bélgica',
+    capital: 'Bruselas',
+    continente: 'Europa',
+    idioma: 'Neerlandés, Francés, Inglés',
+    moneda: 'Euro (EUR)',
+    tipoCambio: '1 EUR = 1 EUR',
+    zonaHoraria: 'UTC+1',
+    conduccion: 'derecha',
+    poblacion: '11.5 millones',
+    pib: '590 mil millones USD',
+    indicadores: { ipc: '3%', indicePrecios: 'Alto' },
+    voltaje: '230V / 50Hz',
+    prefijoTelefono: '+32',
+    nivelRiesgo: 'sin-riesgo',
+    ultimoInforme: 'Marzo 2026',
+    contactos: [
+      {
+        tipo: 'Ministerio',
+        nombre: 'Ministerio de Asuntos Exteriores',
+        direccion: 'Rue des Petits Carmes 15, Bruselas',
+        telefono: '+32 250 181 11',
+        email: 'externe@just.fgov.be',
+        horario: 'Lunes a viernes 9:00-16:00'
+      }
+    ],
+    requerimientos: [
+      { categoria: 'Documentación', icon: '📄', items: ['Pasaporte o DNI vigente', 'Sin visa (españoles UE)', 'Boleto de vuelta'] },
+      { categoria: 'Sanitario', icon: '🏥', items: ['Sistema público', 'Hospitales modernos', 'Urgencias: 100'] },
+      { categoria: 'General', icon: 'ℹ️', items: ['Euro', 'Gótico arquitectura', 'Cerveza y chocolates'] }
+    ],
+    queHacer: [
+      'Ver Hombre doing Pící',
+      'Atomium',
+      'Palacio de Justicia',
+      'Mercado de Grand Place',
+      'Museos reales'
+    ],
+    queNoHacer: [
+      'No conduzcas por ciudades',
+      'No ignores idiomas',
+      'No discutas de política',
+      'No ignores zonas seguro',
+      'No tomes fotos en zonas prohibido'
+    ],
+    diarios: [
+      { nombre: 'Le Soir', url: 'https://lesoir.be' },
+      { nombre: 'De Standaard', url: 'https://standaard.be' }
+    ],
+    urlsUtiles: [
+      { nombre: 'Turismo Bélgica', url: 'https://belgium.travel' },
+      { nombre: 'Bruselas', url: 'https://visitbrussels.be' }
+    ],
+    bandera: '🇧🇪',
+    mapaCoordenadas: [50.8503, 4.3517]
+  },
+  cr: {
+    codigo: 'cr',
+    nombre: 'Costa Rica',
+    capital: 'San José',
+    continente: 'América',
+    idioma: 'Español',
+    moneda: 'Colon costarricense (CRC)',
+    tipoCambio: '1 EUR ≈ 590 CRC',
+    zonaHoraria: 'UTC-6',
+    conduccion: 'derecha',
+    poblacion: '5 millones',
+    pib: '65 mil millones USD',
+    indicadores: { ipc: '2%', indicePrecios: 'Medio' },
+    voltaje: '120V / 60Hz',
+    prefijoTelefono: '+506',
+    nivelRiesgo: 'bajo',
+    ultimoInforme: 'Marzo 2026',
+    contactos: [
+      {
+        tipo: 'Embajada',
+        nombre: 'Embajada de España en San José',
+        direccion: 'Av. Central, San José',
+        telefono: '+506 2221 5555',
+        email: 'emb.sanjose@maec.es',
+        horario: 'Lunes a viernes 8:00-16:00'
+      }
+    ],
+    requerimientos: [
+      { categoria: 'Documentación', icon: '📄', items: ['Pasaporte válido 6 meses', 'Sin visa para españoles (90 días)', 'Boleto de salida'] },
+      { categoria: 'Sanitario', icon: '🏥', items: ['Hospitales privados excellents', 'Clima tropical', 'Urgencias: 911'] },
+      { categoria: 'General', icon: 'ℹ️', items: ['Colon costarricense', 'Ecoturismo líder', 'Pura vida'] }
+    ],
+    queHacer: [
+      'Volcán Arenal',
+      'Parque Manuel Antonio',
+      'Zip line en selva',
+      'Ver tortugas en Tortuguero',
+      'Surf en Tamarindo'
+    ],
+    queNoHacer: [
+      'No bebas agua del grifo',
+      'No ignores zonas de malaria',
+      'No te acerques a animales',
+      'No conduzcas de noche',
+      'No ignores el clima'
+    ],
+    diarios: [
+      { nombre: 'La Nación', url: 'https://nacion.com' },
+      { nombre: 'The Tico Times', url: 'https://ticotimes.net' }
+    ],
+    urlsUtiles: [
+      { nombre: 'Turismo Costa Rica', url: 'https://visitcostarica.com' },
+      { nombre: 'Instituto Cervantes', url: 'https://cervantes.or.cr' }
+    ],
+    bandera: '🇨🇷',
+    mapaCoordenadas: [9.9281, -84.0907]
+  },
+  pa: {
+    codigo: 'pa',
+    nombre: 'Panamá',
+    capital: 'Ciudad de Panamá',
+    continente: 'América',
+    idioma: 'Español',
+    moneda: 'Balboa (PAB) / Dólar USD',
+    tipoCambio: '1 USD = 0.92 EUR',
+    zonaHoraria: 'UTC-5',
+    conduccion: 'derecha',
+    poblacion: '4.3 millones',
+    pib: '85 mil millones USD',
+    indicadores: { ipc: '2.5%', indicePrecios: 'Medio' },
+    voltaje: '120V / 60Hz',
+    prefijoTelefono: '+507',
+    nivelRiesgo: 'bajo',
+    ultimoInforme: 'Marzo 2026',
+    contactos: [
+      {
+        tipo: 'Embajada',
+        nombre: 'Embajada de España en Panamá',
+        direccion: 'Torre Global Bank, Ciudad de Panamá',
+        telefono: '+507 265 0000',
+        email: 'emb.panama@maec.es',
+        horario: 'Lunes a viernes 8:00-16:00'
+      }
+    ],
+    requerimientos: [
+      { categoria: 'Documentación', icon: '📄', items: ['Pasaporte válido 6 meses', 'Sin visa para españoles (90 días)', 'Boleto de salida'] },
+      { categoria: 'Sanitario', icon: '🏥', items: ['Hospitales privados excellents', 'Clima tropical', 'Urgencias: 911'] },
+      { categoria: 'General', icon: 'ℹ️', items: ['Dólar США', 'Canal de Panamá', 'Banking centro'] }
+    ],
+    queHacer: [
+      'Ver el Canal de Panamá',
+      'Skyline de financieros',
+      'Islas San Blas',
+      'Casco Antiguo',
+      'Fuerte de Portobelo'
+    ],
+    queNoHacer: [
+      'No ignores zonas caution',
+      'No bev agua del grifo',
+      'No discutas política',
+      'No conduzcas de noche',
+      'No ignore warnings locals'
+    ],
+    diarios: [
+      { nombre: 'La Prensa', url: 'https://prensa.com' },
+      { nombre: 'El País', url: 'https://elpais.com/panama' }
+    ],
+    urlsUtiles: [
+      { nombre: 'Turismo Panamá', url: 'https://visitpanama.com' },
+      { nombre: 'Canal', url: 'https://pancanal.com' }
+    ],
+    bandera: '🇵🇦',
+    mapaCoordenadas: [8.9824, -79.5199]
+  },
+  do: {
+    codigo: 'do',
+    nombre: 'República Dominicana',
+    capital: 'Santo Domingo',
+    continente: 'América',
+    idioma: 'Español',
+    moneda: 'Peso dominicano (DOP)',
+    tipoCambio: '1 EUR ≈ 57 DOP',
+    zonaHoraria: 'UTC-4',
+    conduccion: 'derecha',
+    poblacion: '11 millones',
+    pib: '115 mil millones USD',
+    indicadores: { ipc: '4%', indicePrecios: 'Medio' },
+    voltaje: '110V / 60Hz',
+    prefijoTelefono: '+1',
+    nivelRiesgo: 'bajo',
+    ultimoInforme: 'Marzo 2026',
+    contactos: [
+      {
+        tipo: 'Embajada',
+        nombre: 'Embajada de España en Santo Domingo',
+        direccion: 'Av. Tiradentes 829, Santo Domingo',
+        telefono: '+1 809 544 0505',
+        email: 'emb.santodomingo@maec.es',
+        horario: 'Lunes a viernes 8:00-16:00'
+      }
+    ],
+    requerimientos: [
+      { categoria: 'Documentación', icon: '📄', items: ['Pasaporte válido 6 meses', 'Sin visa para españoles', 'Boleto de salida'] },
+      { categoria: 'Sanitario', icon: '🏥', items: ['Hospitales privados excellents', 'Clima tropical', 'Urgencias: 911'] },
+      { categoria: 'General', icon: 'ℹ️', items: ['Peso dominicano', 'Playas paradisiacas', 'Todo incluido'] }
+    ],
+    queHacer: [
+      'Playas de Punta Cana',
+      'Zona Colonial de SD',
+      'Parque Nacional del Este',
+      'Santo Domingo Colonial',
+      'Cascada de Damajagua'
+    ],
+    queNoHacer: [
+      'No ignores zonas caution',
+      'No bev agua del grifo',
+      'No discutas política',
+      'No conduzcas de noche',
+      'No ignores hurricanes'
+    ],
+    diarios: [
+      { nombre: 'Listín Diario', url: 'https://listindiario.com' },
+      { nombre: 'El Nuevo Diario', url: 'https://elnuevodiario.com.do' }
+    ],
+    urlsUtiles: [
+      { nombre: 'Turismo RD', url: 'https://godominicanrepublic.com' },
+      { nombre: 'Embajada', url: 'https://www.exteriores.gob.es/embajadas/santodomingo' }
+    ],
+    bandera: '🇩🇴',
+    mapaCoordenadas: [18.4861, -69.9312]
   }
 };
 

@@ -1,7 +1,7 @@
 ---
 title: "Cómo transportar tu mascota en avión: guía completa de aduanas y restricciones"
 description: "Todo lo que necesitas saber para viajar con perros, gatos y otras mascotas. Requisitos, documentación, transporte en cabina o bodega, y pasos para cruzar fronteras sin problemas."
-date: 2026-04-17
+date: "2026-04-17"
 slug: mascota-avion-aduanas-internacional
 image: https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=800
 author: Miguel Castillo

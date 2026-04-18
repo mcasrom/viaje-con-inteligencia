@@ -1,49 +1,28 @@
 # Pendiente - Viaje con Inteligencia
 
-## Supabase (pendiente rate limit)
-- [x] Configurar Supabase
-- [x] Ejecutar schema SQL (tablas bot_stats, bot_commands)
-- [ ] Login emailmgico (rate limit superado? probar mañana)
-- [ ] Verificar favoritos y dashboard
+## Supabase / Auth
+- [x] Configurar Supabase (URL + anon key)
+- [ ] EJECUTAR SCHEMA: scripts/temporal_complete_schema.sql
+  - Ir a Supabase Dashboard > SQL Editor
+  - Ejecutar script completo
+- [ ] Verificar tablas creadas
+- [ ] Login emailmgico (probar rate limit)
 
-## Añadir países (10-15 nuevos)
-- [ ] Indonesia 🇮🇩
-- [ ] Malasia 🇲🇾
-- [ ] Filipinas 🇵🇭
-- [ ] Nepal 🇳🇵
-- [ ] Arabia Saudita 🇸🇦
-- [ ] Catar 🇶🇦
-- [ ] Jordania 🇯🇴
-- [ ] Omán 🇴🇲
-- [ ] Tanzania 🇹🇿
+## Países (58 total)
+- [x] Añadidos 17 nuevos países
 
-## Posts blog (SEO)
-- [x] Mascotas en avión
-- [x] Equipaje de mano
-- [x] Derechos del viajero UE
-- [x] Tags en posts
-- [x] Posts relacionados automático
-- [ ] Guía visados por país
-- [ ] Emergencias en extranjero
-- [ ] Estafas turísticas
-- [ ] Roaming internacional (mañana)
-- [ ] WiFi/Internet en viajes (mañana)
+## Posts blog (15 total)
+- [x] Todos creados (+1000 palabras, tags SEO)
+- [ ] VERIFICAR en producción (no aparecen en /blog?)
 
 ## Bot Telegram
-- [x] Tracking de uso (stats en Supabase)
-- [x] Integrar clima Open-Meteo (/clima comando)
-- [x] Mensajes enriquecidos
-- [ ] Buscar país por código ES, FR (arreglar maana)
-- [x] Página de estadísticas /admin/bot-stats
+- [x] Mejorado búsqueda por nombre
+- [x] Improved premium info
 
-## Premium/Subscriptions
-- [x] Monitor de conflictos (NewsMCP API)
-- [x] Tags en posts
-- [x] Posts relacionados automático
-- [ ] Stripe conectar
-- [ ] Página gestión suscripción
+## Premium/Stripe
+- [x] Stripe integrado (falta credenciales en Vercel)
 
-## SEO técnico
-- [x] robots.txt
-- [x] sitemap.xml dinámico
-- [x] Schema.org posts (JSON-LD)
+## SEO/Técnico
+- [x] robots.txt, sitemap.xml
+- [x] Schema.org JSON-LD
+- [x] Favicon y preview image
