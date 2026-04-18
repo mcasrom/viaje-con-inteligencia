@@ -111,22 +111,34 @@ message += `\n━━━━━━━━━━━━━━━━━━━━\n`;
 }
 
 export function getAlertasRiesgo(): string {
-  const sinRiesgo = Object.values(paisesData).filter(p => p.nivelRiesgo === 'sin-riesgo');
-  const riesgoBajo = Object.values(paisesData).filter(p => p.nivelRiesgo === 'bajo');
-  const riesgoMedio = Object.values(paisesData).filter(p => p.nivelRiesgo === 'medio');
-  const riesgoAlto = Object.values(paisesData).filter(p => p.nivelRiesgo === 'alto' || p.nivelRiesgo === 'muy-alto');
+  const allCountries = Object.values(paisesData);
+  const sinRiesgo = allCountries.filter(p => p.nivelRiesgo === 'sin-riesgo');
+  const riesgoBajo = allCountries.filter(p => p.nivelRiesgo === 'bajo');
+  const riesgoMedio = allCountries.filter(p => p.nivelRiesgo === 'medio');
+  const riesgoAlto = allCountries.filter(p => p.nivelRiesgo === 'alto' || p.nivelRiesgo === 'muy-alto');
   
-  let message = `*⚠️ Resumen Riesgos por País*\n`;
-  message += `━━━━━━━━━━━━━━━━━━━━\n\n`;
+  const total = allCountries.length;
+  const fechaActual = new Date().toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' });
+  
+  let message = `*⚠️ Riesgos de Viaje - ${total} países*\n`;
+  message += `━━━━━━━━━━━━━━━━━━━━\n`;
+  message += `📅 Actualizado: ${fechaActual}\n`;
+  message += `📊 Fuente: MAEC - Ministerio Asuntos Exteriores\n`;
+  message += `🔗 viaje-con-inteligencia.vercel.app\n\n`;
   
   message += `🟢 *Sin riesgo* (${sinRiesgo.length}):\n`;
-  message += sinRiesgo.slice(0, 5).map(p => `  ${p.bandera} ${p.nombre}`).join('\n');
-  if (sinRiesgo.length > 5) message += `\n  ... y ${sinRiesgo.length - 5} más`;
+  if (sinRiesgo.length > 0) {
+    message += sinRiesgo.slice(0, 15).map(p => `  ${p.bandera} ${p.nombre}`).join('\n');
+    if (sinRiesgo.length > 15) message += `\n  → y ${sinRiesgo.length - 15} más`;
+  } else {
+    message += `  Ninguno`;
+  }
   message += `\n\n`;
   
   message += `🟡 *Riesgo bajo* (${riesgoBajo.length}):\n`;
   if (riesgoBajo.length > 0) {
-    message += riesgoBajo.slice(0, 5).map(p => `  ${p.bandera} ${p.nombre}`).join('\n');
+    message += riesgoBajo.slice(0, 15).map(p => `  ${p.bandera} ${p.nombre}`).join('\n');
+    if (riesgoBajo.length > 15) message += `\n  → y ${riesgoBajo.length - 15} más`;
   } else {
     message += `  Ninguno`;
   }
@@ -134,16 +146,23 @@ export function getAlertasRiesgo(): string {
   
   message += `🟠 *Riesgo medio* (${riesgoMedio.length}):\n`;
   if (riesgoMedio.length > 0) {
-    message += riesgoMedio.map(p => `  ${p.bandera} ${p.nombre}`).join('\n');
+    message += riesgoMedio.slice(0, 15).map(p => `  ${p.bandera} ${p.nombre}`).join('\n');
+    if (riesgoMedio.length > 15) message += `\n  → y ${riesgoMedio.length - 15} más`;
   } else {
     message += `  Ninguno`;
   }
   message += `\n\n`;
   
   if (riesgoAlto.length > 0) {
-    message += `🔴 *Riesgo alto* (${riesgoAlto.length}):\n`;
-    message += riesgoAlto.map(p => `  ${p.bandera} ${p.nombre}`).join('\n');
+    message += `🔴 *Riesgo alto/muy alto* (${riesgoAlto.length}):\n`;
+    message += riesgoAlto.slice(0, 15).map(p => `  ${p.bandera} ${p.nombre}`).join('\n');
+    if (riesgoAlto.length > 15) message += `\n  → y ${riesgoAlto.length - 15} más`;
   }
+  
+  message += `\n\n💡 *Usa* /alertas *para más detalle*\n`;
+  message += `🔔 *Usa* /buscar *[país]* *para ver un país específico*\n`;
+  message += `\n━━━━━━━━━━━━━━━━━━━━\n`;
+  message += `📅 Última actualización: ${fechaActual}`;
   
   return message;
 }

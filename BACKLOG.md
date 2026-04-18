@@ -120,13 +120,14 @@
 - [x] Países añadidos (17)
 - [x] Relojes mundiales
 - [x] Imágenes optimizadas
-- [ ] Ejecutar schema Supabase
+- [x] Script check (lint + build)
+- [ ] PWA básico ← PRÓXIMO
 
 ### Mayo
-- [ ] Dashboard usuario
-- [ ] Login funcional (Supabase)
-- [ ] PWA básico
-- [ ] 20 posts blog SEO
+- [ ] PWA completo (service worker, push)
+- [ ] 20 posts blog SEO ← PRIORIDAD
+- [ ] Dashboard usuario (localStorage)
+- [ ] Chat IA mejorado
 
 ### Junio
 - [ ] Chat IA mejorado

@@ -292,13 +292,16 @@ export async function POST(request: NextRequest) {
     
 // FIRST: Check for country code (works from ANY state, even selecting_country)
     console.log('First check for country:', text);
-    const upperText = text.toUpperCase();
-    if (text.length === 2 && /^[A-Za-z]{2}$/.test(upperText)) {
+    // Check for country code - supports "ES", "/ES", "pais ES", "pais ES"
+    const codeMatch = text.match(/^(?:\/pais\s+)?([A-Za-z]{2})$/i);
+    if (codeMatch) {
+      const upperCode = codeMatch[1].toUpperCase();
       const paisesModule = await import('@/data/paises');
       const allPaises = Object.values(paisesModule.paisesData);
-      const country = allPaises.find(p => p.codigo.toUpperCase() === upperText);
+      const country = allPaises.find(p => p.codigo.toUpperCase() === upperCode);
       console.log('Found:', country?.nombre);
       if (country) {
+        resetUserState(chatId);
         const weather = await getWeatherForCountry(country.codigo);
         let info = formatCountryInfo(country.codigo);
         if (weather) info += '\n\n' + weather;
@@ -450,7 +453,7 @@ export async function POST(request: NextRequest) {
       const paisesModule = await import('@/data/paises');
       const allCountries = Object.values(paisesModule.paisesData);
       
-      const cleanText = text.trim().toUpperCase();
+      const cleanText = text.trim().toUpperCase().replace(/^\//, '');
       
       // Check if it's 2 letters (country code) - ES, FR, US, etc.
       if (/^[A-Z]{2}$/.test(cleanText)) {
@@ -468,7 +471,7 @@ export async function POST(request: NextRequest) {
       
       // Also try the "ES - España" format
       if (text.includes(' - ')) {
-        const code = text.split(' - ')[0].trim().toUpperCase();
+        const code = text.replace(/^\//, '').split(' - ')[0].trim().toUpperCase();
         const country = allCountries.find(p => p.codigo.toUpperCase() === code);
         
         if (country) {

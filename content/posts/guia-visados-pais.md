@@ -3,7 +3,7 @@ title: "Guía completa de visados por país: todo lo que necesitas saber para tu
 description: "Todo sobre visados: tipos, requisitos, tramitación, errores a evitar y consejos por país. Guía actualizada 2026 para viajeros españoles y latinoamericanos."
 date: "2026-04-18"
 slug: guia-visados-pais
-image: https://images.unsplash.com/photo-1553726454-4cf022ec770e?w=800
+image: https://images.unsplash.com/photo-1569154941061-e231b4725ef1?w=800
 author: Miguel Castillo
 readingTime: 12 minutos
 tags: [visados, pasaporte, migraciones, fronteras, documentacion, viaje, requisitos]

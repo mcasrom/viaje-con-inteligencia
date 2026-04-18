@@ -94,11 +94,23 @@ Puedes cargar tus dispositivos durante el vuelo en la mayoría de compañías. L
 - Gases comprimidos
 - Lícor de más de 70%
 
-### Objekos con restricciones
+### Objetos con restricciones
 
 - **Bastones de trekking**: Deben facturarse o ir en cabina con autorización
-- **Patinetes eléctricos**: Baterías extraíbles,max 160 Wh
-- **Vapes y cigarrillos electrónicos**: Solo en cabina,no en bodega
+- **Patinetes eléctricos**: Baterías extraíbles, max 160 Wh
+- **Vapes y cigarrillos electrónicos**: Solo en cabina, no en bodega
+
+## Dimensiones por aerolínea
+
+| Aerolínea | Dimensiones | Peso |
+|-----------|-------------|------|
+| Iberia | 55 x 40 x 20 cm | 10 kg |
+| Air Europa | 55 x 40 x 20 cm | 8 kg |
+| Ryanair | 40 x 25 x 20 cm | 10 kg |
+| Vueling | 55 x 40 x 20 cm | 10 kg |
+| British Airways | 56 x 45 x 25 cm | 23 kg |
+| Lufthansa | 55 x 40 x 23 cm | 8 kg |
+| Air France | 55 x 35 x 25 cm | 12 kg |
 
 ## Consejos prácticos
 

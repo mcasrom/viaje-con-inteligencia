@@ -1,9 +1,130 @@
 import Link from 'next/link';
-import { ArrowLeft, Calendar, Clock, BookOpen } from 'lucide-react';
+import { ArrowLeft, Calendar, Clock, BookOpen, TrendingUp, Clock3, Tag, Flame } from 'lucide-react';
 import { getAllPosts } from '@/lib/posts';
+
+interface Post {
+  slug: string;
+  title: string;
+  date: string;
+  author: string;
+  category: string;
+  readTime: string;
+  image: string;
+  keywords: string;
+  excerpt: string;
+  tags?: string[];
+}
+
+function PostCard({ post, featured = false }: { post: Post; featured?: boolean }) {
+  if (featured) {
+    return (
+      <Link
+        href={`/blog/${post.slug}`}
+        className="block mb-8 bg-slate-800 rounded-2xl border border-slate-700 overflow-hidden hover:border-blue-500 transition-all group"
+      >
+        <div className="md:flex">
+          <div className="md:w-1/2 h-64 md:h-auto bg-gradient-to-br from-blue-900/80 via-slate-900/90 to-purple-900/80 overflow-hidden relative">
+            {post.image ? (
+              <>
+                <img 
+                  src={post.image} 
+                  alt={post.title}
+                  className="w-full h-full object-cover opacity-40 blur-[1px] scale-110"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/50 to-transparent" />
+              </>
+            ) : (
+              <div className="w-full h-full bg-gradient-to-br from-blue-600/40 to-purple-600/40" />
+            )}
+            <div className="absolute inset-0 flex items-center justify-center">
+              <img src="/favicon.jpg" alt="" className="w-24 h-24 rounded-2xl shadow-2xl border-4 border-white/20 object-contain" />
+            </div>
+          </div>
+          <div className="md:w-1/2 p-8 flex flex-col justify-center">
+            <span className="inline-flex items-center gap-2 px-3 py-1 bg-blue-500/20 text-blue-400 text-sm font-medium rounded-full w-fit mb-4">
+              <Flame className="w-4 h-4" />
+              Destacado
+            </span>
+            <h2 className="text-2xl md:text-3xl font-bold text-white mb-4 group-hover:text-blue-400 transition-colors">
+              {post.title}
+            </h2>
+            <p className="text-slate-400 mb-6 line-clamp-3">
+              {post.excerpt}
+            </p>
+            <div className="flex items-center gap-6 text-slate-500 text-sm">
+              <span className="flex items-center gap-2">
+                <Calendar className="w-4 h-4" />
+                {new Date(post.date).toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' })}
+              </span>
+              <span className="flex items-center gap-2">
+                <Clock className="w-4 h-4" />
+                {post.readTime}
+              </span>
+              <span className="flex items-center gap-2">
+                <Tag className="w-4 h-4" />
+                {post.category}
+              </span>
+            </div>
+          </div>
+        </div>
+      </Link>
+    );
+  }
+
+  return (
+    <Link
+      key={post.slug}
+      href={`/blog/${post.slug}`}
+      className="bg-slate-800 rounded-xl border border-slate-700 overflow-hidden hover:border-blue-500 transition-colors group"
+    >
+      <div className="h-32 bg-gradient-to-br from-blue-900/80 via-slate-900/90 to-purple-900/80 overflow-hidden relative">
+        {post.image ? (
+          <>
+            <img 
+              src={post.image} 
+              alt={post.title}
+              className="w-full h-full object-cover opacity-40 blur-[1px] scale-110"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/50 to-transparent" />
+            <div className="absolute inset-0 flex items-center justify-center">
+              <img src="/favicon.jpg" alt="" className="w-16 h-16 rounded-xl shadow-2xl border-2 border-white/20 object-contain" />
+            </div>
+          </>
+        ) : (
+          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-600/40 to-purple-600/40">
+            <img src="/favicon.jpg" alt="" className="w-16 h-16 rounded-xl shadow-2xl border-2 border-white/20 object-contain" />
+          </div>
+        )}
+      </div>
+      <div className="p-5">
+        <div className="flex items-center gap-2 mb-2">
+          <span className="px-2 py-1 bg-blue-500/20 text-blue-400 text-xs font-medium rounded">
+            {post.category}
+          </span>
+        </div>
+        <h2 className="text-base font-bold text-white mb-2 group-hover:text-blue-400 transition-colors line-clamp-2">
+          {post.title}
+        </h2>
+        <div className="flex items-center gap-4 text-slate-500 text-xs">
+          <span className="flex items-center gap-1">
+            <Clock3 className="w-3 h-3" />
+            {new Date(post.date).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' })}
+          </span>
+          <span className="flex items-center gap-1">
+            <Clock className="w-3 h-3" />
+            {post.readTime}
+          </span>
+        </div>
+      </div>
+    </Link>
+  );
+}
 
 export default function BlogPage() {
   const posts = getAllPosts();
+  
+  const featuredPost = posts[0];
+  const otherPosts = posts.slice(1);
 
   return (
     <div className="min-h-screen bg-slate-900">
@@ -30,42 +151,29 @@ export default function BlogPage() {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {posts.map((post) => (
-            <Link
-              key={post.slug}
-              href={`/blog/${post.slug}`}
-              className="bg-slate-800 rounded-xl border border-slate-700 overflow-hidden hover:border-blue-500 transition-colors group"
-            >
-              <div className="h-32 bg-gradient-to-br from-slate-700 to-slate-800 flex items-center justify-center">
-                <span className="text-6xl">{post.image}</span>
-              </div>
-              <div className="p-6">
-                <div className="flex items-center gap-2 mb-3">
-                  <span className="px-2 py-1 bg-blue-500/20 text-blue-400 text-xs font-medium rounded">
-                    {post.category}
-                  </span>
-                </div>
-                <h2 className="text-lg font-bold text-white mb-2 group-hover:text-blue-400 transition-colors">
-                  {post.title}
-                </h2>
-                <p className="text-slate-400 text-sm mb-4 line-clamp-2">
-                  {post.excerpt}
-                </p>
-                <div className="flex items-center gap-4 text-slate-500 text-xs">
-                  <span className="flex items-center gap-1">
-                    <Calendar className="w-3 h-3" />
-                    {new Date(post.date).toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' })}
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <Clock className="w-3 h-3" />
-                    {post.readTime}
-                  </span>
-                </div>
-              </div>
-            </Link>
-          ))}
-        </div>
+        {posts.length === 0 ? (
+          <div className="text-center py-12">
+            <p className="text-slate-400 text-lg">No hay artículos publicados aún.</p>
+          </div>
+        ) : (
+          <>
+            {featuredPost && <PostCard post={featuredPost} featured />}
+
+            <div className="flex items-center gap-2 mb-6">
+              <TrendingUp className="w-5 h-5 text-blue-400" />
+              <h3 className="text-xl font-bold text-white">
+                {otherPosts.length > 0 ? 'Más artículos' : 'Artículos'}
+              </h3>
+              <span className="text-slate-500">({posts.length} total)</span>
+            </div>
+
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {otherPosts.map((post: Post) => (
+                <PostCard key={post.slug} post={post} />
+              ))}
+            </div>
+          </>
+        )}
 
         <div className="mt-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-8 text-center">
           <h3 className="text-2xl font-bold text-white mb-4">

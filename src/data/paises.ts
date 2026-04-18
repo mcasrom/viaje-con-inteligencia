@@ -1475,7 +1475,7 @@ export const paisesData: Record<string, DatoPais> = {
     codigo: 'ae',
     nombre: 'Emiratos Árabes Unidos',
     capital: 'Abu Dhabi',
-    continente: 'Asia',
+    continente: 'Oriente Medio',
     idioma: 'Árabe, Inglés',
     moneda: 'Dirham (AED)',
     tipoCambio: '1 EUR ≈ 4.0 AED',
@@ -2395,7 +2395,7 @@ export const paisesData: Record<string, DatoPais> = {
     codigo: 'sa',
     nombre: 'Arabia Saudita',
     capital: 'Riad',
-    continente: 'Asia',
+    continente: 'Oriente Medio',
     idioma: 'Árabe',
     moneda: 'Riyal saudí (SAR)',
     tipoCambio: '1 EUR ≈ 3.75 SAR',
@@ -2452,7 +2452,7 @@ export const paisesData: Record<string, DatoPais> = {
     codigo: 'qa',
     nombre: 'Catar',
     capital: 'Doha',
-    continente: 'Asia',
+    continente: 'Oriente Medio',
     idioma: 'Árabe',
     moneda: 'Riyal catarí (QAR)',
     tipoCambio: '1 EUR ≈ 3.65 QAR',
@@ -2509,7 +2509,7 @@ export const paisesData: Record<string, DatoPais> = {
     codigo: 'jo',
     nombre: 'Jordania',
     capital: 'Amán',
-    continente: 'Asia',
+    continente: 'Oriente Medio',
     idioma: 'Árabe',
     moneda: 'Dinar jordano (JOD)',
     tipoCambio: '1 EUR ≈ 0.71 JOD',
@@ -2562,11 +2562,11 @@ export const paisesData: Record<string, DatoPais> = {
     bandera: '🇯🇴',
     mapaCoordenadas: [31.9454, 35.9284]
   },
-  om: {
+om: {
     codigo: 'om',
     nombre: 'Omán',
-    capital: 'Mascate',
-    continente: 'Asia',
+    capital: 'Muscat',
+    continente: 'Oriente Medio',
     idioma: 'Árabe',
     moneda: 'Rial omaní (OMR)',
     tipoCambio: '1 EUR ≈ 0.42 OMR',
@@ -2618,6 +2618,234 @@ export const paisesData: Record<string, DatoPais> = {
     ],
     bandera: '🇴🇲',
     mapaCoordenadas: [23.588, 58.3829]
+  },
+  mz: {
+    codigo: 'mz',
+    nombre: 'Mozambique',
+    capital: 'Maputo',
+    continente: 'África',
+    idioma: 'Portugués',
+    moneda: 'Metical (MZN)',
+    tipoCambio: '1 EUR ≈ 85 MZN',
+    zonaHoraria: 'UTC+2',
+    conduccion: 'izquierda',
+    poblacion: '33 millones',
+    pib: '18 mil millones USD',
+    indicadores: { ipc: '5%', indicePrecios: 'Bajo' },
+    voltaje: '220V / 50Hz',
+    prefijoTelefono: '+258',
+    nivelRiesgo: 'bajo',
+    ultimoInforme: 'Marzo 2026',
+    contactos: [
+      {
+        tipo: 'Embajada',
+        nombre: 'Embajada de España en Maputo',
+        direccion: 'Av. Julius Nyerere, 1122 Maputo',
+        telefono: '+258 21 481 100',
+        email: 'emb.maputo@maec.es',
+        horario: 'Lunes a viernes 8:00-15:30'
+      }
+    ],
+    requerimientos: [
+      { categoria: 'Documentación', icon: '📄', items: ['Pasaporte válido 6 meses', 'Visa requerida', 'Vacuna fiebre amarilla recomendada'] },
+      { categoria: 'Sanitario', icon: '🏥', items: ['Malaria presente', 'Hospitales básicos fuera de ciudades', 'Urgencias: 112'] },
+      { categoria: 'Seguridad', icon: '⚠️', items: ['Cuidado en zonas rurales', 'No conducir de noche', 'Evitar manifestaciones'] }
+    ],
+    queHacer: [
+      'Safari en Parque Nacional Gorongosa',
+      'Playas de Pemba y Tofo',
+      'Isla de Moçambique (UNESCO)',
+      'Explorar archipiélago de Bazaruto',
+      'Probar marisco fresco en Maputo'
+    ],
+    queNoHacer: [
+      'No bebas agua del grifo',
+      'No ignores la malaria',
+      'No muestres objetos de valor',
+      'No conduzcas de noche',
+      'No visites zonas rurales sin guía'
+    ],
+    diarios: [
+      { nombre: 'Noticias', url: 'https://www.jornaldemoambique.co.mz' },
+      { nombre: 'Verdade', url: 'https://www.verdade.co.mz' }
+    ],
+    urlsUtiles: [
+      { nombre: 'Turismo Mozambique', url: 'https://www.turismodemocambique.co.mz' },
+      { nombre: 'MAEC - Mozambique', url: 'https://www.exteriores.gob.es/Embajadas/Maputo' }
+    ],
+    bandera: '🇲🇿',
+    mapaCoordenadas: [-18.665695, 35.529562]
+  },
+  dz: {
+    codigo: 'dz',
+    nombre: 'Argelia',
+    capital: 'Argel',
+    continente: 'África',
+    idioma: 'Árabe, Francés',
+    moneda: 'Dinar argelino (DZD)',
+    tipoCambio: '1 EUR ≈ 145 DZD',
+    zonaHoraria: 'UTC+1',
+    conduccion: 'derecha',
+    poblacion: '46 millones',
+    pib: '240 mil millones USD',
+    indicadores: { ipc: '4%', indicePrecios: 'Medio' },
+    voltaje: '230V / 50Hz',
+    prefijoTelefono: '+213',
+    nivelRiesgo: 'bajo',
+    ultimoInforme: 'Marzo 2026',
+    contactos: [
+      {
+        tipo: 'Embajada',
+        nombre: 'Embajada de España en Argel',
+        direccion: '9 Avenue Laloa, Hydra, Alger',
+        telefono: '+213 21 691 100',
+        email: 'emb.argel@maec.es',
+        horario: 'Domingo a jueves 8:30-15:30'
+      }
+    ],
+    requerimientos: [
+      { categoria: 'Documentación', icon: '📄', items: ['Pasaporte válido 6 meses', 'Visa requerida', 'Sin PCR para españoles'] },
+      { categoria: 'Sanitario', icon: '🏥', items: ['Hospitales públicos limitados', 'Seguros privados recomendados', 'Urgencias: 14'] },
+      { categoria: 'Seguridad', icon: '⚠️', items: ['Zonas desérticas con precaución', 'Evitar zonas fronterizas', 'Registro en embajada'] }
+    ],
+    queHacer: [
+      'Visitar ruínas de Djemila (UNESCO)',
+      'Explorar valle del Mzab',
+      'Desierto del Sahara (tour)',
+      'Casbah de Argel (UNESCO)',
+      'Costa mediterránea de Orán'
+    ],
+    queNoHacer: [
+      'No fotografíes edificios gubernamentales',
+      'No discutas de política',
+      'No bebas alcohol en público',
+      'No ignores el Ramadán',
+      'No viajes a zonas fronterizas'
+    ],
+    diarios: [
+      { nombre: 'El Watan', url: 'https://www.elwatan.com' },
+      { nombre: 'Liberté', url: 'https://www.liberte-algerie.com' }
+    ],
+    urlsUtiles: [
+      { nombre: 'Turismo Argelia', url: 'https://www.visitalgeria.com' },
+      { nombre: 'MAEC - Argelia', url: 'https://www.exteriores.gob.es/Embajadas/Argel' }
+    ],
+    bandera: '🇩🇿',
+    mapaCoordenadas: [28.0339, 1.6596]
+  },
+  il: {
+    codigo: 'il',
+    nombre: 'Israel',
+    capital: 'Jerusalén',
+    continente: 'Oriente Medio',
+    idioma: 'Hebreo, Árabe, Inglés',
+    moneda: 'Shekel (ILS)',
+    tipoCambio: '1 EUR ≈ 4.0 ILS',
+    zonaHoraria: 'UTC+2',
+    conduccion: 'derecha',
+    poblacion: '9.7 millones',
+    pib: '580 mil millones USD',
+    indicadores: { ipc: '3%', indicePrecios: 'Alto' },
+    voltaje: '230V / 50Hz',
+    prefijoTelefono: '+972',
+    nivelRiesgo: 'bajo',
+    ultimoInforme: 'Marzo 2026',
+    contactos: [
+      {
+        tipo: 'Embajada',
+        nombre: 'Embajada de España en Jerusalén',
+        direccion: '19 Sira Street, Jerusalem',
+        telefono: '+972 2 674 1000',
+        email: 'emb.jerusalen@maec.es',
+        horario: 'Domingo a jueves 8:00-15:30'
+      }
+    ],
+    requerimientos: [
+      { categoria: 'Documentación', icon: '📄', items: ['Pasaporte válido 6 meses', 'Sin visa para españoles (90 días)', 'Seguro médico obligatorio'] },
+      { categoria: 'Sanitario', icon: '🏥', items: ['Hospitales de calidad', 'Sistema sanitario avanzado', 'Urgencias: 101'] },
+      { categoria: 'Seguridad', icon: '⚠️', items: ['Seguridad alta en zonas turísticas', 'Control de seguridad en entradas', 'Zonas fronterizas restringidas'] }
+    ],
+    queHacer: [
+      'Visitar Vieja Jerusalén',
+      'Mar Muerto',
+      'Masada al amanecer',
+      'Tel Aviv y playas',
+      'Galilea y Nazareth'
+    ],
+    queNoHacer: [
+      'No fotografíes checkpoints militares',
+      'No critiques temas religiosos',
+      'No entres en zonas restringidas',
+      'No ignores alertas de seguridad',
+      'No lleves objetos punzantes'
+    ],
+    diarios: [
+      { nombre: 'Haaretz', url: 'https://www.haaretz.com' },
+      { nombre: 'The Times of Israel', url: 'https://www.timesofisrael.com' }
+    ],
+    urlsUtiles: [
+      { nombre: 'Turismo Israel', url: 'https://www.goisrael.com' },
+      { nombre: 'MAEC - Israel', url: 'https://www.exteriores.gob.es/Embajadas/Jerusalen' }
+    ],
+    bandera: '🇮🇱',
+    mapaCoordenadas: [31.0461, 34.8516]
+  },
+  lb: {
+    codigo: 'lb',
+    nombre: 'Líbano',
+    capital: 'Beirut',
+    continente: 'Oriente Medio',
+    idioma: 'Árabe, Francés, Inglés',
+    moneda: 'Libra libanesa (LBP)',
+    tipoCambio: '1 EUR ≈ 89000 LBP',
+    zonaHoraria: 'UTC+2',
+    conduccion: 'derecha',
+    poblacion: '5.5 millones',
+    pib: '52 mil millones USD',
+    indicadores: { ipc: '150%', indicePrecios: 'Muy alto' },
+    voltaje: '220V / 50Hz',
+    prefijoTelefono: '+961',
+    nivelRiesgo: 'medio',
+    ultimoInforme: 'Marzo 2026',
+    contactos: [
+      {
+        tipo: 'Embajada',
+        nombre: 'Embajada de España en Beirut',
+        direccion: 'Rue Madame Curie, Airport Road, Beirut',
+        telefono: '+961 1 867 100',
+        email: 'emb.beirut@maec.es',
+        horario: 'Lunes a viernes 8:00-15:30'
+      }
+    ],
+    requerimientos: [
+      { categoria: 'Documentación', icon: '📄', items: ['Pasaporte válido 6 meses', 'Visa gratuita en arrival', 'Seguro médico'] },
+      { categoria: 'Sanitario', icon: '🏥', items: ['Hospitales privados buenos', 'Crisis económica afecta servicios', 'Urgencias: 140'] },
+      { categoria: 'Seguridad', icon: '⚠️', items: ['Evitar protestas', 'Zonas sureñas con precaución', 'No acercarse a fronteras'] }
+    ],
+    queHacer: [
+      'Explorar Beirut (París de Oriente)',
+      'Ruinas de Baalbek',
+      'Cedros del Líbano',
+      'Cuevas de Jeita',
+      'Byblos (ciudad más antigua habitada)'
+    ],
+    queNoHacer: [
+      'No discutas política',
+      'No ignores alertas de viaje',
+      'No vayas al sur del país',
+      'No fotografíes manifestaciones',
+      'No muestres objetos de valor'
+    ],
+    diarios: [
+      { nombre: 'The Daily Star', url: 'https://www.dailystar.com.lb' },
+      { nombre: 'L\'Orient Le Jour', url: 'https://lorientlejour.com' }
+    ],
+    urlsUtiles: [
+      { nombre: 'Turismo Líbano', url: 'https://www.lebanon.travel' },
+      { nombre: 'MAEC - Líbano', url: 'https://www.exteriores.gob.es/Embajadas/Beirut' }
+    ],
+    bandera: '🇱🇧',
+    mapaCoordenadas: [33.8547, 35.8623]
   },
   tz: {
     codigo: 'tz',

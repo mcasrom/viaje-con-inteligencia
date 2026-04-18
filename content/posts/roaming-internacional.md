@@ -3,7 +3,7 @@ title: "Roaming internacional: cómo usar tu móvil en el extranjero sin pagar d
 description: "Guía completa de roaming internacional: operadores españoles, tarifas, eSIM, comparativas y consejos para usar tu móvil abroad sin sorpresas. Actualizado 2026."
 date: "2026-04-18"
 slug: roaming-internacional
-image: https://images.unsplash.com/photo-1563206767-5b1d97289374?w=800
+image: https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=800
 author: Miguel Castillo
 readingTime: 9 minutos
 tags: [roaming, móviles, telecomunicaciones, datos, economia,旅行, tecnologia, SIM]

@@ -1,7 +1,8 @@
 import Link from 'next/link';
-import { ArrowLeft, Calendar, Clock, Share2, Tag } from 'lucide-react';
+import { ArrowLeft, Calendar, Clock, Tag } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { getPostBySlug, getPostSlugs, getRelatedPosts } from '@/lib/posts';
+import ShareButtons from '@/components/ShareButtons';
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -76,7 +77,7 @@ export default async function ArticuloPage({ params }: PageProps) {
             </div>
           </div>
 
-          <div className="bg-slate-800 rounded-2xl p-6 md:p-10 border border-slate-700 mb-8">
+          <div className="bg-slate-800 rounded-2xl p-6 md:p-10 border border-slate-700 mb-8 overflow-x-auto">
             <div className="prose prose-invert prose-lg max-w-none
               prose-headings:text-white prose-p:text-slate-300 prose-strong:text-white
               prose-a:text-blue-400 prose-a:no-underline hover:prose-a:underline
@@ -85,6 +86,7 @@ export default async function ArticuloPage({ params }: PageProps) {
               prose-ul:text-slate-300 prose-ol:text-slate-300
               prose-li:marker:text-slate-500
               prose-blockquote:border-l-blue-500 prose-blockquote:text-slate-400
+              prose-img:rounded-xl prose-img:shadow-lg prose-img:my-4
             ">
               <ReactMarkdown>{post.content}</ReactMarkdown>
             </div>
@@ -126,10 +128,11 @@ export default async function ArticuloPage({ params }: PageProps) {
             >
               ← Volver al blog
             </Link>
-            <button className="flex items-center gap-2 px-4 py-2 text-slate-400 hover:text-white transition-colors">
-              <Share2 className="w-4 h-4" />
-              Compartir
-            </button>
+            <ShareButtons 
+              title={post.title} 
+              description={post.excerpt}
+              url={`https://viaje-con-inteligencia.vercel.app/blog/${slug}`}
+            />
           </div>
 </article>
           <script

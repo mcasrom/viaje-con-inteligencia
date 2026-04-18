@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Bot, Bell, FileCheck, Map, TrendingUp, Star, Check, CreditCard, Globe, Zap, AlertTriangle, MessageSquare, Plane } from 'lucide-react';
+import { ArrowLeft, Bot, Bell, FileCheck, Map, TrendingUp, Star, Check, CreditCard, Globe, Zap, AlertTriangle, MessageSquare, Plane, Wallet } from 'lucide-react';
 
 const PLANS = [
   {
@@ -44,7 +44,7 @@ const PLANS = [
 export default function PremiumPage() {
   const [loading, setLoading] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<'itinerary' | 'chat' | 'seismos' | 'conflicts'>('seismos');
+  const [activeTab, setActiveTab] = useState<'itinerary' | 'chat' | 'seismos' | 'conflicts' | 'expenses'>('seismos');
   const [itineraryLoading, setItineraryLoading] = useState(false);
   const [itineraryResult, setItineraryResult] = useState<string>('');
   const [chatMessages, setChatMessages] = useState<{role: string; content: string}[]>([]);
@@ -54,6 +54,9 @@ export default function PremiumPage() {
   const [seismosLoading, setSeismosLoading] = useState(false);
   const [conflicts, setConflicts] = useState<any[]>([]);
   const [conflictsLoading, setConflictsLoading] = useState(false);
+  const [expensesLoading, setExpensesLoading] = useState(false);
+  const [expensesResult, setExpensesResult] = useState<string>('');
+  const [expensesData, setExpensesData] = useState({ destination: '', days: '7', budget: 'moderado', category: 'turista' });
 
   const handleSubscribe = async (priceId: string) => {
     setLoading(priceId);
@@ -79,6 +82,35 @@ export default function PremiumPage() {
       setError('Error de conexión');
     } finally {
       setLoading(null);
+    }
+  };
+
+  const handleGenerateExpenses = async () => {
+    const destination = expensesData.destination;
+    if (!destination) {
+      setExpensesResult('Por favor, introduce un destino.');
+      return;
+    }
+
+    setExpensesLoading(true);
+    setExpensesResult('Analizando presupuesto...');
+
+    try {
+      const response = await fetch('/api/ai/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message: `Analiza el presupuesto estimado para un viaje de ${expensesData.days} días a ${destination} para un viajero ${expensesData.category}. Budget: ${expensesData.budget}. Proporciona un desglose detallado por categorías: alojamiento, transporte, comida, actividades, seguros, misceláneos. Incluye consejos para ahorrar.`,
+          history: [],
+        }),
+      });
+
+      const data = await response.json();
+      setExpensesResult(data.response || data.error || 'Error al analizar');
+    } catch (err) {
+      setExpensesResult('Error de conexión. Asegúrate de tener GROQ_API_KEY configurada.');
+    } finally {
+      setExpensesLoading(false);
     }
   };
 
@@ -302,6 +334,17 @@ export default function PremiumPage() {
                 >
                   <MessageSquare className="w-4 h-4" />
                   Chat IA
+                </button>
+                <button
+                  onClick={() => setActiveTab('expenses')}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors ${
+                    activeTab === 'expenses'
+                      ? 'bg-green-500 text-white'
+                      : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
+                  }`}
+                >
+                  <Wallet className="w-4 h-4" />
+                  Análisis Gastos
                 </button>
               </div>
 
@@ -532,6 +575,91 @@ export default function PremiumPage() {
                       Enviar
                     </button>
                   </div>
+                </div>
+              )}
+
+              {activeTab === 'expenses' && (
+                <div>
+                  <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                    <Wallet className="w-5 h-5 text-green-500" />
+                    Análisis de Gastos con IA
+                  </h3>
+                  <div className="space-y-4 mb-4">
+                    <div>
+                      <label className="block text-slate-300 text-sm mb-1">Destino</label>
+                      <input
+                        type="text"
+                        value={expensesData.destination}
+                        onChange={(e) => setExpensesData({ ...expensesData, destination: e.target.value })}
+                        placeholder="Ej: Japón, España, Thailandia..."
+                        className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-green-500"
+                      />
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-slate-300 text-sm mb-1">Días</label>
+                        <input
+                          type="number"
+                          value={expensesData.days}
+                          onChange={(e) => setExpensesData({ ...expensesData, days: e.target.value })}
+                          min="1"
+                          max="90"
+                          className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:outline-none focus:border-green-500"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-slate-300 text-sm mb-1">Perfil</label>
+                        <select
+                          value={expensesData.category}
+                          onChange={(e) => setExpensesData({ ...expensesData, category: e.target.value })}
+                          className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:outline-none focus:border-green-500"
+                        >
+                          <option value="mochilero">Mochilero</option>
+                          <option value="turista">Turista</option>
+                          <option value="lujo">Lujo</option>
+                          <option value="familia">Familia</option>
+                          <option value="negocios">Negocios</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block text-slate-300 text-sm mb-1">Presupuesto</label>
+                      <select
+                        value={expensesData.budget}
+                        onChange={(e) => setExpensesData({ ...expensesData, budget: e.target.value })}
+                        className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:outline-none focus:border-green-500"
+                      >
+                        <option value="bajo">Económico (menos de 50€/día)</option>
+                        <option value="moderado">Moderado (50-150€/día)</option>
+                        <option value="alto">Alto (150-300€/día)</option>
+                        <option value="lujo">Lujo (300+/día)</option>
+                      </select>
+                    </div>
+                  </div>
+                  <button
+                    onClick={handleGenerateExpenses}
+                    disabled={expensesLoading}
+                    className="w-full py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-lg font-bold hover:from-green-500 hover:to-emerald-500 disabled:opacity-50 flex items-center justify-center gap-2"
+                  >
+                    {expensesLoading ? (
+                      <>
+                        <span className="animate-spin w-5 h-5 border-2 border-white border-t-transparent rounded-full"></span>
+                        Analizando...
+                      </>
+                    ) : (
+                      <>
+                        <Wallet className="w-5 h-5" />
+                        Analizar Presupuesto
+                      </>
+                    )}
+                  </button>
+                  {expensesResult && (
+                    <div className="mt-4 bg-slate-700/50 rounded-lg p-4 max-h-96 overflow-y-auto">
+                      <pre className="text-slate-300 text-sm whitespace-pre-wrap font-sans">
+                        {expensesResult}
+                      </pre>
+                    </div>
+                  )}
                 </div>
               )}
             </div>

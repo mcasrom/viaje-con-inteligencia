@@ -21,7 +21,7 @@ const CAPITALES: City[] = [
   { name: 'Tokio', timezone: 'Asia/Tokyo', pais: 'Japón', bandera: '🇯🇵' },
   { name: 'Sídney', timezone: 'Australia/Sydney', pais: 'Australia', bandera: '🇦🇺' },
   { name: 'Dubái', timezone: 'Asia/Dubai', pais: 'Emiratos Árabes', bandera: '🇦🇪' },
-  { name: 'Singapur', timezone: 'Asia/Singapur', pais: 'Singapur', bandera: '🇸🇬' },
+  { name: 'Singapur', timezone: 'Asia/Singapore', pais: 'Singapur', bandera: '🇸🇬' },
   { name: 'São Paulo', timezone: 'America/Sao_Paulo', pais: 'Brasil', bandera: '🇧🇷' },
   { name: 'Ciudad de México', timezone: 'America/Mexico_City', pais: 'México', bandera: '🇲🇽' },
   { name: 'Buenos Aires', timezone: 'America/Argentina/Buenos_Aires', pais: 'Argentina', bandera: '🇦🇷' },
@@ -110,7 +110,7 @@ export default function WorldClocksPage() {
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-500/20 text-blue-400 rounded-full text-sm font-medium mb-4">
             <Globe className="w-4 h-4" />
-            Relojes Mundiales
+            Horario Global
           </div>
           <h1 className="text-4xl font-bold text-white mb-4">
            🌍 Hora Mundial en Directo
@@ -168,7 +168,7 @@ export default function WorldClocksPage() {
             🌐 ¿Tu ciudad favorita?
           </h3>
           <p className="text-white/80 mb-6">
-            SolicitaAñadir más ciudades a los relojes mundiales.
+            Solicita añadir más ciudades a los relojes mundiales.
           </p>
           <Link
             href="/contact"

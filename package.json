@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "check": "npm run lint && npm run build",
+    "predeploy": "npm run check"
   },
   "dependencies": {
     "@stripe/stripe-js": "^9.2.0",
