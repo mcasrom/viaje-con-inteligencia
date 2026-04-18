@@ -3,7 +3,7 @@ title: "WiFi e internet en viajes: guía completa para conectado en cualquier lu
 description: "Dónde encontrar WiFi gratis, cómo conseguir datos móviles económicos, mejores apps y consejos para estar conectado abroad sin pagar de más. Guía actualizada 2026."
 date: "2026-04-18"
 slug: wifi-internet-viajes
-image: https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=800
+image: https://images.unsplash.com/photo-1527240555-9a600e20dacb?w=800
 author: Miguel Castillo
 readingTime: 8 minutos
 tags: [wifi, internet, datos, tecnologia, conectado, roaming, viajar]

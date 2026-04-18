@@ -3,7 +3,7 @@ title: "Estafas turísticas: cómo detectarlas y evitarlas - guía completa de t
 description: "Las estafas más comunes contra tourists y cómo evitarlas. Desde taxistas hasta falsos guías: conoce los timos y protegetu dinero."
 date: "2026-04-18"
 slug: estafas-turisticas
-image: https://images.unsplash.com/photo-1559650656-5ab976cbb5ac?w=800
+image: https://images.unsplash.com/photo-1563206767-5b1d97289374?w=800
 author: Miguel Castillo
 readingTime: 9 minutos
 tags: [estafas, seguridad, timos, dinero, fraude, viaje, steal]
