@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { paisesData, getLabelRiesgo, NivelRiesgo } from '@/data/paises';
-import { AlertTriangle, ArrowRight, Globe, Search, ClipboardList, Star, BookOpen, RefreshCw } from 'lucide-react';
+import { AlertTriangle, ArrowRight, Globe, Search, ClipboardList, Star, BookOpen, RefreshCw, Clock } from 'lucide-react';
 import LanguageSelector from './LanguageSelector';
 import { useI18n } from '@/lib/i18n';
 
@@ -89,6 +89,13 @@ export default function MapaMundial() {
               >
                 <BookOpen className="w-4 h-4" />
                 <span className="hidden md:inline">{t('nav.blog')}</span>
+              </Link>
+              <Link 
+                href="/relojes" 
+                className="flex items-center gap-2 px-3 py-2 text-slate-300 hover:text-white transition-colors"
+              >
+                <Clock className="w-4 h-4" />
+                <span className="hidden md:inline">Relojes</span>
               </Link>
               <Link 
                 href="/checklist" 
