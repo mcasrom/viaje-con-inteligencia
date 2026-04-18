@@ -1,12 +1,36 @@
 # Backlog Priorizado - Viaje con Inteligencia
 
+## ✅ COMPLETADOS (Abril 2026)
+- [x] Blog con tablas markdown (remark-gfm)
+- [x] Post mochilero (1000+ palabras)
+- [x] Sitemap.xml para Google
+- [x] robots.txt
+- [x] Google Site Verification
+- [x] Premium: Visa Checker
+- [x] Premium: Packing List Generator
+- [x] QuickAccess buttons fixed
+- [x] Git history cleaned (tokens removed)
+- [x] Países: Mozambique, Algeria, Israel, Líbano
+
 ## 🎯 PRIORIDAD ALTA (Alto Impacto + SEO)
+
+### 1. 📊 Dashboard de Usuario Premium
 
 ### 1. 📊 Dashboard de Usuario Premium
 - [ ] Panel personal con favoritos sincronizados
 - [ ] Historial de búsquedas
 - [ ] Alertas personalizadas por países guardados
 - [ ] Recomendaciones IA basadas en historial
+
+### 2. 🤖 Telegram Bot - Comando /pais
+- [ ] Arreglar búsqueda por nombre de país
+- [ ] Mejorar respuestas con formato
+- [ ] Añadir comandos: /visado, /presupuesto
+
+### 3. 🌍 Mapa Interactivo
+- [ ] Leaflet/Mapbox para visualizar países
+- [ ] Capa de embajadas
+- [ ] Capa de riesgos en tiempo real
 
 ### 2. 🔔 Sistema de Alertas en Tiempo Real
 - [ ] Alertas Push via bot Telegram
