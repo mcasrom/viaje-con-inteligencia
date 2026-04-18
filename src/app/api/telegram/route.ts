@@ -291,13 +291,15 @@ export async function POST(request: NextRequest) {
     }
     
 // FIRST: Check for country code (works from ANY state, even selecting_country)
-    console.log('First check for country:', text);
+    console.log('First check for country:', text, 'state:', state.step);
     // Check for country code - supports "ES", "/ES", "pais ES", "pais ES"
     const codeMatch = text.match(/^(?:\/pais\s+)?([A-Za-z]{2})$/i);
     if (codeMatch) {
+      console.log('Code match found:', codeMatch[1]);
       const upperCode = codeMatch[1].toUpperCase();
       const paisesModule = await import('@/data/paises');
       const allPaises = Object.values(paisesModule.paisesData);
+      console.log('Looking for code:', upperCode, 'available:', allPaises.map(p => p.codigo));
       const country = allPaises.find(p => p.codigo.toUpperCase() === upperCode);
       console.log('Found:', country?.nombre);
       if (country) {
