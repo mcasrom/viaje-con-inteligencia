@@ -10,10 +10,7 @@ function QuickAccessInner() {
 
   useEffect(() => {
     const urgent = searchParams.get('leaving');
-    const random = searchParams.get('random');
-    const flights = searchParams.get('flights');
-    
-    if (urgent || random || flights) {
+    if (urgent) {
       setShowPanel(true);
     }
   }, [searchParams]);
@@ -29,33 +26,43 @@ function QuickAccessInner() {
       </button>
 
       {showPanel && (
-        <div className="absolute bottom-16 right-0 bg-slate-800 rounded-xl p-4 shadow-xl border border-slate-700 w-64">
+        <div className="absolute bottom-16 right-0 bg-slate-800 rounded-xl p-4 shadow-xl border border-slate-700 w-72">
           <h3 className="text-white font-bold mb-3">⚡ Acceso Rápido</h3>
           <div className="space-y-2">
             <Link 
-              href="/?leaving=1" 
-              className="block p-2 bg-red-600/20 text-red-400 rounded-lg hover:bg-red-600/30"
-            >
-              🚨 Me voy AHORA
-            </Link>
-            <Link 
-              href="/?random=1" 
-              className="block p-2 bg-purple-600/20 text-purple-400 rounded-lg hover:bg-purple-600/30"
-            >
-              🎲 Destino aleatorio
-            </Link>
-            <Link 
-              href="/flights" 
+              href="/checklist" 
               className="block p-2 bg-blue-600/20 text-blue-400 rounded-lg hover:bg-blue-600/30"
             >
-              ✈️ Vuelos baratos
+              📋 Checklist viaje
             </Link>
             <Link 
-              href="/?visa=check" 
+              href="/relojes" 
+              className="block p-2 bg-purple-600/20 text-purple-400 rounded-lg hover:bg-purple-600/30"
+            >
+              🌍 Relojes mundiales
+            </Link>
+            <Link 
+              href="/blog" 
               className="block p-2 bg-green-600/20 text-green-400 rounded-lg hover:bg-green-600/30"
             >
-              📄 Check visa
+              📖 Blog recomendaciones
             </Link>
+            <Link 
+              href="https://t.me/ViajeConInteligenciaBot" 
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block p-2 bg-cyan-600/20 text-cyan-400 rounded-lg hover:bg-cyan-600/30"
+            >
+              🤖 Bot Telegram
+            </Link>
+            <div className="pt-2 mt-2 border-t border-slate-600">
+              <p className="text-slate-500 text-xs">Próximamente:</p>
+              <div className="flex flex-wrap gap-1 mt-1">
+                <span className="px-2 py-1 bg-slate-700/50 text-slate-400 text-xs rounded">🎲 Destino aleatorio</span>
+                <span className="px-2 py-1 bg-slate-700/50 text-slate-400 text-xs rounded">✈️ Vuelos</span>
+                <span className="px-2 py-1 bg-slate-700/50 text-slate-400 text-xs rounded">📄 Check visa</span>
+              </div>
+            </div>
           </div>
         </div>
       )}
