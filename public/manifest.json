@@ -1,0 +1,55 @@
+{
+  "name": "Viaje con Inteligencia",
+  "short_name": "Viaje IA",
+  "description": "Mapa de riesgos de viaje por país - MAEC",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#0f172a",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "48x48",
+      "type": "image/x-icon",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/preview_favicon.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any"
+    }
+  ],
+  "categories": ["travel", "navigation"],
+  "lang": "es",
+  "dir": "ltr",
+  "scope": "/",
+  "prefer_related_applications": false,
+  "shortcuts": [
+    {
+      "name": "Buscar País",
+      "short_name": "Buscar",
+      "url": "/?search=1",
+      "description": "Buscar información de países"
+    },
+    {
+      "name": "Blog",
+      "short_name": "Blog",
+      "url": "/blog",
+      "description": "Artículos de viaje"
+    },
+    {
+      "name": "Relojes",
+      "short_name": "Relojes",
+      "url": "/relojes",
+      "description": "Hora mundial"
+    }
+  ]
+}

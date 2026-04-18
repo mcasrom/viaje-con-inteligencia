@@ -11,11 +11,12 @@ const geistSans = Geist({
 
 export const metadata: Metadata = {
   title: "Viaje con Inteligencia | Mapa de Riesgos de Viaje MAEC - Riesgo Zero",
-  description: "Tu guía completa de viajes seguros. Mapa interactivo de riesgos por país según MAEC español. Embajadas, requisitos, consejos, qué hacer y qué no hacer en cada destino. Viaja con inteligencia, viaja seguro.",
+  description: "Tu guía completa de viajes seguros. Mapa interactivo de riesgos por país según MAEC español. Embajadas, requisitos, consejos, qué hacer y qué no hacer en cada destino. Viaja con inteligencia, viajanSeguro.",
   keywords: "viaje seguro, mapa de riesgos, MAEC, embajadas, requisitos viaje, travel risk, países riesgo, seguro viaje,外交部, risk assessment, travel advisory",
   authors: [{ name: "M.Castillo" }],
   creator: "M.Castillo",
   publisher: "Viaje con Inteligencia",
+  manifest: '/manifest.json',
   openGraph: {
     title: "Viaje con Inteligencia | Riesgo Zero",
     description: "Mapa interactivo de riesgos de viaje por país. Información oficial MAEC. Embajadas, requisitos y consejos para viajar seguro.",
