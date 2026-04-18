@@ -336,7 +336,7 @@ export default function PremiumPage() {
 
           <div className="lg:col-span-2">
             <div className="bg-slate-800 rounded-2xl p-6 border border-slate-700">
-              <div className="flex gap-2 mb-6">
+              <div className="flex flex-wrap gap-2 mb-6 justify-center">
                 <button
                   onClick={() => { setActiveTab('seismos'); loadSeismos(); }}
                   className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors ${
