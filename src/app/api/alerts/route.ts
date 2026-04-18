@@ -1,69 +1,116 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { sendRiskUpdate, sendCountryAlert, getBotInfo, getChannelInfo } from '@/lib/telegram-channel';
-import { paisesData } from '@/data/paises';
+import { paisesData, NivelRiesgo } from '@/data/paises';
+import { sendTelegramMessage } from '@/lib/telegram-channel';
+
+export const dynamic = 'force-dynamic';
+
+const ALERT_TYPES: Record<string, {emoji: string; color: string; priority: string}> = {
+  risk_change: {
+    emoji: '⚠️',
+    color: 'red',
+    priority: 'high'
+  },
+  security: {
+    emoji: '🚨',
+    color: 'red',
+    priority: 'high'
+  },
+  weather: {
+    emoji: '🌧️',
+    color: 'yellow',
+    priority: 'medium'
+  },
+  health: {
+    emoji: '🏥',
+    color: 'yellow',
+    priority: 'medium'
+  },
+  info: {
+    emoji: 'ℹ️',
+    color: 'blue',
+    priority: 'low'
+  }
+};
+
+export async function GET(request: NextRequest) {
+  const searchParams = request.nextUrl.searchParams;
+  const country = searchParams.get('country');
+  const type = searchParams.get('type');
+  const days = parseInt(searchParams.get('days') || '7');
+
+  if (country) {
+    const pais = paisesData[country.toLowerCase()];
+    if (!pais) {
+      return NextResponse.json({ error: 'País no encontrado' }, { status: 404 });
+    }
+    return NextResponse.json({
+      country: pais.codigo,
+      nombre: pais.nombre,
+      nivelRiesgo: pais.nivelRiesgo,
+      ultimoInforme: pais.ultimoInforme,
+      contactos: pais.contactos,
+      recomendaciones: pais.requerimientos
+    });
+  }
+
+  if (type === 'all') {
+    const risky = Object.values(paisesData).filter(p => 
+      p.nivelRiesgo === 'alto' || p.nivelRiesgo === 'muy-alto'
+    );
+    return NextResponse.json({
+      total: Object.keys(paisesData).length,
+      highRisk: Object.values(paisesData).filter(p => p.nivelRiesgo === 'alto' || p.nivelRiesgo === 'muy-alto').length,
+      countries: risky.map(p => ({
+        codigo: p.codigo,
+        nombre: p.nombre,
+        nivelRiesgo: p.nivelRiesgo,
+        ultimaActualizacion: p.ultimoInforme
+      }))
+    });
+  }
+
+  return NextResponse.json({
+    message: 'Usa /api/alerts?country=ES para ver alertas de un país',
+    opciones: {
+      country: 'Código de país (ej: ES, FR, MX)',
+      type: 'all (países en riesgo)',
+      days: 'Días de histórico (default 7)'
+    }
+  });
+}
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { action, countryCode } = body;
+    const { countryCode, type, message, title, sendToTelegram } = body;
 
-    switch (action) {
-      case 'broadcast_risk':
-        const sent = await sendRiskUpdate();
-        return NextResponse.json({ 
-          success: sent, 
-          message: sent ? 'Alerta enviada al canal' : 'Error al enviar alerta'
-        });
-
-      case 'send_country_alert':
-        if (!countryCode) {
-          return NextResponse.json({ error: 'Country code required' }, { status: 400 });
-        }
-        const countrySent = await sendCountryAlert(countryCode);
-        return NextResponse.json({ 
-          success: countrySent,
-          message: countrySent ? `Alerta de ${countryCode} enviada` : 'Error al enviar'
-        });
-
-      case 'test_bot':
-        const botInfo = await getBotInfo();
-        return NextResponse.json(botInfo);
-
-      case 'test_channel':
-        const channelInfo = await getChannelInfo();
-        return NextResponse.json(channelInfo);
-
-      case 'list_countries':
-        return NextResponse.json({
-          countries: Object.values(paisesData).map(p => ({
-            code: p.codigo,
-            name: p.nombre,
-            risk: p.nivelRiesgo,
-          })),
-        });
-
-      default:
-        return NextResponse.json({ 
-          error: 'Invalid action',
-          available: ['broadcast_risk', 'send_country_alert', 'test_bot', 'test_channel', 'list_countries']
-        }, { status: 400 });
+    if (!countryCode || !message) {
+      return NextResponse.json({ error: 'Faltan countryCode o message' }, { status: 400 });
     }
-  } catch (error) {
-    console.error('Alerts API error:', error);
-    return NextResponse.json({ error: 'Internal error' }, { status: 500 });
-  }
-}
 
-export async function GET() {
-  return NextResponse.json({
-    endpoint: '/api/alerts',
-    methods: ['POST'],
-    actions: {
-      broadcast_risk: 'Enviar actualización de riesgos al canal',
-      send_country_alert: 'Enviar alerta de país específico',
-      test_bot: 'Probar conexión con Bot API',
-      test_channel: 'Ver info del canal',
-      list_countries: 'Listar países disponibles',
-    },
-  });
+    const pais = paisesData[countryCode.toLowerCase()];
+    if (!pais) {
+      return NextResponse.json({ error: 'País no encontrado' }, { status: 404 });
+    }
+
+    const alertType = ALERT_TYPES[type] || ALERT_TYPES.info;
+    const alertMessage = `${alertType.emoji} *${title || 'Alerta'} - ${pais.nombre}*\n\n${message}\n\n🔗 via @ViajeConInteligenciaBot`;
+
+    if (sendToTelegram) {
+      await sendTelegramMessage(alertMessage);
+    }
+
+    return NextResponse.json({
+      success: true,
+      message: 'Alerta enviada',
+      alert: {
+        country: pais.nombre,
+        type: type,
+        message: message
+      }
+    });
+  } catch (error) {
+    console.error('Alerts error:', error);
+    return NextResponse.json({ error: 'Error procesando alerta' }, { status: 500 });
+  }
 }

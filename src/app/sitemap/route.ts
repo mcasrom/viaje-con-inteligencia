@@ -14,6 +14,7 @@ const staticPages = [
   '/legal',
   '/metodologia',
   '/relojes',
+  '/alertas',
 ];
 
 export async function GET() {
