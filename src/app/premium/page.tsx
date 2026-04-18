@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, Bot, Bell, FileCheck, Map, TrendingUp, Star, Check, CreditCard, Globe, Zap, AlertTriangle, MessageSquare, Plane, Wallet } from 'lucide-react';
 
@@ -57,6 +57,10 @@ export default function PremiumPage() {
   const [expensesLoading, setExpensesLoading] = useState(false);
   const [expensesResult, setExpensesResult] = useState<string>('');
   const [expensesData, setExpensesData] = useState({ destination: '', days: '7', budget: 'moderado', category: 'turista' });
+
+  useEffect(() => {
+    loadSeismos();
+  }, []);
 
   const handleSubscribe = async (priceId: string) => {
     setLoading(priceId);
