@@ -666,6 +666,13 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ ok: true });
     }
     
+    if (text === '/help' || text === '/ayuda' || text === '/ajuda') {
+      await sendMessage(chatId, t.help(), {
+        reply_markup: t.menu()
+      });
+      return NextResponse.json({ ok: true });
+    }
+    
     await sendMessage(chatId, t.notUnderstood(), {
       reply_markup: t.menu()
     });
