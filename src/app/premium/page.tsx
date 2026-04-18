@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Bot, Bell, FileCheck, Map, TrendingUp, Star, Check, CreditCard, Globe, Zap, AlertTriangle, MessageSquare, Plane, Wallet } from 'lucide-react';
+import { ArrowLeft, Bot, Bell, FileCheck, Map, TrendingUp, Star, Check, CreditCard, Globe, Zap, AlertTriangle, MessageSquare, Plane, Wallet, FileText, Calculator, Briefcase } from 'lucide-react';
 
 const PLANS = [
   {
@@ -44,7 +44,7 @@ const PLANS = [
 export default function PremiumPage() {
   const [loading, setLoading] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<'itinerary' | 'chat' | 'seismos' | 'conflicts' | 'expenses'>('seismos');
+  const [activeTab, setActiveTab] = useState<'itinerary' | 'chat' | 'seismos' | 'conflicts' | 'expenses' | 'visa' | 'packing'>('seismos');
   const [itineraryLoading, setItineraryLoading] = useState(false);
   const [itineraryResult, setItineraryResult] = useState<string>('');
   const [chatMessages, setChatMessages] = useState<{role: string; content: string}[]>([]);
@@ -57,6 +57,14 @@ export default function PremiumPage() {
   const [expensesLoading, setExpensesLoading] = useState(false);
   const [expensesResult, setExpensesResult] = useState<string>('');
   const [expensesData, setExpensesData] = useState({ destination: '', days: '7', budget: 'moderado', category: 'turista' });
+  const [visaCountry, setVisaCountry] = useState('');
+  const [visaResult, setVisaResult] = useState<any>(null);
+  const [visaLoading, setVisaLoading] = useState(false);
+  const [packingDestination, setPackingDestination] = useState('');
+  const [packingDays, setPackingDays] = useState('7');
+  const [packingType, setPackingType] = useState('viaje');
+  const [packingResult, setPackingResult] = useState<string>('');
+  const [packingLoading, setPackingLoading] = useState(false);
 
   useEffect(() => {
     loadSeismos();
@@ -201,6 +209,40 @@ export default function PremiumPage() {
       setConflicts([]);
     } finally {
       setConflictsLoading(false);
+    }
+  };
+
+  const checkVisa = async () => {
+    if (!visaCountry.trim()) return;
+    setVisaLoading(true);
+    setVisaResult(null);
+    try {
+      const response = await fetch(`/api/visa-check?country=${encodeURIComponent(visaCountry)}`);
+      const data = await response.json();
+      setVisaResult(data);
+    } catch (err) {
+      setVisaResult({ error: 'Error al verificar visa' });
+    } finally {
+      setVisaLoading(false);
+    }
+  };
+
+  const generatePackingList = async () => {
+    if (!packingDestination.trim()) return;
+    setPackingLoading(true);
+    setPackingResult('');
+    try {
+      const response = await fetch('/api/packing-list', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ destination: packingDestination, days: parseInt(packingDays), type: packingType }),
+      });
+      const data = await response.json();
+      setPackingResult(data.list || data.error);
+    } catch (err) {
+      setPackingResult('Error al generar lista');
+    } finally {
+      setPackingLoading(false);
     }
   };
 
@@ -349,6 +391,28 @@ export default function PremiumPage() {
                 >
                   <Wallet className="w-4 h-4" />
                   Análisis Gastos
+                </button>
+                <button
+                  onClick={() => setActiveTab('visa')}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors ${
+                    activeTab === 'visa'
+                      ? 'bg-cyan-500 text-white'
+                      : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
+                  }`}
+                >
+                  <FileText className="w-4 h-4" />
+                  Visa Checker
+                </button>
+                <button
+                  onClick={() => setActiveTab('packing')}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors ${
+                    activeTab === 'packing'
+                      ? 'bg-teal-500 text-white'
+                      : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
+                  }`}
+                >
+                  <Briefcase className="w-4 h-4" />
+                  Lista Equipaje
                 </button>
               </div>
 
@@ -699,6 +763,114 @@ export default function PremiumPage() {
             ¿Ya tienes cuenta? <Link href="/dashboard" className="text-blue-400 hover:text-blue-300">Acceder a mi cuenta</Link>
           </p>
         </div>
+
+        {activeTab === 'visa' && (
+          <div className="mt-8 bg-slate-800 rounded-2xl p-6 border border-slate-700">
+            <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+              <FileText className="w-6 h-6 text-cyan-500" />
+              🛂 Check Visa - ¿Necesito visa?
+            </h3>
+            <div className="flex gap-3 mb-4">
+              <input
+                type="text"
+                value={visaCountry}
+                onChange={(e) => setVisaCountry(e.target.value)}
+                placeholder="Escribe un país (ej: Japón,泰国, 日本)"
+                className="flex-1 px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-cyan-500"
+                onKeyDown={(e) => e.key === 'Enter' && checkVisa()}
+              />
+              <button
+                onClick={checkVisa}
+                disabled={visaLoading || !visaCountry.trim()}
+                className="px-6 py-3 bg-cyan-600 text-white rounded-lg font-medium hover:bg-cyan-500 disabled:opacity-50"
+              >
+                {visaLoading ? 'Verificando...' : 'Verificar'}
+              </button>
+            </div>
+            {visaResult && (
+              <div className={`p-4 rounded-lg ${visaResult.error ? 'bg-red-900/50' : 'bg-green-900/50'}`}>
+                {visaResult.error ? (
+                  <p className="text-red-300">{visaResult.error}</p>
+                ) : (
+                  <div className="space-y-2">
+                    <p className="text-white font-bold text-lg">{visaResult.country}</p>
+                    <p className="text-slate-300">{visaResult.visa_required ? '⚠️ Visa requerida' : '✅ Sin visa (para españoles)'}</p>
+                    {visaResult.details && <p className="text-slate-400 text-sm">{visaResult.details}</p>}
+                    {visaResult.duration && <p className="text-cyan-400">Duración máxima: {visaResult.duration}</p>}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        )}
+
+        {activeTab === 'packing' && (
+          <div className="mt-8 bg-slate-800 rounded-2xl p-6 border border-slate-700">
+            <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+              <Briefcase className="w-6 h-6 text-teal-500" />
+              🧳 Generador de Lista de Equipaje
+            </h3>
+            <div className="grid md:grid-cols-3 gap-4 mb-4">
+              <div>
+                <label className="block text-slate-400 text-sm mb-1">Destino</label>
+                <input
+                  type="text"
+                  value={packingDestination}
+                  onChange={(e) => setPackingDestination(e.target.value)}
+                  placeholder="Ej: Japón, Tailandia..."
+                  className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-teal-500"
+                />
+              </div>
+              <div>
+                <label className="block text-slate-400 text-sm mb-1">Días</label>
+                <input
+                  type="number"
+                  value={packingDays}
+                  onChange={(e) => setPackingDays(e.target.value)}
+                  min="1"
+                  max="365"
+                  className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:outline-none focus:border-teal-500"
+                />
+              </div>
+              <div>
+                <label className="block text-slate-400 text-sm mb-1">Tipo de viaje</label>
+                <select
+                  value={packingType}
+                  onChange={(e) => setPackingType(e.target.value)}
+                  className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:outline-none focus:border-teal-500"
+                >
+                  <option value="viaje">Turismo</option>
+                  <option value="negocios">Negocios</option>
+                  <option value="mochilero">Mochilero</option>
+                  <option value="playa">Playa</option>
+                  <option value="montaña">Montaña</option>
+                </select>
+              </div>
+            </div>
+            <button
+              onClick={generatePackingList}
+              disabled={packingLoading || !packingDestination.trim()}
+              className="w-full py-3 bg-gradient-to-r from-teal-600 to-cyan-600 text-white rounded-lg font-bold hover:from-teal-500 hover:to-cyan-500 disabled:opacity-50 flex items-center justify-center gap-2"
+            >
+              {packingLoading ? (
+                <>
+                  <span className="animate-spin w-5 h-5 border-2 border-white border-t-transparent rounded-full"></span>
+                  Generando...
+                </>
+              ) : (
+                <>
+                  <Briefcase className="w-5 h-5" />
+                  Generar Lista
+                </>
+              )}
+            </button>
+            {packingResult && (
+              <div className="mt-4 bg-slate-700/50 rounded-lg p-4 max-h-96 overflow-y-auto">
+                <pre className="text-slate-300 text-sm whitespace-pre-wrap font-sans">{packingResult}</pre>
+              </div>
+            )}
+          </div>
+        )}
       </main>
 
       <footer className="bg-slate-800 border-t border-slate-700 py-6 mt-12">
