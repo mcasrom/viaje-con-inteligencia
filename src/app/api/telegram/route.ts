@@ -292,12 +292,14 @@ export async function POST(request: NextRequest) {
     
 // FIRST: Check for country code (works from ANY state)
     const codeMatch = text.match(/^(?:\/pais\s+)?([A-Za-z]{2})$/i);
+    console.log('Telegram update:', text, 'codeMatch:', codeMatch);
     if (codeMatch) {
       const upperCode = codeMatch[1].toUpperCase();
       const paisesModule = await import('@/data/paises');
       const allPaises = Object.values(paisesModule.paisesData);
       const country = allPaises.find(p => p.codigo.toUpperCase() === upperCode);
       if (country) {
+        console.log('Found country by code:', country.nombre);
         resetUserState(chatId);
         const weather = await getWeatherForCountry(country.codigo);
         let info = formatCountryInfo(country.codigo);
@@ -593,7 +595,9 @@ export async function POST(request: NextRequest) {
     
     // Handle /pais command (official)
     if (text.startsWith('/pais') || text.startsWith('/country')) {
+      console.log('/pais command detected:', text);
       const query = text.replace('/pais', '').replace('/country', '').trim();
+      console.log('Query after replace:', query);
       if (!query) {
         // /pais sin argumento - mostrar ayuda
         await sendMessage(chatId, '🇬🇧 *Buscar país*\n\nUsa: /pais [código o nombre]\n\n_Ejemplos:_\n/pais ES\n/pais España\n/pais Australia', {
