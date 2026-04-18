@@ -729,10 +729,106 @@ export default function PremiumPage() {
                     </div>
                   )}
                 </div>
+)}
+              </div>
+
+              {activeTab === 'visa' && (
+                <div className="mt-6 bg-slate-800 rounded-2xl p-6 border border-slate-700">
+                  <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                    <FileText className="w-6 h-6 text-cyan-500" />
+                    🛂 Check Visa - ¿Necesito visa?
+                  </h3>
+                  <div className="flex gap-3 mb-4">
+                    <input
+                      type="text"
+                      value={visaCountry}
+                      onChange={(e) => setVisaCountry(e.target.value)}
+                      placeholder="Escribe un país (ej: Japón,泰国, 日本)"
+                      className="flex-1 px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-cyan-500"
+                      onKeyDown={(e) => e.key === 'Enter' && checkVisa()}
+                    />
+                    <button
+                      onClick={checkVisa}
+                      disabled={visaLoading || !visaCountry.trim()}
+                      className="px-6 py-3 bg-cyan-600 text-white rounded-lg font-medium hover:bg-cyan-500 disabled:opacity-50"
+                    >
+                      {visaLoading ? 'Verificando...' : 'Verificar'}
+                    </button>
+                  </div>
+                  {visaResult && (
+                    <div className={`p-4 rounded-lg ${visaResult.error ? 'bg-red-900/50' : 'bg-green-900/50'}`}>
+                      {visaResult.error ? (
+                        <p className="text-red-300">{visaResult.error}</p>
+                      ) : (
+                        <div className="space-y-2">
+                          <p className="text-white font-bold text-lg">{visaResult.country}</p>
+                          <p className="text-slate-300">{visaResult.visa_required ? '⚠️ Visa requerida' : '✅ Sin visa (para españoles)'}</p>
+                          {visaResult.details && <p className="text-slate-400 text-sm">{visaResult.details}</p>}
+                          {visaResult.duration && <p className="text-cyan-400">Duración máxima: {visaResult.duration}</p>}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {activeTab === 'packing' && (
+                <div className="mt-6 bg-slate-800 rounded-2xl p-6 border border-slate-700">
+                  <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                    <Briefcase className="w-6 h-6 text-teal-500" />
+                    🧳 Generador de Lista de Equipaje
+                  </h3>
+                  <div className="grid md:grid-cols-3 gap-4 mb-4">
+                    <div>
+                      <label className="block text-slate-400 text-sm mb-1">Destino</label>
+                      <input
+                        type="text"
+                        value={packingDestination}
+                        onChange={(e) => setPackingDestination(e.target.value)}
+                        placeholder="Ej: Japón, Tailandia..."
+                        className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-teal-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-slate-400 text-sm mb-1">Días</label>
+                      <input
+                        type="number"
+                        value={packingDays}
+                        onChange={(e) => setPackingDays(e.target.value)}
+                        min="1"
+                        max="365"
+                        className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:outline-none focus:border-teal-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-slate-400 text-sm mb-1">Tipo</label>
+                      <select
+                        value={packingType}
+                        onChange={(e) => setPackingType(e.target.value)}
+                        className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:outline-none focus:border-teal-500"
+                      >
+                        <option value="viaje">Turismo</option>
+                        <option value="negocios">Negocios</option>
+                        <option value="mochilero">Mochilero</option>
+                      </select>
+                    </div>
+                  </div>
+                  <button
+                    onClick={generatePackingList}
+                    disabled={packingLoading || !packingDestination.trim()}
+                    className="w-full py-3 bg-gradient-to-r from-teal-600 to-cyan-600 text-white rounded-lg font-bold hover:from-teal-500 hover:to-cyan-500 disabled:opacity-50"
+                  >
+                    {packingLoading ? 'Generando...' : 'Generar Lista'}
+                  </button>
+                  {packingResult && (
+                    <div className="mt-4 bg-slate-700/50 rounded-lg p-4 max-h-96 overflow-y-auto">
+                      <pre className="text-slate-300 text-sm whitespace-pre-wrap font-sans">{packingResult}</pre>
+                    </div>
+                  )}
+                </div>
               )}
             </div>
           </div>
-        </div>
 
         <div className="grid md:grid-cols-3 gap-4 mb-8">
           <div className="bg-slate-800 rounded-xl p-5 border border-slate-700">
@@ -763,114 +859,6 @@ export default function PremiumPage() {
             ¿Ya tienes cuenta? <Link href="/dashboard" className="text-blue-400 hover:text-blue-300">Acceder a mi cuenta</Link>
           </p>
         </div>
-
-        {activeTab === 'visa' && (
-          <div className="mt-8 bg-slate-800 rounded-2xl p-6 border border-slate-700">
-            <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
-              <FileText className="w-6 h-6 text-cyan-500" />
-              🛂 Check Visa - ¿Necesito visa?
-            </h3>
-            <div className="flex gap-3 mb-4">
-              <input
-                type="text"
-                value={visaCountry}
-                onChange={(e) => setVisaCountry(e.target.value)}
-                placeholder="Escribe un país (ej: Japón,泰国, 日本)"
-                className="flex-1 px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-cyan-500"
-                onKeyDown={(e) => e.key === 'Enter' && checkVisa()}
-              />
-              <button
-                onClick={checkVisa}
-                disabled={visaLoading || !visaCountry.trim()}
-                className="px-6 py-3 bg-cyan-600 text-white rounded-lg font-medium hover:bg-cyan-500 disabled:opacity-50"
-              >
-                {visaLoading ? 'Verificando...' : 'Verificar'}
-              </button>
-            </div>
-            {visaResult && (
-              <div className={`p-4 rounded-lg ${visaResult.error ? 'bg-red-900/50' : 'bg-green-900/50'}`}>
-                {visaResult.error ? (
-                  <p className="text-red-300">{visaResult.error}</p>
-                ) : (
-                  <div className="space-y-2">
-                    <p className="text-white font-bold text-lg">{visaResult.country}</p>
-                    <p className="text-slate-300">{visaResult.visa_required ? '⚠️ Visa requerida' : '✅ Sin visa (para españoles)'}</p>
-                    {visaResult.details && <p className="text-slate-400 text-sm">{visaResult.details}</p>}
-                    {visaResult.duration && <p className="text-cyan-400">Duración máxima: {visaResult.duration}</p>}
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-        )}
-
-        {activeTab === 'packing' && (
-          <div className="mt-8 bg-slate-800 rounded-2xl p-6 border border-slate-700">
-            <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
-              <Briefcase className="w-6 h-6 text-teal-500" />
-              🧳 Generador de Lista de Equipaje
-            </h3>
-            <div className="grid md:grid-cols-3 gap-4 mb-4">
-              <div>
-                <label className="block text-slate-400 text-sm mb-1">Destino</label>
-                <input
-                  type="text"
-                  value={packingDestination}
-                  onChange={(e) => setPackingDestination(e.target.value)}
-                  placeholder="Ej: Japón, Tailandia..."
-                  className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-teal-500"
-                />
-              </div>
-              <div>
-                <label className="block text-slate-400 text-sm mb-1">Días</label>
-                <input
-                  type="number"
-                  value={packingDays}
-                  onChange={(e) => setPackingDays(e.target.value)}
-                  min="1"
-                  max="365"
-                  className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:outline-none focus:border-teal-500"
-                />
-              </div>
-              <div>
-                <label className="block text-slate-400 text-sm mb-1">Tipo de viaje</label>
-                <select
-                  value={packingType}
-                  onChange={(e) => setPackingType(e.target.value)}
-                  className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:outline-none focus:border-teal-500"
-                >
-                  <option value="viaje">Turismo</option>
-                  <option value="negocios">Negocios</option>
-                  <option value="mochilero">Mochilero</option>
-                  <option value="playa">Playa</option>
-                  <option value="montaña">Montaña</option>
-                </select>
-              </div>
-            </div>
-            <button
-              onClick={generatePackingList}
-              disabled={packingLoading || !packingDestination.trim()}
-              className="w-full py-3 bg-gradient-to-r from-teal-600 to-cyan-600 text-white rounded-lg font-bold hover:from-teal-500 hover:to-cyan-500 disabled:opacity-50 flex items-center justify-center gap-2"
-            >
-              {packingLoading ? (
-                <>
-                  <span className="animate-spin w-5 h-5 border-2 border-white border-t-transparent rounded-full"></span>
-                  Generando...
-                </>
-              ) : (
-                <>
-                  <Briefcase className="w-5 h-5" />
-                  Generar Lista
-                </>
-              )}
-            </button>
-            {packingResult && (
-              <div className="mt-4 bg-slate-700/50 rounded-lg p-4 max-h-96 overflow-y-auto">
-                <pre className="text-slate-300 text-sm whitespace-pre-wrap font-sans">{packingResult}</pre>
-              </div>
-            )}
-          </div>
-        )}
       </main>
 
       <footer className="bg-slate-800 border-t border-slate-700 py-6 mt-12">
