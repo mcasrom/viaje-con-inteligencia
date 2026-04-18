@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { ArrowLeft, Calendar, Clock, Tag } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { getPostBySlug, getPostSlugs, getRelatedPosts } from '@/lib/posts';
 import ShareButtons from '@/components/ShareButtons';
 
@@ -88,7 +89,7 @@ export default async function ArticuloPage({ params }: PageProps) {
               prose-blockquote:border-l-blue-500 prose-blockquote:text-slate-400
               prose-img:rounded-xl prose-img:shadow-lg prose-img:my-4
             ">
-              <ReactMarkdown>{post.content}</ReactMarkdown>
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>{post.content}</ReactMarkdown>
             </div>
           </div>
 
