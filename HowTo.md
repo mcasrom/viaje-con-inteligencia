@@ -166,7 +166,7 @@ node -r ts-node/register src/lib/telegram-bot.ts
 
 ### Variables entorno
 ```
-TELEGRAM_BOT_TOKEN=TOKEN_REMOVED
+TELEGRAM_BOT_TOKEN=TU_TOKEN_AQUI
 TELEGRAM_CHANNEL_ID=-1003764932977
 CRON_SECRET=lS+/mhOpowDvtLUVHsGmGYq35m+cGYMX8Ca5BdAk9vQ=
 ```
