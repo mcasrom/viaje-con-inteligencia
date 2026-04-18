@@ -594,19 +594,29 @@ export async function POST(request: NextRequest) {
     // Handle /pais command (official)
     if (text.startsWith('/pais') || text.startsWith('/country')) {
       const query = text.replace('/pais', '').replace('/country', '').trim();
-      if (query) {
-        const paisesModule = await import('@/data/paises');
-        const country = Object.values(paisesModule.paisesData).find(
-          (p) => p.nombre.toLowerCase().includes(query.toLowerCase()) ||
-                 p.codigo.toLowerCase() === query.toLowerCase()
-        );
-        if (country) {
-          const weather = await getWeatherForCountry(country.codigo);
-          let info = formatCountryInfo(country.codigo);
-          if (weather) info += '\n\n' + weather;
-          await sendMessage(chatId, info, getMainKeyboard());
-          return NextResponse.json({ ok: true });
-        }
+      if (!query) {
+        // /pais sin argumento - mostrar ayuda
+        await sendMessage(chatId, '🇬🇧 *Buscar país*\n\nUsa: /pais [código o nombre]\n\n_Ejemplos:_\n/pais ES\n/pais España\n/pais Australia', {
+          reply_markup: t.menu()
+        });
+        return NextResponse.json({ ok: true });
+      }
+      const paisesModule = await import('@/data/paises');
+      const country = Object.values(paisesModule.paisesData).find(
+        (p) => p.nombre.toLowerCase().includes(query.toLowerCase()) ||
+               p.codigo.toLowerCase() === query.toLowerCase()
+      );
+      if (country) {
+        const weather = await getWeatherForCountry(country.codigo);
+        let info = formatCountryInfo(country.codigo);
+        if (weather) info += '\n\n' + weather;
+        await sendMessage(chatId, info, getMainKeyboard());
+        return NextResponse.json({ ok: true });
+      } else {
+        await sendMessage(chatId, `❌ No encontré "${query}". Prueba con otro nombre o código (ES, FR, AU...).`, {
+          reply_markup: t.menu()
+        });
+        return NextResponse.json({ ok: true });
       }
     }
     
