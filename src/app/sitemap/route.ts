@@ -13,6 +13,7 @@ const staticPages = [
   '/dashboard',
   '/legal',
   '/metodologia',
+  '/relojes',
 ];
 
 export async function GET() {
