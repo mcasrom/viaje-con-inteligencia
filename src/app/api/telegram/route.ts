@@ -307,29 +307,43 @@ export async function POST(request: NextRequest) {
       }
     }
     
-    // Handle /pais ES, /pais España, etc
-    if (text.startsWith('/pais ') || text.startsWith('/country ')) {
-      const query = text.replace(/^\/(pais|country)\s+/i, '').trim();
-      if (query) {
-        const paisesModule = await import('@/data/paises');
-        const allPaises = Object.values(paisesModule.paisesData);
-        const country = allPaises.find(p => 
-          p.nombre.toLowerCase().includes(query.toLowerCase()) ||
-          p.codigo.toLowerCase() === query.toLowerCase()
+    // Handle /pais or /country command
+    if (text.startsWith('/pais') || text.startsWith('/country')) {
+      const query = text.replace(/^\/(pais|country)\s*/i, '').trim().toLowerCase();
+      console.log('/pais command - query:', query);
+      
+      if (!query) {
+        await sendMessage(chatId, '🇬🇧 *Buscar país*\n\nUsa: /pais [código o nombre]\n\n_Ejemplos:_\n/pais ES\n/pais España\n/pais Japón', {
+          reply_markup: t.menu()
+        });
+        return NextResponse.json({ ok: true });
+      }
+      
+      const paisesModule = await import('@/data/paises');
+      const allPaises = Object.values(paisesModule.paisesData);
+      
+      // Search by code first, then by name
+      let country = allPaises.find(p => p.codigo.toLowerCase() === query);
+      if (!country) {
+        country = allPaises.find(p => 
+          p.nombre.toLowerCase().includes(query) ||
+          p.nombre.toLowerCase().split(' ').some(word => word.startsWith(query))
         );
-        if (country) {
-          resetUserState(chatId);
-          const weather = await getWeatherForCountry(country.codigo);
-          let info = formatCountryInfo(country.codigo);
-          if (weather) info += '\n\n' + weather;
-          await sendMessage(chatId, info, getMainKeyboard());
-          return NextResponse.json({ ok: true });
-        } else {
-          await sendMessage(chatId, `❌ No encontré "${query}". Prueba: ES, España, Francia, Australia...`, {
-            reply_markup: t.menu()
-          });
-          return NextResponse.json({ ok: true });
-        }
+      }
+      
+      if (country) {
+        console.log('Found country:', country.nombre);
+        resetUserState(chatId);
+        const weather = await getWeatherForCountry(country.codigo);
+        let info = formatCountryInfo(country.codigo);
+        if (weather) info += '\n\n' + weather;
+        await sendMessage(chatId, info, getMainKeyboard());
+        return NextResponse.json({ ok: true });
+      } else {
+        await sendMessage(chatId, `❌ No encontré "${query}". Prueba: ES, España, Francia, Japón, Australia...`, {
+          reply_markup: t.menu()
+        });
+        return NextResponse.json({ ok: true });
       }
     }
     
