@@ -16,9 +16,11 @@ interface Post {
   keywords: string;
   excerpt: string;
   tags?: string[];
+  views?: number;
 }
 
 function PostCard({ post }: { post: Post }) {
+  const isPopular = (post.views || 0) >= 10;
   return (
     <Link
       href={`/blog/${post.slug}`}
@@ -42,6 +44,12 @@ function PostCard({ post }: { post: Post }) {
             <img src="/favicon.jpg" alt="" className="w-16 h-16 rounded-xl shadow-2xl border-2 border-white/20 object-contain" />
           </div>
         )}
+        {isPopular && (
+          <div className="absolute top-2 right-2 px-2 py-1 bg-orange-500 text-white text-xs font-bold rounded-full flex items-center gap-1">
+            <Flame className="w-3 h-3" />
+            Popular
+          </div>
+        )}
       </div>
       <div className="p-5">
         <div className="flex items-center gap-2 mb-2">
@@ -61,6 +69,12 @@ function PostCard({ post }: { post: Post }) {
             <Clock className="w-3 h-3" />
             {post.readTime}
           </span>
+          {post.views !== undefined && post.views > 0 && (
+            <span className="flex items-center gap-1">
+              <Flame className="w-3 h-3" />
+              {post.views}
+            </span>
+          )}
         </div>
       </div>
     </Link>

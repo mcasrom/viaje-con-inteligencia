@@ -1,5 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getPostsPagination, getCategories } from '@/lib/posts';
+import fs from 'fs';
+import path from 'path';
+
+const VIEWS_FILE = path.join(process.cwd(), 'data', 'views.json');
+
+function loadViews(): Record<string, number> {
+  try {
+    if (fs.existsSync(VIEWS_FILE)) {
+      return JSON.parse(fs.readFileSync(VIEWS_FILE, 'utf8'));
+    }
+  } catch {}
+  return {};
+}
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
@@ -14,9 +27,15 @@ export async function GET(request: NextRequest) {
     : { sort: sort as 'recent' | 'oldest' };
 
   const { posts, totalPages } = getPostsPagination(page, perPage, filter);
+  const views = loadViews();
+
+  const postsWithViews = posts.map((post: any) => ({
+    ...post,
+    views: views[post.slug] || 0,
+  }));
 
   return NextResponse.json({
-    posts,
+    posts: postsWithViews,
     totalPages,
     currentPage: page,
   });
