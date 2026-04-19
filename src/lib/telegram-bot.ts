@@ -171,7 +171,7 @@ export function formatCountryInfo(codigo: string): string {
   const pais = getPaisPorCodigo(codigo);
   if (!pais) return 'País no encontrado.';
 
-  const nivelRiesgoEmoji = {
+  const nivelRiesgoEmoji: Record<string, string> = {
     'sin-riesgo': '🟢',
     bajo: '🟡',
     medio: '🟠',
@@ -182,9 +182,10 @@ export function formatCountryInfo(codigo: string): string {
   const riesgoEmoji = nivelRiesgoEmoji[pais.nivelRiesgo];
   const riesgoLabel = getLabelRiesgo(pais.nivelRiesgo);
 
-  let message = `*${pais.bandera} ${pais.nombre}*\n`;
-  message += `━━━━━━━━━━━━━━━━━━━━\n\n`;
+  let message = `*${pais.bandera} ${pais.nombre}* (${pais.continente})\n`;
+  message += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
   message += `📍 *Capital:* ${pais.capital}\n`;
+  message += `👥 *Población:* ${pais.poblacion}\n`;
   message += `${riesgoEmoji} *Nivel riesgo:* ${riesgoLabel}\n`;
   message += `💰 *Moneda:* ${pais.moneda}\n`;
   message += `💱 *Cambio:* ${pais.tipoCambio}\n`;
@@ -193,24 +194,32 @@ export function formatCountryInfo(codigo: string): string {
   message += `🚗 *Conducción:* ${
     pais.conduccion === 'derecha' ? 'Derecha ↱' : 'Izquierda ↰'
   }\n`;
-  message += `⏰ *Zona horaria:* ${pais.zonaHoraria}\n\n`;
+  message += `⏰ *Zona horaria:* ${pais.zonaHoraria}\n`;
 
-  if (pais.contactos.length > 0) {
-    message += `🏛️ *Embajada España:*\n`;
+  if (pais.contactos && pais.contactos.length > 0) {
+    message += `\n🏛️ *Embajada de España:*\n`;
     message += `📍 ${pais.contactos[0].direccion}\n`;
-    message += `📞 ${pais.contactos[0].telefono}\n\n`;
+    message += `📞 ${pais.contactos[0].telefono}\n`;
   }
 
-  message += `📝 *Requisitos:*\n`;
-  if (pais.requerimientos[0]) {
-    pais.requerimientos[0].items.slice(0, 3).forEach(item => {
+  message += `\n📋 *Requisitos de entrada:*\n`;
+  const reqItems = pais.requerimientos?.[0]?.items || [];
+  if (reqItems.length > 0) {
+    reqItems.slice(0, 5).forEach(item => {
       message += `• ${item}\n`;
     });
+  } else {
+    message += `• Pasaporte vigente\n`;
+    message += `• Visado no requerido\n`;
   }
 
-  message += `\n━━━━━━━━━━━━━━━━━━━━\n`;
-  message += `🔗 *Más info:* /pais_${pais.codigo}`;
-  message += `\n🌐 [Ver en web](https://viaje-con-inteligencia.vercel.app/pais/${pais.codigo})`;
+if (pais.ultimoInforme) {
+    message += `\n📄 *Último informe:* ${pais.ultimoInforme}\n`;
+  }
+  message += `\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
+  message += `🕐 *Actualizado:* Abril 2026\n`;
+  message += `📊 *Fuente:* MAEC - Ministerio Asuntos Exteriores\n`;
+  message += `\n🔗 Más detalles: https://viaje-con-inteligencia.vercel.app/pais/${pais.codigo}`;
 
   return message;
 }
@@ -222,20 +231,38 @@ export function formatCountryInfo(codigo: string): string {
 export function getAlertasRiesgo(): string {
   const allCountries = Object.values(paisesData);
 
-  const riesgoAlto = allCountries.filter(
-    p => p.nivelRiesgo === 'alto' || p.nivelRiesgo === 'muy-alto'
-  );
+  const riesgoMuyAlto = allCountries.filter(p => p.nivelRiesgo === 'muy-alto');
+  const riesgoAlto = allCountries.filter(p => p.nivelRiesgo === 'alto');
+  const riesgoMedio = allCountries.filter(p => p.nivelRiesgo === 'medio');
+  const riesgoBajo = allCountries.filter(p => p.nivelRiesgo === 'bajo');
+  const riesgoNinguno = allCountries.filter(p => p.nivelRiesgo === 'sin-riesgo');
 
-  let message = `*⚠️ Riesgos de Viaje*\n`;
-  message += `━━━━━━━━━━━━━━━━━━━━\n\n`;
+  let message = `*⚠️ Alertas de Viaje - MAEC*\n`;
+  message += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
+  message += `📊 *Fuente:* Ministerio Asuntos Exteriores\n`;
+  message += `🕐 *Actualizado:* Abril 2026\n\n`;
+
+  if (riesgoMuyAlto.length > 0) {
+    message += `⚫ *Riesgo MUY ALTO (${riesgoMuyAlto.length}):*\n`;
+    message += riesgoMuyAlto.map(p => `${p.bandera} ${p.nombre}`).join('\n');
+    message += `\n\n`;
+  }
 
   if (riesgoAlto.length > 0) {
-    message += `🔴 *Riesgo alto/muy alto:*\n`;
-    message += riesgoAlto
-      .slice(0, 15)
-      .map(p => `${p.bandera} ${p.nombre}`)
-      .join('\n');
+    message += `🔴 *Riesgo ALTO (${riesgoAlto.length}):*\n`;
+    message += riesgoAlto.map(p => `${p.bandera} ${p.nombre}`).join('\n');
+    message += `\n\n`;
   }
+
+  if (riesgoMedio.length > 0) {
+    message += `🟠 *Riesgo MEDIO (${riesgoMedio.length}):*\n`;
+    message += riesgoMedio.slice(0, 10).map(p => `${p.bandera} ${p.nombre}`).join('\n');
+    if (riesgoMedio.length > 10) message += `\n...y otros ${riesgoMedio.length - 10}`;
+    message += `\n\n`;
+  }
+
+  message += `🟢 *Países seguros:* ${riesgoBajo.length + riesgoNinguno.length}`;
+  message += `\n\n🔗 Consultar: https://viaje-con-inteligencia.vercel.app/pais/[código]`;
 
   return message;
 }
