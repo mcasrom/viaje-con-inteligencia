@@ -82,3 +82,35 @@ export async function isFavorite(userId: string, countryCode: string) {
     .single();
   return !!data;
 }
+
+export async function getPostViews(slug: string): Promise<number> {
+  if (!supabase) return 0;
+  const { data } = await supabase
+    .from('post_views')
+    .select('views')
+    .eq('slug', slug)
+    .single();
+  return data?.views || 0;
+}
+
+export async function incrementPostViews(slug: string): Promise<number> {
+  if (!supabase) return 0;
+  const { data: existing } = await supabase
+    .from('post_views')
+    .select('views')
+    .eq('slug', slug)
+    .single();
+
+  if (existing) {
+    await supabase
+      .from('post_views')
+      .update({ views: existing.views + 1, updated_at: new Date().toISOString() })
+      .eq('slug', slug);
+    return existing.views + 1;
+  } else {
+    await supabase
+      .from('post_views')
+      .insert({ slug, views: 1 });
+    return 1;
+  }
+}

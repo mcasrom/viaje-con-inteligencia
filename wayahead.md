@@ -36,9 +36,13 @@
 ### 📊 POPULARIDAD
 | # | Mejora | Complejidad |
 |---|-------|------------|
-| 1 | Contador vistas | ✅ |
+| 1 | Contador vistas (Supabase) | ✅ pending deploy |
 | 2 | Badge "Popular" | ✅ |
 | 3 | Pestaña Populares | M |
+
+### ⚠️ SUPABASE (PENDIENTE - mañana)
+- [ ] Crear tabla post_views en Supabase
+- [ ] Ejecutar supabase-schema.sql actualizado
 
 ### 🟡 PRIORIDAD MEDIA
 | # | Mejora | Complejidad |

@@ -47,6 +47,13 @@ CREATE TABLE IF NOT EXISTS public.alert_preferences (
   UNIQUE(user_id, country_code)
 );
 
+-- Tabla de vistas de posts (anónima - sin auth)
+CREATE TABLE IF NOT EXISTS public.post_views (
+  slug TEXT PRIMARY KEY,
+  views BIGINT DEFAULT 0,
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
 -- Row Level Security (RLS)
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.favorites ENABLE ROW LEVEL SECURITY;
