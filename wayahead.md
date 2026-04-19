@@ -19,15 +19,27 @@
 | 8 | Programa afiliados (seguros, eSIM) | 2 | 3 | M | ⏳ |
 | 9 | Mapa interactivo (Leaflet/Mapbox) | 3 | 5 | A | ⏳ |
 
-### 📝 BLOG MEJORAS (Siguiente Sprint)
-| # | Mejora | Complejidad | Notas |
-|---|-------|------------|-------|
-| 10 | Paginación (10 posts/página) | B | Cambiar page.tsx para usar getAllPosts(page) |
-| 11 | Filtros por tags/categorías | B | Añadir sidebar con filtros |
-| 12 | Ordenar por fecha | B | Recientes primero por defecto |
-| 13 | Buscador interno | M | Input de búsqueda en header blog |
-| 14 | Página por categoría | M | /blog/[categoria] routes |
-| 15 | RSS feed completo | B | /rss.xml |
+### 📝 BLOG MEJORAS (Gestión Posts - Simple)
+| # | Mejora | Estado |
+|---|-------|--------|
+| 10 | Paginación (10/pág) | ✅ implementando |
+| 11 | Ordenar por fecha | ✅ implementando |
+| 12 | Filtro por categoría | ✅ implementando |
+| 13 | API posts /api/posts | ✅ |
+| 14 | API categorías /api/posts/categories | ✅ |
+
+### 📸 RESEÑAS FOTOGRÁFICAS (Minimal)
+| # | Tipo | Complejidad | Implementación |
+|---|------|------------|---------------|
+| 1 | Imágenes en markdown | B | `![pie de foto](img.jpg)` estándar |
+| 2 | Grid visual en blog | B | Usar thumbnail grande en PostCard |
+| 3 | Lightbox básico | M | Componente simple con `<dialog>` HTML |
+
+### 📊 POPULARIDAD (Minimal)
+| # | Tipo | Complejidad | Implementación |
+|---|------|------------|---------------|
+| 1 | Contador basic | B | localStorage + mostrar al abrir post |
+| 2 | Badge "Popular" | B | Si views > 100, mostrar estrella |
 
 ### 🟡 PRIORIDAD BAJA
 | # | Mejora | SEO | UX | Complejidad | Estado |

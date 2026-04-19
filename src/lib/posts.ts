@@ -56,9 +56,14 @@ export function getPostBySlug(slug: string): Post | null {
   }
 }
 
-export function getAllPosts(): PostMeta[] {
+export interface PostsFilter {
+  category?: string;
+  sort?: 'recent' | 'oldest';
+}
+
+export function getAllPosts(filter?: PostsFilter): PostMeta[] {
   const slugs = getPostSlugs();
-  const posts = slugs
+  let posts = slugs
     .map((slug) => getPostBySlug(slug))
     .filter((post): post is Post => post !== null)
     .sort((a, b) => (a.date < b.date ? 1 : -1))
@@ -75,7 +80,38 @@ export function getAllPosts(): PostMeta[] {
       tags,
     }));
 
+  if (filter?.category && filter.category !== 'all') {
+    posts = posts.filter(p => p.category === filter.category);
+  }
+
+  if (filter?.sort === 'oldest') {
+    posts = posts.reverse();
+  }
+
   return posts;
+}
+
+export function getPostsPagination(page: number = 1, perPage: number = 10, filter?: PostsFilter): {
+  posts: PostMeta[];
+  totalPages: number;
+  currentPage: number;
+} {
+  const allPosts = getAllPosts(filter);
+  const totalPages = Math.ceil(allPosts.length / perPage);
+  const startIndex = (page - 1) * perPage;
+  const posts = allPosts.slice(startIndex, startIndex + perPage);
+
+  return {
+    posts,
+    totalPages,
+    currentPage: page,
+  };
+}
+
+export function getCategories(): string[] {
+  const posts = getAllPosts();
+  const categories = new Set(posts.map(p => p.category).filter(Boolean));
+  return Array.from(categories).sort();
 }
 
 export function getRelatedPosts(currentSlug: string, limit: number = 3): PostMeta[] {

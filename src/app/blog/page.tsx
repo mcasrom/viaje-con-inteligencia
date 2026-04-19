@@ -1,6 +1,9 @@
+'use client';
+
+import { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Calendar, Clock, BookOpen, TrendingUp, Clock3, Tag, Flame } from 'lucide-react';
-import { getAllPosts } from '@/lib/posts';
+import { useSearchParams, useRouter } from 'next/navigation';
+import { ArrowLeft, Calendar, Clock, BookOpen, TrendingUp, Clock3, Tag, Flame, ChevronLeft, ChevronRight, Filter, ArrowUpDown } from 'lucide-react';
 
 interface Post {
   slug: string;
@@ -15,65 +18,9 @@ interface Post {
   tags?: string[];
 }
 
-function PostCard({ post, featured = false }: { post: Post; featured?: boolean }) {
-  if (featured) {
-    return (
-      <Link
-        href={`/blog/${post.slug}`}
-        className="block mb-8 bg-slate-800 rounded-2xl border border-slate-700 overflow-hidden hover:border-blue-500 transition-all group"
-      >
-        <div className="md:flex">
-          <div className="md:w-1/2 h-64 md:h-auto bg-gradient-to-br from-blue-900/80 via-slate-900/90 to-purple-900/80 overflow-hidden relative">
-            {post.image ? (
-              <>
-                <img 
-                  src={post.image} 
-                  alt={post.title}
-                  className="w-full h-full object-cover opacity-40 blur-[1px] scale-110"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/50 to-transparent" />
-              </>
-            ) : (
-              <div className="w-full h-full bg-gradient-to-br from-blue-600/40 to-purple-600/40" />
-            )}
-            <div className="absolute inset-0 flex items-center justify-center">
-              <img src="/favicon.jpg" alt="" className="w-24 h-24 rounded-2xl shadow-2xl border-4 border-white/20 object-contain" />
-            </div>
-          </div>
-          <div className="md:w-1/2 p-8 flex flex-col justify-center">
-            <span className="inline-flex items-center gap-2 px-3 py-1 bg-blue-500/20 text-blue-400 text-sm font-medium rounded-full w-fit mb-4">
-              <Flame className="w-4 h-4" />
-              Destacado
-            </span>
-            <h2 className="text-2xl md:text-3xl font-bold text-white mb-4 group-hover:text-blue-400 transition-colors">
-              {post.title}
-            </h2>
-            <p className="text-slate-400 mb-6 line-clamp-3">
-              {post.excerpt}
-            </p>
-            <div className="flex items-center gap-6 text-slate-500 text-sm">
-              <span className="flex items-center gap-2">
-                <Calendar className="w-4 h-4" />
-                {new Date(post.date).toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' })}
-              </span>
-              <span className="flex items-center gap-2">
-                <Clock className="w-4 h-4" />
-                {post.readTime}
-              </span>
-              <span className="flex items-center gap-2">
-                <Tag className="w-4 h-4" />
-                {post.category}
-              </span>
-            </div>
-          </div>
-        </div>
-      </Link>
-    );
-  }
-
+function PostCard({ post }: { post: Post }) {
   return (
     <Link
-      key={post.slug}
       href={`/blog/${post.slug}`}
       className="bg-slate-800 rounded-xl border border-slate-700 overflow-hidden hover:border-blue-500 transition-colors group"
     >
@@ -120,11 +67,60 @@ function PostCard({ post, featured = false }: { post: Post; featured?: boolean }
   );
 }
 
-export default function BlogPage() {
-  const posts = getAllPosts();
+function BlogContent() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   
-  const featuredPost = posts[0];
-  const otherPosts = posts.slice(1);
+  const page = parseInt(searchParams.get('page') || '1');
+  const category = searchParams.get('category') || 'all';
+  const sort = searchParams.get('sort') || 'recent';
+
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [totalPages, setTotalPages] = useState(1);
+  const [categories, setCategories] = useState<string[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchPosts();
+    fetchCategories();
+  }, [page, category, sort]);
+
+  const fetchPosts = async () => {
+    setLoading(true);
+    try {
+      const params = new URLSearchParams({
+        page: page.toString(),
+        perPage: '10',
+        category: category,
+        sort: sort,
+      });
+      const res = await fetch(`/api/posts?${params}`);
+      const data = await res.json();
+      setPosts(data.posts || []);
+      setTotalPages(data.totalPages || 1);
+    } catch (e) {
+      console.error('Error fetching posts:', e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchCategories = async () => {
+    try {
+      const res = await fetch('/api/posts/categories');
+      const data = await res.json();
+      setCategories(data.categories || []);
+    } catch (e) {
+      console.error('Error fetching categories:', e);
+    }
+  };
+
+  const updateParams = (key: string, value: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set(key, value);
+    if (key !== 'page') params.set('page', '1');
+    router.push(`/blog?${params.toString()}`);
+  };
 
   return (
     <div className="min-h-screen bg-slate-900">
@@ -138,7 +134,7 @@ export default function BlogPage() {
       </header>
 
       <main className="max-w-6xl mx-auto px-6 py-12">
-        <div className="text-center mb-12">
+        <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-500/20 text-blue-400 rounded-full text-sm font-medium mb-4">
             <BookOpen className="w-4 h-4" />
             Blog de Viaje con Inteligencia
@@ -151,27 +147,79 @@ export default function BlogPage() {
           </p>
         </div>
 
-        {posts.length === 0 ? (
+        <div className="flex flex-wrap items-center gap-4 mb-8 p-4 bg-slate-800 rounded-xl border border-slate-700">
+          <div className="flex items-center gap-2">
+            <Filter className="w-4 h-4 text-slate-400" />
+            <select
+              value={category}
+              onChange={(e) => updateParams('category', e.target.value)}
+              className="bg-slate-700 text-white px-3 py-2 rounded-lg text-sm border border-slate-600 focus:border-blue-500"
+            >
+              <option value="all">Todas las categorías</option>
+              {categories.map((cat) => (
+                <option key={cat} value={cat}>{cat}</option>
+              ))}
+            </select>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <ArrowUpDown className="w-4 h-4 text-slate-400" />
+            <select
+              value={sort}
+              onChange={(e) => updateParams('sort', e.target.value)}
+              className="bg-slate-700 text-white px-3 py-2 rounded-lg text-sm border border-slate-600 focus:border-blue-500"
+            >
+              <option value="recent">Más recientes</option>
+              <option value="oldest">Más antiguos</option>
+            </select>
+          </div>
+
+          <span className="text-slate-400 text-sm ml-auto">
+            {posts.length} artículos
+          </span>
+        </div>
+
+        {loading ? (
           <div className="text-center py-12">
-            <p className="text-slate-400 text-lg">No hay artículos publicados aún.</p>
+            <div className="animate-spin w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full mx-auto"></div>
+          </div>
+        ) : posts.length === 0 ? (
+          <div className="text-center py-12">
+            <p className="text-slate-400 text-lg">No hay artículos en esta categoría.</p>
           </div>
         ) : (
           <>
-            {featuredPost && <PostCard post={featuredPost} featured />}
-
-            <div className="flex items-center gap-2 mb-6">
-              <TrendingUp className="w-5 h-5 text-blue-400" />
-              <h3 className="text-xl font-bold text-white">
-                {otherPosts.length > 0 ? 'Más artículos' : 'Artículos'}
-              </h3>
-              <span className="text-slate-500">({posts.length} total)</span>
-            </div>
-
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {otherPosts.map((post: Post) => (
+              {posts.map((post: Post) => (
                 <PostCard key={post.slug} post={post} />
               ))}
             </div>
+
+            {totalPages > 1 && (
+              <div className="flex items-center justify-center gap-4 mt-12">
+                <button
+                  onClick={() => updateParams('page', (page - 1).toString())}
+                  disabled={page <= 1}
+                  className="flex items-center gap-2 px-4 py-2 bg-slate-700 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-slate-600 transition-colors"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                  Anterior
+                </button>
+                
+                <span className="text-slate-400">
+                  Página {page} de {totalPages}
+                </span>
+                
+                <button
+                  onClick={() => updateParams('page', (page + 1).toString())}
+                  disabled={page >= totalPages}
+                  className="flex items-center gap-2 px-4 py-2 bg-slate-700 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-slate-600 transition-colors"
+                >
+                  Siguiente
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+              </div>
+            )}
           </>
         )}
 
@@ -204,5 +252,17 @@ export default function BlogPage() {
         </div>
       </footer>
     </div>
+  );
+}
+
+export default function BlogPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-slate-900 flex items-center justify-center">
+        <div className="animate-spin w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full"></div>
+      </div>
+    }>
+      <BlogContent />
+    </Suspense>
   );
 }
