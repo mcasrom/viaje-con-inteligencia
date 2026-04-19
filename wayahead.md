@@ -3,8 +3,8 @@
 ## Estrategia Crecimiento (FASE SIGUIENTE)
 
 ### SEO / Contenido
-- [ ] Blog: posts "viajar con IA", "itinerarios por país", "viajes baratos"
-- [ ] Keywords long-tail en contenido
+- [x] Blog: posts "viajar-barato-ia", "itinerarios-ia", "seguros-comparativa"
+- [ ] Más posts SEO (keywords long-tail)
 - [ ] Cluster semántico (guías > comparativas > herramientas)
 
 ### Producto
@@ -63,3 +63,6 @@
 - [x] Service Worker básico
 - [x] Página offline
 - [x] instalable en móvil
+
+## WEB UX/UI
+- [x] Homepage hero mejorado (beneficios, modernas)
