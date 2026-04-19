@@ -3,7 +3,7 @@
 import { useParams } from 'next/navigation';
 import { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Calendar, Clock, Tag } from 'lucide-react';
+import { ArrowLeft, Calendar, Clock, Tag, Eye } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import StarRating from '@/components/StarRating';
@@ -62,6 +62,30 @@ function BlogPostRating({ slug }: { slug: string }) {
   );
 }
 
+function BlogPostViews({ slug }: { slug: string }) {
+  const [views, setViews] = useState(0);
+
+  useEffect(() => {
+    fetch(`/api/posts/views?slug=${slug}`)
+      .then(res => res.json())
+      .then(data => setViews(data.views || 0))
+      .catch(() => {});
+    
+    fetch('/api/posts/views', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ slug }),
+    }).catch(() => {});
+  }, [slug]);
+
+  return (
+    <span className="flex items-center gap-1 text-slate-400 text-sm">
+      <Eye className="w-4 h-4" />
+      {views.toLocaleString()} vistas
+    </span>
+  );
+}
+
 export default function BlogPostPage({ post }: { post: Post }) {
   const params = useParams();
   const slug = params.slug as string;
@@ -108,6 +132,7 @@ export default function BlogPostPage({ post }: { post: Post }) {
                 <Clock className="w-4 h-4" />
                 {post.readTime}
               </span>
+              <BlogPostViews slug={slug} />
             </div>
             <div className="mt-2">
               <BlogPostRating slug={slug} />

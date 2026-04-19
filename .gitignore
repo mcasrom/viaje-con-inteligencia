@@ -43,3 +43,6 @@ next-env.d.ts
 
 # Documentación personal
 proyecto.org
+
+# data
+/data
