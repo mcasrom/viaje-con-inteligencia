@@ -170,8 +170,8 @@ Responde en español, de forma clara y útil. Sugiere consultar la web del MAEC.
         ...(history ? [{ role: 'user' as const, content: history }] : []),
         { role: 'user', content: message },
       ],
-      model: 'mixtral-8x7b-32768',
-      temperature: 0.5,
+      model: 'llama-3.1-8b-instant',
+      temperature: 0.7,
       max_tokens: 2048,
     });
 
