@@ -15,9 +15,15 @@
 - [x] Todos creados (+1000 palabras, tags SEO)
 - [ ] VERIFICAR en producción (no aparecen en /blog?)
 
-## Bot Telegram
-- [x] Mejorado búsqueda por nombre
+## Bot Telegram (parcialmente funcionando)
+- [x] Mejorado búsqueda por nombre (con flags emoji)
 - [x] Improved premium info
+- [x] Alertas riesgo (detalladas por nivel MAEC)
+- [x] Tipo cambio (6+ monedas)
+- [x] Checklist detallado (categorías)
+- [ ] Clima: mejora (añadir humedad, previsión 3 días, ropa recomendada)
+- [ ] País buscar (solucionar bugs, búsqueda fuzzy)
+- [ ] Añadir másinfo riesgo (enlaces MAEC)
 
 ## Premium/Stripe
 - [x] Stripe integrado (falta credenciales en Vercel)
