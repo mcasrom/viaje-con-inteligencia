@@ -50,6 +50,12 @@
       "short_name": "Relojes",
       "url": "/relojes",
       "description": "Hora mundial"
+    },
+    {
+      "name": "Instalar App",
+      "short_name": "Instalar",
+      "url": "/pwa",
+      "description": "Cómo instalar la PWA"
     }
   ]
 }
