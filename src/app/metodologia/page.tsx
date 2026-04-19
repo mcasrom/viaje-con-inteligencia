@@ -4,6 +4,7 @@ import { ArrowLeft, BookOpen, MapPin, AlertTriangle, Shield, Globe, FileText, Ch
 import InstallPWA from '@/components/InstallPWA';
 
 export default function MetodologiaPage() {
+  return (
     <div className="min-h-screen bg-slate-900">
       <header className="bg-slate-800 border-b border-slate-700">
         <div className="max-w-4xl mx-auto px-6 py-4">
@@ -299,13 +300,12 @@ export default function MetodologiaPage() {
               </a>
             </div>
           </div>
-        </section>
 
         <section className="bg-gradient-to-r from-blue-900/50 to-purple-900/50 rounded-xl p-6 border border-blue-700/50">
-            <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
-              <Smartphone className="w-6 h-6 text-blue-400" />
-              App Móvil - Instala Nuestra PWA
-            </h2>
+          <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+            <Smartphone className="w-6 h-6 text-blue-400" />
+            {"App Móvil - Instala Nuestra PWA"}
+          </h2>
             <p className="text-slate-300 mb-6">
               Añade <strong className="text-white">Viaje con Inteligencia</strong> a tu pantalla de inicio para acceder rápidamente como una app nativa.
             </p>

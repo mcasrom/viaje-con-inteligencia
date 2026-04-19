@@ -1,4 +1,4 @@
-import { paisesData, getPaisPorCodigo, getLabelRiesgo } from '@/data/paises';
+import { paisesData, getPaisPorCodigo, getLabelRiesgo, DatoPais } from '@/data/paises';
 
 const OPEN_METEO_API = 'https://api.open-meteo.com/v1/forecast';
 
@@ -50,14 +50,16 @@ export function getMainKeyboard() {
 ========================= */
 
 export function getCountryKeyboard() {
-  const countries = Object.values(paisesData).slice(0, 58);
+  const countries = paisesData as unknown as Record<string, DatoPais>;
   const keyboard = [];
+  const keys = Object.keys(countries);
 
-  for (let i = 0; i < countries.length; i += 3) {
+  for (let i = 0; i < keys.length; i += 3) {
     const row = [];
-    for (let j = 0; j < 3 && i + j < countries.length; j++) {
-      const c = countries[i + j];
-      row.push({ text: `${c.bandera} ${c.codigo.toUpperCase()}` });
+    for (let j = 0; j < 3 && i + j < keys.length; j++) {
+      const key = keys[i + j];
+      const c = countries[key];
+      if (c) row.push({ text: `${c.bandera} ${c.codigo.toUpperCase()}` });
     }
     if (row.length > 0) keyboard.push(row);
   }
@@ -278,4 +280,65 @@ export async function getWeatherForCountry(
   } catch {
     return null;
   }
+}
+
+/* =========================
+   TIPO CAMBIO
+========================= */
+
+export function getTipoCambioInfo(): string {
+  const rates = {
+    EUR: '1 EUR = 1.08 USD, 0.85 GBP, 162 JPY',
+    USD: '1 USD = 0.93 EUR, 0.78 GBP, 150 JPY',
+    GBP: '1 GBP = 1.18 EUR, 1.27 USD',
+  };
+
+  let message = `*🏦 Tipos de Cambio (orientativos)*\n`;
+  message += `━━━━━━━━━━━━━━━━━━━━\n\n`;
+  message += `🇪🇺 EUR: ${rates.EUR}\n\n`;
+  message += `🇺🇸 USD: ${rates.USD}\n\n`;
+  message += `🇬🇧 GBP: ${rates.GBP}\n\n`;
+  message += `_Usa: /cambio 100 EUR USD_`;
+  return message;
+}
+
+/* =========================
+   CHECKLIST PREVIEW
+========================= */
+
+export function getChecklistPreview(): string {
+  const items = [
+    '✅ Pasaporte (6+ meses)',
+    '✅ Visado (si aplica)',
+    '✅ Seguro de viaje',
+    '✅ Billetes confirmados',
+    '✅ Reserva hotels',
+    '✅ Moneda local',
+    '✅ Teléfono roaming',
+    '✅ Vacunas si aplica',
+  ];
+
+  let message = `*📋 Checklist de Viaje*\n`;
+  message += `━━━━━━━━━━━━━━━━━━━━\n\n`;
+  message += items.slice(0, 8).join('\n');
+  message += `\n\n🔗 Ver completo: /checklist`;
+  return message;
+}
+
+/* =========================
+   PREMIUM INFO
+========================= */
+
+export function getPremiumInfo(): string {
+  let message = `*⭐ Viaje con Inteligencia PRO*\n`;
+  message += `━━━━━━━━━━━━━━━━━━━━\n\n`;
+  message += `*Gratis:* Mapa riesgos, detalles países, checklist\n\n`;
+  message += `*PRO (4.99€/mes):*\n`;
+  message += `• Chat IA ilimitado\n`;
+  message += `• Itinerarios IA\n`;
+  message += `• Predicción riesgos\n`;
+  message += `• Alertas push\n`;
+  message += `• Historial guardado\n\n`;
+  message += `🔗 https://viaje-con-inteligencia.vercel.app/premium`;
+  return message;
 }
