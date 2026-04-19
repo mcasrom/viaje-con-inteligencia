@@ -1,71 +1,88 @@
 # Pendiente - Viaje con Inteligencia
 
-## Estrategia Crecimiento (FASE SIGUIENTE)
+## ⏰ SPRINT ACTUAL (Prioridades CRÍTICAS)
 
-### SEO / Contenido
-- [x] Blog: posts "viajar-barato-ia", "itinerarios-ia", "seguros-comparativa"
-- [x] Post "libros para viajeros" (1500 palabras, tablas valoración, tags por interés)
-- [ ] Más posts SEO (keywords long-tail)
-- [ ] Cluster semántico (guías > comparativas > herramientas)
+### 🔴 CRÍTICO - SEO Técnico
+| # | Mejora | SEO | UX | Complejidad | Estado |
+|--+------------------------------------------+-----+----+-------------+--------|
+| 1 | Meta tags únicos por página /pais/[code] | 5 | 3 | B | ⏳ |
+| 2 | Schema.org TravelAction + Place | 5 | 2 | B | ⏳ |
+| 3 | Sitemap.xml dinámico + robots.txt | 4 | 1 | B | ⏳ |
+| 4 | hreflang ES/EN/PT en <head> | 4 | 2 | B | ⏳ |
 
-### Producto
-- [ ] Chat IA conversacional (input tipo diálogo)
-- [ ] Generador itinerarios dinámico
-- [ ] Perfil usuario (preferencias guardadas)
+### 🟠 PRIORIDAD ALTA
+| # | Mejora | SEO | UX | Complejidad | Estado |
+|--+------------------------------------------+-----+----+-------------+--------|
+| 5 | Blog activo (2 posts/semana, cola larga) | 5 | 4 | M | ⏳ |
+| 6 | Stripe + auth funcional en /premium | 1 | 5 | A | ⏳ |
+| 7 | Eliminar testimonio genérico, añadir UGC | 3 | 4 | B | ⏳ |
+| 8 | Añadir 20+ países nuevos | 4 | 4 | M | ⏳ |
 
-### UX
-- [ ] Onboarding guiado
-- [ ] Guardado de viajes favoritos
+### 🟡 PRIORIDAD MEDIA
+| # | Mejora | SEO | UX | Complejidad | Estado |
+|--+------------------------------------------+-----+----+-------------+--------|
+| 9 | Newsletter semanal de alertas de riesgo | 2 | 5 | M | ⏳ |
+| 10 | API B2B para agencias (€99/mes) | 1 | 3 | A | ⏳ |
+| 11 | Google Analytics 4 + Search Console | 3 | 1 | B | ⏳ |
+| 12 | Programa afiliados (seguros, eSIM) | 2 | 3 | M | ⏳ |
 
-### Monetización
-- [ ] Freemium (funciones limitadas)
-- [ ] Afiliación Booking/vuelos
-- [ ] Plan premium (9.99€/mes)
+### 🟢 BAJA/POSTERGADO
+| # | Mejora | SEO | UX | Complejidad | Estado |
+|--+------------------------------------------+-----+----+-------------+--------|
+| 13 | App nativa React Native | 1 | 5 | A | ⏳ |
+| 14 | Datos ACLED conflictos tiempo real | 3 | 5 | A | ⏳ |
+| 15 | Partnerships aseguradoras (Mapfre/AXA) | 2 | 4 | A | ⏳ |
 
-### Comunidad
-- [ ] Canal Telegram con alertas
-- [ ] TikTok/YouTube (contenido)
+---
 
-## Supabase / Auth
-- [x] Configurar Supabase (URL + anon key)
-- [ ] EJECUTAR SCHEMA: scripts/temporal_complete_schema.sql
-  - Ir a Supabase Dashboard > SQL Editor
-  - Ejecutar script completo
-- [ ] Verificar tablas creadas
-- [ ] Login emailmgico (probar rate limit)
+## 📋 ACCIONES SPRINT 1
 
-## Países (58 total)
-- [x] Añadidos 17 nuevos países
+### 1. Meta tags únicos por página /pais/[code]
+- [x] Revisar src/app/pais/[codigo]/page.tsx
+- [x] Añadir dynamic metadata por código de país
+- [x] Title: "{país} - Requisitos, riesgo y consejos | Viaje con Inteligencia"
+- [x] Description: extraer de datos del país
+- ⏳ DONE ✅
 
-## Posts blog (15 total)
-- [x] Todos creados (+1000 palabras, tags SEO)
-- [ ] VERIFICAR en producción (no aparecen en /blog?)
+### 2. Schema.org TravelAction + Place
+- [x] Añadir JSON-LD para páginas de país
+- [x] Tipo schema: Place + coordenadas, riesgo, moneda
+- ⏳ DONE ✅
 
-## Bot Telegram (parcialmente funcionando)
-- [x] Mejorado búsqueda por nombre (con flags emoji)
-- [x] Improved premium info
-- [x] Alertas riesgo (detalladas por nivel MAEC)
-- [x] Tipo cambio (6+ monedas)
-- [x] Checklist detallado (categorías)
-- [ ] Clima: mejora (añadir humedad, previsión 3 días, ropa recomendada)
-- [ ] País buscar (solucionar bugs, búsqueda fuzzy)
-- [ ] Añadir másinfo riesgo (enlaces MAEC)
+### 3. Sitemap.xml dinámico 
+- [x] Creado src/app/sitemap.ts dinámico
+- [x] Incluyen /pais/[code], /blog,static pages
+- [x] Prioridades y changefreq por tipo
+- ⏳ DONE ✅
 
-## Premium/Stripe
-- [x] Stripe integrado (falta credenciales en Vercel)
+### 4. hreflang ES/EN/PT
+- [x] Añadidos link tags en layout.tsx
+- ⏳ DONE ✅
 
-## SEO/Técnico
-- [x] robots.txt, sitemap.xml
-- [x] Schema.org JSON-LD
-- [x] Favicon y preview image
+---
 
-## PWA (Progressive Web App)
-- [x] manifest.json configurado
-- [x] Service Worker básico
-- [x] Página offline
-- [x] instalable en móvil
+## 📊 RESUMEN SPRINT 1
+- ✅ Tareas críticas (1-4): COMPLETADAS
+- ⚠️ Pendientes: 5-15
 
-## WEB UX/UI
-- [x] Homepage hero mejorado (beneficios, modernas)
-- [x] Página /pwa (instrucciones instalar)
-- [x] Enlace PWA en footer
+### 5. Blog activo
+- [x] Posts nuevos: errores-visados, apps-viaje-esenciales-2026, presupuesto-viaje-economico
+- [x] Total posts: 25 (antes 22)
+- Target: 2 posts/semana
+- ✅ COMPLETADO
+
+### 6. Stripe + auth (PENDIENTE - Posponer)
+- [x] Template variables STRIPE_* añadido en .env.local y .env.example
+- [ ] CONFIGURAR en Vercel Dashboard: STRIPE_SECRET_KEY, STRIPE_PUBLISHABLE_KEY, STRIPE_WEBHOOK_SECRET, STRIPE_PRICE_MONTHLY, STRIPE_PRICE_YEARLY
+- [ ] Probar flow completo de suscripción
+- ⚠️ POSTERGADO: resolver posteriormente
+
+### 7. UGC (Testimonios)
+- [x] Testimonios ahora usan API /api/reviews real
+- [x] mensaje "Sé el primero en compartir" si vacío
+- ✅ COMPLETADO
+
+### 8. Países nuevos
+- [x] Añadidos 16 países nuevos: ng, gh, et, rw, tn, sn, bw, mu, bd, pk, fj, pg, ws, gt, jm, tt
+- Total: 78 países (antes 62)
+- ✅ COMPLETADO

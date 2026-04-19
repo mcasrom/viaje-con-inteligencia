@@ -69,6 +69,11 @@ export default function RootLayout({
         <link rel="canonical" href="https://viaje-con-inteligencia.vercel.app" />
         <link rel="icon" href="/favicon.jpg" type="image/jpeg" sizes="32x32" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.jpg" />
+        <link rel="alternate" hrefLang="es" href="https://viaje-con-inteligencia.vercel.app" />
+        <link rel="alternate" hrefLang="en" href="https://viaje-con-inteligencia.vercel.app/en" />
+        <link rel="alternate" hrefLang="pt" href="https://viaje-con-inteligencia.vercel.app/pt" />
+        <link rel="alternate" hrefLang="x-default" href="https://viaje-con-inteligencia.vercel.app" />
+        <link rel="sitemap" type="application/xml" href="https://viaje-con-inteligencia.vercel.app/sitemap.xml" />
         <meta name="theme-color" content="#0f172a" />
         <meta name="thumbnail" content="/preview_favicon.jpg" />
       </head>
