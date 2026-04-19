@@ -490,7 +490,12 @@ export async function POST(request: NextRequest) {
       const paisesModule = await import('@/data/paises');
       const allCountries = Object.values(paisesModule.paisesData);
       
-      const cleanText = text.trim().toUpperCase().replace(/^\//, '');
+      // Clean text - remove emoji flags, extra whitespace
+      let cleanText = text.trim()
+        .replace(/🇺🇸|🇪🇺|🇬🇧|🇦🇺|🇨🇦|🇧🇷|🇲🇽|🇯🇵|🇰🇷|🇨🇳|🇮🇳|🇹🇭|🇻🇳|🇵🇭|🇲🇾|🇮🇩|🇪🇬|🇿🇦|🇪🇬|🇲🇦|🇪🇬|🇱🇧|🇸🇦|🇲🇲|🇰🇭|🇪🇬|🇻🇪/g, '')
+        .replace(/^\//, '')
+        .replace(/\s+/g, '')
+        .toUpperCase();
       
       // Check if it's 2 letters (country code) - ES, FR, US, etc.
       if (/^[A-Z]{2}$/.test(cleanText)) {
