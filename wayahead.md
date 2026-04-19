@@ -66,3 +66,5 @@
 
 ## WEB UX/UI
 - [x] Homepage hero mejorado (beneficios, modernas)
+- [x] Página /pwa (instrucciones instalar)
+- [x] Enlace PWA en footer
