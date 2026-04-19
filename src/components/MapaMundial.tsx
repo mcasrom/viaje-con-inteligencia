@@ -138,40 +138,38 @@ export default function MapaMundial() {
               <LanguageSelector />
             </div>
             
-            <div className="flex flex-col sm:flex-row gap-3">
-              <div className="relative">
+            <div className="flex flex-wrap gap-2 items-center">
+              <div className="relative flex-1 min-w-[200px]">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                 <input
                   type="text"
                   placeholder="Buscar país..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 pr-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-blue-500 transition-colors w-full sm:w-64"
+                  className="pl-10 pr-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-blue-500 transition-colors w-full"
                 />
               </div>
-              <div className="flex gap-2">
-                <select
-                  value={selectedContinente}
-                  onChange={(e) => setSelectedContinente(e.target.value)}
-                  className="px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-blue-500"
-                >
-                  {continentes.map(c => (
-                    <option key={c} value={c}>{c}</option>
-                  ))}
-                </select>
-                <select
-                  value={selectedRiesgo}
-                  onChange={(e) => setSelectedRiesgo(e.target.value as NivelRiesgo | 'Todos')}
-                  className="px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-blue-500"
-                >
-                  <option value="Todos">Todos</option>
-                  <option value="sin-riesgo">Sin riesgo</option>
-                  <option value="bajo">Riesgo bajo</option>
-                  <option value="medio">Riesgo medio</option>
-                  <option value="alto">Riesgo alto</option>
-                  <option value="muy-alto">Muy alto</option>
-                </select>
-              </div>
+              <select
+                value={selectedContinente}
+                onChange={(e) => setSelectedContinente(e.target.value)}
+                className="px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-blue-500"
+              >
+                {continentes.map(c => (
+                  <option key={c} value={c}>{c}</option>
+                ))}
+              </select>
+              <select
+                value={selectedRiesgo}
+                onChange={(e) => setSelectedRiesgo(e.target.value as NivelRiesgo | 'Todos')}
+                className="px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-blue-500"
+              >
+                <option value="Todos">Todos</option>
+                <option value="sin-riesgo">Sin riesgo</option>
+                <option value="bajo">Riesgo bajo</option>
+                <option value="medio">Riesgo medio</option>
+                <option value="alto">Riesgo alto</option>
+                <option value="muy-alto">Muy alto</option>
+              </select>
             </div>
           </div>
         </div>
