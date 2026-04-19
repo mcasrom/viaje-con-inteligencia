@@ -2,7 +2,7 @@
 title: "Clásicos de viajes y aventura: descarga gratis desde Project Gutenberg"
 description: "Descarga gratis clásicos de viajes, aventura y exploración desde Project Gutenberg. Around the World in 80 Days, Treasure Island, Moby Dick y más."
 date: "2026-04-20"
-slug: clasicos-viajes-aventura-descarga-gratis
+slug: libros-gratis-gutenberg
 image: https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=800
 author: Miguel Castillo
 readingTime: 3 minutos
