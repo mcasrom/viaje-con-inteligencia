@@ -5,6 +5,10 @@ on:
     - cron: '0 8 * * 0'  # Domingos a las 8:00 UTC
   workflow_dispatch:  # También ejecutable manualmente
 
+permissions:
+  contents: write
+  repository-projects: read
+
 jobs:
   backup:
     runs-on: ubuntu-latest
@@ -83,22 +87,26 @@ jobs:
 
       - name: Cleanup old backups
         run: |
-          # Obtener todos los tags de backup ordenados por fecha
-          tags=$(git tag -l 'backup-*' --sort=-creatordate)
-          
-          # Mantener solo los últimos 8 backups
-          count=0
+          # Usar gh cli para gestionar releases en lugar de git tags
+          # Mantener solo los últimos 8 releases de backup
           max_backups=8
           
-          for tag in $tags; do
-            count=$((count + 1))
-            if [ $count -gt $max_backups ]; then
-              echo "Eliminando backup antiguo: $tag"
-              git push --delete origin "$tag"
-            fi
-          done
+          # Obtener releases de backup
+          releases=$(gh release list --limit 100 --repo "$GITHUB_REPOSITORY" | grep '^backup-' | wc -l)
           
-          echo "Backups retention: manteniendo últimos $max_backups"
+          if [ "$releases" -gt "$max_backups" ]; then
+            excess=$((releases - max_backups))
+            echo "Eliminando $excess backups antiguos..."
+            
+            # Eliminar los más antiguos (los últimos en la lista)
+            gh release list --limit "$excess" --repo "$GITHUB_REPOSITORY" | grep '^backup-' | tail -n "$excess" | while read -r line; do
+              tag=$(echo "$line" | awk '{print $1}')
+              echo "Eliminando: $tag"
+              gh release delete "$tag" --yes || true
+            done
+          fi
+          
+          echo "Backups retention: máximos $max_backups"
 
       - name: Notification
         if: always()
