@@ -46,7 +46,7 @@ export function getPostBySlug(slug: string): Post | null {
       author: data.author || '',
       category: data.category || data.categories?.[0] || '',
       readTime: data.readTime || data.readingTime || '',
-      image: data.image || '',
+      image: data.image || data.coverImage || '',
       keywords: data.keywords || data.description || '',
       excerpt: data.excerpt || data.description || '',
       tags: data.tags || [],
