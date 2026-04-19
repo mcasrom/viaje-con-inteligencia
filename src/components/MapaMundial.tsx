@@ -2,10 +2,16 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
 import { paisesData, getLabelRiesgo, NivelRiesgo } from '@/data/paises';
 import { AlertTriangle, ArrowRight, Globe, Search, ClipboardList, Star, BookOpen, RefreshCw, Clock } from 'lucide-react';
 import LanguageSelector from './LanguageSelector';
 import { useI18n } from '@/lib/i18n';
+
+const MapaInteractivo = dynamic(() => import('./MapaInteractivo'), {
+  ssr: false,
+  loading: () => <div className="h-[600px] bg-slate-800 animate-pulse rounded-xl" />
+});
 
 const paises = Object.values(paisesData);
 const continentes = ['Todos', ...new Set(paises.map(p => p.continente))];
@@ -223,6 +229,14 @@ export default function MapaMundial() {
               </div>
             ))}
           </div>
+        </div>
+
+        <div className="mb-8">
+          <div className="bg-slate-800/50 rounded-xl p-4 mb-4 border border-slate-700">
+            <h2 className="text-xl font-bold text-white mb-2">🗺️ Mapa de Riesgos</h2>
+            <p className="text-slate-400 text-sm">Consulta el nivel de riesgo, requisitos de entrada y recomendaciones para cada destino. Información actualizada según MAEC español.</p>
+          </div>
+          <MapaInteractivo />
         </div>
 
         <div className="mb-6 flex items-center justify-between">
