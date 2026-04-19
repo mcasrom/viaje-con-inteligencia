@@ -4,6 +4,8 @@ import "./globals.css";
 import Providers from "@/components/Providers";
 import Footer from "@/components/Footer";
 import QuickAccess from "@/components/QuickAccess";
+import ServiceWorkerRegistration from "@/components/ServiceWorkerRegistration";
+import InstallPWA from "@/components/InstallPWA";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -72,7 +74,9 @@ export default function RootLayout({
       </head>
       <body className={`${geistSans.variable} antialiased`}>
 <Providers>
+          <ServiceWorkerRegistration />
           {children}
+          <InstallPWA />
           <QuickAccess />
           <Footer />
           </Providers>

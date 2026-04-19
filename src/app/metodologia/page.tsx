@@ -1,8 +1,9 @@
 import Link from 'next/link';
-import { ArrowLeft, BookOpen, MapPin, AlertTriangle, Shield, Globe, FileText, CheckCircle, Scale } from 'lucide-react';
+import { ArrowLeft, BookOpen, MapPin, AlertTriangle, Shield, Globe, FileText, CheckCircle, Scale, Smartphone, Download } from 'lucide-react';
+
+import InstallPWA from '@/components/InstallPWA';
 
 export default function MetodologiaPage() {
-  return (
     <div className="min-h-screen bg-slate-900">
       <header className="bg-slate-800 border-b border-slate-700">
         <div className="max-w-4xl mx-auto px-6 py-4">
@@ -298,6 +299,61 @@ export default function MetodologiaPage() {
               </a>
             </div>
           </div>
+        </section>
+
+        <section className="bg-gradient-to-r from-blue-900/50 to-purple-900/50 rounded-xl p-6 border border-blue-700/50">
+            <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+              <Smartphone className="w-6 h-6 text-blue-400" />
+              App Móvil - Instala Nuestra PWA
+            </h2>
+            <p className="text-slate-300 mb-6">
+              Añade <strong className="text-white">Viaje con Inteligencia</strong> a tu pantalla de inicio para acceder rápidamente como una app nativa.
+            </p>
+            
+            <div className="grid md:grid-cols-2 gap-6 mb-6">
+              <div className="bg-slate-800/50 rounded-lg p-4">
+                <h3 className="font-bold text-white mb-3">📱 En Android</h3>
+                <ol className="space-y-2 text-slate-300 text-sm">
+                  <li className="flex items-start gap-2">
+                    <span className="text-blue-400 font-medium">1.</span>
+                    Abre este sitio en Chrome
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-blue-400 font-medium">2.</span>
+                    Toca los tres puntos (arriba derecha)
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-blue-400 font-medium">3.</span>
+                    Selecciona "Añadir a pantalla inicio"
+                  </li>
+                </ol>
+              </div>
+              <div className="bg-slate-800/50 rounded-lg p-4">
+                <h3 className="font-bold text-white mb-3">🍎 En iOS (iPhone)</h3>
+                <ol className="space-y-2 text-slate-300 text-sm">
+                  <li className="flex items-start gap-2">
+                    <span className="text-blue-400 font-medium">1.</span>
+                    Abre este sitio en Safari
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-blue-400 font-medium">2.</span>
+                    Toca el botón compartir (⬆️)
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-blue-400 font-medium">3.</span>
+                    Selecciona "Añadir a pantalla inicio"
+                  </li>
+                </ol>
+              </div>
+            </div>
+
+            <div className="bg-green-900/20 border border-green-800/30 rounded-lg p-4">
+              <h3 className="font-bold text-green-400 mb-2">✅ Instalada</h3>
+              <p className="text-slate-300 text-sm">
+                Una vez instalada, funcionará como app independiente. Podrás acceder desde tu pantalla de inicio sin abrir el navegador.
+              </p>
+            </div>
+          </section>
         </div>
       </main>
 
@@ -309,6 +365,7 @@ export default function MetodologiaPage() {
           </p>
         </div>
       </footer>
+      <InstallPWA />
     </div>
   );
 }

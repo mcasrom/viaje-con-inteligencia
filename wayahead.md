@@ -26,3 +26,9 @@
 - [x] robots.txt, sitemap.xml
 - [x] Schema.org JSON-LD
 - [x] Favicon y preview image
+
+## PWA (Progressive Web App)
+- [x] manifest.json configurado
+- [x] Service Worker básico
+- [x] Página offline
+- [x] instalable en móvil
