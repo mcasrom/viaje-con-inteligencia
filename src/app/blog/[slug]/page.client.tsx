@@ -92,14 +92,14 @@ export default function BlogPostPage({ post }: { post: Post }) {
 
       <main className="max-w-4xl mx-auto px-6 py-12">
         <article>
-          <div className="text-center mb-12">
+          <div className="text-center mb-6">
             <span className="px-3 py-1 bg-blue-500/20 text-blue-400 text-sm font-medium rounded-full">
               {post.category}
             </span>
-            <h1 className="text-3xl md:text-4xl font-bold text-white mt-6 mb-4">
+            <h1 className="text-3xl md:text-4xl font-bold text-white mt-4 mb-2">
               {post.title}
             </h1>
-            <div className="flex items-center justify-center gap-6 text-slate-400">
+            <div className="flex items-center justify-center gap-4 text-slate-400 text-sm">
               <span className="flex items-center gap-2">
                 <Calendar className="w-4 h-4" />
                 {new Date(post.date).toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' })}
@@ -109,14 +109,14 @@ export default function BlogPostPage({ post }: { post: Post }) {
                 {post.readTime}
               </span>
             </div>
-            <div className="mt-4">
+            <div className="mt-2">
               <BlogPostRating slug={slug} />
             </div>
           </div>
 
           {post.image && (
-            <div className="mb-12 rounded-2xl overflow-hidden">
-              <img src={post.image} alt={post.title} className="w-full h-64 md:h-96 object-cover" />
+            <div className="mb-6 mt-6 rounded-2xl overflow-hidden">
+              <img src={post.image} alt={post.title} className="w-full h-48 md:h-64 object-cover" />
             </div>
           )}
 
