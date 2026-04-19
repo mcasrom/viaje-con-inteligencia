@@ -64,6 +64,7 @@ function BlogPostRating({ slug }: { slug: string }) {
 
 function BlogPostViews({ slug }: { slug: string }) {
   const [views, setViews] = useState(0);
+  const [counted, setCounted] = useState(false);
 
   useEffect(() => {
     fetch(`/api/posts/views?slug=${slug}`)
@@ -71,12 +72,19 @@ function BlogPostViews({ slug }: { slug: string }) {
       .then(data => setViews(data.views || 0))
       .catch(() => {});
     
-    fetch('/api/posts/views', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ slug }),
-    }).catch(() => {});
-  }, [slug]);
+    if (!counted && typeof window !== 'undefined') {
+      const sessionKey = `viewed_${slug}`;
+      if (!sessionStorage.getItem(sessionKey)) {
+        sessionStorage.setItem(sessionKey, '1');
+        setCounted(true);
+        fetch('/api/posts/views', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ slug }),
+        }).catch(() => {});
+      }
+    }
+  }, [slug, counted]);
 
   return (
     <span className="flex items-center gap-1 text-slate-400 text-sm">

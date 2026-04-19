@@ -1,10 +1,33 @@
 import Groq from 'groq-sdk';
+import { paisesData } from '@/data/paises';
 
 const groq = new Groq({
   apiKey: process.env.GROQ_API_KEY || '',
 });
 
 export const groqClient = groq;
+
+const riesgoLabels: Record<string, string> = {
+  'sin-riesgo': '🟢 Bajo/Sin riesgo',
+  'bajo': '🟡 Riesgo bajo',
+  'medio': '🟠 Riesgo medio',
+  'alto': '🔴 Riesgo alto',
+  'muy-alto': '🔴 Riesgo muy alto',
+};
+
+function getCountryRiskInfo(countryCode: string): string {
+  const pais = paisesData[countryCode];
+  if (!pais) return '';
+  return `
+DATOS DEL PAÍS (actualizados):
+- País: ${pais.nombre}
+- Riesgo actual: ${riesgoLabels[pais.nivelRiesgo] || pais.nivelRiesgo}
+- Capital: ${pais.capital}
+- Moneda: ${pais.moneda}
+- Idioma: ${pais.idioma}
+- Último informe: ${pais.ultimoInforme}
+`.trim();
+}
 
 export async function generateItinerary(
   destination: string,
@@ -103,8 +126,12 @@ export async function chatWithAI(
   message: string,
   context: { country?: string; previousMessages?: string[] }
 ): Promise<string> {
-  const countryContext = context.country
-    ? `El usuario está preguntando sobre viajes a/desde ${context.country}.`
+  const countryCode = context.country?.toLowerCase();
+  const countryData = countryCode ? getCountryRiskInfo(countryCode) : '';
+  const countryContext = countryData
+    ? `El usuario pregunta sobre ${context.country}.\n${countryData}`
+    : context.country
+    ? `El usuario está preguntando sobre viajes a/desde ${context.country}. (Datos no disponibles en cache)`
     : '';
 
   const history = context.previousMessages
