@@ -1,5 +1,30 @@
 # Pendiente - Viaje con Inteligencia
 
+## Estrategia Crecimiento (FASE SIGUIENTE)
+
+### SEO / Contenido
+- [ ] Blog: posts "viajar con IA", "itinerarios por país", "viajes baratos"
+- [ ] Keywords long-tail en contenido
+- [ ] Cluster semántico (guías > comparativas > herramientas)
+
+### Producto
+- [ ] Chat IA conversacional (input tipo diálogo)
+- [ ] Generador itinerarios dinámico
+- [ ] Perfil usuario (preferencias guardadas)
+
+### UX
+- [ ] Onboarding guiado
+- [ ] Guardado de viajes favoritos
+
+### Monetización
+- [ ] Freemium (funciones limitadas)
+- [ ] Afiliación Booking/vuelos
+- [ ] Plan premium (9.99€/mes)
+
+### Comunidad
+- [ ] Canal Telegram con alertas
+- [ ] TikTok/YouTube (contenido)
+
 ## Supabase / Auth
 - [x] Configurar Supabase (URL + anon key)
 - [ ] EJECUTAR SCHEMA: scripts/temporal_complete_schema.sql
