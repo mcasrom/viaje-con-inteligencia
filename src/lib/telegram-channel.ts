@@ -3,37 +3,67 @@ import { paisesData } from '@/data/paises';
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const TELEGRAM_CHANNEL_ID = process.env.TELEGRAM_CHANNEL_ID;
 
+/* =========================
+   TYPES
+========================= */
+
 interface AlertMessage {
   title: string;
   body: string;
   type: 'riesgo' | 'info' | 'premium';
 }
 
+/* =========================
+   UTILS
+========================= */
+
+function escapeMD(text: string): string {
+  return text.replace(/[_*[\]()~`>#+\-=|{}.!]/g, '\\$&');
+}
+
+/* =========================
+   CORE SEND
+========================= */
+
 export async function sendTelegramMessage(text: string): Promise<boolean> {
-  if (!TELEGRAM_BOT_TOKEN) {
-    console.log('[Telegram] Bot token not configured');
+  if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHANNEL_ID) {
+    console.error('[Telegram] Missing BOT_TOKEN or CHANNEL_ID');
     return false;
   }
 
   try {
-    const response = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        chat_id: TELEGRAM_CHANNEL_ID,
-        text,
-        parse_mode: 'Markdown',
-        disable_web_page_preview: true,
-      }),
-    });
+    const response = await fetch(
+      `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chat_id: TELEGRAM_CHANNEL_ID,
+          text: escapeMD(text),
+          parse_mode: 'MarkdownV2',
+          disable_web_page_preview: true,
+        }),
+      }
+    );
 
     const result = await response.json();
-    return result.ok;
+
+    if (!result.ok) {
+      console.error('[Telegram API ERROR]', result);
+      return false;
+    }
+
+    return true;
+
   } catch (error) {
-    console.error('[Telegram] Error sending message:', error);
+    console.error('[Telegram] Network error:', error);
     return false;
   }
 }
+
+/* =========================
+   BROADCAST
+========================= */
 
 export async function broadcastAlert(alert: AlertMessage): Promise<boolean> {
   const emoji = {
@@ -42,84 +72,105 @@ export async function broadcastAlert(alert: AlertMessage): Promise<boolean> {
     premium: '⭐',
   };
 
-  const message = `${emoji[alert.type]} *${alert.title}*\n\n${alert.body}\n\n_Source: Viaje con Inteligencia_`;
+  const message =
+    `${emoji[alert.type]} ${alert.title}\n\n` +
+    `${alert.body}\n\n` +
+    `Source: Viaje con Inteligencia`;
 
   return sendTelegramMessage(message);
 }
+
+/* =========================
+   RISK SUMMARY
+========================= */
 
 export async function sendRiskUpdate(): Promise<boolean> {
-  const sinRiesgo = Object.values(paisesData).filter(p => p.nivelRiesgo === 'sin-riesgo');
-  const riesgoBajo = Object.values(paisesData).filter(p => p.nivelRiesgo === 'bajo');
+  const all = Object.values(paisesData);
 
-  const message = `🔄 *Actualización de Riesgos - ${new Date().toLocaleDateString('es-ES', { 
-    weekday: 'long', 
-    year: 'numeric', 
-    month: 'long', 
-    day: 'numeric' 
-  })}*\n\n` +
-  `📊 *Resumen Global:*\n` +
-  `• 🟢 Sin riesgo: ${sinRiesgo.length} países\n` +
-  `• 🟡 Riesgo bajo: ${riesgoBajo.length} países\n\n` +
-  `Verifica siempre la info en @ViajeConInteligenciaBot`;
+  const sinRiesgo = all.filter(p => p.nivelRiesgo === 'sin-riesgo');
+  const bajo = all.filter(p => p.nivelRiesgo === 'bajo');
+
+  const date = new Date().toLocaleDateString('es-ES');
+
+  const message =
+    `🔄 Actualización de Riesgos (${date})\n\n` +
+    `🟢 Sin riesgo: ${sinRiesgo.length}\n` +
+    `🟡 Riesgo bajo: ${bajo.length}\n\n` +
+    `Bot: @ViajeConInteligenciaBot`;
 
   return sendTelegramMessage(message);
 }
+
+/* =========================
+   COUNTRY ALERT
+========================= */
 
 export async function sendCountryAlert(countryCode: string): Promise<boolean> {
   const pais = paisesData[countryCode];
   if (!pais) return false;
 
-  const nivelRiesgoEmoji = {
+  const emojiMap = {
     'sin-riesgo': '🟢',
-    'bajo': '🟡',
-    'medio': '🟠',
-    'alto': '🔴',
+    bajo: '🟡',
+    medio: '🟠',
+    alto: '🔴',
     'muy-alto': '⚫',
   };
 
-  const riesgoEmoji = nivelRiesgoEmoji[pais.nivelRiesgo];
+  const emoji = emojiMap[pais.nivelRiesgo];
 
-  const message = `${riesgoEmoji} *ALERTA: ${pais.nombre}*\n\n` +
-  `Nivel de riesgo: ${riesgoEmoji} ${pais.nivelRiesgo.replace('-', ' ').toUpperCase()}\n` +
-  `Capital: ${pais.capital}\n` +
-  `Moneda: ${pais.moneda}\n\n` +
-  `Más info: /pais_${pais.codigo}`;
+  const message =
+    `${emoji} ALERTA: ${pais.nombre}\n\n` +
+    `Riesgo: ${pais.nivelRiesgo}\n` +
+    `Capital: ${pais.capital}\n` +
+    `Moneda: ${pais.moneda}\n\n` +
+    `https://viaje-con-inteligencia.vercel.app/pais/${pais.codigo}`;
 
   return sendTelegramMessage(message);
 }
 
+/* =========================
+   SUBSCRIPTIONS (placeholder)
+========================= */
+
 export async function subscribeUser(chatId: number, username?: string): Promise<boolean> {
-  console.log(`[Subscription] New user: ${chatId} (@${username || 'unknown'})`);
+  console.log(`[Subscription] ${chatId} (@${username || 'unknown'})`);
   return true;
 }
 
 export async function unsubscribeUser(chatId: number): Promise<boolean> {
-  console.log(`[Subscription] User unsubscribed: ${chatId}`);
+  console.log(`[Unsubscribe] ${chatId}`);
   return true;
 }
 
+/* =========================
+   DEBUG
+========================= */
+
 export async function getBotInfo() {
   if (!TELEGRAM_BOT_TOKEN) {
-    return { error: 'Bot token not configured' };
+    return { error: 'Bot token missing' };
   }
 
   try {
-    const response = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/getMe`);
-    return response.json();
+    const res = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/getMe`);
+    return await res.json();
   } catch {
-    return { error: 'Failed to get bot info' };
+    return { error: 'getMe failed' };
   }
 }
 
 export async function getChannelInfo() {
   if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHANNEL_ID) {
-    return { error: 'Channel ID not configured' };
+    return { error: 'Missing config' };
   }
 
   try {
-    const response = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/getChat?chat_id=${TELEGRAM_CHANNEL_ID}`);
-    return response.json();
+    const res = await fetch(
+      `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/getChat?chat_id=${TELEGRAM_CHANNEL_ID}`
+    );
+    return await res.json();
   } catch {
-    return { error: 'Failed to get channel info' };
+    return { error: 'getChat failed' };
   }
 }

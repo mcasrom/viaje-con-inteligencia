@@ -46,6 +46,35 @@ export function getMainKeyboard() {
 }
 
 /* =========================
+   REGULAR COUNTRY KEYBOARD ( ReplyKeyboard)
+========================= */
+
+export function getCountryKeyboard() {
+  const countries = Object.values(paisesData).slice(0, 58);
+  const keyboard = [];
+
+  for (let i = 0; i < countries.length; i += 3) {
+    const row = [];
+    for (let j = 0; j < 3 && i + j < countries.length; j++) {
+      const c = countries[i + j];
+      row.push({ text: `${c.bandera} ${c.codigo.toUpperCase()}` });
+    }
+    if (row.length > 0) keyboard.push(row);
+  }
+
+  keyboard.push([
+    { text: '« Volver' },
+  ]);
+
+  return {
+    reply_markup: {
+      keyboard,
+      resize_keyboard: true,
+    },
+  };
+}
+
+/* =========================
    INLINE COUNTRY SELECTOR
 ========================= */
 
