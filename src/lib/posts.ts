@@ -34,6 +34,9 @@ export function getPostSlugs(): string[] {
 
 export function getPostBySlug(slug: string): Post | null {
   try {
+    if (!slug || !/^[a-z0-9-]+$/.test(slug)) {
+      return null;
+    }
     const fullPath = path.join(postsDirectory, `${slug}.md`);
     const fileContents = fs.readFileSync(fullPath, 'utf8');
     const { data, content } = matter(fileContents);
