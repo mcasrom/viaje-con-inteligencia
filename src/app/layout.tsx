@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import Providers from "@/components/Providers";
 import Footer from "@/components/Footer";
@@ -78,6 +79,7 @@ export default function RootLayout({
         <meta name="thumbnail" content="/preview_favicon.jpg" />
       </head>
       <body className={`${geistSans.variable} antialiased`}>
+<Analytics />
 <Providers>
           <ServiceWorkerRegistration />
           {children}
