@@ -1,88 +1,70 @@
 # Pendiente - Viaje con Inteligencia
 
-## ⏰ SPRINT ACTUAL (Prioridades CRÍTICAS)
+## ⏰ SPRINT 2 (Próximo)
 
-### 🔴 CRÍTICO - SEO Técnico
+### 🔴 PRIORIDAD ALTA
 | # | Mejora | SEO | UX | Complejidad | Estado |
 |--+------------------------------------------+-----+----+-------------+--------|
-| 1 | Meta tags únicos por página /pais/[code] | 5 | 3 | B | ⏳ |
-| 2 | Schema.org TravelAction + Place | 5 | 2 | B | ⏳ |
-| 3 | Sitemap.xml dinámico + robots.txt | 4 | 1 | B | ⏳ |
-| 4 | hreflang ES/EN/PT en <head> | 4 | 2 | B | ⏳ |
+| 1 | Chat IA conversacional (input tipo diálogo) | 4 | 5 | M | ⏳ |
+| 2 | Generador itinerarios dinámico IA | 4 | 5 | A | ⏳ |
+| 3 | Perfil usuario (preferencias guardadas) | 2 | 5 | M | ⏳ |
+| 4 | Guardado de viajes favoritos | 2 | 5 | M | ⏳ |
 
-### 🟠 PRIORIDAD ALTA
+### 🟠 PRIORIDAD MEDIA
 | # | Mejora | SEO | UX | Complejidad | Estado |
 |--+------------------------------------------+-----+----+-------------+--------|
-| 5 | Blog activo (2 posts/semana, cola larga) | 5 | 4 | M | ⏳ |
-| 6 | Stripe + auth funcional en /premium | 1 | 5 | A | ⏳ |
-| 7 | Eliminar testimonio genérico, añadir UGC | 3 | 4 | B | ⏳ |
-| 8 | Añadir 20+ países nuevos | 4 | 4 | M | ⏳ |
+| 5 | Onboarding guiado (nuevos usuarios) | 2 | 5 | B | ⏳ |
+| 6 | Newsletter semanal de alertas de riesgo | 2 | 5 | M | ⏳ |
+| 7 | Google Analytics 4 + Search Console | 3 | 1 | B | ⏳ |
+| 8 | Programa afiliados (seguros, eSIM) | 2 | 3 | M | ⏳ |
+| 9 | Mapa interactivo (Leaflet/Mapbox) | 3 | 5 | A | ⏳ |
 
-### 🟡 PRIORIDAD MEDIA
+### 📝 BLOG MEJORAS (Siguiente Sprint)
+| # | Mejora | Complejidad | Notas |
+|---|-------|------------|-------|
+| 10 | Paginación (10 posts/página) | B | Cambiar page.tsx para usar getAllPosts(page) |
+| 11 | Filtros por tags/categorías | B | Añadir sidebar con filtros |
+| 12 | Ordenar por fecha | B | Recientes primero por defecto |
+| 13 | Buscador interno | M | Input de búsqueda en header blog |
+| 14 | Página por categoría | M | /blog/[categoria] routes |
+| 15 | RSS feed completo | B | /rss.xml |
+
+### 🟡 PRIORIDAD BAJA
 | # | Mejora | SEO | UX | Complejidad | Estado |
 |--+------------------------------------------+-----+----+-------------+--------|
-| 9 | Newsletter semanal de alertas de riesgo | 2 | 5 | M | ⏳ |
 | 10 | API B2B para agencias (€99/mes) | 1 | 3 | A | ⏳ |
-| 11 | Google Analytics 4 + Search Console | 3 | 1 | B | ⏳ |
-| 12 | Programa afiliados (seguros, eSIM) | 2 | 3 | M | ⏳ |
+| 11 | App nativa React Native | 1 | 5 | A | ⏳ |
+| 12 | Datos ACLED conflictos tiempo real | 3 | 5 | A | ⏳ |
 
-### 🟢 BAJA/POSTERGADO
-| # | Mejora | SEO | UX | Complejidad | Estado |
-|--+------------------------------------------+-----+----+-------------+--------|
-| 13 | App nativa React Native | 1 | 5 | A | ⏳ |
-| 14 | Datos ACLED conflictos tiempo real | 3 | 5 | A | ⏳ |
-| 15 | Partnerships aseguradoras (Mapfre/AXA) | 2 | 4 | A | ⏳ |
+### ⚠️ PENDIENTES (de sprints anteriores)
+- Stripe + auth: requiere configuración manual en Vercel Dashboard
+- Añadir más países (target: 100 países)
 
 ---
 
-## 📋 ACCIONES SPRINT 1
+## 📋 SPRINT 1 COMPLETADO ✅
 
-### 1. Meta tags únicos por página /pais/[code]
-- [x] Revisar src/app/pais/[codigo]/page.tsx
-- [x] Añadir dynamic metadata por código de país
-- [x] Title: "{país} - Requisitos, riesgo y consejos | Viaje con Inteligencia"
-- [x] Description: extraer de datos del país
-- ⏳ DONE ✅
+| # | Tarea | Estado |
+|---|------|-------|
+| 1 | Meta tags únicos /pais/[code] | ✅ |
+| 2 | Schema.org JSON-LD | ✅ |
+| 3 | Sitemap dinámico | ✅ |
+| 4 | hreflang ES/EN/PT | ✅ |
+| 5 | Blog activo (25 posts) | ✅ |
+| 6 | Stripe + auth | ⚠️ postergado |
+| 7 | UGC testimonios | ✅ |
+| 8 | Países nuevos (78) | ✅ |
 
-### 2. Schema.org TravelAction + Place
-- [x] Añadir JSON-LD para páginas de país
-- [x] Tipo schema: Place + coordenadas, riesgo, moneda
-- ⏳ DONE ✅
-
-### 3. Sitemap.xml dinámico 
-- [x] Creado src/app/sitemap.ts dinámico
-- [x] Incluyen /pais/[code], /blog,static pages
-- [x] Prioridades y changefreq por tipo
-- ⏳ DONE ✅
-
-### 4. hreflang ES/EN/PT
-- [x] Añadidos link tags en layout.tsx
-- ⏳ DONE ✅
+**Total: 7/8 completados**
 
 ---
 
-## 📊 RESUMEN SPRINT 1
-- ✅ Tareas críticas (1-4): COMPLETADAS
-- ⚠️ Pendientes: 5-15
+## 📊 Métricas Objetivo Q2 2026
 
-### 5. Blog activo
-- [x] Posts nuevos: errores-visados, apps-viaje-esenciales-2026, presupuesto-viaje-economico
-- [x] Total posts: 25 (antes 22)
-- Target: 2 posts/semana
-- ✅ COMPLETADO
-
-### 6. Stripe + auth (PENDIENTE - Posponer)
-- [x] Template variables STRIPE_* añadido en .env.local y .env.example
-- [ ] CONFIGURAR en Vercel Dashboard: STRIPE_SECRET_KEY, STRIPE_PUBLISHABLE_KEY, STRIPE_WEBHOOK_SECRET, STRIPE_PRICE_MONTHLY, STRIPE_PRICE_YEARLY
-- [ ] Probar flow completo de suscripción
-- ⚠️ POSTERGADO: resolver posteriormente
-
-### 7. UGC (Testimonios)
-- [x] Testimonios ahora usan API /api/reviews real
-- [x] mensaje "Sé el primero en compartir" si vacío
-- ✅ COMPLETADO
-
-### 8. Países nuevos
-- [x] Añadidos 16 países nuevos: ng, gh, et, rw, tn, sn, bw, mu, bd, pk, fj, pg, ws, gt, jm, tt
-- Total: 78 países (antes 62)
-- ✅ COMPLETADO
+| Métrica | Actual | Target |
+|---------|--------|--------|
+| Visitantes/mes | ~500 | 10,000 |
+| Países en mapa | 78 | 100 |
+| Posts blog | 25 | 50 |
+| Usuarios Telegram | ~50 | 1,000 |
+| Suscripciones | 0 | 100 |

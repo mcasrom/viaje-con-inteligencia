@@ -42,7 +42,7 @@ Leer sobre un destino antes de visitarlo enriquece tu viaje de maneras que ning�
 
 ---
 
-## Capítulo 1: Los Mejores Libros para Mochileros
+## Los Mejores Libros para Mochileros
 
 El mochilero necesita lecturas que capturen el espíritu de la aventura, la libertad de los caminos y las experiencias compartidas en ruta. Estos libros capturan la esencia del viaje ligero.
 
@@ -64,7 +64,7 @@ Bill Bryson explicando con humor sus viajes por Estados Unidos en una cocina rod
 
 ---
 
-## Capítulo 2: Los Mejores Libros para Familias
+## Los Mejores Libros para Familias
 
 Viajar con niños requiere preparación específica, y estos libros ofrecen tanto entretenimiento como sabiduría práctica.
 
@@ -86,7 +86,7 @@ Varios autores han compile guías específicas para viajar con niños. Estos lib
 
 ---
 
-## Capítulo 3: Los Mejores Libros para Parejas
+## Los Mejores Libros para Parejas
 
 Viajar en pareja es una experiencia única que requiere conexión, comunicación y preparación. Estos libros strengthened vínculos while inspiring adventures gemeinsam.
 
@@ -108,7 +108,7 @@ Ann Patchett escribió sobre un viaje de compras por todo el país con su mejor 
 
 ---
 
-## Capítulo 4: Los Mejores Libros para Solitarios
+## Los Mejores Libros para Solitarios
 
 El viajero solitary enfrenta desafíos únicos: seguridad, socialización y aceptación de la soledad. Estos libros ofrecen compañía y sabiduría.
 
@@ -130,7 +130,7 @@ Tom Hanks collectionó observaciones y reflexiones durante sus viajes por el mun
 
 ---
 
-## Capítulo 5: Los Mejores Libros para Estudiantes
+## Los Mejores Libros para Estudiantes
 
 Los estudiantes tienen recursos limitados pero mucha curiosidad. Estos libros ofrecen conocimiento profundo a precios accesibles.
 
@@ -152,14 +152,15 @@ Encuestas de lectores Travelers sobre los libros más recomendados. Esta compila
 
 ---
 
-## Cómo Encontrar Estos Libros
+## Dónde Encontrar Estos Libros
 
-### Opciones Gratuitas y Baratas
+Todos estos libros están disponibles **gratuitamente** en [Project Gutenberg](https://www.gutenberg.org/), la biblioteca digital de dominio público más grande del mundo. Simplemente busca el título en su web y descarga el formato que prefieras (EPUB, Kindle, HTML o texto plano).
 
-- **Bibliotecas públicas:** La mayoría de estos títulos están disponibles gratuitamente en bibliotecas. Usa la app de tu biblioteca local para reservar y recoger.
-- **LibreKindle:** Muchos classics están disponibles gratuitamente en formato digital.
-- **Ediciones de bolsillo:** Las versiones en rústica son más baratas y ligeras para llevar en la mochila.
-- **Segunda mano:** Tasacións de segunda mano ofrecen precios reducidos y una experiencia de lectura más auténtica.
+### Otras Opciones Gratuitas
+
+- **Bibliotecas públicas:** Reserva y recogida la app de tu biblioteca local.
+- **Ediciones de bolsillo:** Más barata y ligeras para la mochila.
+- **Segunda mano:** Precios reducidos y experiencia auténtica.
 
 ### Formato Digital vs Físico
 
