@@ -114,11 +114,17 @@ export default function BlogPostPage({ post }: { post: Post }) {
             </div>
           </div>
 
-          {post.image && (
-            <div className="mb-6 mt-6 rounded-2xl overflow-hidden">
-              <img src={post.image} alt={post.title} className="w-full h-48 md:h-64 object-cover" />
-            </div>
-          )}
+          <div className="mt-8">
+            {post.image ? (
+              <div className="rounded-2xl overflow-hidden">
+                <img src={post.image} alt={post.title} className="w-full h-48 md:h-64 object-cover" />
+              </div>
+            ) : (
+              <div className="h-32 bg-gradient-to-br from-blue-900/80 via-purple-900/50 to-slate-800 rounded-xl flex items-center justify-center">
+                <span className="text-slate-500">Sin imagen</span>
+              </div>
+            )}
+          </div>
 
           <div className="prose prose-invert max-w-none">
             <ReactMarkdown remarkPlugins={[remarkGfm]}>
