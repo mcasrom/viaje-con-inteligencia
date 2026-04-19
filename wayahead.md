@@ -13,8 +13,10 @@
 | 6 | API posts/rate | ✅ |
 | 7 | Post libros-viajeros (largo) | ✅ |
 | 8 | Post clasicos-viajes-gutenberg (corto) | ✅ |
+| 9 | Chat IA Groq - Mejora prompt (MAEC) | ✅ |
+| 10 | Chat IA - Modelo mixtral | ✅ |
 
-## ⏰ SPRINT 3 (Próximo)
+## ⏰ SPRINT 3 (En progreso)
 
 ### 🔴 PRIORIDAD ALTA
 | # | Mejora | Complejidad |
@@ -34,8 +36,8 @@
 ### 📊 POPULARIDAD
 | # | Mejora | Complejidad |
 |---|-------|------------|
-| 1 | Contador vistas | B |
-| 2 | Badge "Popular" | B |
+| 1 | Contador vistas | ✅ |
+| 2 | Badge "Popular" | ✅ |
 | 3 | Pestaña Populares | M |
 
 ### 🟡 PRIORIDAD MEDIA

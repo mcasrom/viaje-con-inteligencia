@@ -3,7 +3,7 @@
 import { useParams } from 'next/navigation';
 import { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Calendar, Clock, Tag, Eye } from 'lucide-react';
+import { ArrowLeft, Calendar, Clock, Tag, Eye, Loader2 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import StarRating from '@/components/StarRating';
