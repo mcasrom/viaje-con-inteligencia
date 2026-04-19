@@ -22,6 +22,13 @@ export default function MapaMundial() {
   const [selectedRiesgo, setSelectedRiesgo] = useState<NivelRiesgo | 'Todos'>('Todos');
   const [ratings, setRatings] = useState<CountryRatings>({});
 
+  const beneficios = [
+    { icon: '🛡️', text: 'Datos oficiales MAEC' },
+    { icon: '🤖', text: 'Chat IA para viajes' },
+    { icon: '✈️', text: '58 países analizados' },
+    { icon: '📋', text: 'Checklist descargable' },
+  ];
+
   useEffect(() => {
     fetch('/api/reviews')
       .then(res => res.json())
@@ -165,8 +172,23 @@ export default function MapaMundial() {
       </header>
 
       <main className="max-w-7xl mx-auto px-6 py-8">
+        <div className="bg-gradient-to-r from-blue-900/50 to-purple-900/50 rounded-2xl p-6 mb-8 border border-blue-700/30">
+          <div className="text-center mb-6">
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-3">🌍 Viaje con Inteligencia</h2>
+            <p className="text-blue-300 text-lg">Tu asistente de viaje inteligente. Planifica seguro, viaja smarter.</p>
+          </div>
+          <div className="flex flex-wrap justify-center gap-4 md:gap-6">
+            {beneficios.map((b, i) => (
+              <div key={i} className="flex items-center gap-2 px-4 py-2 bg-slate-800/50 rounded-full border border-slate-700">
+                <span className="text-xl">{b.icon}</span>
+                <span className="text-slate-300 text-sm font-medium">{b.text}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
         <div className="text-center mb-8">
-          <h2 className="text-4xl font-bold text-white mb-3">Mapa de Riesgos por País</h2>
+          <h3 className="text-2xl font-bold text-white mb-3">📊 Mapa de Riesgos por País</h3>
           <p className="text-slate-400 max-w-2xl mx-auto">
             Consulta el nivel de riesgo, requisitos de entrada y recomendaciones para cada destino. 
             Información actualizada según MAEC español.
