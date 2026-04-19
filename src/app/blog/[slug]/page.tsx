@@ -27,6 +27,9 @@ export async function generateMetadata({ params }: PageProps) {
     title: `${post.title} | Viaje con Inteligencia`,
     description: post.excerpt,
     keywords: post.keywords,
+    alternates: {
+      canonical: `https://viaje-con-inteligencia.vercel.app/blog/${slug}`,
+    },
   };
 }
 

@@ -33,6 +33,9 @@ export async function generateMetadata({ params }: PageProps) {
     title: `${pais.nombre} - Requisitos, ${riesgo} y consejos para viajar | Viaje con Inteligencia`,
     description: `Información actualizada sobre ${pais.nombre}: requisitos de entrada, nivel de riesgo ${riesgo}, embajadas, moneda, idioma y consejos para viajeros. Datos del MAEC español.`,
     keywords: `viajar a ${pais.nombre}, ${pais.nombre} requisitos entrada, riesgo ${pais.nombre}, seguro viaje ${pais.nombre}, embajadas ${pais.nombre},${pais.continente} viaje`,
+    alternates: {
+      canonical: `https://viaje-con-inteligencia.vercel.app/pais/${codigo}`,
+    },
     openGraph: {
       title: `${pais.nombre} - Guía completa para viajeros`,
       description: `Todo lo que necesitas saber antes de viajar a ${pais.nombre}: ${riesgo}, requisitos, embajadas y más.`,

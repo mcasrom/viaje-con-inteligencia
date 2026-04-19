@@ -14,7 +14,7 @@
 | 7 | Post libros-viajeros (largo) | ✅ |
 | 8 | Post clasicos-viajes-gutenberg (corto) | ✅ |
 | 9 | Chat IA Groq - Mejora prompt (MAEC) | ✅ |
-| 10 | Chat IA - Modelo mixtral | ✅ |
+| 10 | Chat IA - Modelo llama-3.1-8b-instant | ✅ |
 
 ## ⏰ SPRINT 3 (En progreso)
 
@@ -51,6 +51,9 @@
 | 2 | Newsletter semanal | M |
 | 3 | GA4 + Search Console | B |
 | 4 | Programa afiliados | M |
+| 5 | Sitemap.xml dinámico | B |
+| 6 | Corregir textos EN en páginas ES | B |
+| 7 | Email profesional dominio propio | B |
 
 ### ⚠️ PENDIENTES
 - Stripe + auth (config manual Vercel)
