@@ -53,7 +53,7 @@
 | 4 | Programa afiliados | M |
 | 5 | Sitemap.xml dinámico | B |
 | 6 | Corregir textos EN en páginas ES | B |
-| 7 | Email profesional dominio propio | B |
+| 7 | Email profesional dominio propio | B | [Comprar dominio + Cloudflare Email]
 
 ### ⚠️ PENDIENTES
 - Stripe + auth (config manual Vercel)

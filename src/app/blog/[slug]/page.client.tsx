@@ -98,6 +98,28 @@ export default function BlogPostPage({ post }: { post: Post }) {
   const params = useParams();
   const slug = params.slug as string;
 
+  useEffect(() => {
+    const schema = {
+      '@context': 'https://schema.org',
+      '@type': 'Article',
+      headline: post.title,
+      description: post.excerpt,
+      image: post.image,
+      datePublished: post.date,
+      author: { '@type': 'Person', name: post.author },
+      publisher: {
+        '@type': 'Organization',
+        name: 'Viaje con Inteligencia',
+        logo: 'https://viaje-con-inteligencia.vercel.app/og-image.png',
+      },
+    };
+    const script = document.createElement('script');
+    script.type = 'application/ld+json';
+    script.textContent = JSON.stringify(schema);
+    document.head.appendChild(script);
+    return () => { document.head.removeChild(script); };
+  }, [post]);
+
   if (!post) {
     return (
       <div className="min-h-screen bg-slate-900 flex items-center justify-center">

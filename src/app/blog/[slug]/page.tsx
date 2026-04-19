@@ -30,6 +30,10 @@ export async function generateMetadata({ params }: PageProps) {
     alternates: {
       canonical: `https://viaje-con-inteligencia.vercel.app/blog/${slug}`,
     },
+    other: {
+      'article:published_time': post.date,
+      'article:author': post.author,
+    },
   };
 }
 
