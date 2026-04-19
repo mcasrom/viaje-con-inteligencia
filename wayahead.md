@@ -4,6 +4,7 @@
 
 ### SEO / Contenido
 - [x] Blog: posts "viajar-barato-ia", "itinerarios-ia", "seguros-comparativa"
+- [x] Post "libros para viajeros" (1500 palabras, tablas valoración, tags por interés)
 - [ ] Más posts SEO (keywords long-tail)
 - [ ] Cluster semántico (guías > comparativas > herramientas)
 
