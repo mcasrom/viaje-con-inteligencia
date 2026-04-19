@@ -1,82 +1,63 @@
 # Pendiente - Viaje con Inteligencia
 
-## ⏰ SPRINT 2 (Próximo)
+## ⏰ SPRINT 2 (Completado)
 
-### 🔴 PRIORIDAD ALTA
-| # | Mejora | SEO | UX | Complejidad | Estado |
-|--+------------------------------------------+-----+----+-------------+--------|
-| 1 | Chat IA conversacional (input tipo diálogo) | 4 | 5 | M | ⏳ |
-| 2 | Generador itinerarios dinámico IA | 4 | 5 | A | ⏳ |
-| 3 | Perfil usuario (preferencias guardadas) | 2 | 5 | M | ⏳ |
-| 4 | Guardado de viajes favoritos | 2 | 5 | M | ⏳ |
-
-### 🟠 PRIORIDAD MEDIA
-| # | Mejora | SEO | UX | Complejidad | Estado |
-|--+------------------------------------------+-----+----+-------------+--------|
-| 5 | Onboarding guiado (nuevos usuarios) | 2 | 5 | B | ⏳ |
-| 6 | Newsletter semanal de alertas de riesgo | 2 | 5 | M | ⏳ |
-| 7 | Google Analytics 4 + Search Console | 3 | 1 | B | ⏳ |
-| 8 | Programa afiliados (seguros, eSIM) | 2 | 3 | M | ⏳ |
-| 9 | Mapa interactivo (Leaflet/Mapbox) | 3 | 5 | A | ⏳ |
-
-### 📝 BLOG MEJORAS (Gestión Posts - Simple)
+### 📝 BLOG MEJORAS - COMPLETADAS ✅
 | # | Mejora | Estado |
 |---|-------|--------|
-| 10 | Paginación (10/pág) | ✅ implementando |
-| 11 | Ordenar por fecha | ✅ implementando |
-| 12 | Filtro por categoría | ✅ implementando |
-| 13 | API posts /api/posts | ✅ |
-| 14 | API categorías /api/posts/categories | ✅ |
+| 1 | Paginación (10/pág) | ✅ |
+| 2 | Filtro por categoría | ✅ |
+| 3 | Ordenar por fecha | ✅ |
+| 4 | StarRating posts (1-5 estrellas) | ✅ |
+| 5 | Imagen en posts (image/coverImage) | ✅ |
+| 6 | API posts/rate | ✅ |
+| 7 | Post libros-viajeros (largo) | ✅ |
+| 8 | Post clasicos-viajes-gutenberg (corto) | ✅ |
 
-### 📸 RESEÑAS FOTOGRÁFICAS (Minimal)
-| # | Tipo | Complejidad | Implementación |
-|---|------|------------|---------------|
-| 1 | Imágenes en markdown | B | `![pie de foto](img.jpg)` estándar |
-| 2 | Grid visual en blog | B | Usar thumbnail grande en PostCard |
-| 3 | Lightbox básico | M | Componente simple con `<dialog>` HTML |
+## ⏰ SPRINT 3 (Próximo)
 
-### 📊 POPULARIDAD (Minimal)
-| # | Tipo | Complejidad | Implementación |
-|---|------|------------|---------------|
-| 1 | Contador basic | B | localStorage + mostrar al abrir post |
-| 2 | Badge "Popular" | B | Si views > 100, mostrar estrella |
+### 🔴 PRIORIDAD ALTA
+| # | Mejora | Complejidad |
+|---|-------|------------|
+| 1 | Chat IA conversacional | M |
+| 2 | Generador itinerarios IA | A |
+| 3 | Perfil usuario | M |
+| 4 | Favoritos sincronizados | M |
 
-### 🟡 PRIORIDAD BAJA
-| # | Mejora | SEO | UX | Complejidad | Estado |
-|--+------------------------------------------+-----+----+-------------+--------|
-| 10 | API B2B para agencias (€99/mes) | 1 | 3 | A | ⏳ |
-| 11 | App nativa React Native | 1 | 5 | A | ⏳ |
-| 12 | Datos ACLED conflictos tiempo real | 3 | 5 | A | ⏳ |
+### 📸 RESEÑAS FOTOGRÁFICAS
+| # | Mejora | Complejidad |
+|---|-------|------------|
+| 1 | Componente Gallery | B |
+| 2 | Grid visual posts | B |
+| 3 | Lightbox | M |
 
-### ⚠️ PENDIENTES (de sprints anteriores)
-- Stripe + auth: requiere configuración manual en Vercel Dashboard
-- Añadir más países (target: 100 países)
+### 📊 POPULARIDAD
+| # | Mejora | Complejidad |
+|---|-------|------------|
+| 1 | Contador vistas | B |
+| 2 | Badge "Popular" | B |
+| 3 | Pestaña Populares | M |
 
----
+### 🟡 PRIORIDAD MEDIA
+| # | Mejora | Complejidad |
+|---|-------|------------|
+| 1 | Onboarding nuevos | B |
+| 2 | Newsletter semanal | M |
+| 3 | GA4 + Search Console | B |
+| 4 | Programa afiliados | M |
 
-## 📋 SPRINT 1 COMPLETADO ✅
-
-| # | Tarea | Estado |
-|---|------|-------|
-| 1 | Meta tags únicos /pais/[code] | ✅ |
-| 2 | Schema.org JSON-LD | ✅ |
-| 3 | Sitemap dinámico | ✅ |
-| 4 | hreflang ES/EN/PT | ✅ |
-| 5 | Blog activo (25 posts) | ✅ |
-| 6 | Stripe + auth | ⚠️ postergado |
-| 7 | UGC testimonios | ✅ |
-| 8 | Países nuevos (78) | ✅ |
-
-**Total: 7/8 completados**
+### ⚠️ PENDIENTES
+- Stripe + auth (config manual Vercel)
+- Más países (target 100)
 
 ---
 
-## 📊 Métricas Objetivo Q2 2026
+## 📊 Métricas Q2 2026
 
 | Métrica | Actual | Target |
 |---------|--------|--------|
 | Visitantes/mes | ~500 | 10,000 |
-| Países en mapa | 78 | 100 |
-| Posts blog | 25 | 50 |
+| Países | 78 | 100 |
+| Posts blog | 25+ | 50 |
 | Usuarios Telegram | ~50 | 1,000 |
 | Suscripciones | 0 | 100 |
