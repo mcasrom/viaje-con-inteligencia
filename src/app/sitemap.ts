@@ -22,7 +22,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     lastModified: new Date(pais.ultimoInforme),
     changeFrequency: 'weekly' as const,
     priority: 0.8,
-    alternates: buildAlternates(`${BASE_URL}/pais/${pais.codigo}`),
   }));
 
   const blogSlugs = getPostSlugs();
@@ -31,12 +30,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
     lastModified: new Date(),
     changeFrequency: 'monthly' as const,
     priority: 0.7,
-    alternates: buildAlternates(`${BASE_URL}/blog/${slug}`),
   }));
 
   const staticPages = [
-    { url: BASE_URL, priority: 1.0 },
-    { url: `${BASE_URL}/premium`, priority: 0.9 },
+    { url: BASE_URL, priority: 1.0, alternates: buildAlternates(BASE_URL) },
+    { url: `${BASE_URL}/en`, priority: 0.9 },
+    { url: `${BASE_URL}/pt`, priority: 0.9 },
+    { url: `${BASE_URL}/premium`, priority: 0.8 },
     { url: `${BASE_URL}/checklist`, priority: 0.8 },
     { url: `${BASE_URL}/alertas`, priority: 0.8 },
     { url: `${BASE_URL}/blog`, priority: 0.8 },
@@ -49,7 +49,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...page,
     lastModified: new Date(),
     changeFrequency: 'monthly' as const,
-    alternates: buildAlternates(page.url),
   }));
 
   return [...staticPages, ...paisEntries, ...blogEntries];
