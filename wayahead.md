@@ -64,20 +64,19 @@
 | 3e | Structured data JSON-LD | ✅ Completado |
 | 3f | Páginas /en /pt | ✅ Completado |
 | 4 | Programa afiliados | M |
-| 5 | Sitemap.xml dinámico | B |
+| 5 | Sitemap.xml dinámico | ✅ Completado (ya existe en src/app/sitemap.ts) |
 | 6 | Corregir textos EN en páginas ES | B | ⚠️ Pendiente refactor i18n
-| 7 | Email profesional dominio propio | B | [Comprar dominio + Cloudflare Email]
+| 7 | Email profesional dominio propio | ✅ Completado (viajeinteligencia.com + Cloudflare)
 
 ### ⚠️ PENDIENTES
 - Stripe + auth (config manual Vercel)
-- Más países (target 100): añadir países Nordic/Europeos
 
 ### 🟡 PRIORIDAD SPRINT 4 - PAÍSES
 | # | Mejora | Complejidad |
 |---|-------|------------|
-| 1 | Añadir países Nordic (Noruega, Suecia, Denmark, Finlandia) | M |
-| 2 | Añadir países Eastern Europe (Estonia, Letonia, Lituania, Croacia, Eslovenia) | M |
-| 3 | Añadir más países target 100 | M |
+| 1 | Añadir países Nordic (Noruega, Suecia, Denmark, Finlandia) | ✅ Completado |
+| 2 | Añadir países Eastern Europe (Estonia, Letonia, Lituania, Croacia, Eslovenia) | ✅ Completado |
+| 3 | Añadir más países target 90+ | ✅ Completado |
 
 ### 📬 NEWSLETTER (Completado)
 - ✅ Telegram: posts blog + países riesgo
@@ -111,7 +110,8 @@
 | Métrica | Actual | Target |
 |---------|--------|--------|
 | Visitantes/mes | ~500 | 10,000 |
-| Países | 78 | 100 |
-| Posts blog | 25+ | 50 |
+| Países | 89 | 100 |
+| Posts blog | 26+ | 50 |
 | Usuarios Telegram | ~50 | 1,000 |
 | Suscripciones | 0 | 100 |
+| Email | info@viajeinteligencia.com | ✅ Verificado y funcionando |

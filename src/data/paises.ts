@@ -4002,6 +4002,519 @@ requerimientos: [
     urlsUtiles: [{ nombre: 'Turismo Trinidad y Tobago', url: 'www.visittrinidadandtobago.com' }, { nombre: 'Embajada', url: 'https://www.exteriores.gob.es/embajadas/portofspain' }],
     bandera: '🇹🇹',
     mapaCoordenadas: [10.6918, -61.2225]
+  },
+  no: {
+    codigo: 'no',
+    nombre: 'Noruega',
+    capital: 'Oslo',
+    continente: 'Europa',
+    idioma: 'Noruego, Inglés',
+    moneda: 'Corona noruega (NOK)',
+    tipoCambio: '1 EUR ≈ 11.5 NOK',
+    zonaHoraria: 'UTC+1',
+    conduccion: 'derecha',
+    poblacion: '5.5 millones',
+    pib: '640 mil millones USD',
+    indicadores: { ipc: '3.5%', indicePrecios: 'Muy Alto' },
+    voltaje: '230V / 50Hz',
+    prefijoTelefono: '+47',
+    nivelRiesgo: 'sin-riesgo',
+    ultimoInforme: 'Marzo 2026',
+    contactos: [
+      {
+        tipo: 'Embajada',
+        nombre: 'Embajada de España en Oslo',
+        direccion: 'Haakon VIIs gate 1, 0161 Oslo',
+        telefono: '+47 22 82 94 00',
+        email: 'emb.oslo@maec.es',
+        horario: 'Lunes a viernes 8:30-16:30'
+      }
+    ],
+    requerimientos: [
+      { categoria: 'Documentación', icon: '📄', items: ['Pasaporte o DNI vigente', 'Sin visa (españoles UE)', 'Permiso conducir recomendado'] },
+      { categoria: 'Sanitario', icon: '🏥', items: ['Tarjeta sanitaria europea', 'Hospitales modernos', 'Urgencias: 113'] },
+      { categoria: 'General', icon: 'ℹ️', items: ['Moneda: Corona noruega', 'Muy caro', 'Naturaleza impresionante'] }
+    ],
+    queHacer: [
+      'Cruceros por fiordos',
+      'Ver auroras boreales',
+      'Visitar Oslo y Museo Viking',
+      'Esquí en pistas',
+      'Pescar en mar'
+    ],
+    queNoHacer: [
+      'No ignores clima frío',
+      'No conduzcas sin neumáticos invierno',
+      'No ignores horarios de silencio',
+      'No discutas de política',
+      'No ignores tarifas peajes'
+    ],
+    diarios: [
+      { nombre: 'Aftenposten', url: 'https://www.aftenposten.no' },
+      { nombre: 'VG', url: 'https://www.vg.no' }
+    ],
+    urlsUtiles: [
+      { nombre: 'Visit Norway', url: 'https://www.visitnorway.com' },
+      { nombre: 'MAEC - Noruega', url: 'https://www.exteriores.gob.es/Embajadas/Oslo' }
+    ],
+    bandera: '🇳🇴',
+    mapaCoordenadas: [60.4720, 8.4689]
+  },
+  se: {
+    codigo: 'se',
+    nombre: 'Suecia',
+    capital: 'Estocolmo',
+    continente: 'Europa',
+    idioma: 'Sueco, Inglés',
+    moneda: 'Corona sueca (SEK)',
+    tipoCambio: '1 EUR ≈ 11.2 SEK',
+    zonaHoraria: 'UTC+1',
+    conduccion: 'derecha',
+    poblacion: '10.5 millones',
+    pib: '680 mil millones USD',
+    indicadores: { ipc: '2.9%', indicePrecios: 'Alto' },
+    voltaje: '230V / 50Hz',
+    prefijoTelefono: '+46',
+    nivelRiesgo: 'sin-riesgo',
+    ultimoInforme: 'Marzo 2026',
+    contactos: [
+      {
+        tipo: 'Embajada',
+        nombre: 'Embajada de España en Estocolmo',
+        direccion: ' Djursholmsslätten 36, 182 72 Djursholm',
+        telefono: '+46 8 528 300',
+        email: 'emb.estocolmo@maec.es',
+        horario: 'Lunes a Viernes 9:00-16:00'
+      }
+    ],
+    requerimientos: [
+      { categoria: 'Documentación', icon: '📄', items: ['Pasaporte o DNI vigente', 'Sin visa (españoles UE)', 'Permiso conducir recomendado'] },
+      { categoria: 'Sanitario', icon: '🏥', items: ['Tarjeta sanitaria europea', 'Hospitales modernos', 'Urgencias: 112'] },
+      { categoria: 'General', icon: 'ℹ️', items: ['Moneda: Corona sueca', 'Design famoso', 'Naturaleza boreal'] }
+    ],
+    queHacer: [
+      'Visitar Estocolmo',
+      'Ver Gamla Stan',
+      'Islas de archipelago',
+      'Muebles IKEA',
+      'Auroras boreales norte'
+    ],
+    queNoHacer: [
+      'No ignoressilencio',
+      'No conduzcas rápido',
+      'No ignores horarios',
+      'No discutas de política',
+      'No ignores limpieza'
+    ],
+    diarios: [
+      { nombre: 'Dagens Nyheter', url: 'https://www.dn.se' },
+      { nombre: 'Svd', url: 'https://www.svd.se' }
+    ],
+    urlsUtiles: [
+      { nombre: 'Visit Sweden', url: 'https://visitsweden.com' },
+      { nombre: 'MAEC - Suecia', url: 'https://www.exteriores.gob.es/Embajadas/Estocolmo' }
+    ],
+    bandera: '🇸🇪',
+    mapaCoordenadas: [60.1282, 18.6435]
+  },
+  dk: {
+    codigo: 'dk',
+    nombre: 'Dinamarca',
+    capital: 'Copenhague',
+    continente: 'Europa',
+    idioma: 'Danés, Inglés',
+    moneda: 'Corona danesa (DKK)',
+    tipoCambio: '1 EUR ≈ 7.45 DKK',
+    zonaHoraria: 'UTC+1',
+    conduccion: 'derecha',
+    poblacion: '5.9 millones',
+    pib: '400 mil millones USD',
+    indicadores: { ipc: '2.4%', indicePrecios: 'Alto' },
+    voltaje: '230V / 50Hz',
+    prefijoTelefono: '+45',
+    nivelRiesgo: 'sin-riesgo',
+    ultimoInforme: 'Marzo 2026',
+    contactos: [
+      {
+        tipo: 'Embajada',
+        nombre: 'Embajada de España en Copenhague',
+        direccion: 'Kirstehave 15, 2000 Frederiksberg',
+        telefono: '+45 77 33 10 00',
+        email: 'emb.copenhague@maec.es',
+        horario: 'Lunes a viernes 9:00-16:00'
+      }
+    ],
+    requerimientos: [
+      { categoria: 'Documentación', icon: '📄', items: ['Pasaporte o DNI vigente', 'Sin visa (españoles UE)', 'Permiso conducir recomendado'] },
+      { categoria: 'Sanitario', icon: '🏥', items: ['Tarjeta sanitaria europea', 'Hospitales modernos', 'Urgencias: 112'] },
+      { categoria: 'General', icon: 'ℹ️', items: ['Moneda: Corona danesa', 'Diseño y ciclismo', ' castillos'] }
+    ],
+    queHacer: [
+      'Visitar Copenhagen',
+      'Ver Frederiksborg',
+      'Nyhavn histórico',
+      'Toros cyclists',
+      'Legoland'
+    ],
+    queNoHacer: [
+      'No conduzcas en bicicleta',
+      'No ignores-cycling lanes',
+      'No ignores silencio',
+      'No discutas de política',
+      'No ignores horarios tiendas'
+    ],
+    diarios: [
+      { nombre: 'Politiken', url: 'https://politiken.dk' },
+      { nombre: 'Berlingske', url: 'https://www.berlingske.dk' }
+    ],
+    urlsUtiles: [
+      { nombre: 'Visit Denmark', url: 'https://visitdenmark.com' },
+      { nombre: 'MAEC - Dinamarca', url: 'https://www.exteriores.gob.es/Embajadas/Copenhague' }
+    ],
+    bandera: '🇩🇰',
+    mapaCoordenadas: [56.2639, 9.5018]
+  },
+  fi: {
+    codigo: 'fi',
+    nombre: 'Finlandia',
+    capital: 'Helsinki',
+    continente: 'Europa',
+    idioma: 'Finlandés, Sueco, Inglés',
+    moneda: 'Euro (EUR)',
+    tipoCambio: '1 EUR = 1 EUR',
+    zonaHoraria: 'UTC+2',
+    conduccion: 'derecha',
+    poblacion: '5.5 millones',
+    pib: '300 mil millones USD',
+    indicadores: { ipc: '2.1%', indicePrecios: 'Alto' },
+    voltaje: '230V / 50Hz',
+    prefijoTelefono: '+358',
+    nivelRiesgo: 'sin-riesgo',
+    ultimoInforme: 'Marzo 2026',
+    contactos: [
+      {
+        tipo: 'Embajada',
+        nombre: 'Embajada de España en Helsinki',
+        direccion: 'Mannerheimintie 15 A, 00100 Helsinki',
+        telefono: '+358 9 612 8700',
+        email: 'emb.helsinki@maec.es',
+        horario: 'Lunes a viernes 9:00-16:00'
+      }
+    ],
+    requerimientos: [
+      { categoria: 'Documentación', icon: '📄', items: ['Pasaporte o DNI vigente', 'Sin visa (españoles UE)', 'Permiso conducir recomendado'] },
+      { categoria: 'Sanitario', icon: '🏥', items: ['Tarjeta sanitaria europea', 'Hospitales modernos', 'Urgencias: 112'] },
+      { categoria: 'General', icon: 'ℹ️', items: ['Euro', 'Sauna nacional', 'Auroras boreales'] }
+    ],
+    queHacer: [
+      'Visitar Helsinki',
+      'Ver Aurora boreal',
+      'Sauna en naturaleza',
+      'Santa Claus Village',
+      'Islas Aland'
+    ],
+    queNoHacer: [
+      'No ignores frío extremo',
+      'Noignes ruidos saunas',
+      'No discutas de política',
+      'No ignores limpieza',
+      'No conduzcas sin cadenas'
+    ],
+    diarios: [
+      { nombre: 'Helsingin Sanomat', url: 'https://www.hs.fi' },
+      { nombre: 'Iltalehti', url: 'https://www.iltalehti.fi' }
+    ],
+    urlsUtiles: [
+      { nombre: 'Visit Finland', url: 'https://visitfinland.com' },
+      { nombre: 'MAEC - Finlandia', url: 'https://www.exteriores.gob.es/Embajadas/Helsinki' }
+    ],
+    bandera: '🇫🇮',
+    mapaCoordenadas: [61.9241, 25.7482]
+  },
+  ee: {
+    codigo: 'ee',
+    nombre: 'Estonia',
+    capital: 'Tallin',
+    continente: 'Europa',
+    idioma: 'Estonio, Inglés',
+    moneda: 'Euro (EUR)',
+    tipoCambio: '1 EUR = 1 EUR',
+    zonaHoraria: 'UTC+2',
+    conduccion: 'derecha',
+    poblacion: '1.3 millones',
+    pib: '31 mil millones USD',
+    indicadores: { ipc: '3.2%', indicePrecios: 'Medio' },
+    voltaje: '230V / 50Hz',
+    prefijoTelefono: '+372',
+    nivelRiesgo: 'sin-riesgo',
+    ultimoInforme: 'Marzo 2026',
+    contactos: [
+      {
+        tipo: 'Embajada',
+        nombre: 'Embajada de España en Tallin',
+        direccion: 'Kohtu 4, 10130 Tallin',
+        telefono: '+372 630 0650',
+        email: 'emb.tallin@maec.es',
+        horario: 'Lunes a viernes 9:00-16:00'
+      }
+    ],
+    requerimientos: [
+      { categoria: 'Documentación', icon: '📄', items: ['Pasaporte o DNI vigente', 'Sin visa (españoles UE)', 'Permiso conducir recomendado'] },
+      { categoria: 'Sanitario', icon: '🏥', items: ['Tarjeta sanitaria europea', 'Hospitales modernos', 'Urgencias: 112'] },
+      { categoria: 'General', icon: 'ℹ️', items: ['Euro', 'E-gobierno líder', 'Bosques y lagos'] }
+    ],
+    queHacer: [
+      'Visitar Tallin Old Town',
+      'Ver Castillos medievales',
+      'Lago Peipus',
+      'Saunas naturales',
+      'Islas Saaremaa'
+    ],
+    queNoHacer: [
+      'No ignores clima frío',
+      'Noignes silencio oficinas',
+      'No discutas de política',
+      'No ignores horarios',
+      'No conduzcas rápido'
+    ],
+    diarios: [
+      { nombre: 'Postimees', url: 'https://www.postimees.ee' },
+      { nombre: 'Eesti Päevaleht', url: 'https://www.epl.ee' }
+    ],
+    urlsUtiles: [
+      { nombre: 'Visit Estonia', url: 'https://visittallinn.ee' },
+      { nombre: 'MAEC - Estonia', url: 'https://www.exteriores.gob.es/Embajadas/Tallin' }
+    ],
+    bandera: '🇪🇪',
+    mapaCoordenadas: [58.5953, 25.0016]
+  },
+  lv: {
+    codigo: 'lv',
+    nombre: 'Letonia',
+    capital: 'Riga',
+    continente: 'Europa',
+    idioma: 'Letón, Inglés',
+    moneda: 'Euro (EUR)',
+    tipoCambio: '1 EUR = 1 EUR',
+    zonaHoraria: 'UTC+2',
+    conduccion: 'derecha',
+    poblacion: '1.8 millones',
+    pib: '39 mil millones USD',
+    indicadores: { ipc: '3.5%', indicePrecios: 'Bajo' },
+    voltaje: '230V / 50Hz',
+    prefijoTelefono: '+371',
+    nivelRiesgo: 'sin-riesgo',
+    ultimoInforme: 'Marzo 2026',
+    contactos: [
+      {
+        tipo: 'Embajada',
+        nombre: 'Embajada de España en Riga',
+        direccion: 'Elizabetes iela 11-4, 1010 Riga',
+        telefono: '+371 673 281 90',
+        email: 'emb.riga@maec.es',
+        horario: 'Lunes a viernes 9:00-16:00'
+      }
+    ],
+    requerimientos: [
+      { categoria: 'Documentación', icon: '📄', items: ['Pasaporte o DNI vigente', 'Sin visa (españoles UE)', 'Permiso conducir recomendado'] },
+      { categoria: 'Sanitario', icon: '🏥', items: ['Tarjeta sanitaria europea', 'Hospitales modernos', 'Urgencias: 113'] },
+      { categoria: 'General', icon: 'ℹ️', items: ['Euro', 'Arquitectura Art Nouveau', 'Naturaleza salvaje'] }
+    ],
+    queHacer: [
+      'Visitar Riga Old Town',
+      'Ver Casa de los Blackheads',
+      'Playas de Jurmala',
+      'Parques Nacionales',
+      'Castillos medievales'
+    ],
+    queNoHacer: [
+      'No ignores clima extremo',
+      'Noignes silencio',
+      'No discutas de política',
+      'No ignores horarios',
+      'No conduzcas sin cuidado'
+    ],
+    diarios: [
+      { nombre: 'Diena', url: 'https://www.diena.lv' },
+      { nombre: 'Latvijas Avīze', url: 'https://www.la.lv' }
+    ],
+    urlsUtiles: [
+      { nombre: 'Visit Riga', url: 'https://www.riga.lv' },
+      { nombre: 'MAEC - Letonia', url: 'https://www.exteriores.gob.es/Embajadas/Riga' }
+    ],
+    bandera: '🇱🇻',
+    mapaCoordenadas: [56.8796, 24.6032]
+  },
+  lt: {
+    codigo: 'lt',
+    nombre: 'Lituania',
+    capital: 'Vilna',
+    continente: 'Europa',
+    idioma: 'Lituano, Inglés',
+    moneda: 'Euro (EUR)',
+    tipoCambio: '1 EUR = 1 EUR',
+    zonaHoraria: 'UTC+2',
+    conduccion: 'derecha',
+    poblacion: '2.8 millones',
+    pib: '65 mil millones USD',
+    indicadores: { ipc: '2.8%', indicePrecios: 'Bajo' },
+    voltaje: '230V / 50Hz',
+    prefijoTelefono: '+370',
+    nivelRiesgo: 'sin-riesgo',
+    ultimoInforme: 'Marzo 2026',
+    contactos: [
+      {
+        tipo: 'Embajada',
+        nombre: 'Embajada de España en Vilna',
+        direccion: 'Šventoji 14-4, 08100 Vilna',
+        telefono: '+370 5 231 0180',
+        email: 'emb.vilna@maec.es',
+        horario: 'Lunes a viernes 9:00-16:00'
+      }
+    ],
+    requerimientos: [
+      { categoria: 'Documentación', icon: '📄', items: ['Pasaporte o DNI vigente', 'Sin visa (españoles UE)', 'Permiso conducir recomendado'] },
+      { categoria: 'Sanitario', icon: '🏥', items: ['Tarjeta sanitaria europea', 'Hospitales modernos', 'Urgencias: 112'] },
+      { categoria: 'General', icon: 'ℹ️', items: ['Euro', 'Castillos medievales', 'Naturaleza y lagos'] }
+    ],
+    queHacer: [
+      'Visitar Vilna Old Town',
+      'Ver Castillo de Trakai',
+      'Parque Nacional Curonian',
+      'Colina de las Cruces',
+      'Klaipeda y ferry'
+    ],
+    queNoHacer: [
+      'No ignores clima frío',
+      'Noignes silencio',
+      'No discutas de política',
+      'No ignores horarios',
+      'No conduzcas sin cadenas'
+    ],
+    diarios: [
+      { nombre: 'Lietuvos Rytas', url: 'https://www.lrytas.lt' },
+      { nombre: 'Verslo Zinios', url: 'https://www.vz.lt' }
+    ],
+    urlsUtiles: [
+      { nombre: 'Visit Lithuania', url: 'https://www.visitlithuania.com' },
+      { nombre: 'MAEC - Lituania', url: 'https://www.exteriores.gob.es/Embajadas/Vilna' }
+    ],
+    bandera: '🇱🇹',
+    mapaCoordenadas: [55.1694, 23.8818]
+  },
+  hr: {
+    codigo: 'hr',
+    nombre: 'Croacia',
+    capital: 'Zagreb',
+    continente: 'Europa',
+    idioma: 'Croata, Inglés',
+    moneda: 'Euro (EUR)',
+    tipoCambio: '1 EUR = 1 EUR',
+    zonaHoraria: 'UTC+1',
+    conduccion: 'derecha',
+    poblacion: '3.9 millones',
+    pib: '70 mil millones USD',
+    indicadores: { ipc: '4.5%', indicePrecios: 'Medio' },
+    voltaje: '230V / 50Hz',
+    prefijoTelefono: '+385',
+    nivelRiesgo: 'sin-riesgo',
+    ultimoInforme: 'Marzo 2026',
+    contactos: [
+      {
+        tipo: 'Embajada',
+        nombre: 'Embajada de España en Zagreb',
+        direccion: 'Radiceva 4, 10000 Zagreb',
+        telefono: '+385 1 489 9600',
+        email: 'emb.zagreb@maec.es',
+        horario: 'Lunes a viernes 9:00-16:00'
+      }
+    ],
+    requerimientos: [
+      { categoria: 'Documentación', icon: '📄', items: ['Pasaporte o DNI vigente', 'Sin visa (españoles UE)', 'Permiso conducir recomendado'] },
+      { categoria: 'Sanitario', icon: '🏥', items: ['Tarjeta sanitaria europea', 'Hospitales modernos', 'Urgencias: 112'] },
+      { categoria: 'General', icon: 'ℹ️', items: ['Euro', 'Costa Adriática', 'Islas y historia'] }
+    ],
+    queHacer: [
+      'Visitar Zagreb',
+      'Dubrovnik antiguo',
+      'Parques Nacionales',
+      'Islas Hvar y Brac',
+      'Plavas y mergull'
+    ],
+    queNoHacer: [
+      'No ignores horarios siesta',
+      'Noignes ruido excesivo',
+      'No discutas de política',
+      'No ignores tides',
+      'No conduzcas después de beber'
+    ],
+    diarios: [
+      { nombre: 'Vecernji List', url: 'https://www.vecernji.hr' },
+      { nombre: 'Jutarnji List', url: 'https://www.jutarnji.hr' }
+    ],
+    urlsUtiles: [
+      { nombre: 'Visit Croatia', url: 'https://www.croatia.hr' },
+      { nombre: 'MAEC - Croacia', url: 'https://www.exteriores.gob.es/Embajadas/Zagreb' }
+    ],
+    bandera: '🇭🇷',
+    mapaCoordenadas: [45.1000, 15.2000]
+  },
+  si: {
+    codigo: 'si',
+    nombre: 'Eslovenia',
+    capital: 'Liubliana',
+    continente: 'Europa',
+    idioma: 'Esloveno, Inglés',
+    moneda: 'Euro (EUR)',
+    tipoCambio: '1 EUR = 1 EUR',
+    zonaHoraria: 'UTC+1',
+    conduccion: 'derecha',
+    poblacion: '2.1 millones',
+    pib: '60 mil millones USD',
+    indicadores: { ipc: '3.8%', indicePrecios: 'Medio' },
+    voltaje: '230V / 50Hz',
+    prefijoTelefono: '+386',
+    nivelRiesgo: 'sin-riesgo',
+    ultimoInforme: 'Marzo 2026',
+    contactos: [
+      {
+        tipo: 'Embajada',
+        nombre: 'Embajada de España en Liubliana',
+        direccion: 'Bleiweisova 4, 1000 Liubliana',
+        telefono: '+386 1 420 2600',
+        email: 'emb.liubliana@maec.es',
+        horario: 'Lunes a viernes 9:00-16:00'
+      }
+    ],
+    requerimientos: [
+      { categoria: 'Documentación', icon: '📄', items: ['Pasaporte o DNI vigente', 'Sin visa (españoles UE)', 'Permiso conducir recomendado'] },
+      { categoria: 'Sanitario', icon: '🏥', items: ['Tarjeta sanitaria europea', 'Hospitales modernos', 'Urgencias: 112'] },
+      { categoria: 'General', icon: 'ℹ️', items: ['Euro', 'Alpes y lagos', 'Cuevas y naturaleza'] }
+    ],
+    queHacer: [
+      'Visitar Liubliana',
+      'Lago Bled',
+      'Cuevas de Postojna',
+      'Parque Nacional Triglav',
+      'Costa Eslovena'
+    ],
+    queNoHacer: [
+      'No ignores clima alpino',
+      'Noignes silencio',
+      'No discutas de política',
+      'No ignores horarios',
+      'No conduzcas sin cuidado'
+    ],
+    diarios: [
+      { nombre: 'Delo', url: 'https://www.delo.si' },
+      { nombre: 'Dnevnik', url: 'https://www.dnevnik.si' }
+    ],
+    urlsUtiles: [
+      { nombre: 'Visit Slovenia', url: 'https://www.slovenia.info' },
+      { nombre: 'MAEC - Eslovenia', url: 'https://www.exteriores.gob.es/Embajadas/Liubliana' }
+    ],
+    bandera: '🇸🇮',
+    mapaCoordenadas: [46.1512, 14.5065]
   }
 };
 

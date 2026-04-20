@@ -648,7 +648,7 @@ export default function DetallePaisClient({ pais }: DetallePaisClientProps) {
             Volver al Mapa Mundial
           </Link>
           <p className="text-slate-500 text-sm mt-4">
-            © {new Date().getFullYear()} <a href="mailto:mybloggingnotes@gmail.com" className="text-slate-400 hover:text-blue-400">M.Castillo</a> - 
+            © {new Date().getFullYear()} <a href="mailto:info@viajeinteligencia.com" className="text-slate-400 hover:text-blue-400">M.Castillo</a> - 
             Información basada en datos oficiales del MAEC español
           </p>
         </div>

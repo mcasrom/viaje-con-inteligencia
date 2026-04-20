@@ -148,11 +148,11 @@ export default function LegalPage() {
                 Para consultas sobre este aviso legal:
               </p>
               <a 
-                href="mailto:mybloggingnotes@gmail.com" 
+                href="mailto:info@viajeinteligencia.com" 
                 className="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300"
               >
                 <Mail className="w-4 h-4" />
-                mybloggingnotes@gmail.com
+                info@viajeinteligencia.com
               </a>
             </div>
           </section>

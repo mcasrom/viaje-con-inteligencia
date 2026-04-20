@@ -56,8 +56,8 @@ export default function Footer() {
             <h4 className="font-semibold text-white mb-3">Contacto</h4>
             <ul className="space-y-2 text-sm">
               <li>
-                <a href="mailto:mybloggingnotes@gmail.com" className="text-slate-400 hover:text-white transition-colors">
-                  mybloggingnotes@gmail.com
+                <a href="mailto:info@viajeinteligencia.com" className="text-slate-400 hover:text-white transition-colors">
+                  info@viajeinteligencia.com
                 </a>
               </li>
               <li>

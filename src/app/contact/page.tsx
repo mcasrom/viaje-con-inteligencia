@@ -12,7 +12,7 @@ export default function ContactPage() {
     e.preventDefault();
     const subject = encodeURIComponent('Solicitud: Añadir ciudad a relojes mundiales');
     const body = encodeURIComponent(`Nombre: ${formData.name}\nEmail: ${formData.email}\n\nCiudad(es) solicitada(s):\n${formData.message}`);
-    window.location.href = `mailto:mybloggingnotes@gmail.com?subject=${subject}&body=${body}`;
+    window.location.href = `mailto:info@viajeinteligencia.com?subject=${subject}&body=${body}`;
     setSubmitted(true);
   };
 
@@ -107,13 +107,13 @@ export default function ContactPage() {
 
         <div className="mt-12 grid md:grid-cols-2 gap-4">
           <a
-            href="mailto:mybloggingnotes@gmail.com?subject=Solicitud ciudad relojes"
+            href="mailto:info@viajeinteligencia.com?subject=Solicitud ciudad relojes"
             className="flex items-center gap-3 p-4 bg-slate-800 rounded-xl border border-slate-700 hover:border-blue-500 transition-colors"
           >
             <Mail className="w-8 h-8 text-blue-400" />
             <div>
               <div className="font-medium text-white">Email</div>
-              <div className="text-sm text-slate-400">mybloggingnotes@gmail.com</div>
+              <div className="text-sm text-slate-400">info@viajeinteligencia.com</div>
             </div>
           </a>
           <a
