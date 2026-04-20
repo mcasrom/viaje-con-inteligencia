@@ -89,7 +89,7 @@ export const defaultAlerts = [
 
 export async function generateWeeklyDigest(): Promise<string> {
   const paises = Object.values(paisesData);
-  const altoRiesgo = paises.filter(p => p.nivelRiesgo === 'alto' || p.nivelRiesgo === 'muy-alto');
+  const paisesRiesgo = paises.filter(p => p.nivelRiesgo !== 'sin-riesgo' && p.nivelRiesgo);
   const recentPosts = getAllPosts({ sort: 'recent' }).slice(0, 5);
   
   let maecAlerts: { pais: string; nivelRiesgo: string }[] = [];
@@ -117,16 +117,21 @@ export async function generateWeeklyDigest(): Promise<string> {
     message += `\n`;
   }
   
-  if (altoRiesgo.length > 0 || maecAlerts.length > 0) {
-    message += `⚠️ *Países con riesgo (MAEC en tiempo real):*\n`;
+  if (paisesRiesgo.length > 0 || maecAlerts.length > 0) {
+    message += `⚠️ *Países con riesgo (datos MAEC):*\n`;
     const allRisk = [
-      ...altoRiesgo.map(p => ({ pais: p.nombre, nivel: p.nivelRiesgo as string })),
+      ...paisesRiesgo.map(p => ({ pais: p.nombre, nivel: p.nivelRiesgo as string })),
       ...maecAlerts.map(a => ({ pais: a.pais, nivel: a.nivelRiesgo }))
     ];
     const uniqueRisk = allRisk.filter((v, i, a) => a.findIndex(t => t.pais === v.pais) === i);
-    uniqueRisk.slice(0, 10).forEach(p => {
-      const emoji = p.nivel === 'alto' || p.nivel === 'muy-alto' ? '🔴' : '🟠';
-      message += `${emoji} ${p.pais}\n`;
+    uniqueRisk.slice(0, 12).forEach(p => {
+      if (p.nivel === 'alto' || p.nivel === 'muy-alto') {
+        message += `🔴 ${p.pais} (${p.nivel})\n`;
+      } else if (p.nivel === 'medio') {
+        message += `🟠 ${p.pais} (${p.nivel})\n`;
+      } else {
+        message += `🟡 ${p.pais} (${p.nivel})\n`;
+      }
     });
     message += `\n`;
   }
