@@ -3,7 +3,7 @@ title: "Cómo viajar con poco presupuesto: guía para viajes económicos 2026"
 description: " Estrategias y tips para viajar barato: vuelos, alojamiento, comida y transporte. Ahorra hasta 50% sin renunciar a experiencias."
 date: "2026-04-19"
 slug: viajar-bajo-presupuesto
-image: https://images.unsplash.com/photo-1507608616759-54f480f8d14b?w=800
+image: https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800
 author: Miguel Castillo
 readingTime: 7 minutos
 tags: [presupuesto, ahorrar, flights cheap, hotels, comida, transporte]
