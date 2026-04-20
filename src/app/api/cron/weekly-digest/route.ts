@@ -8,9 +8,11 @@ const TELEGRAM_CHANNEL_ID = process.env.TELEGRAM_CHANNEL_ID;
 
 async function sendToChannel(message: string): Promise<boolean> {
   if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHANNEL_ID) {
-    console.log('[Cron] Credenciales no configuradas');
+    console.log('[Cron] Credenciales no configuradas', { telegram: !!TELEGRAM_BOT_TOKEN, channel: !!TELEGRAM_CHANNEL_ID });
     return false;
   }
+
+  console.log('[Cron] Enviando a canal:', TELEGRAM_CHANNEL_ID);
 
   try {
     const response = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
@@ -46,8 +48,9 @@ export async function GET(request: Request) {
     return NextResponse.json({
       success: sent,
       message: 'Digest semanal enviado',
+      channel: TELEGRAM_CHANNEL_ID,
+      token_prefix: TELEGRAM_BOT_TOKEN?.substring(0, 10),
       timestamp: new Date().toISOString(),
-      last_run: new Date().toISOString(),
     });
   } catch (error) {
     console.error('[Cron] Error:', error);
