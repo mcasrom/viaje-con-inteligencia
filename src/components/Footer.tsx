@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useI18n } from '@/lib/i18n';
 import ScraperStatus from './ScraperStatus';
+import NewsletterSignup from './NewsletterSignup';
 
 export default function Footer() {
   const { t } = useI18n();
@@ -74,6 +75,11 @@ export default function Footer() {
               </li>
             </ul>
           </div>
+        </div>
+
+        <div className="mb-6">
+          <h4 className="font-semibold text-white mb-3">Newsletter</h4>
+          <NewsletterSignup variant="footer" />
         </div>
 
         <div className="pt-6 border-t border-slate-800">
