@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import ScraperStatus from '@/components/ScraperStatus';
 
 interface BotStats {
   totalUsers?: number;
@@ -27,7 +28,13 @@ export default function BotStatsPage() {
 
   return (
     <div className="min-h-screen bg-slate-900 text-white p-8">
-      <h1 className="text-2xl font-bold mb-6">Estadísticas del Bot</h1>
+      <h1 className="text-2xl font-bold mb-6">Panel de Administración</h1>
+      
+      <div className="mb-8">
+        <h2 className="text-lg font-medium mb-3">Estado de Scrapers</h2>
+        <ScraperStatus /></div>
+      
+      <h1 className="text-xl font-bold mb-4">Estadísticas del Bot</h1>
       
       <button
         onClick={loadStats}

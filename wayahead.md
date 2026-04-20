@@ -88,6 +88,7 @@
 | A3 | Avisos última hora | Badge + scraper | ✅ Completado |
 | A3 | Texto completo seguridad | Accordion | ✅ Completado |
 | B | Fichas País PDF | Botón descarga | ✅ Completado |
+| - | Sistema auditoría scrapers | Dashboard + indicadores | ✅ Completado |
 
 ---
 

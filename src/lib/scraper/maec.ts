@@ -1,5 +1,8 @@
+import { logScraperSuccess, logScraperWarning, logScraperError } from './audit';
+
 const MAEC_BASE = 'https://www.exteriores.gob.es';
 const CACHE_DURATION = 1000 * 60 * 60;
+const SCRAPER_NAME = 'maec';
 
 interface CacheEntry<T> {
   data: T;
@@ -173,8 +176,11 @@ export async function getMAECData(countryCode: string): Promise<MAECCountryData 
     };
 
     setCache(cacheKey, data);
+    logScraperSuccess(SCRAPER_NAME, `Datos obtenidos para ${countryName}`);
     return data;
-  } catch (error) {
+  } catch (error: any) {
+    const errorMsg = error?.message || String(error);
+    logScraperError(SCRAPER_NAME, `Error al obtener datos de ${countryName}`, errorMsg);
     console.error(`Error fetching MAEC data for ${countryCode}:`, error);
     return null;
   }
