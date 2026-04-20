@@ -15,6 +15,11 @@ const staticPages = [
   '/metodologia',
   '/relojes',
   '/alertas',
+  '/en',
+  '/pt',
+  '/contact',
+  '/premium',
+  '/pwa',
 ];
 
 export async function GET() {
