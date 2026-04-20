@@ -3,7 +3,7 @@ title: "Emergencias en el extranjero: guía completa de actuación - qué hacer 
 description: "Guía completa de emergencias médicas, robos, accidentes y situaciones críticas abroad. Números de emergencia,consejos prácticos y cómo prevenirlonguardar tu seguridad."
 date: "2026-04-18"
 slug: emergencias-extranjero
-image: https://images.unsplash.com/photo-1516014782315-e7364c8b7e92?w=800
+image: https://images.unsplash.com/photo-1540541338287-41700207dee6?w=800
 author: Miguel Castillo
 readingTime: 10 minutos
 tags: [emergencias, seguridad, salud, robo, asistencia, viaje, primeros auxilios]

@@ -6,7 +6,7 @@ date: "2026-04-15"
 author: "M. Castillo"
 category: "Destinos"
 readTime: "8 min"
-image: "🇯🇵"
+image: https://images.unsplash.com/photo-1530789253388-582c481c54b0?w=800
 keywords: "japon viaje seguro, japon turismo, consejos japon, riesgo japon, viaje japon 2026"
 excerpt: "Todo lo que necesitas saber sobre seguridad, cultura y precauciones para tu viaje a Japón."
 ---
@@ -15,7 +15,7 @@ Japón es uno de los destinos más seguros del mundo para viajar. Con esta guía
 
 ## ¿Por qué Japón es seguro?
 
-Japón posee una de las tasas de criminalidad más bajas del mundo. Los habitantes son conocidos por su hospitalidad y respeto hacia los visitantes. Es común que dejéis objetos de valor en una mesa de cafetería y estos permanezcan ahí cuando volváis.
+Japón posee una de las tasas de criminalidad más bajas del mundo. Los habitantes son conocidos por su hospitalidad y respeto hacia los visitantes. Es común dejar objetos de valor en una mesa de cafetería y estos permanecen ahí cuando vuelves.
 
 ### Datos que lo demuestran:
 

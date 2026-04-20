@@ -6,7 +6,7 @@ date: "2026-04-17"
 author: "M. Castillo"
 category: "Básicos"
 readTime: "7 min"
-image: "🛃"
+image: https://images.unsplash.com/photo-1569154941061-e231b4725ef1?w=800
 keywords: "aduana aeropuerto, pasar aduana, control aduanero consejos, viajar sin problemas aeropuerto, que declarar aduana, viajar extranjero consejos, aduana equipaje, control fronterizo"
 excerpt: "Aprende cómo pasar la aduana en el aeropuerto sin problemas. Consejos reales, errores comunes y recomendaciones prácticas para viajeros."
 ---

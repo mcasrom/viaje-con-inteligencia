@@ -3,7 +3,7 @@ title: "Cómo viajar más barato usando inteligencia artificial: la guía defini
 description: "Aprende a usar la IA para encontrar vuelos baratos, hoteles con descuento y optimizar tu presupuesto de viaje. Guía actualizada con herramientas y técnicas."
 date: "2026-04-19"
 slug: viajar-barato-ia
-image: https://images.unsplash.com/photo-1436491865332-3831b05b1a55?w=800
+image: https://images.unsplash.com/photo-1530789253388-582c481c54b0?w=800
 author: Miguel Castillo
 readingTime: 8 minutos
 tags: [ia, vuelos baratos, presupuesto, tecnologia, ahorro, travel hack]

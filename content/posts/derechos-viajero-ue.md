@@ -10,7 +10,7 @@ tags: [derechos, UE, reclamar, vuelos, compensacion]
 categories: [Consejos de Viaje]
 ---
 
-Viajar en avión dentro de la Unión Europea te protege un conjunto de derechos mínimos que muchas desconoces. El Reglamento CE 261/2004 establece protecciones específicas que pueden save cientos de euros en situaciones adversas.
+Viajar en avión dentro de la Unión Europea te protege un conjunto de derechos mínimos que muchas desconoces. El Reglamento CE 261/2004 establece protecciones específicas que pueden ahorrar cientos de euros en situaciones adversas.
 
 ## Reglamento CE 261/2004: basics
 

@@ -6,7 +6,7 @@ date: "2026-04-01"
 author: "M. Castillo"
 category: "Básicos"
 readTime: "4 min"
-image: "📄"
+image: https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=800
 keywords: "documentos viaje, pasaporte, visado, documentos internacionales, viaje extranjero"
 excerpt: "Pasaporte, visados, seguros y más: todo lo que necesitas documentar antes de partir."
 ---

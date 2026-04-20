@@ -6,7 +6,7 @@ date: "2026-04-08"
 author: "M. Castillo"
 category: "Seguros"
 readTime: "6 min"
-image: "🛡️"
+image: https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=800
 keywords: "seguro viaje, importancia seguro viaje, seguro viaje España, coberturas seguro viaje"
 excerpt: "Casos reales donde un seguro de viaje marcó la diferencia entre un susto y una tragedia."
 ---

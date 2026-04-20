@@ -3,7 +3,7 @@ title: "Mejor seguro de viaje 2026: comparativa completa y guía de contratació
 description: "Comparativa de seguros de viaje: Coverwise, Iati, Mondo y más. Cuál elegir según destino, duración y presupuesto. Guía actualizada."
 date: "2026-04-19"
 slug: seguro-viaje-comparativa
-image: https://images.unsplash.com/photo-1554224155-6726b41ff1ef?w=800
+image: https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=800
 author: Miguel Castillo
 readingTime: 7 minutos
 tags: [seguro, comparativa, cobertura, viaje, proteccion]

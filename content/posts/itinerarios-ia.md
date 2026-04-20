@@ -3,7 +3,7 @@ title: "Cómo crear itinerarios de viaje con IA: la herramienta que reemplaza a 
 description: "Genera itinerarios personalizados con inteligencia artificial. Desde 3 días hasta 2 semanas: la IA adapta el plan a tu presupuesto, preferencias y tempo."
 date: "2026-04-19"
 slug: itinerary-ia
-image: https://images.unsplash.com/photo-1469474968028-56623f02e042?w=800
+image: https://images.unsplash.com/photo-1506929562872-bb421503ef21?w=800
 author: Miguel Castillo
 readingTime: 10 minutos
 tags: [ia, itinerario, planificacion, chatgpt, travel planner, ruta]

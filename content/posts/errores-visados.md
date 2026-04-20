@@ -1,16 +1,16 @@
 ---
 title: "Errores comunes al solicitar visado: cómo evitarlos"
-description: "Los 10 errores más frecuentes al solicitar visado turístico, de trabajo o estudiante. Evita rejections y retrasos con estos consejos actualizados."
+description: "Los 10 errores más frecuentes al solicitar visado turístico, de trabajo o estudiante. Evita rechazos y retrasos con estos consejos actualizados."
 date: "2026-04-19"
 slug: errores-comunes-visado-solicitar
-image: https://images.unsplash.com/photo-1553114836-74115986bc35?w=800
+image: https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=800
 author: Miguel Castillo
 readingTime: 6 minutos
-tags: [visado, trámites, documentación, ошибor common, Schegen, konsulado]
+tags: [visado, trámites, documentación, errores comunes, Schengen, konsulado]
 categories: [Documentación]
 ---
 
-Solicitar un visado puede parecer un proceso sencillos, pero un solo error puede costarte weeks de delay o incluso el rejection de tu solicitud. En esta guía te muestran los errores más comunes y cómo evitarlos.
+Solicitar un visado puede parecer un proceso sencillo, pero un solo error puede costarte semanas de retraso o incluso el rechazo de tu solicitud. En esta guía te mostramos los errores más comunes y cómo evitarlos.
 
 ## Los 10 Errores Más Frecuentes
 

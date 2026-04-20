@@ -6,7 +6,7 @@ date: "2026-03-28"
 author: "M. Castillo"
 category: "Tecnología"
 readTime: "3 min"
-image: "🤖"
+image: https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=800
 keywords: "bot telegram viaje, alertas viaje, telegram bot, alertas seguridad, viaje inteligente"
 excerpt: "Funciones secretas del bot que muy pocos conocen y que pueden ser cruciales en emergencias."
 ---

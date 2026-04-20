@@ -6,7 +6,7 @@ date: "2026-04-05"
 author: "M. Castillo"
 category: "Destinos"
 readTime: "7 min"
-image: "🇲🇽"
+image: https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=800
 keywords: "mexico riesgo, zonas mexico, seguridad mexico, mae c mexico, viaje mexico seguro"
 excerpt: "Mapa actualizado de zonas a evitar y recomendaciones del MAEC para viajar seguro."
 ---

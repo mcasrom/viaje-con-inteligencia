@@ -6,7 +6,7 @@ date: "2026-04-12"
 author: "M. Castillo"
 category: "Consejos"
 readTime: "5 min"
-image: "✈️"
+image: https://images.unsplash.com/photo-1565026057447-bc90a3dceb87?w=800
 keywords: "checklist viaje, errores viaje, consejos viaje, prepare su viaje, lista equipaje"
 excerpt: "Los errores más comunes que cometen los viajeros y cómo evitarlos para un viaje sin problemas."
 ---

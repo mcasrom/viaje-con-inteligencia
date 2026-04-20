@@ -10,7 +10,7 @@ tags: [presupuesto, ahorrar, flights cheap, hotels, comida, transporte]
 categories: [Ahorro]
 ---
 
-Viajar no tiene que ser caro. Con las estrategias correctas, puedes save hasta 50% en tu próximo viaje. Aquí te presento una guía completa.
+Viajar no tiene que ser caro. Con las estrategias correctas, puedes ahorrar hasta 50% en tu próximo viaje. Aquí te presento una guía completa.
 
 ## ✈️ Vuelos Baratos
 
