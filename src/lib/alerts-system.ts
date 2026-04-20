@@ -1,4 +1,5 @@
 import { paisesData, getPaisPorCodigo, NivelRiesgo } from '@/data/paises';
+import { getAllPosts, PostMeta } from './posts';
 
 interface ChangeLog {
   fecha: string;
@@ -89,14 +90,29 @@ export function generateWeeklyDigest(): string {
   const changes = getRecentChanges(7);
   const paises = Object.values(paisesData);
   const altoRiesgo = paises.filter(p => p.nivelRiesgo === 'alto' || p.nivelRiesgo === 'muy-alto');
+  const recentPosts = getAllPosts({ sort: 'recent' }).slice(0, 5);
   
-  let message = `📊 *INFORME SEMANAL - Viaje con Inteligencia*\n`;
-  message += `━━━━━━━━━━━━━━━━━━━━\n\n`;
-  message += `📅 Del ${new Date().toLocaleDateString('es-ES')} - Semana ${getWeekNumber()}\n\n`;
+  const formatDate = (dateStr: string) => {
+    const d = new Date(dateStr);
+    return d.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' });
+  };
+  
+  let message = `📬 *RESUMEN SEMANAL - Viaje con Inteligencia*\n`;
+  message += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+  message += `📅 ${new Date().toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}\n\n`;
+  
+  if (recentPosts.length > 0) {
+    message += `📝 *Nuevos artículos esta semana:*\n`;
+    recentPosts.forEach((post: PostMeta) => {
+      const category = post.category || 'Artículo';
+      message += `• ${post.title} [${category}]\n`;
+    });
+    message += `\n`;
+  }
   
   if (altoRiesgo.length > 0) {
     message += `⚠️ *Países con riesgo alto:*\n`;
-    altoRiesgo.forEach(p => {
+    altoRiesgo.slice(0, 8).forEach(p => {
       const emoji = p.nivelRiesgo === 'muy-alto' ? '🔴' : '🟠';
       message += `${emoji} ${p.bandera} ${p.nombre}\n`;
     });
@@ -104,17 +120,20 @@ export function generateWeeklyDigest(): string {
   }
   
   if (changes.length > 0) {
-    message += `🔄 *Cambios recientes:*\n`;
-    changes.slice(0, 5).forEach(c => {
+    message += `🔄 *Últimos cambios MAEC:*\n`;
+    changes.slice(0, 3).forEach(c => {
       message += `• ${c.pais}: ${c.descripcion}\n`;
     });
     message += `\n`;
   }
   
-  message += `💡 *Consejo de la semana:*\n`;
-  message += `Antes de viajar, verifica siempre los requisitos actualizados `;
-  message += `en la web oficial del MAEC.\n\n`;
-  message += `🤖 @ViajeConInteligenciaBot | 🌐 viaje-con-inteligencia.vercel.app`;
+  message += `💡 *Consejo:*\n`;
+  message += `Revisa siempre los requisitos en la web oficial del MAEC antes de viajar.\n\n`;
+  message += `🔗 *Links útiles:*\n`;
+  message += `📰 Blog: https://viaje-con-inteligencia.vercel.app/blog\n`;
+  message += `🤖 Bot IA: @ViajeConInteligenciaBot\n`;
+  message += `🗺️ Mapa: https://viaje-con-inteligencia.vercel.app\n\n`;
+  message += `✨ *Viaja con inteligencia!*`;
   
   return message;
 }
