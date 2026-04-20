@@ -85,9 +85,9 @@
 ### 🟠 SPRINT 4B - Scraping MAEC (MEDIO/ALTO ESFUERZO)
 | # | Índice | UI | Estado |
 |---|--------|-----|--------|
-| A3 | Avisos última hora | Badge + scraper | ⏳ |
-| A3 | Texto completo seguridad | Accordion | ⏳ |
-| B | Fichas País PDF | Botón descarga | ⏳ |
+| A3 | Avisos última hora | Badge + scraper | ✅ Completado |
+| A3 | Texto completo seguridad | Accordion | ✅ Completado |
+| B | Fichas País PDF | Botón descarga | ✅ Completado |
 
 ---
 

@@ -9,7 +9,7 @@ import {
   AlertTriangle, DollarSign, Globe, Newspaper, 
   ExternalLink, Building2, CheckCircle2, XCircle, 
   Plane, Info, Flag, Users, Clock3, Zap, Car, MapPinned,
-  Heart, Loader2, CheckCircle, RefreshCw, Shield, Wallet, Siren
+  Heart, Loader2, CheckCircle, RefreshCw, Shield, Wallet, Siren, Download, Bell
 } from 'lucide-react';
 import Reviews from '@/components/Reviews';
 import WeatherWidget from '@/components/WeatherWidget';
@@ -25,10 +25,25 @@ export default function DetallePaisClient({ pais }: DetallePaisClientProps) {
   const [isFavorite, setIsFavorite] = useState(false);
   const [favLoading, setFavLoading] = useState(false);
   const [activeTab, setActiveTab] = useState<'info' | 'legal' | 'dinero' | 'emergencia'>('info');
+  const [maecData, setMaecData] = useState<any>(null);
+  const [maecLoading, setMaecLoading] = useState(false);
 
   useEffect(() => {
     checkFavorite();
   }, [codigo]);
+
+  useEffect(() => {
+    if (activeTab === 'legal' && !maecData) {
+      setMaecLoading(true);
+      fetch(`/api/maec?country=${codigo}`)
+        .then(res => res.json())
+        .then(data => {
+          if (!data.error) setMaecData(data);
+        })
+        .catch(console.error)
+        .finally(() => setMaecLoading(false));
+    }
+  }, [activeTab, codigo, maecData]);
 
   const checkFavorite = async () => {
     try {
@@ -228,7 +243,7 @@ export default function DetallePaisClient({ pais }: DetallePaisClientProps) {
         <div className="flex flex-wrap gap-2 mb-6">
           {[
             { id: 'info', label: 'Información', icon: <Info className="w-4 h-4" /> },
-            { id: 'legal', label: 'Legal', icon: <Shield className="w-4 h-4" /> },
+            { id: 'legal', label: 'MAEC', icon: <Shield className="w-4 h-4" /> },
             { id: 'dinero', label: 'Dinero', icon: <Wallet className="w-4 h-4" /> },
             { id: 'emergencia', label: 'Emergencia', icon: <Siren className="w-4 h-4" /> },
           ].map(tab => (
@@ -251,17 +266,98 @@ export default function DetallePaisClient({ pais }: DetallePaisClientProps) {
           <div className="bg-slate-800 rounded-xl p-6 border border-slate-700 mb-6">
             <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
               <Shield className="w-5 h-5 text-yellow-400" />
-              Legislación Local
+              Datos Oficiales MAEC
             </h3>
-            <div className="space-y-3">
-              <p className="text-slate-300">📋 Información legal por país. Esta sección se completará con datos del MAEC.</p>
-              <ul className="text-slate-400 text-sm space-y-2">
-                <li>• Requisitos de visa</li>
-                <li>• Regulaciones de aduanas</li>
-                <li>• Leyes locales importantes</li>
-                <li>• Restricciones de物品</li>
-              </ul>
-            </div>
+            
+            {maecLoading ? (
+              <div className="flex items-center gap-2 text-slate-400">
+                <Loader2 className="w-5 h-5 animate-spin" />
+                <span>Cargando datos del MAEC...</span>
+              </div>
+            ) : maecData ? (
+              <div className="space-y-4">
+                <div className="flex items-center justify-between p-3 bg-slate-700/50 rounded-lg">
+                  <span className="text-slate-300">Nivel de riesgo</span>
+                  <span className={`px-3 py-1 rounded-full text-sm font-medium ${
+                    maecData.nivelRiesgo === 'alto' ? 'bg-red-500/20 text-red-400' :
+                    maecData.nivelRiesgo === 'medio' ? 'bg-orange-500/20 text-orange-400' :
+                    'bg-green-500/20 text-green-400'
+                  }`}>
+                    {maecData.nivelRiesgo === 'alto' ? '🔴 Alto' :
+                     maecData.nivelRiesgo === 'medio' ? '🟠 Medio' :
+                     maecData.nivelRiesgo === 'bajo' ? '🟡 Bajo' : '⚪ Desconocido'}
+                  </span>
+                </div>
+                
+                {maecData.fechaActualizacion && (
+                  <div className="flex items-center gap-2 text-slate-400 text-sm">
+                    <Clock className="w-4 h-4" />
+                    <span>Actualizado: {maecData.fechaActualizacion}</span>
+                  </div>
+                )}
+
+                {maecData.alertas && maecData.alertas.length > 0 && (
+                  <div className="mt-4">
+                    <h4 className="text-white font-medium mb-2 flex items-center gap-2">
+                      <Bell className="w-4 h-4 text-orange-400" />
+                      Alertas activas
+                    </h4>
+                    <ul className="space-y-2">
+                      {maecData.alertas.map((alerta: string, i: number) => (
+                        <li key={i} className="text-slate-300 text-sm bg-orange-500/10 p-2 rounded">
+                          {alerta}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-4">
+                  <a
+                    href={maecData.enlaces?.fichaPdf}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 p-3 bg-blue-500/20 hover:bg-blue-500/30 rounded-lg text-blue-400 transition-colors"
+                  >
+                    <Download className="w-4 h-4" />
+                    <span className="text-sm">Descargar Ficha PDF</span>
+                  </a>
+                  <a
+                    href={maecData.enlaces?.recomendaciones}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 p-3 bg-purple-500/20 hover:bg-purple-500/30 rounded-lg text-purple-400 transition-colors"
+                  >
+                    <ExternalLink className="w-4 h-4" />
+                    <span className="text-sm">Recomendaciones MAEC</span>
+                  </a>
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                <p className="text-slate-300">📋 Información oficial del Ministerio de Asuntos Exteriores.</p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <a
+                    href={`https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=${pais.nombre}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 p-3 bg-blue-500/20 hover:bg-blue-500/30 rounded-lg text-blue-400 transition-colors"
+                  >
+                    <ExternalLink className="w-4 h-4" />
+                    <span className="text-sm">Ver recomendaciones</span>
+                  </a>
+                  <a
+                    href={`https://www.exteriores.gob.es/Documents/FichasPais/${pais.nombre.toUpperCase()}_FICHA%20PAIS.pdf`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 p-3 bg-purple-500/20 hover:bg-purple-500/30 rounded-lg text-purple-400 transition-colors"
+                  >
+                    <Download className="w-4 h-4" />
+                    <span className="text-sm">Descargar Ficha</span>
+                  </a>
+                </div>
+              </div>
+            )}
           </div>
         )}
 
