@@ -40,9 +40,17 @@ function PostCard({ post }: { post: Post }) {
             </div>
           </>
         ) : (
-          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-600/40 to-purple-600/40">
-            <img src="/favicon.jpg" alt="" className="w-16 h-16 rounded-xl shadow-2xl border-2 border-white/20 object-contain" />
-          </div>
+          <>
+            <img 
+              src="/blog-header.jpg" 
+              alt={post.title}
+              className="w-full h-full object-cover opacity-30"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/50 to-transparent" />
+            <div className="absolute inset-0 flex items-center justify-center">
+              <img src="/favicon.jpg" alt="" className="w-16 h-16 rounded-xl shadow-2xl border-2 border-white/20 object-contain" />
+            </div>
+          </>
         )}
         {isPopular && (
           <div className="absolute top-2 right-2 px-2 py-1 bg-orange-500 text-white text-xs font-bold rounded-full flex items-center gap-1">
@@ -148,17 +156,25 @@ function BlogContent() {
       </header>
 
       <main className="max-w-6xl mx-auto px-6 py-12">
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-500/20 text-blue-400 rounded-full text-sm font-medium mb-4">
-            <BookOpen className="w-4 h-4" />
-            Blog de Viaje con Inteligencia
+        <div className="relative mb-10 rounded-2xl overflow-hidden">
+          <img 
+            src="/blog-header.jpg" 
+            alt="Viajes" 
+            className="w-full h-48 md:h-64 object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/70 to-transparent" />
+          <div className="absolute bottom-0 left-0 right-0 p-8">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-blue-500/30 text-blue-300 rounded-full text-sm font-medium mb-3 backdrop-blur-sm">
+              <BookOpen className="w-4 h-4" />
+              Blog de Viaje con Inteligencia
+            </div>
+            <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">
+              Artículos para viajar smarter
+            </h1>
+            <p className="text-slate-300 max-w-2xl">
+              Consejos prácticos, guías de destinos y análisis de riesgos para planificar tus viajes con seguridad.
+            </p>
           </div>
-          <h1 className="text-4xl font-bold text-white mb-4">
-            Artículos para viajar smarter
-          </h1>
-          <p className="text-slate-400 max-w-2xl mx-auto">
-            Consejos prácticos, guías de destinos y análisis de riesgos para planificar tus viajes con seguridad.
-          </p>
         </div>
 
         <div className="flex flex-wrap items-center gap-4 mb-8 p-4 bg-slate-800 rounded-xl border border-slate-700">
