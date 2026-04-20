@@ -140,3 +140,28 @@ CREATE TABLE IF NOT EXISTS public.bot_commands (
 CREATE INDEX IF NOT EXISTS idx_bot_stats_chat_id ON public.bot_stats(chat_id);
 CREATE INDEX IF NOT EXISTS idx_bot_commands_chat_id ON public.bot_commands(chat_id);
 CREATE INDEX IF NOT EXISTS idx_bot_commands_executed_at ON public.bot_commands(executed_at);
+
+-- Tabla de suscriptores newsletter
+CREATE TABLE IF NOT EXISTS public.newsletter_subscribers (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  email TEXT UNIQUE NOT NULL,
+  name TEXT,
+  verified BOOLEAN DEFAULT FALSE,
+  verify_token TEXT,
+  subscribed_at TIMESTAMPTZ DEFAULT NOW(),
+  unsubscribed_at TIMESTAMPTZ,
+  source TEXT DEFAULT 'web'
+);
+
+-- Tabla de historial newsletter
+CREATE TABLE IF NOT EXISTS public.newsletter_history (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  subject TEXT NOT NULL,
+  content TEXT NOT NULL,
+  sent_at TIMESTAMPTZ DEFAULT NOW(),
+  recipients_count INTEGER DEFAULT 0,
+  opened_count INTEGER DEFAULT 0,
+  clicked_count INTEGER DEFAULT 0
+);
+
+CREATE INDEX IF NOT EXISTS idx_newsletter_subscribers_email ON public.newsletter_subscribers(email);

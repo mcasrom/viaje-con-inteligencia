@@ -38,7 +38,7 @@
 |---|-------|------------|
 | 1 | Contador vistas (Supabase) | ✅ Completado (schema ready) |
 | 2 | Badge "Popular" | ✅ Completado |
-| 3 | Pestaña Populares | M |
+| 3 | Pestaña Populares | ✅ Completado |
 
 ### 🗺️ MAPA INTERACTIVO
 | # | Mejora | Complejidad |
@@ -56,7 +56,7 @@
 | # | Mejora | Complejidad |
 |---|-------|------------|
 | 1 | Onboarding nuevos | ✅ Completado |
-| 2 | Newsletter semanal | M |
+| 2 | Newsletter semanal | ✅ Completado (API + UI + Schema) |
 | 3 | Google Search Console | ✅ Completado (code in metadata) |
 | 3b | Vercel Analytics | ✅ Completado |
 | 3c | Speed Insights | ✅ Completado |

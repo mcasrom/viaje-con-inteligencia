@@ -4,6 +4,7 @@ import { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { ArrowLeft, Calendar, Clock, BookOpen, TrendingUp, Clock3, Tag, Flame, ChevronLeft, ChevronRight, Filter, ArrowUpDown } from 'lucide-react';
+import NewsletterSignup from '@/components/NewsletterSignup';
 
 interface Post {
   slug: string;
@@ -96,16 +97,22 @@ function BlogContent() {
   const page = parseInt(searchParams.get('page') || '1');
   const category = searchParams.get('category') || 'all';
   const sort = searchParams.get('sort') || 'recent';
+  const tab = searchParams.get('tab') || 'recientes';
 
   const [posts, setPosts] = useState<Post[]>([]);
   const [totalPages, setTotalPages] = useState(1);
   const [categories, setCategories] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState(tab);
 
   useEffect(() => {
     fetchPosts();
     fetchCategories();
-  }, [page, category, sort]);
+  }, [page, category, sort, tab]);
+
+  useEffect(() => {
+    setActiveTab(tab);
+  }, [tab]);
 
   const fetchPosts = async () => {
     setLoading(true);
@@ -114,7 +121,7 @@ function BlogContent() {
         page: page.toString(),
         perPage: '10',
         category: category,
-        sort: sort,
+        sort: activeTab === 'populares' ? 'popular' : sort,
       });
       const res = await fetch(`/api/posts?${params}`);
       const data = await res.json();
@@ -141,6 +148,13 @@ function BlogContent() {
     const params = new URLSearchParams(searchParams.toString());
     params.set(key, value);
     if (key !== 'page') params.set('page', '1');
+    router.push(`/blog?${params.toString()}`);
+  };
+
+  const switchTab = (newTab: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('tab', newTab);
+    params.set('page', '1');
     router.push(`/blog?${params.toString()}`);
   };
 
@@ -178,7 +192,28 @@ function BlogContent() {
         </div>
 
         <div className="flex flex-wrap items-center gap-4 mb-8 p-4 bg-slate-800 rounded-xl border border-slate-700">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 p-1 bg-slate-700 rounded-lg">
+            <button
+              onClick={() => switchTab('recientes')}
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                activeTab === 'recientes' ? 'bg-blue-500 text-white' : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              <Clock3 className="w-4 h-4" />
+              Recientes
+            </button>
+            <button
+              onClick={() => switchTab('populares')}
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                activeTab === 'populares' ? 'bg-orange-500 text-white' : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              <Flame className="w-4 h-4" />
+              Populares
+            </button>
+          </div>
+
+          <div className="flex items-center gap-2 ml-auto">
             <Filter className="w-4 h-4 text-slate-400" />
             <select
               value={category}
@@ -271,6 +306,10 @@ function BlogContent() {
             </svg>
             Probar Bot IA
           </a>
+        </div>
+
+        <div className="mt-16">
+          <NewsletterSignup />
         </div>
       </main>
 
