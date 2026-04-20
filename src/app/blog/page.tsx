@@ -27,7 +27,7 @@ function PostCard({ post }: { post: Post }) {
       className="bg-slate-800 rounded-xl border border-slate-700 overflow-hidden hover:border-blue-500 transition-colors group"
     >
       <div className="h-32 bg-gradient-to-br from-blue-900/80 via-slate-900/90 to-purple-900/80 overflow-hidden relative">
-        {post.image && post.image.trim() !== '' ? (
+        {post.image && post.image.trim() !== '' && (post.image.startsWith('http') || post.image.startsWith('/') || post.image.endsWith('.jpg') || post.image.endsWith('.png') || post.image.endsWith('.webp')) ? (
           <>
             <img 
               src={post.image} 
