@@ -22,7 +22,7 @@
 | # | Mejora | Complejidad |
 |---|-------|------------|
 | 1 | Chat IA conversacional | M |
-| 2 | Generador itinerarios IA | A |
+| 2 | Generador itinerarios IA | ✅ Completado |
 | 3 | Perfil usuario | M |
 | 4 | Favoritos sincronizados | M |
 
@@ -61,6 +61,7 @@
 | 3c | Speed Insights | ✅ Completado |
 | 3d | Sitemap multilingual | ✅ Completado |
 | 3e | Structured data JSON-LD | ✅ Completado |
+| 3f | Páginas /en /pt | ✅ Completado |
 | 4 | Programa afiliados | M |
 | 5 | Sitemap.xml dinámico | B |
 | 6 | Corregir textos EN en páginas ES | B |
