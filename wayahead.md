@@ -16,7 +16,7 @@
 | 9 | Chat IA Groq - Mejora prompt (MAEC) | ✅ |
 | 10 | Chat IA - Modelo llama-3.1-8b-instant | ✅ |
 
-## ⏰ SPRINT 3 (En progreso)
+## ⏰ SPRINT 3 (Completado)
 
 ### 🔴 PRIORIDAD ALTA
 | # | Mejora | Complejidad |
@@ -70,7 +70,20 @@
 
 ### ⚠️ PENDIENTES
 - Stripe + auth (config manual Vercel)
-- Más países (target 100)
+- Más países (target 100): añadir países Nordic/Europeos
+
+### 🟡 PRIORIDAD SPRINT 4 - PAÍSES
+| # | Mejora | Complejidad |
+|---|-------|------------|
+| 1 | Añadir países Nordic (Noruega, Suecia, Denmark, Finlandia) | M |
+| 2 | Añadir países Eastern Europe (Estonia, Letonia, Lituania, Croacia, Eslovenia) | M |
+| 3 | Añadir más países target 100 | M |
+
+### 📬 NEWSLETTER (Completado)
+- ✅ Telegram: posts blog + países riesgo
+- ✅ Channel: @ViajeConInteligencia
+- ✅ Frecuencia: cada lunes 8:00 UTC
+- ⚠️ Scraping MAEC no funcional (web institucional)
 
 ---
 
