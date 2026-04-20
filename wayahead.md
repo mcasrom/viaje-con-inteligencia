@@ -111,8 +111,13 @@
 | Métrica | Actual | Target |
 |---------|--------|--------|
 | Visitantes/mes | ~500 | 10,000 |
-| Países | 89 | 100 |
-| Posts blog | 26+ | 50 |
+| Países | 89 (cache Vercel muestra 87) | 100 |
+| Posts blog | 27 | 50 |
 | Usuarios Telegram | ~50 | 1,000 |
 | Suscripciones | 0 | 100 |
 | Email | info@viajeinteligencia.com | ✅ Verificado y funcionando |
+
+### ⚠️ Known Issues
+- Cache Vercel no actualiza países (87 vs 89) - necesita purge manual
+- Post imagen no carga (URL Unsplash)
+- Redirect Cloudflare no funciona
