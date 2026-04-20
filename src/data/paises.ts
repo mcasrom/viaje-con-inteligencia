@@ -2748,8 +2748,8 @@ om: {
     indicadores: { ipc: '3%', indicePrecios: 'Alto' },
     voltaje: '230V / 50Hz',
     prefijoTelefono: '+972',
-    nivelRiesgo: 'bajo',
-    ultimoInforme: 'Marzo 2026',
+    nivelRiesgo: 'medio',
+    ultimoInforme: 'Abril 2026',
     contactos: [
       {
         tipo: 'Embajada',
