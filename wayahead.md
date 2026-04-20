@@ -55,7 +55,7 @@
 ### 🟡 PRIORIDAD MEDIA
 | # | Mejora | Complejidad |
 |---|-------|------------|
-| 1 | Onboarding nuevos | B |
+| 1 | Onboarding nuevos | ✅ Completado |
 | 2 | Newsletter semanal | M |
 | 3 | Google Search Console | ✅ Completado (code in metadata) |
 | 3b | Vercel Analytics | ✅ Completado |
