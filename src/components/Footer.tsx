@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useI18n } from '@/lib/i18n';
+import ScraperStatus from './ScraperStatus';
 
 export default function Footer() {
   const { t } = useI18n();
@@ -69,9 +70,12 @@ export default function Footer() {
 
         <div className="pt-6 border-t border-slate-800">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-slate-500 text-sm">
-              © {new Date().getFullYear()} <strong className="text-slate-400">M.Castillo</strong> - Viaje con Inteligencia
-            </p>
+            <div className="flex items-center gap-4">
+              <p className="text-slate-500 text-sm">
+                © {new Date().getFullYear()} <strong className="text-slate-400">M.Castillo</strong> - Viaje con Inteligencia
+              </p>
+              <ScraperStatus compact />
+            </div>
             <p className="text-slate-600 text-xs text-center md:text-right max-w-xl">
               {t('footer.dataSource')}
             </p>
