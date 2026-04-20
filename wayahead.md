@@ -70,6 +70,7 @@
 
 ### ⚠️ PENDIENTES
 - Stripe + auth (config manual Vercel)
+- Redirect viajeinteligencia.com → vercel.app (Cloudflare)
 
 ### 🟡 PRIORIDAD SPRINT 4 - PAÍSES
 | # | Mejora | Complejidad |
