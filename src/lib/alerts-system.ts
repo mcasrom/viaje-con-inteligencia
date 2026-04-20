@@ -1,5 +1,6 @@
 import { paisesData, getPaisPorCodigo, NivelRiesgo } from '@/data/paises';
 import { getAllPosts, PostMeta } from './posts';
+import { getAllMAECAlerts } from './scraper/maec';
 
 interface ChangeLog {
   fecha: string;
@@ -86,11 +87,17 @@ export const defaultAlerts = [
   },
 ];
 
-export function generateWeeklyDigest(): string {
-  const changes = getRecentChanges(7);
+export async function generateWeeklyDigest(): Promise<string> {
   const paises = Object.values(paisesData);
   const altoRiesgo = paises.filter(p => p.nivelRiesgo === 'alto' || p.nivelRiesgo === 'muy-alto');
   const recentPosts = getAllPosts({ sort: 'recent' }).slice(0, 5);
+  
+  let maecAlerts: { pais: string; nivelRiesgo: string }[] = [];
+  try {
+    maecAlerts = await getAllMAECAlerts();
+  } catch (e) {
+    console.error('[Newsletter] Error getting MAEC alerts:', e);
+  }
   
   const formatDate = (dateStr: string) => {
     const d = new Date(dateStr);
@@ -110,19 +117,16 @@ export function generateWeeklyDigest(): string {
     message += `\n`;
   }
   
-  if (altoRiesgo.length > 0) {
-    message += `⚠️ *Países con riesgo alto:*\n`;
-    altoRiesgo.slice(0, 8).forEach(p => {
-      const emoji = p.nivelRiesgo === 'muy-alto' ? '🔴' : '🟠';
-      message += `${emoji} ${p.bandera} ${p.nombre}\n`;
-    });
-    message += `\n`;
-  }
-  
-  if (changes.length > 0) {
-    message += `🔄 *Últimos cambios MAEC:*\n`;
-    changes.slice(0, 3).forEach(c => {
-      message += `• ${c.pais}: ${c.descripcion}\n`;
+  if (altoRiesgo.length > 0 || maecAlerts.length > 0) {
+    message += `⚠️ *Países con riesgo (MAEC en tiempo real):*\n`;
+    const allRisk = [
+      ...altoRiesgo.map(p => ({ pais: p.nombre, nivel: p.nivelRiesgo as string })),
+      ...maecAlerts.map(a => ({ pais: a.pais, nivel: a.nivelRiesgo }))
+    ];
+    const uniqueRisk = allRisk.filter((v, i, a) => a.findIndex(t => t.pais === v.pais) === i);
+    uniqueRisk.slice(0, 10).forEach(p => {
+      const emoji = p.nivel === 'alto' || p.nivel === 'muy-alto' ? '🔴' : '🟠';
+      message += `${emoji} ${p.pais}\n`;
     });
     message += `\n`;
   }

@@ -52,7 +52,7 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ success: sentCustom });
 
       case 'weekly_digest':
-        const digest = generateWeeklyDigest();
+        const digest = await generateWeeklyDigest();
         const sentDigest = await sendToChannel(digest);
         return NextResponse.json({ success: sentDigest });
 

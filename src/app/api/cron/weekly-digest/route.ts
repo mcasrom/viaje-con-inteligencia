@@ -42,7 +42,7 @@ export async function GET(request: Request) {
 
   try {
     console.log('[Cron] Ejecutando digest semanal...');
-    const digest = generateWeeklyDigest();
+    const digest = await generateWeeklyDigest();
     const sent = await sendToChannel(digest);
     
     return NextResponse.json({
