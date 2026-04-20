@@ -1,12 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import Link from 'next/link';
-import { CheckSquare, Square, Printer, ArrowLeft, FileText, Pill, Shield, CreditCard, Smartphone, Plane, MapPin, Phone } from 'lucide-react';
+import { CheckSquare, Square, Printer, ArrowLeft, FileText, Pill, Shield, CreditCard, Smartphone, Plane, MapPin, Phone, Eye, EyeOff } from 'lucide-react';
 
 interface ChecklistCategory {
   id: string;
   name: string;
+  shortName: string;
   icon: React.ReactNode;
   items: { id: string; text: string }[];
 }
@@ -15,7 +16,8 @@ const checklistCategories: ChecklistCategory[] = [
   {
     id: 'documentos',
     name: 'Documentación Esencial',
-    icon: <FileText className="w-5 h-5" />,
+    shortName: 'Docs',
+    icon: <FileText className="w-4 h-4" />,
     items: [
       { id: 'passport', text: 'Pasaporte en vigor (6 meses validez)' },
       { id: 'passport-copy', text: 'Copia pasaporte (física + digital)' },
@@ -36,13 +38,14 @@ const checklistCategories: ChecklistCategory[] = [
   {
     id: 'legales',
     name: 'Aspectos Legales',
-    icon: <Shield className="w-5 h-5" />,
+    shortName: 'Legales',
+    icon: <Shield className="w-4 h-4" />,
     items: [
       { id: 'visa-check', text: 'Verificar requisitos visado' },
-      { id: 'customs', text: '了解海关规定 (Customs regulations)' },
+      { id: 'customs', text: 'Regulaciones aduaneras' },
       { id: 'prohibited', text: 'Revisar objetos prohibidos' },
       { id: 'drugs', text: 'Medicamentos: receta médica inglés' },
-      { id: 'food', text: 'Productos alimentación permits' },
+      { id: 'food', text: 'Productos alimentación permitidos' },
       { id: 'cash-limit', text: 'Límite efectivo Declaración (>10.000$)' },
       { id: 'pets', text: 'Permisos mascotas' },
       { id: 'drone', text: 'Permiso drone si aplica' },
@@ -50,8 +53,9 @@ const checklistCategories: ChecklistCategory[] = [
   },
   {
     id: 'sanitarios',
-    name: 'Sanitarios / Salud',
-    icon: <Pill className="w-5 h-5" />,
+    name: 'Sanitario / Salud',
+    shortName: 'Salud',
+    icon: <Pill className="w-4 h-4" />,
     items: [
       { id: 'vaccines', text: 'Vacunas recomendadas/obligatorias' },
       { id: 'insurance-health', text: 'Seguro médico internacional' },
@@ -60,7 +64,7 @@ const checklistCategories: ChecklistCategory[] = [
       { id: 'prescription', text: 'Receta médica en inglés' },
       { id: 'first-aid', text: 'Botiquín básico' },
       { id: 'painkillers', text: 'Analgésicos' },
-      { id: 'anti diarrhea', text: 'Antidiarreicos' },
+      { id: 'anti-diarrhea', text: 'Antidiarreicos' },
       { id: 'insect', text: 'Repelente insectos' },
       { id: 'sunscreen', text: 'Protector solar' },
       { id: 'altitude', text: 'Medicamentos altitud (si aplica)' },
@@ -72,10 +76,11 @@ const checklistCategories: ChecklistCategory[] = [
   {
     id: 'finanzas',
     name: 'Finanzas / Dinero',
-    icon: <CreditCard className="w-5 h-5" />,
+    shortName: 'Dinero',
+    icon: <CreditCard className="w-4 h-4" />,
     items: [
       { id: 'cash-local', text: 'Efectivo moneda local' },
-      { id: 'cash-euros', text: 'Euros / dólares备用' },
+      { id: 'cash-euros', text: 'Euros / dólares backup' },
       { id: 'cards', text: 'Tarjetas crédito (aviso banco)' },
       { id: 'cards-2', text: 'Tarjeta secundaria backup' },
       { id: 'atm', text: 'Tarjeta ATM internacional' },
@@ -87,7 +92,8 @@ const checklistCategories: ChecklistCategory[] = [
   {
     id: 'tecnologia',
     name: 'Tecnología',
-    icon: <Smartphone className="w-5 h-5" />,
+    shortName: 'Tech',
+    icon: <Smartphone className="w-4 h-4" />,
     items: [
       { id: 'phone', text: 'Móvil cargado + cargador' },
       { id: 'power-bank', text: 'Power bank' },
@@ -106,7 +112,8 @@ const checklistCategories: ChecklistCategory[] = [
   {
     id: 'equipaje',
     name: 'Equipaje',
-    icon: <Plane className="w-5 h-5" />,
+    shortName: 'Equipaje',
+    icon: <Plane className="w-4 h-4" />,
     items: [
       { id: 'luggage', text: 'Maleta principal' },
       { id: 'carry-on', text: 'Equipaje mano' },
@@ -124,7 +131,8 @@ const checklistCategories: ChecklistCategory[] = [
   {
     id: 'hogar',
     name: 'Casa / Vacaciones',
-    icon: <MapPin className="w-5 h-5" />,
+    shortName: 'Casa',
+    icon: <MapPin className="w-4 h-4" />,
     items: [
       { id: 'plants', text: 'Plantas regadas / cuidado' },
       { id: 'mail', text: 'Correspondencia detenida' },
@@ -136,8 +144,9 @@ const checklistCategories: ChecklistCategory[] = [
   },
   {
     id: 'emergencias',
-    name: 'Contactos Emergencia',
-    icon: <Phone className="w-5 h-5" />,
+    name: 'Emergencias',
+    shortName: 'Emerg.',
+    icon: <Phone className="w-4 h-4" />,
     items: [
       { id: 'embassy', text: 'Embajada país destino' },
       { id: 'family', text: 'Familia notificación viaje' },
@@ -151,6 +160,11 @@ const checklistCategories: ChecklistCategory[] = [
 ];
 
 export default function ChecklistPage() {
+  const [activeTab, setActiveTab] = useState('documentos');
+  const [visibleSections, setVisibleSections] = useState<Set<string>>(new Set(checklistCategories.map(c => c.id)));
+  const [printMode, setPrintMode] = useState<'all' | 'current'>('current');
+  const printRef = useRef<HTMLDivElement>(null);
+
   const [checklist, setChecklist] = useState<Record<string, Record<string, boolean>>>(() => {
     const initial: Record<string, Record<string, boolean>> = {};
     checklistCategories.forEach(cat => {
@@ -165,6 +179,7 @@ export default function ChecklistPage() {
   const [tripName, setTripName] = useState('');
   const [destination, setDestination] = useState('');
   const [dates, setDates] = useState('');
+  const [notes, setNotes] = useState('');
 
   const toggleItem = (categoryId: string, itemId: string) => {
     setChecklist(prev => ({
@@ -174,6 +189,18 @@ export default function ChecklistPage() {
         [itemId]: !prev[categoryId][itemId]
       }
     }));
+  };
+
+  const toggleSectionVisibility = (categoryId: string) => {
+    setVisibleSections(prev => {
+      const next = new Set(prev);
+      if (next.has(categoryId)) {
+        next.delete(categoryId);
+      } else {
+        next.add(categoryId);
+      }
+      return next;
+    });
   };
 
   const getCategoryProgress = (categoryId: string) => {
@@ -188,11 +215,7 @@ export default function ChecklistPage() {
     const checked = checklistCategories.reduce((acc, cat) => {
       return acc + cat.items.filter(item => checklist[cat.id][item.id]).length;
     }, 0);
-    return Math.round((checked / total) * 100);
-  };
-
-  const printChecklist = () => {
-    window.print();
+    return total > 0 ? Math.round((checked / total) * 100) : 0;
   };
 
   const resetChecklist = () => {
@@ -206,227 +229,257 @@ export default function ChecklistPage() {
     setChecklist(initial);
   };
 
+  const printChecklist = () => {
+    const sectionsToPrint = printMode === 'all' 
+      ? checklistCategories 
+      : [checklistCategories.find(c => c.id === activeTab)!];
+    
+    const printContent = sectionsToPrint
+      .map(cat => {
+        const checked = cat.items.filter(i => checklist[cat.id][i.id]);
+        const unchecked = cat.items.filter(i => !checklist[cat.id][i.id]);
+        
+        return `
+          <div style="margin-bottom: 20px; page-break-inside: avoid;">
+            <h3 style="border-bottom: 2px solid #3b82f6; padding-bottom: 5px; margin-bottom: 10px;">
+              ${cat.icon || ''} ${cat.name}
+            </h3>
+            ${checked.map(i => `<div style="color: #16a34a;">✓ ${i.text}</div>`).join('')}
+            ${unchecked.map(i => `<div style="color: #94a3b8;">☐ ${i.text}</div>`).join('')}
+          </div>
+        `;
+      })
+      .join('');
+
+    const header = tripName || destination || dates 
+      ? `<div style="margin-bottom: 20px; padding: 10px; background: #f1f5f9; border-radius: 8px;">
+          <strong>${tripName || 'Viaje'}</strong> ${destination ? '→ ' + destination : ''} ${dates ? '(' + dates + ')' : ''}
+        </div>`
+      : '';
+
+    const printWindow = window.open('', '_blank');
+    if (printWindow) {
+      printWindow.document.write(`
+        <html>
+          <head>
+            <title>Checklist Viaje - ${tripName || destination || 'Viaje con Inteligencia'}</title>
+            <style>
+              body { font-family: Arial, sans-serif; padding: 20px; color: #1e293b; }
+              h1 { color: #1e293b; border-bottom: 2px solid #3b82f6; padding-bottom: 10px; }
+              h3 { color: #1e293b; }
+              @media print { body { padding: 0; } }
+            </style>
+          </head>
+          <body>
+            <h1>✈️ Checklist de Viaje</h1>
+            ${header}
+            ${printContent}
+            ${notes ? `<div style="margin-top: 20px;"><h3>Notas:</h3><p>${notes}</p></div>` : ''}
+          </body>
+        </html>
+      `);
+      printWindow.document.close();
+      printWindow.print();
+    }
+  };
+
+  const activeCategory = checklistCategories.find(c => c.id === activeTab)!;
+
   return (
     <div className="min-h-screen bg-slate-900">
-      <header className="bg-slate-800 border-b border-slate-700">
-        <div className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors">
-            <ArrowLeft className="w-5 h-5" />
-            <span>Volver al mapa</span>
+      <header className="bg-slate-800 border-b border-slate-700 sticky top-0 z-50">
+        <div className="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
+          <Link href="/" className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors text-sm">
+            <ArrowLeft className="w-4 h-4" />
+            <span className="hidden sm:inline">Volver</span>
           </Link>
-          <div className="flex gap-2 no-print">
+          
+          <div className="flex items-center gap-2">
+            <select
+              value={printMode}
+              onChange={(e) => setPrintMode(e.target.value as 'all' | 'current')}
+              className="bg-slate-700 text-white text-xs px-2 py-1 rounded border border-slate-600"
+            >
+              <option value="current">Sección actual</option>
+              <option value="all">Todas las secciones</option>
+            </select>
             <button
               onClick={resetChecklist}
-              className="px-4 py-2 bg-slate-700 text-slate-300 rounded-lg hover:bg-slate-600 transition-colors text-sm"
+              className="px-3 py-1.5 bg-slate-700 text-slate-300 rounded-lg hover:bg-slate-600 transition-colors text-xs"
             >
               Reiniciar
             </button>
             <button
               onClick={printChecklist}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm flex items-center gap-2"
+              className="px-3 py-1.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-xs flex items-center gap-1.5"
             >
-              <Printer className="w-4 h-4" />
-              Imprimir
+              <Printer className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Imprimir</span>
             </button>
+          </div>
+        </div>
+
+        <div className="max-w-5xl mx-auto px-4 pb-3 overflow-x-auto">
+          <div className="flex gap-1.5 min-w-max">
+            {checklistCategories.map(cat => (
+              <button
+                key={cat.id}
+                onClick={() => setActiveTab(cat.id)}
+                className={`px-3 py-2 rounded-lg text-xs font-medium transition-all whitespace-nowrap flex items-center gap-1.5 ${
+                  activeTab === cat.id
+                    ? 'bg-blue-600 text-white'
+                    : visibleSections.has(cat.id)
+                      ? 'bg-slate-700 text-slate-300 hover:bg-slate-600'
+                      : 'bg-slate-800 text-slate-500 hover:bg-slate-700'
+                }`}
+              >
+                {cat.icon}
+                <span className="hidden md:inline">{cat.name}</span>
+                <span className="md:hidden">{cat.shortName}</span>
+                <span className="ml-1 opacity-70">({getCategoryProgress(cat.id)}%)</span>
+              </button>
+            ))}
           </div>
         </div>
       </header>
 
-      <main className="max-w-4xl mx-auto px-6 py-8">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-white mb-2">Checklist de Viaje</h1>
-          <p className="text-slate-400">Prepara tu viaje con inteligencia. Marca los elementos completados.</p>
-        </div>
-
-        <div className="bg-slate-800 rounded-xl p-6 mb-8 border border-slate-700 no-print">
+      <main className="max-w-5xl mx-auto px-4 py-6">
+        <div className="bg-slate-800 rounded-xl p-4 mb-6 border border-slate-700">
           <div className="grid md:grid-cols-3 gap-4">
-            <div>
-              <label className="block text-slate-400 text-sm mb-2">Nombre del viaje</label>
-              <input
-                type="text"
-                value={tripName}
-                onChange={(e) => setTripName(e.target.value)}
-                placeholder="Vacaciones de verano..."
-                className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400"
-              />
-            </div>
-            <div>
-              <label className="block text-slate-400 text-sm mb-2">Destino</label>
-              <input
-                type="text"
-                value={destination}
-                onChange={(e) => setDestination(e.target.value)}
-                placeholder="Japón"
-                className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400"
-              />
-            </div>
-            <div>
-              <label className="block text-slate-400 text-sm mb-2">Fechas</label>
-              <input
-                type="text"
-                value={dates}
-                onChange={(e) => setDates(e.target.value)}
-                placeholder="15-30 Julio 2026"
-                className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400"
-              />
-            </div>
+            <input
+              type="text"
+              value={tripName}
+              onChange={(e) => setTripName(e.target.value)}
+              placeholder="Nombre del viaje"
+              className="px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white text-sm placeholder-slate-400"
+            />
+            <input
+              type="text"
+              value={destination}
+              onChange={(e) => setDestination(e.target.value)}
+              placeholder="Destino"
+              className="px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white text-sm placeholder-slate-400"
+            />
+            <input
+              type="text"
+              value={dates}
+              onChange={(e) => setDates(e.target.value)}
+              placeholder="Fechas"
+              className="px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white text-sm placeholder-slate-400"
+            />
           </div>
         </div>
 
-        <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl p-6 mb-8">
+        <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl p-4 mb-6">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-white font-medium">Progreso total</span>
-            <span className="text-white font-bold text-xl">{getTotalProgress()}%</span>
+            <span className="text-white font-medium text-sm">Progreso total</span>
+            <span className="text-white font-bold">{getTotalProgress()}%</span>
           </div>
-          <div className="h-4 bg-white/20 rounded-full overflow-hidden">
+          <div className="h-2.5 bg-white/20 rounded-full overflow-hidden">
             <div
               className="h-full bg-white rounded-full transition-all duration-500"
               style={{ width: `${getTotalProgress()}%` }}
             />
           </div>
-          <p className="text-white/80 text-sm mt-2">
-            {checklistCategories.reduce((acc, cat) => acc + cat.items.filter(item => checklist[cat.id][item.id]).length, 0)} de{' '}
-            {checklistCategories.reduce((acc, cat) => acc + cat.items.length, 0)} elementos completados
-          </p>
         </div>
 
-        <div className="space-y-6">
-          {checklistCategories.map((category) => (
-            <div key={category.id} className="bg-slate-800 rounded-xl border border-slate-700 overflow-hidden">
-              <div className="bg-slate-700/50 px-6 py-4 flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <span className="text-blue-400">{category.icon}</span>
-                  <h2 className="text-lg font-semibold text-white">{category.name}</h2>
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className="w-24 h-2 bg-slate-600 rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-green-500 rounded-full transition-all duration-300"
-                      style={{ width: `${getCategoryProgress(category.id)}%` }}
-                    />
-                  </div>
-                  <span className="text-slate-400 text-sm w-10 text-right">
-                    {category.items.filter(item => checklist[category.id][item.id]).length}/{category.items.length}
-                  </span>
-                </div>
-              </div>
-              <div className="p-4 grid gap-2">
-                {category.items.map((item) => (
-                  <label
-                    key={item.id}
-                    className={`flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-colors no-print ${
-                      checklist[category.id][item.id]
-                        ? 'bg-green-500/20 hover:bg-green-500/30'
-                        : 'bg-slate-700/50 hover:bg-slate-700'
-                    }`}
-                  >
-                    <button
-                      onClick={() => toggleItem(category.id, item.id)}
-                      className="flex-shrink-0"
-                    >
-                      {checklist[category.id][item.id] ? (
-                        <CheckSquare className="w-5 h-5 text-green-500" />
-                      ) : (
-                        <Square className="w-5 h-5 text-slate-400" />
-                      )}
-                    </button>
-                    <span className={`${
-                      checklist[category.id][item.id]
-                        ? 'text-green-300 line-through'
-                        : 'text-slate-200'
-                    }`}>
-                      {item.text}
-                    </span>
-                  </label>
-                ))}
-              </div>
-            </div>
+        <div className="flex flex-wrap gap-2 mb-6">
+          {checklistCategories.map(cat => (
+            <button
+              key={cat.id}
+              onClick={() => toggleSectionVisibility(cat.id)}
+              className={`px-2 py-1 rounded text-xs flex items-center gap-1.5 transition-colors ${
+                visibleSections.has(cat.id)
+                  ? 'bg-slate-700 text-slate-300 hover:bg-slate-600'
+                  : 'bg-slate-800 text-slate-500 line-through'
+              }`}
+            >
+              {visibleSections.has(cat.id) ? <Eye className="w-3 h-3" /> : <EyeOff className="w-3 h-3" />}
+              {cat.shortName}
+            </button>
           ))}
         </div>
 
-        <div className="mt-8 p-6 bg-slate-800 rounded-xl border border-slate-700 no-print">
-          <h3 className="text-lg font-semibold text-white mb-4">Notas personales</h3>
+        <div className="space-y-4">
+          {checklistCategories
+            .filter(cat => visibleSections.has(cat.id))
+            .map(category => (
+              <div 
+                key={category.id} 
+                id={`section-${category.id}`}
+                className={`bg-slate-800 rounded-xl border border-slate-700 overflow-hidden transition-all ${
+                  activeTab === category.id ? 'ring-2 ring-blue-500' : 'opacity-60 hover:opacity-80'
+                }`}
+              >
+                <button
+                  onClick={() => setActiveTab(category.id)}
+                  className="w-full px-4 py-3 flex items-center justify-between hover:bg-slate-700/50"
+                >
+                  <div className="flex items-center gap-2">
+                    <span className="text-blue-400">{category.icon}</span>
+                    <span className="font-medium text-white">{category.name}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-16 h-2 bg-slate-600 rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-green-500 rounded-full"
+                        style={{ width: `${getCategoryProgress(category.id)}%` }}
+                      />
+                    </div>
+                    <span className="text-slate-400 text-xs">
+                      {category.items.filter(item => checklist[category.id][item.id]).length}/{category.items.length}
+                    </span>
+                  </div>
+                </button>
+                
+                {activeTab === category.id && (
+                  <div className="p-3 grid gap-1.5 border-t border-slate-700">
+                    {category.items.map((item) => (
+                      <button
+                        key={item.id}
+                        onClick={() => toggleItem(category.id, item.id)}
+                        className={`flex items-center gap-2.5 p-2 rounded-lg text-left transition-colors ${
+                          checklist[category.id][item.id]
+                            ? 'bg-green-500/20 hover:bg-green-500/30'
+                            : 'bg-slate-700/50 hover:bg-slate-700'
+                        }`}
+                      >
+                        {checklist[category.id][item.id] ? (
+                          <CheckSquare className="w-4 h-4 text-green-500 flex-shrink-0" />
+                        ) : (
+                          <Square className="w-4 h-4 text-slate-500 flex-shrink-0" />
+                        )}
+                        <span className={`text-sm ${
+                          checklist[category.id][item.id]
+                            ? 'text-green-300 line-through'
+                            : 'text-slate-200'
+                        }`}>
+                          {item.text}
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))}
+        </div>
+
+        <div className="mt-6 p-4 bg-slate-800 rounded-xl border border-slate-700">
+          <h3 className="text-sm font-medium text-white mb-2">Notas personales</h3>
           <textarea
-            className="w-full h-32 px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 resize-none"
-            placeholder="Añade tus notas, recordatorios especiales, números importantes..."
+            value={notes}
+            onChange={(e) => setNotes(e.target.value)}
+            className="w-full h-24 px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white text-sm placeholder-slate-400 resize-none"
+            placeholder="Añade tus notas, recordatorios especiales..."
           />
         </div>
       </main>
 
       <style jsx global>{`
         @media print {
-          body {
-            background: white !important;
-            color: black !important;
-          }
-          .no-print {
-            display: none !important;
-          }
-          .min-h-screen {
-            min-height: auto !important;
-          }
-          .bg-slate-900 {
-            background: white !important;
-          }
-          .bg-slate-800 {
-            background: #f8fafc !important;
-            border-color: #e2e8f0 !important;
-          }
-          .bg-slate-700 {
-            background: #f1f5f9 !important;
-          }
-          .bg-slate-700\\/50 {
-            background: #e2e8f0 !important;
-          }
-          .bg-green-500\\/20 {
-            background: #dcfce7 !important;
-          }
-          .text-white {
-            color: #1e293b !important;
-          }
-          .text-slate-400 {
-            color: #64748b !important;
-          }
-          .text-slate-200 {
-            color: #334155 !important;
-          }
-          .text-blue-400 {
-            color: #3b82f6 !important;
-          }
-          .text-green-500 {
-            color: #22c55e !important;
-          }
-          .text-green-300 {
-            color: #16a34a !important;
-          }
-          .border-slate-700 {
-            border-color: #cbd5e1 !important;
-          }
-          .rounded-xl {
-            border-radius: 0.5rem !important;
-          }
-          .from-blue-600 {
-            --tw-gradient-from: #3b82f6 !important;
-          }
-          .to-purple-600 {
-            --tw-gradient-to: #a855f7 !important;
-          }
-          .bg-gradient-to-r {
-            background: #f1f5f9 !important;
-          }
-          .text-white\\/80 {
-            color: #475569 !important;
-          }
-          h1, h2, h3 {
-            color: #1e293b !important;
-          }
-          label[style] {
-            background: white !important;
-            border: 1px solid #e2e8f0 !important;
-          }
-          @page {
-            margin: 1cm;
-          }
+          header, .no-print { display: none !important; }
+          body { background: white !important; }
+          .min-h-screen { min-height: auto !important; }
         }
       `}</style>
     </div>
