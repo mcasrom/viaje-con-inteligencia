@@ -40,6 +40,13 @@
 | 2 | Badge "Popular" | ✅ |
 | 3 | Pestaña Populares | M |
 
+### 🗺️ MAPA INTERACTIVO
+| # | Mejora | Complejidad |
+|---|-------|------------|
+| 1 | Leaflet.js con marcadores por riesgo | ✅ Completado |
+| 2 | Popup con info país | ✅ Completado |
+| 3 | Mejora UI filtros | ✅ Completado |
+
 ### ⚠️ SUPABASE (PENDIENTE - mañana)
 - [ ] Crear tabla post_views en Supabase
 - [ ] Ejecutar supabase-schema.sql actualizado
@@ -50,6 +57,10 @@
 | 1 | Onboarding nuevos | B |
 | 2 | Newsletter semanal | M |
 | 3 | GA4 + Search Console | B |
+| 3b | Vercel Analytics | ✅ Completado |
+| 3c | Speed Insights | ✅ Completado |
+| 3d | Sitemap multilingual | ✅ Completado |
+| 3e | Structured data JSON-LD | ✅ Completado |
 | 4 | Programa afiliados | M |
 | 5 | Sitemap.xml dinámico | B |
 | 6 | Corregir textos EN en páginas ES | B |

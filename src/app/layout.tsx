@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
 import Providers from "@/components/Providers";
 import Footer from "@/components/Footer";
@@ -67,6 +68,27 @@ export default function RootLayout({
   return (
     <html lang="es">
       <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "WebSite",
+              name: "Viaje con Inteligencia",
+              url: "https://viaje-con-inteligencia.vercel.app",
+              description: "Tu guía completa de viajes seguros. Mapa interactivo de riesgos por país según MAEC español.",
+              publisher: {
+                "@type": "Organization",
+                name: "Viaje con Inteligencia",
+              },
+              potentialAction: {
+                "@type": "SearchAction",
+                target: "https://viaje-con-inteligencia.vercel.app/blog?search={search_term_string}",
+                "query-input": "required name=search_term_string",
+              },
+            }),
+          }}
+        />
         <link rel="canonical" href="https://viaje-con-inteligencia.vercel.app" />
         <link rel="icon" href="/favicon.jpg" type="image/jpeg" sizes="32x32" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.jpg" />
@@ -80,6 +102,7 @@ export default function RootLayout({
       </head>
       <body className={`${geistSans.variable} antialiased`}>
 <Analytics />
+        <SpeedInsights />
 <Providers>
           <ServiceWorkerRegistration />
           {children}
