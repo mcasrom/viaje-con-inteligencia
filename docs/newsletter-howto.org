@@ -1,0 +1,125 @@
+# -*- mode: org; coding: utf-8; -*-
+# Viaje con Inteligencia - Newsletter HOWTO
+# Guía para gestionar el newsletter semanal
+
+* Configuración de Suscriptores
+
+** Ver suscriptores en Supabase
+   - Ir a: https://supabase.com/dashboard
+   - Seleccionar proyecto
+   - Table Editor → newsletter_subscribers
+   - Filtrar por: verified = true (solo suscriptores confirmados)
+
+** Gestionar manualmente
+   # En Supabase SQL Editor:
+   -- Ver todos los suscriptores
+   SELECT email, name, verified, subscribed_at FROM newsletter_subscribers;
+
+   -- Ver count total
+   SELECT count(*) FROM newsletter_subscribers WHERE verified = true;
+
+   -- Eliminar suscriptor
+   DELETE FROM newsletter_subscribers WHERE email = 'email@ejemplo.com';
+
+* Generación de Contenido
+
+** Artículos del blog (automático)
+   - Los artículos se generan desde: content/posts/*.md
+   - Metadata obligatorio: title, date, category, excerpt
+   - Orden: más recientes primero
+   - Selección: últimos 5-10 artículos publicados
+
+** Estructura recomendada del email
+   # Encabezado
+   - Título: "Resumen Semanal de Viajes"
+   - Fecha: [día] de [mes] de [año]
+
+   # Sección: Nuevos Artículos
+   - Links a últimos posts del blog
+   - Formato: Título + excerpt (150 chars) + enlace
+
+   # Sección: Alertas de Seguridad
+   - Países con cambios en nivel de riesgo
+   - Fuente: datos MAEC
+
+   # Sección: Tips de la Semana
+   - 1-2 consejos prácticos de viaje
+
+   # Footer
+   - Links: Blog | Telegram Bot | Desuscribirse
+   - Redes sociales
+
+* Programación del Envío
+
+** Automático (configurar en Vercel Cron)
+   - Endpoint: /api/cron/weekly-digest
+   - Configurar: Vercel Dashboard → Settings → Cron Jobs
+   - Frecuencia recomendada: cada sábado 9:00 UTC
+
+   # Configuración Vercel:
+   -- Path: /api/cron/weekly-digest
+   -- Schedule: 0 9 * * 6 (sábados 9:00 UTC)
+   -- Method: GET
+
+** Manual (vía Telegram)
+   - Enviar al canal: https://t.me/ViajeConInteligencia
+   - Usar el bot: @ViajeConInteligenciaBot
+   - Comando: /newsletter o /digest
+
+* Plantilla de Envío
+
+** Formato Markdown (Telegram)
+   # 📬 Resumen Semanal de Viajes - [FECHA]
+
+   ## 🆕 Nuevos Artículos
+   • [Título](URL)
+     [Excerpt...]
+     ⏱ [tiempo lect]
+
+   ## ⚠️ Alertas de Seguridad
+   • [País]: [Nivel] - [Descripción breve]
+
+   ## 💡 Tip de la Semana
+   [Consejo...]
+
+   ---
+   🔗 Links útiles:
+   Blog: https://viaje-con-inteligencia.vercel.app/blog
+   Bot: https://t.me/ViajeConInteligenciaBot
+   📧 Desuscribirse: [link]
+
+** Métricas a trackear
+   - Envíos realizados: tabla newsletter_history
+   - Opens (si hay tracking): pixel 1x1
+   - Clicks: UTM params en enlaces
+   - Conversiones: nuevos usuarios
+
+* Troubleshooting
+
+** No llegan emails
+   - Verificar: spam/junk folder
+   - Confirmar: email existe en tabla (verified=true)
+   - Chequear: logs en Vercel Functions
+
+** Error en cron
+   - Verificar: CRON_SECRET configurado en Vercel
+   - Revisar: logs en Vercel Dashboard → Functions
+
+** Problemas con suscriptores
+   - Tabla: newsletter_subscribers
+   - Estado verified: debe ser true
+   - Token verify_token: debe ser null (una vez verificado)
+
+* Variables de Entorno Requeridas
+
+   # .env.local
+   TELEGRAM_BOT_TOKEN=xxx
+   TELEGRAM_CHANNEL_ID=xxx
+   CRON_SECRET=xxx
+
+* Links Útiles
+
+   - Dashboard: https://supabase.com/dashboard
+   - Blog: https://viaje-con-inteligencia.vercel.app/blog
+   - Telegram: https://t.me/ViajeConInteligencia
+   - Canal Telegram: https://t.me/ViajeConInteligencia

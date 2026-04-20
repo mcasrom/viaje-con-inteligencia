@@ -170,7 +170,7 @@ export default function BlogPostPage({ post }: { post: Post }) {
           </div>
 
           <div className="mt-8">
-            {post.image && (post.image.startsWith('http') || post.image.startsWith('/') || post.image.endsWith('.jpg') || post.image.endsWith('.png') || post.image.endsWith('.webp')) ? (
+            {post.image && post.image.trim() !== '' ? (
               <div className="rounded-2xl overflow-hidden">
                 <img src={post.image} alt={post.title} className="w-full h-48 md:h-64 object-cover" />
               </div>
