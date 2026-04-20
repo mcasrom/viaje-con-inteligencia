@@ -21,23 +21,23 @@
 ### 🔴 PRIORIDAD ALTA
 | # | Mejora | Complejidad |
 |---|-------|------------|
-| 1 | Chat IA conversacional | M |
+| 1 | Chat IA conversacional | ✅ Completado (en /premium) |
 | 2 | Generador itinerarios IA | ✅ Completado |
-| 3 | Perfil usuario | M |
-| 4 | Favoritos sincronizados | M |
+| 3 | Perfil usuario (Supabase) | ✅ Completado |
+| 4 | Favoritos sincronizados | ✅ Completado |
 
 ### 📸 RESEÑAS FOTOGRÁFICAS
 | # | Mejora | Complejidad |
 |---|-------|------------|
-| 1 | Componente Gallery | B |
-| 2 | Grid visual posts | B |
-| 3 | Lightbox | M |
+| 1 | Componente Gallery | ✅ Completado |
+| 2 | Grid visual posts | ✅ Completado |
+| 3 | Lightbox | ✅ Completado |
 
 ### 📊 POPULARIDAD
 | # | Mejora | Complejidad |
 |---|-------|------------|
-| 1 | Contador vistas (Supabase) | ✅ pending deploy |
-| 2 | Badge "Popular" | ✅ |
+| 1 | Contador vistas (Supabase) | ✅ Completado (schema ready) |
+| 2 | Badge "Popular" | ✅ Completado |
 | 3 | Pestaña Populares | M |
 
 ### 🗺️ MAPA INTERACTIVO
@@ -47,16 +47,17 @@
 | 2 | Popup con info país | ✅ Completado |
 | 3 | Mejora UI filtros | ✅ Completado |
 
-### ⚠️ SUPABASE (PENDIENTE - mañana)
-- [ ] Crear tabla post_views en Supabase
-- [ ] Ejecutar supabase-schema.sql actualizado
+### ⚠️ SUPABASE (Completado)
+- ✅ Schema ejecutado en Supabase
+- ✅ Auth configurado
+- ✅ Redirect URLs configuradas
 
 ### 🟡 PRIORIDAD MEDIA
 | # | Mejora | Complejidad |
 |---|-------|------------|
 | 1 | Onboarding nuevos | B |
 | 2 | Newsletter semanal | M |
-| 3 | GA4 + Search Console | B |
+| 3 | Google Search Console | ✅ Completado (code in metadata) |
 | 3b | Vercel Analytics | ✅ Completado |
 | 3c | Speed Insights | ✅ Completado |
 | 3d | Sitemap multilingual | ✅ Completado |
@@ -64,7 +65,7 @@
 | 3f | Páginas /en /pt | ✅ Completado |
 | 4 | Programa afiliados | M |
 | 5 | Sitemap.xml dinámico | B |
-| 6 | Corregir textos EN en páginas ES | B |
+| 6 | Corregir textos EN en páginas ES | B | ⚠️ Pendiente refactor i18n
 | 7 | Email profesional dominio propio | B | [Comprar dominio + Cloudflare Email]
 
 ### ⚠️ PENDIENTES

@@ -8,6 +8,7 @@ import Footer from "@/components/Footer";
 import QuickAccess from "@/components/QuickAccess";
 import ServiceWorkerRegistration from "@/components/ServiceWorkerRegistration";
 import InstallPWA from "@/components/InstallPWA";
+import Onboarding from "@/components/Onboarding";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -105,6 +106,7 @@ export default function RootLayout({
         <SpeedInsights />
 <Providers>
           <ServiceWorkerRegistration />
+          <Onboarding />
           {children}
           <InstallPWA />
           <QuickAccess />
