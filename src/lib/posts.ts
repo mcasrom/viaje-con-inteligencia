@@ -24,11 +24,30 @@ export interface Post extends PostMeta {
 export function getPostSlugs(): string[] {
   try {
     const fileNames = fs.readdirSync(postsDirectory);
-    return fileNames
+    const slugs = fileNames
       .filter((fileName) => fileName.endsWith('.md'))
       .map((fileName) => fileName.replace(/\.md$/, ''));
+    return slugs;
   } catch {
     return [];
+  }
+}
+
+function getSlugFromSlug(slug: string): string | null {
+  try {
+    const fileNames = fs.readdirSync(postsDirectory);
+    for (const fileName of fileNames) {
+      if (!fileName.endsWith('.md')) continue;
+      const fullPath = path.join(postsDirectory, fileName);
+      const fileContents = fs.readFileSync(fullPath, 'utf8');
+      const { data } = matter(fileContents);
+      if (data.slug === slug) {
+        return fileName.replace(/\.md$/, '');
+      }
+    }
+    return null;
+  } catch {
+    return null;
   }
 }
 
@@ -37,9 +56,24 @@ export function getPostBySlug(slug: string): Post | null {
     if (!slug || !/^[a-z0-9-]+$/.test(slug)) {
       return null;
     }
-    const fullPath = path.join(postsDirectory, `${slug}.md`);
-    const fileContents = fs.readFileSync(fullPath, 'utf8');
-    const { data, content } = matter(fileContents);
+    let fullPath = path.join(postsDirectory, `${slug}.md`);
+    let content: string;
+    let data: any;
+    
+    if (fs.existsSync(fullPath)) {
+      const fc = fs.readFileSync(fullPath, 'utf8');
+      const result = matter(fc);
+      data = result.data;
+      content = result.content;
+    } else {
+      const fileName = getSlugFromSlug(slug);
+      if (!fileName) return null;
+      fullPath = path.join(postsDirectory, `${fileName}.md`);
+      const fc = fs.readFileSync(fullPath, 'utf8');
+      const result = matter(fc);
+      data = result.data;
+      content = result.content;
+    }
 
     return {
       slug,
