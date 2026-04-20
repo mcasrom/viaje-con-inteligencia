@@ -58,7 +58,6 @@ export const metadata: Metadata = {
   },
   verification: {
     google: "gn0Kmx84cnhJifWfqu-3E-zEIgOak4oVJw61ObNBqds",
-    bing: "79B687F3E7391A245058BD02622B5D5D",
   },
 };
 
@@ -70,6 +69,7 @@ export default function RootLayout({
   return (
     <html lang="es">
       <head>
+        <meta name="msvalidate.01" content="79B687F3E7391A245058BD02622B5D5D" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
