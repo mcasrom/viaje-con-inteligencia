@@ -73,6 +73,24 @@
 
 ---
 
+## 🌍 INTEGRACIÓN DATOS MAEC (SPRINT 4)
+
+### 🔴 SPRINT 4A - UI Fichas País (BAJO ESFUERZO)
+| # | Índice | UI | Estado |
+|---|--------|-----|--------|
+| A8 | Tel. emergencia 24h consular | Card Emergencias | ✅ Completado |
+| A6 | Legislación local | Tab Legal | ✅ Completado |
+| A7 | Normas divisas | Tab Dinero | ✅ Completado |
+
+### 🟠 SPRINT 4B - Scraping MAEC (MEDIO/ALTO ESFUERZO)
+| # | Índice | UI | Estado |
+|---|--------|-----|--------|
+| A3 | Avisos última hora | Badge + scraper | ⏳ |
+| A3 | Texto completo seguridad | Accordion | ⏳ |
+| B | Fichas País PDF | Botón descarga | ⏳ |
+
+---
+
 ## 📊 Métricas Q2 2026
 
 | Métrica | Actual | Target |

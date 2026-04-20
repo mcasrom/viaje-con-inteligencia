@@ -9,7 +9,7 @@ import {
   AlertTriangle, DollarSign, Globe, Newspaper, 
   ExternalLink, Building2, CheckCircle2, XCircle, 
   Plane, Info, Flag, Users, Clock3, Zap, Car, MapPinned,
-  Heart, Loader2, CheckCircle, RefreshCw
+  Heart, Loader2, CheckCircle, RefreshCw, Shield, Wallet, Siren
 } from 'lucide-react';
 import Reviews from '@/components/Reviews';
 import WeatherWidget from '@/components/WeatherWidget';
@@ -24,6 +24,7 @@ export default function DetallePaisClient({ pais }: DetallePaisClientProps) {
   const codigo = params.codigo as string;
   const [isFavorite, setIsFavorite] = useState(false);
   const [favLoading, setFavLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState<'info' | 'legal' | 'dinero' | 'emergencia'>('info');
 
   useEffect(() => {
     checkFavorite();
@@ -223,6 +224,117 @@ export default function DetallePaisClient({ pais }: DetallePaisClientProps) {
             </div>
           </div>
         </div>
+
+        <div className="flex flex-wrap gap-2 mb-6">
+          {[
+            { id: 'info', label: 'Información', icon: <Info className="w-4 h-4" /> },
+            { id: 'legal', label: 'Legal', icon: <Shield className="w-4 h-4" /> },
+            { id: 'dinero', label: 'Dinero', icon: <Wallet className="w-4 h-4" /> },
+            { id: 'emergencia', label: 'Emergencia', icon: <Siren className="w-4 h-4" /> },
+          ].map(tab => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id as any)}
+              className={`px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 transition-colors ${
+                activeTab === tab.id
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700'
+              }`}
+            >
+              {tab.icon}
+              {tab.label}
+            </button>
+          ))}
+        </div>
+
+        {activeTab === 'legal' && (
+          <div className="bg-slate-800 rounded-xl p-6 border border-slate-700 mb-6">
+            <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+              <Shield className="w-5 h-5 text-yellow-400" />
+              Legislación Local
+            </h3>
+            <div className="space-y-3">
+              <p className="text-slate-300">📋 Información legal por país. Esta sección se completará con datos del MAEC.</p>
+              <ul className="text-slate-400 text-sm space-y-2">
+                <li>• Requisitos de visa</li>
+                <li>• Regulaciones de aduanas</li>
+                <li>• Leyes locales importantes</li>
+                <li>• Restricciones de物品</li>
+              </ul>
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'dinero' && (
+          <div className="bg-slate-800 rounded-xl p-6 border border-slate-700 mb-6">
+            <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+              <Wallet className="w-5 h-5 text-green-400" />
+              Normas y Divisas
+            </h3>
+            <div className="space-y-3">
+              <div className="flex justify-between text-sm">
+                <span className="text-slate-400">Moneda</span>
+                <span className="text-white">{pais.moneda}</span>
+              </div>
+              <div className="flex justify-between text-sm">
+                <span className="text-slate-400">Tipo cambio</span>
+                <span className="text-white">{pais.tipoCambio}</span>
+              </div>
+              <div className="flex justify-between text-sm">
+                <span className="text-slate-400">Límite efectivo</span>
+                <span className="text-white">10.000€ (declaración obligatoria)</span>
+              </div>
+              <div className="flex justify-between text-sm">
+                <span className="text-slate-400">Propina habitual</span>
+                <span className="text-white">5-10%</span>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'emergencia' && (
+          <div className="bg-slate-800 rounded-xl p-6 border border-slate-700 mb-6">
+            <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+              <Siren className="w-5 h-5 text-red-400" />
+              Teléfonos de Emergencia
+            </h3>
+            <div className="space-y-3">
+              <div className="flex items-center justify-between p-3 bg-red-500/10 rounded-lg border border-red-500/30">
+                <span className="text-white font-medium">Emergencias générales</span>
+                <span className="text-red-400 font-bold">112</span>
+              </div>
+              <div className="flex items-center justify-between p-3 bg-slate-700/50 rounded-lg">
+                <span className="text-slate-300">Policía</span>
+                <span className="text-white">091 / local</span>
+              </div>
+              <div className="flex items-center justify-between p-3 bg-slate-700/50 rounded-lg">
+                <span className="text-slate-300">Bomberos</span>
+                <span className="text-white">080 / local</span>
+              </div>
+              <div className="flex items-center justify-between p-3 bg-slate-700/50 rounded-lg">
+                <span className="text-slate-300">Ambulancia</span>
+                <span className="text-white">061 / local</span>
+              </div>
+            </div>
+            <div className="mt-4 pt-4 border-t border-slate-700">
+              <h4 className="text-white font-medium mb-2">Consulado de España</h4>
+              {pais.contactos[0] ? (
+                <div className="space-y-2 text-sm">
+                  <p className="text-slate-400 flex items-center gap-2">
+                    <MapPin className="w-4 h-4" />
+                    {pais.contactos[0].direccion}
+                  </p>
+                  <p className="text-slate-400 flex items-center gap-2">
+                    <Phone className="w-4 h-4" />
+                    {pais.contactos[0].telefono}
+                  </p>
+                </div>
+              ) : (
+                <p className="text-slate-500 text-sm">Consultar consular.maec.es</p>
+              )}
+            </div>
+          </div>
+        )}
 
         <WeatherWidget 
           lat={pais.mapaCoordenadas[0]} 
