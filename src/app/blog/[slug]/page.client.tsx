@@ -170,13 +170,13 @@ export default function BlogPostPage({ post }: { post: Post }) {
           </div>
 
           <div className="mt-8">
-            {post.image ? (
+            {post.image && (post.image.startsWith('http') || post.image.startsWith('/') || post.image.endsWith('.jpg') || post.image.endsWith('.png') || post.image.endsWith('.webp')) ? (
               <div className="rounded-2xl overflow-hidden">
                 <img src={post.image} alt={post.title} className="w-full h-48 md:h-64 object-cover" />
               </div>
             ) : (
-              <div className="h-32 bg-gradient-to-br from-blue-900/80 via-purple-900/50 to-slate-800 rounded-xl flex items-center justify-center">
-                <span className="text-slate-500">Sin imagen</span>
+              <div className="rounded-2xl overflow-hidden">
+                <img src="/blog-header.jpg" alt={post.title} className="w-full h-48 md:h-64 object-cover opacity-80" />
               </div>
             )}
           </div>
