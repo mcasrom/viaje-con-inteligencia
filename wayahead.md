@@ -106,6 +106,14 @@
 
 ---
 
+### ✅ SPRINT 6 (Completado)
+| # | Tarea | Estado |
+|---|------|--------|
+| S6a | Propuesta clara (Comparativas + Itinerarios) | ✅ Done |
+| S6b | Comparar países IA | ✅ Done |
+| S6c | QuickAccess + Comparar | ✅ Done |
+| S6d | Campos IPC + Coste vida | ✅ Done |
+
 ## 📊 Métricas Q2 2026
 
 | Métrica | Actual | Target |
@@ -157,13 +165,16 @@
 | IA visible | ❌ Usuario no percibe | Interacción directa |
 | UX | 🟡 Funcional pero plana | Dashboards + visualización |
 
-### 🎯 SPRINT 6: Propuesta Única
+### 🎯 SPRINT 6: Propuesta Única (Completado ✅)
 | # | Tarea | Estado |
 |---|------|--------|
 | 1 | Definir propuesta clara | ✅ Done (Comparativas + Itinerarios) |
 | 2 | Diferenciar de blog informativo | ✅ Done (/comparar) |
 | 3 | Tool vs Content estrategia | ✅ Done (herramientas>posts) |
-| 4 | Diagrama flow viaje | ⏳ Pendiente |
+| 4 | Comparar países IA | ✅ Done |
+| 5 | QuickAccess + Comparar | ✅ Done |
+| 6 | Campos IPC + Coste vida | ✅ Done |
+| 7 | Diagrama flow viaje | ⏳ Pendiente |
 
 ### 📈 SPRINT 7: SEO Estratégico
 | # | Tarea | Estado |
