@@ -72,7 +72,7 @@ function PostCard({ post }: { post: Post }) {
         <div className="flex items-center gap-4 text-slate-500 text-xs">
           <span className="flex items-center gap-1">
             <Clock3 className="w-3 h-3" />
-            {new Date(post.date).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' })}
+            {post.date ? new Date(post.date + 'T00:00:00').toLocaleDateString('es-ES', { day: 'numeric', month: 'short' }) : 'Reciente'}
           </span>
           <span className="flex items-center gap-1">
             <Clock className="w-3 h-3" />
