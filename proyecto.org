@@ -9,6 +9,7 @@
 
 ** URLs Principales
 - Web: https://viajeinteligencia.com
+- Blog: https://viajeinteligencia.com/blog
 - Web Vercel: https://viaje-con-inteligencia.vercel.app
 - Bot Telegram: https://t.me/ViajeConInteligenciaBot
 - Canal: @ViajeConInteligencia
@@ -104,11 +105,12 @@
 - [X] Canal: @ViajeConInteligencia
 - [X] Enlace unsubscribe (RGPD)
 
-** Blog Posts (47+)
-- [X] Posts SEO país "Es seguro viajar a..."
-- [X] Francia, Italia, Alemania, Portugal
-- [X] España, México, Japón, Argentina
-- [X] +20 países nuevos
+** Blog Posts (48+)
+- [X] Posts SEO país "Es seguro viajar a..." (target 50)
+- [X] Francia (post premium: 2000+ palabras, imagen Unsplash, SEO)
+- [X] Italia, Alemania, Portugal, Países Bajos (mejora pendiente)
+- [X] España, México, Japón, Argentina, Australia
+- [X] Mejora SEO: +palabras, imagen, hashtags, estructura
 
 * BACKLOG (Actualizado 2026-04-21)
 
@@ -301,6 +303,12 @@ jobs:
 - [ ] Rutas principales funcionan
 
 * NOTAS
+
+** 2026-04-21 :: Análisis estratégico recibido
+- Problema principal: Falta contenido SEO profundo
+- Solución: Posts "Es seguro viajar a [país]" 2000+ palabras
+- Formato: Imagen Unsplash, hashtags, tablas, emergency numbers
+- Primer post: Francia completado
 
 ** 2026-04-21 :: Dominio y Email configurados
 - Dominio: viajeinteligencia.com (Cloudflare)
