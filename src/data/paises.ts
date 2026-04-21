@@ -4459,19 +4459,19 @@ requerimientos: [
     bandera: '🇭🇷',
     mapaCoordenadas: [45.1000, 15.2000]
   },
-  si: {
+si: {
     codigo: 'si',
     nombre: 'Eslovenia',
     capital: 'Liubliana',
     continente: 'Europa',
-    idioma: 'Esloveno, Inglés',
+    idioma: 'Eslovenio',
     moneda: 'Euro (EUR)',
-    tipoCambio: '1 EUR = 1 EUR',
+    tipoCambio: '1 EUR = 1.08 USD',
     zonaHoraria: 'UTC+1',
     conduccion: 'derecha',
     poblacion: '2.1 millones',
-    pib: '60 mil millones USD',
-    indicadores: { ipc: '3.8%', indicePrecios: 'Medio' },
+    pib: '62 mil millones USD',
+    indicadores: { ipc: '4.5%', indicePrecios: 'Medio' },
     voltaje: '230V / 50Hz',
     prefijoTelefono: '+386',
     nivelRiesgo: 'sin-riesgo',
@@ -4479,42 +4479,156 @@ requerimientos: [
     contactos: [
       {
         tipo: 'Embajada',
-        nombre: 'Embajada de España en Liubliana',
-        direccion: 'Bleiweisova 4, 1000 Liubliana',
-        telefono: '+386 1 420 2600',
-        email: 'emb.liubliana@maec.es',
-        horario: 'Lunes a viernes 9:00-16:00'
+        nombre: 'Embajada de España en Liubljana',
+        direccion: 'Plein 2, 1000 Liubljana',
+        telefono: '+386 1 200 55 80',
+        email: 'emb.liubljana@maec.es',
+        horario: 'Lunes a viernes 8:00-16:00'
       }
     ],
     requerimientos: [
-      { categoria: 'Documentación', icon: '📄', items: ['Pasaporte o DNI vigente', 'Sin visa (españoles UE)', 'Permiso conducir recomendado'] },
-      { categoria: 'Sanitario', icon: '🏥', items: ['Tarjeta sanitaria europea', 'Hospitales modernos', 'Urgencias: 112'] },
-      { categoria: 'General', icon: 'ℹ️', items: ['Euro', 'Alpes y lagos', 'Cuevas y naturaleza'] }
+      { categoria: 'Documentación', icon: '📄', items: ['Pasaporte o DNI en vigor', 'No se requiere visado', 'Schengen 90 días'] },
+      { categoria: 'Sanitario', icon: '🏥', items: ['Tarjeta sanitaria europea', 'Hospitales públicos', 'Emergencias: 112'] },
+      { categoria: 'General', icon: '🏔️', items: ['Pequeño país alpino', 'Bella naturaleza', 'Económico'] }
     ],
     queHacer: [
-      'Visitar Liubliana',
-      'Lago Bled',
-      'Cuevas de Postojna',
-      'Parque Nacional Triglav',
-      'Costa Eslovena'
+      'Visitar Lago Bohinj',
+      'Explorar cuevas de Postojna',
+      'Pasear por Liubljana',
+      'Probar美味菜肴',
+      'Ver glaciares y montañas'
     ],
     queNoHacer: [
-      'No ignores clima alpino',
-      'Noignes silencio',
-      'No discutas de política',
-      'No ignores horarios',
-      'No conduzcas sin cuidado'
+      'No subestimar distancias',
+      'No forget sunscreen',
+      'No be unprepared for mountains',
+      'No skip coastal towns',
+      'No disrespect nature'
     ],
     diarios: [
       { nombre: 'Delo', url: 'https://www.delo.si' },
-      { nombre: 'Dnevnik', url: 'https://www.dnevnik.si' }
+      { nombre: 'Finance', url: 'https://www.finance.si' }
     ],
     urlsUtiles: [
-      { nombre: 'Visit Slovenia', url: 'https://www.slovenia.info' },
+      { nombre: 'Eslovenia Turismo', url: 'https://www.slovenia.info' },
       { nombre: 'MAEC - Eslovenia', url: 'https://www.exteriores.gob.es/Embajadas/Liubliana' }
     ],
     bandera: '🇸🇮',
-    mapaCoordenadas: [46.1512, 14.5065]
+    mapaCoordenadas: [46.1512, 14.9955]
+  },
+  mt: {
+    codigo: 'mt',
+    nombre: 'Malta',
+    capital: 'La Valeta',
+    continente: 'Europa',
+    idioma: 'Maltés, Inglés',
+    moneda: 'Euro (EUR)',
+    tipoCambio: '1 EUR = 1.08 USD',
+    zonaHoraria: 'UTC+1',
+    conduccion: 'derecha',
+    poblacion: '519,000',
+    pib: '19 mil millones USD',
+    indicadores: { ipc: '3.2%', indicePrecios: 'Medio-Alto' },
+    voltaje: '230V / 50Hz',
+    prefijoTelefono: '+356',
+    nivelRiesgo: 'sin-riesgo',
+    ultimoInforme: 'Marzo 2026',
+    contactos: [
+      {
+        tipo: 'Embajada',
+        nombre: 'Embajada de España en La Valeta',
+        direccion: '39, Zachary Street, La Valetta',
+        telefono: '+356 2122 1470',
+        email: 'emb.valeta@maec.es',
+        horario: 'Lunes a viernes 8:00-16:00'
+      }
+    ],
+    requerimientos: [
+      { categoria: 'Documentación', icon: '📄', items: ['Pasaporte o DNI en vigor', 'No se requiere visado', 'Schengen 90 días'] },
+      { categoria: 'Sanitario', icon: '🏥', items: ['Tarjeta sanitaria europea', 'Hospitales modernos', 'Emergencias: 112'] },
+      { categoria: 'General', icon: '🏝️', items: ['Isla mediterránea', 'Historia templaria', 'Inglés oficial'] }
+    ],
+    queHacer: [
+      'Visitar templos de Hal Salfari',
+      'Explorar La Valeta',
+      'Nadar en Blue Lagoon',
+      'Probar pastizzi',
+      'Crucero por grottes'
+    ],
+    queNoHacer: [
+      'No drive under 18',
+      'No swim at night',
+      'No expect big cities',
+      'No forget sunscreen',
+      'No ignore siesta culture'
+    ],
+    diarios: [
+      { nombre: 'Times of Malta', url: 'https://timesofmalta.com' },
+      { nombre: 'Malta Independent', url: 'https://www.independent.com.mt' }
+    ],
+    urlsUtiles: [
+      { nombre: 'Malta Turismo', url: 'https://www.visitmalta.com' },
+      { nombre: 'MAEC - Malta', url: 'https://www.exteriores.gob.es/Embajadas/LaValeta' }
+    ],
+    bandera: '🇲🇹',
+    mapaCoordenadas: [35.9375, 14.3754]
+  },
+  bg: {
+    codigo: 'bg',
+    nombre: 'Bulgaria',
+    capital: 'Sofía',
+    continente: 'Europa',
+    idioma: 'Búlgaro',
+    moneda: 'Lev búlgaro (BGN)',
+    tipoCambio: '1 EUR = 1.96 BGN',
+    zonaHoraria: 'UTC+2',
+    conduccion: 'derecha',
+    poblacion: '6.9 millones',
+    pib: '84 mil millones USD',
+    indicadores: { ipc: '5.0%', indicePrecios: 'Bajo' },
+    voltaje: '230V / 50Hz',
+    prefijoTelefono: '+359',
+    nivelRiesgo: 'sin-riesgo',
+    ultimoInforme: 'Marzo 2026',
+    contactos: [
+      {
+        tipo: 'Embajada',
+        nombre: 'Embajada de España en Sofía',
+        direccion: 'Apartment 2, 2a Dondukov Blvd, Sofía',
+        telefono: '+359 2 981 57 17',
+        email: 'emb.sofia@maec.es',
+        horario: 'Lunes a viernes 8:30-16:30'
+      }
+    ],
+    requerimientos: [
+      { categoria: 'Documentación', icon: '📄', items: ['Pasaporte o DNI en vigor', 'No se requiere visado', 'Schengen 90 días'] },
+      { categoria: 'Sanitario', icon: '🏥', items: ['Seguro recomendado', 'Hospitales públicos', 'Emergencias: 112'] },
+      { categoria: 'General', icon: '💰', items: ['Moneda local lev', 'Muy barato', 'Historia milenaria'] }
+    ],
+    queHacer: [
+      'Visitar Rila Monastery',
+      'Explorar Sofía',
+      'Bañarse en thermal baths',
+      'Probar yogurt y banitsa',
+      'Ver sunrise en Shipka'
+    ],
+    queNoHacer: [
+      'No nod (offensive)',
+      'No expect western service',
+      'No underestimate winter',
+      'No skip Plovdiv',
+      'No bargain in small shops'
+    ],
+    diarios: [
+      { nombre: 'Standard', url: 'https://www.standard.bg' },
+      { nombre: 'Dnevnik', url: 'https://www.dnevnik.bg' }
+    ],
+    urlsUtiles: [
+      { nombre: 'Bulgaria Turismo', url: 'https://www.bulgariatravel.org' },
+      { nombre: 'MAEC - Bulgaria', url: 'https://www.exteriores.gob.es/Embajadas/Sofia' }
+    ],
+    bandera: '🇧🇬',
+    mapaCoordenadas: [42.7339, 25.4858]
   }
 };
 

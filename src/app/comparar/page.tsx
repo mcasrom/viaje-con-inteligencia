@@ -281,6 +281,30 @@ export default function CompararPage() {
                   ))}
                 </tr>
                 <tr>
+                  <td className="p-4 text-slate-300">🛒 IPC (inflación)</td>
+                  {selectedPaises.map(p => (
+                    <td key={p?.codigo} className="p-4 text-center text-white">
+                      {p?.indicadores?.ipc || '-'}
+                    </td>
+                  ))}
+                </tr>
+                <tr>
+                  <td className="p-4 text-slate-300">💰 Coste vida</td>
+                  {selectedPaises.map(p => (
+                    <td key={p?.codigo} className="p-4 text-center text-white">
+                      {p?.indicadores?.indicePrecios ? (
+                        <span className={`px-2 py-1 rounded text-xs ${
+                          p.indicadores.indicePrecios === 'Bajo' ? 'bg-green-500/20 text-green-400' :
+                          p.indicadores.indicePrecios === 'Medio' ? 'bg-yellow-500/20 text-yellow-400' :
+                          'bg-red-500/20 text-red-400'
+                        }`}>
+                          {p.indicadores.indicePrecios}
+                        </span>
+                      ) : '-'}
+                    </td>
+                  ))}
+                </tr>
+                <tr>
                   <td className="p-4 text-slate-300">Mejor época</td>
                   {selectedPaises.map(p => (
                     <td key={p?.codigo} className="p-4 text-center text-white text-sm">

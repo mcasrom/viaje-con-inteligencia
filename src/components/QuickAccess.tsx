@@ -30,6 +30,12 @@ function QuickAccessInner() {
           <h3 className="text-white font-bold mb-3">⚡ Acceso Rápido</h3>
           <div className="space-y-2">
             <Link 
+              href="/comparar" 
+              className="block p-2 bg-orange-600/20 text-orange-400 rounded-lg hover:bg-orange-600/30"
+            >
+              ⚖️ Comparar países
+            </Link>
+            <Link 
               href="/checklist" 
               className="block p-2 bg-blue-600/20 text-blue-400 rounded-lg hover:bg-blue-600/30"
             >
