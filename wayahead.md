@@ -334,6 +334,12 @@ I = 0.4A + 0.3M + 0.3S
 - Dashboard /admin con vista de logs
 - Cron Jobs Vercel (06:00 + 08:00 daily)
 
+### ⚠️ Revisión Resultados Cron
+
+- [ ] Verificar ejecución cron en /admin/scraper-logs
+- [ ] Revisar logs en Vercel Functions
+- [ ] Comprobar que scraper_logs tiene datos
+
 ---
 
 ## 🚀 SPRINT 15: Revisión Constante - Scrapers (2026-04-21)
