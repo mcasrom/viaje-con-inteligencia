@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import { paisesData, getLabelRiesgo, NivelRiesgo } from '@/data/paises';
-import { AlertTriangle, ArrowRight, Globe, Search, ClipboardList, Star, BookOpen, RefreshCw, Clock, Gift, TrendingUp } from 'lucide-react';
+import { AlertTriangle, ArrowRight, Globe, Search, ClipboardList, Star, BookOpen, RefreshCw, Clock, Gift, TrendingUp, Activity, BarChart3 } from 'lucide-react';
 import LanguageSelector from './LanguageSelector';
 import { useI18n } from '@/lib/i18n';
 
@@ -231,6 +231,26 @@ export default function MapaMundial() {
             <div className="text-purple-300 text-sm">Continentes</div>
           </div>
         </div>
+
+        {/* BOTÓN KPIs DESTACADO */}
+        <Link 
+          href="/dashboard/kpis"
+          className="block mb-8 bg-gradient-to-r from-blue-600 via-cyan-500 to-blue-600 rounded-xl p-6 hover:from-blue-500 hover:via-cyan-400 hover:to-blue-500 transition-all shadow-xl shadow-blue-500/20"
+        >
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
+                <Activity className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <span className="inline-block px-2 py-0.5 bg-white/20 rounded text-xs font-medium text-white mb-1">NUEVO</span>
+                <h3 className="text-xl font-bold text-white">📊 Dashboard de KPIs de Seguridad</h3>
+                <p className="text-blue-100 text-sm">Riesgo político • Aéreo • Restricciones • Recomendaciones IA</p>
+              </div>
+            </div>
+            <ArrowRight className="w-8 h-8 text-white" />
+          </div>
+        </Link>
 
         <div className="bg-slate-800/50 rounded-xl p-4 mb-8 border border-slate-700">
           <div className="flex flex-wrap justify-center gap-6">
