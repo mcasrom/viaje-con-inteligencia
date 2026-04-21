@@ -285,6 +285,8 @@ I = 0.4A + 0.3M + 0.3S
 - [ ] Scoring dinámico con IA
 - [ ] Timeline visual
 - [ ] Alertas inteligentes
+- [x] Filtro automático eventos pasados (ordenados por fecha)
+- [x] Badges estado (en curso/próximo)
 
 ---
 
