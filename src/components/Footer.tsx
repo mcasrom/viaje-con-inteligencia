@@ -41,6 +41,7 @@ export default function Footer() {
               <li><Link href="/relojes" className="text-slate-400 hover:text-white transition-colors">🌐 Relojes Mundiales</Link></li>
               <li><Link href="/alertas" className="text-slate-400 hover:text-white transition-colors">🔔 Alertas</Link></li>
               <li><Link href="/checklist" className="text-slate-400 hover:text-white transition-colors">Checklist</Link></li>
+              <li><Link href="/comparar" className="text-slate-400 hover:text-white transition-colors">⚖️ Comparar</Link></li>
               <li><Link href="/pwa" className="text-slate-400 hover:text-white transition-colors">📱 Instalar App</Link></li>
               <li><Link href="/premium" className="text-slate-400 hover:text-white transition-colors">Premium</Link></li>
             </ul>
