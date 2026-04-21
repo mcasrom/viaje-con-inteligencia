@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getPostsPagination, getCategories } from '@/lib/posts';
 import { supabase } from '@/lib/supabase';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   
