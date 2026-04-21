@@ -119,7 +119,7 @@ function BlogContent() {
     try {
       const params = new URLSearchParams({
         page: page.toString(),
-        perPage: '10',
+        perPage: '20',
         category: category,
         sort: activeTab === 'populares' ? 'popular' : sort,
       });
