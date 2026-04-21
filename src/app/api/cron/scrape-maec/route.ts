@@ -62,7 +62,7 @@ export async function GET(request: Request) {
     return NextResponse.json({
       success: true,
       total: results.length,
-      success: successCount,
+      success_count: successCount,
       errors: errorCount,
       alerts: alerts.length,
       duration_ms: Date.now() - startTime,
