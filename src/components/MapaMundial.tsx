@@ -132,6 +132,13 @@ export default function MapaMundial() {
                 <span className="hidden md:inline">Stats</span>
               </Link>
               <Link 
+                href="/eventos" 
+                className="flex items-center gap-2 px-3 py-2 bg-purple-600/30 hover:bg-purple-600/50 text-purple-300 hover:text-purple-200 rounded-lg transition-colors"
+              >
+                <Ticket className="w-4 h-4" />
+                <span className="hidden md:inline">Eventos</span>
+              </Link>
+              <Link 
                 href="/premium" 
                 className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-yellow-500 to-orange-500 text-white rounded-lg hover:from-yellow-600 hover:to-orange-600 transition-colors font-medium"
               >
@@ -264,14 +271,6 @@ export default function MapaMundial() {
                 <span className="text-slate-300 text-sm">{getLabelRiesgo(riesgo)}</span>
               </div>
             ))}
-            <div className="w-px h-6 bg-slate-600"></div>
-            <Link 
-              href="/eventos"
-              className="flex items-center gap-2 px-3 py-1.5 bg-purple-600/20 hover:bg-purple-600/30 text-purple-400 hover:text-purple-300 rounded-lg transition-colors text-sm font-medium"
-            >
-              <Ticket className="w-4 h-4" />
-              <span>Eventos</span>
-            </Link>
           </div>
         </div>
 
