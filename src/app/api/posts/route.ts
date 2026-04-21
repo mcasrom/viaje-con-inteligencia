@@ -6,7 +6,7 @@ export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   
   const page = parseInt(searchParams.get('page') || '1');
-  const perPage = parseInt(searchParams.get('perPage') || '10');
+  const perPage = parseInt(searchParams.get('perPage') || '20');
   const category = searchParams.get('category') || undefined;
   const sort = searchParams.get('sort') || 'recent';
 

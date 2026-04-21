@@ -72,7 +72,7 @@ function PostCard({ post }: { post: Post }) {
         <div className="flex items-center gap-4 text-slate-500 text-xs">
           <span className="flex items-center gap-1">
             <Clock3 className="w-3 h-3" />
-            {post.date ? new Date(post.date + 'T00:00:00').toLocaleDateString('es-ES', { day: 'numeric', month: 'short' }) : 'Reciente'}
+            {post.date ? new Date(post.date).toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' }) : '2026'}
           </span>
           <span className="flex items-center gap-1">
             <Clock className="w-3 h-3" />
@@ -118,8 +118,8 @@ function BlogContent() {
     setLoading(true);
     try {
       const params = new URLSearchParams({
-        page: page.toString(),
-        perPage: '20',
+        page: '1',
+        perPage: '50',
         category: category,
         sort: activeTab === 'populares' ? 'popular' : sort,
       });
@@ -260,31 +260,7 @@ function BlogContent() {
               ))}
             </div>
 
-            {totalPages > 1 && (
-              <div className="flex items-center justify-center gap-4 mt-12">
-                <button
-                  onClick={() => updateParams('page', (page - 1).toString())}
-                  disabled={page <= 1}
-                  className="flex items-center gap-2 px-4 py-2 bg-slate-700 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-slate-600 transition-colors"
-                >
-                  <ChevronLeft className="w-4 h-4" />
-                  Anterior
-                </button>
-                
-                <span className="text-slate-400">
-                  Página {page} de {totalPages}
-                </span>
-                
-                <button
-                  onClick={() => updateParams('page', (page + 1).toString())}
-                  disabled={page >= totalPages}
-                  className="flex items-center gap-2 px-4 py-2 bg-slate-700 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-slate-600 transition-colors"
-                >
-                  Siguiente
-                  <ChevronRight className="w-4 h-4" />
-                </button>
-              </div>
-            )}
+            
           </>
         )}
 
