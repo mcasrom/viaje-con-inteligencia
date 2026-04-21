@@ -1,11 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import Link from 'next/link';
 import { 
   Calendar, MapPin, AlertTriangle, ArrowLeft, Filter,
   Plane, Users, Clock, TrendingUp, Shield, Bus,
-  Ticket, Music, Trophy, Globe, Info
+  Ticket, Music, Trophy, Globe, Info, CalendarDays
 } from 'lucide-react';
 
 interface Event {
@@ -171,11 +171,18 @@ export default function EventosPage() {
   const [filterType, setFilterType] = useState<string>('todos');
   const [filterImpact, setFilterImpact] = useState<string>('todos');
 
-  const filteredEvents = events.filter(e => {
-    if (filterType !== 'todos' && e.type !== filterType) return false;
-    if (filterImpact !== 'todos' && e.impact !== filterImpact) return false;
-    return true;
-  });
+  const filteredEvents = useMemo(() => {
+    const now = new Date();
+    return events
+      .filter(e => {
+        const endDate = new Date(e.endDate);
+        if (endDate < now) return false;
+        if (filterType !== 'todos' && e.type !== filterType) return false;
+        if (filterImpact !== 'todos' && e.impact !== filterImpact) return false;
+        return true;
+      })
+      .sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime());
+  }, [filterType, filterImpact]);
 
   const getRecommendation = (rec: string) => {
     switch (rec) {
@@ -184,6 +191,19 @@ export default function EventosPage() {
       case 'evitar': return { color: 'text-red-400', bg: 'bg-red-500/20', label: '❌ Evitar' };
       default: return { color: 'text-slate-400', bg: 'bg-slate-500/20', label: '?' };
     }
+  };
+
+  const getEventStatus = (startDate: string, endDate: string) => {
+    const now = new Date();
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    if (now >= start && now <= end) {
+      return { label: '🔴 EN CURSO', color: 'bg-red-500 text-white' };
+    }
+    if (start > now && start.getTime() - now.getTime() < 7 * 24 * 60 * 60 * 1000) {
+      return { label: '🟡 PRÓXIMO', color: 'bg-yellow-500 text-slate-900' };
+    }
+    return null;
   };
 
   return (
@@ -272,6 +292,7 @@ export default function EventosPage() {
           {filteredEvents.map((event) => {
             const Icon = typeIcons[event.type];
             const rec = getRecommendation(event.recommendation);
+            const status = getEventStatus(event.startDate, event.endDate);
             
             return (
               <div
@@ -281,6 +302,11 @@ export default function EventosPage() {
                 <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
                   <div className="flex-1">
                     <div className="flex flex-wrap items-center gap-2 mb-2">
+                      {status && (
+                        <span className={`px-2 py-1 rounded text-xs font-bold ${status.color}`}>
+                          {status.label}
+                        </span>
+                      )}
                       <span className={`px-2 py-1 rounded-full text-xs font-medium border ${typeColors[event.type]}`}>
                         <Icon className="w-3 h-3 inline mr-1" />
                         {event.type.charAt(0).toUpperCase() + event.type.slice(1)}
