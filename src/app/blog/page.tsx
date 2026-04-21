@@ -309,6 +309,27 @@ function BlogContent() {
         </div>
 
         <div className="mt-16">
+          <div className="bg-gradient-to-r from-green-600 to-emerald-600 rounded-2xl p-8 text-center">
+            <h3 className="text-2xl font-bold text-white mb-4">
+              📋 Checklist Premium Gratis
+            </h3>
+            <p className="text-white/80 mb-6">
+              Descarga nuestra guía gratuita con 80+ cosas esenciales para tu próximo viaje. 
+             Incluye: documentos, sanidad, seguridad, dinero y más.
+            </p>
+            <Link
+              href="/checklist"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-white text-green-600 rounded-lg font-bold hover:bg-slate-100 transition-colors"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+              </svg>
+              Descargar Checklist
+            </Link>
+          </div>
+        </div>
+
+        <div className="mt-8">
           <NewsletterSignup />
         </div>
       </main>

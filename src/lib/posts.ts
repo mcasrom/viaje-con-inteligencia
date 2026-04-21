@@ -151,6 +151,18 @@ export function getCategories(): string[] {
   return Array.from(categories).sort();
 }
 
+export function getPostsByCountry(countryName: string, limit: number = 3): PostMeta[] {
+  const allPosts = getAllPosts();
+  const name = countryName.toLowerCase();
+  return allPosts
+    .filter(p => 
+      p.title.toLowerCase().includes(name) ||
+      p.keywords?.toLowerCase().includes(name) ||
+      p.excerpt?.toLowerCase().includes(name)
+    )
+    .slice(0, limit);
+}
+
 export function getRelatedPosts(currentSlug: string, limit: number = 3): PostMeta[] {
   const allPosts = getAllPosts();
   const currentPost = getPostBySlug(currentSlug);

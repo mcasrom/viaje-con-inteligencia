@@ -4,21 +4,23 @@ import { useParams, useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { DatoPais } from '@/data/paises';
+import { PostMeta } from '@/lib/posts';
 import { 
   ArrowLeft, MapPin, Phone, Mail, Clock, FileText, 
   AlertTriangle, DollarSign, Globe, Newspaper, 
   ExternalLink, Building2, CheckCircle2, XCircle, 
   Plane, Info, Flag, Users, Clock3, Zap, Car, MapPinned,
-  Heart, Loader2, CheckCircle, RefreshCw, Shield, Wallet, Siren, Download, Bell
+  Heart, Loader2, CheckCircle, RefreshCw, Shield, Wallet, Siren, Download, Bell, BookOpen
 } from 'lucide-react';
 import Reviews from '@/components/Reviews';
 import WeatherWidget from '@/components/WeatherWidget';
 
 interface DetallePaisClientProps {
   pais: DatoPais;
+  relatedPosts?: PostMeta[];
 }
 
-export default function DetallePaisClient({ pais }: DetallePaisClientProps) {
+export default function DetallePaisClient({ pais, relatedPosts = [] }: DetallePaisClientProps) {
   const params = useParams();
   const router = useRouter();
   const codigo = params.codigo as string;
@@ -640,6 +642,27 @@ export default function DetallePaisClient({ pais }: DetallePaisClientProps) {
           }}
         />
       </main>
+
+      {relatedPosts.length > 0 && (
+        <section className="max-w-6xl mx-auto px-6 py-8">
+          <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
+            <BookOpen className="w-6 h-6 text-blue-400" />
+            Artículos relacionados
+          </h2>
+          <div className="grid md:grid-cols-3 gap-4">
+            {relatedPosts.map((post) => (
+              <Link
+                key={post.slug}
+                href={`/blog/${post.slug}`}
+                className="bg-slate-800 rounded-xl p-4 border border-slate-700 hover:border-blue-500 transition-colors"
+              >
+                <h3 className="text-white font-medium text-sm line-clamp-2">{post.title}</h3>
+                <p className="text-slate-400 text-xs mt-2">{post.category}</p>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
 
       <footer className="bg-slate-800 border-t border-slate-700 py-6 mt-12">
         <div className="max-w-6xl mx-auto px-6 text-center">
