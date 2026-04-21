@@ -1,0 +1,496 @@
+#+TITLE: Viaje con Inteligencia - Gestión de Proyecto
+#+AUTHOR: M. Castillo
+#+EMAIL: mybloggingnotes@gmail.com
+#+STARTUP: content
+#+TODO: TODO NEXT WAIT DONE
+#+CATEGORY: proyecto
+
+* INFO DEL PROYECTO
+
+** URLs Principales
+- Web: https://viajeinteligencia.com
+- Web Vercel: https://viaje-con-inteligencia.vercel.app
+- Bot Telegram: https://t.me/ViajeConInteligenciaBot
+- Canal: @ViajeConInteligencia
+- Repo: https://github.com/mcasrom/viaje-con-inteligencia
+- Admin bot: https://viaje-con-inteligencia.vercel.app/admin/bot-stats
+
+** Dominio y Cloudflare
+- Dominio: viajeinteligencia.com
+- WWW redirect → Vercel (Cloudflare Pages)
+- DNS: Cloudflare gestionando DNS
+- SSL: Cloudflare flexible/proxy
+
+** Email
+- info@viajeinteligencia.com → mybloggingnotes@gmail.com
+- Configurado via Cloudflare Email Routing
+
+** Tecnologías
+- Next.js 16 + React 19 + TypeScript
+- Tailwind CSS 4
+- Groq AI (Llama 3.1)
+- Open-Meteo API (clima)
+- node-telegram-bot-api
+
+** Estados
+- [X] MVP completado
+- [X] Blog SEO (27 posts)
+- [X] Supabase (auth + DB)
+- [X] Premium features (chat IA, itinerario)
+- [X] PWA básico
+- [ ] Programa afiliados
+- [ ] Stripe
+
+* FUNCIONALIDADES
+
+** Core Features
+- [X] Mapa riesgos 89 países
+- [X] Detalle país (MAEC + emergencias)
+- [X] Checklist 80+ items
+- [X] Bot Telegram + Channel
+- [X] Dashboard favoritos
+- [X] Widget clima (Open-Meteo)
+- [X] Blog Markdown (27 posts)
+- [X] SEO + sitemap + JSON-LD
+- [X] PWA + offline
+- [X] Chat IA (Groq Llama)
+- [X] Generador itinerarios IA
+- [ ] Premium completo
+
+** Páginas
+| Ruta | Descripción | Estado |
+|------|-------------|--------|
+| / | Mapa mundial | ✅ |
+| /pais/[codigo] | Detalle país + clima | ✅ |
+| /premium | Planes + Chat IA | ✅ |
+| /itinerario | Generador itinerarios IA | ✅ |
+| /comparar | Comparar destinos + IA análisis | ✅ |
+| /checklist | Imprimible | ✅ |
+| /blog | Lista posts + filtros | ✅ |
+| /blog/[slug] | Post dinámico | ✅ |
+| /dashboard | Usuario + favoritos + recomendaciones | ✅ |
+| /relojes | Relojes mundiales | ✅ |
+| /alertas | Alertas MAEC | ✅ |
+| /legal | Disclaimer | ✅ |
+| /metodologia | MAEC | ✅ |
+| /pwa | Instalar app | ✅ |
+| /admin/bot-stats | Stats bot | ✅ |
+| /stats | Dashboard riesgos global | ✅ |
+| /lead-magnet | Checklist premium | ✅ |
+
+** API Routes
+| Ruta | Función |
+|------|---------|
+| /api/telegram | Webhook bot |
+| /api/auth/* | Login/logout/favorites |
+| /api/subscription | Stripe subscriptions |
+| /api/ai/chat | Chat Groq (Llama 3.1) |
+| /api/ai/itinerary | Generador itinerarios |
+| /api/ai/risk | Análisis riesgo país |
+| /api/ai/compare | Comparar países IA |
+| /api/stripe/* | Pagos Webhook |
+| /api/cron/* | Tareas programadas |
+| /api/reviews | Reseñas países |
+| /api/newsletter/* | Newsletter semanal |
+| /api/purge | Cache purge |
+| /api/bot-stats | Stats Telegram |
+| /api/recommendations | Recomendaciones personalizadas |
+| /api/checklist-pdf | Descarga checklist PDF |
+
+** Blog Posts (27+)
+- [X] MAEC conceptos
+- [X] Aduanas aeropuerto
+- [X] Japón
+- [X] Checklist viaje
+- [X] Seguro viaje
+- [X] México
+- [X] Documentos
+- [X] Bot Telegram
+- [X] WiFi e internet
+- [X] Roaming internacional
+- [X] Guía visados
+- [X] Emergencias extranjero
+- [X] Estafas turísticas
+- [X] Derechos viajero UE
+- [X] Equipaje mano
+- [X] Libros viajeros
+- [X] Clásicos viajes Gutenberg
+- [X] Apps vuelo
+- [X] Mejores destinos
+
+* BACKLOG (Actualizado 2026-04-21)
+
+** 🔴 Alta Prioridad
+
+*** Programa Afiliados
+- [ ] Sistema tracking afiliados
+- [ ] Comisiones configurables
+- [ ] Dashboard payouts
+- [ ] Landing dedicated
+
+*** Stripe Payments
+- [ ] Webhook subscription
+- [ ] Portal cliente
+- [ ] Invoice generation
+
+*** Expansión países (100+)
+- [ ] Fichas países Africa
+- [ ] Fichas países Asia/Oceanía
+- [ ] Destinos emergentes
+
+** 🟡 Media Prioridad
+
+*** SEO Blog (50 posts)
+- [X] Keywords long-tail (S7)
+- [X] Interlinking país→post (S7)
+- [ ] 23 posts nuevos para llegar a 50
+- [ ] Schema JSON-LD todos posts
+
+*** Captación usuarios
+- [X] Lead magnet checklist (S8)
+- [X] Newsletter automation (S8)
+- [ ] Email sequences
+- [ ] Lead magnet adicionales
+
+** 🟢 Baja Prioridad
+- [ ] App móvil (React Native)
+- [ ] Analytics avanzado
+- [ ] Predicción riesgo ML (S9)
+
+*** Completados (S7-S10)
+- [X] SEO estratégico (S7)
+- [X] Lead magnet + newsletter (S8)
+- [X] Recomendaciones personalizadas (S9)
+- [X] Dashboard stats global (S10)
+
+* CONFIGURACIÓN
+
+** Variables Entorno (Vercel)
+
+#+BEGIN_SRC
+# Telegram
+TELEGRAM_BOT_TOKEN=xxx
+TELEGRAM_CHANNEL_ID=-100xxx
+
+# Cron
+CRON_SECRET=xxx
+
+# Groq AI
+GROQ_API_KEY=xxx
+
+# Supabase (PENDIENTE)
+NEXT_PUBLIC_SUPABASE_URL=https://xxx.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=xxx
+
+# Stripe (PENDIENTE)
+STRIPE_SECRET_KEY=xxx
+STRIPE_WEBHOOK_SECRET=xxx
+NEXT_PUBLIC_STRIPE_PRICE_MONTHLY=price_xxx
+NEXT_PUBLIC_STRIPE_PRICE_YEARLY=price_xxx
+#+END_SRC
+
+** Deploy
+#+BEGIN_SRC bash
+git clone https://github.com/mcasrom/viaje-con-inteligencia.git
+cd viaje-con-inteligencia
+npm install
+npm run dev
+git push  # Vercel despliega automáticamente
+#+END_SRC
+
+* RECURSOS
+
+** Scripts Útiles
+
+*** Subir a GitHub (manual)
+#+BEGIN_SRC bash
+./subir_a_github.sh
+#+END_SRC
+- Muestra estado y cambios
+- Pide mensaje de commit
+- Ejecuta add, commit y push
+
+** Docs Útiles
+- [[https://nextjs.org/docs][Next.js Docs]]
+- [[https://supabase.com/docs][Supabase Docs]]
+- [[https://stripe.com/docs][Stripe Docs]]
+- [[https://core.telegram.org/bots][Telegram Bot API]]
+- [[https://open-meteo.com/][Open-Meteo API]]
+
+** MAEC
+- [[https://www.exteriores.gob.es/][Ministerio Asuntos Exteriores]]
+- [[https://www.exteriores.gob.es/es/servicios/alertas][Alertas de viaje]]
+
+** Imágenes (Unsplash)
+- Usar URLs externas en posts
+- Optimizar con ?w=800
+- No añadir al repo
+
+* CALIDAD DEL CÓDIGO
+
+** Auditoría y Testing
+
+*** Scripts disponibles
+#+BEGIN_SRC bash
+# Verificar código (lint + build)
+npm run check
+
+# Solo lint
+npm run lint
+
+# Solo build
+npm run build
+
+# Pre-despliegue (verificación completa)
+npm run predeploy
+#+END_SRC
+
+*** Flujo de trabajo recomendado
+1. Antes de hacer commit: ~npm run check~
+2. Antes de desplegar: ~npm run predeploy~
+3. CI/CD ejecuta ~npm run check~ automáticamente
+
+*** Opciones de testing
+
+**** Unit Tests (Jest)
+#+BEGIN_SRC bash
+npm install --save-dev jest @testing-library/react @testing-library/jest-dom
+npm install --save-dev ts-jest @types/jest
+#+END_SRC
+
+Configuración =jest.config.ts=:
+#+BEGIN_SRC typescript
+export default {
+  preset: 'ts-jest',
+  testEnvironment: 'jsdom',
+  setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
+};
+#+END_SRC
+
+**** E2E Tests (Playwright)
+#+BEGIN_SRC bash
+npm install --save-dev @playwright/test
+npx playwright install chromium
+#+END_SRC
+
+Configuración =playwright.config.ts=:
+#+BEGIN_SRC typescript
+import { defineConfig } from '@playwright/test';
+
+export default defineConfig({
+  testDir: './tests',
+  use: { baseURL: 'http://localhost:3000' },
+});
+#+END_SRC
+
+**** CI/CD con GitHub Actions
+#.github/workflows/test.yml:
+#+BEGIN_SRC yaml
+name: Test
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+      - run: npm ci
+      - run: npm run check
+#+END_SRC
+
+*** Checklist pre-despliegue
+- [ ] ~npm run check~ pasa sin errores
+- [ ] Build genera todas las páginas
+- [ ] No hay warnings de TypeScript
+- [ ] Imágenes y assets cargan
+- [ ] Rutas principales funcionan
+
+* NOTAS
+
+** 2026-04-21 :: Dominio y Email configurados
+- Dominio: viajeinteligencia.com (Cloudflare)
+- WWW redirect → Vercel
+- Email: info@viajeinteligencia.com → mybloggingnotes@gmail.com
+- Cloudflare Email Routing activo
+
+** 2026-04-21 :: SPRINTS S7-S10 completados
+
+Sprint 7 (SEO Estratégico):
+- [X] Keywords long-tail (getSeoClusterContent)
+- [X] Content clusters por riesgo (getPostsByRisk)
+- [X] Interlinking país → post
+
+Sprint 8 (Captación):
+- [X] Lead magnet checklist premium (/lead-magnet)
+- [X] Newsletter automation
+- [X] SEO keywords
+
+Sprint 9 (IA Visible):
+- [X] Recomendaciones personalizadas (/api/recommendations)
+- [X] RecommendationsList component
+- [X] Scoring por favoritos/intereses
+
+Sprint 10 (UX Impactante):
+- [X] Dashboard riesgo visual (/stats)
+- [X] Mapa calor riesgos
+- [X] Stats globales
+
+Commit: bc75d9b (2026-04-21)
+
+** Próximos pasos (pendientes):
+| Feature | Prioridad |
+|--------|----------|
+| Programa afiliados | Alta |
+| Stripe payments | Alta |
+| 50 posts nuevos | Media |
+| App móvil | Baja |
+
+** 2026-04-21 :: Reparo Telegram
+- Bot: webhook configurado → https://viaje-con-inteligencia.vercel.app/api/telegram
+- Canal: @ViajeConInteligencia (-1003910098382)
+- Test: message enviado al canal correctamente
+- Cron semanal funciona (Bearer auth)
+
+** 2026-04-21 :: Paises + purge
+- Añadidos Malta (mt) y Bulgaria (bg)
+- Total: 89 países
+- Deploy: vercel --prod (purge cache)
+
+** 2026-04-17 :: Sesión
+- Sistema blog Markdown (posts en /content/posts/)
+- Backup semanal GitHub Actions
+- Rotación 8 backups
+- Script local backup.sh
+- Archivo proyecto.org (gestión personal)
+- Corregido: posts dinámicos por slug
+
+* NOTAS
+
+** 2026-04-18 :: Sesión completa
+- QuickAccess component (fallback Suspense)
+- Blog images fix: now shows actual Unsplash images with favicon overlay
+- Telegram alertas: 15 países por nivel, fuente MAEC
+- Script npm run check (lint + build)
+- Documentación calidad código (proyecto.org)
+- PWA, Premium Features Pro, SEO Blog documentados
+- Contact page (/contact) para solicitar ciudades
+- Tablas blog: estilos CSS mejorados (gradiente header, hover)
+- Typo fix: Objekos → Objetos
+- Tabla dimensiones equipaje (7 aeronaves)
+
+** 2026-04-17 :: Precio premium
+- Anual: 49.99€ → 19.99€
+
+* PWA (Progressive Web App)
+
+** Qué es
+- Web app que se comporta como app nativa
+- Instalable en móvil/escritorio
+- Funciona sin internet (service workers)
+- Notificaciones push nativas
+
+** Beneficios
+- Installable: "Añadir a pantalla inicio"
+- Offline: funciona sin conexión
+- Fast: carga instantánea
+- Push: notificaciones del navegador
+- No App Store: sin aprobación Apple/Google
+
+** Estado actual
+- [X] manifest.json configurado
+- [ ] Service worker (caching)
+- [ ] Notificaciones push
+- [ ] Install banner
+
+** Implementación Next.js
+#+BEGIN_SRC bash
+# Instalar next-pwa
+npm install next-pwa
+#+END_SRC
+
+next.config.ts:
+#+BEGIN_SRC typescript
+const withPWA = require('next-pwa')({
+  dest: 'public',
+  register: true,
+  skipWaiting: true,
+});
+module.exports = withPWA(nextConfig);
+#+END_SRC
+
+* PREMIUM FEATURES PRO
+
+** Nivel Pro (9.99€/mes)
+- [ ] Itinerario IA automático
+- [ ] Predicción riesgos con ML
+- [ ] Alertas push ilimitadas
+- [ ] Acceso API para devs
+- [ ] Beta features early access
+
+** Ideas premium alto valor
+1. AI Trip Planner
+   - Input: presupuesto, fechas, preferencias
+   - Output: itinerario IA completo
+   
+2. Risk Prediction Engine
+   - ML con datos históricos MAEC
+   - Predice cambios antes de ocurrir
+   
+3. Emergency Concierge
+   - Botón emergencia real
+   - Contacto asistencia 24/7
+
+4. Viaje Corporativo
+   - Dashboard empresas
+   - Gestión empleados
+   - Reportes
+
+* ESTRATEGIA SEO BLOG
+
+** Posts prioritarios (20-50 nuevos)
+
+| Post | Palabras | Keywords |
+|------|----------|----------|
+| Guía MAEC por país | 1500+ | "riesgo viaje [país]" |
+| Comparativa seguros | 2000+ | "mejor seguro viaje 2026" |
+| Presupuesto por país | 1200+ | "cuanto cuesta viaje [país]" |
+| Apps viaje esenciales | 1000+ | "apps viaje 2026" |
+| Rutas seguras continente | 1500+ | "viajar seguro [continente]" |
+| Errores visados | 1200+ | "error visa turismo" |
+| Emergenciasconsulares | 1500+ | "embajada española [país]" |
+
+** Métricas objetivo
+- Posts: 15 → 100
+- Palabras/post: 1000+
+- Keywords: 5-10 por post
+- SEO: schema.org, meta tags
+
+** Formato post
+- Title SEO-friendly
+- Excerpt 150-160 chars
+- 5+ secciones H2
+- Imágenes Unsplash
+- Internal links
+- Schema JSON-LD
+
+* RESPALDO
+
+** GitHub Actions
+- Backup automático: Domingos 8:00 UTC
+- Rotación: 8 backups máximo
+- Ubicación: GitHub Releases (tags backup-YYYY-MM-DD)
+
+** Script Local
+#+BEGIN_SRC bash
+./scripts/backup.sh
+# Backup en: ~/viaje-con-inteligencia-backups
+#+END_SRC
+
+** Restauración
+#+BEGIN_SRC bash
+tar -xzf backup_YYYY-MM-DD.tar.gz -C ~/viaje-con-inteligencia
+cd ~/viaje-con-inteligencia && npm install
+#+END_SRC
