@@ -54,6 +54,8 @@ export default function PremiumPage() {
   const [seismosLoading, setSeismosLoading] = useState(false);
   const [conflicts, setConflicts] = useState<any[]>([]);
   const [conflictsLoading, setConflictsLoading] = useState(false);
+  const [conflictsStatus, setConflictsStatus] = useState<'live' | 'fallback'>('live');
+  const [conflictsTimestamp, setConflictsTimestamp] = useState<string | null>(null);
   const [expensesLoading, setExpensesLoading] = useState(false);
   const [expensesResult, setExpensesResult] = useState<string>('');
   const [expensesData, setExpensesData] = useState({ destination: '', days: '7', budget: 'moderado', category: 'turista' });
@@ -205,8 +207,12 @@ export default function PremiumPage() {
       const response = await fetch('/api/conflicts?maxrecords=15');
       const data = await response.json();
       setConflicts(data.conflicts || []);
+      setConflictsStatus(data.status || 'live');
+      setConflictsTimestamp(data.lastRealUpdate || data.updated || new Date().toISOString());
     } catch (err) {
       setConflicts([]);
+      setConflictsStatus('fallback');
+      setConflictsTimestamp(new Date().toISOString());
     } finally {
       setConflictsLoading(false);
     }
@@ -471,7 +477,7 @@ export default function PremiumPage() {
                     <AlertTriangle className="w-5 h-5 text-red-500" />
                     Monitor de Conflictos Activos
                   </h3>
-                  <div className="mb-4">
+                  <div className="mb-4 flex items-center gap-3 flex-wrap">
                     <button
                       onClick={loadConflicts}
                       disabled={conflictsLoading}
@@ -479,9 +485,18 @@ export default function PremiumPage() {
                     >
                       {conflictsLoading ? 'Cargando...' : 'Actualizar'}
                     </button>
+                    {conflictsTimestamp && (
+                      <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                        conflictsStatus === 'live' 
+                          ? 'bg-green-500/20 text-green-400 border border-green-500/30' 
+                          : 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30'
+                      }`}>
+                        {conflictsStatus === 'live' ? '● En vivo' : '⚠ Fallback'} · {new Date(conflictsTimestamp).toLocaleString('es-ES')}
+                      </span>
+                    )}
                   </div>
                   <p className="text-slate-400 text-sm mb-4">
-                    Datos en tiempo real de NewsMCP - Últimas noticias geopolíticas
+                    Datos basados en información oficial del MAEC {conflictsStatus === 'fallback' && '- Fallback activo'}
                   </p>
                   {conflicts.length > 0 ? (
                     <div className="space-y-2 max-h-96 overflow-y-auto">

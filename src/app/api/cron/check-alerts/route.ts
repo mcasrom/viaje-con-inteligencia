@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { paisesData } from '@/data/paises';
 import { generateRiskChangeAlert } from '@/lib/alerts-system';
 import { NivelRiesgo } from '@/data/paises';
+import { supabase } from '@/lib/supabase';
 
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const TELEGRAM_CHANNEL_ID = process.env.TELEGRAM_CHANNEL_ID;
@@ -61,8 +62,20 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
+  const startTime = Date.now();
+  let logId: string | null = null;
+
   try {
     console.log('[Cron] Verificando alertas...');
+    
+    if (supabase) {
+      const { data: logData } = await supabase
+        .from('scraper_logs')
+        .insert({ source: 'maec_risk_check', status: 'running', items_scraped: 0 })
+        .select('id')
+        .single();
+      logId = logData?.id || null;
+    }
     
     const changes = checkForChanges();
     
@@ -71,7 +84,29 @@ export async function GET(request: Request) {
       
       for (const change of changes) {
         const alertMsg = generateRiskChangeAlert(change.code, change.oldRisk, change.newRisk);
-        await sendToChannel(alertMsg);
+        const sent = await sendToChannel(alertMsg);
+        
+        if (supabase && sent) {
+          await supabase.from('risk_alerts').insert({
+            country_code: change.code,
+            old_risk: change.oldRisk,
+            new_risk: change.newRisk,
+            alert_sent: true,
+            source: 'maec_risk_check',
+          });
+        }
+      }
+      
+      if (supabase && logId) {
+        await supabase
+          .from('scraper_logs')
+          .update({ 
+            status: 'success', 
+            items_scraped: changes.length, 
+            completed_at: new Date().toISOString(),
+            duration_ms: Date.now() - startTime,
+          })
+          .eq('id', logId);
       }
       
       return NextResponse.json({
@@ -79,8 +114,19 @@ export async function GET(request: Request) {
         changes: changes.length,
         details: changes,
         timestamp: new Date().toISOString(),
-        last_run: new Date().toISOString(),
       });
+    }
+    
+    if (supabase && logId) {
+      await supabase
+        .from('scraper_logs')
+        .update({ 
+          status: 'no_changes', 
+          items_scraped: 0, 
+          completed_at: new Date().toISOString(),
+          duration_ms: Date.now() - startTime,
+        })
+        .eq('id', logId);
     }
     
     console.log('[Cron] Sin cambios detectados');
@@ -89,10 +135,22 @@ export async function GET(request: Request) {
       changes: 0,
       message: 'Sin cambios en niveles de riesgo',
       timestamp: new Date().toISOString(),
-      last_run: new Date().toISOString(),
     });
   } catch (error) {
     console.error('[Cron] Error:', error);
+    
+    if (supabase && logId) {
+      await supabase
+        .from('scraper_logs')
+        .update({ 
+          status: 'error', 
+          errors: String(error),
+          completed_at: new Date().toISOString(),
+          duration_ms: Date.now() - startTime,
+        })
+        .eq('id', logId);
+    }
+    
     return NextResponse.json({ error: 'Error interno' }, { status: 500 });
   }
 }

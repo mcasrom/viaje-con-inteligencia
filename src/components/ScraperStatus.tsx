@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { AlertTriangle, CheckCircle, XCircle, RefreshCw } from 'lucide-react';
+import { AlertTriangle, CheckCircle, XCircle, RefreshCw, Globe } from 'lucide-react';
 import { ScraperStatus } from '@/lib/scraper/audit';
 
 interface ScraperStatusDisplayProps {
@@ -12,19 +12,29 @@ export default function ScraperStatusDisplay({ compact = false }: ScraperStatusD
   const [status, setStatus] = useState<ScraperStatus>('healthy');
   const [loading, setLoading] = useState(true);
   const [lastCheck, setLastCheck] = useState<string | null>(null);
+  const [conflictsStatus, setConflictsStatus] = useState<'live' | 'fallback'>('live');
+  const [conflictsTimestamp, setConflictsTimestamp] = useState<string | null>(null);
 
   useEffect(() => {
-    fetchStatus();
-    const interval = setInterval(fetchStatus, 60000);
+    fetchAllStatus();
+    const interval = setInterval(fetchAllStatus, 60000);
     return () => clearInterval(interval);
   }, []);
 
-  const fetchStatus = async () => {
+  const fetchAllStatus = async () => {
     try {
-      const res = await fetch('/api/scraper-status');
-      const data = await res.json();
-      setStatus(data.overall);
-      setLastCheck(data.lastCheck ? new Date(data.lastCheck).toLocaleString('es-ES') : null);
+      const [scraperRes, conflictsRes] = await Promise.all([
+        fetch('/api/scraper-status'),
+        fetch('/api/conflicts?limit=1'),
+      ]);
+      
+      const scraperData = await scraperRes.json();
+      setStatus(scraperData.overall);
+      setLastCheck(scraperData.lastCheck ? new Date(scraperData.lastCheck).toLocaleString('es-ES') : null);
+      
+      const conflictsData = await conflictsRes.json();
+      setConflictsStatus(conflictsData.status || 'live');
+      setConflictsTimestamp(conflictsData.lastRealUpdate || conflictsData.updated || null);
     } catch {
       setStatus('error');
     } finally {
@@ -72,6 +82,11 @@ export default function ScraperStatusDisplay({ compact = false }: ScraperStatusD
       <div className={`flex items-center gap-2 px-2 py-1 rounded-full ${cfg.bg} ${cfg.border} border`}>
         {cfg.icon}
         <span className={`text-xs font-medium ${cfg.text}`}>{cfg.label}</span>
+        {conflictsTimestamp && (
+          <span className="text-xs text-slate-400 ml-1">
+            · {new Date(conflictsTimestamp).toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit' })}
+          </span>
+        )}
       </div>
     );
   }
@@ -84,7 +99,16 @@ export default function ScraperStatusDisplay({ compact = false }: ScraperStatusD
       </div>
       {lastCheck && (
         <p className="text-xs text-slate-400 mt-1">
-          Última verificación: {lastCheck}</p>
+          Sistema: {lastCheck}</p>
+      )}
+      {conflictsTimestamp && (
+        <div className="flex items-center gap-1 mt-2 text-xs text-slate-400">
+          <Globe className="w-3 h-3" />
+          <span>MAEC: {new Date(conflictsTimestamp).toLocaleString('es-ES')}</span>
+          <span className={`ml-1 px-1 rounded ${conflictsStatus === 'live' ? 'bg-green-500/30 text-green-400' : 'bg-yellow-500/30 text-yellow-400'}`}>
+            {conflictsStatus === 'live' ? '● Live' : '⚠ Fallback'}
+          </span>
+        </div>
       )}
     </div>
   );
