@@ -4635,7 +4635,9 @@ si: {
 };
 
 export function getPaisPorCodigo(codigo: string): DatoPais | undefined {
-  return paisesData[codigo.toLowerCase()];
+  const pais = paisesData[codigo.toLowerCase()];
+  if (!pais || pais.visible === false) return undefined;
+  return pais;
 }
 
 export function getTodosLosPaises(): DatoPais[] {
