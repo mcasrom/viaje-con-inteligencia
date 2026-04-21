@@ -4,7 +4,7 @@ import { Resend } from 'resend';
 
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.viajeinteligencia.com';
+const BASE_URL = process.env.APP_BASE_URL || 'https://www.viajeinteligencia.com';
 const UNSUCRIBE_URL = `${BASE_URL}/api/newsletter/subscribe`;
 
 async function sendWelcomeEmail(email: string, name: string, verifyToken: string) {

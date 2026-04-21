@@ -7,7 +7,7 @@ const LAST_RUN_KEY = 'last_weekly_digest';
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const TELEGRAM_CHANNEL_ID = process.env.TELEGRAM_CHANNEL_ID;
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.viajeinteligencia.com';
+const BASE_URL = process.env.APP_BASE_URL || 'https://www.viajeinteligencia.com';
 
 async function sendToChannel(message: string): Promise<boolean> {
   if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHANNEL_ID) {
