@@ -107,8 +107,11 @@ function BlogContent() {
 
   useEffect(() => {
     fetchPosts();
-    fetchCategories();
   }, [page, category, sort, tab]);
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
 
   useEffect(() => {
     setActiveTab(tab);
@@ -118,7 +121,7 @@ function BlogContent() {
     setLoading(true);
     try {
       const params = new URLSearchParams({
-        page: '1',
+        page: page.toString(),
         perPage: '50',
         category: category,
         sort: activeTab === 'populares' ? 'popular' : sort,
@@ -243,6 +246,24 @@ function BlogContent() {
             {posts.length} artículos
           </span>
         </div>
+
+        {totalPages > 1 && (
+          <div className="flex items-center justify-center gap-2 mt-6">
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+              <button
+                key={p}
+                onClick={() => updateParams('page', p.toString())}
+                className={`w-10 h-10 rounded-lg text-sm font-medium transition-colors ${
+                  page === p
+                    ? 'bg-blue-500 text-white'
+                    : 'bg-slate-700 text-slate-400 hover:text-white'
+                }`}
+              >
+                {p}
+              </button>
+            ))}
+          </div>
+        )}
 
         {loading ? (
           <div className="text-center py-12">

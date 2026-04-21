@@ -91,9 +91,9 @@ Esta guía proporciona información esencial para ayudarlo a tomar decisiones in
 ### Puntos Clave a Recordar
 
 - La preparación meticulosa es esencial para un viaje exitoso
-- Conocer sus derechos le empowers para التعامل مع situaciones difíciles
-- Mantenerse informado sobre las condiciones actuales de destino
-- La flexibilidad y la позитивная actitud son invaluables
+- Conocer sus derechos le permite afrontar situaciones difíciles con mayor seguridad
+- Mantenerse informado sobre las condiciones actuales del destino es fundamental
+- La flexibilidad y una actitud positiva son invaluables
 
 ### Llamada a la Acción
 
