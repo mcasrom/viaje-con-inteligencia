@@ -43,6 +43,7 @@ export interface DatoPais {
   urlsUtiles: { nombre: string; url: string }[];
   bandera: string;
   mapaCoordenadas: [number, number];
+  visible?: boolean;
 }
 
 export const paisesData: Record<string, DatoPais> = {
@@ -747,6 +748,7 @@ export const paisesData: Record<string, DatoPais> = {
     prefijoTelefono: '+53',
     nivelRiesgo: 'bajo',
     ultimoInforme: 'Marzo 2026',
+    visible: false,
     contactos: [
       {
         tipo: 'Embajada',
@@ -4637,6 +4639,10 @@ export function getPaisPorCodigo(codigo: string): DatoPais | undefined {
 }
 
 export function getTodosLosPaises(): DatoPais[] {
+  return Object.values(paisesData).filter(p => p.visible !== false);
+}
+
+export function getTodosLosPaisesIncluyendoOcultos(): DatoPais[] {
   return Object.values(paisesData);
 }
 
