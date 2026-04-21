@@ -77,12 +77,16 @@ export async function POST(request: NextRequest) {
     const verifyToken = crypto.randomUUID();
     
     if (supabase) {
-      await supabase
-        .from('newsletter_subscribers')
-        .upsert(
-          { email, name, verify_token: verifyToken, source: source || 'web' },
-          { onConflict: 'email' }
-        );
+      try {
+        await supabase
+          .from('newsletter_subscribers')
+          .upsert(
+            { email, name, verify_token: verifyToken, source: source || 'web' },
+            { onConflict: 'email' }
+          );
+      } catch (e) {
+        console.log('Supabase error (ignorado):', e);
+      }
     }
 
     await sendWelcomeEmail(email, name || '', verifyToken);
