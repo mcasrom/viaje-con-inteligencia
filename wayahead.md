@@ -190,10 +190,10 @@
 | 2 | Newsletter automation | ⏳ Pendiente |
 | 3 | secuencia onboarding | ⏳ Pendiente |
 
-### 🤖 SPRINT 9: IA Visible
+### 🤖 SPRINT 9: IA Visible (Completado ✅)
 | # | Tarea | Estado |
 |---|------|--------|
-| 1 | Chat IA destacado visible | ⏳ Pendiente |
+| 1 | Chat IA destacado visible | ✅ Done (widget flotante + QuickAccess) |
 | 2 | Recomendaciones personalizadas | ⏳ Pendiente |
 | 3 | Predicción riesgo IA | ⏳ Pendiente |
 

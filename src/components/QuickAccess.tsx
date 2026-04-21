@@ -61,6 +61,12 @@ function QuickAccessInner() {
             >
               🤖 Bot Telegram
             </Link>
+            <Link 
+              href="/premium"
+              className="block p-2 bg-purple-600/20 text-purple-400 rounded-lg hover:bg-purple-600/30"
+            >
+              💬 Chat IA
+            </Link>
             <div className="pt-2 mt-2 border-t border-slate-600">
               <p className="text-slate-500 text-xs">Próximamente:</p>
               <div className="flex flex-wrap gap-1 mt-1">

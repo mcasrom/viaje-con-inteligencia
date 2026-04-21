@@ -6,6 +6,7 @@ import "./globals.css";
 import Providers from "@/components/Providers";
 import Footer from "@/components/Footer";
 import QuickAccess from "@/components/QuickAccess";
+import AITravelAssistant from "@/components/AITravelAssistant";
 import ServiceWorkerRegistration from "@/components/ServiceWorkerRegistration";
 import InstallPWA from "@/components/InstallPWA";
 import Onboarding from "@/components/Onboarding";
@@ -111,6 +112,7 @@ export default function RootLayout({
           {children}
           <InstallPWA />
           <QuickAccess />
+          <AITravelAssistant />
           <Footer />
           </Providers>
       </body>
