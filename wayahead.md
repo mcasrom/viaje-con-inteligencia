@@ -321,17 +321,38 @@ I = 0.4A + 0.3M + 0.3S
 ### 🔄 REVISIÓN CONSTANTE
 | # | Tarea | Frecuencia | Estado |
 |---|------|----------|--------|
-| 1 | Scrapers MAEC | Diaria | ✅ Completado (logs + cron) |
+| 1 | Scrapers MAEC | Diaria | ✅ Completado |
 | 2 | NewsMCP | Semanal | ⏳ Pendiente |
 | 3 | Posts blog | Semanal | ⏳ Pendiente |
 | 4 | SEO keywords | Mensual | ⏳ Pendiente |
 | 5 | Analytics | Quincenal | ⏳ Pendiente |
 
 **Implementado:**
-- Tabla scraper_logs + risk_alerts en Supabase
+- Tabla scraper_logs + risk_alerts en Supabase ✅
 - API /api/cron/scrape-maec (scrape completo)
 - Logging automático en /api/cron/check-alerts
 - Dashboard /admin con vista de logs
+- Cron Jobs Vercel (06:00 + 08:00 daily)
+
+---
+
+## 🚀 SPRINT 15: Revisión Constante - Scrapers (2026-04-21)
+
+### ✅ Completados
+
+| # | Tarea | Estado |
+|---|------|--------|
+| 1 | Tablas Supabase (scraper_logs, risk_alerts) | ✅ Done |
+| 2 | API /api/cron/scrape-maec | ✅ Done |
+| 3 | Logging automático check-alerts | ✅ Done |
+| 4 | Dashboard /admin/scraper-logs | ✅ Done |
+| 5 | Cron Jobs Vercel automáticos | ✅ Done |
+
+### ⏰ Schedule
+
+- 06:00 UTC → Scrape MAEC completo
+- 08:00 UTC → Check alertas riesgo
+- 08:00 Lunes → Newsletter semanal
 
 ---
 
