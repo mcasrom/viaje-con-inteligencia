@@ -203,3 +203,30 @@
 | 1 | Dashboard riesgo visual | ✅ Done (/stats) |
 | 2 | Mapa calor riesgos | ✅ Done (grid visual) |
 | 3 | Stats usuario tiempo real | ✅ Done (banners + services) |
+
+---
+
+## 🚀 SPRINT 11: Análisis de Riesgo IA (Propuesta)
+
+### 📊 Índice de Riesgo en Tiempo Real
+
+**Input:** país, zona o región
+**Output:**
+- Riesgo político (1-10)
+- Riesgo aéreo (1-10)
+- Restricciones actuales
+- Recomendación IA personalizada
+
+**KPIs Gráficos:**
+- Mapa de calor por zona
+- Evolución temporal del riesgo
+- Comparativa con países similares
+- Alertas de cambio de nivel
+
+**Propuesta diferenciadora:**
+- ✅ Posicionamiento SEO único
+- ✅ Datos en tiempo real (scraping + IA)
+- ✅ Visualización atractiva
+- ✅ Actualización automática
+
+**Estado:** ⏳ Pendiente desarrollo
