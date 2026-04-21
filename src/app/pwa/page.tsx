@@ -43,7 +43,7 @@ export default function PWAPage() {
               </li>
               <li className="flex items-start gap-3">
                 <span className="w-6 h-6 rounded-full bg-blue-500 text-white text-sm flex items-center justify-center flex-shrink-0">3</span>
-                <span>Selecciona "Instalar app" o "Añadir a pantalla inicio"</span>
+                <span>Selecciona &quot;Instalar app&quot; o &quot;Añadir a pantalla inicio&quot;</span>
               </li>
               <li className="flex items-start gap-3">
                 <span className="w-6 h-6 rounded-full bg-blue-500 text-white text-sm flex items-center justify-center flex-shrink-0">4</span>
@@ -67,7 +67,7 @@ export default function PWAPage() {
               </li>
               <li className="flex items-start gap-3">
                 <span className="w-6 h-6 rounded-full bg-green-500 text-white text-sm flex items-center justify-center flex-shrink-0">3</span>
-                <span>Desliza y selecciona "Añadir a pantalla inicio"</span>
+                <span>Desliza y selecciona &quot;Añadir a pantalla inicio&quot;</span>
               </li>
               <li className="flex items-start gap-3">
                 <span className="w-6 h-6 rounded-full bg-green-500 text-white text-sm flex items-center justify-center flex-shrink-0">4</span>

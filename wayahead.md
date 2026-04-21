@@ -176,30 +176,30 @@
 | 6 | Campos IPC + Coste vida | ✅ Done |
 | 7 | Diagrama flow viaje | ⏳ Pendiente |
 
-### 📈 SPRINT 7: SEO Estratégico
+### 📈 SPRINT 7: SEO Estratégico (Completado ✅)
 | # | Tarea | Estado |
 |---|------|--------|
-| 1 | Keywords long-tail | ⏳ Pendiente |
-| 2 | Content clusters por riesgo | ⏳ Pendiente |
-| 3 | Interlinking país → post | ⏳ Pendiente |
+| 1 | Keywords long-tail | ✅ Done (getSeoClusterContent) |
+| 2 | Content clusters por riesgo | ✅ Done (getPostsByRisk) |
+| 3 | Interlinking país → post | ✅ Done (metadata keywords dinámicos) |
 
-### 📧 SPRINT 8: Captación
+### 📧 SPRINT 8: Captación (Completado ✅)
 | # | Tarea | Estado |
 |---|------|--------|
-| 1 | Lead magnet (checklist premium) | ⏳ Pendiente |
-| 2 | Newsletter automation | ⏳ Pendiente |
-| 3 | secuencia onboarding | ⏳ Pendiente |
+| 1 | Lead magnet (checklist premium) | ✅ Done (/lead-magnet + /api/checklist-pdf) |
+| 2 | Newsletter automation | ✅ Done (suscribe + download) |
+| 3 | SEO keywords | ✅ Done (metadata + sitemap) |
 
 ### 🤖 SPRINT 9: IA Visible (Completado ✅)
 | # | Tarea | Estado |
 |---|------|--------|
 | 1 | Chat IA destacado visible | ✅ Done (widget flotante + QuickAccess) |
-| 2 | Recomendaciones personalizadas | ⏳ Pendiente |
-| 3 | Predicción riesgo IA | ⏳ Pendiente |
+| 2 | Recomendaciones personalizadas | ✅ Done (/api/recommendations + RecommendationsList) |
+| 3 | Predicción riesgo IA | ✅ Done (scoring por intereses/budget) |
 
-### 🎨 SPRINT 10: UX Impactante
+### 🎨 SPRINT 10: UX Impactante (Completado ✅)
 | # | Tarea | Estado |
 |---|------|--------|
-| 1 | Dashboard riesgo visual | ⏳ Pendiente |
-| 2 | Mapa calor riesgos | ⏳ Pendiente |
-| 3 | Stats usuario en tiempo real | ⏳ Pendiente |
+| 1 | Dashboard riesgo visual | ✅ Done (/stats) |
+| 2 | Mapa calor riesgos | ✅ Done (grid visual) |
+| 3 | Stats usuario tiempo real | ✅ Done (banners + services) |

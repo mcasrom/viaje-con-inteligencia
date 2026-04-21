@@ -197,3 +197,56 @@ export function getRelatedPosts(currentSlug: string, limit: number = 3): PostMet
 
   return scored.slice(0, limit).map(s => s.post);
 }
+
+export function getPostsByRisk(riskLevel: string, limit: number = 10): PostMeta[] {
+  const allPosts = getAllPosts();
+  const riskKeywords: Record<string, string[]> = {
+    'alto': ['seguro', 'seguridad', 'zona riesgo', 'emergencia', 'evitar'],
+    'medio': ['checklist', 'preparacion', 'consejos', 'requisitos'],
+    'bajo': ['barato', 'economico', 'presupuesto', 'ahorrar'],
+    'sin-riesgo': ['destinos', 'mejores', 'guia', 'turismo'],
+  };
+  
+  const keywords = riskKeywords[riskLevel] || [];
+  return allPosts
+    .filter(p => 
+      keywords.some(k => 
+        p.keywords?.toLowerCase().includes(k.toLowerCase()) ||
+        p.title.toLowerCase().includes(k.toLowerCase()) ||
+        p.tags?.some(t => t.toLowerCase().includes(k.toLowerCase()))
+      )
+    )
+    .slice(0, limit);
+}
+
+export function getSeoClusterContent(countryName: string, riskLevel: string): {
+  mainKeyword: string;
+  longTailKeywords: string[];
+  relatedTopics: string[];
+} {
+  const clusters: Record<string, { keywords: string[]; topics: string[] }> = {
+    'alto': {
+      keywords: [`seguro viaje ${countryName}`, `viajar seguro ${countryName}`, `recomendaciones ${countryName}`],
+      topics: ['seguro obligatorio', 'emergencias', 'embajada', 'contacto consular'],
+    },
+    'medio': {
+      keywords: [`requisitos entrada ${countryName}`, `visa ${countryName}`, `documentos ${countryName}`],
+      topics: ['checklist', 'equipaje', 'presupuesto'],
+    },
+    'bajo': {
+      keywords: [`viaje economico ${countryName}`, `que hacer ${countryName}`, `itinerario ${countryName}`],
+      topics: ['turismo', 'destinos', 'presupuesto'],
+    },
+    'sin-riesgo': {
+      keywords: [`mejores destinos ${countryName}`, `guia ${countryName}`, `turismo ${countryName}`],
+      topics: ['que hacer', 'itinerario', 'recomendaciones'],
+    },
+  };
+  
+  const config = clusters[riskLevel] || clusters['sin-riesgo'];
+  return {
+    mainKeyword: `viajar a ${countryName}`,
+    longTailKeywords: config.keywords,
+    relatedTopics: config.topics,
+  };
+}

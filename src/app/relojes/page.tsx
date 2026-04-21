@@ -42,6 +42,11 @@ export default function WorldClocksPage() {
   const [isDay, setIsDay] = useState(true);
   const [sunPosition, setSunPosition] = useState({ lat: 0, lng: 0 });
 
+  const calculateDayNight = (date: Date) => {
+    const hour = date.getUTCHours() + date.getUTCMinutes() / 60;
+    setIsDay(hour >= 6 && hour < 18);
+  };
+
   useEffect(() => {
     const timer = setInterval(() => {
       const now = new Date();
@@ -66,11 +71,6 @@ export default function WorldClocksPage() {
 
     return () => clearInterval(timer);
   }, []);
-
-  const calculateDayNight = (date: Date) => {
-    const hour = date.getUTCHours() + date.getUTCMinutes() / 60;
-    setIsDay(hour >= 6 && hour < 18);
-  };
 
   const getTimeOfDay = (timezone: string): string => {
     try {

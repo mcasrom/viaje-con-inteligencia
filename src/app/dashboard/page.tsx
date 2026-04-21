@@ -7,8 +7,9 @@ import { createClient } from '@supabase/supabase-js';
 import { 
   ArrowLeft, Heart, MapPin, AlertTriangle, Trash2, 
   Plus, Mail, LogOut, Crown, Bell, Settings, Loader2,
-  Cloud, CheckCircle, XCircle
+  Cloud, CheckCircle, XCircle, Star, Sparkles
 } from 'lucide-react';
+import RecommendationsList from '@/components/RecommendationsList';
 import { paisesData, getLabelRiesgo } from '@/data/paises';
 import WeatherWidget from '@/components/WeatherWidget';
 
@@ -545,6 +546,14 @@ const handleAuth = async (e: React.FormEvent) => {
             })}
           </div>
         )}
+
+        <div className="mt-12">
+          <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+            <Star className="w-5 h-5 text-yellow-400" />
+            Recomendaciones para ti
+          </h2>
+          <RecommendationsList favorites={favorites.map(f => f.country_code)} />
+        </div>
 
         <div className="mt-12 grid md:grid-cols-3 gap-4">
           <Link href="/premium" className="bg-gradient-to-br from-purple-600 to-blue-600 rounded-xl p-6 text-center hover:opacity-90 transition-opacity">

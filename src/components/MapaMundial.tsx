@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import { paisesData, getLabelRiesgo, NivelRiesgo } from '@/data/paises';
-import { AlertTriangle, ArrowRight, Globe, Search, ClipboardList, Star, BookOpen, RefreshCw, Clock } from 'lucide-react';
+import { AlertTriangle, ArrowRight, Globe, Search, ClipboardList, Star, BookOpen, RefreshCw, Clock, Gift, TrendingUp } from 'lucide-react';
 import LanguageSelector from './LanguageSelector';
 import { useI18n } from '@/lib/i18n';
 
@@ -116,6 +116,20 @@ export default function MapaMundial() {
               >
                 <ClipboardList className="w-4 h-4" />
                 <span className="hidden md:inline">{t('nav.checklist')}</span>
+              </Link>
+              <Link 
+                href="/lead-magnet" 
+                className="flex items-center gap-2 px-3 py-2 text-yellow-400 hover:text-yellow-300 transition-colors"
+              >
+                <Gift className="w-4 h-4" />
+                <span className="hidden md:inline">Gratis</span>
+              </Link>
+              <Link 
+                href="/stats" 
+                className="flex items-center gap-2 px-3 py-2 text-slate-300 hover:text-white transition-colors"
+              >
+                <TrendingUp className="w-4 h-4" />
+                <span className="hidden md:inline">Stats</span>
               </Link>
               <Link 
                 href="/premium" 

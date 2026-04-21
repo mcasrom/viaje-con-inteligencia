@@ -92,9 +92,9 @@ export default function Testimonios() {
             
             <div className="text-center">
               <p className="text-xl text-slate-200 mb-6 leading-relaxed">
-                "{reviews[current].comment.length > 200 
+                {reviews[current].comment.length > 200 
                   ? reviews[current].comment.slice(0, 200) + '...' 
-                  : reviews[current].comment}"
+                  : reviews[current].comment}
               </p>
               
               <div className="flex items-center justify-center gap-2 mb-4">

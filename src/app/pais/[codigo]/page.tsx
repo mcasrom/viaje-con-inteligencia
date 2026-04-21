@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
 import { getPaisPorCodigo } from '@/data/paises';
-import { getPostsByCountry } from '@/lib/posts';
+import { getPostsByCountry, getSeoClusterContent } from '@/lib/posts';
 import DetallePaisClient from './DetallePaisClient';
 
 interface PageProps {
@@ -29,11 +29,23 @@ export async function generateMetadata({ params }: PageProps) {
     'muy-alto': 'riesgo muy alto'
   };
   const riesgo = riesgoLabels[pais.nivelRiesgo] || 'riesgo';
+  const seoCluster = getSeoClusterContent(pais.nombre, pais.nivelRiesgo);
 
   return {
     title: `${pais.nombre} - Requisitos, ${riesgo} y consejos para viajar | Viaje con Inteligencia`,
     description: `Información actualizada sobre ${pais.nombre}: requisitos de entrada, nivel de riesgo ${riesgo}, embajadas, moneda, idioma y consejos para viajeros. Datos del MAEC español.`,
-    keywords: `viajar a ${pais.nombre}, ${pais.nombre} requisitos entrada, riesgo ${pais.nombre}, ${pais.continente} viaje, ${pais.moneda}, ${pais.idioma} speaking, países ${pais.nivelRiesgo}, ${pais.continente} seguro travel, ${pais.nombre} consejos viajeros, ${pais.nombre} embajada Madrid, ${pais.nombre} emergencia consular`,
+    keywords: [
+      `viajar a ${pais.nombre}`,
+      `${pais.nombre} requisitos entrada`,
+      `riesgo ${pais.nombre}`,
+      `${pais.continente} viaje`,
+      pais.moneda,
+      pais.idioma,
+      `países ${pais.nivelRiesgo}`,
+      `consejos viajeros ${pais.nombre}`,
+      `embajada Madrid ${pais.nombre}`,
+      ...seoCluster.longTailKeywords,
+    ].join(', '),
     alternates: {
       canonical: `https://viaje-con-inteligencia.vercel.app/pais/${codigo}`,
     },

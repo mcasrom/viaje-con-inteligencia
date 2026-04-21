@@ -491,7 +491,7 @@ export async function POST(request: NextRequest) {
       const allCountries = Object.values(paisesModule.paisesData);
       
       // Clean text - remove emoji flags, extra whitespace
-      let cleanText = text.trim()
+      const cleanText = text.trim()
         .replace(/🇺🇸|🇪🇺|🇬🇧|🇦🇺|🇨🇦|🇧🇷|🇲🇽|🇯🇵|🇰🇷|🇨🇳|🇮🇳|🇹🇭|🇻🇳|🇵🇭|🇲🇾|🇮🇩|🇪🇬|🇿🇦|🇪🇬|🇲🇦|🇪🇬|🇱🇧|🇸🇦|🇲🇲|🇰🇭|🇪🇬|🇻🇪/g, '')
         .replace(/^\//, '')
         .replace(/\s+/g, '')
