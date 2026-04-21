@@ -260,6 +260,34 @@
 
 ---
 
+## 🚀 SPRINT 14: Módulo de Eventos Globales (2026-04-21)
+
+### ✅ Completados
+
+| # | Tarea | Estado |
+|---|------|--------|
+| 1 | Página /eventos | ✅ Done |
+| 2 | Lista eventos con clasificación | ✅ Done |
+| 3 | Scoring impacto y riesgo | ✅ Done |
+| 4 | Botón en barra de filtros mapa | ✅ Done |
+
+### 📊 Concepto Implementado
+
+```
+Evento → Impacto → Riesgo → Decisión
+I = 0.4A + 0.3M + 0.3S
+```
+
+### 📋 Pendientes (Fase 2-3)
+
+- [ ] APIs (Ticketmaster, Eventbrite, Amadeus)
+- [ ] Scraping Wikipedia/Webs oficiales
+- [ ] Scoring dinámico con IA
+- [ ] Timeline visual
+- [ ] Alertas inteligentes
+
+---
+
 ## 🚀 PENDIENTES LARGO PLAZO
 
 ### 🔐 AUTH + FAVORITOS
