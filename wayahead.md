@@ -118,6 +118,77 @@
 | Email | info@viajeinteligencia.com | ✅ Verificado y funcionando |
 
 ### ⚠️ Known Issues
-- Cache Vercel no actualiza países (87 vs 89) - necesita purge manual
 - Post imagen no carga (URL Unsplash)
 - Redirect Cloudflare no funciona
+
+### 🔧 Purge Cache
+- API: `/api/purge` (revalidatePath para rutas principales)
+- Deploy: `vercel --prod` para purgar cache estático (89 países)
+
+---
+
+## 🚀 SPRINT 5 - ORGANIZACIÓN
+
+### 📋 Flow en Org Mode
+| # | Tarea | Estado |
+|---|------|--------|
+| 1 | Actualizar proyecto.org con sprints completados | ✅ Completado |
+| 2 | Definir milestones/sprints | ⏳ Pendiente |
+| 3 | Añadir enlaces a código | ⏳ Pendiente |
+| 4 | Sincronizar con wayahead.md | ⏳ Pendiente |
+
+### 🔧 Telegram Reparado (2026-04-21)
+| Componente | Estado |
+|-----------|--------|
+| Bot @ViajeConInteligenciaBot | ✅ Webhook configurado |
+| Canal @ViajeConInteligencia | ✅ |
+| Cron semanal | ✅ Enviado |
+
+---
+
+## 🚀 SPRINT 6 - PRODUCTO DIFERENCIAL
+
+### 📊 Análisis Estratégico
+| Aspecto | Estado | Acción |
+|--------|--------|--------|
+| Propuesta única | ❌ Blog informativo | ✅ Convertir en herramienta |
+| SEO | 🔴 Keywords no estructuradas | Build clusters + interlinking |
+| Sistema captación | ❌ No hay lead magnet | newsletter + automations |
+| IA visible | ❌ Usuario no percibe | Interacción directa |
+| UX | 🟡 Funcional pero plana | Dashboards + visualización |
+
+### 🎯 SPRINT 6: Propuesta Única
+| # | Tarea | Estado |
+|---|------|--------|
+| 1 | Definir propuesta clara | ✅ Done (Comparativas + Itinerarios) |
+| 2 | Diferenciar de blog informativo | ✅ Done (/comparar) |
+| 3 | Tool vs Content estrategia | ✅ Done (herramientas>posts) |
+| 4 | Diagrama flow viaje | ⏳ Pendiente |
+
+### 📈 SPRINT 7: SEO Estratégico
+| # | Tarea | Estado |
+|---|------|--------|
+| 1 | Keywords long-tail | ⏳ Pendiente |
+| 2 | Content clusters por riesgo | ⏳ Pendiente |
+| 3 | Interlinking país → post | ⏳ Pendiente |
+
+### 📧 SPRINT 8: Captación
+| # | Tarea | Estado |
+|---|------|--------|
+| 1 | Lead magnet (checklist premium) | ⏳ Pendiente |
+| 2 | Newsletter automation | ⏳ Pendiente |
+| 3 | secuencia onboarding | ⏳ Pendiente |
+
+### 🤖 SPRINT 9: IA Visible
+| # | Tarea | Estado |
+|---|------|--------|
+| 1 | Chat IA destacado visible | ⏳ Pendiente |
+| 2 | Recomendaciones personalizadas | ⏳ Pendiente |
+| 3 | Predicción riesgo IA | ⏳ Pendiente |
+
+### 🎨 SPRINT 10: UX Impactante
+| # | Tarea | Estado |
+|---|------|--------|
+| 1 | Dashboard riesgo visual | ⏳ Pendiente |
+| 2 | Mapa calor riesgos | ⏳ Pendiente |
+| 3 | Stats usuario en tiempo real | ⏳ Pendiente |

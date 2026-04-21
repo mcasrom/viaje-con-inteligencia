@@ -122,6 +122,74 @@ Responde SOLO con el JSON, sin explicaciones adicionales.`;
   }
 }
 
+export interface CountryComparisonData {
+  codigo: string;
+  nombre: string;
+  bandera: string;
+  nivelRiesgo: string;
+  capital: string;
+  moneda: string;
+  tipoCambio: string;
+  idioma: string;
+  zonaHoraria: string;
+  voltaje: string;
+  conduccion: 'derecha' | 'izquierda';
+  ultimoInforme?: string;
+}
+
+export async function compareCountries(countries: CountryComparisonData[]): Promise<string> {
+  const countriesInfo = countries
+    .map(
+      (p) => `- ${p.bandera} ${p.nombre}
+  Riesgo: ${riesgoLabels[p.nivelRiesgo] || p.nivelRiesgo}
+  Capital: ${p.capital}
+  Moneda: ${p.moneda} (${p.tipoCambio}/día)
+  Idioma: ${p.idioma}
+  Zona horaria: ${p.zonaHoraria}
+  Voltaje: ${p.voltaje}
+  Conducción: ${p.conduccion === 'derecha' ? 'Derecha' : 'Izquierda'}
+  Última info: ${p.ultimoInforme || 'N/A'}`
+    )
+    .join('\n\n');
+
+  const prompt = `Compara estos países para un viajero español y crea un análisis útil:
+
+${countriesInfo}
+
+Proporciona:
+1. **Resumen ejecutivo**: ¿Cuál es mejor para viajar según el perfil?
+2. **Comparativa por categorías** (tabla):
+   - Seguridad (basado en riesgo MAEC)
+   - Coste diario
+   - Facilidad de viaje (idioma, infraestructura)
+   - Experiencia turística
+3. **Recomendación final** personalizada
+4. **Consejos prácticos** para cada uno
+
+Usa un formato limpio y práctico. Responde en español.`;
+
+  try {
+    const chatCompletion = await groqClient.chat.completions.create({
+      messages: [
+        {
+          role: 'system',
+          content:
+            'Eres un asesor de viajes experto. Analizas datos objetivos y das recomendaciones prácticas y personalizadas.',
+        },
+        { role: 'user', content: prompt },
+      ],
+      model: 'llama-3.1-8b-instant',
+      temperature: 0.7,
+      max_tokens: 2048,
+    });
+
+    return chatCompletion.choices[0]?.message?.content || 'No pude completar la comparación.';
+  } catch (error) {
+    console.error('Groq API error:', error);
+    return 'Error al comparar. Intenta de nuevo.';
+  }
+}
+
 export async function chatWithAI(
   message: string,
   context: { country?: string; previousMessages?: string[] }
