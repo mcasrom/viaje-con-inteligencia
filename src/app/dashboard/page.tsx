@@ -7,7 +7,7 @@ import { createClient } from '@supabase/supabase-js';
 import { 
   ArrowLeft, Heart, MapPin, AlertTriangle, Trash2, 
   Plus, Mail, LogOut, Crown, Bell, Settings, Loader2,
-  Cloud, CheckCircle, XCircle, Star, Sparkles
+  Cloud, CheckCircle, XCircle, Star, Sparkles, Activity
 } from 'lucide-react';
 import RecommendationsList from '@/components/RecommendationsList';
 import { paisesData, getLabelRiesgo } from '@/data/paises';
