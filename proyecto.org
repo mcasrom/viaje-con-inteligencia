@@ -91,11 +91,18 @@
 | /api/stripe/* | Pagos Webhook |
 | /api/cron/* | Tareas programadas |
 | /api/reviews | Reseñas países |
-| /api/newsletter/* | Newsletter semanal |
+| /api/newsletter/subscribe | Newsletter (Resend emails) |
+| /api/cron/weekly-digest | Digest semanal a emails + Telegram |
 | /api/purge | Cache purge |
 | /api/bot-stats | Stats Telegram |
 | /api/recommendations | Recomendaciones personalizadas |
 | /api/checklist-pdf | Descarga checklist PDF |
+
+** Newsletter
+- [X] Welcome email (Resend)
+- [X] Weekly digest (Telegram + Email)
+- [X] Canal: @ViajeConInteligencia
+- [X] Enlace unsubscribe (RGPD)
 
 ** Blog Posts (27+)
 - [X] MAEC conceptos
@@ -315,6 +322,12 @@ jobs:
 - WWW redirect → Vercel
 - Email: info@viajeinteligencia.com → mybloggingnotes@gmail.com
 - Cloudflare Email Routing activo
+- Newsletter: Resend API (bienvenida + semanal)
+
+** 2026-04-21 :: Cuba bloqueada
+- Middleware: /pais/cu → redirect /
+- getPaisPorCodigo: filtra visible=false
+- Commit: fe60cca
 
 ** 2026-04-21 :: SPRINTS S7-S10 completados
 
