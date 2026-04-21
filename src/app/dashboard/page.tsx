@@ -555,7 +555,12 @@ const handleAuth = async (e: React.FormEvent) => {
           <RecommendationsList favorites={favorites.map(f => f.country_code)} />
         </div>
 
-        <div className="mt-12 grid md:grid-cols-3 gap-4">
+        <div className="mt-12 grid md:grid-cols-4 gap-4">
+          <Link href="/dashboard/kpis" className="bg-gradient-to-br from-blue-600 to-cyan-600 rounded-xl p-6 text-center hover:opacity-90 transition-opacity">
+            <Activity className="w-8 h-8 text-white mx-auto mb-2" />
+            <h3 className="font-bold text-white">KPIs de Riesgo</h3>
+            <p className="text-white/70 text-sm">Dashboard en vivo</p>
+          </Link>
           <Link href="/premium" className="bg-gradient-to-br from-purple-600 to-blue-600 rounded-xl p-6 text-center hover:opacity-90 transition-opacity">
             <Crown className="w-8 h-8 text-white mx-auto mb-2" />
             <h3 className="font-bold text-white">Hazte Premium</h3>
