@@ -1,11 +1,11 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
 import { 
   Calendar, MapPin, AlertTriangle, ArrowLeft, Filter,
   Plane, Users, Clock, TrendingUp, Shield, Bus,
-  Ticket, Music, Trophy, Globe, Info, CalendarDays
+  Ticket, Music, Trophy, Globe, Info, CalendarDays, Calculator
 } from 'lucide-react';
 
 interface Event {
@@ -170,6 +170,26 @@ const impactColors = {
 export default function EventosPage() {
   const [filterType, setFilterType] = useState<string>('todos');
   const [filterImpact, setFilterImpact] = useState<string>('todos');
+  const [istCountry, setIstCountry] = useState('ES');
+  const [istDate, setIstDate] = useState(new Date().toISOString().split('T')[0]);
+  const [istData, setIstData] = useState<any>(null);
+  const [istLoading, setIstLoading] = useState(false);
+
+  const calculateIST = async () => {
+    setIstLoading(true);
+    try {
+      const res = await fetch(`/api/ist?country=${istCountry}&date=${istDate}`);
+      const data = await res.json();
+      setIstData(data);
+    } catch (e) {
+      console.error('IST Error:', e);
+    }
+    setIstLoading(false);
+  };
+
+  useEffect(() => {
+    calculateIST();
+  }, []);
 
   const filteredEvents = useMemo(() => {
     const now = new Date();
@@ -285,6 +305,161 @@ export default function EventosPage() {
             <span className="text-slate-500 text-sm ml-auto">
               {filteredEvents.length} eventos encontrados
             </span>
+          </div>
+        </div>
+
+        <div className="bg-gradient-to-r from-purple-900/50 to-blue-900/50 rounded-xl p-6 mb-8 border border-purple-700/30">
+          <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+            <Calculator className="w-5 h-5 text-purple-400" />
+            Índice de Saturación Turística (IST)
+          </h3>
+          <p className="text-slate-300 text-sm mb-4">
+            Calcula el IST de cualquier destino para planificar tu viaje避开 la masificación.
+          </p>
+          
+          <div className="flex flex-wrap items-end gap-4">
+            <div>
+              <label className="block text-slate-400 text-sm mb-2">País</label>
+              <select
+                value={istCountry}
+                onChange={(e) => setIstCountry(e.target.value)}
+                className="px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:outline-none focus:border-purple-500"
+              >
+                <option value="ES">España</option>
+                <option value="FR">Francia</option>
+                <option value="IT">Italia</option>
+                <option value="PT">Portugal</option>
+                <option value="DE">Alemania</option>
+                <option value="GB">Reino Unido</option>
+                <option value="US">EE.UU.</option>
+                <option value="JP">Japón</option>
+                <option value="MX">México</option>
+                <option value="BR">Brasil</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-slate-400 text-sm mb-2">Fecha viaje</label>
+              <input
+                type="date"
+                value={istDate}
+                onChange={(e) => setIstDate(e.target.value)}
+                className="px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:outline-none focus:border-purple-500"
+              />
+            </div>
+            <button
+              onClick={calculateIST}
+              disabled={istLoading}
+              className="px-6 py-2 bg-purple-600 hover:bg-purple-500 text-white rounded-lg transition-colors flex items-center gap-2"
+            >
+              <Calculator className="w-4 h-4" />
+              {istLoading ? 'Calculando...' : 'Calcular'}
+            </button>
+          </div>
+
+          {istData && (
+            <div className="mt-6 grid md:grid-cols-2 gap-6">
+              <div className="bg-slate-800/50 rounded-xl p-5 text-center">
+                <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-lg font-bold mb-3 ${
+                  istData.recommendationColor === 'green' ? 'bg-green-500/20 text-green-400' :
+                  istData.recommendationColor === 'lime' ? 'bg-lime-500/20 text-lime-400' :
+                  istData.recommendationColor === 'yellow' ? 'bg-yellow-500/20 text-yellow-400' :
+                  istData.recommendationColor === 'orange' ? 'bg-orange-500/20 text-orange-400' :
+                  'bg-red-500/20 text-red-400'
+                }`}>
+                  <span>{istData.recommendationIcon}</span>
+                  <span>{istData.recommendation}</span>
+                </div>
+                <div className="text-5xl font-bold text-white mb-2">{istData.ist}</div>
+                <div className="text-slate-400 text-sm">IST para {istData.country}</div>
+                <div className="text-slate-500 text-xs mt-1">{new Date(istData.generatedAt).toLocaleString('es-ES')}</div>
+              </div>
+              
+              <div className="space-y-2">
+                <h4 className="text-white font-medium text-sm mb-2">Desglose:</h4>
+                <div className="flex items-center gap-2 text-sm">
+                  <span className="text-slate-400 w-24">Eventos</span>
+                  <div className="flex-1 bg-slate-700 rounded-full h-2">
+                    <div className="bg-purple-500 h-2 rounded-full" style={{ width: `${istData.breakdown?.eventos?.score || 0}%` }}></div>
+                  </div>
+                  <span className="text-white w-8">{istData.breakdown?.eventos?.score || 0}</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                  <span className="text-slate-400 w-24">Riesgo</span>
+                  <div className="flex-1 bg-slate-700 rounded-full h-2">
+                    <div className="bg-blue-500 h-2 rounded-full" style={{ width: `${istData.breakdown?.riesgo?.score || 0}%` }}></div>
+                  </div>
+                  <span className="text-white w-8">{istData.breakdown?.riesgo?.score || 0}</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                  <span className="text-slate-400 w-24">Temporal</span>
+                  <div className="flex-1 bg-slate-700 rounded-full h-2">
+                    <div className="bg-yellow-500 h-2 rounded-full" style={{ width: `${Math.abs(istData.breakdown?.estacionalidad?.score || 0)}%` }}></div>
+                  </div>
+                  <span className="text-white w-8">{istData.breakdown?.estacionalidad?.score || 0}</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                  <span className="text-slate-400 w-24">Precios</span>
+                  <div className="flex-1 bg-slate-700 rounded-full h-2">
+                    <div className="bg-green-500 h-2 rounded-full" style={{ width: `${istData.breakdown?.precios?.score || 0}%` }}></div>
+                  </div>
+                  <span className="text-white w-8">{istData.breakdown?.precios?.score || 0}</span>
+                </div>
+                <div className="pt-2 mt-2 border-t border-slate-700">
+                  <p className="text-slate-500 text-xs">
+                    Fórmula: 0.35×Eventos + 0.30×Riesgo + 0.20×Temporal + 0.15×Precios
+                  </p>
+                  {istData.breakdown?.eventos?.details?.length > 0 ? (
+                    <p className="text-slate-400 text-xs mt-1">
+                      Eventos: {istData.breakdown.eventos.details.join(', ')}
+                    </p>
+                  ) : null}
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
+        <div className="bg-blue-900/30 border border-blue-700/50 rounded-xl p-6 mb-8">
+          <h3 className="text-lg font-semibold text-blue-300 mb-3 flex items-center gap-2">
+            <Info className="w-5 h-5" />
+            ¿Cómo funciona el IST?
+          </h3>
+          <p className="text-slate-300 text-sm mb-4">
+            El <strong className="text-white">Índice de Saturación Turística (IST)</strong> es un indicador de 0 a 100 que mide la presión turística prevista en un destino. Se calcula con datos reales y predictivos.
+          </p>
+          <div className="grid md:grid-cols-4 gap-4 text-sm">
+            <div className="bg-slate-800/50 rounded-lg p-4">
+              <h4 className="text-purple-400 font-medium mb-2">📅 35% - Eventos</h4>
+              <p className="text-slate-400 text-xs">
+                Festivales, F1, Mundiales y otros eventos programados que afectan movilidad y precios.
+              </p>
+            </div>
+            <div className="bg-slate-800/50 rounded-lg p-4">
+              <h4 className="text-blue-400 font-medium mb-2">🛡️ 30% - Riesgo</h4>
+              <p className="text-slate-400 text-xs">
+                Nivel de riesgo país (MAEC). Mayor riesgo = mayor presión turística en zonas seguras.
+              </p>
+            </div>
+            <div className="bg-slate-800/50 rounded-lg p-4">
+              <h4 className="text-yellow-400 font-medium mb-2">📆 20% - Temporal</h4>
+              <p className="text-slate-400 text-xs">
+                Temporada alta (julio-agosto) vs baja (noviembre). Julio puede duplicar el IST.
+              </p>
+            </div>
+            <div className="bg-slate-800/50 rounded-lg p-4">
+              <h4 className="text-green-400 font-medium mb-2">💰 15% - Precios</h4>
+              <p className="text-slate-400 text-xs">
+                IPC local y coste de vida. Afecta accesibilidad y experiencia.
+              </p>
+            </div>
+          </div>
+          <div className="mt-4 pt-4 border-t border-blue-800/50">
+            <p className="text-slate-400 text-xs">
+              <strong className="text-white">Interpretación:</strong> IST &lt; 20 = Ideal | 21-40 = Bueno | 41-60 = Moderado | 61-80 = Alto | &gt; 80 = Crítico
+            </p>
+            <p className="text-slate-500 text-xs mt-1">
+              El IST es predictivo, basado en datos programados y históricos. No garantiza situaciones imprevistas como huelgas o weather.
+            </p>
           </div>
         </div>
 

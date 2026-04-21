@@ -83,9 +83,9 @@ La IA teará:
 
 ##Errores a Evitar
 
-1. **No comparar manualmente** - Deja que la IA lo haga
-2. **No设置 alertas** - Precios cambian cada hora
-3. **No considerar错误票价** - A veces hay errores de precio enorm
+** No comparar manualmente – Deja que la IA lo haga
+** No configurar alertas – Los precios cambian constantemente
+** No considerar tarifas erróneas – A veces aparecen precios con errores
 
 ---
 

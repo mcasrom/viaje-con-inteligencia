@@ -163,7 +163,7 @@ Mantente informado, planifica cuidadosamente, y sobre todo, disfruta del proceso
 
 ## Implementación Práctica
 
-Para implementar itinerarios basados en IA exitosamente,，你需要:
+Para implementar itinerarios basados en IA exitosamente:
 1. Definir claramente tus preferencias
 2. Establecer límites de presupuesto
 3. Seleccionar actividades por priorities
