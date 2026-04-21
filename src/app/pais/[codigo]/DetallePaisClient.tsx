@@ -14,6 +14,8 @@ import {
 } from 'lucide-react';
 import Reviews from '@/components/Reviews';
 import WeatherWidget from '@/components/WeatherWidget';
+import LoginButton from '@/components/LoginButton';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface DetallePaisClientProps {
   pais: DatoPais;
@@ -24,15 +26,21 @@ export default function DetallePaisClient({ pais, relatedPosts = [] }: DetallePa
   const params = useParams();
   const router = useRouter();
   const codigo = params.codigo as string;
+  const { user, loading: authLoading } = useAuth();
   const [isFavorite, setIsFavorite] = useState(false);
   const [favLoading, setFavLoading] = useState(false);
   const [activeTab, setActiveTab] = useState<'info' | 'legal' | 'dinero' | 'emergencia'>('info');
   const [maecData, setMaecData] = useState<any>(null);
   const [maecLoading, setMaecLoading] = useState(false);
+  const [showLoginPrompt, setShowLoginPrompt] = useState(false);
 
   useEffect(() => {
-    checkFavorite();
-  }, [codigo]);
+    if (!authLoading && user) {
+      checkFavorite();
+    } else if (!authLoading && !user) {
+      setIsFavorite(false);
+    }
+  }, [codigo, user, authLoading]);
 
   useEffect(() => {
     if (activeTab === 'legal' && !maecData) {
@@ -62,6 +70,10 @@ export default function DetallePaisClient({ pais, relatedPosts = [] }: DetallePa
   };
 
   const toggleFavorite = async () => {
+    if (!user) {
+      setShowLoginPrompt(true);
+      return;
+    }
     setFavLoading(true);
     try {
       if (isFavorite) {
@@ -676,6 +688,32 @@ export default function DetallePaisClient({ pais, relatedPosts = [] }: DetallePa
           </p>
         </div>
       </footer>
+
+      {showLoginPrompt && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setShowLoginPrompt(false)} />
+          <div className="relative bg-slate-800 rounded-2xl p-6 w-full max-w-md border border-slate-700 shadow-2xl">
+            <div className="text-center">
+              <div className="w-16 h-16 bg-blue-600/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Heart className="w-8 h-8 text-blue-400" />
+              </div>
+              <h2 className="text-2xl font-bold text-white mb-2">Guarda {pais.nombre} en favoritos</h2>
+              <p className="text-slate-400 mb-6">
+                Inicia sesión para guardar países y acceder a ellos desde cualquier dispositivo.
+              </p>
+              <div className="flex flex-col gap-3">
+                <LoginButton showEmail={false} size="lg" />
+                <button
+                  onClick={() => setShowLoginPrompt(false)}
+                  className="text-slate-400 hover:text-white text-sm transition-colors"
+                >
+                  Cancelar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

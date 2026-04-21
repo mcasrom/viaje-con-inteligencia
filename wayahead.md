@@ -206,7 +206,7 @@
 
 ---
 
-## 🚀 SPRINT 11: Análisis de Riesgo IA (Propuesta)
+## 🚀 SPRINT 11: Análisis de Riesgo IA (Completado ✅)
 
 ### 📊 Índice de Riesgo en Tiempo Real
 
@@ -229,4 +229,92 @@
 - ✅ Visualización atractiva
 - ✅ Actualización automática
 
-**Estado:** ⏳ Pendiente desarrollo
+**Estado:** ✅ Completado
+
+---
+
+## 🚀 SPRINT 12: Monitor Conflictos Activos (Completado ✅)
+
+### ✅ Progreso - Abril 2026
+
+| # | Tarea | Estado | Fecha |
+|---|------|--------|-------|
+| 1 | NewsMCP API 410 Gone - Corregir | ✅ | 2026-04-21 |
+| 2 | Fallback system conflicts | ✅ | 2026-04-21 |
+| 3 | Premium conflicts tab status | ✅ | 2026-04-21 |
+| 4 | Footer ScraperStatus timestamp | ✅ | 2026-04-21 |
+| 5 | Compact mode timestamp | ✅ | 2026-04-21 |
+
+### 📊 Estado Actual
+
+- **NewsMCP:** ❌ No disponible (retorna 410)
+- **Fallback:** ✅ Funcional con datos hardcodeados del 21/04/2026
+- **Footer:** ✅ Semáforo verde + timestamp visible
+- **Premium tab:** ✅ Muestra "Live" o "Fallback" con timestamp
+
+### 🎯 Siguientes Pasos
+
+- [ ] Buscar alternativa a NewsMCP (API geopolítica)
+- [ ] Integrar datos MAEC en tiempo real
+- [ ] Melhorar fallback con datos reales
+
+---
+
+## 🚀 PENDIENTES LARGO PLAZO
+
+### 🔐 AUTH + FAVORITOS
+| # | Tarea | Prioridad | Estado |
+|---|------|----------|--------|
+| 1 | Login/Auth (Supabase) | Alta | ✅ Completado |
+| 2 | Favoritos usuario | Alta | ✅ Completado |
+| 3 | Sincronización favoritos | Media | ✅ Completado |
+| 4 | LoginButton visible (QuickAccess) | Alta | ✅ Completado |
+| 5 | Prompt login en favoritos | Alta | ✅ Completado |
+| 6 | AuthContext global | Alta | ✅ Completado |
+
+### 💳 STRIPE
+| # | Tarea | Prioridad | Estado |
+|---|------|----------|--------|
+| 1 | Integración Stripe | Alta | ⏳ Pendiente |
+| 2 | Pagos Premium | Alta | ⏳ Pendiente |
+| 3 | Webhooks | Media | ⏳ Pendiente |
+| 4 | Facturación | Media | ⏳ Pendiente |
+
+### 📈 MARKETING EXPANSIÓN
+| # | Tarea | Prioridad | Estado |
+|---|------|----------|--------|
+| 1 | Modelos expansión marketing | Alta | ⏳ Pendiente |
+| 2 | Lead magnets adicionales | Media | ⏳ Pendiente |
+| 3 | Automatizaciones email | Media | ⏳ Pendiente |
+| 4 | Partnerships/Afiliados | Media | ⏳ Pendiente |
+
+### 🔄 REVISIÓN CONSTANTE
+| # | Tarea | Frecuencia | Estado |
+|---|------|----------|--------|
+| 1 | Scrapers MAEC | Diaria | ⏳ Pendiente |
+| 2 | NewsMCP | Semanal | ⏳ Pendiente |
+| 3 | Posts blog | Semanal | ⏳ Pendiente |
+| 4 | SEO keywords | Mensual | ⏳ Pendiente |
+| 5 | Analytics | Quincenal | ⏳ Pendiente |
+
+---
+
+## 🚀 SPRINT 13: Producto Minimalista (2026-04-21)
+
+### 📊 Progreso
+
+| Métrica | Actual | Target |
+|---------|--------|--------|
+| Visitantes/mes | ~500 | 10,000 |
+| Países | 89 | 100 |
+| Posts blog | 52 | 52 ✅ |
+| Usuarios Telegram | ~50 | 1,000 |
+| Suscripciones | 0 | 100 |
+
+### ✅ Completados Recientemente
+
+- ✅ KPIs Dashboard visible en homepage
+- ✅ Blog 52 posts 1000+ palabras
+- ✅ Monitor Conflictos con fallback
+- ✅ Footer con timestamp
+- ✅ Semáforo color en footer
