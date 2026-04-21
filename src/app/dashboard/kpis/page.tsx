@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Globe, Plane, Shield, AlertTriangle, TrendingUp, Activity, Map, BarChart3, AlertCircle, CheckCircle, XCircle, ArrowRight, Search, Filter } from 'lucide-react';
+import { ArrowLeft, Globe, Plane, Shield, AlertTriangle, TrendingUp, Activity, Map, BarChart3, AlertCircle, CheckCircle, XCircle, ArrowRight, Search, Filter, Clock } from 'lucide-react';
 
 const KPIData = [
   { country: 'España', code: 'ES', riesgoPolitico: 15, riesgoAereo: 8, restricciones: 5, score: 87, status: 'seguro' },
@@ -157,6 +157,10 @@ export default function KPIsPage() {
           </h1>
           <p className="text-slate-400 max-w-2xl mx-auto">
             Datos en tiempo real sobre riesgo político, aéreo y restricciones por país. Actualizado constantemente.
+          </p>
+          <p className="text-blue-400 text-sm mt-3 flex items-center justify-center gap-2">
+            <Clock className="w-4 h-4" />
+            Última actualización: 21 Abril 2026, 18:00 UTC • Fuentes: MAEC, OACI, OSINT, APIs seguridad
           </p>
         </div>
 

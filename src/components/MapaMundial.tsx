@@ -211,6 +211,10 @@ export default function MapaMundial() {
             Consulta el nivel de riesgo, requisitos de entrada y recomendaciones para cada destino. 
             Información actualizada según MAEC español.
           </p>
+          <p className="text-blue-400 text-sm mt-2 flex items-center justify-center gap-2">
+            <Clock className="w-4 h-4" />
+            Actualizado: 21 Abril 2026 • Fuentes: MAEC, OACI, OSINT
+          </p>
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
