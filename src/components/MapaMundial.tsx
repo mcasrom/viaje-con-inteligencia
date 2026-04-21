@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import { paisesData, getLabelRiesgo, NivelRiesgo } from '@/data/paises';
-import { AlertTriangle, ArrowRight, Globe, Search, ClipboardList, Star, BookOpen, RefreshCw, Clock, Gift, TrendingUp, Activity, BarChart3 } from 'lucide-react';
+import { AlertTriangle, ArrowRight, Globe, Search, ClipboardList, Star, BookOpen, RefreshCw, Clock, Gift, TrendingUp, Activity, BarChart3, Ticket } from 'lucide-react';
 import LanguageSelector from './LanguageSelector';
 import { useI18n } from '@/lib/i18n';
 
@@ -257,13 +257,21 @@ export default function MapaMundial() {
         </Link>
 
         <div className="bg-slate-800/50 rounded-xl p-4 mb-8 border border-slate-700">
-          <div className="flex flex-wrap justify-center gap-6">
+          <div className="flex flex-wrap justify-center items-center gap-6">
             {(['sin-riesgo', 'bajo', 'medio', 'alto', 'muy-alto'] as NivelRiesgo[]).map((riesgo) => (
               <div key={riesgo} className="flex items-center gap-2">
                 <div className={`w-4 h-4 rounded-full ${riesgoColors[riesgo].bg}`}></div>
                 <span className="text-slate-300 text-sm">{getLabelRiesgo(riesgo)}</span>
               </div>
             ))}
+            <div className="w-px h-6 bg-slate-600"></div>
+            <Link 
+              href="/eventos"
+              className="flex items-center gap-2 px-3 py-1.5 bg-purple-600/20 hover:bg-purple-600/30 text-purple-400 hover:text-purple-300 rounded-lg transition-colors text-sm font-medium"
+            >
+              <Ticket className="w-4 h-4" />
+              <span>Eventos</span>
+            </Link>
           </div>
         </div>
 
