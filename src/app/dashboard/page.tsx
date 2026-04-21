@@ -406,6 +406,21 @@ const handleAuth = async (e: React.FormEvent) => {
           </div>
         )}
 
+        {/* Banner KPIs destacado */}
+        <Link href="/dashboard/kpis" className="block mb-6 bg-gradient-to-r from-blue-600 to-cyan-600 rounded-xl p-4 hover:opacity-90 transition-opacity">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Activity className="w-8 h-8 text-white" />
+              <div>
+                <span className="text-blue-200 text-xs font-medium">NUEVO</span>
+                <h3 className="text-white font-bold">📊 Dashboard de KPIs de Seguridad</h3>
+                <p className="text-blue-200 text-sm">Riesgo político, aéreo, restricciones y recomendaciones IA</p>
+              </div>
+            </div>
+            <span className="text-white font-bold">→</span>
+          </div>
+        </Link>
+
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-2xl font-bold text-white flex items-center gap-3">
