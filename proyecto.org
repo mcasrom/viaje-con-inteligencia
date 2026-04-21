@@ -104,26 +104,11 @@
 - [X] Canal: @ViajeConInteligencia
 - [X] Enlace unsubscribe (RGPD)
 
-** Blog Posts (27+)
-- [X] MAEC conceptos
-- [X] Aduanas aeropuerto
-- [X] Japón
-- [X] Checklist viaje
-- [X] Seguro viaje
-- [X] México
-- [X] Documentos
-- [X] Bot Telegram
-- [X] WiFi e internet
-- [X] Roaming internacional
-- [X] Guía visados
-- [X] Emergencias extranjero
-- [X] Estafas turísticas
-- [X] Derechos viajero UE
-- [X] Equipaje mano
-- [X] Libros viajeros
-- [X] Clásicos viajes Gutenberg
-- [X] Apps vuelo
-- [X] Mejores destinos
+** Blog Posts (47+)
+- [X] Posts SEO país "Es seguro viajar a..."
+- [X] Francia, Italia, Alemania, Portugal
+- [X] España, México, Japón, Argentina
+- [X] +20 países nuevos
 
 * BACKLOG (Actualizado 2026-04-21)
 
