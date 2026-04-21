@@ -321,11 +321,17 @@ I = 0.4A + 0.3M + 0.3S
 ### 🔄 REVISIÓN CONSTANTE
 | # | Tarea | Frecuencia | Estado |
 |---|------|----------|--------|
-| 1 | Scrapers MAEC | Diaria | ⏳ Pendiente |
+| 1 | Scrapers MAEC | Diaria | ✅ Completado (logs + cron) |
 | 2 | NewsMCP | Semanal | ⏳ Pendiente |
 | 3 | Posts blog | Semanal | ⏳ Pendiente |
 | 4 | SEO keywords | Mensual | ⏳ Pendiente |
 | 5 | Analytics | Quincenal | ⏳ Pendiente |
+
+**Implementado:**
+- Tabla scraper_logs + risk_alerts en Supabase
+- API /api/cron/scrape-maec (scrape completo)
+- Logging automático en /api/cron/check-alerts
+- Dashboard /admin con vista de logs
 
 ---
 
