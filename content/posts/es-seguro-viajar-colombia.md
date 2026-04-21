@@ -1,5 +1,5 @@
 ---
-title: "[ANÁLISIS] ¿Es SEGURO viajar a COLOMBIA en 2026? | Guía COMPLETA"
+title: "¿Es SEGURO viajar a COLOMBIA en 2026? | Guía COMPLETA"
 slug: "es-seguro-viajar-colombia"
 date: "2026-04-21"
 author: "M. Castillo"
@@ -7,6 +7,7 @@ category: "Destinos"
 readTime: "11 min"
 image: https://images.unsplash.com/photo-1583267318073-795748127e8b?w=800
 keywords: "colombia seguridad viaje, riesgo colombia 2026, es seguro colombia, alertas colombia, viaje colombia peligroso, turismo colombia, consejos colombia, bogota safety"
+tags: ["Análisis"]
 excerpt: "Análisis COMPLETO de seguridad en Colombia 2026. Conoce el nivel de riesgo real, zonas seguras, consejos prácticos y todo lo que necesitas para viajar seguro a Colombia."
 ---
 
@@ -17,21 +18,6 @@ excerpt: "Análisis COMPLETO de seguridad en Colombia 2026. Conoce el nivel de r
 Colombia ha experimentado una transformación remarkable en las últimas dos décadas. El país que alguna vez fue sinónimo de conflicto armado y peligro ahora atrae a viajeros con su cultura vibrante, paisajes diversos,café de clase mundial y gente excepcionalmente acogedora.
 
 Con más de 5 millones de turistas anuales, Colombia se ha consolidado como un destino turístico emergente de gran atractivo. Sin embargo, como todo país en desarrollo, requiere precauciones específicas. En esta guía exhaustiva te proporcionamos toda la información para visitar Colombia de manera segura en 2026.
-
----
-
-## 📊 Índice del Artículo
-
-1. [Panorama general de seguridad](#1-panorama-general)
-2. [Nivel de riesgo según el MAEC](#2-nivel-de-riesgo)
-3. [Zonas seguras y zonas a evitar](#3-zonas-seguras)
-4. [Tipos de riesgos principales](#4-riesgos)
-5. [Seguridad por ciudades](#5-ciudades)
-6. [Transporte y movilidad](#6-transporte)
-7. [Sanidad y emergencias](#7-sanidad)
-8. [Cultura local y etiqueta](#8-cultura)
-9. [Cuándo viajar a Colombia](#9-epoca)
-10. [Conclusión](#10-conclusion)
 
 ---
 

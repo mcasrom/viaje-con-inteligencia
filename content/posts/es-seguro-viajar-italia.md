@@ -1,12 +1,13 @@
 ---
-title: "[ANÁLISIS] ¿Es SEGURO viajar a ITALIA en 2026? | Guía COMPLETA y actualizada"
+title: "¿Es SEGURO viajar a ITALIA en 2026? | Guía COMPLETA y actualizada"
 slug: "es-seguro-viajar-italia"
 date: "2026-04-21"
 author: "M. Castillo"
 category: "Destinos"
 readTime: "12 min"
-image: https://images.unsplash.com/photo-1515542622106-78bda8ba0e5b?w=800
+image: https://images.unsplash.com/photo-1515542622106-78bda8ba0e6b?w=800
 keywords: "italia seguridad viaje, riesgo italia 2026, es seguro italia, alertas italia, viaje italia peligroso, turismo italia, consejos italia"
+tags: ["Análisis"]
 excerpt: "Análisis COMPLETO y actualizado de seguridad en Italia en 2026. Conoce el nivel de riesgo real, zonas a evitar y consejos prácticos."
 ---
 

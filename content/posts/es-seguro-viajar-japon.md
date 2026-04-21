@@ -1,5 +1,5 @@
 ---
-title: "[ANÁLISIS] ¿Es SEGURO viajar a JAPÓN en 2026? | Guía COMPLETA"
+title: "¿Es SEGURO viajar a JAPÓN en 2026? | Guía COMPLETA"
 slug: "es-seguro-viajar-japon"
 date: "2026-04-21"
 author: "M. Castillo"
@@ -7,6 +7,7 @@ category: "Destinos"
 readTime: "11 min"
 image: https://images.unsplash.com/photo-1545569341-9eb8b30979d9?w=800
 keywords: "japon seguridad viaje, riesgo japon 2026, es seguro japon, alertas japon, viaje japon peligroso, turismo japon, consejos japon, tokio safety"
+tags: ["Análisis"]
 excerpt: "Análisis COMPLETO de seguridad en Japón 2026. Conoce el nivel de riesgo real, zonas seguras, consejos prácticos y todo lo que necesitas para viajar seguro a Japón."
 ---
 
@@ -17,21 +18,6 @@ excerpt: "Análisis COMPLETO de seguridad en Japón 2026. Conoce el nivel de rie
 Japón es uno de los destinos más seguros, fascinantes y bien organizados del mundo. Este archipiélago del Pacífico combina perfectamente tradición milenaria con tecnología de vanguardia, ofreciendo a los viajeros una experiencia única e inolvidable. Desde los rascacielos de Tokio hasta los templos古老的 de Kioto, pasando por los onsen termales y los cerezos en flor, Japón cautiva con su mezcla única de modernidad y tradición.
 
 Con una población de 125 millones de habitantes y una tasa de criminalidad extremadamente baja, Japón es frecuentemente citado como uno de los países más seguros del mundo para turistas. El país ofrece infraestructura de primer nivel, transporte eficiente y una hospitalidad excepcional conocida como "omotenashi". En esta guía exhaustiva analizamos todos los aspectos de seguridad para visitar Japón en 2026.
-
----
-
-## 📊 Índice del Artículo
-
-1. [Panorama general de seguridad](#1-panorama-general)
-2. [Nivel de riesgo según el MAEC](#2-nivel-de-riesgo)
-3. [Zonas seguras y zonas a evitar](#3-zonas-seguras)
-4. [Tipos de riesgos principales](#4-riesgos)
-5. [Seguridad por ciudades](#5-ciudades)
-6. [Transporte y movilidad](#6-transporte)
-7. [Sanidad y emergencias](#7-sanidad)
-8. [Cultura local y etiqueta](#8-cultura)
-9. [Cuándo viajar a Japón](#9-epoca)
-10. [Conclusión](#10-conclusion)
 
 ---
 

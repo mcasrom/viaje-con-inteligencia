@@ -1,5 +1,5 @@
 ---
-title: "[ANÁLISIS] ¿Es SEGURO viajar a FRANCIA en 2026? | Guía COMPLETA y actualizada"
+title: "¿Es SEGURO viajar a FRANCIA en 2026? | Guía COMPLETA y actualizada"
 slug: "es-seguro-viajar-francia"
 date: "2026-04-21"
 author: "M. Castillo"
@@ -7,6 +7,7 @@ category: "Destinos"
 readTime: "12 min"
 image: https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=800
 keywords: " frances seguridad viaje, riesgo francia 2026, es seguro francia, alertas francia, viaje francia peligroso, turismo francia, consejos francia, francia recomendaciones"
+tags: ["Análisis"]
 excerpt: "Análisis COMPLETO y actualizado de seguridad en Francia en 2026. Conoce el nivel de riesgo real, zonas a evitar, consejos prácticos y todo lo que necesitas saber antes de viajar."
 ---
 
@@ -15,21 +16,6 @@ excerpt: "Análisis COMPLETO y actualizado de seguridad en Francia en 2026. Cono
 **🇫🇷 Nivel de riesgo según MAEC: BAJO**
 
 Francia es uno de los destinos turísticos más importantes de Europa. Con millones de visitantes anuales, es fundamental conocer la situación real de seguridad antes de planificar tu viaje.
-
----
-
-## 📊 Índice del Artículo
-
-1. [Panorama general de seguridad](#1-panorama-general-de-seguridad)
-2. [Nivel de riesgo según el MAEC](#2-nivel-de-riesgo-según-el-maec)
-3. [Zonas seguras y zonas a evitar](#3-zonas-seguras-y-zonas-a-evitar)
-4. [Tipos de riesgos principales](#4-tipos-de-riesgos-principales)
-5. [Alertas actuales 2026](#5-alertas-actuales-2026)
-6. [Transporte y movilidad](#6-transporte-y-movilidad)
-7. [Sanidad y emergencias](#7-sanidad-y-emergencias)
-8. [Cultura local y etiqueta](#8-cultura-local-y-etiqueta)
-9. [Cuándo viajar a Francia](#9-cuándo-viajar-a-francia)
-10. [Conclusión y veredicto final](#10-conclusión-y-veredicto-final)
 
 ---
 

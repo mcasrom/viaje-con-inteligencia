@@ -1,12 +1,13 @@
 ---
-title: "[ANÁLISIS] ¿Es SEGURO viajar a TAILANDIA en 2026? | Guía COMPLETA"
+title: "¿Es SEGURO viajar a TAILANDIA en 2026? | Guía COMPLETA"
 slug: "es-seguro-viajar-tailandia"
 date: "2026-04-21"
 author: "M. Castillo"
 category: "Destinos"
 readTime: "14 min"
-image: https://images.unsplash.com/photo-1528181304800-259b08814526?w=800
+image: https://images.unsplash.com/photo-1528181304800-259ecc088f0a?w=800
 keywords: "tailandia seguridad viaje, riesgo tailandia 2026, es seguro tailandia, alertas tailandia, Bangkok peligroso, viaje tailandia peligroso, turismo tailandia, consejos tailandia, isla phuket, tailsilandia playa"
+tags: ["Análisis"]
 excerpt: "Análisis COMPLETO de seguridad en Tailandia 2026. Conoce el nivel de riesgo real, zonas a evitar, consejos prácticos y todo lo que necesitas para viajar seguro a Tailandia."
 ---
 
@@ -15,21 +16,6 @@ excerpt: "Análisis COMPLETO de seguridad en Tailandia 2026. Conoce el nivel de 
 **🇹🇭 Nivel de riesgo según MAEC: BAJO/MEDIO**
 
 Tailandia es uno de los destinos más populares del Sudeste Asiático. Con millones de visitantes anuales, es fundamental conocer la situación реальной de seguridad antes de planificar tu viaje.
-
----
-
-## 📊 Índice del Artículo
-
-1. [Panorama general](#1-panorama-general)
-2. [Nivel de riesgo según MAEC](#2-nivel-de-riesgo-según-el-maec)
-3. [Zonas seguras y zonas a evitar](#3-zonas-seguras-y-zonas-a-evitar)
-4. [Tipos de riesgos principales](#4-tipos-de-riesgos-principales)
-5. [Alertas actuales 2026](#5-alertas-actuales-2026)
-6. [Transporte y movilidad](#6-transporte-y-movilidad)
-7. [Sanidad y emergencias](#7-sanidad-y-emergencias)
-8. [Cultura local y etiqueta](#8-cultura-local-y-etiqueta)
-9. [Cuándo viajar](#9-cuándo-viajar-a-tailandia)
-10. [Conclusión](#10-conclusión)
 
 ---
 

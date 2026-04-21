@@ -1,5 +1,5 @@
 ---
-title: "[ANÁLISIS] ¿Es SEGURO viajar a AUSTRALIA en 2026? | Guía COMPLETA"
+title: "¿Es SEGURO viajar a AUSTRALIA en 2026? | Guía COMPLETA"
 slug: "es-seguro-viajar-australia"
 date: "2026-04-21"
 author: "M. Castillo"
@@ -7,6 +7,7 @@ category: "Destinos"
 readTime: "11 min"
 image: https://images.unsplash.com/photo-1523482580672-f109ba8cb9be?w=800
 keywords: "australia seguridad viaje, riesgo australia 2026, es seguro australia, alertas australia, viaje australia peligroso, turismo australia, consejos australia, sydney safety"
+tags: ["Análisis"]
 excerpt: "Análisis COMPLETO de seguridad en Australia 2026. Conoce el nivel de riesgo real, zonas seguras, consejos prácticos y todo lo que necesitas para viajar seguro a Australia."
 ---
 
@@ -17,21 +18,6 @@ excerpt: "Análisis COMPLETO de seguridad en Australia 2026. Conoce el nivel de 
 Australia es uno de los destinos más fascinantes y seguros del mundo. Este continente-país combina ciudades de vanguardia con naturaleza salvaje única, fauna endémica que no existe en ningún otro lugar del planeta, playas impeccables y una calidad de vida excepcional. Con una población de apenas 26 millones de habitantes en un territorio del tamaño de Europa, Australia ofrece espacios ilimitados y una densidad de población bajísima.
 
 El país oceánico consistently se encuentra entre los más seguros del mundo para turistas, con instituciones sólidas, bajas tasas de criminalidad y una infraestructura turística de primer nivel. En esta guía exhaustiva analizamos todos los aspectos de seguridad para visitar Australia en 2026.
-
----
-
-## 📊 Índice del Artículo
-
-1. [Panorama general de seguridad](#1-panorama-general)
-2. [Nivel de riesgo según el MAEC](#2-nivel-de-riesgo)
-3. [Zonas seguras y zonas a evitar](#3-zonas-seguras)
-4. [Tipos de riesgos principales](#4-riesgos)
-5. [Seguridad por ciudades](#5-ciudades)
-6. [Fauna y naturaleza](#6-fauna)
-7. [Transporte y movilidad](#7-transporte)
-8. [Sanidad y emergencias](#8-sanidad)
-9. [Cuándo viajar a Australia](#9-epoca)
-10. [Conclusión](#10-conclusion)
 
 ---
 

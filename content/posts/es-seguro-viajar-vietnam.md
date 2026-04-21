@@ -1,5 +1,5 @@
 ---
-title: "[ANÁLISIS] ¿Es SEGURO viajar a VIETNAM en 2026? | Guía COMPLETA"
+title: "¿Es SEGURO viajar a VIETNAM en 2026? | Guía COMPLETA"
 slug: "es-seguro-viajar-vietnam"
 date: "2026-04-21"
 author: "M. Castillo"
@@ -7,6 +7,7 @@ category: "Destinos"
 readTime: "11 min"
 image: https://images.unsplash.com/photo-1528127269322-539801943592?w=800
 keywords: "vietnam seguridad viaje, riesgo vietnam 2026, es seguro vietnam, alertas vietnam, viaje vietnam peligroso, turismo vietnam, consejos vietnam"
+tags: ["Análisis"]
 excerpt: "Análisis COMPLETO de seguridad en Vietnam 2026. Conoce el nivel de riesgo real, zonas seguras, consejos prácticos y todo lo que necesitas para viajar seguro a Vietnam."
 ---
 
@@ -34,21 +35,6 @@ Con una población de más de 100 millones de habitantes y una economía en ráp
 ### Nivel MAEC: ⭐⭐⭐⭐
 
 El Ministerio de Asuntos Exteriores de España clasifica Vietnam como destino de **riesgo bajo**, similar a países vecinos como Tailandia o Camboya.
-
----
-
-## 📊 Índice del Artículo
-
-1. [Panorama general](#1-panorama)
-2. [Nivel de riesgo MAEC](#2-nivel)
-3. [Zonas seguras](#3-zonas)
-4. [Tipos de riesgos](#4-riesgos)
-5. [Seguridad por ciudades](#5-ciudades)
-6. [Transporte](#6-transporte)
-7. [Sanidad](#7-sanidad)
-8. [Cultura](#8-cultura)
-9. [Cuándo viajar](#9-epoca)
-10. [Conclusión](#10-conclusion)
 
 ---
 

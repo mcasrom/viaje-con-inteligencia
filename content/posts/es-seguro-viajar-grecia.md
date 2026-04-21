@@ -1,5 +1,5 @@
 ---
-title: "[ANÁLISIS] ¿Es SEGURO viajar a GRECIA en 2026? | Guía COMPLETA"
+title: "¿Es SEGURO viajar a GRECIA en 2026? | Guía COMPLETA"
 slug: "es-seguro-viajar-grecia"
 date: "2026-04-21"
 author: "M. Castillo"
@@ -7,6 +7,7 @@ category: "Destinos"
 readTime: "11 min"
 image: https://images.unsplash.com/photo-1503152394-c571994fd383?w=800
 keywords: "grecia seguridad viaje, riesgo grecia 2026, es seguro grecia, alertas grecia, viaje grecia peligroso, turismo grecia, consejos grecia, atenas safety"
+tags: ["Análisis"]
 excerpt: "Análisis COMPLETO de seguridad en Grecia 2026. Conoce el nivel de riesgo real, zonas seguras, consejos prácticos y todo lo que necesitas para viajar seguro a Grecia."
 ---
 
@@ -17,21 +18,6 @@ excerpt: "Análisis COMPLETO de seguridad en Grecia 2026. Conoce el nivel de rie
 Grecia es uno de los destinos más fascinantes y seguros de Europa, considerada la cuna de la civilización occidental. Este país mediterráneo combina perfectamente historia milenaria, islas paradisíacas, gastronomía deliciosa y paisajess breathtaking. Desde la Acrópolis de Atenas hasta las playas de Santorini, pasando por los monasterios de Meteora y los molinos de Mykonos, Grecia ofrece experiencias únicas e históricas.
 
 Con una población de aproximadamente 10 millones de habitantes y una economía orientada al turismo, Grecia ha invertido significativamente en seguridad turística. El país mantiene tasas de criminalidad bajas y es extremadamente seguro para visitantes. En esta guía exhaustiva analizamos todos los aspectos de seguridad para visitar Grecia en 2026.
-
----
-
-## 📊 Índice del Artículo
-
-1. [Panorama general de seguridad](#1-panorama-general)
-2. [Nivel de riesgo según el MAEC](#2-nivel-de-riesgo)
-3. [Zonas seguras y zonas a evitar](#3-zonas-seguras)
-4. [Tipos de riesgos principales](#4-riesgos)
-5. [Seguridad por destinos](#5-destinos)
-6. [Transporte y movilidad](#6-transporte)
-7. [Sanidad y emergencias](#7-sanidad)
-8. [Cultura local y etiqueta](#8-cultura)
-9. [Cuándo viajar a Grecia](#9-epoca)
-10. [Conclusión](#10-conclusion)
 
 ---
 

@@ -1,5 +1,5 @@
 ---
-title: "[ANÁLISIS] ¿Es SEGURO viajar a ESTADOS UNIDOS en 2026? | Guía COMPLETA"
+title: "¿Es SEGURO viajar a ESTADOS UNIDOS en 2026? | Guía COMPLETA"
 slug: "es-seguro-viajar-estados-unidos"
 date: "2026-04-21"
 author: "M. Castillo"
@@ -7,6 +7,7 @@ category: "Destinos"
 readTime: "14 min"
 image: https://images.unsplash.com/photo-1485738422979-f5c462d49f74?w=800
 keywords: "eeuu seguridad viaje, riesgo estados unidos 2026, es seguro estados unidos, alertas eeuu, viaje estados unidos peligroso, turismo eeuu, consejos eeuu"
+tags: ["Análisis"]
 excerpt: "Análisis COMPLETO de seguridad en Estados Unidos 2026. Conoce el nivel de riesgo real por ciudades, zonas seguras, consejos prácticos y todo lo que necesitas para viajar seguro a USA."
 ---
 
@@ -17,21 +18,6 @@ excerpt: "Análisis COMPLETO de seguridad en Estados Unidos 2026. Conoce el nive
 Estados Unidos es el destino turístico más visitado del mundo, con millones de viajeros explorando sus paisajes diversos, ciudades icónicas y atracciones de categoría mundial cada año. Desde la Estatua de la Libertad hasta el Gran Cañón, pasando por Disney World y las playas de California, el país ofrece experiencias únicas e irrepetibles.
 
 Sin embargo, la extensión geográfica del país y sus diferencias regionales significativas hacen que la seguridad varíe considerablemente dependiendo de la zona que visites. En esta guía completa analizamos todos los aspectos para que tu viaje a Estados Unidos sea seguro y memorable.
-
----
-
-## 📊 Índice del Artículo
-
-1. [Panorama general de seguridad](#1-panorama-general)
-2. [Nivel de riesgo según el MAEC](#2-nivel-de-riesgo)
-3. [Zonas seguras y zonas a evitar](#3-zonas-seguras)
-4. [Tipos de riesgos principales](#4-riesgos)
-5. [Seguridad por ciudades](#5-ciudades)
-6. [Transporte y movilidad](#6-transporte)
-7. [Sanidad y emergencias](#7-sanidad)
-8. [Cultura local y etiqueta](#8-cultura)
-9. [Cuándo viajar a Estados Unidos](#9-epoca)
-10. [Conclusión](#10-conclusion)
 
 ---
 

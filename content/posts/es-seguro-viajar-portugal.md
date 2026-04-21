@@ -1,5 +1,5 @@
 ---
-title: "[ANÁLISIS] ¿Es SEGURO viajar a PORTUGAL en 2026? | Guía COMPLETA"
+title: "¿Es SEGURO viajar a PORTUGAL en 2026? | Guía COMPLETA"
 slug: "es-seguro-viajar-portugal"
 date: "2026-04-21"
 author: "M. Castillo"
@@ -7,6 +7,7 @@ category: "Destinos"
 readTime: "12 min"
 image: https://images.unsplash.com/photo-1555881400-74d7acaacd8b?w=800
 keywords: "portugal seguridad viaje, riesgo portugal 2026, es seguro portugal, alertas portugal, viaje portugal peligroso, turismo portugal, consejos portugal, lisboa dangerous, algarve safety"
+tags: ["Análisis"]
 excerpt: "Análisis COMPLETO de seguridad en Portugal 2026. Conoce el nivel de riesgo real, zonas seguras, consejos prácticos y todo lo que necesitas para viajar seguro a Portugal."
 ---
 
@@ -15,21 +16,6 @@ excerpt: "Análisis COMPLETO de seguridad en Portugal 2026. Conoce el nivel de r
 **🇵🇹 Nivel de riesgo según MAEC: BAJO**
 
 Portugal es uno de los destinos más seguros de Europa y del mundo. Conocido por su hospitalidad, gastronomía excepcional y ciudades históricas, el país atrae a millones de turistas cada año. En esta guía te proporcionamos un análisis exhaustivo sobre la seguridad en Portugal para 2026.
-
----
-
-## 📊 Índice del Artículo
-
-1. [Panorama general de seguridad](#1-panorama-general)
-2. [Nivel de riesgo según el MAEC](#2-nivel-de-riesgo)
-3. [Zonas seguras y zonas a evitar](#3-zonas-seguras)
-4. [Tipos de riesgos principales](#4-riesgos)
-5. [Alertas actuales 2026](#5-alertas)
-6. [Transporte y movilidad](#6-transporte)
-7. [Sanidad y emergencias](#7-sanidad)
-8. [Cultura local y etiqueta](#8-cultura)
-9. [Cuándo viajar a Portugal](#9-epoca)
-10. [Conclusión](#10-conclusion)
 
 ---
 

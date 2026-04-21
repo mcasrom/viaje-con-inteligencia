@@ -1,5 +1,5 @@
 ---
-title: "[ANÁLISIS] ¿Es SEGURO viajar a BRASIL en 2026? | Guía COMPLETA"
+title: "¿Es SEGURO viajar a BRASIL en 2026? | Guía COMPLETA"
 slug: "es-seguro-viajar-brasil"
 date: "2026-04-21"
 author: "M. Castillo"
@@ -7,6 +7,7 @@ category: "Destinos"
 readTime: "13 min"
 image: https://images.unsplash.com/photo-1483729558449-99ef09a8c325?w=800
 keywords: "brasil seguridad viaje, riesgo brasil 2026, es seguro brasil, alertas brasil, viaje brasil peligroso, turismo brasil, consejos brasil, rio de janeiro safety"
+tags: ["Análisis"]
 excerpt: "Análisis COMPLETO de seguridad en Brasil 2026. Conoce el nivel de riesgo real, zonas seguras, consejos prácticos y todo lo que necesitas para viajar seguro a Brasil."
 ---
 
@@ -17,21 +18,6 @@ excerpt: "Análisis COMPLETO de seguridad en Brasil 2026. Conoce el nivel de rie
 Brasil es un país de dimensiones continentales que fascina al mundo con su naturaleza exuberante, playas paradisíacas, amazonas, el Carnaval de Río y una cultura vibrante e inclusiva. Con más de 200 millones de habitantes y una industria turística en constante crecimiento, el gigante sudamericano atrae a viajeros de todos los continentes.
 
 Sin embargo, Brasil presenta desafíos de seguridad que requieren atención y preparación. Las diferencias entre zonas turísticas seguras y áreas problematicas pueden ser extremas. En esta guía exhaustiva te proporcionamos toda la información necesaria para visitar Brasil de manera segura en 2026.
-
----
-
-## 📊 Índice del Artículo
-
-1. [Panorama general de seguridad](#1-panorama-general)
-2. [Nivel de riesgo según el MAEC](#2-nivel-de-riesgo)
-3. [Zonas seguras y zonas a evitar](#3-zonas-seguras)
-4. [Tipos de riesgos principales](#4-riesgos)
-5. [Seguridad por ciudades](#5-ciudades)
-6. [Transporte y movilidad](#6-transporte)
-7. [Sanidad y emergencias](#7-sanidad)
-8. [Cultura local y etiqueta](#8-cultura)
-9. [Cuándo viajar a Brasil](#9-epoca)
-10. [Conclusión](#10-conclusion)
 
 ---
 

@@ -1,5 +1,5 @@
 ---
-title: "[ANÁLISIS] ¿Es SEGURO viajar a BALI e INDONESIA en 2026? | Guía COMPLETA"
+title: "¿Es SEGURO viajar a BALI e INDONESIA en 2026? | Guía COMPLETA"
 slug: "es-seguro-viajar-bali"
 date: "2026-04-21"
 author: "M. Castillo"
@@ -7,6 +7,7 @@ category: "Destinos"
 readTime: "14 min"
 image: https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=800
 keywords: "bali seguridad viaje, riesgo bali 2026, es seguro bali, indonesia seguridad, alerts bali, viaje bali peligroso, turismo bali, consejos bali, ubud, seminyak"
+tags: ["Análisis"]
 excerpt: "Análisis COMPLETO de seguridad en Bali e Indonesia 2026. Nivel de riesgo real, zonas seguras, volcanes, culturales y consejos prácticos."
 ---
 

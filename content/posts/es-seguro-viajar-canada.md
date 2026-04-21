@@ -1,5 +1,5 @@
 ---
-title: "[ANÁLISIS] ¿Es SEGURO viajar a CANADÁ en 2026? | Guía COMPLETA"
+title: "¿Es SEGURO viajar a CANADÁ en 2026? | Guía COMPLETA"
 slug: "es-seguro-viajar-canada"
 date: "2026-04-21"
 author: "M. Castillo"
@@ -7,6 +7,7 @@ category: "Destinos"
 readTime: "10 min"
 image: https://images.unsplash.com/photo-1517935706615-2717063c2225?w=800
 keywords: "canada seguridad viaje, riesgo canada 2026, es seguro canada, alertas canada, viaje canada peligroso, turismo canada, consejos canada, toronto safety"
+tags: ["Análisis"]
 excerpt: "Análisis COMPLETO de seguridad en Canadá 2026. Conoce el nivel de riesgo real, zonas seguras, consejos prácticos y todo lo que necesitas para viajar seguro a Canadá."
 ---
 
@@ -17,21 +18,6 @@ excerpt: "Análisis COMPLETO de seguridad en Canadá 2026. Conoce el nivel de ri
 Canadá es uno de los países más seguros, bellos y acogedores del mundo. Con una población de apenas 40 millones de habitantes distribuidos en un territorio vastísimo, el segundo país más grande del mundo ofrece naturaleza prístina, ciudades vibrantes y una calidad de vida excepcional. Desde las majestuosas Montañas Rocosas hasta las cosmopolitanas Toronto y Montreal, pasando por la belleza natural de Columbia Británica y la encantadora Quebec, Canadá lo tiene todo.
 
 El país consistently se posiciona entre los más seguros del mundo para turistas, con bajas tasas de criminalidad, instituciones sólidas y una hospitalidadlegendaria. En esta guía exhaustiva analizamos todos los aspectos de seguridad para visitar Canadá en 2026.
-
----
-
-## 📊 Índice del Artículo
-
-1. [Panorama general de seguridad](#1-panorama-general)
-2. [Nivel de riesgo según el MAEC](#2-nivel-de-riesgo)
-3. [Zonas seguras y zonas a evitar](#3-zonas-seguras)
-4. [Tipos de riesgos principales](#4-riesgos)
-5. [Seguridad por ciudades](#5-ciudades)
-6. [Transporte y movilidad](#6-transporte)
-7. [Sanidad y emergencias](#7-sanidad)
-8. [Cultura local y etiqueta](#8-cultura)
-9. [Cuándo viajar a Canadá](#9-epoca)
-10. [Conclusión](#10-conclusion)
 
 ---
 
