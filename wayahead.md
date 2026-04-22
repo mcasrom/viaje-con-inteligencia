@@ -473,7 +473,24 @@ I = 0.4A + 0.3M + 0.3S
 
 ---
 
-## 🚀 SPRINT 21: Meteorología + Alertas de Vuelo (2026-04-22)
+## 🚀 SPRINT 21: SuperAlertas - Meteorología + Alertas de Vuelo (2026-04-22)
+
+### 🎯 POTENCIAL SEO + USUARIO (ALTO)
+
+**Keywords long-tail de alto valor:**
+- "alertas retrasos vuelos [ciudad/país]"
+- "clima aeropuerto [código IATA] hoy"
+- "vuelos retrasados por tormenta [destino]"
+- "alerta viaje [país] ahora"
+- "estado vuelos en tiempo real [aeropuerto]"
+- "clima extremo [destino] viajar"
+
+**Diferenciador único:**
+El único sitio en español que correlaciona clima + retrasos + IA en tiempo real.
+
+**Contenido evergreen + trending:**
+- evergreen: guías de clima por país/ciudad
+- trending: alertas en tiempo real (viralizable en RRSS)
 
 ### 📊 Concepto
 Sistema OSINT de inteligencia de transporte: clima, retrasos, alertas para viajeros.
@@ -506,19 +523,21 @@ Sistema OSINT de inteligencia de transporte: clima, retrasos, alertas para viaje
 ```
 
 ### 🎯 Impacto
-- Alertas retrasos por clima
-- Rutas alternativas sugeridas
-- Dashboard OSINT transporte
-- Automatización contenido RRSS/blog
+- 🔥 Viral: alertas de retrasos en tiempo real (compartir RRSS)
+- 📈 SEO: keywords de alta competencia buscadas
+- 💰 Monetizable: Premium para alertas push personalizadas
+- 🤖 IA: predicciones de riesgo de viaje
 
-### 📋 Tareas
-| # | Feature | Estado |
-|---|---------|--------|
-| 1 | Integración OpenWeather API | ⏳ Pendiente |
-| 2 | METAR/TAF parser | ⏳ Pendiente |
-| 3 | Dashboard retrasos | ⏳ Pendiente |
-| 4 | Alertas Telegram clima | ⏳ Pendiente |
-| 5 | Correlación IA (clima↔retrasos) | ⏳ Pendiente |
+### 📋 Roadmap
+| # | Feature | Estado | SEO |
+|---|---------|--------|-----|
+| 1 | Integración OpenWeather API | ⏳ Pendiente | ✅ |
+| 2 | METAR/TAF parser | ⏳ Pendiente | ✅ |
+| 3 | Dashboard retrasos | ⏳ Pendiente | ✅ |
+| 4 | Alertas Telegram clima | ⏳ Pendiente | ✅ |
+| 5 | Correlación IA (clima↔retrasos) | ⏳ Pendiente | ✅ |
+| 6 | Página /alertas-vuelos | ⏳ Pendiente | ✅ |
+| 7 | Posts blog SEO clima | ⏳ Pendiente | ✅ |
 
 ### 📈 MARKETING EXPANSIÓN
 | # | Tarea | Prioridad | Estado |
