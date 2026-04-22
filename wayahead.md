@@ -677,4 +677,15 @@ Módulo PWA de almacenamiento local (IndexedDB) para documentos de viaje/offline
 | Países en mapa riesgos | 95 |
 | Posts blog | 52 |
 | KPIs Index | ✅ Nuevo |
+| Memoria de Viaje (PWA) | ✅ Completado |
+| Logo corporativo | ✅ Implementado |
+
+---
+
+### 📝 NOTAS LOGO CORPORATIVO (2026-04-22)
+- Logo original: /potential_pics/logo_ok.png
+- Copiado a: /public/logo.png
+- Usado en: Footer (h-12, 80% opacidad)
+- Favicon: Browser tabs
+- Apple Touch Icon: iOS shortcuts
 | Premium tabs | 8 |
