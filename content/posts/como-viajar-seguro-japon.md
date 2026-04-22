@@ -157,7 +157,7 @@ Mantente informado, planifica cuidadosamente, y sobre todo, disfruta del proceso
 
 ## Experiencias de Otros Viajeros
 
-Miles de viajeros españoles visits Japón cada año sin incidentes. Los testimonios普遍的 son extremadamente positivos, destacando la amabilidad del pueblo japonés y la eficiencia del transporte. 
+Miles de viajeros españoles visits Japón cada año sin incidentes. Los testimonios son extremadamente positivos, destacando la amabilidad del pueblo japonés y la eficiencia del transporte. 
 
 Los pocos problemas que surgen generalmente involucran malentendidos culturales menores que se resuelven fácilmente con educación mutua. Considera esta preparación cultural como parte integral de la aventura de viaje.
 
@@ -188,7 +188,7 @@ Esta guía proporciona información esencial para ayudarlo a tomar decisiones in
 ### Puntos Clave a Recordar
 
 - La preparación meticulosa es esencial para un viaje exitoso
-- Conocer sus derechos le empowers para التعامل مع situaciones difíciles
+- Conocer sus derechos generan confianza ante situaciones difíciles
 - Mantenerse informado sobre las condiciones actuales de destino
 - La flexibilidad y la позитивная actitud son invaluables
 

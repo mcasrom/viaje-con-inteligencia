@@ -29,10 +29,12 @@ export default function DetallePaisClient({ pais, relatedPosts = [] }: DetallePa
   const { user, loading: authLoading } = useAuth();
   const [isFavorite, setIsFavorite] = useState(false);
   const [favLoading, setFavLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState<'info' | 'legal' | 'dinero' | 'emergencia'>('info');
+  const [activeTab, setActiveTab] = useState<'info' | 'legal' | 'saturacion' | 'dinero' | 'emergencia'>('info');
   const [maecData, setMaecData] = useState<any>(null);
   const [maecLoading, setMaecLoading] = useState(false);
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
+  const [istData, setIstData] = useState<any>(null);
+  const [istLoading, setIstLoading] = useState(false);
 
   useEffect(() => {
     if (!authLoading && user) {
@@ -256,10 +258,11 @@ export default function DetallePaisClient({ pais, relatedPosts = [] }: DetallePa
 
         <div className="flex flex-wrap gap-2 mb-6">
           {[
-            { id: 'info', label: 'Información', icon: <Info className="w-4 h-4" /> },
+            { id: 'info', label: 'Info', icon: <Info className="w-4 h-4" /> },
             { id: 'legal', label: 'MAEC', icon: <Shield className="w-4 h-4" /> },
+            { id: 'saturacion', label: 'IST', icon: <Users className="w-4 h-4" /> },
             { id: 'dinero', label: 'Dinero', icon: <Wallet className="w-4 h-4" /> },
-            { id: 'emergencia', label: 'Emergencia', icon: <Siren className="w-4 h-4" /> },
+            { id: 'emergencia', label: 'Emerg.', icon: <Siren className="w-4 h-4" /> },
           ].map(tab => (
             <button
               key={tab.id}
@@ -275,6 +278,99 @@ export default function DetallePaisClient({ pais, relatedPosts = [] }: DetallePa
             </button>
           ))}
         </div>
+
+        {activeTab === 'saturacion' && (
+          <div className="bg-slate-800 rounded-xl p-6 border border-slate-700 mb-6">
+            <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+              <Users className="w-5 h-5 text-cyan-400" />
+              Índice de Saturación Turística (IST)
+            </h3>
+            
+            {!istData && !istLoading && (
+              <div className="text-center py-8">
+                <button
+                  onClick={async () => {
+                    setIstLoading(true);
+                    try {
+                      const cityMap: Record<string, string> = {
+                        'ES': 'madrid', 'FR': 'paris', 'IT': 'roma', 
+                        'PT': 'lisboa', 'NL': 'amsterdam', 'DE': 'munich'
+                      };
+                      const city = cityMap[pais.codigo] || 'barcelona';
+                      const res = await fetch(`/api/ist?city=${city}`);
+                      const data = await res.json();
+                      setIstData(data);
+                    } catch (e) {
+                      console.error(e);
+                    } finally {
+                      setIstLoading(false);
+                    }
+                  }}
+                  className="px-6 py-3 bg-cyan-600 hover:bg-cyan-700 text-white rounded-lg font-medium transition-colors"
+                >
+                  Consultar IST
+                </button>
+              </div>
+            )}
+            
+            {istLoading && (
+              <div className="flex items-center gap-2 text-slate-400 justify-center py-8">
+                <Loader2 className="w-5 h-5 animate-spin" />
+                <span>Calculando índice...</span>
+              </div>
+            )}
+            
+            {istData && (
+              <div className="space-y-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <span className="text-5xl font-bold text-white">{istData.ist}</span>
+                    <span className="text-slate-400 text-lg">/100</span>
+                  </div>
+                  <div className={`px-4 py-2 rounded-full text-lg font-medium ${
+                    istData.level === 'muy_baja' ? 'bg-green-500/20 text-green-400' :
+                    istData.level === 'baja' ? 'bg-lime-500/20 text-lime-400' :
+                    istData.level === 'moderada' ? 'bg-yellow-500/20 text-yellow-400' :
+                    istData.level === 'alta' ? 'bg-orange-500/20 text-orange-400' :
+                    'bg-red-500/20 text-red-400'
+                  }`}>
+                    {istData.level === 'muy_baja' ? '🟢 Muy Baja' :
+                     istData.level === 'baja' ? '🟢 Baja' :
+                     istData.level === 'moderada' ? '🟡 Moderada' :
+                     istData.level === 'alta' ? '🟠 Alta' : '🔴 Extrema'}
+                  </div>
+                </div>
+                
+                <p className="text-slate-300 bg-slate-700/50 p-4 rounded-lg">
+                  {istData.recommendation}
+                </p>
+                
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div className="bg-slate-700/50 p-4 rounded-lg text-center">
+                    <div className="text-2xl font-bold text-cyan-400">{istData.factors?.season || 0}</div>
+                    <div className="text-xs text-slate-400">Temporada</div>
+                  </div>
+                  <div className="bg-slate-700/50 p-4 rounded-lg text-center">
+                    <div className="text-2xl font-bold text-green-400">{istData.factors?.price || 0}</div>
+                    <div className="text-xs text-slate-400">Precios</div>
+                  </div>
+                  <div className="bg-slate-700/50 p-4 rounded-lg text-center">
+                    <div className="text-2xl font-bold text-purple-400">{istData.factors?.events || 0}</div>
+                    <div className="text-xs text-slate-400">Eventos</div>
+                  </div>
+                  <div className="bg-slate-700/50 p-4 rounded-lg text-center">
+                    <div className="text-2xl font-bold text-orange-400">{istData.factors?.weekday || 0}</div>
+                    <div className="text-xs text-slate-400">Día</div>
+                  </div>
+                </div>
+                
+                <div className="text-xs text-slate-500 text-center">
+                  IST basado en patrones históricos. No sustituye datos en tiempo real.
+                </div>
+              </div>
+            )}
+          </div>
+        )}
 
         {activeTab === 'legal' && (
           <div className="bg-slate-800 rounded-xl p-6 border border-slate-700 mb-6">

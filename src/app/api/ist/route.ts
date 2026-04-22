@@ -1,123 +1,236 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { paisesData } from '@/data/paises';
-import { getAllMAECAlerts } from '@/lib/scraper/maec';
+import { NextResponse } from 'next/server';
 
-interface EventData {
-  id: string;
+interface CityPattern {
   name: string;
+  code: string;
+  country: string;
   countryCode: string;
-  impact: 'alto' | 'medio' | 'bajo';
-  attendees: number;
+  seasonMultiplier: number;
+  basePriceIndex: number;
+  events: { name: string; month: number; impact: number }[];
 }
 
-const eventsData: EventData[] = [
-  { id: '1', name: 'Gran Premio F1', countryCode: 'MC', impact: 'alto', attendees: 300000 },
-  { id: '2', name: 'Copa Mundial', countryCode: 'ES', impact: 'alto', attendees: 5000000 },
-  { id: '3', name: 'Festival Cannes', countryCode: 'FR', impact: 'medio', attendees: 50000 },
-  { id: '4', name: 'Maratón Berlín', countryCode: 'DE', impact: 'medio', attendees: 45000 },
-  { id: '5', name: 'Cumbre G20', countryCode: 'BR', impact: 'alto', attendees: 25000 },
-  { id: '6', name: 'Carnaval Río', countryCode: 'BR', impact: 'alto', attendees: 1000000 },
-  { id: '7', name: 'Tomorrowland', countryCode: 'BE', impact: 'medio', attendees: 400000 },
-  { id: '8', name: 'Copa América', countryCode: 'US', impact: 'alto', attendees: 800000 },
-];
-
-const seasonalFactors: Record<string, number> = {
-  '01': 1.3, '02': 1.2, '03': 1.0, '04': 1.0, '05': 1.1, '06': 1.4,
-  '07': 1.5, '08': 1.5, '09': 1.1, '10': 1.0, '11': 0.9, '12': 1.2,
+const CITY_PATTERNS: Record<string, CityPattern> = {
+  barcelona: {
+    name: 'Barcelona',
+    code: 'barcelona',
+    country: 'España',
+    countryCode: 'ES',
+    seasonMultiplier: 1.3,
+    basePriceIndex: 1.5,
+    events: [
+      { name: 'Mobile World Congress', month: 2, impact: 25 },
+      { name: 'Sant Joan', month: 6, impact: 20 },
+      { name: 'La Mercè', month: 9, impact: 20 },
+      { name: 'Festa Major Gràcia', month: 8, impact: 15 },
+    ],
+  },
+  roma: {
+    name: 'Roma',
+    code: 'roma',
+    country: 'Italia',
+    countryCode: 'IT',
+    seasonMultiplier: 1.4,
+    basePriceIndex: 1.4,
+    events: [
+      { name: 'Semana Santa', month: 4, impact: 30 },
+      { name: 'Ferragosto', month: 8, impact: 25 },
+      { name: 'Natale', month: 12, impact: 20 },
+    ],
+  },
+  paris: {
+    name: 'París',
+    code: 'paris',
+    country: 'Francia',
+    countryCode: 'FR',
+    seasonMultiplier: 1.35,
+    basePriceIndex: 1.6,
+    events: [
+      { name: 'Fashion Week', month: 2, impact: 20 },
+      { name: 'Fashion Week', month: 9, impact: 20 },
+      { name: 'Juegos Olímpicos', month: 7, impact: 35 },
+      { name: 'Fête de la Musique', month: 6, impact: 15 },
+    ],
+  },
+  madrid: {
+    name: 'Madrid',
+    code: 'madrid',
+    country: 'España',
+    countryCode: 'ES',
+    seasonMultiplier: 1.2,
+    basePriceIndex: 1.3,
+    events: [
+      { name: 'San Isidro', month: 5, impact: 20 },
+      { name: 'Navidad', month: 12, impact: 25 },
+      { name: 'Semana Santa', month: 4, impact: 20 },
+    ],
+  },
+  lisboa: {
+    name: 'Lisboa',
+    code: 'lisboa',
+    country: 'Portugal',
+    countryCode: 'PT',
+    seasonMultiplier: 1.25,
+    basePriceIndex: 1.2,
+    events: [
+      { name: 'Festas de Lisboa', month: 6, impact: 25 },
+      { name: 'Santo António', month: 6, impact: 25 },
+    ],
+  },
+  vencia: {
+    name: 'Venecia',
+    code: 'vencia',
+    country: 'Italia',
+    countryCode: 'IT',
+    seasonMultiplier: 1.5,
+    basePriceIndex: 1.7,
+    events: [
+      { name: 'Carnaval', month: 2, impact: 25 },
+      { name: 'Festa del Redentore', month: 7, impact: 20 },
+    ],
+  },
+  amsterdam: {
+    name: 'Ámsterdam',
+    code: 'amsterdam',
+    country: 'Países Bajos',
+    countryCode: 'NL',
+    seasonMultiplier: 1.2,
+    basePriceIndex: 1.4,
+    events: [
+      { name: 'Koningsdag', month: 4, impact: 30 },
+      { name: 'Grachtenfestival', month: 8, impact: 15 },
+    ],
+  },
+  munich: {
+    name: 'Múnich',
+    code: 'munich',
+    country: 'Alemania',
+    countryCode: 'DE',
+    seasonMultiplier: 1.15,
+    basePriceIndex: 1.35,
+    events: [
+      { name: 'Oktoberfest', month: 9, impact: 35 },
+      { name: 'Navidad', month: 12, impact: 25 },
+    ],
+  },
 };
 
-const riskWeightMap: Record<string, number> = {
-  'sin-riesgo': 0.1,
-  'bajo': 0.3,
-  'medio': 0.5,
-  'alto': 0.8,
-  'muy-alto': 1.0,
+const MONTH_SEASONALITY: Record<number, number> = {
+  1: 0.4,
+  2: 0.45,
+  3: 0.55,
+  4: 0.7,
+  5: 0.8,
+  6: 0.9,
+  7: 1.0,
+  8: 1.0,
+  9: 0.85,
+  10: 0.7,
+  11: 0.45,
+  12: 0.6,
 };
 
-function getSeasonality(month: string): number {
-  return seasonalFactors[month] || 1.0;
-}
-
-function getEventsScore(countryCode: string, targetDate: string): { score: number; events: string[]; impact: string } {
-  const countryEvents = eventsData.filter(e => e.countryCode === countryCode);
-  const events: string[] = [];
-  let totalImpact = 0;
-
-  for (const event of countryEvents) {
-    events.push(event.name);
-    const impactValue = event.impact === 'alto' ? 1.0 : event.impact === 'medio' ? 0.6 : 0.3;
-    totalImpact += impactValue;
+function calculateIST(cityCode: string, date: Date): {
+  ist: number;
+  level: string;
+  recommendation: string;
+  factors: {
+    season: number;
+    price: number;
+    events: number;
+    weekday: number;
+  };
+} {
+  const city = CITY_PATTERNS[cityCode.toLowerCase()];
+  
+  if (!city) {
+    return {
+      ist: 35,
+      level: 'baja',
+      recommendation: 'Datos no disponibles para esta ciudad',
+      factors: { season: 35, price: 35, events: 35, weekday: 35 },
+    };
   }
 
-  const score = Math.min(100, totalImpact * 25);
-  return { score, events, impact: score > 60 ? 'alto' : score > 30 ? 'medio' : 'bajo' };
-}
-
-function getPriceScore(ipc: string): number {
-  const ipcMap: Record<string, number> = {
-    'bajo': 20,
-    'medio': 40,
-    'alto': 60,
-    'muy-alto': 80,
+  const month = date.getMonth() + 1;
+  const dayOfWeek = date.getDay();
+  
+  const seasonScore = MONTH_SEASONALITY[month] * 100 * 0.35 * city.seasonMultiplier;
+  
+  const priceMultiplier = month >= 6 && month <= 9 ? 1.3 : 1.0;
+  const priceScore = city.basePriceIndex * priceMultiplier * 50;
+  
+  const monthEvents = city.events.filter(e => e.month === month);
+  const eventScore = monthEvents.reduce((sum, e) => sum + e.impact, 0) * 2;
+  
+  const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+  const weekdayScore = isWeekend ? 60 : 40;
+  
+  const rawIST = (seasonScore * 0.35) + (priceScore * 0.25) + (eventScore * 0.2) + (weekdayScore * 0.2);
+  const ist = Math.min(100, Math.max(0, Math.round(rawIST)));
+  
+  let level: string;
+  let recommendation: string;
+  
+  if (ist <= 20) {
+    level = 'muy_baja';
+    recommendation = `Ideal para visitar. ${city.name} está tranquila con precios contenidos.`;
+  } else if (ist <= 40) {
+    level = 'baja';
+    recommendation = `Buena opción. Pocos turistas y precios razonables.`;
+  } else if (ist <= 60) {
+    level = 'moderada';
+    recommendation = `Visitável com planeamento. Reserve com antecedência.`;
+  } else if (ist <= 80) {
+    level = 'alta';
+    recommendation = `Altamente saturado. Considere datas alternativas ou llegue temprano.`;
+  } else {
+    level = 'extrema';
+    recommendation = `Evite se possível. Masse críticas e preços elevados.`;
+  }
+  
+  return {
+    ist,
+    level,
+    recommendation,
+    factors: {
+      season: Math.round(seasonScore),
+      price: Math.round(priceScore),
+      events: Math.round(eventScore),
+      weekday: weekdayScore,
+    },
   };
-  const ipcStr = ipc?.toLowerCase() || 'medio';
-  return ipcMap[ipcStr] || 40;
 }
 
-function getRecommendation(istScore: number): { label: string; color: string; icon: string } {
-  if (istScore <= 20) return { label: 'Ideal', color: 'green', icon: '✅' };
-  if (istScore <= 40) return { label: 'Bueno', color: 'lime', icon: '👍' };
-  if (istScore <= 60) return { label: 'Moderado', color: 'yellow', icon: '⚠️' };
-  if (istScore <= 80) return { label: 'Alto', color: 'orange', icon: '🔥' };
-  return { label: 'Crítico', color: 'red', icon: '❌' };
-}
-
-export async function GET(request: NextRequest) {
+export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
-  const countryCode = searchParams.get('country')?.toUpperCase() || 'ES';
-  const date = searchParams.get('date') || new Date().toISOString().split('T')[0];
-
-  const pais = paisesData[countryCode];
-  if (!pais) {
-    return NextResponse.json({ error: 'País no encontrado' }, { status: 404 });
+  const city = searchParams.get('city') || 'barcelona';
+  const date = searchParams.get('date');
+  
+  let targetDate: Date;
+  if (date) {
+    targetDate = new Date(date);
+  } else {
+    targetDate = new Date();
   }
-
-  const month = date.substring(5, 7);
-  const seasonality = getSeasonality(month);
-  const { score: eventsScore, events, impact: eventsImpact } = getEventsScore(countryCode, date);
   
-  const riskWeight = riskWeightMap[pais.nivelRiesgo] || 0.5;
-  const riskScore = riskWeight * 100;
+  const cityCode = city.toLowerCase();
+  const result = calculateIST(cityCode, targetDate);
   
-  const priceScore = getPriceScore(pais.indicadores?.ipc?.toLowerCase() || 'medio');
-
-  const istRaw =
-    (eventsScore * 0.35) +
-    (riskScore * 0.30) +
-    ((seasonality - 1) * 100 * 0.20) +
-    (priceScore * 0.15)
-  ;
-
-  const istScore = Math.max(0, Math.min(100, Math.round(istRaw)));
-  const recommendation = getRecommendation(istScore);
-
-  const breakdown = {
-    eventos: { score: Math.round(eventsScore * 0.35), weight: '35%', impact: eventsImpact, details: events },
-    riesgo: { score: Math.round(riskScore * 0.30), weight: '30%', level: pais.nivelRiesgo },
-    estacionalidad: { score: Math.round(((seasonality - 1) * 100) * 0.20), weight: '20%', month, factor: seasonality },
-    precios: { score: Math.round(priceScore * 0.15), weight: '15%', ipc: pais.indicadores?.ipc || 'N/A' },
-  };
-
+  const cityData = CITY_PATTERNS[cityCode];
+  
   return NextResponse.json({
-    country: pais.nombre,
-    countryCode,
-    date,
-    ist: istScore,
-    recommendation: recommendation.label,
-    recommendationIcon: recommendation.icon,
-    recommendationColor: recommendation.color,
-    breakdown,
-    methodology: 'IST = 0.35×Eventos + 0.30×Riesgo + 0.20×Estacionalidad + 0.15×Precios',
-    generatedAt: new Date().toISOString(),
+    city: cityData ? {
+      name: cityData.name,
+      country: cityData.country,
+      code: cityData.code,
+    } : { name: city, code: city },
+    date: targetDate.toISOString().split('T')[0],
+    ist: result.ist,
+    level: result.level,
+    recommendation: result.recommendation,
+    factors: result.factors,
+    methodology: 'IST = 0.35×Season + 0.25×Price + 0.20×Events + 0.20×Weekday',
+    note: 'Índice basado en patrones históricos. No sustituye datos en tiempo real.',
   });
 }

@@ -131,3 +131,19 @@
 tar -xzf backup_YYYY-MM-DD_HHMMSS.tar.gz -C ~/viaje-con-inteligencia
 cd ~/viaje-con-inteligencia && npm install
 ```
+
+---
+
+## 🔄 Cron Jobs (Vercel)
+
+| Cron | Schedule (UTC) | Path | Función |
+|------|----------------|------|---------|
+| scrape-maec | 0 6 * * * (diario 6:00) | /api/cron/scrape-maec | Scraping completo MAEC 89 países → tabla scraper_logs |
+| check-alerts | 0 8 * * * (diario 8:00) | /api/cron/check-alerts | Verificar alertas riesgo → tabla risk_alerts |
+| weekly-digest | 0 8 * * 1 (lunes 8:00) | /api/cron/weekly-digest | Newsletter semanal (Telegram + Email) |
+
+**Requisito:** Variable =CRON_SECRET= configurada en Vercel
+
+**Verificación:**
+- Vercel Dashboard → Functions Logs → =/api/cron/*=
+- Supabase → tabla =scraper_logs=

@@ -33,7 +33,7 @@ Las especificaciones de fotografía son muy estrictas:
 
 El oficial necesita ver que puedes mantenerte durante tu estancia. Documenta tus finanzas con:
 - Extractos bancarios recientes (3-6 meses)
-- Cartas de empleo con salary
+- Cartas de empleo con salario
 - Prueba de propiedades o inversiones
 
 ### 4. Itinerario incompleto o falso

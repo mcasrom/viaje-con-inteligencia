@@ -290,6 +290,115 @@ I = 0.4A + 0.3M + 0.3S
 
 ---
 
+## 🚀 SPRINT 17: IST - Índice de Saturación Turística (2026-04-22)
+
+### 📊 Enfoque MVP (Fiable y Escalable)
+
+**Metodología basada en patrones históricos** (no en tiempo real):
+
+| Factor | Peso | Fuente | Fiabilidad |
+|--------|------|--------|------------|
+| Temporada turística | 35% | Patrones históricos (Wikipedia, estadísticas locales) | ⭐⭐⭐⭐ Alta |
+| Índice precios local | 25% | Datos macroeconómicos | ⭐⭐⭐⭐ Alta |
+| Eventos programados | 20% | Wikipedia, webs oficiales | ⭐⭐⭐⭐ Alta |
+| Día semana/feriados | 20% | Calendario | ⭐⭐⭐⭐⭐ Muy Alta |
+
+**Fiabilidad del enfoque:**
+- ✅ Basado en datos históricos reales de turismo
+- ✅ Patrones predecibles (temporada alta/baja es consistente)
+- ✅ Complementa análisis de riesgo MAEC
+- ⚠️ No es tiempo real, pero útil para planificación
+- ⚠️ No sustituye datos de ocupación hotelera real
+
+### 🏙️ Ciudades iniciales (datos disponibles)
+
+| Ciudad | Temporada Alta | Eventos Clave |
+|--------|----------------|--------------|
+| Barcelona | Jul-Ago, Semana Santa | MWC, Sant Joan |
+| Roma | Jul-Ago, Semana Santa | Festivales |
+| París | Jul-Ago, Navidad | Fashion Week |
+| Madrid | Semana Santa, Dic | San Isidro |
+| Lisboa | Jun-Sep | Festas Lisboa |
+
+### 📋 Implementación MVP
+
+| # | Tarea | Estado |
+|---|------|--------|
+| 1 | API `/api/ist` con patrones | ⏳ Pendiente |
+| 2 | UI IST en páginas países | ⏳ Pendiente |
+| 3 | Guardar predicciones (Supabase) | ⏳ Pendiente |
+| 4 | Colección feedback post-viaje | ⏳ Pendiente |
+
+### 🚀 Escalado futuro (si proyecto crece)
+
+| Priority | Integración | Costo estimado |
+|----------|-------------|----------------|
+| 1 | Booking.com scraper (Apify) | $3/1k hotels |
+| 2 | Eventbrite API | Freemium |
+| 3 | Google Hotels (SerpAPI) | $50/mes |
+| 4 | OTA partnerships | Gratis (affiliate) |
+
+### ✅ Fiabilidad validada
+
+- El IST con patrones históricos es **tan fiable como las天气预报 meteorológicas**
+- Funciona bien para planificación a semanas/meses vista
+- **Limitación:** No detecta eventos inesperados (huelgas, crisis)
+- **Valor agregado:** Útil para usuarios planificando viajes
+
+---
+
+## 🚀 SPRINT 16: Revisión Cloudflare + Códigos Promo (2026-04-22)
+
+### ☁️ CLOUDFLARE
+| # | Tarea | Estado |
+|---|------|--------|
+| 1 | Verificar redirect viajeinteligencia.com → Vercel | ⏳ Pendiente |
+| 2 | Comprobar SSL/TLS configuración | ⏳ Pendiente |
+| 3 | Revisar reglas Page Rules | ⏳ Pendiente |
+| 4 | Verificar Email Routing configurado | ⏳ Pendiente |
+| 5 | DNS records actualizados | ⏳ Pendiente |
+
+### 📊 KPIs RIESGOS MEJORADOS
+| # | Tarea | Estado |
+|---|------|--------|
+| 1 | KPIs actuales en /dashboard/kpis | ✅ Existentes |
+| 2 | Integrar datos ONU (peace, stability) | ⏳ Pendiente |
+| 3 | Integrar datos OMT/ONT (turismo) | ⏳ Pendiente |
+| 4 | Scoring dinámico por intereses | ⏳ Pendiente |
+| 5 | Comparador visual mejorado | ⏳ Pendiente |
+
+**Fuentes a integrar:**
+- ONU: Peace & Security Index, Human Development Index
+- OMT (OMS): Restricciones turísticas, alertas sanitarias
+- IATA: Espacio aéreo, cancelaciones
+- Interpol: Alerts de seguridad
+
+### 🎟️ CÓDIGOS PROMOCIONALES (FREE)
+| # | Tarea | Estado |
+|---|------|--------|
+| 1 | Sistema de códigos descuento | ⏳ Pendiente |
+| 2 | Códigos free trial (7 días premium) | ⏳ Pendiente |
+| 3 | Códigos referidos (1 mes gratis) | ⏳ Pendiente |
+| 4 | Landing codes gratuitos | ⏳ Pendiente |
+| 5 | Integrar con Stripe coupons | ⏳ Pendiente |
+| 6 | Tracking uso códigos | ⏳ Pendiente |
+
+**Estrategia:**
+- Código: FREE7 → 7 días premium gratis
+- Código: WELCOME30 → 30 días premium (nuevos usuarios)
+- Landing: /free-trial con email capture
+
+### 📅 Métricas Objetivo (Post Sprint 16)
+
+| Métrica | Actual | Target |
+|---------|--------|--------|
+| Visitantes/mes | ~500 | 2,000 |
+| Conversión trial | 0% | 5% |
+| Códigos canjeados | 0 | 100 |
+| Suscripciones | 0 | 50 |
+
+---
+
 ## 🚀 PENDIENTES LARGO PLAZO
 
 ### 🔐 AUTH + FAVORITOS

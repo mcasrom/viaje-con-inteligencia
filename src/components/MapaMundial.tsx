@@ -31,7 +31,7 @@ export default function MapaMundial() {
   const beneficios = [
     { icon: '🛡️', text: 'Datos oficiales MAEC' },
     { icon: '🤖', text: 'Chat IA para viajes' },
-    { icon: '✈️', text: '58 países analizados' },
+    { icon: '📊', text: 'Análisis continuo' },
     { icon: '📋', text: 'Checklist descargable' },
   ];
 
