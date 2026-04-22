@@ -333,6 +333,18 @@ I = 0.4A + 0.3M + 0.3S
 | 2 | Georgia | ge | Emergente español |
 | 3 | Uzbekistán | uz | ⏳ Pendiente |
 
+### 🛡️ NUEVA PÁGINA KPIs (2026-04-22)
+| # | Feature | Estado |
+|---|---------|--------|
+| 1 | Página `/kpi` | ✅ Done |
+| 2 | Datos IEP Global Peace Index 2025 | ✅ Done |
+| 3 | 46 países con scores reales | ✅ Done |
+| 4 | Filtro por región | ✅ Done |
+| 5 | Buscador | ✅ Done |
+| 6 | Top 5 / Bottom 5 | ✅ Done |
+| 7 | Cambio vs 2024 | ✅ Done |
+| 8 | Botón en QuickAccess | ✅ Done |
+
 ### 📊 COBERTURA ACTUAL
 | Métrica | Valor |
 |---------|-------|
