@@ -93,8 +93,8 @@ export default function RootLayout({
           }}
         />
         <link rel="canonical" href="https://www.viajeinteligencia.com" />
-        <link rel="icon" href="/favicon.jpg" type="image/jpeg" sizes="32x32" />
-        <link rel="apple-touch-icon" href="/apple-touch-icon.jpg" />
+        <link rel="icon" href="/logo.png" type="image/png" sizes="32x32" />
+        <link rel="apple-touch-icon" href="/logo.png" />
         <link rel="alternate" hrefLang="es" href="https://www.viajeinteligencia.com" />
         <link rel="alternate" hrefLang="en" href="https://www.viajeinteligencia.com/en" />
         <link rel="alternate" hrefLang="pt" href="https://www.viajeinteligencia.com/pt" />
