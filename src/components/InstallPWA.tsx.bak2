@@ -96,62 +96,60 @@ export default function InstallPWA() {
     setPushStatus('idle');
   };
 
-  if (typeof window === 'undefined') return null;
+  // Banner de instalación (igual que antes)
+  if (showBanner && !isInstalled) {
+    return (
+      <div className="fixed bottom-4 left-4 right-4 md:left-auto md:right-4 md:w-auto z-50">
+        <div className="bg-slate-800 border border-slate-600 rounded-xl p-4 shadow-2xl flex items-center gap-4">
+          <div className="text-3xl hidden md:block">📱</div>
+          <div className="flex-1">
+            <p className="text-white font-medium">Añadir a pantalla inicio</p>
+            <p className="text-slate-400 text-sm">Acceso rápido sin navegador</p>
+          </div>
+          <button
+            onClick={handleInstall}
+            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center gap-2"
+          >
+            <Download className="w-4 h-4" />
+            <span className="hidden md:inline">Instalar</span>
+          </button>
+          <button
+            onClick={() => setShowBanner(false)}
+            className="text-slate-400 hover:text-white p-1"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // Botón de notificaciones (visible cuando está instalada o sin banner)
+  if (typeof window === 'undefined' || !('PushManager' in window)) return null;
 
   return (
-    <>
-      {/* Banner instalación */}
-      {showBanner && !isInstalled && (
-        <div className="fixed bottom-4 left-4 right-4 md:left-auto md:right-4 md:w-auto z-50">
-          <div className="bg-slate-800 border border-slate-600 rounded-xl p-4 shadow-2xl flex items-center gap-4">
-            <div className="text-3xl hidden md:block">📱</div>
-            <div className="flex-1">
-              <p className="text-white font-medium">Añadir a pantalla inicio</p>
-              <p className="text-slate-400 text-sm">Acceso rápido sin navegador</p>
-            </div>
-            <button
-              onClick={handleInstall}
-              className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center gap-2"
-            >
-              <Download className="w-4 h-4" />
-              <span className="hidden md:inline">Instalar</span>
-            </button>
-            <button
-              onClick={() => setShowBanner(false)}
-              className="text-slate-400 hover:text-white p-1"
-            >
-              <X className="w-5 h-5" />
-            </button>
-          </div>
-        </div>
+    <div className="fixed bottom-4 right-4 z-50">
+      {pushStatus === 'subscribed' ? (
+        <button
+          onClick={handlePushUnsubscribe}
+          title="Desactivar alertas de viaje"
+          className="bg-green-600 hover:bg-green-700 text-white p-3 rounded-full shadow-lg flex items-center gap-2"
+        >
+          <Bell className="w-5 h-5" />
+        </button>
+      ) : pushStatus === 'denied' ? null : (
+        <button
+          onClick={handlePushSubscribe}
+          disabled={pushStatus === 'loading'}
+          title="Activar alertas de viaje"
+          className="bg-slate-700 hover:bg-slate-600 text-white p-3 rounded-full shadow-lg flex items-center gap-2"
+        >
+          {pushStatus === 'loading'
+            ? <span className="w-5 h-5 animate-spin border-2 border-white border-t-transparent rounded-full" />
+            : <BellOff className="w-5 h-5" />
+          }
+        </button>
       )}
-
-      {/* Botón notificaciones */}
-      {'PushManager' in window && pushStatus !== 'denied' && (
-        <div className="fixed bottom-20 right-4 z-50">
-          {pushStatus === 'subscribed' ? (
-            <button
-              onClick={handlePushUnsubscribe}
-              title="Desactivar alertas de viaje"
-              className="bg-green-600 hover:bg-green-700 text-white p-3 rounded-full shadow-lg"
-            >
-              <Bell className="w-5 h-5" />
-            </button>
-          ) : (
-            <button
-              onClick={handlePushSubscribe}
-              disabled={pushStatus === 'loading'}
-              title="Activar alertas de viaje"
-              className="bg-slate-700 hover:bg-slate-600 text-white p-3 rounded-full shadow-lg"
-            >
-              {pushStatus === 'loading'
-                ? <span className="w-5 h-5 animate-spin border-2 border-white border-t-transparent rounded-full inline-block" />
-                : <BellOff className="w-5 h-5" />
-              }
-            </button>
-          )}
-        </div>
-      )}
-    </>
+    </div>
   );
 }
