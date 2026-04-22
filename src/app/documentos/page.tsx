@@ -171,11 +171,11 @@ export default function TravelDocumentsPage() {
       <div className="bg-slate-800/50 rounded-xl p-4 mb-6 text-sm">
         <h3 className="font-bold text-white mb-3">Como usar esta app</h3>
         <div className="space-y-2 text-slate-300">
-          <p><span className="text-green-400 font-bold">1.</span> <span className="font-bold">Subir documentos:</span> Pulsa el boton ↑ azul para selecionar fotos de tu movil o laptop (boarding pass, reserva hotel, entradas)</p>
-          <p><span className="text-green-400 font-bold">2.</span> <span className="font-bold">Ver offline:</span> Acceso sin internet desde tu dispositivo</p>
-          <p><span className="text-red-400 font-bold">⚠ Importante:</span> Los documentos solo se guardan en tu dispositivo. <span className="text-red-400">Si pierdes el movil, pierdes los documentos.</span> Haz exports regulares!</p>
-          <p><span className="text-blue-400 font-bold">3.</span> <span className="font-bold">Export:</span> Usa el boton ↓ para hacer copia de seguridad</p>
-          <p><span className="text-slate-400">Formatos: JPG, PNG, WebP | Tamano max: 5MB por imagen</span></p>
+          <p><span className="text-green-400 font-bold">1.</span> <span className="font-bold">Subir documento:</span> Boton ↑ azul = imagen (boarding pass, reserva, entradas)</p>
+          <p><span className="text-green-400 font-bold">2.</span> <span className="font-bold">Escribir nota:</span> Boton naranja = texto libre, recordatorios, lo que sea</p>
+          <p><span className="text-green-400 font-bold">3.</span> <span className="font-bold">Referencia:</span> Boton cyan = telefono, direccion, contacto emergencia, email...</p>
+          <p><span className="text-red-400 font-bold">⚠ Importante:</span> Todo solo en tu dispositivo. Si pierdes el movil, pierdes todo. Haz exports!</p>
+          <p><span className="text-blue-400 font-bold">4.</span> <span className="font-bold">Export:</span> Boton ↓ = copia de seguridad</p>
         </div>
       </div>
 
