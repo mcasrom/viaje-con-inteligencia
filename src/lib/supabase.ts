@@ -114,3 +114,86 @@ export async function incrementPostViews(slug: string): Promise<number> {
     return 1;
   }
 }
+
+export interface Trip {
+  id: string;
+  user_id: string;
+  name: string;
+  destination: string;
+  country_code?: string;
+  start_date?: string;
+  end_date?: string;
+  days: number;
+  budget: string;
+  interests: string[];
+  itinerary_raw?: string;
+  status: 'draft' | 'planned' | 'completed' | 'cancelled';
+  notes?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export async function getTrips(userId: string) {
+  if (!supabase) return [];
+  const { data, error } = await supabase
+    .from('trips')
+    .select('*')
+    .eq('user_id', userId)
+    .order('created_at', { ascending: false });
+  if (error) {
+    console.error('Error getting trips:', error);
+    return [];
+  }
+  return data || [];
+}
+
+export async function getTrip(userId: string, tripId: string) {
+  if (!supabase) return null;
+  const { data, error } = await supabase
+    .from('trips')
+    .select('*')
+    .eq('user_id', userId)
+    .eq('id', tripId)
+    .single();
+  if (error) {
+    console.error('Error getting trip:', error);
+    return null;
+  }
+  return data;
+}
+
+export async function createTrip(trip: Omit<Trip, 'id' | 'created_at' | 'updated_at'>) {
+  if (!supabase) return { error: 'Supabase no configurado' };
+  const { data, error } = await supabase
+    .from('trips')
+    .insert([trip])
+    .select()
+    .single();
+  return { data, error };
+}
+
+export async function updateTrip(
+  userId: string,
+  tripId: string,
+  updates: Partial<Omit<Trip, 'id' | 'user_id' | 'created_at'>>
+) {
+  if (!supabase) return { error: 'Supabase no configurado' };
+  const { data, error } = await supabase
+    .from('trips')
+    .update({ ...updates, updated_at: new Date().toISOString() })
+    .eq('user_id', userId)
+    .eq('id', tripId)
+    .select()
+    .single();
+  return { data, error };
+}
+
+export async function deleteTrip(userId: string, tripId: string) {
+  if (!supabase) return { error: 'Supabase no configurado' };
+  const { error } = await supabase
+    .from('trips')
+    .delete()
+    .eq('user_id', userId)
+    .eq('id', tripId);
+  return { error };
+}
