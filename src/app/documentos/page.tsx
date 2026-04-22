@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { Plus, Camera, Image, FileText, X, Plane, Building, Ticket, Trash2, Download, Upload, Phone, StickyNote } from 'lucide-react';
+import { Plus, Camera, Image, FileText, X, Plane, Building, Ticket, Trash2, Download, Upload, Phone, StickyNote, ArrowLeft, Home } from 'lucide-react';
 import { addDocument, getDocuments, deleteDocument, getAllDocuments, exportToZip } from '@/lib/travel-documents';
 
 interface TravelDocument {
@@ -132,9 +132,14 @@ export default function TravelDocumentsPage() {
       />
 
       <header className="flex items-center justify-between mb-6">
-        <div>
-          <h1 className="text-2xl font-bold">Memoria de Viaje</h1>
-          <p className="text-slate-400 text-sm">PREMIUM</p>
+        <div className="flex items-center gap-3">
+          <a href="/" className="p-2 bg-slate-800 rounded-full hover:bg-slate-700" title="Ir al inicio">
+            <Home className="w-5 h-5" />
+          </a>
+          <div>
+            <h1 className="text-2xl font-bold">Memoria de Viaje</h1>
+            <p className="text-slate-400 text-sm">PREMIUM</p>
+          </div>
         </div>
         <div className="flex gap-2">
           <button
