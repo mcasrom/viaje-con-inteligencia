@@ -39,6 +39,10 @@ export async function getDocuments(type?: string): Promise<TravelDocument[]> {
   return db.documents.reverse().sortBy('createdAt');
 }
 
+export async function getAllDocuments(): Promise<TravelDocument[]> {
+  return db.documents.reverse().sortBy('createdAt');
+}
+
 export async function deleteDocument(id: number): Promise<void> {
   return db.documents.delete(id);
 }
@@ -49,4 +53,29 @@ export async function updateDocument(id: number, changes: Partial<TravelDocument
 
 export async function getDocumentCount(): Promise<number> {
   return db.documents.count();
+}
+
+export async function exportToZip(): Promise<Blob> {
+  const docs = await getAllDocuments();
+  
+  const files: { name: string; data: string }[] = [];
+  
+  for (const doc of docs) {
+    if (doc.imageData) {
+      const ext = doc.imageData.includes('image/png') ? 'png' : 'jpg';
+      const filename = `${doc.type}_${doc.id}_${Date.now()}.${ext}`;
+      files.push({ name: filename, data: doc.imageData });
+    }
+    if (doc.text) {
+      const filename = `${doc.type}_${doc.id}.txt`;
+      files.push({ name: filename, data: doc.text });
+    }
+  }
+  
+  if (files.length === 0) {
+    return new Blob(['No documents to export'], { type: 'text/plain' });
+  }
+  
+  const content = files.map(f => `${f.name}\n---\n${f.data.split(',')[1] || f.data}\n`).join('\n\n');
+  return new Blob([content], { type: 'text/plain' });
 }

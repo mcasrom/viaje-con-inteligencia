@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
-import { Plus, Camera, Image, FileText, X, Plane, Building, Ticket, Trash2, Search, Filter, Upload } from 'lucide-react';
-import { db, TravelDocument, addDocument, getDocuments, deleteDocument } from '@/lib/travel-documents';
+import { useState, useEffect, useCallback, useRef } from 'react';
+import { Plus, Camera, Image, FileText, X, Plane, Building, Ticket, Trash2, Download, Upload } from 'lucide-react';
+import { TravelDocument, addDocument, getDocuments, deleteDocument, getAllDocuments, exportToZip } from '@/lib/travel-documents';
 
 const DOC_TYPES = [
   { id: 'vuelo', label: 'Vuelo', icon: Plane, color: 'bg-blue-500' },
@@ -14,11 +14,12 @@ const DOC_TYPES = [
 export default function TravelDocumentsPage() {
   const [documents, setDocuments] = useState<TravelDocument[]>([]);
   const [loading, setLoading] = useState(true);
-  const [showAddMenu, setShowAddMenu] = useState(false);
   const [selectedDoc, setSelectedDoc] = useState<TravelDocument | null>(null);
   const [filter, setFilter] = useState<string>('all');
   const [showNoteInput, setShowNoteInput] = useState(false);
   const [noteText, setNoteText] = useState('');
+  const [showTypeMenu, setShowTypeMenu] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const loadDocuments = useCallback(async () => {
     setLoading(true);
@@ -36,43 +37,47 @@ export default function TravelDocumentsPage() {
     loadDocuments();
   }, [loadDocuments]);
 
-  const handleAddDocument = async (type: string, data: { text: string; imageData?: string }) => {
-    const docType = type as 'ticket' | 'vuelo' | 'hotel' | 'nota';
-    await addDocument({
-      type: docType,
-      title: data.text || `${docType.charAt(0).toUpperCase() + docType.slice(1)} - ${new Date().toLocaleDateString('es-ES')}`,
-      text: data.text,
-      imageData: data.imageData,
-      createdAt: new Date(),
-    });
-    setShowAddMenu(false);
-    setShowNoteInput(false);
-    setNoteText('');
-    loadDocuments();
+  const handleCaptureImage = (type: 'vuelo' | 'hotel' | 'ticket') => {
+    if (fileInputRef.current) {
+      fileInputRef.current.dataset.docType = type;
+      fileInputRef.current.click();
+    }
   };
 
-  const handleImageUpload = (type: 'vuelo' | 'hotel' | 'ticket') => {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = 'image/*';
-    input.onchange = async (e) => {
-      const file = (e.target as HTMLInputElement).files?.[0];
-      if (!file) return;
-      
-      const reader = new FileReader();
-      reader.onload = async () => {
-        const imageData = reader.result as string;
-        const fileName = file.name.replace(/\.[^/.]+$/, '').replace(/[-_]/g, ' ');
-        await handleAddDocument(type, { text: fileName, imageData });
-      };
-      reader.readAsDataURL(file);
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    const docType = (e.target.dataset.docType || 'ticket') as 'vuelo' | 'hotel' | 'ticket';
+    
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = async () => {
+      const imageData = reader.result as string;
+      const fileName = file.name.replace(/\.[^/.]+$/, '').replace(/[-_]/g, ' ');
+      await addDocument({
+        type: docType,
+        title: fileName || `${docType} - ${new Date().toLocaleDateString('es-ES')}`,
+        text: '',
+        imageData,
+        createdAt: new Date(),
+      });
+      loadDocuments();
     };
-    input.click();
+    reader.readAsDataURL(file);
+    e.target.value = '';
   };
 
   const handleNoteSave = async () => {
     if (!noteText.trim()) return;
-    await handleAddDocument('nota', { text: noteText });
+    await addDocument({
+      type: 'nota',
+      title: noteText.substring(0, 50) + (noteText.length > 50 ? '...' : ''),
+      text: noteText,
+      createdAt: new Date(),
+    });
+    setShowNoteInput(false);
+    setNoteText('');
+    loadDocuments();
   };
 
   const handleDelete = async (id: number) => {
@@ -80,6 +85,21 @@ export default function TravelDocumentsPage() {
     await deleteDocument(id);
     setSelectedDoc(null);
     loadDocuments();
+  };
+
+  const handleExport = async () => {
+    if (documents.length === 0) {
+      alert('No hay documentos para exportar');
+      return;
+    }
+    
+    const blob = await exportToZip();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `viaje-documentos-${new Date().toISOString().split('T')[0]}.txt`;
+    a.click();
+    URL.revokeObjectURL(url);
   };
 
   const formatDate = (date: Date) => {
@@ -90,14 +110,28 @@ export default function TravelDocumentsPage() {
 
   return (
     <div className="min-h-screen bg-slate-950 text-white p-4">
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/*"
+        capture="environment"
+        className="hidden"
+        data-doc-type=""
+        onChange={handleFileChange}
+      />
+
       <header className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-bold">Memoria de Viaje</h1>
           <p className="text-slate-400 text-sm">Documentos offline</p>
         </div>
-        <div className="flex items-center gap-2 text-xs text-slate-500">
-          <span>{documents.length} documentos</span>
-        </div>
+        <button
+          onClick={handleExport}
+          className="p-2 bg-slate-800 rounded-full"
+          title="Exportar"
+        >
+          <Download className="w-5 h-5" />
+        </button>
       </header>
 
       <div className="flex gap-2 overflow-x-auto pb-4 mb-4 scrollbar-hide">
@@ -167,46 +201,32 @@ export default function TravelDocumentsPage() {
         </div>
       )}
 
-      <div className="fixed bottom-20 right-4 z-40">
-        {showAddMenu && (
-          <div className="mb-3 space-y-2">
+      <div className="fixed bottom-20 right-4 z-40 flex flex-col items-end gap-3">
+        {showTypeMenu && (
+          <div className="mb-2 flex flex-col gap-2">
             <button
-              onClick={() => { setShowNoteInput(true); setShowAddMenu(false); }}
-              className="flex items-center gap-3 px-4 py-3 bg-orange-500 hover:bg-orange-600 rounded-full shadow-lg transition"
-            >
-              <FileText className="w-5 h-5" />
-              <span className="font-medium">Nota</span>
-            </button>
-            <button
-              onClick={() => handleImageUpload('hotel')}
-              className="flex items-center gap-3 px-4 py-3 bg-purple-500 hover:bg-purple-600 rounded-full shadow-lg transition"
-            >
-              <Building className="w-5 h-5" />
-              <span className="font-medium">Hotel</span>
-            </button>
-            <button
-              onClick={() => handleImageUpload('vuelo')}
+              onClick={() => { handleCaptureImage('vuelo'); setShowTypeMenu(false); }}
               className="flex items-center gap-3 px-4 py-3 bg-blue-500 hover:bg-blue-600 rounded-full shadow-lg transition"
             >
               <Plane className="w-5 h-5" />
               <span className="font-medium">Vuelo</span>
             </button>
             <button
-              onClick={() => handleImageUpload('ticket')}
-              className="flex items-center gap-3 px-4 py-3 bg-green-500 hover:bg-green-600 rounded-full shadow-lg transition"
+              onClick={() => { setShowNoteInput(true); setShowTypeMenu(false); }}
+              className="flex items-center gap-3 px-4 py-3 bg-orange-500 hover:bg-orange-600 rounded-full shadow-lg transition"
             >
-              <Ticket className="w-5 h-5" />
-              <span className="font-medium">Ticket</span>
+              <FileText className="w-5 h-5" />
+              <span className="font-medium">Nota</span>
             </button>
           </div>
         )}
         <button
-          onClick={() => setShowAddMenu(!showAddMenu)}
+          onClick={() => setShowTypeMenu(!showTypeMenu)}
           className={`w-14 h-14 rounded-full shadow-lg transition ${
-            showAddMenu ? 'bg-slate-700' : 'bg-blue-500 hover:bg-blue-600'
+            showTypeMenu ? 'bg-slate-700' : 'bg-blue-500 hover:bg-blue-600'
           } flex items-center justify-center`}
         >
-          {showAddMenu ? <X className="w-6 h-6" /> : <Plus className="w-6 h-6" />}
+          {showTypeMenu ? <X className="w-6 h-6" /> : <Plus className="w-6 h-6" />}
         </button>
       </div>
 
