@@ -44,7 +44,7 @@ const PLANS = [
 export default function PremiumPage() {
   const [loading, setLoading] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<'itinerary' | 'chat' | 'seismos' | 'conflicts' | 'expenses' | 'visa' | 'packing'>('seismos');
+  const [activeTab, setActiveTab] = useState<'itinerary' | 'chat' | 'seismos' | 'conflicts' | 'expenses' | 'visa' | 'packing' | 'indices'>('indices');
   const [itineraryLoading, setItineraryLoading] = useState(false);
   const [itineraryResult, setItineraryResult] = useState<string>('');
   const [chatMessages, setChatMessages] = useState<{role: string; content: string}[]>([]);
@@ -364,6 +364,17 @@ export default function PremiumPage() {
                 >
                   <AlertTriangle className="w-4 h-4" />
                   Conflictos
+                </button>
+                <button
+                  onClick={() => setActiveTab('indices')}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors ${
+                    activeTab === 'indices'
+                      ? 'bg-green-500 text-white'
+                      : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
+                  }`}
+                >
+                  <TrendingUp className="w-4 h-4" />
+                  KPIs Index
                 </button>
                 <button
                   onClick={() => setActiveTab('itinerary')}
@@ -784,6 +795,59 @@ export default function PremiumPage() {
                       )}
                     </div>
                   )}
+                </div>
+              )}
+
+              {activeTab === 'indices' && (
+                <div>
+                  <div className="mb-4">
+                    <h3 className="text-lg font-bold text-white flex items-center gap-2 mb-2">
+                      <TrendingUp className="w-5 h-5 text-green-500" />
+                      📊 KPIs Index - Comparativa Global de Índices
+                    </h3>
+                    <p className="text-slate-400 text-sm">
+                      Análisis comparativo de 6 índices clave para planificación de viajes.
+                      Fuentes: GPI/GTI (IEP), HDI (UNDP), IPC (Macro), Sismos (USGS), MAEC.
+                    </p>
+                  </div>
+                  <Link 
+                    href="/indices"
+                    className="block w-full bg-gradient-to-r from-green-600 to-emerald-600 text-white py-4 px-6 rounded-xl text-center font-bold hover:from-green-500 hover:to-emerald-500 transition-all shadow-lg shadow-green-500/20"
+                  >
+                    <span className="flex items-center justify-center gap-2">
+                      <TrendingUp className="w-5 h-5" />
+                      Abrir Mapa de Índices Interactivo →
+                    </span>
+                  </Link>
+                  <div className="mt-4 bg-slate-700/50 rounded-xl p-4">
+                    <h4 className="text-white font-medium mb-3">Índices disponibles:</h4>
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-3 text-sm">
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                        <span className="text-slate-300">GPI - Índice Paz Global</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 rounded-full bg-red-500"></div>
+                        <span className="text-slate-300">GTI - Terrorismo</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 rounded-full bg-blue-500"></div>
+                        <span className="text-slate-300">HDI - Desarrollo Humano</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+                        <span className="text-slate-300">IPC - Inflación</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 rounded-full bg-orange-500"></div>
+                        <span className="text-slate-300">Sismos - Tiempo Real</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 rounded-full bg-slate-500"></div>
+                        <span className="text-slate-300">MAEC - Riesgo Oficial</span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               )}
 

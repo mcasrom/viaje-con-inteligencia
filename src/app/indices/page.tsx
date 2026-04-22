@@ -196,9 +196,14 @@ const filteredData = useMemo(() => {
         <div className="mb-6">
           <div className="flex items-center gap-3 mb-2">
             <LayersIcon className="w-8 h-8 text-blue-400" />
-            <h1 className="text-3xl font-bold text-white">Índices Globales</h1>
+            <h1 className="text-3xl font-bold text-white">📊 KPIs Index</h1>
           </div>
-          <p className="text-slate-400">Mapa interactivo • Actualizado: {new Date().toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
+          <p className="text-slate-400">
+            <span className="flex items-center gap-2">
+              <Clock className="w-4 h-4" />
+              Actualizado: {new Date().toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' })}
+            </span>
+          </p>
         </div>
 
         {/* LAYER SELECTOR */}
