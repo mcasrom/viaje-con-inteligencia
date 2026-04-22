@@ -151,16 +151,18 @@ export default function IndicesPage() {
   const config = layerConfig[activeLayer];
   const baseData = getDataForLayer(activeLayer);
   
-  const filteredData = useMemo(() => {
-    let data = [...baseData];
+const filteredData = useMemo(() => {
+    let data = [...(baseData || [])];
+    if (!data || data.length === 0) return [];
+    
+    if (region !== 'Todas' && region) {
+      data = data.filter((d: any) => d.region === region);
+    }
     if (search) {
-      data = data.filter(d => 
+      data = data.filter((d: any) => 
         d.country?.toLowerCase().includes(search.toLowerCase()) ||
         d.code?.toLowerCase().includes(search.toLowerCase())
       );
-    }
-    if (region !== 'Todos') {
-      data = data.filter(d => d.region === region);
     }
     return data;
   }, [baseData, search, region]);
