@@ -4762,6 +4762,130 @@ si: {
     mapaCoordenadas: [-16.2902, -63.5887]
   },
 
+  al: {
+    codigo: 'al',
+    nombre: 'Albania',
+    capital: 'Tirana',
+    continente: 'Europa',
+    idioma: 'Albañol',
+    moneda: 'Lek (ALL)',
+    tipoCambio: '1 EUR ≈ 105 ALL',
+    zonaHoraria: 'UTC+1',
+    conduccion: 'derecha',
+    poblacion: '2.8 millones',
+    pib: '18 mil millones USD',
+    indicadores: { ipc: '2.5%', indicePrecios: 'Bajo' },
+    voltaje: '230V / 50Hz',
+    prefijoTelefono: '+355',
+    nivelRiesgo: 'bajo',
+    ultimoInforme: 'Abril 2026',
+    contactos: [
+      {
+        tipo: 'Embajada',
+        nombre: 'Embajada de Albania en Madrid',
+        direccion: 'Calle Lagasca 68, 1ºB, 28001 Madrid',
+        telefono: '+34 91 562 6985',
+        email: 'embassy.madrid@mfa.gov.al',
+        horario: 'Lunes a viernes 9:00-17:00'
+      }
+    ],
+    requerimientos: [
+      { categoria: 'Documentación', icon: '📄', items: ['Pasaporte (90 días mínimo)', 'No se requiere visado para ciudadanos UE', 'Seguro médico de viaje'] },
+      { categoria: 'Sanitario', icon: '🏥', items: ['Hospitales públicos en principales ciudades', 'Farmacias (24h en Tirana)', 'Urgencias: 112'] },
+      { categoria: 'General', icon: 'ℹ️', items: ['Moneda: Lek (cambiar en bancos)', 'Horario comercial: 8:00-16:00', 'Propina: 5-10% en restaurantes'] }
+    ],
+    queHacer: [
+      'Visitar las playas de la Riviera Albanesa',
+      'Explorar el casco antiguo de Gjirokastra',
+      'Descubrir el Lago de Butrint',
+      'Disfrutar de la gastronomía kosovar',
+      'Visitar bunkers históricos'
+    ],
+    queNoHacer: [
+      'No conduzca de noche por caminos rurales',
+      'No beba agua del grifo',
+      'No fotografíe instalaciones militares',
+      'No demuestre gesto de mano offense',
+      'No entre en parques nacionales sin guía'
+    ],
+    diarios: [
+      { nombre: 'Gazeta SHQIP', url: 'https://gazetashqip.al' },
+      { nombre: 'Top Channel', url: 'https://top-channel.tv' }
+    ],
+    urlsUtiles: [
+      { nombre: 'Turismo Albania', url: 'https://albania.ca' },
+      { nombre: 'MAEC España', url: 'https://www.exteriores.gob.es' }
+    ],
+    bandera: '🇦🇱',
+    mapaCoordenadas: [41.1533, 20.1683]
+  },
+
+  ge: {
+    codigo: 'ge',
+    nombre: 'Georgia',
+    capital: 'Tbilisi',
+    continente: 'Europa',
+    idioma: 'Georgiano',
+    moneda: 'Lari (GEL)',
+    tipoCambio: '1 EUR ≈ 2.8 GEL',
+    zonaHoraria: 'UTC+4',
+    conduccion: 'derecha',
+    poblacion: '3.7 millones',
+    pib: '67 mil millones USD',
+    indicadores: { ipc: '2.8%', indicePrecios: 'Medio' },
+    voltaje: '220V / 50Hz',
+    prefijoTelefono: '+995',
+    nivelRiesgo: 'bajo',
+    ultimoInforme: 'Abril 2026',
+    contactos: [
+      {
+        tipo: 'Embajada',
+        nombre: 'Embajada de Georgia en Madrid',
+        direccion: 'Plaza de las Cortes 4, 5º Derecha, 28014 Madrid',
+        telefono: '+34 914 29 33 29',
+        email: 'embassymadrid@mfa.gov.ge',
+        horario: 'Lunes a viernes 9:00-18:00'
+      },
+      {
+        tipo: 'Consulado',
+        nombre: 'Consulado de España en Tbilisi',
+        direccion: 'GMT Plaza, 4th Floor, 4 Freedom Square, 0105 Tbilisi',
+        telefono: '+995 32 220 00 63',
+        email: 'emb.tbilisi@maec.es',
+        horario: 'Lunes a viernes 9:00-14:00'
+      }
+    ],
+    requerimientos: [
+      { categoria: 'Documentación', icon: '📄', items: ['Pasaporte (90 días mínimo)', 'Visado no requerido para españoles (90 días)', 'Seguro médico de viaje'] },
+      { categoria: 'Sanitario', icon: '🏥', items: ['Sistema sanitario público disponible', 'Hospitales en Tbilisi', 'Urgencias: 112'] },
+      { categoria: 'General', icon: 'ℹ️', items: ['Moneda: Lari', 'Idioma: georgiano (transliteración cirílica)', 'Propina: 10% en restaurantes'] }
+    ],
+    queHacer: [
+      'Visitar Monasterios de la región de Kajetia',
+      'Probar vino tradicional georgiano',
+      'Explorarcuevas de Uplistsikje',
+      'Disfrutar de la arquitectura de Tbilisi',
+      'Visitar el Mar Negro en Batumi'
+    ],
+    queNoHacer: [
+      'No beba agua del grifo',
+      'No muestre gesto de mano offense',
+      'No fotografíe instalaciones militares',
+      'No conduzca bajo efectos del alcohol',
+      'No entre en monasterios con hombros/piernas descubiertos'
+    ],
+    diarios: [
+      { nombre: 'Civil Georgia', url: 'https://civil.ge' },
+      { nombre: 'Netgazeti', url: 'https://netgazeti.ge' }
+    ],
+    urlsUtiles: [
+      { nombre: 'Turismo Georgia', url: 'https://georgia.travel' },
+      { nombre: 'MAEC España', url: 'https://www.exteriores.gob.es' }
+    ],
+    bandera: '🇬🇪',
+    mapaCoordenadas: [42.8746, 43.3566]
+  },
+
   gl: {
     codigo: 'gl',
     nombre: 'Groenlandia',
