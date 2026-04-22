@@ -179,7 +179,13 @@ export default function TravelDocumentsPage() {
           <span className="text-blue-400 font-bold">↑</span> imagen · 
           <span className="text-orange-400 font-bold">📝</span> nota · 
           <span className="text-cyan-400 font-bold">☎</span> ref · 
-          <span className="text-red-400 font-bold">⚠</span> local solo
+          <span className="text-slate-400 font-bold">↓</span> backup
+        </p>
+        <p className="mt-1 text-slate-500">
+          Formatos: JPG, PNG, WebP | Max 5MB | <span className="text-red-400">Local solo - sin nube</span>
+        </p>
+        <p className="text-red-400 mt-1">
+          ⚠ Si pierdes el dispositivo, pierdes TODO. Exporta backup regularmente.
         </p>
       </div>
 
@@ -353,9 +359,9 @@ export default function TravelDocumentsPage() {
       )}
 
       <div className="mt-8 pt-4 border-t border-slate-800 text-center text-xs text-slate-500">
-        <p>AVISO: Documentos guardados localmente en tu dispositivo. Sin copia en la nube.</p>
-        <p>Si pierdes el movil, pierdes los docs. Exporta regularmente.</p>
-        <p className="mt-1 text-slate-600">Formatos: JPG, PNG, WebP | Max 5MB/imagen</p>
+        <p>AVISO: Docs guardados localmente. Sin copia en la nube.</p>
+        <p className="text-red-400">Si pierdes el dispostivo, pierdes TODO. Exporta regularmente.</p>
+        <p className="mt-1 text-slate-600">Formats: JPG, PNG, WebP | Max 5MB</p>
       </div>
     </div>
   );
