@@ -10,6 +10,7 @@ import {
 import { 
   LAYERS, LayerId, GPI_DATA, GTI_DATA, HDI_DATA, IPC_DATA 
 } from '@/data/indices';
+import { paisesData } from '@/data/paises';
 
 const MapContainer = dynamic(
   () => import('react-leaflet').then((mod) => mod.MapContainer),
@@ -85,7 +86,10 @@ const layerConfig: Record<LayerId, {
     getLevel: (v) => v === 0 ? 'Sin Riesgo' : v === 1 ? 'Bajo' : v === 2 ? 'Medio' : v === 3 ? 'Alto' : 'Muy Alto',
     getColor: (v) => v === 0 ? '#22c55e' : v === 1 ? '#4ade80' : v === 2 ? '#eab308' : v === 3 ? '#f97316' : '#dc2626',
     getLabel: (v) => v === 0 ? 'Sin Riesgo' : v === 1 ? 'Bajo' : v === 2 ? 'Medio' : v === 3 ? 'Alto' : 'Muy Alto',
-    format: (v) => String(v || 0),
+    format: (v) => {
+      const labels = ['Sin Riesgo', 'Bajo', 'Medio', 'Alto', 'Muy Alto'];
+      return labels[Math.min(v, 4)];
+    },
     unit: '',
     colorScale: { '0': '#22c55e', '1': '#4ade80', '2': '#eab308', '3': '#f97316', '4': '#dc2626' },
   },
@@ -120,7 +124,15 @@ function getDataForLayer(layerId: LayerId) {
     case 'hdi': return HDI_DATA;
     case 'ipc': return IPC_DATA;
     case 'sismo': return [];
-    case 'maec': return [];
+    case 'maec': return Object.values(paisesData).map((p: any) => {
+      const riskScore: Record<string, number> = { 'sin-riesgo': 0, 'bajo': 1, 'medio': 2, 'alto': 3, 'muy-alto': 4 };
+      return {
+        code: p.codigo,
+        country: p.nombre,
+        region: p.continente,
+        score: riskScore[p.nivelRiesgo] || 2,
+      };
+    });
     default: return [];
   }
 }
@@ -351,9 +363,10 @@ const filteredData = useMemo(() => {
                 ))
               ) : (
                 filteredData.map((item: any) => {
-                  const coords = PAIS_COORDS[item.code];
+                  const codeKey = (item.code || '').toUpperCase();
+                  const coords = PAIS_COORDS[codeKey as keyof typeof PAIS_COORDS];
                   if (!coords) return null;
-                  const value = (item as any).score || (item as any).ipc ? parseFloat((item as any).ipc?.replace('%', '') || '0') : 0;
+                  const value = (item as any).score ?? (item as any).ipc ? parseFloat((item as any).ipc?.replace('%', '') || '0') : 0;
                   
                   return (
                     <CircleMarker
