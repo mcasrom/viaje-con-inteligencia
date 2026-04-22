@@ -528,3 +528,57 @@ I = 0.4A + 0.3M + 0.3S
 - ✅ Monitor Conflictos con fallback
 - ✅ Footer con timestamp
 - ✅ Semáforo color en footer
+- ✅ KPIs Index - Mapa de 6 capas interactivas
+- ✅ Tab KPIs Index en Premium
+- ✅ Capas: GPI, GTI, HDI, IPC, Sismos (USGS), MAEC
+
+---
+
+## 🚀 SPRINT 18: KPIs Index - Índice de Riesgos Globales (2026-04-22)
+
+### 📊 Concepto
+Herramienta GIS-like con selector de capas para visualizar múltiples índices de riesgo y desarrollo en un mapa interactivo.
+
+### ✅ Completado
+| # | Feature | Estado |
+|---|---------|--------|
+| 1 | Página `/indices` | ✅ Done |
+| 2 | 6 capas selectorables | ✅ Done |
+| 3 | Mapa Leaflet interactivo | ✅ Done |
+| 4 | Tab en Premium (`/premium`) | ✅ Done |
+| 5 | Timestamp actualización visible | ✅ Done |
+| 6 | Filtros por región | ✅ Done |
+| 7 | Tabla de datos filtrable | ✅ Done |
+
+### 📈 Datos por Capa
+| Capa | Fuente | Países | Tipo |
+|------|--------|---------|------|
+| GPI | IEP 2026 | 46 | Estático |
+| GTI | IEP 2026 | 48 | Estático |
+| HDI | UNDP 2024 | 45 | Estático |
+| IPC | Macro 2026 | 55 | Estático |
+| Sismos | USGS API | - | Tiempo real |
+| MAEC | MAEC 2026 | 95 | Estático |
+
+### 🔄 Actualización
+- **GPI/GTI/HDI**: Anual (IEP publica en marzo)
+- **IPC**: Trimestral
+- **MAEC**: Diaria (scrapers)
+- **Sismos**: Tiempo real (USGS)
+
+### 🎯 Siguientes Pasos
+- [ ] Expandir GPI/GTI/HDI a 80+ países
+- [ ] Añadir capa de Corrupción (TI Index)
+- [ ] Historial de cambios por país
+- [ ] Comparativa automática de países
+
+---
+
+## 📊 COBERTURA ACTUAL (2026-04-22)
+
+| Feature | Estado |
+|---------|--------|
+| Países en mapa riesgos | 95 |
+| Posts blog | 52 |
+| KPIs Index | ✅ Nuevo |
+| Premium tabs | 8 |

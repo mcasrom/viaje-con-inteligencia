@@ -9,7 +9,8 @@
 - **Repo:** https://github.com/mcasrom/viaje-con-inteligencia
 
 ### Core Features
-- Mapa de riesgos 78 países (target 100)
+- Mapa de riesgos 95 países (target 100)
+- KPIs Index con 6 capas interactivas (GPI, GTI, HDI, IPC, Sismos, MAEC)
 - Detalle por país (embajadas, requisitos, qué hacer/no hacer)
 - Checklist imprimible (8 categorías, 80+ items)
 - Bot Telegram con comandos
@@ -34,6 +35,13 @@
 - Sitemap multilingual
 - Structured data JSON-LD
 - Páginas /en /pt
+
+### KPIs Index (Premium)
+- 6 capas interactivas (GPI, GTI, HDI, IPC, Sismos, MAEC)
+- Mapa Leaflet con colores dinámicos
+- Filtros por región
+- Tabla de datos filtrable
+- Tiempo real para sismos (USGS API)
 
 ### Chat IA (Premium)
 - Groq integration (modelo llama-3.1-8b-instant)
