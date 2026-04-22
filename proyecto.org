@@ -45,7 +45,7 @@
 * FUNCIONALIDADES
 
 ** Core Features
-- [X] Mapa riesgos 89 países
+- [X] Mapa riesgos 93 países
 - [X] Detalle país (MAEC + emergencias)
 - [X] Checklist 80+ items
 - [X] Bot Telegram + Channel
@@ -56,6 +56,8 @@
 - [X] PWA + offline
 - [X] Chat IA (Groq Llama)
 - [X] Generador itinerarios IA
+- [X] IST (Índice Saturación Turística) /api/ist
+- [X] Fuentes OSINT /fuentes-osint
 - [ ] Premium completo
 
 ** Páginas
@@ -128,9 +130,16 @@
 - [ ] Invoice generation
 
 *** Expansión países (100+)
+- [x] Fichas países América del Sur + Groenlandia (Uruguay, Paraguay, Bolivia, Groenlandia)
+- [x] Groenlandia (América del Norte)
 - [ ] Fichas países Africa
 - [ ] Fichas países Asia/Oceanía
 - [ ] Destinos emergentes
+
+** Nuevos países solicitados (próxima iteración):**
+- Guyana (gy) - Sudamericana
+- Surinam (sr) - Sudamericana
+- Venezuela (ve) - Excluida por penalización
 
 ** 🟡 Media Prioridad
 
@@ -570,7 +579,7 @@ cd ~/viaje-con-inteligencia && npm install
 
 | Cron | Schedule (UTC) | Path | Función |
 |------|----------------|------|---------|
-| scrape-maec | 0 6 * * * (diario 6:00) | /api/cron/scrape-maec | Scraping completo MAEC 89 países |
+| scrape-maec | 0 6 * * * (diario 6:00) | /api/cron/scrape-maec | Scraping completo MAEC 93 países |
 | check-alerts | 0 8 * * * (diario 8:00) | /api/cron/check-alerts | Verificar alertas riesgo |
 | weekly-digest | 0 8 * * 1 (lunes 8:00) | /api/cron/weekly-digest | Newsletter semanal |
 

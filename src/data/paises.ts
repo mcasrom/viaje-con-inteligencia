@@ -4631,6 +4631,178 @@ si: {
     ],
     bandera: '🇧🇬',
     mapaCoordenadas: [42.7339, 25.4858]
+  },
+
+  uy: {
+    codigo: 'uy',
+    nombre: 'Uruguay',
+    capital: 'Montevideo',
+    continente: 'Sudamérica',
+    idioma: 'Español',
+    moneda: 'Peso Uruguayo (UYU)',
+    tipoCambio: '1 EUR ≈ 44 UYU',
+    zonaHoraria: 'UTC-3',
+    conduccion: 'derecha',
+    poblacion: '3.5 millones',
+    pib: '75 mil millones USD',
+    indicadores: { ipc: '5.8%', indicePrecios: 'Medio' },
+    voltaje: '220V / 50Hz',
+    prefijoTelefono: '+598',
+    nivelRiesgo: 'sin-riesgo',
+    ultimoInforme: 'Abril 2026',
+    contactos: [
+      {
+        tipo: 'Embajada',
+        nombre: 'Embajada de España en Uruguay',
+        direccion: 'Buena Vista 441, Montevideo',
+        telefono: '+598 2 915 77 00',
+        email: 'emb.montevideo@mae.es',
+        horario: 'Lunes a viernes 9:00-14:00'
+      }
+    ],
+    requerimientos: [
+      { categoria: 'Documentación', icon: '📄', items: ['Pasaporte vigente', 'Visa no requerida para españoles (90 días)', 'Billete de regreso'] },
+      { categoria: 'Sanitario', icon: '🏥', items: ['Sistema sanitario público bueno', 'Urgencias: 105', 'Seguro de viaje recomendado'] },
+      { categoria: 'General', icon: 'ℹ️', items: ['Moneda: Peso uruguayo', 'Tarjetas aceptadas', 'Propina: 10%'] }
+    ],
+    queHacer: ['Visitar Punta del Este', 'Explorar Colonia del Sacramento', 'Degustar asado'],
+    queNoHacer: ['No conducir después de beber', 'No ignorar normas de tráfico'],
+    diarios: [{ nombre: 'El País Uruguay', url: 'https://elpais.com.uy' }],
+    urlsUtiles: [
+      { nombre: 'Turismo Uruguay', url: 'https://turismo.gub.uy' },
+      { nombre: 'MAEC Uruguay', url: 'https://www.exteriores.gob.es/Embajadas/Montevideo' }
+    ],
+    bandera: '🇺🇾',
+    mapaCoordenadas: [-32.5228, -55.7658]
+  },
+
+  py: {
+    codigo: 'py',
+    nombre: 'Paraguay',
+    capital: 'Asunción',
+    continente: 'Sudamérica',
+    idioma: 'Español, Guaraní',
+    moneda: 'Guaraní (PYG)',
+    tipoCambio: '1 EUR ≈ 8300 PYG',
+    zonaHoraria: 'UTC-4',
+    conduccion: 'derecha',
+    poblacion: '7.4 millones',
+    pib: '40 mil millones USD',
+    indicadores: { ipc: '4.0%', indicePrecios: 'Bajo' },
+    voltaje: '220V / 60Hz',
+    prefijoTelefono: '+595',
+    nivelRiesgo: 'bajo',
+    ultimoInforme: 'Abril 2026',
+    contactos: [
+      {
+        tipo: 'Embajada',
+        nombre: 'Embajada de España en Paraguay',
+        direccion: 'Avda. de la Concordia 3146, Asunción',
+        telefono: '+595 21 604 000',
+        email: 'emb.asuncion@mae.es',
+        horario: 'Lunes a viernes 8:00-15:00'
+      }
+    ],
+    requerimientos: [
+      { categoria: 'Documentación', icon: '📄', items: ['Pasaporte vigente', 'Visa no requerida (90 días)', 'Certificado fiebre amarrilla si viene de zona endémica'] },
+      { categoria: 'Sanitario', icon: '🏥', items: ['Sistema sanitario limitado', 'Urgencias: 141', 'Vacunas: hepatitis A recomendada'] },
+      { categoria: 'General', icon: 'ℹ️', items: ['Moneda: Guaraní', 'Efectivo necesario fuera ciudades', 'Seguridad: evitar zonas fronterizas'] }
+    ],
+    queHacer: ['Visitar Cataratas del Iguazú', 'Explorar Missions Jesuíticas', 'Conocer Asunción'],
+    queNoHacer: ['No manejar de noche', 'No mostrar objetos valiosos'],
+    diarios: [{ nombre: 'ABC Color', url: 'https://www.abc.com.py' }],
+    urlsUtiles: [
+      { nombre: 'Secretaría Turismo', url: 'https://turismo.gov.py' },
+      { nombre: 'MAEC Paraguay', url: 'https://www.exteriores.gob.es/Embajadas/Asuncion' }
+    ],
+    bandera: '🇵🇾',
+    mapaCoordenadas: [-23.4425, -58.4438]
+  },
+
+  bo: {
+    codigo: 'bo',
+    nombre: 'Bolivia',
+    capital: 'Sucre (constitucional), La Paz (administrativa)',
+    continente: 'Sudamérica',
+    idioma: 'Español, Quechua, Aymara',
+    moneda: 'Boliviano (BOB)',
+    tipoCambio: '1 EUR ≈ 7.9 BOB',
+    zonaHoraria: 'UTC-4',
+    conduccion: 'derecha',
+    poblacion: '12 millones',
+    pib: '40 mil millones USD',
+    indicadores: { ipc: '3.5%', indicePrecios: 'Bajo' },
+    voltaje: '220V / 50Hz',
+    prefijoTelefono: '+591',
+    nivelRiesgo: 'bajo',
+    ultimoInforme: 'Abril 2026',
+    contactos: [
+      {
+        tipo: 'Embajada',
+        nombre: 'Embajada de España en Bolivia',
+        direccion: 'Calle 14 de Calacoto, La Paz',
+        telefono: '+591 2 279 50 00',
+        email: 'emb.lapaz@mae.es',
+        horario: 'Lunes a viernes 8:30-14:00'
+      }
+    ],
+    requerimientos: [
+      { categoria: 'Documentación', icon: '📄', items: ['Pasaporte vigente', 'Visa requerida (obtener antes)', 'Permiso migratorio'] },
+      { categoria: 'Sanitario', icon: '🏥', items: ['Sistema sanitario limitado', 'Urgencias: 118', 'Riesgo altura en La Paz'] },
+      { categoria: 'General', icon: 'ℹ️', items: ['Moneda: Boliviano', 'Efectivo necesario', 'Seguridad: zonas rurales'] }
+    ],
+    queHacer: ['Visitar Salar de Uyuni', 'Explorar Lago Titicaca', 'Machu Picchu (cerca)'],
+    queNoHacer: ['No fotografiar zonas militares', 'No comprar especies protegidas'],
+    diarios: [{ nombre: 'La Razón', url: 'https://www.larazon.com' }],
+    urlsUtiles: [
+      { nombre: 'Turismo Bolivia', url: 'https://bolivia.tur.es' },
+      { nombre: 'MAEC Bolivia', url: 'https://www.exteriores.gob.es/Embajadas/LaPaz' }
+    ],
+    bandera: '🇧🇴',
+    mapaCoordenadas: [-16.2902, -63.5887]
+  },
+
+  gl: {
+    codigo: 'gl',
+    nombre: 'Groenlandia',
+    capital: 'Nuuk',
+    continente: 'América del Norte',
+    idioma: 'Groenlandés, Danés',
+    moneda: 'Corona Danesa (DKK)',
+    tipoCambio: '1 EUR ≈ 7.5 DKK',
+    zonaHoraria: 'UTC-4 a UTC-1',
+    conduccion: 'derecha',
+    poblacion: '57,000',
+    pib: '3 mil millones USD',
+    indicadores: { ipc: '2.0%', indicePrecios: 'Muy Alto' },
+    voltaje: '220V / 50Hz',
+    prefijoTelefono: '+299',
+    nivelRiesgo: 'sin-riesgo',
+    ultimoInforme: 'Abril 2026',
+    contactos: [
+      {
+        tipo: 'Consulado',
+        nombre: 'Consulado de España en Groenlandia',
+        direccion: 'Sin representación. Consultar Embajada Dinamarca',
+        telefono: '+45 35 20 52 00',
+        email: 'emb.ciudadania@maec.es',
+        horario: 'Lunes a viernes'
+      }
+    ],
+    requerimientos: [
+      { categoria: 'Documentación', icon: '📄', items: ['Pasaporte vigente o DNI nórdico', 'Permiso entrada', 'Registro de viaje recomendado'] },
+      { categoria: 'Sanitario', icon: '🏥', items: ['Sistema sanitario limitado', 'Evacuación costosa', 'Seguro obligatorio'] },
+      { categoria: 'General', icon: 'ℹ️', items: ['Moneda: Corona danesa', 'Costos muy elevados', 'Clima extremo: preparar frío'] }
+    ],
+    queHacer: ['Ver Auroras Boreales', 'Explorar fiordos', 'Safari fauna ártica'],
+    queNoHacer: ['No alejarse de poblaciones en invierno', 'No alimentar fauna', 'No alterar ecosistema'],
+    diarios: [{ nombre: 'Sermitsiaq', url: 'https://sermitsiaq.ag' }],
+    urlsUtiles: [
+      { nombre: 'Visit Greenland', url: 'https://visitgreenland.com' },
+      { nombre: 'MAEC Dinamarca', url: 'https://www.exteriores.gob.es/Embajadas/Copenhague' }
+    ],
+    bandera: '🇬🇱',
+    mapaCoordenadas: [71.7069, -42.6043]
   }
 };
 

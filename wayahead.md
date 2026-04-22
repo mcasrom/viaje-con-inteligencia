@@ -324,8 +324,8 @@ I = 0.4A + 0.3M + 0.3S
 
 | # | Tarea | Estado |
 |---|------|--------|
-| 1 | API `/api/ist` con patrones | ⏳ Pendiente |
-| 2 | UI IST en páginas países | ⏳ Pendiente |
+| 1 | API `/api/ist` con patrones | ✅ Done |
+| 2 | UI IST en páginas países | ✅ Done |
 | 3 | Guardar predicciones (Supabase) | ⏳ Pendiente |
 | 4 | Colección feedback post-viaje | ⏳ Pendiente |
 
@@ -340,7 +340,7 @@ I = 0.4A + 0.3M + 0.3S
 
 ### ✅ Fiabilidad validada
 
-- El IST con patrones históricos es **tan fiable como las天气预报 meteorológicas**
+- El IST con patrones históricos es **tan fiable como las meteorológicas**
 - Funciona bien para planificación a semanas/meses vista
 - **Limitación:** No detecta eventos inesperados (huelgas, crisis)
 - **Valor agregado:** Útil para usuarios planificando viajes
@@ -478,7 +478,7 @@ I = 0.4A + 0.3M + 0.3S
 | Métrica | Actual | Target |
 |---------|--------|--------|
 | Visitantes/mes | ~500 | 10,000 |
-| Países | 89 | 100 |
+| Países | 93 | 100+ |
 | Posts blog | 52 | 52 ✅ |
 | Usuarios Telegram | ~50 | 1,000 |
 | Suscripciones | 0 | 100 |

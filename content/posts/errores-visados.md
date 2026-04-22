@@ -1,9 +1,8 @@
 ---
 title: "Errores comunes al solicitar visado: cómo evitarlos"
-title: " "Errores comunes al solicitar visado: cómo evitarlos"
 description: "Los 10 errores más frecuentes al solicitar visado turístico, de trabajo o estudiante. Evita rechazos y retrasos con estos consejos actualizados."
 date: "2026-04-19"
-slug: errores-comunes-visado-solicitar
+slug: errores-visados
 image: https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=800
 author: Miguel Castillo
 readingTime: 6 minutos
@@ -17,7 +16,7 @@ Solicitar un visado puede parecer un proceso sencillo, pero un solo error puede 
 
 ### 1. Pasaporte con menos de 6 meses de validez
 
-Este es el error más común. Muchos países requieren que tu pasaporte tenga **al menos 6 meses de vigencia** después de tu fecha de salida planned.
+Este es el error más común. Muchos países requieren que tu pasaporte tenga **al menos 6 meses de vigencia** después de tu fecha de salida prevista.
 
 **Conseil**: Verifica la fecha de expiración antes de solicitar cualquier visado. Si está cerca de vencer, renuévalo primero.
 
@@ -43,7 +42,7 @@ Presentar un itinerario vague o inventado es un motivo común de rechazo. Incluy
 - Billetes de ida y vuelta
 - Plan de actividades detallado
 
-### 5. Solicitar wrong tipo de visado
+### 5. Solicitar el tipo de visado incorrecto
 
 Asegúrate del tipo correcto:
 - **Turista**: Para vacaciones, hasta 90 días
