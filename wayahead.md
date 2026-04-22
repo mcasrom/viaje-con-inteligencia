@@ -345,6 +345,14 @@ I = 0.4A + 0.3M + 0.3S
 | 7 | Cambio vs 2024 | ✅ Done |
 | 8 | Botón en QuickAccess | ✅ Done |
 
+### 🔧 FIXES TÉCNICOS (2026-04-22)
+| # | Fix | Estado |
+|---|-----|--------|
+| 1 | APIs push dynamic (SSR) | ✅ Done |
+| 2 | Blog pages dynamic | ✅ Done |
+| 3 | País pages dynamic | ✅ Done |
+| 4 | InstallPWA type fix | ✅ Done |
+
 ### 📊 COBERTURA ACTUAL
 | Métrica | Valor |
 |---------|-------|
