@@ -76,6 +76,12 @@ function QuickAccessInner() {
             🗺️ Índices Globales
           </Link>
           <Link 
+            href="/documentos"
+            className="block p-2 bg-orange-600/20 text-orange-400 rounded-lg hover:bg-orange-600/30"
+          >
+            📁 Memoria de Viaje
+          </Link>
+          <Link 
             href="/kpi"
             className="block p-2 bg-green-600/20 text-green-400 rounded-lg hover:bg-green-600/30"
           >

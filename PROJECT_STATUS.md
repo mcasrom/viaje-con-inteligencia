@@ -49,6 +49,13 @@
 - Endpoint `/api/cron/status` para verificar
 - Schedule: daily 6:00 UTC (scrape), 8:00 UTC (alerts), weekly lunes 8:00
 
+### Memoria de Viaje (PWA)
+- IndexedDB (Dexie.js) para storage local
+- FloatingActionButton con cámara/galería/nota
+- DocumentList con filtros por tipo
+- Mode offline-first
+- Privacidad total (sin backend)
+
 ### Chat IA (Premium)
 - Groq integration (modelo llama-3.1-8b-instant)
 - Prompt MAEC mejorado
