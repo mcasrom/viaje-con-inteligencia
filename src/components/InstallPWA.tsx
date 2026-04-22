@@ -126,32 +126,7 @@ export default function InstallPWA() {
         </div>
       )}
 
-      {/* Botón notificaciones */}
-      {'PushManager' in window && pushStatus !== 'denied' && (
-        <div className="fixed bottom-20 right-4 z-50">
-          {pushStatus === 'subscribed' ? (
-            <button
-              onClick={handlePushUnsubscribe}
-              title="Desactivar alertas de viaje"
-              className="bg-green-600 hover:bg-green-700 text-white p-3 rounded-full shadow-lg"
-            >
-              <Bell className="w-5 h-5" />
-            </button>
-          ) : (
-            <button
-              onClick={handlePushSubscribe}
-              disabled={pushStatus === 'loading'}
-              title="Activar alertas de viaje"
-              className="bg-slate-700 hover:bg-slate-600 text-white p-3 rounded-full shadow-lg"
-            >
-              {pushStatus === 'loading'
-                ? <span className="w-5 h-5 animate-spin border-2 border-white border-t-transparent rounded-full inline-block" />
-                : <BellOff className="w-5 h-5" />
-              }
-            </button>
-          )}
-        </div>
-      )}
+
     </>
   );
 }
