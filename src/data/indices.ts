@@ -158,7 +158,7 @@ export const IPC_DATA = [
   { country: 'Portugal', code: 'PT', ipc: '2.3%', nivel: 'Bajo', region: 'Europa' },
   { country: 'Grecia', code: 'GR', ipc: '3.5%', nivel: 'Alto', region: 'Europa' },
   { country: 'Reino Unido', code: 'GB', ipc: '4.2%', nivel: 'Alto', region: 'Europa' },
-  { country: 'M��xico', code: 'MX', ipc: '5.5%', nivel: 'Muy Alto', region: 'Latinoamérica' },
+  { country: 'México', code: 'MX', ipc: '5.5%', nivel: 'Muy Alto', region: 'Latinoamérica' },
   { country: 'Brasil', code: 'BR', ipc: '4.5%', nivel: 'Alto', region: 'Latinoamérica' },
   { country: 'Argentina', code: 'AR', ipc: '130%', nivel: 'Extremo', region: 'Latinoamérica' },
   { country: 'Turquía', code: 'TR', ipc: '50%', nivel: 'Extremo', region: 'Europa' },
