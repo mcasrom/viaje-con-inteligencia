@@ -45,7 +45,7 @@
 * FUNCIONALIDADES
 
 ** Core Features
-- [X] Mapa riesgos 93 países
+- [X] Mapa riesgos 95 países ( Albania, Georgia)
 - [X] Detalle país (MAEC + emergencias)
 - [X] Checklist 80+ items
 - [X] Bot Telegram + Channel

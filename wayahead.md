@@ -325,6 +325,18 @@ I = 0.4A + 0.3M + 0.3S
 | # | Tarea | Estado |
 |---|------|--------|
 | 1 | API `/api/ist` con patrones | ✅ Done |
+
+### 🆕 PAÍSES AÑADIDOS (2026-04-22)
+| # | País | Código | Destino Turístico |
+|---|------|--------|------------------|
+| 1 | Albania | al | Emergente español |
+| 2 | Georgia | ge | Emergente español |
+| 3 | Uzbekistán | uz | ⏳ Pendiente |
+
+### 📊 COBERTURA ACTUAL
+| Métrica | Valor |
+|---------|-------|
+| Países en mapa | 95 |
 | 2 | UI IST en páginas países | ✅ Done |
 | 3 | Guardar predicciones (Supabase) | ⏳ Pendiente |
 | 4 | Colección feedback post-viaje | ⏳ Pendiente |
