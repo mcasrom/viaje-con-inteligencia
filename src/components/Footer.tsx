@@ -87,7 +87,7 @@ export default function Footer() {
         <div className="pt-6 border-t border-slate-800">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <div className="flex items-center gap-4">
-              <img src="/logo.png" alt="Viaje con Inteligencia" className="h-8 opacity-60" />
+              <img src="/logo.png" alt="Viaje con Inteligencia" className="h-12 opacity-80" />
               <div>
                 <p className="text-slate-500 text-sm">
                   © {new Date().getFullYear()} <strong className="text-slate-400">M.Castillo</strong>
