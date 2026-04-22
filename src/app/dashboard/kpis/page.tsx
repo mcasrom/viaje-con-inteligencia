@@ -160,7 +160,7 @@ export default function KPIsPage() {
           </p>
           <p className="text-blue-400 text-sm mt-3 flex items-center justify-center gap-2">
             <Clock className="w-4 h-4" />
-            Última actualización: 21 Abril 2026, 18:00 UTC • Fuentes: MAEC, OACI, OSINT, APIs seguridad
+            Ultima actualizacion: {new Date().toLocaleDateString('es-ES', { day: '2-digit', month: 'long', year: 'numeric' })} • Fuentes: MAEC, OACI, OSINT
           </p>
         </div>
 
@@ -430,7 +430,7 @@ export default function KPIsPage() {
 
         {/* Footer con fuentes */}
         <div className="text-center text-slate-500 text-sm">
-          <p>Datos actualizados: Abril 2026 | Fuentes: MAEC, OACI, OSINT, APIs de seguridad</p>
+          <p>Datos actualizados: {new Date().toLocaleDateString('es-ES', { month: 'long', year: 'numeric' })} | Fuentes: MAEC, OACI, OSINT</p>
           <p className="mt-2">💡 Los KPIs son orientativos. Verifica siempre las alertas oficiales antes de viajar.</p>
         </div>
       </main>

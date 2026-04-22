@@ -220,7 +220,7 @@ export default function MapaMundial() {
           </p>
           <p className="text-blue-400 text-sm mt-2 flex items-center justify-center gap-2">
             <Clock className="w-4 h-4" />
-            Actualizado: 21 Abril 2026 • Fuentes: MAEC, OACI, OSINT
+            Actualizado: {new Date().toLocaleDateString('es-ES', { day: '2-digit', month: 'long', year: 'numeric' })} • Fuentes: MAEC, OACI, OSINT
           </p>
         </div>
 
