@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
+import Head from 'next/head';
 import dynamic from 'next/dynamic';
 import { 
   ArrowLeft, Search, Globe, Shield, TrendingUp, TrendingDown, 
@@ -11,7 +12,7 @@ import {
 import { 
   LAYERS, LayerId, GPI_DATA, GTI_DATA, HDI_DATA, IPC_DATA, getLayerValue 
 } from '@/data/indices';
-import { paisesData, NivelRiesgo } from '@/data/paises';
+import { paisesData } from '@/data/paises';
 
 const MapContainer = dynamic(
   () => import('react-leaflet').then((mod) => mod.MapContainer),
@@ -136,6 +137,9 @@ export default function IndicesPage() {
   useEffect(() => {
     setMounted(true);
     setLastUpdate(new Date().toISOString());
+    import('leaflet').then((L) => {
+      delete (L as any).Default.prototype._initMapDefaults;
+    });
   }, []);
 
   useEffect(() => {
@@ -189,6 +193,12 @@ export default function IndicesPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900/30 to-slate-900">
+      <Head>
+        <link
+          rel="stylesheet"
+          href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        />
+      </Head>
       <div className="max-w-7xl mx-auto px-4 py-6">
         <Link href="/" className="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 mb-4">
           <ArrowLeft className="w-4 h-4" /> Volver al inicio
