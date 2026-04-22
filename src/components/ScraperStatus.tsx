@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { AlertTriangle, CheckCircle, XCircle, RefreshCw, Globe } from 'lucide-react';
+import { AlertTriangle, CheckCircle, XCircle, RefreshCw, Globe, Clock } from 'lucide-react';
 import { ScraperStatus } from '@/lib/scraper/audit';
 
 interface ScraperStatusDisplayProps {
@@ -14,11 +14,16 @@ export default function ScraperStatusDisplay({ compact = false }: ScraperStatusD
   const [lastCheck, setLastCheck] = useState<string | null>(null);
   const [conflictsStatus, setConflictsStatus] = useState<'live' | 'fallback'>('live');
   const [conflictsTimestamp, setConflictsTimestamp] = useState<string | null>(null);
+  const [currentTime, setCurrentTime] = useState(new Date());
 
   useEffect(() => {
     fetchAllStatus();
     const interval = setInterval(fetchAllStatus, 60000);
-    return () => clearInterval(interval);
+    const timeInterval = setInterval(() => setCurrentTime(new Date()), 60000);
+    return () => {
+      clearInterval(interval);
+      clearInterval(timeInterval);
+    };
   }, []);
 
   const fetchAllStatus = async () => {
@@ -30,7 +35,9 @@ export default function ScraperStatusDisplay({ compact = false }: ScraperStatusD
       
       const scraperData = await scraperRes.json();
       setStatus(scraperData.overall);
-      setLastCheck(scraperData.lastCheck ? new Date(scraperData.lastCheck).toLocaleString('es-ES') : null);
+      setLastCheck(scraperData.lastCheck ? new Date(scraperData.lastCheck).toLocaleString('es-ES', { 
+        day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' 
+      }) : null);
       
       const conflictsData = await conflictsRes.json();
       setConflictsStatus(conflictsData.status || 'live');
@@ -50,6 +57,9 @@ export default function ScraperStatusDisplay({ compact = false }: ScraperStatusD
       </div>
     );
   }
+
+  const today = currentTime.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit' });
+  const now = currentTime.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
 
   const config = {
     healthy: {
@@ -82,11 +92,9 @@ export default function ScraperStatusDisplay({ compact = false }: ScraperStatusD
       <div className={`flex items-center gap-2 px-2 py-1 rounded-full ${cfg.bg} ${cfg.border} border`}>
         {cfg.icon}
         <span className={`text-xs font-medium ${cfg.text}`}>{cfg.label}</span>
-        {conflictsTimestamp && (
-          <span className="text-xs text-slate-400 ml-1">
-            · {new Date(conflictsTimestamp).toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit' })}
-          </span>
-        )}
+        <span className="text-xs text-slate-400 ml-1">
+          · {today} {now}
+        </span>
       </div>
     );
   }
@@ -97,14 +105,14 @@ export default function ScraperStatusDisplay({ compact = false }: ScraperStatusD
         {cfg.icon}
         <span className={`font-medium ${cfg.text}`}>{cfg.label}</span>
       </div>
-      {lastCheck && (
-        <p className="text-xs text-slate-400 mt-1">
-          Sistema: {lastCheck}</p>
-      )}
+      <p className="text-xs text-slate-400 mt-1 flex items-center gap-1">
+        <Clock className="w-3 h-3" />
+        Actualizado: {today} {now}
+      </p>
       {conflictsTimestamp && (
         <div className="flex items-center gap-1 mt-2 text-xs text-slate-400">
           <Globe className="w-3 h-3" />
-          <span>MAEC: {new Date(conflictsTimestamp).toLocaleString('es-ES')}</span>
+          <span>MAEC: {new Date(conflictsTimestamp).toLocaleDateString('es-ES')}</span>
           <span className={`ml-1 px-1 rounded ${conflictsStatus === 'live' ? 'bg-green-500/30 text-green-400' : 'bg-yellow-500/30 text-yellow-400'}`}>
             {conflictsStatus === 'live' ? '● Live' : '⚠ Fallback'}
           </span>
