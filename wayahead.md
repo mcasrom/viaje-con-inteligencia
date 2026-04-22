@@ -471,6 +471,55 @@ I = 0.4A + 0.3M + 0.3S
 
 **Nota:** Stripe mantiene bloqueo por requisitos de informe sobre Cuba. Situación en espera.
 
+---
+
+## 🚀 SPRINT 21: Meteorología + Alertas de Vuelo (2026-04-22)
+
+### 📊 Concepto
+Sistema OSINT de inteligencia de transporte: clima, retrasos, alertas para viajeros.
+
+### 🔑 Fuentes OSINT
+
+**Núcleo de datos:**
+| Fuente | Uso | Costo |
+|--------|-----|-------|
+| OpenSky Network | Tracking vuelos | Gratis |
+| AviationStack | Estado vuelos | Freemium |
+| GTFS Realtime | Trenes/buses | Gratis |
+| AIS feeds | Navieras | Gratis |
+
+**Capa meteorológica:**
+| Fuente | Uso | Costo |
+|--------|-----|-------|
+| METAR/TAF | Meteorología aviacion | Gratis |
+| OpenWeather API | Clima global, tormentas | Freemium |
+| NOAA | Eventos extremos | Gratis |
+
+**Capa IA:**
+- Correlación retrasos ↔ clima
+- Detección congestión aérea
+- Predicción riesgos de viaje
+
+### 📐 Arquitectura
+```
+[Fuentes OSINT] → [Ingestión ETL] → [PostgreSQL] → [Motor IA] → [Alertas/Dashboard]
+```
+
+### 🎯 Impacto
+- Alertas retrasos por clima
+- Rutas alternativas sugeridas
+- Dashboard OSINT transporte
+- Automatización contenido RRSS/blog
+
+### 📋 Tareas
+| # | Feature | Estado |
+|---|---------|--------|
+| 1 | Integración OpenWeather API | ⏳ Pendiente |
+| 2 | METAR/TAF parser | ⏳ Pendiente |
+| 3 | Dashboard retrasos | ⏳ Pendiente |
+| 4 | Alertas Telegram clima | ⏳ Pendiente |
+| 5 | Correlación IA (clima↔retrasos) | ⏳ Pendiente |
+
 ### 📈 MARKETING EXPANSIÓN
 | # | Tarea | Prioridad | Estado |
 |---|------|----------|--------|
