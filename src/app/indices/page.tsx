@@ -1,4 +1,5 @@
-import type { Metadata } from 'next';
+'use client';
+
 import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
@@ -7,19 +8,6 @@ import {
   Activity, Info, Layers as LayersIcon, Map as MapIcon, Table, RefreshCw, ExternalLink,
   AlertTriangle, DollarSign, Heart, Eye, Clock, Zap
 } from 'lucide-react';
-
-export async function generateMetadata(): Promise<Metadata> {
-  return {
-    title: 'Índices Globales Interactivo | Viaje con Inteligencia',
-    description: 'Mapa interactivo con índices de riesgo: Paz Global (GPI), Terrorismo (GTI), Desarrollo Humano (HDI), Inflación, Terremotos en tiempo real y riesgo MAEC. Datos actualizados 2026.',
-    keywords: ['índice paz global', 'GPI', 'terrorism index', 'HDI', 'terremotos tiempo real', 'USGS', 'riesgo viaje', 'comparar países'],
-    openGraph: {
-      title: '🗺️ Índices Globales Interactivo',
-      description: 'Visualiza GPI, GTI, HDI, Inflación y terremotos en tiempo real. La herramienta más completa para análisis de riesgo travel.',
-      type: 'website',
-    },
-  };
-}
 import { 
   LAYERS, LayerId, GPI_DATA, GTI_DATA, HDI_DATA, IPC_DATA, getLayerValue 
 } from '@/data/indices';
@@ -102,7 +90,7 @@ function getPaisCoord(codigo: string): [number, number] | null {
   const coords: Record<string, [number, number]> = {
     ES: [40.0, -3.0], FR: [46.0, 2.0], DE: [51.0, 10.0], IT: [42.0, 12.0], GB: [54.0, -2.0],
     PT: [39.0, -8.0], US: [38.0, -97.0], CA: [56.0, -106.0], MX: [23.0, -102.0],
-    JP: [36.0, 138.0], CN: [35.0, 105.0], IN: [20.0, 77.0], KR: [35.0, 128.0],
+    JP: [36.0, 138.0], CN: [35.0, 105.0], KR: [35.0, 128.0],
     BR: [-14.0, -51.0], AR: [-34.0, -64.0], CL: [-30.0, -71.0], CO: [4.0, -72.0],
     AU: [-25.0, 133.0], NZ: [-41.0, 174.0], RU: [60.0, 100.0], TR: [39.0, 35.0],
     EG: [26.0, 30.0], ZA: [-30.0, 25.0], KE: [1.0, 38.0], MA: [32.0, -5.0],
@@ -113,7 +101,7 @@ function getPaisCoord(codigo: string): [number, number] | null {
     IE: [53.0, -8.0], IS: [65.0, -18.0], SG: [1.0, 103.0], TW: [23.0, 121.0],
     TH: [15.0, 100.0], VN: [14.0, 108.0], PH: [12.0, 121.0], MY: [4.0, 101.0],
     ID: [-5.0, 120.0], AZ: [40.0, 47.0], GE: [42.0, 43.0], AM: [40.0, 45.0],
-    CR: [10.0, -83.0], PA: [9.0, -80.0], GT: [15.0, -90.0], CU: [21.0, -77.0],
+    CR: [10.0, -83.0], PA: [9.0, -80.0], CU: [21.0, -77.0],
     IN: [20.0, 77.0], PK: [30.0, 69.0], BD: [23.0, 90.0], NP: [28.0, 84.0],
     LK: [7.0, 80.0], MM: [21.0, 95.0], KH: [12.0, 105.0], LA: [18.0, 102.0],
     DO: [18.0, -70.0], HN: [15.0, -86.0], SV: [13.0, -88.0], NI: [12.0, -85.0],
