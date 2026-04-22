@@ -1,4 +1,3 @@
 User-agent: *
 Allow: /
-
-Sitemap: https://www.viajeinteligencia.com/sitemap.xml
+Sitemap: https://viajeinteligente.com/sitemap.xml
