@@ -11,6 +11,7 @@
 - Web: https://viajeinteligencia.com
 - Blog: https://viajeinteligencia.com/blog
 - Web Vercel: https://viaje-con-inteligencia.vercel.app
+- KPIs Paz: https://viaje-con-inteligencia.vercel.app/kpi
 - Bot Telegram: https://t.me/ViajeConInteligenciaBot
 - Canal: @ViajeConInteligencia
 - Repo: https://github.com/mcasrom/viaje-con-inteligencia
