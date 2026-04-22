@@ -371,7 +371,7 @@ export default function KPIsPage() {
                         { label: 'Político', value: 100 - pais.riesgoPolitico },
                         { label: 'Aéreo', value: 100 - pais.riesgoAereo },
                         { label: 'Seguridad', value: pais.score },
-                        { label: 'Económico', value: 75 + Math.random() * 20 },
+                        { label: 'Económico', value: pais.score > 60 ? 80 : 65 },
                       ].map((item) => (
                         <div key={item.label}>
                           <div className="flex justify-between text-sm mb-1">
