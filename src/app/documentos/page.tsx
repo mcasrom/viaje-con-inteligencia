@@ -81,7 +81,7 @@ export default function TravelDocumentsPage() {
   const handleNoteSave = async () => {
     if (!noteText.trim()) return;
     await addDocument({
-      type: 'nota',
+      type: newDocType,
       title: noteText.substring(0, 50) + (noteText.length > 50 ? '...' : ''),
       text: noteText,
       createdAt: new Date(),
@@ -278,12 +278,19 @@ export default function TravelDocumentsPage() {
       {showNoteInput && (
         <div className="fixed inset-0 bg-black/80 z-50 flex items-center p-4">
           <div className="w-full bg-slate-900 rounded-2xl p-4">
-            <h3 className="text-lg font-bold mb-4">Nueva Nota</h3>
+            <h3 className="text-lg font-bold mb-4">
+              {newDocType === 'ref' ? 'Nueva Referencia' : 'Nueva Nota'}
+            </h3>
+            <p className="text-xs text-slate-400 mb-2">
+              {newDocType === 'ref' 
+                ? 'Escribe: telefono, direccion, email, contacto emergencia...' 
+                : 'Escribe: notas sobre tu viaje, recordatorios, lo que sea...'}
+            </p>
             <textarea
               value={noteText}
               onChange={(e) => setNoteText(e.target.value)}
-              placeholder="Escribe tu nota..."
-              className="w-full h-40 bg-slate-800 rounded-xl p-4 text-white placeholder-slate-500 resize-none"
+              placeholder={newDocType === 'ref' ? 'Hotel: +34 600 000 000\nEmergencia: 112\nDirección: Calle...' : 'Escribe tu nota...'}
+              className="w-full h-48 bg-slate-800 rounded-xl p-4 text-white placeholder-slate-500 resize-none"
               autoFocus
             />
             <div className="flex gap-3 mt-4">
