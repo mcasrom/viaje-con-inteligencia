@@ -3,6 +3,8 @@ import { getPaisPorCodigo } from '@/data/paises';
 import { getPostsByCountry, getSeoClusterContent } from '@/lib/posts';
 import DetallePaisClient from './DetallePaisClient';
 
+export const dynamic = 'force-dynamic';
+
 interface PageProps {
   params: Promise<{ codigo: string }>;
 }

@@ -6,6 +6,8 @@ import { getPostBySlug, getPostSlugs, getRelatedPosts } from '@/lib/posts';
 import ShareButtons from '@/components/ShareButtons';
 import BlogPostPage from './page.client';
 
+export const dynamic = 'force-dynamic';
+
 interface PageProps {
   params: Promise<{ slug: string }>;
 }

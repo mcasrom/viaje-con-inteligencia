@@ -125,7 +125,7 @@ export default function InstallPWA() {
   }
 
   // Botón de notificaciones (visible cuando está instalada o sin banner)
-  if (!('PushManager' in window)) return null;
+  if (typeof window === 'undefined' || !('PushManager' in window)) return null;
 
   return (
     <div className="fixed bottom-4 right-4 z-50">
