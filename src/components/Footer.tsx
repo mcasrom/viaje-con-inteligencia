@@ -50,6 +50,7 @@ export default function Footer() {
             <h4 className="font-semibold text-white mb-3">Legal</h4>
             <ul className="space-y-2 text-sm">
               <li><Link href="/metodologia" className="text-slate-400 hover:text-white transition-colors">Metodología MAEC</Link></li>
+              <li><Link href="/fuentes-osint" className="text-slate-400 hover:text-white transition-colors">📡 Fuentes OSINT</Link></li>
               <li><Link href="/legal" className="text-slate-400 hover:text-white transition-colors">Aviso Legal</Link></li>
             </ul>
           </div>

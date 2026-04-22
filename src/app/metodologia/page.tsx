@@ -74,7 +74,7 @@ export default function MetodologiaPage() {
                   <strong className="text-white">MAEC:</strong> &ldquo;Extremar las precauciones normales&rdquo;
                 </p>
                 <p className="text-slate-400 text-sm">
-                  Riesgo bajo. Se recomienda vigilance y tomar precauciones adicionales.
+                  Riesgo bajo. Se recomienda vigilancia y tomar precauciones adicionales.
                 </p>
               </div>
 
@@ -104,7 +104,7 @@ export default function MetodologiaPage() {
                   <strong className="text-white">MAEC:</strong> &ldquo;Desaconsejar todos los viajes&rdquo;
                 </p>
                 <p className="text-slate-400 text-sm">
-                  Riesgo muy alto. Condiciones extremadamente危险 (peligrosas).
+                  Riesgo muy alto. Condiciones extremadamente peligrosas.
                 </p>
               </div>
             </div>
