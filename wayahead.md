@@ -461,13 +461,15 @@ I = 0.4A + 0.3M + 0.3S
 | 5 | Prompt login en favoritos | Alta | ✅ Completado |
 | 6 | AuthContext global | Alta | ✅ Completado |
 
-### 💳 STRIPE
+### 💳 STRIPE (BLOQUEADO)
 | # | Tarea | Prioridad | Estado |
 |---|------|----------|--------|
-| 1 | Integración Stripe | Alta | ⏳ Pendiente |
-| 2 | Pagos Premium | Alta | ⏳ Pendiente |
-| 3 | Webhooks | Media | ⏳ Pendiente |
-| 4 | Facturación | Media | ⏳ Pendiente |
+| 1 | Integración Stripe | 🔴 Alta | ⛔ Bloqueado (informe Cuba) |
+| 2 | Pagos Premium | 🔴 Alta | ⛔ Bloqueado |
+| 3 | Webhooks | 🟠 Media | ⛔ Bloqueado |
+| 4 | Facturación | 🟠 Media | ⛔ Bloqueado |
+
+**Nota:** Stripe mantiene bloqueo por requisitos de informe sobre Cuba. Situación en espera.
 
 ### 📈 MARKETING EXPANSIÓN
 | # | Tarea | Prioridad | Estado |
