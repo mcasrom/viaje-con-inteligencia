@@ -114,6 +114,7 @@ export default function TravelDocumentsPage() {
         ref={fileInputRef}
         type="file"
         accept="image/*"
+        capture="environment"
         className="hidden"
         data-doc-type=""
         onChange={handleFileChange}
@@ -122,15 +123,24 @@ export default function TravelDocumentsPage() {
       <header className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-bold">Memoria de Viaje</h1>
-          <p className="text-slate-400 text-sm">Documentos offline</p>
+          <p className="text-slate-400 text-sm">PREMIUM</p>
         </div>
-        <button
-          onClick={handleExport}
-          className="p-2 bg-slate-800 rounded-full"
-          title="Exportar"
-        >
-          <Download className="w-5 h-5" />
-        </button>
+        <div className="flex gap-2">
+          <button
+            onClick={() => handleCaptureImage('ticket')}
+            className="p-2 bg-blue-600 rounded-full"
+            title="Subir"
+          >
+            <Upload className="w-5 h-5" />
+          </button>
+          <button
+            onClick={handleExport}
+            className="p-2 bg-slate-800 rounded-full"
+            title="Exportar"
+          >
+            <Download className="w-5 h-5" />
+          </button>
+        </div>
       </header>
 
       <div className="flex gap-2 overflow-x-auto pb-4 mb-4 scrollbar-hide">
