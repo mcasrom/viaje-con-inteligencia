@@ -114,7 +114,6 @@ export default function TravelDocumentsPage() {
         ref={fileInputRef}
         type="file"
         accept="image/*"
-        capture="environment"
         className="hidden"
         data-doc-type=""
         onChange={handleFileChange}
