@@ -349,6 +349,12 @@ I = 0.4A + 0.3M + 0.3S
 
 ## 🚀 SPRINT 16: Revisión Cloudflare + Códigos Promo (2026-04-22)
 
+### 🔧 FIXES TÉCNICOS (2026-04-22)
+| # | Tarea | Estado |
+|---|------|--------|
+| 1 | Corregir Math.random impurity en /dashboard/kpis | ✅ Done |
+| 2 | Deploy automático (git push → Vercel) | ✅ Done |
+
 ### ☁️ CLOUDFLARE
 | # | Tarea | Estado |
 |---|------|--------|

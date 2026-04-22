@@ -168,6 +168,10 @@
 
 ** 🚀 SPRINT 16: Cloudflare + Códigos Promo (2026-04-22)
 
+*** 🔧 Fixes Técnicos (2026-04-22)
+- [X] Corregir Math.random impurity en /dashboard/kpis (lint error)
+- [ ] Deploy automático a Vercel ✓ (git push trigger)
+
 *** ☁️ Cloudflare
 - [ ] Verificar redirect viajeinteligencia.com → Vercel
 - [ ] Comprobar SSL/TLS configuración
