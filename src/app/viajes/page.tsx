@@ -8,7 +8,9 @@ import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/lib/supabase';
 import type { Trip } from '@/lib/supabase';
 
-const statusLabels: Record<Trip['status'], { label: string; color: string }> = {
+type StatusConfig = Record<Trip['status'], { label: string; color: string }>;
+
+const statusLabels: StatusConfig = {
   draft: { label: 'Borrador', color: 'bg-slate-600 text-slate-200' },
   planned: { label: 'Planificado', color: 'bg-blue-600 text-blue-100' },
   completed: { label: 'Completado', color: 'bg-green-600 text-green-100' },
@@ -31,12 +33,15 @@ export default function ViajesPage() {
   useEffect(() => {
     if (!user) return;
 
+    const currentUser = user;
+
     async function fetchTrips() {
+      if (!supabase) return;
       try {
         const { data, error } = await supabase
           .from('trips')
           .select('*')
-          .eq('user_id', user.id)
+          .eq('user_id', currentUser.id)
           .order('created_at', { ascending: false });
 
         if (!error && data) {
@@ -53,6 +58,7 @@ export default function ViajesPage() {
   }, [user]);
 
   const handleDelete = async (tripId: string) => {
+    if (!supabase) return;
     if (!confirm('¿Eliminar este viaje?')) return;
     setDeletingId(tripId);
 
@@ -155,7 +161,7 @@ function TripCard({
   deletingId,
 }: {
   trip: Trip;
-  statusLabels: typeof statusLabels;
+  statusLabels: StatusConfig;
   onDelete: (id: string) => void;
   deletingId: string | null;
 }) {

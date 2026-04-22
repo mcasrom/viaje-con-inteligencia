@@ -5,7 +5,14 @@ const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
 
 export const supabase = supabaseUrl && supabaseAnonKey
   ? createClient(supabaseUrl, supabaseAnonKey)
-  : null;
+  : null!;
+
+export function getSupabase() {
+  if (!supabaseUrl || !supabaseAnonKey) {
+    throw new Error('Supabase not configured');
+  }
+  return createClient(supabaseUrl, supabaseAnonKey);
+}
 
 export const isSupabaseConfigured = () => !!supabase;
 

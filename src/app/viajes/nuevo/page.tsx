@@ -90,7 +90,8 @@ export default function NuevoViajePage() {
   };
 
   const handleSave = async () => {
-    if (!user || !name || !destination) {
+    if (!user || !supabase) return;
+    if (!name || !destination) {
       setError('Completa los campos requeridos');
       return;
     }

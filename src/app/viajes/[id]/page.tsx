@@ -44,14 +44,17 @@ export default function ViajeDetallePage() {
   }, [user, authLoading, router]);
 
   useEffect(() => {
-    if (!user || !tripId) return;
+    if (!user || !tripId || !supabase) return;
+
+    const currentUser = user;
+    const client = supabase;
 
     async function fetchTrip() {
       try {
-        const { data, error } = await supabase
+        const { data, error } = await client
           .from('trips')
           .select('*')
-          .eq('user_id', user.id)
+          .eq('user_id', currentUser.id)
           .eq('id', tripId)
           .single();
 
@@ -74,8 +77,9 @@ export default function ViajeDetallePage() {
   }, [user, tripId, router]);
 
   const handleRegenerateItinerary = async () => {
-    if (!trip) return;
+    if (!trip || !supabase) return;
     setRegenerating(true);
+    const client = supabase;
 
     try {
       const res = await fetch('/api/ai/itinerary', {
@@ -91,7 +95,7 @@ export default function ViajeDetallePage() {
       const data = await res.json();
       if (data.itinerary) {
         setTrip(prev => prev ? { ...prev, itinerary_raw: data.itinerary } : null);
-        await supabase
+        await client
           .from('trips')
           .update({ itinerary_raw: data.itinerary, updated_at: new Date().toISOString() })
           .eq('id', tripId);
@@ -104,7 +108,7 @@ export default function ViajeDetallePage() {
   };
 
   const handleSave = async () => {
-    if (!trip) return;
+    if (!trip || !user || !supabase) return;
     setSaving(true);
     setError('');
 
@@ -116,7 +120,7 @@ export default function ViajeDetallePage() {
           status: editStatus,
           updated_at: new Date().toISOString()
         })
-        .eq('user_id', user!.id)
+        .eq('user_id', user.id)
         .eq('id', tripId)
         .select()
         .single();
