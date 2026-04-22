@@ -9,24 +9,27 @@ export default function Home() {
     <>
       <MapaMundial />
       
-      {/* KPIs Dashboard - Nuevo */}
+      {/* Memoria de Viaje - Destacado */}
       <div className="max-w-6xl mx-auto px-6 py-8">
-        <div className="bg-gradient-to-r from-orange-900/50 to-amber-900/50 rounded-2xl p-6 border border-orange-500/30">
+        <div className="bg-gradient-to-r from-orange-600 to-amber-600 rounded-2xl p-6 shadow-lg shadow-orange-500/20">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-4">
-              <div className="w-14 h-14 bg-orange-500/20 rounded-xl flex items-center justify-center">
-                <FileText className="w-8 h-8 text-orange-400" />
+              <div className="w-14 h-14 bg-white/20 rounded-xl flex items-center justify-center">
+                <FileText className="w-8 h-8 text-white" />
               </div>
               <div>
-                <h3 className="text-xl font-bold text-white">📁 Memoria de Viaje Offline</h3>
-                <p className="text-slate-400">Guarda boarding passes, reservas de hotel y notas. Disponible sin conexión.</p>
+                <h3 className="text-xl font-bold text-white">📁 Memoria de Viaje</h3>
+                <p className="text-orange-100 text-sm">
+                  Guarda tus documentos de viaje de forma 100% local en tu teléfono. 
+                  No se suben a Internet. Si pierdes el móvil, los pierdes. Exporta backups periódicos.
+                </p>
               </div>
             </div>
             <Link 
               href="/documentos" 
-              className="px-6 py-3 bg-gradient-to-r from-orange-500 to-amber-500 text-white font-bold rounded-xl hover:from-orange-600 hover:to-amber-600 transition-all shadow-lg shadow-orange-500/25 whitespace-nowrap"
+              className="px-6 py-3 bg-white text-orange-600 font-bold rounded-xl hover:bg-orange-50 transition-all whitespace-nowrap"
             >
-              Abrir →
+              Abrir app →
             </Link>
           </div>
         </div>
