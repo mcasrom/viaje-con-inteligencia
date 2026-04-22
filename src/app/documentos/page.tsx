@@ -133,8 +133,9 @@ export default function TravelDocumentsPage() {
 
       <header className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
-          <a href="/" className="p-2 bg-slate-800 rounded-full hover:bg-slate-700" title="Ir al inicio">
-            <Home className="w-5 h-5" />
+          <a href="/" className="flex items-center gap-2 px-3 py-2 bg-slate-800 rounded-full hover:bg-slate-700 text-sm">
+            <Home className="w-4 h-4" />
+            <span className="hidden sm:inline">Inicio</span>
           </a>
           <div>
             <h1 className="text-2xl font-bold">Memoria de Viaje</h1>
@@ -173,15 +174,13 @@ export default function TravelDocumentsPage() {
         </div>
       </header>
 
-      <div className="bg-slate-800/50 rounded-xl p-4 mb-6 text-sm">
-        <h3 className="font-bold text-white mb-3">Como usar esta app</h3>
-        <div className="space-y-2 text-slate-300">
-          <p><span className="text-green-400 font-bold">1.</span> <span className="font-bold">Subir documento:</span> Boton ↑ azul = imagen (boarding pass, reserva, entradas)</p>
-          <p><span className="text-green-400 font-bold">2.</span> <span className="font-bold">Escribir nota:</span> Boton naranja = texto libre, recordatorios, lo que sea</p>
-          <p><span className="text-green-400 font-bold">3.</span> <span className="font-bold">Referencia:</span> Boton cyan = telefono, direccion, contacto emergencia, email...</p>
-          <p><span className="text-red-400 font-bold">⚠ Importante:</span> Todo solo en tu dispositivo. Si pierdes el movil, pierdes todo. Haz exports!</p>
-          <p><span className="text-blue-400 font-bold">4.</span> <span className="font-bold">Export:</span> Boton ↓ = copia de seguridad</p>
-        </div>
+      <div className="bg-slate-800/50 rounded-xl p-3 mb-4 text-xs">
+        <p className="text-slate-300">
+          <span className="text-blue-400 font-bold">↑</span> imagen · 
+          <span className="text-orange-400 font-bold">📝</span> nota · 
+          <span className="text-cyan-400 font-bold">☎</span> ref · 
+          <span className="text-red-400 font-bold">⚠</span> local solo
+        </p>
       </div>
 
       <div className="flex gap-2 overflow-x-auto pb-4 mb-4 scrollbar-hide">
