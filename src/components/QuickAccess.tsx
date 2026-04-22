@@ -60,6 +60,12 @@ function QuickAccessInner() {
             💬 Chat IA
           </Link>
           <Link 
+            href="/kpi"
+            className="block p-2 bg-green-600/20 text-green-400 rounded-lg hover:bg-green-600/30"
+          >
+            🛡️ Índice de Paz
+          </Link>
+          <Link 
             href="/dashboard"
             className="block p-2 bg-red-600/20 text-red-400 rounded-lg hover:bg-red-600/30"
           >
