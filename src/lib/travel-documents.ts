@@ -2,7 +2,7 @@ import Dexie, { Table } from 'dexie';
 
 export interface TravelDocument {
   id?: number;
-  type: 'ticket' | 'vuelo' | 'hotel' | 'nota';
+  type: 'ticket' | 'vuelo' | 'hotel' | 'nota' | 'ref';
   createdAt: Date;
   image?: Blob;
   imageData?: string;

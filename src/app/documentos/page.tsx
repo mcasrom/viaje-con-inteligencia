@@ -1,14 +1,24 @@
 'use client';
 
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { Plus, Camera, Image, FileText, X, Plane, Building, Ticket, Trash2, Download, Upload } from 'lucide-react';
-import { TravelDocument, addDocument, getDocuments, deleteDocument, getAllDocuments, exportToZip } from '@/lib/travel-documents';
+import { Plus, Camera, Image, FileText, X, Plane, Building, Ticket, Trash2, Download, Upload, Phone, StickyNote } from 'lucide-react';
+import { addDocument, getDocuments, deleteDocument, getAllDocuments, exportToZip } from '@/lib/travel-documents';
+
+interface TravelDocument {
+  id?: number;
+  type: 'ticket' | 'vuelo' | 'hotel' | 'nota' | 'ref';
+  createdAt: Date;
+  imageData?: string;
+  text: string;
+  title: string;
+}
 
 const DOC_TYPES = [
   { id: 'vuelo', label: 'Vuelo', icon: Plane, color: 'bg-blue-500' },
   { id: 'hotel', label: 'Hotel', icon: Building, color: 'bg-purple-500' },
   { id: 'ticket', label: 'Ticket', icon: Ticket, color: 'bg-green-500' },
   { id: 'nota', label: 'Nota', icon: FileText, color: 'bg-orange-500' },
+  { id: 'ref', label: 'Referencia', icon: Phone, color: 'bg-cyan-500' },
 ];
 
 export default function TravelDocumentsPage() {
@@ -18,6 +28,7 @@ export default function TravelDocumentsPage() {
   const [filter, setFilter] = useState<string>('all');
   const [showNoteInput, setShowNoteInput] = useState(false);
   const [noteText, setNoteText] = useState('');
+  const [newDocType, setNewDocType] = useState<'nota' | 'ref'>('nota');
   const [showTypeMenu, setShowTypeMenu] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -129,9 +140,23 @@ export default function TravelDocumentsPage() {
           <button
             onClick={() => handleCaptureImage('ticket')}
             className="p-2 bg-blue-600 rounded-full"
-            title="Subir"
+            title="Subir imagen"
           >
             <Upload className="w-5 h-5" />
+          </button>
+          <button
+            onClick={() => { setNewDocType('nota'); setShowNoteInput(true); }}
+            className="p-2 bg-orange-600 rounded-full"
+            title="Nueva nota"
+          >
+            <StickyNote className="w-5 h-5" />
+          </button>
+          <button
+            onClick={() => { setNewDocType('ref'); setShowNoteInput(true); }}
+            className="p-2 bg-cyan-600 rounded-full"
+            title="Nueva referencia (tlfn, direccion, etc)"
+          >
+            <Phone className="w-5 h-5" />
           </button>
           <button
             onClick={handleExport}
