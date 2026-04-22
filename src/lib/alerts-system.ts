@@ -34,7 +34,7 @@ export function formatAlertMessage(pais: string, tipo: 'riesgo' | 'info' | 'urge
     urgente: '🚨',
   };
   
-  return `${emoji[tipo]} *ALERTA: ${pais}*\n\n${mensaje}\n\n_Actualizado: ${new Date().toLocaleDateString('es-ES')}_\n\n🔗 https://viaje-con-inteligencia.vercel.app`;
+  return `${emoji[tipo]} *ALERTA: ${pais}*\n\n${mensaje}\n\n_Actualizado: ${new Date().toLocaleDateString('es-ES')}_\n\n🔗 https://www.viajeinteligencia.com`;
 }
 
 export function generateRiskChangeAlert(
@@ -66,7 +66,7 @@ export function generateRiskChangeAlert(
     `📊 Nivel actual: ${riskEmoji[newRisk]} ${riskLabels[newRisk]}\n\n` +
     `${newRisk === 'alto' || newRisk === 'muy-alto' ? '🚨 Se desaconsejan viajes no esenciales.\n\n' : ''}` +
     `Verifica siempre en la web oficial del MAEC antes de viajar.\n\n` +
-    `🔗 https://viaje-con-inteligencia.vercel.app/pais/${paisCodigo}`;
+    `🔗 https://www.viajeinteligencia.com/pais/${paisCodigo}`;
 }
 
 export const defaultAlerts = [
@@ -139,9 +139,9 @@ export async function generateWeeklyDigest(): Promise<string> {
   message += `💡 *Consejo:*\n`;
   message += `Revisa siempre los requisitos en la web oficial del MAEC antes de viajar.\n\n`;
   message += `🔗 *Links útiles:*\n`;
-  message += `📰 Blog: https://viaje-con-inteligencia.vercel.app/blog\n`;
+  message += `📰 Blog: https://www.viajeinteligencia.com/blog\n`;
   message += `🤖 Bot IA: @ViajeConInteligenciaBot\n`;
-  message += `🗺️ Mapa: https://viaje-con-inteligencia.vercel.app\n\n`;
+  message += `🗺️ Mapa: https://www.viajeinteligencia.com\n\n`;
   message += `✨ *Viaja con inteligencia!*`;
   
   return message;

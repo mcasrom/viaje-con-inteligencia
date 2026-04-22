@@ -47,7 +47,7 @@ export async function generateMetadata({ params }: PageProps) {
       ...seoCluster.longTailKeywords,
     ].join(', '),
     alternates: {
-      canonical: `https://viaje-con-inteligencia.vercel.app/pais/${codigo}`,
+      canonical: `https://www.viajeinteligencia.com/pais/${codigo}`,
     },
     openGraph: {
       title: `${pais.nombre} - Guía completa para viajeros`,

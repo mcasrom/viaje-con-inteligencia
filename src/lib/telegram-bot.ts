@@ -216,7 +216,7 @@ if (pais.ultimoInforme) {
   message += `\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
   message += `🕐 *Actualizado:* Abril 2026\n`;
   message += `📊 *Fuente:* MAEC - Ministerio Asuntos Exteriores\n`;
-  message += `\n🔗 Más detalles: https://viaje-con-inteligencia.vercel.app/pais/${pais.codigo}`;
+  message += `\n🔗 Más detalles: https://www.viajeinteligencia.com/pais/${pais.codigo}`;
 
   return message;
 }
@@ -259,7 +259,7 @@ export function getAlertasRiesgo(): string {
   }
 
   message += `🟢 *Países seguros:* ${riesgoBajo.length + riesgoNinguno.length}`;
-  message += `\n\n🔗 Consultar: https://viaje-con-inteligencia.vercel.app/pais/[código]`;
+  message += `\n\n🔗 Consultar: https://www.viajeinteligencia.com/pais/[código]`;
 
   return message;
 }
@@ -375,7 +375,7 @@ export function getChecklistPreview(): string {
     message += `\n`;
   }
 
-  message += `🔗 Ver completo: https://viaje-con-inteligencia.vercel.app/checklist`;
+  message += `🔗 Ver completo: https://www.viajeinteligencia.com/checklist`;
   return message;
 }
 
@@ -393,6 +393,6 @@ export function getPremiumInfo(): string {
   message += `• Predicción riesgos\n`;
   message += `• Alertas push\n`;
   message += `• Historial guardado\n\n`;
-  message += `🔗 https://viaje-con-inteligencia.vercel.app/premium`;
+  message += `🔗 https://www.viajeinteligencia.com/premium`;
   return message;
 }

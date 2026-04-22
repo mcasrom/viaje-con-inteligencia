@@ -1,7 +1,7 @@
 import { getPostSlugs, getPostBySlug } from '@/lib/posts';
 
 export async function GET() {
-  const siteUrl = 'https://viaje-con-inteligencia.vercel.app';
+  const siteUrl = 'https://www.viajeinteligencia.com';
   const slugs = getPostSlugs();
   const posts = slugs
     .map(slug => getPostBySlug(slug))

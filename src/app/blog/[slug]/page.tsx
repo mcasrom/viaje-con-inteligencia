@@ -28,7 +28,7 @@ export async function generateMetadata({ params }: PageProps) {
     description: post.excerpt,
     keywords: post.keywords,
     alternates: {
-      canonical: `https://viaje-con-inteligencia.vercel.app/blog/${slug}`,
+      canonical: `https://www.viajeinteligencia.com/blog/${slug}`,
     },
     other: {
       'article:published_time': post.date,

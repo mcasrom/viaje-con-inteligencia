@@ -17,7 +17,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Email requerido' }, { status: 400 });
     }
 
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_URL || 'https://viaje-con-inteligencia.vercel.app';
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_URL || 'https://www.viajeinteligencia.com';
     
     const { error } = await supabase!.auth.signInWithOtp({
       email: email.toLowerCase().trim(),

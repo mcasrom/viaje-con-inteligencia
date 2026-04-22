@@ -37,7 +37,7 @@ export async function GET(request: NextRequest) {
         <ul style="line-height: 1.8;">
           ${recentPosts.map((post: any) => `
             <li style="margin-bottom: 10px;">
-              <a href="https://viaje-con-inteligencia.vercel.app/blog/${post.slug}" style="color: #60a5fa; text-decoration: none;">
+              <a href="https://www.viajeinteligencia.com/blog/${post.slug}" style="color: #60a5fa; text-decoration: none;">
                 ${post.title}
               </a>
               <span style="color: #94a3b8; font-size: 12px;"> - ${post.readTime || '5 min'}</span>
@@ -51,13 +51,13 @@ export async function GET(request: NextRequest) {
         ` : ''}
         
         <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #334155; text-align: center;">
-          <a href="https://viaje-con-inteligencia.vercel.app/blog" style="display: inline-block; background-color: #3b82f6; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: bold;">
+          <a href="https://www.viajeinteligencia.com/blog" style="display: inline-block; background-color: #3b82f6; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: bold;">
             Ver Todos los Artículos →
           </a>
         </div>
         
         <p style="margin-top: 30px; font-size: 12px; color: #64748b; text-align: center;">
-          ¿No quieres recibir estos emails? <a href="https://viaje-con-inteligencia.vercel.app/api/newsletter/subscribe?action=unsubscribe&token=demo" style="color: #64748b;">Cancelar suscripción</a>
+          ¿No quieres recibir estos emails? <a href="https://www.viajeinteligencia.com/api/newsletter/subscribe?action=unsubscribe&token=demo" style="color: #64748b;">Cancelar suscripción</a>
         </p>
       </div>
     </div>

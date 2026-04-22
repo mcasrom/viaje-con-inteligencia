@@ -3,7 +3,7 @@ import { paisesData } from '@/data/paises';
 
 export const dynamic = 'force-dynamic';
 
-const BASE_URL = 'https://viaje-con-inteligencia.vercel.app';
+import { SITE_URL as BASE_URL } from '@/lib/config';
 
 const staticPages = [
   '',

@@ -124,7 +124,7 @@ export async function sendCountryAlert(countryCode: string): Promise<boolean> {
     `Riesgo: ${pais.nivelRiesgo}\n` +
     `Capital: ${pais.capital}\n` +
     `Moneda: ${pais.moneda}\n\n` +
-    `https://viaje-con-inteligencia.vercel.app/pais/${pais.codigo}`;
+    `https://www.viajeinteligencia.com/pais/${pais.codigo}`;
 
   return sendTelegramMessage(message);
 }

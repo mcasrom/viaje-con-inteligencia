@@ -110,7 +110,7 @@ export default function BlogPostPage({ post }: { post: Post }) {
       publisher: {
         '@type': 'Organization',
         name: 'Viaje con Inteligencia',
-        logo: 'https://viaje-con-inteligencia.vercel.app/og-image.png',
+        logo: 'https://www.viajeinteligencia.com/og-image.png',
       },
     };
     const script = document.createElement('script');

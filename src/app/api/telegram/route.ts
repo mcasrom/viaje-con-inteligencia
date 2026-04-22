@@ -381,7 +381,7 @@ export async function POST(request: NextRequest) {
       // Handle /start login token
       const params = text.replace('/start ', '').trim();
       if (params === 'login' && isSupabaseConfigured()) {
-        await sendMessage(chatId, '✅ Sesión iniciada correctamente!\n\n🔗 https://viaje-con-inteligencia.vercel.app/dashboard?telegram_login=1');
+        await sendMessage(chatId, '✅ Sesión iniciada correctamente!\n\n🔗 https://www.viajeinteligencia.com/dashboard?telegram_login=1');
         return NextResponse.json({ ok: true });
       }
       

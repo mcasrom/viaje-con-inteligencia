@@ -2,7 +2,7 @@ import { MetadataRoute } from 'next';
 import { getTodosLosPaises } from '@/data/paises';
 import { getPostSlugs } from '@/lib/posts';
 
-const BASE_URL = 'https://viaje-con-inteligencia.vercel.app';
+import { SITE_URL as BASE_URL } from '@/lib/config';
 
 function buildAlternates(baseUrl: string) {
   return {

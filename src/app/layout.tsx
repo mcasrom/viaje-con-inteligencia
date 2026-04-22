@@ -27,7 +27,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Viaje con Inteligencia | Riesgo Zero",
     description: "Mapa interactivo de riesgos de viaje por país. Información oficial MAEC. Embajadas, requisitos y consejos para viajar seguro.",
-    url: "https://viaje-con-inteligencia.vercel.app",
+    url: "https://www.viajeinteligencia.com",
     siteName: "Viaje con Inteligencia",
     locale: "es_ES",
     type: "website",
@@ -78,7 +78,7 @@ export default function RootLayout({
               "@context": "https://schema.org",
               "@type": "WebSite",
               name: "Viaje con Inteligencia",
-              url: "https://viaje-con-inteligencia.vercel.app",
+              url: "https://www.viajeinteligencia.com",
               description: "Tu guía completa de viajes seguros. Mapa interactivo de riesgos por país según MAEC español.",
               publisher: {
                 "@type": "Organization",
@@ -86,20 +86,20 @@ export default function RootLayout({
               },
               potentialAction: {
                 "@type": "SearchAction",
-                target: "https://viaje-con-inteligencia.vercel.app/blog?search={search_term_string}",
+                target: "https://www.viajeinteligencia.com/blog?search={search_term_string}",
                 "query-input": "required name=search_term_string",
               },
             }),
           }}
         />
-        <link rel="canonical" href="https://viaje-con-inteligencia.vercel.app" />
+        <link rel="canonical" href="https://www.viajeinteligencia.com" />
         <link rel="icon" href="/favicon.jpg" type="image/jpeg" sizes="32x32" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.jpg" />
-        <link rel="alternate" hrefLang="es" href="https://viaje-con-inteligencia.vercel.app" />
-        <link rel="alternate" hrefLang="en" href="https://viaje-con-inteligencia.vercel.app/en" />
-        <link rel="alternate" hrefLang="pt" href="https://viaje-con-inteligencia.vercel.app/pt" />
-        <link rel="alternate" hrefLang="x-default" href="https://viaje-con-inteligencia.vercel.app" />
-        <link rel="sitemap" type="application/xml" href="https://viaje-con-inteligencia.vercel.app/sitemap.xml" />
+        <link rel="alternate" hrefLang="es" href="https://www.viajeinteligencia.com" />
+        <link rel="alternate" hrefLang="en" href="https://www.viajeinteligencia.com/en" />
+        <link rel="alternate" hrefLang="pt" href="https://www.viajeinteligencia.com/pt" />
+        <link rel="alternate" hrefLang="x-default" href="https://www.viajeinteligencia.com" />
+        <link rel="sitemap" type="application/xml" href="https://www.viajeinteligencia.com/sitemap.xml" />
         <meta name="theme-color" content="#0f172a" />
         <meta name="thumbnail" content="/preview_favicon.jpg" />
       </head>
