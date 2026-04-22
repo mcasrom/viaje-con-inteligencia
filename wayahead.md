@@ -635,7 +635,8 @@ Módulo PWA de almacenamiento local (IndexedDB) para documentos de viaje/offline
 | 5 | Export backup | ✅ Done |
 | 6 | PWA manifest | ✅ Done |
 | 7 | Guia de uso integrada | ✅ Done |
-| 8 | **Soporte PDF** | ✅ Done |
+| 8 | **Soporte PDF** (5MB max) | ✅ Done |
+| 9 | **Toast confirmation** | ✅ Done |
 
 ### 🧩 Tipos de Documentos
 - Vuelo (imagen/PDF)
