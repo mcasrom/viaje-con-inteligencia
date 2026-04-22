@@ -620,18 +620,28 @@ Scraping y alertas automatizadas mediante Vercel Cron Jobs para mantener datos a
 
 ---
 
-## 🚀 SPRINT 20: Memoria de Viaje - MVP (2026-04-22)
+## 🚀 SPRINT 20: Memoria de Viaje - COMPLETADO (2026-04-22)
 
 ### 📱 Concepto
-Módulo PWA de almacenamiento local (IndexedDB) para documentos de viaje/offline: boarding passes, hotel confirmations, notas.
+Módulo PWA de almacenamiento local (IndexedDB) para documentos de viaje/offline: boarding passes, hotel confirmations, notas, referencias.
 
 ### ✅ Completado
 | # | Feature | Estado |
 |---|---------|--------|
-| 1 | IndexedDB con Dexie.js | ⏳ Pendiente |
-| 2 | UI "+" flotante (cámara/galería/nota) | ⏳ Pendiente |
-| 3 | Lista documentos con filtros | ⏳ Pendiente |
-| 4 | PWA manifest | ⏳ Pendiente |
+| 1 | IndexedDB con Dexie.js | ✅ Done |
+| 2 | Subir imagen (Upload) | ✅ Done |
+| 3 | Escribir nota (text) | ✅ Done |
+| 4 | Referencia (tfno, direccion) | ✅ Done |
+| 5 | Export backup | ✅ Done |
+| 6 | PWA manifest | ✅ Done |
+| 7 | Guia de uso integrada | ✅ Done |
+
+### 🧩 Tipos de Documentos
+- Vuelo (imagen)
+- Hotel (imagen)
+- Ticket (imagen)
+- Nota (texto libre)
+- Referencia (telefono, direccion, contacto)
 
 ### 📦 Modelo de Datos
 ```javascript

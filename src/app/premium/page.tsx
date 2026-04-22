@@ -354,17 +354,13 @@ export default function PremiumPage() {
                   <Globe className="w-4 h-4" />
                   Sismos
                 </button>
-                <button
-                  onClick={() => { setActiveTab('conflicts'); loadConflicts(); }}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors ${
-                    activeTab === 'conflicts'
-                      ? 'bg-red-500 text-white'
-                      : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
-                  }`}
+                <Link
+                  href="/documentos"
+                  className="flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors bg-orange-600/80 text-orange-200 hover:bg-orange-600"
                 >
-                  <AlertTriangle className="w-4 h-4" />
-                  Conflictos
-                </button>
+                  <FileText className="w-4 h-4" />
+                  Memoria Viaje
+                </Link>
                 <button
                   onClick={() => setActiveTab('indices')}
                   className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors ${
