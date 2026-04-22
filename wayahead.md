@@ -635,11 +635,12 @@ Módulo PWA de almacenamiento local (IndexedDB) para documentos de viaje/offline
 | 5 | Export backup | ✅ Done |
 | 6 | PWA manifest | ✅ Done |
 | 7 | Guia de uso integrada | ✅ Done |
+| 8 | **Soporte PDF** | ✅ Done |
 
 ### 🧩 Tipos de Documentos
-- Vuelo (imagen)
-- Hotel (imagen)
-- Ticket (imagen)
+- Vuelo (imagen/PDF)
+- Hotel (imagen/PDF)
+- Ticket (imagen/PDF)
 - Nota (texto libre)
 - Referencia (telefono, direccion, contacto)
 

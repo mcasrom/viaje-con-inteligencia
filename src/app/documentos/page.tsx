@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback, useRef } from 'react';
+import Link from 'next/link';
 import { Plus, Camera, Image, FileText, X, Plane, Building, Ticket, Trash2, Download, Upload, Phone, StickyNote, ArrowLeft, Home } from 'lucide-react';
 import { addDocument, getDocuments, deleteDocument, getAllDocuments, exportToZip } from '@/lib/travel-documents';
 
@@ -61,19 +62,37 @@ export default function TravelDocumentsPage() {
     
     if (!file) return;
 
+    const MAX_SIZE = 5 * 1024 * 1024; // 5MB
+    if (file.size > MAX_SIZE) {
+      alert(`Archivo muy grande (${(file.size / 1024 / 1024).toFixed(1)}MB). Máximo: 5MB`);
+      e.target.value = '';
+      return;
+    }
+
+    const isPdf = file.type === 'application/pdf';
     const reader = new FileReader();
+    
     reader.onload = async () => {
-      const imageData = reader.result as string;
+      let imageData: string | undefined;
+      let text: string = '';
+      
+      if (isPdf) {
+        text = `PDF: ${file.name} (${(file.size / 1024).toFixed(0)}KB)`;
+      } else {
+        imageData = reader.result as string;
+      }
+      
       const fileName = file.name.replace(/\.[^/.]+$/, '').replace(/[-_]/g, ' ');
       await addDocument({
         type: docType,
         title: fileName || `${docType} - ${new Date().toLocaleDateString('es-ES')}`,
-        text: '',
+        text,
         imageData,
         createdAt: new Date(),
       });
       loadDocuments();
     };
+    
     reader.readAsDataURL(file);
     e.target.value = '';
   };
@@ -124,7 +143,7 @@ export default function TravelDocumentsPage() {
       <input
         ref={fileInputRef}
         type="file"
-        accept="image/*"
+        accept="image/*,.pdf,application/pdf"
         capture="environment"
         className="hidden"
         data-doc-type=""
@@ -133,10 +152,10 @@ export default function TravelDocumentsPage() {
 
       <header className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
-          <a href="/" className="flex items-center gap-2 px-3 py-2 bg-slate-800 rounded-full hover:bg-slate-700 text-sm">
+          <Link href="/" className="flex items-center gap-2 px-3 py-2 bg-slate-800 rounded-full hover:bg-slate-700 text-sm">
             <Home className="w-4 h-4" />
             <span className="hidden sm:inline">Inicio</span>
-          </a>
+          </Link>
           <div>
             <h1 className="text-2xl font-bold">Memoria de Viaje</h1>
             <p className="text-slate-400 text-sm">PREMIUM</p>
@@ -176,13 +195,13 @@ export default function TravelDocumentsPage() {
 
       <div className="bg-slate-800/50 rounded-xl p-3 mb-4 text-xs">
         <p className="text-slate-300">
-          <span className="text-blue-400 font-bold">↑</span> imagen · 
+          <span className="text-blue-400 font-bold">↑</span> img/PDF · 
           <span className="text-orange-400 font-bold">📝</span> nota · 
           <span className="text-cyan-400 font-bold">☎</span> ref · 
           <span className="text-slate-400 font-bold">↓</span> backup
         </p>
         <p className="mt-1 text-slate-500">
-          Formatos: JPG, PNG, WebP | Max 5MB | <span className="text-red-400">Local solo - sin nube</span>
+          Formatos: JPG, PNG, WebP, PDF | Max 5MB | <span className="text-red-400">Local solo - sin nube</span>
         </p>
         <p className="text-red-400 mt-1">
           ⚠ Si pierdes el dispositivo, pierdes TODO. Exporta backup regularmente.
@@ -227,6 +246,7 @@ export default function TravelDocumentsPage() {
         <div className="grid grid-cols-2 gap-3">
           {documents.map((doc) => {
             const typeInfo = getTypeInfo(doc.type);
+            const isPdf = doc.text?.startsWith('PDF:');
             return (
               <button
                 key={doc.id}
@@ -236,6 +256,13 @@ export default function TravelDocumentsPage() {
                 {doc.imageData ? (
                   <div className="aspect-[4/3] bg-slate-800">
                     <img src={doc.imageData} alt={doc.title} className="w-full h-full object-cover" />
+                  </div>
+                ) : isPdf ? (
+                  <div className="aspect-[4/3] bg-red-900/50 flex items-center justify-center">
+                    <div className="text-center">
+                      <FileText className="w-12 h-12 text-red-400 mx-auto" />
+                      <span className="text-xs text-red-400 mt-2 block">PDF</span>
+                    </div>
                   </div>
                 ) : (
                   <div className={`aspect-[4/3] ${typeInfo.color} flex items-center justify-center`}>
@@ -360,8 +387,8 @@ export default function TravelDocumentsPage() {
 
       <div className="mt-8 pt-4 border-t border-slate-800 text-center text-xs text-slate-500">
         <p>AVISO: Docs guardados localmente. Sin copia en la nube.</p>
-        <p className="text-red-400">Si pierdes el dispostivo, pierdes TODO. Exporta regularmente.</p>
-        <p className="mt-1 text-slate-600">Formats: JPG, PNG, WebP | Max 5MB</p>
+        <p className="text-red-400">Si pierdes el dispositivo, pierdes TODO. Exporta regularmente.</p>
+        <p className="mt-1 text-slate-600">Formatos: JPG, PNG, WebP, PDF | Max 5MB</p>
       </div>
     </div>
   );
