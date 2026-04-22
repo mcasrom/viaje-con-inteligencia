@@ -152,6 +152,18 @@
 | Canal @ViajeConInteligencia | ✅ |
 | Cron semanal | ✅ Enviado |
 
+### 🔄 CRON Jobs Vercel (2026-04-22)
+Configurados en `vercel.json`:
+| Cron | Schedule | Path | Función |
+|------|----------|------|---------|
+| scrape-maec | 0 6 * * * | /api/cron/scrape-maec | Scraping MAEC diario |
+| check-alerts | 0 8 * * * | /api/cron/check-alerts | Verificar alertas |
+| weekly-digest | 0 8 * * 1 | /api/cron/weekly-digest | Newsletter semanal |
+
+**Requisito:** Variable `CRON_SECRET` configurada en Vercel
+
+**Footer actualizado:** Muestra fecha/hora actual en lugar de timestamp estático
+
 ---
 
 ## 🚀 SPRINT 6 - PRODUCTO DIFERENCIAL
