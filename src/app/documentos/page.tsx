@@ -143,6 +143,17 @@ export default function TravelDocumentsPage() {
         </div>
       </header>
 
+      <div className="bg-slate-800/50 rounded-xl p-4 mb-6 text-sm">
+        <h3 className="font-bold text-white mb-3">Como usar esta app</h3>
+        <div className="space-y-2 text-slate-300">
+          <p><span className="text-green-400 font-bold">1.</span> <span className="font-bold">Subir documentos:</span> Pulsa el boton ↑ azul para selecionar fotos de tu movil o laptop (boarding pass, reserva hotel, entradas)</p>
+          <p><span className="text-green-400 font-bold">2.</span> <span className="font-bold">Ver offline:</span> Acceso sin internet desde tu dispositivo</p>
+          <p><span className="text-red-400 font-bold">⚠ Importante:</span> Los documentos solo se guardan en tu dispositivo. <span className="text-red-400">Si pierdes el movil, pierdes los documentos.</span> Haz exports regulares!</p>
+          <p><span className="text-blue-400 font-bold">3.</span> <span className="font-bold">Export:</span> Usa el boton ↓ para hacer copia de seguridad</p>
+          <p><span className="text-slate-400">Formatos: JPG, PNG, WebP | Tamano max: 5MB por imagen</span></p>
+        </div>
+      </div>
+
       <div className="flex gap-2 overflow-x-auto pb-4 mb-4 scrollbar-hide">
         <button
           onClick={() => setFilter('all')}
@@ -304,6 +315,12 @@ export default function TravelDocumentsPage() {
           </div>
         </div>
       )}
+
+      <div className="mt-8 pt-4 border-t border-slate-800 text-center text-xs text-slate-500">
+        <p>AVISO: Documentos guardados localmente en tu dispositivo. Sin copia en la nube.</p>
+        <p>Si pierdes el movil, pierdes los docs. Exporta regularmente.</p>
+        <p className="mt-1 text-slate-600">Formatos: JPG, PNG, WebP | Max 5MB/imagen</p>
+      </div>
     </div>
   );
 }
