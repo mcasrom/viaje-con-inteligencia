@@ -31,7 +31,15 @@ export default function TravelDocumentsPage() {
   const [noteText, setNoteText] = useState('');
   const [newDocType, setNewDocType] = useState<'nota' | 'ref'>('nota');
   const [showTypeMenu, setShowTypeMenu] = useState(false);
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const showToastMessage = (message: string) => {
+    setToastMessage(message);
+    setShowToast(true);
+    setTimeout(() => setShowToast(false), 2500);
+  };
 
   const loadDocuments = useCallback(async () => {
     setLoading(true);
@@ -83,6 +91,7 @@ export default function TravelDocumentsPage() {
       }
       
       const fileName = file.name.replace(/\.[^/.]+$/, '').replace(/[-_]/g, ' ');
+      const docLabel = DOC_TYPES.find(t => t.id === docType)?.label || docType;
       await addDocument({
         type: docType,
         title: fileName || `${docType} - ${new Date().toLocaleDateString('es-ES')}`,
@@ -90,6 +99,7 @@ export default function TravelDocumentsPage() {
         imageData,
         createdAt: new Date(),
       });
+      showToastMessage(`✓ ${docLabel} guardado`);
       loadDocuments();
     };
     
@@ -207,6 +217,12 @@ export default function TravelDocumentsPage() {
           ⚠ Si pierdes el dispositivo, pierdes TODO. Exporta backup regularmente.
         </p>
       </div>
+
+      {showToast && (
+        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 px-4 py-2 bg-green-500 text-white rounded-full text-sm font-medium shadow-lg animate-pulse">
+          {toastMessage}
+        </div>
+      )}
 
       <div className="flex gap-2 overflow-x-auto pb-4 mb-4 scrollbar-hide">
         <button
