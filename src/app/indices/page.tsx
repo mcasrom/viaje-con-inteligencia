@@ -1,11 +1,11 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import { 
   ArrowLeft, Search, Shield, Activity, Info, Layers as LayersIcon, Table, 
-  AlertTriangle, DollarSign, Heart, Eye, Clock, Zap
+  AlertTriangle, DollarSign, Heart, Eye, Clock, Zap, RefreshCw
 } from 'lucide-react';
 import { 
   LAYERS, LayerId, GPI_DATA, GTI_DATA, HDI_DATA, IPC_DATA 
@@ -119,6 +119,8 @@ function getDataForLayer(layerId: LayerId) {
     case 'gti': return GTI_DATA;
     case 'hdi': return HDI_DATA;
     case 'ipc': return IPC_DATA;
+    case 'sismo': return [];
+    case 'maec': return [];
     default: return [];
   }
 }
@@ -128,6 +130,23 @@ export default function IndicesPage() {
   const [search, setSearch] = useState('');
   const [region, setRegion] = useState('Todas');
   const [showTable, setShowTable] = useState(true);
+  const [earthquakes, setEarthquakes] = useState<any[]>([]);
+  const [loadingQuakes, setLoadingQuakes] = useState(false);
+  const [lastUpdate, setLastUpdate] = useState<string>('');
+
+  useEffect(() => {
+    if (activeLayer === 'sismo') {
+      setLoadingQuakes(true);
+      fetch('/api/earthquakes?timeframe=month&minMagnitude=4&limit=50')
+        .then(res => res.json())
+        .then(data => {
+          setEarthquakes(data.earthquakes || []);
+          setLastUpdate(data.updated || new Date().toISOString());
+        })
+        .catch(console.error)
+        .finally(() => setLoadingQuakes(false));
+    }
+  }, [activeLayer]);
 
   const config = layerConfig[activeLayer];
   const baseData = getDataForLayer(activeLayer);
@@ -261,7 +280,35 @@ export default function IndicesPage() {
 
         {/* MAP */}
         <div className="bg-slate-800 rounded-xl p-4 mb-6 border border-slate-700">
-          <h2 className="font-bold text-white mb-4">Mapa interactivo</h2>
+          <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
+            <h2 className="font-bold text-white">Mapa interactivo</h2>
+            {activeLayer === 'sismo' && (
+              <div className="flex items-center gap-2">
+                <span className="flex items-center gap-1 px-2 py-1 bg-green-900/30 text-green-400 rounded-full text-xs">
+                  <Zap className="w-3 h-3" /> Tiempo real
+                </span>
+                <span className="flex items-center gap-1 text-xs text-slate-400">
+                  <Clock className="w-3 h-3" />
+                  {loadingQuakes ? 'Actualizando...' : lastUpdate ? new Date(lastUpdate).toLocaleString('es-ES', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }) : '-'}
+                </span>
+                <button
+                  onClick={() => {
+                    setLoadingQuakes(true);
+                    fetch('/api/earthquakes?timeframe=month&minMagnitude=4&limit=50')
+                      .then(res => res.json())
+                      .then(data => {
+                        setEarthquakes(data.earthquakes || []);
+                        setLastUpdate(data.updated || new Date().toISOString());
+                      })
+                      .finally(() => setLoadingQuakes(false));
+                  }}
+                  className="text-xs text-blue-400 hover:text-blue-300 flex items-center gap-1"
+                >
+                  <RefreshCw className={`w-3 h-3 ${loadingQuakes ? 'animate-spin' : ''}`} />
+                </button>
+              </div>
+            )}
+          </div>
           
           <div className="h-[400px] rounded-xl overflow-hidden z-0">
             <MapContainer
@@ -275,33 +322,60 @@ export default function IndicesPage() {
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
               />
               
-              {filteredData.map((item: any) => {
-                const coords = PAIS_COORDS[item.code];
-                if (!coords) return null;
-                const value = (item as any).score || (item as any).ipc ? parseFloat((item as any).ipc?.replace('%', '') || '0') : 0;
-                
-                return (
+              {activeLayer === 'sismo' ? (
+                earthquakes.map((eq: any) => (
                   <CircleMarker
-                    key={item.code}
-                    center={coords}
+                    key={eq.id}
+                    center={[eq.lat, eq.lng]}
                     pathOptions={{
-                      color: config.getColor(value),
-                      fillColor: config.getColor(value),
+                      color: eq.magnitude >= 6 ? '#dc2626' : eq.magnitude >= 5 ? '#f97316' : '#eab308',
+                      fillColor: eq.magnitude >= 6 ? '#dc2626' : eq.magnitude >= 5 ? '#f97316' : '#eab308',
                       fillOpacity: 0.7,
                       weight: 1,
                     }}
-                    radius={8}
+                    radius={eq.magnitude * 3}
                   >
                     <Popup>
                       <div className="text-sm">
-                        <strong>{item.country}</strong><br/>
-                        {currentLayerInfo?.shortName}: {config.format(value)} {config.unit}<br/>
-                        Nivel: {config.getLabel(value)}
+                        <strong className="text-red-600">{eq.place}</strong><br/>
+                        Magnitud: {eq.magnitude}<br/>
+                        Profundidad: {eq.depth} km<br/>
+                        <a href={eq.url} target="_blank" rel="noopener" className="text-blue-500 underline">
+                          Más información
+                        </a>
                       </div>
                     </Popup>
                   </CircleMarker>
-                );
-              })}
+                ))
+              ) : (
+                filteredData.map((item: any) => {
+                  const coords = PAIS_COORDS[item.code];
+                  if (!coords) return null;
+                  const value = (item as any).score || (item as any).ipc ? parseFloat((item as any).ipc?.replace('%', '') || '0') : 0;
+                  
+                  return (
+                    <CircleMarker
+                      key={item.code}
+                      center={coords}
+                      pathOptions={{
+                        color: config.getColor(value),
+                        fillColor: config.getColor(value),
+                        fillOpacity: 0.7,
+                        weight: 1,
+                      }}
+                      radius={8}
+                    >
+                      <Popup>
+                        <div className="text-sm">
+                          <strong>{item.country}</strong><br/>
+                          {currentLayerInfo?.shortName}: {config.format(value)} {config.unit}<br/>
+                          Nivel: {config.getLabel(value)}
+                        </div>
+                      </Popup>
+                    </CircleMarker>
+                  );
+                })
+              )}
             </MapContainer>
           </div>
 
