@@ -586,6 +586,40 @@ Herramienta GIS-like con selector de capas para visualizar múltiples índices d
 
 ---
 
+## 🚀 SPRINT 19: Cron Jobs Automatizados (2026-04-22)
+
+### ⏰ Concepto
+Scraping y alertas automatizadas mediante Vercel Cron Jobs para mantener datos actualizados.
+
+### ✅ Completado
+| # | Feature | Estado |
+|---|---------|--------|
+| 1 | Configuración vercel.json | ✅ Done |
+| 2 | CRON_SECRET configurado | ✅ Done |
+| 3 | Endpoint `/api/cron/status` | ✅ Done |
+| 4 | UI de estado en ScraperStatus | ✅ Done |
+
+### 📅 Schedule
+| Job | Schedule | Descripción |
+|-----|----------|------------|
+| scrape-maec | `0 6 * * *` | Scraping MAEC diario 6:00 UTC |
+| check-alerts | `0 8 * * *` | Check alertas diario 8:00 UTC |
+| weekly-digest | `0 8 * * 1` | Resumen semanal cada lunes 8:00 UTC |
+
+### 🔧 Verificación
+- Dashboard Vercel → Cron Jobs
+- `GET /api/cron/status` → Estado de ejecuciones
+- Supabase tabla `scraper_logs` → Histórico
+
+---
+
+### 🎯 Siguientes Pasos
+- [ ] Monitor de fallos (email notification)
+- [ ] Retry automático en error
+- [ ] Dashboard de métricas
+
+---
+
 ## 📊 COBERTURA ACTUAL (2026-04-22)
 
 | Feature | Estado |

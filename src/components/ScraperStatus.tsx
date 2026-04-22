@@ -15,6 +15,7 @@ export default function ScraperStatusDisplay({ compact = false }: ScraperStatusD
   const [conflictsStatus, setConflictsStatus] = useState<'live' | 'fallback'>('live');
   const [conflictsTimestamp, setConflictsTimestamp] = useState<string | null>(null);
   const [currentTime, setCurrentTime] = useState(new Date());
+  const [cronStatus, setCronStatus] = useState<any>(null);
 
   useEffect(() => {
     fetchAllStatus();
@@ -28,9 +29,10 @@ export default function ScraperStatusDisplay({ compact = false }: ScraperStatusD
 
   const fetchAllStatus = async () => {
     try {
-      const [scraperRes, conflictsRes] = await Promise.all([
+      const [scraperRes, conflictsRes, cronRes] = await Promise.all([
         fetch('/api/scraper-status'),
         fetch('/api/conflicts?limit=1'),
+        fetch('/api/cron/status'),
       ]);
       
       const scraperData = await scraperRes.json();
@@ -42,6 +44,9 @@ export default function ScraperStatusDisplay({ compact = false }: ScraperStatusD
       const conflictsData = await conflictsRes.json();
       setConflictsStatus(conflictsData.status || 'live');
       setConflictsTimestamp(conflictsData.lastRealUpdate || conflictsData.updated || null);
+      
+      const cronData = await cronRes.json();
+      setCronStatus(cronData);
     } catch {
       setStatus('error');
     } finally {
@@ -116,6 +121,23 @@ export default function ScraperStatusDisplay({ compact = false }: ScraperStatusD
           <span className={`ml-1 px-1 rounded ${conflictsStatus === 'live' ? 'bg-green-500/30 text-green-400' : 'bg-yellow-500/30 text-yellow-400'}`}>
             {conflictsStatus === 'live' ? '● Live' : '⚠ Fallback'}
           </span>
+        </div>
+      )}
+      {cronStatus && (
+        <div className="mt-2 pt-2 border-t border-slate-700/50">
+          <div className="text-xs text-slate-500 mb-1">Próximo scrape:</div>
+          <div className="flex gap-2 text-xs">
+            <span className={cronStatus.scrapeMaec?.status === 'healthy' ? 'text-green-400' : 'text-orange-400'}>
+              MAEC: {cronStatus.scrapeMaec?.nextRun 
+                ? new Date(cronStatus.scrapeMaec.nextRun).toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })
+                : 'pendiente'}
+            </span>
+            <span className={cronStatus.checkAlerts?.status === 'healthy' ? 'text-green-400' : 'text-orange-400'}>
+              Alerts: {cronStatus.checkAlerts?.nextRun
+                ? new Date(cronStatus.checkAlerts.nextRun).toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })
+                : 'pendiente'}
+            </span>
+          </div>
         </div>
       )}
     </div>

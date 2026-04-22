@@ -43,6 +43,12 @@
 - Tabla de datos filtrable
 - Tiempo real para sismos (USGS API)
 
+### Cron Jobs
+- vercel.json configurado (3 jobs)
+- CRON_SECRET en Vercel Dashboard
+- Endpoint `/api/cron/status` para verificar
+- Schedule: daily 6:00 UTC (scrape), 8:00 UTC (alerts), weekly lunes 8:00
+
 ### Chat IA (Premium)
 - Groq integration (modelo llama-3.1-8b-instant)
 - Prompt MAEC mejorado
