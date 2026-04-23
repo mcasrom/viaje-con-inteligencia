@@ -299,23 +299,38 @@ I = 0.4A + 0.3M + 0.3S
 - [ ] Alertas inteligentes
 - [x] Filtro automático eventos pasados (ordenados por fecha)
 - [x] Badges estado (en curso/próximo)
+- [ ] **Ampliar nearbyCountries** para más países en PDF
+
+### 🔧 Próximas Mejoras PDF
+| # | Mejora | Prioridad |
+|---|-------|----------|
+| 1 | Añadir más países a `nearbyCountries` | Media |
+| 2 | Mapa ruta itinerario (si hay múltiples ciudades) | Baja |
+| 3 | QR code enlace a web | Baja |
+
+**Para añadir ciudades:** Editar `src/components/PDFExportButton.tsx` - objeto `nearbyCountries`
 
 ### 🎨 SPRINT 22: PDF Itinerario Premium (2026-04-23)
 | # | Feature | Estado |
 |---|---------|--------|
 | 1 | Botón "Exportar PDF" en vista viaje | ✅ Done |
-| 2 | jsPDF + html2canvas | ✅ Done |
-| 3 | Cabecera corporativo (logo, web) | ✅ Done |
-| 4 | Fechas + duración | ✅ Done |
+| 2 | jsPDF (gratuito) | ✅ Done |
+| 3 | Cabecera con logo (logo_ok.png) | ✅ Done |
+| 4 | Fechas + duración + presupuesto | ✅ Done |
 | 5 | Itinerario día a día | ✅ Done |
-| 6 | Precauciones riesgo país | ✅ Done |
-| 7 | Info emergencias (teléfonos) | ✅ Done |
-| 8 | Checklist embargue (12 items) | ✅ Done |
-| 9 | Footer con fecha generación | ✅ Done |
-| 10 | Notas personales (espacio 6 líneas) | ✅ Done |
-| 11 | Badge "PREMIUM" + disclaimer | ✅ Done |
-| 12 | **Mapa geográfico (coordenadas)** | ✅ Done |
-| 13 | Spacing dinámico (checkNewPage) | ✅ Done |
+| 6 | Nivel de riesgo país (color-coded) | ✅ Done |
+| 7 | Mapa geográfico con grid hemisférico | ✅ Done |
+| 8 | Ciudades cercanas + distancias (km) | ✅ Done |
+| 9 | Info: moneda, conduccion, zona horaria | ✅ Done |
+| 10 | Checklist embargue (12 items) | ✅ Done |
+| 11 | Teléfonos emergencia | ✅ Done |
+| 12 | Notas personales (espacio 5 líneas) | ✅ Done |
+| 13 | Footer todas páginas + "Premium" | ✅ Done |
+| 14 | Badge PREMIUM dorado | ✅ Done |
+| 15 | Spacing dinámico (checkNewPage) | ✅ Done |
+
+**Cost:** $0 (jsPDF gratuito)
+**Ampliable:** Añadir más países en `nearbyCountries`
 
 ---
 
