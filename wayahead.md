@@ -98,6 +98,14 @@
 |-------|-----------|-----------|
 | Email (info@) | Diario 00:00 UTC | Resumen alertas + stats sistema |
 | Telegram @ViajeConInteligencia | Diario 00:00 UTC | Resumen alertas + stats sistema |
+| Bot @ViajeConInteligenciaBot | On-demand | Menú interactivo completo |
+
+#### 🤖 Bot Telegram
+- Comando: `/alertasviaje` - Resumen alertas viaje
+- Comando: `/alertasviaje full` - Detalle completo
+- Menú botones: `✈️🛤️ Alertas viaje` → submenú
+- Submenú: Aeropuertos | Trenes | Clima | Actualizar | Volver
+- Menú principal: ⚠️ Alertas de riesgo | ✈️🛤️ Alertas viaje
 
 #### 🕐 REVISIÓN SEMANAL - APIs
 - Buscar nuevas APIs gratuitas para alertas
