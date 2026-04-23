@@ -41,18 +41,15 @@ async function getNewsletterStats() {
   if (!supabaseAdmin) return { total: 0, pending: 0 };
   
   try {
-    const { data: all, error } = await supabaseAdmin
+    const { data: all } = await supabaseAdmin
       .from('newsletter_subscribers')
       .select('verified, unsubscribed_at');
-    
-    console.log('[Newsletter] Query result:', { count: all?.length, error });
     
     const verified = all?.filter(s => s.verified && !s.unsubscribed_at).length || 0;
     const pending = all?.filter(s => !s.verified).length || 0;
     
     return { total: verified, pending };
   } catch (e) {
-    console.error('[Newsletter] Error:', e);
     return { total: 0, pending: 0 };
   }
 }
@@ -197,24 +194,12 @@ export async function GET(request: Request) {
   }
 
   try {
-    console.log('[DailyDigest] Generando digest...');
-    console.log('[DailyDigest] supabaseAdmin:', !!supabaseAdmin);
-    console.log('[DailyDigest] URL:', process.env.NEXT_PUBLIC_SUPABASE_URL);
-    console.log('[DailyDigest] SERVICE_KEY exists:', !!process.env.SUPABASE_SERVICE_ROLE_KEY);
-    console.log('[DailyDigest] SERVICE_KEY first10:', process.env.SUPABASE_SERVICE_ROLE_KEY?.substring(0, 10));
-    console.log('[DailyDigest] Using placeholder?:', process.env.SUPABASE_SERVICE_ROLE_KEY?.includes('placeholder') || process.env.SUPABASE_SERVICE_KEY?.includes('placeholder'));
-    
     const digest = await generateDigest();
     const emailSent = await sendDailyEmail(digest);
     
     return NextResponse.json({
       success: true,
       email: emailSent ? 'enviado' : 'error',
-      debug: {
-        supabaseAdmin: !!supabaseAdmin,
-        url: process.env.NEXT_PUBLIC_SUPABASE_URL,
-        hasServiceKey: !!process.env.SUPABASE_SERVICE_ROLE_KEY
-      },
       digest: digest,
       timestamp: new Date().toISOString(),
     });

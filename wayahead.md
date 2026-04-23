@@ -740,6 +740,34 @@ Scraping y alertas automatizadas mediante Vercel Cron Jobs para mantener datos a
 
 ---
 
+## 📧 Daily Digest (2026-04-24) - COMPLETADO ✅
+
+### 📧 Concepto
+Email diario a las 00:00 UTC con estado del sistema a info@viajeinteligencia.com.
+
+### ✅ Completado
+| # | Feature | Estado |
+|---|---------|--------|
+| 1 | API /api/cron/daily-digest | ✅ Done |
+| 2 | Cron 0 0 * * * (00:00 UTC) | ✅ Done |
+| 3 | Stats: uptime, users, newsletter, alerts, scraper, bot | ✅ Done |
+| 4 | Email HTML a info@viajeinteligencia.com | ✅ Done |
+| 5 | Auto-verify newsletter | ✅ Done |
+
+### 📊 Datos Recopilados
+- Estado sistema + latencia
+- Usuarios registrados + nuevos hoy
+- Suscriptores newsletter + pendientes verificación
+- Alertas riesgos nuevas hoy + total
+- Scraper ejecuciones + errores
+- Bot Telegram usuarios + mensajes hoy
+
+### ⚠️ Requiere en Vercel
+- NEXT_PUBLIC_SUPABASE_URL = https://tu-proyecto.supabase.co
+- SUPABASE_SERVICE_ROLE_KEY = tu_service_key
+
+---
+
 ## 🚀 SPRINT 20: Memoria de Viaje - MEJORAS (2026-04-24)
 
 ### 📱 Concepto
