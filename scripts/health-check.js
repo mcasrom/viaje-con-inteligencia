@@ -17,7 +17,7 @@ const { execSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 
-const BASE_URL = 'https://viaje-con-inteligencia.vercel.app';
+const BASE_URL = 'https://www.viajeinteligencia.com';
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
 const EMAIL_TO = process.env.EMAIL_TO || 'mybloggingnotes@gmail.com';

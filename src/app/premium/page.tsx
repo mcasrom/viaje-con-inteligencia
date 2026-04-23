@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Bot, Bell, FileCheck, Map, TrendingUp, Star, Check, CreditCard, Globe, Zap, AlertTriangle, MessageSquare, Plane, Wallet, FileText, Calculator, Briefcase } from 'lucide-react';
+import { ArrowLeft, Bot, Bell, FileCheck, Map, TrendingUp, Star, Check, CreditCard, Globe, Zap, AlertTriangle, MessageSquare, Plane, Wallet, FileText, Calculator, Briefcase, FileDown } from 'lucide-react';
 
 const PLANS = [
   {
@@ -354,12 +354,19 @@ export default function PremiumPage() {
                   <Globe className="w-4 h-4" />
                   Sismos
                 </button>
-                <Link
+<Link
                   href="/documentos"
                   className="flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors bg-orange-600/80 text-orange-200 hover:bg-orange-600"
                 >
                   <FileText className="w-4 h-4" />
-                  Memoria Viaje
+                  Docs
+                </Link>
+                <Link
+                  href="/viajes"
+                  className="flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors bg-yellow-600/80 text-yellow-200 hover:bg-yellow-600"
+                >
+                  <Briefcase className="w-4 h-4" />
+                  Mis Viajes
                 </Link>
                 <button
                   onClick={() => setActiveTab('indices')}

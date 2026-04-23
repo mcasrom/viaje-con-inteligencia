@@ -90,7 +90,7 @@ export async function GET(request: NextRequest) {
 
   <div class="footer">
     <p><strong>Viaje con Inteligencia</strong> - vía ${new Date().getFullYear()}</p>
-    <p>Más información: viaje-con-inteligencia.vercel.app</p>
+    <p>Más información: www.viajeinteligencia.com</p>
   </div>
 </body>
 </html>`;
