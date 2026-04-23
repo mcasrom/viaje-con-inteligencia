@@ -81,7 +81,7 @@ export async function POST(request: NextRequest) {
         await supabase
           .from('newsletter_subscribers')
           .upsert(
-            { email, name, verify_token: verifyToken, source: source || 'web' },
+            { email, name, verify_token: verifyToken, verified: true, source: source || 'web' },
             { onConflict: 'email' }
           );
       } catch (e) {
