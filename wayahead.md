@@ -865,7 +865,46 @@ Módulo PWA de almacenamiento local (IndexedDB) para documentos de viaje/offline
 
 ---
 
-## 🚀 SPRINT 23: ML/AI + KPIs Turismo (2026-04-25)
+## 🚀 SPRINT 24: ML/AI + Fotos Diarias (2026-04-25)
+
+### ✅ Completado Sprint 24
+
+| Feature | Estado | Notas |
+|---------|--------|-------|
+| Gen AI docs /api/ai/gen-doc | ✅ | Tipos: informe, resumen, comparativa |
+| Datos turismo OWID | ✅ | 50 países, llegadas/ingresos 2024 |
+| Blog search button | ✅ | Busca por título, tags, keywords |
+| Flight alerts API real | ✅ | `/api/flights/delays` AviationStack |
+| Fotos diarias rotatorias | ✅ | `/public/photos/1.jpg, 2.jpg...` |
+| Clustering ML K-Means | ⚠️ | API `/api/ai/clustering` devuelve vacío |
+| UI clustering | ✅ | Página `/clustering` (sin datos) |
+
+### 📋 Pendiente
+
+| Feature | Priority | Estado |
+|---------|----------|--------|
+| Fix clustering bug producción | 🔴 Alta | Devuelve vacío |
+| AviationStack API key | 🟠 Media | Configurar en Vercel |
+| Fotos en más páginas | 🟡 Baja | Home, clustering |
+| Predicción riesgo | 🟡 Baja | Sin datos históricos |
+| Anomaly detection | 🟡 Baja | - |
+
+### 📊 ML Implementado
+
+**K-Means Clustering:**
+- Features: riesgo (2x), IPC (1.5x), distancia (1x), llegadas (0.5x)
+- 50+ países con datos
+- Dataset: riesgo MAEC + turismo OWID + IPC
+
+** Fotos diarias:**
+- Folder: `/public/photos/`
+- Nombres: `1.jpg`, `2.jpg`, `3.jpg`... (hasta 20)
+- Rotación diaria automática
+- Estilo: grayscale + 40% opacity
+
+---
+
+## 📊 COBERTURA ACTUAL (2026-04-23)
 
 ### 📊 Roadmap 1 mes
 
