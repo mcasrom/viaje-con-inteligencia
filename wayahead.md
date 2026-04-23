@@ -970,10 +970,10 @@ Módulo PWA de almacenamiento local (IndexedDB) para documentos de viaje/offline
 
 ---
 
-### 📝 NOTAS LOGO CORPORATIVO (2026-04-22)
-- Logo original: /potential_pics/logo_ok.png
-- Copiado a: /public/logo.png
-- Usado en: Footer (h-12, 80% opacidad)
-- Favicon: Browser tabs
-- Apple Touch Icon: iOS shortcuts
-| Premium tabs | 8 |
+## 🔧 BUG FIXES (2026-04-23)
+
+| # | Fix | Archivo | Estado |
+|---|-----|--------|--------|
+| 1 | Fotos diarias: MAX_PHOTOS 20→4, ref imagen, unoptimized | src/app/blog/page.tsx, src/components/DailyPhoto.tsx | ✅ Done |
+| 2 | Documentos: add ref={fileInputRef} input file (cámara/PDF) | src/app/documentos/page.tsx | ✅ Done |
+| 3 | PDF: offset teléfono emergencia +57 45→52 | src/components/PDFExportButton.tsx | ✅ Done |
