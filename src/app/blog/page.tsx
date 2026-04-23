@@ -369,7 +369,7 @@ function BlogContent() {
 
 // Fotos en /public/photos/ se añaden automáticamente
 // Nombra: 1.jpg, 2.jpg, 3.jpg... (sin código necesario)
-const MAX_PHOTOS = 20;
+const MAX_PHOTOS = 4;
 function getDailyPhoto() {
   const today = new Date();
   const dayOfYear = Math.floor((today.getTime() - new Date(today.getFullYear(), 0, 0).getTime()) / (1000 * 60 * 60 * 24));

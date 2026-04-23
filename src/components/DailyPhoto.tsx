@@ -4,11 +4,13 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 
 const photos = [
-  { src: '/photos/byron-bay.jpg', alt: 'Byron Bay, Australia', place: 'Australia' },
-  { src: '/photos/currumbi.jpg', alt: 'Currumbi, Australia', place: 'Australia' },
-  { src: '/photos/lighthouse.jpg', alt: 'Lighthouse, Tasmania', place: 'Tasmania' },
-  { src: '/photos/lorca.jpg', alt: 'Lorca, España', place: 'España' },
+  { src: '/photos/1.jpg', alt: 'Australia', place: 'Australia' },
+  { src: '/photos/2.jpg', alt: 'Paisaje', place: 'España' },
+  { src: '/photos/3.jpg', alt: 'Naturaleza', place: 'España' },
+  { src: '/photos/4.jpg', alt: 'España', place: 'Europa' },
 ];
+
+const MAX_PHOTOS = 4;
 
 function getDailyPhoto(): typeof photos[0] {
   const today = new Date();
@@ -40,7 +42,7 @@ export default function DailyPhoto({
     setPhoto(getDailyPhoto());
   }, []);
 
-  if (!enabled || !isClient) return null;
+  if (!isClient) return <div className="h-48 md:h-64 bg-slate-800 rounded-2xl animate-pulse" />;
 
   const sizes = {
     hero: '100vw',
@@ -61,6 +63,7 @@ export default function DailyPhoto({
         src={photo.src}
         alt={photo.alt}
         fill
+        unoptimized
         className={`object-cover ${grayscale ? 'grayscale-[30%]' : ''}`}
         style={{ opacity }}
         sizes={sizes[type]}
