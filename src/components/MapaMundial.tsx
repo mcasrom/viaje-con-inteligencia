@@ -95,7 +95,7 @@ export default function MapaMundial() {
               </div>
             </div>
             
-              <div className="flex items-center gap-2">
+<div className="flex flex-wrap gap-2 items-center">
               <Link 
                 href="/blog" 
                 className="flex items-center gap-2 px-3 py-2 text-slate-300 hover:text-white transition-colors"
@@ -274,7 +274,7 @@ export default function MapaMundial() {
           </div>
         </div>
 
-        <div className="mb-8">
+        <div className="mb-6">
           <div className="bg-slate-800/50 rounded-xl p-4 mb-4 border border-slate-700">
             <h2 className="text-xl font-bold text-white mb-2">🗺️ Mapa de Riesgos</h2>
             <p className="text-slate-400 text-sm">Consulta el nivel de riesgo, requisitos de entrada y recomendaciones para cada destino. Información actualizada según MAEC español.</p>
@@ -282,8 +282,45 @@ export default function MapaMundial() {
           <MapaInteractivo />
         </div>
 
-        <div className="mb-6 flex items-center justify-between">
-          <p className="text-slate-400">
+        <div className="bg-slate-800/70 rounded-xl p-4 mb-6 border border-slate-700">
+          <div className="flex flex-col lg:flex-row lg:items-center gap-4">
+            <div className="flex-1">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                <input
+                  type="text"
+                  placeholder="Buscar país, capital..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10 pr-4 py-2.5 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-blue-500 transition-colors w-full"
+                />
+              </div>
+            </div>
+            <div className="flex flex-wrap gap-2 items-center">
+              <select
+                value={selectedContinente}
+                onChange={(e) => setSelectedContinente(e.target.value)}
+                className="px-3 py-2.5 bg-slate-700 border border-slate-600 rounded-lg text-white focus:outline-none focus:border-blue-500"
+              >
+                {continentes.map(c => (
+                  <option key={c} value={c}>{c}</option>
+                ))}
+              </select>
+              <select
+                value={selectedRiesgo}
+                onChange={(e) => setSelectedRiesgo(e.target.value as NivelRiesgo | 'Todos')}
+                className="px-3 py-2.5 bg-slate-700 border border-slate-600 rounded-lg text-white focus:outline-none focus:border-blue-500"
+              >
+                <option value="Todos">Todos</option>
+                <option value="sin-riesgo">Sin riesgo</option>
+                <option value="bajo">Riesgo bajo</option>
+                <option value="medio">Riesgo medio</option>
+                <option value="alto">Riesgo alto</option>
+                <option value="muy-alto">Muy alto</option>
+              </select>
+            </div>
+          </div>
+          <p className="text-slate-400 mt-3">
             Mostrando <span className="text-white font-medium">{filteredPaises.length}</span> países
             {selectedContinente !== 'Todos' && ` en ${selectedContinente}`}
             {selectedRiesgo !== 'Todos' && ` con ${getLabelRiesgo(selectedRiesgo as NivelRiesgo).toLowerCase()}`}

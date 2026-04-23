@@ -126,7 +126,7 @@ Las aerolíneas pueden intentar clasificar una cancelación por costes operativo
 
 ### Signos de Gestión Comercial (Tu Caso Favorito):
 - La cancelación afecta solo a rutas específicas, no a todas
-- Ofrecen代金券 (vouchers) como "compensación"
+- Ofrecen (vouchers) como "compensación"
 - El mensaje dice "problemas operativos" sin especificar
 - Otras aerolíneas operan rutas similares sin cancelar
 
@@ -168,26 +168,12 @@ Si tu vuelo acaba de ser cancelado, sigue este protocolo paso a paso:
 
 ## 7. Herramientas de ViajeInteligencia para tu Reclamación
 
-En ViajeInteligencia estamos analizando cada caso con nuestras herramientas de inteligencia artificial para ayudarte a tomar decisiones informadas sobre tu situación:
+En ViajeInteligencia estamos analizando con herramientas de inteligencia artificial para gestionar la toma de decisiones informadas:
 
 ### Análisis de Viabilidad
-Nuestra IA evalúa:
-- Tipo de aerolinea y su historial de cancelaciones
-- Documentación disponible sobre el motivo de cancelación
-- Distancia del vuelo y compensaciones potenciales
-- Precedentes similares en tribunales europeos
-
 ### Plantillas de Reclamación
-Genera cartas personalizadas para:
-- Reclamación formal a la aerolinea
-- Solicitud de compensación ante autoridad de aviación
-- Documentación para tu aseguradora
-- Pasos para denuncia en consumidor europeo
-
 ### Comparativa de Seguros
-- Coberturas específicas para crisis de suministros
-- Servicios de asistencia legal incluidos
-- Reembolso por cancelación cubierto
+
 
 ---
 
@@ -210,7 +196,7 @@ Evita aceptar vouchers o vales de viaje a menos que superen con creces el valor 
 
 ### Pilar de Protección: Revisa tu Seguro
 
-Revisa tu póliza de seguro contratada en nuestra plataforma. Muchos de nuestros seguros de 2026 ya incluyen **cobertura específica para "Crisis de Suministros"**, que te protege en situaciones donde la aerolinea no llega:
+Revisa tu póliza de seguro contratado. Muchos seguros de 2026 ya incluyen **cobertura específica para "Crisis de Suministros"**, que te protege en situaciones donde la aerolinea no llega:
 
 - Gastos de alojamiento adicionales no cubiertos por la aerolinea
 - Comidas fuera del alcance de la asistencia estándar
@@ -223,9 +209,8 @@ Revisa tu póliza de seguro contratada en nuestra plataforma. Muchos de nuestros
 
 La crisis de combustible de 2026 está poniendo a prueba tanto a las aerolineas como a los pasajeros. La información es tu mejor herramienta: conoce tus derechos, documenta todo, y actúa con estrategia. No permitas que dificultades logísticas ajenas se conviertan en pérdidas económicas tuyas.
 
-¿Vuelas pronto y quieres revisar los riesgos de tu destino? Consulta nuestro mapa de alertas actualizado con información en tiempo real sobre restricciones aéreas y ситуации.
+¿Vuelas pronto y quieres revisar los riesgos de tu destino? Consulta nuestros mapas de alertas actualizado con información en tiempo real sobre restricciones aéreas y ситуации.
 
-**¿Necesitas ayuda con tu reclamación?** En ViajeInteligencia estamos analizando cada caso con nuestras herramientas de IA para asesorarte sobre la viabilidad de tu indemnización. Accede a tu panel de Premium para solicitar un análisis personalizado.
 
 ---
 
