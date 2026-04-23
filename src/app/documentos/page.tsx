@@ -344,7 +344,7 @@ export default function TravelDocumentsPage() {
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
           {documents.map((doc) => {
             const typeInfo = getTypeInfo(doc.type);
-            const isPdf = doc.text?.startsWith('PDF:') || doc.pdfData;
+            const hasPdf = doc.text?.startsWith('PDF:') || doc.pdfData;
             return (
               <button
                 key={doc.id}
@@ -355,7 +355,7 @@ export default function TravelDocumentsPage() {
                   <div className="aspect-square bg-slate-800">
                     <img src={doc.imageData} alt={doc.title} className="w-full h-full object-cover" />
                   </div>
-                ) : isPdf ? (
+                ) : hasPdf ? (
                   <div className="aspect-square bg-red-900/50 flex items-center justify-center">
                     <div className="text-center">
                       <FileText className="w-8 h-8 text-red-400 mx-auto" />
