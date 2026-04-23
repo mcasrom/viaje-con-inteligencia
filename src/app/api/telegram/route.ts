@@ -150,9 +150,11 @@ function detectLanguage(text: string): Lang {
 
 async function sendMessage(chatId: number, text: string, keyboard?: TelegramKeyboard) {
   if (!TELEGRAM_BOT_TOKEN) {
-    console.log('Mensaje (sin bot configurado):', text.substring(0, 50));
+    console.log('[Telegram] Mensaje (sin bot configurado):', text.substring(0, 50));
     return;
   }
+  
+  console.log('[Telegram] Enviando a', chatId, ':', text.substring(0, 30));
   
   try {
     await fetch(`${TELEGRAM_API}/sendMessage`, {
@@ -243,7 +245,8 @@ Responda em português, de forma clara e útil. Máximo 500 caracteres.`;
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    console.log('=== Tg request:', Object.keys(body));
+    console.log('[Telegram] Request received:', Object.keys(body));
+    console.log('[Telegram] Token configured:', TELEGRAM_BOT_TOKEN ? 'YES' : 'NO');
     const { message, callback_query, inline_query } = body;
     
     // Handle inline keyboards (callback queries)
@@ -658,8 +661,11 @@ export async function POST(request: NextRequest) {
     }
     
     if (text === '/alertasviaje' || text === '/travelalerts' || text === '/viaje') {
+      console.log('[Telegram] Comando /alertasviaje detectado');
       const alerts = await getTravelAlertsSummary();
+      console.log('[Telegram] Alerts response:', alerts ? 'OK' : 'NULL');
       const formatted = formatTravelAlertsShort(alerts);
+      console.log('[Telegram] Formatted:', formatted.substring(0, 50));
       await sendMessage(chatId, formatted, {
         reply_markup: t.menu()
       });
