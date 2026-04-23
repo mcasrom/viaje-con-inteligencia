@@ -402,7 +402,7 @@ export function getPremiumInfo(): string {
    TRAVEL ALERTS
  ========================= */
 
-const BASE_URL = process.env.APP_BASE_URL || 'https://www.viajeinteligencia.com';
+const BASE_URL = process.env.APP_BASE_URL || 'https://viaje-con-inteligencia.vercel.app';
 
 export async function getTravelAlertsSummary(): Promise<any> {
   try {
