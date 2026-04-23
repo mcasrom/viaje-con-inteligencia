@@ -17,7 +17,8 @@ import {
   getTravelAlertsAll,
   formatTravelAlertsShort,
   formatTravelAlertsDetailed,
-  getAlertsKeyboard
+  getAlertsKeyboard,
+  getAlertsFullKeyboard
 } from '@/lib/telegram-bot';
 
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || '';
@@ -403,7 +404,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ ok: true });
     }
     
-    if (text === '🌍 Buscar país' || text === '🌍 Search country' || text === '🌍 Pesquisar país') {
+    if (text === '🏦 Tipo cambio' || text === '🏦 Exchange rate' || text === '🏦 Câmbio') {
       setUserState(chatId, { step: 'selecting_country' });
       await sendMessage(chatId, t.selectCountry(), getCountryKeyboard());
       return NextResponse.json({ ok: true });
@@ -424,10 +425,58 @@ export async function POST(request: NextRequest) {
     }
     
     if (text === '✈️🛤️ Alertas viaje' || text === '✈️🛤️ Travel alerts') {
-      const alerts = await getTravelAlertsSummary();
-      const formatted = formatTravelAlertsShort(alerts);
+      const alerts = await getTravelAlertsAll();
+      const formatted = formatTravelAlertsDetailed(alerts);
       await sendMessage(chatId, formatted, {
-        reply_markup: t.menu()
+        reply_markup: getAlertsFullKeyboard() as any
+      });
+      return NextResponse.json({ ok: true });
+    }
+    
+    if (text === '✈️ Ver aeropuertos' || text === '✈️ Airports') {
+      const alerts = await getTravelAlertsAll();
+      const airports = (alerts.allAlerts || []).filter((a: any) => a.type === 'airport');
+      let msg = `✈️ *Aeropuertos*\n`;
+      msg += `━━━━━━━━━━━━━━━━\n`;
+      airports.forEach((a: any) => {
+        const emoji = a.status === 'ok' ? '✅' : a.delay > 60 ? '🔴' : '⚠️';
+        msg += `${emoji} ${a.name}: ${a.delay}min\n`;
+      });
+      await sendMessage(chatId, msg, { reply_markup: getAlertsFullKeyboard() as any });
+      return NextResponse.json({ ok: true });
+    }
+    
+    if (text === '🚂 Ver trenes' || text === '🚂 Trains') {
+      const alerts = await getTravelAlertsAll();
+      const trains = (alerts.allAlerts || []).filter((a: any) => a.type === 'train');
+      let msg = `🚂 *Trenes*\n`;
+      msg += `━━━━━━━━━━━━━━━━\n`;
+      trains.forEach((a: any) => {
+        const emoji = a.status === 'ok' ? '✅' : a.delay > 30 ? '🔴' : '⚠️';
+        msg += `${emoji} ${a.name || a.origin}: ${a.delay}min\n`;
+      });
+      await sendMessage(chatId, msg, { reply_markup: getAlertsFullKeyboard() as any });
+      return NextResponse.json({ ok: true });
+    }
+    
+    if (text === '🌧️ Ver clima' || text === '🌧️ Weather') {
+      const alerts = await getTravelAlertsAll();
+      const weather = (alerts.allAlerts || []).filter((a: any) => a.type === 'weather');
+      let msg = `🌧️ *Meteorología*\n`;
+      msg += `━━━━━━━━━━━━━━━━\n`;
+      weather.forEach((a: any) => {
+        const emoji = a.level === 'low' ? '✅' : a.level === 'warning' ? '⚠️' : '🔴';
+        msg += `${emoji} ${a.location}: ${a.condition}\n`;
+      });
+      await sendMessage(chatId, msg, { reply_markup: getAlertsFullKeyboard() as any });
+      return NextResponse.json({ ok: true });
+    }
+    
+    if (text === '🔄 Actualizar alertas' || text === '🔄 Refresh alerts') {
+      const alerts = await getTravelAlertsAll();
+      const formatted = formatTravelAlertsDetailed(alerts);
+      await sendMessage(chatId, formatted, {
+        reply_markup: getAlertsFullKeyboard() as any
       });
       return NextResponse.json({ ok: true });
     }

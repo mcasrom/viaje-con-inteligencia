@@ -37,9 +37,22 @@ export function getMainKeyboard() {
         [{ text: '🌍 Buscar país' }],
         [{ text: '🌤️ Clima' }, { text: '🤖 Chat IA' }],
         [{ text: '⚠️ Alertas de riesgo' }, { text: '✈️🛤️ Alertas viaje' }],
-        [{ text: '🏦 Tipo cambio' }],
-        [{ text: '📋 Checklist viaje' }],
-        [{ text: '⭐ Premium' }],
+        [{ text: '📋 Checklist viaje' }, { text: '⭐ Premium' }],
+      ],
+      resize_keyboard: true,
+    },
+  };
+}
+
+export function getAlertsFullKeyboard() {
+  return {
+    reply_markup: {
+      keyboard: [
+        [{ text: '✈️ Ver aeropuertos' }],
+        [{ text: '🚂 Ver trenes' }],
+        [{ text: '🌧️ Ver clima' }],
+        [{ text: '🔄 Actualizar alertas' }],
+        [{ text: '« Volver' }],
       ],
       resize_keyboard: true,
     },
