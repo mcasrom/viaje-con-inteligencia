@@ -2,7 +2,8 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import Link from 'next/link';
-import { Plus, Camera, Image, FileText, X, Plane, Building, Ticket, Trash2, Download, Upload, Phone, StickyNote, ArrowLeft, Home } from 'lucide-react';
+import Image from 'next/image';
+import { Plus, Image as ImageIcon, FileText, X, Plane, Building, Ticket, Trash2, Download, Upload, Phone, StickyNote, Home, Eye, List } from 'lucide-react';
 import { addDocument, getDocuments, deleteDocument, getAllDocuments, exportToZip } from '@/lib/travel-documents';
 
 interface TravelDocument {
@@ -33,6 +34,7 @@ export default function TravelDocumentsPage() {
   const [showTypeMenu, setShowTypeMenu] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const showToastMessage = (message: string) => {
@@ -142,6 +144,19 @@ export default function TravelDocumentsPage() {
     URL.revokeObjectURL(url);
   };
 
+  const handleDownload = (doc: TravelDocument) => {
+    if (doc.imageData) {
+      const link = document.createElement('a');
+      link.href = doc.imageData;
+      const ext = doc.imageData.includes('image/png') ? 'png' : 'jpg';
+      link.download = `${doc.title.replace(/\s+/g, '_')}.${ext}`;
+      link.click();
+    }
+    if (doc.text && doc.text.startsWith('PDF:')) {
+      showToastMessage('PDF: Descarga desde historial del navegador');
+    }
+  };
+
   const formatDate = (date: Date) => {
     return new Date(date).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' });
   };
@@ -196,9 +211,16 @@ export default function TravelDocumentsPage() {
           <button
             onClick={handleExport}
             className="p-2 bg-slate-800 rounded-full"
-            title="Exportar"
+            title="Exportar todo"
           >
             <Download className="w-5 h-5" />
+          </button>
+          <button
+            onClick={() => setViewMode(viewMode === 'grid' ? 'list' : 'grid')}
+            className="p-2 bg-slate-800 rounded-full"
+            title={viewMode === 'grid' ? 'Ver lista' : 'Ver miniaturas'}
+          >
+            <List className="w-5 h-5" />
           </button>
         </div>
       </header>
@@ -258,8 +280,54 @@ export default function TravelDocumentsPage() {
           <p className="text-slate-400 mb-2">Sin documentos</p>
           <p className="text-slate-600 text-sm">Toca + para añadir tu primer documento</p>
         </div>
+      ) : viewMode === 'list' ? (
+        <div className="space-y-2">
+          {documents.map((doc) => {
+            const typeInfo = getTypeInfo(doc.type);
+            const isPdf = doc.text?.startsWith('PDF:');
+            return (
+              <button
+                key={doc.id}
+                onClick={() => setSelectedDoc(doc)}
+                className="w-full bg-slate-900 rounded-xl p-3 flex items-center gap-3 text-left transition hover:ring-2 hover:ring-blue-500/50"
+              >
+                {doc.imageData ? (
+                  <img src={doc.imageData} alt={doc.title} className="w-16 h-16 object-cover rounded-lg flex-shrink-0" />
+                ) : isPdf ? (
+                  <div className="w-16 h-16 bg-red-900/50 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <FileText className="w-8 h-8 text-red-400" />
+                  </div>
+                ) : (
+                  <div className={`w-16 h-16 ${typeInfo.color} rounded-lg flex items-center justify-center flex-shrink-0`}>
+                    <typeInfo.icon className="w-8 h-8 text-white/80" />
+                  </div>
+                )}
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2">
+                    <span className={`w-2 h-2 rounded-full ${typeInfo.color}`} />
+                    <span className="text-xs text-slate-400">{typeInfo.label}</span>
+                  </div>
+                  <p className="text-sm font-medium truncate">{doc.title}</p>
+                  <p className="text-xs text-slate-500">{formatDate(doc.createdAt)}</p>
+                </div>
+                <div className="flex gap-1">
+                  {doc.imageData && (
+                    <button
+                      onClick={(e) => { e.stopPropagation(); handleDownload(doc); }}
+                      className="p-2 bg-slate-800 rounded-full"
+                      title="Descargar"
+                    >
+                      <Download className="w-4 h-4" />
+                    </button>
+                  )}
+                  <Eye className="w-5 h-5 text-slate-500" />
+                </div>
+              </button>
+            );
+          })}
+        </div>
       ) : (
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
           {documents.map((doc) => {
             const typeInfo = getTypeInfo(doc.type);
             const isPdf = doc.text?.startsWith('PDF:');
@@ -270,27 +338,27 @@ export default function TravelDocumentsPage() {
                 className="bg-slate-900 rounded-xl overflow-hidden text-left transition hover:ring-2 hover:ring-blue-500/50"
               >
                 {doc.imageData ? (
-                  <div className="aspect-[4/3] bg-slate-800">
+                  <div className="aspect-square bg-slate-800">
                     <img src={doc.imageData} alt={doc.title} className="w-full h-full object-cover" />
                   </div>
                 ) : isPdf ? (
-                  <div className="aspect-[4/3] bg-red-900/50 flex items-center justify-center">
+                  <div className="aspect-square bg-red-900/50 flex items-center justify-center">
                     <div className="text-center">
-                      <FileText className="w-12 h-12 text-red-400 mx-auto" />
-                      <span className="text-xs text-red-400 mt-2 block">PDF</span>
+                      <FileText className="w-8 h-8 text-red-400 mx-auto" />
+                      <span className="text-xs text-red-400 mt-1 block">PDF</span>
                     </div>
                   </div>
                 ) : (
-                  <div className={`aspect-[4/3] ${typeInfo.color} flex items-center justify-center`}>
-                    <typeInfo.icon className="w-12 h-12 text-white/80" />
+                  <div className={`aspect-square ${typeInfo.color} flex items-center justify-center`}>
+                    <typeInfo.icon className="w-8 h-8 text-white/80" />
                   </div>
                 )}
-                <div className="p-3">
+                <div className="p-2">
                   <div className="flex items-center gap-2 mb-1">
                     <span className={`w-2 h-2 rounded-full ${typeInfo.color}`} />
                     <span className="text-xs text-slate-400">{typeInfo.label}</span>
                   </div>
-                  <p className="text-sm font-medium truncate">{doc.title}</p>
+                  <p className="text-xs font-medium truncate">{doc.title}</p>
                   <p className="text-xs text-slate-500">{formatDate(doc.createdAt)}</p>
                 </div>
               </button>
@@ -384,6 +452,15 @@ export default function TravelDocumentsPage() {
               )}
             </div>
             <div className="flex gap-3 p-4 border-t border-slate-800">
+              {selectedDoc.imageData && (
+                <button
+                  onClick={() => handleDownload(selectedDoc)}
+                  className="flex-1 py-3 bg-blue-500 rounded-full font-medium flex items-center justify-center gap-2"
+                >
+                  <Download className="w-4 h-4" />
+                  Descargar
+                </button>
+              )}
               <button
                 onClick={() => setSelectedDoc(null)}
                 className="flex-1 py-3 bg-slate-800 rounded-full"
