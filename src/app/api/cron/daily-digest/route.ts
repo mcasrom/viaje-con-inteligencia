@@ -201,6 +201,9 @@ export async function GET(request: Request) {
 
   try {
     console.log('[DailyDigest] Generando digest...');
+    console.log('[DailyDigest] supabaseAdmin:', !!supabaseAdmin);
+    console.log('[DailyDigest] URL:', process.env.NEXT_PUBLIC_SUPABASE_URL);
+    console.log('[DailyDigest] SERVICE_KEY exists:', !!process.env.SUPABASE_SERVICE_ROLE_KEY);
     
     const digest = await generateDigest();
     const emailSent = await sendDailyEmail(digest);
@@ -208,6 +211,11 @@ export async function GET(request: Request) {
     return NextResponse.json({
       success: true,
       email: emailSent ? 'enviado' : 'error',
+      debug: {
+        supabaseAdmin: !!supabaseAdmin,
+        url: process.env.NEXT_PUBLIC_SUPABASE_URL,
+        hasServiceKey: !!process.env.SUPABASE_SERVICE_ROLE_KEY
+      },
       digest: digest,
       timestamp: new Date().toISOString(),
     });
