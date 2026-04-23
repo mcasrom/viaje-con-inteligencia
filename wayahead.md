@@ -109,9 +109,10 @@
 - Diferencia clara: riesgo país (MAEC) vs alertas viaje (vuelos/trenes/clima)
 
 #### 📄 Documentos (Completado)
-- Subir imágenes y PDFs (tickets hotel, billete vuelo)
+- Subir imágenes y PDFs (tickets hotel)
 - Guardado 100% local (IndexedDB)
 - Ver/Descargar en nueva pestaña (mobile-friendly)
+- ⚠️ PWA requiere reinstalar tras actualizar para ver cambios
 
 #### 🕐 REVISIÓN SEMANAL - APIs
 - Buscar nuevas APIs gratuitas para alertas
