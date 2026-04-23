@@ -46,7 +46,6 @@ function getAirportName(code: string): string {
     'LLN': 'Logroño',
     'MFN': 'Murcia',
     'OIA': 'Orense',
-    'BIO': 'Bilbao',
     'VIT': 'Vitoria',
     'ZAZ': 'Zaragoza',
   };
