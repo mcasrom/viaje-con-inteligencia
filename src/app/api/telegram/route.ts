@@ -431,12 +431,6 @@ export async function POST(request: NextRequest) {
       });
       return NextResponse.json({ ok: true });
     }
-      const formatted = formatTravelAlertsDetailed(alerts);
-      await sendMessage(chatId, formatted, {
-        reply_markup: getAlertsFullKeyboard() as any
-      });
-      return NextResponse.json({ ok: true });
-    }
     
     if (text === '✈️ Ver aeropuertos' || text === '✈️ Airports') {
       const alerts = await getTravelAlertsAll();
@@ -777,7 +771,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ ok: true });
     }
     
-    await sendMessage(chatId, t.notUnderstood(), {
+await sendMessage(chatId, t.notUnderstood(), {
       reply_markup: t.menu()
     });
     
@@ -789,7 +783,7 @@ export async function POST(request: NextRequest) {
 }
 
 export async function GET() {
-  return NextResponse.json({ 
+  return NextResponse.json({
     status: 'Telegram Bot API endpoint',
     usage: 'POST updates here',
     commands: ['/start', '/pais', '/alertas', '/alertasviaje', '/cambio', '/checklist', '/premium', '/help', '/salir'],
