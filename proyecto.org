@@ -60,6 +60,7 @@
 - [X] Generador itinerarios IA
 - [X] IST (Índice Saturación Turística) /api/ist
 - [X] Fuentes OSINT /fuentes-osint
+- [X] Memoria de Viaje /documentos (IndexedDB)
 - [ ] Premium completo
 
 ** Páginas
@@ -82,6 +83,7 @@
 | /admin/bot-stats | Stats bot | ✅ |
 | /stats | Dashboard riesgos global | ✅ |
 | /lead-magnet | Checklist premium | ✅ |
+| /documentos | Memoria de viaje (IndexedDB) | ✅ |
 
 ** API Routes
 | Ruta | Función |

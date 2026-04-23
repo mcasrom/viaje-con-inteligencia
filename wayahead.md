@@ -740,7 +740,7 @@ Scraping y alertas automatizadas mediante Vercel Cron Jobs para mantener datos a
 
 ---
 
-## 🚀 SPRINT 20: Memoria de Viaje - COMPLETADO (2026-04-22)
+## 🚀 SPRINT 20: Memoria de Viaje - MEJORAS (2026-04-24)
 
 ### 📱 Concepto
 Módulo PWA de almacenamiento local (IndexedDB) para documentos de viaje/offline: boarding passes, hotel confirmations, notas, referencias.
@@ -757,6 +757,18 @@ Módulo PWA de almacenamiento local (IndexedDB) para documentos de viaje/offline
 | 7 | Guia de uso integrada | ✅ Done |
 | 8 | **Soporte PDF** (5MB max) | ✅ Done |
 | 9 | **Toast confirmation** | ✅ Done |
+| 10 | Botón visible "Subir imagen o PDF" | ✅ Done |
+| 11 | Miniaturas reducidas grid 2col/4col | ✅ Done |
+| 12 | Vista lista + grid toggle | ✅ Done |
+| 13 | Descargar PDF real (no solo texto) | ✅ Done |
+| 14 | Modal preview PDF/imagen | ✅ Done |
+| 15 | Descargar individual | ✅ Done |
+
+### 📋 Estado Actual
+- Grid: miniaturas cuadradas compactas
+- Lista: thumbnail 64px + texto + btn descargar
+- Modal: preview + descargar + eliminar
+- PDF: se guarda archivo real (base64), recuperable
 
 ### 🧩 Tipos de Documentos
 - Vuelo (imagen/PDF)
