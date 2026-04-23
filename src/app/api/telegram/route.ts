@@ -423,8 +423,14 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ ok: true });
     }
     
-    if (text === '✈️🛤️ Alertas viaje' || text === '✈️🛤️ Travel alerts') {
+    if (text === '✈️🛤️ Alertas viaje' || text === '✈️🛤️ Travel alerts' || text === 'Viaje') {
       const alerts = await getTravelAlertsAll();
+      const formatted = formatTravelAlertsDetailed(alerts);
+      await sendMessage(chatId, formatted, {
+        reply_markup: getAlertsFullKeyboard() as any
+      });
+      return NextResponse.json({ ok: true });
+    }
       const formatted = formatTravelAlertsDetailed(alerts);
       await sendMessage(chatId, formatted, {
         reply_markup: getAlertsFullKeyboard() as any
