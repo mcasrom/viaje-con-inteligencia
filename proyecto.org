@@ -458,10 +458,11 @@ Commit: bc75d9b (2026-04-21)
 
 * NOTAS
 
-** 2026-04-23 :: Bug fixes sesión
+** 2026-04-23 :: Bug fixes sesión + Post blog
 - Fotos diarias: fixMAX_PHOTOS 20→4, ref imagen, unoptimized, placeholder SSR
 - Documentos: add ref={fileInputRef} input file para activar cámara/PDF
 - PDF: offset teléfono emergencia local +57 45→52 para evitar solapamiento
+- Post blog: "Crisis de Combustible 2026: derechos pasajeros vuelo cancelado" (234 líneas)
 
 ** 2026-04-18 :: Sesión completa
 - QuickAccess component (fallback Suspense)

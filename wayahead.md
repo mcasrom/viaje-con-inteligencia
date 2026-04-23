@@ -977,3 +977,4 @@ Módulo PWA de almacenamiento local (IndexedDB) para documentos de viaje/offline
 | 1 | Fotos diarias: MAX_PHOTOS 20→4, ref imagen, unoptimized | src/app/blog/page.tsx, src/components/DailyPhoto.tsx | ✅ Done |
 | 2 | Documentos: add ref={fileInputRef} input file (cámara/PDF) | src/app/documentos/page.tsx | ✅ Done |
 | 3 | PDF: offset teléfono emergencia +57 45→52 | src/components/PDFExportButton.tsx | ✅ Done |
+| 4 | Post blog: Crisis de Combustible 2026 - derechos pasajeros | content/posts/ | ✅ Done |
