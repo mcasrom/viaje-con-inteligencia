@@ -300,6 +300,22 @@ I = 0.4A + 0.3M + 0.3S
 - [x] Filtro automático eventos pasados (ordenados por fecha)
 - [x] Badges estado (en curso/próximo)
 
+### 🎨 SPRINT 22: PDF Itinerario Premium (2026-04-23)
+| # | Feature | Estado |
+|---|---------|--------|
+| 1 | Botón "Exportar PDF" en vista viaje | ✅ Done |
+| 2 | jsPDF + html2canvas | ✅ Done |
+| 3 | Cabecera corporativo (logo, web) | ✅ Done |
+| 4 | Fechas + duración | ✅ Done |
+| 5 | Itinerario día a día | ✅ Done |
+| 6 | Precauciones riesgo país | ✅ Done |
+| 7 | Info emergencias (teléfonos) | ✅ Done |
+| 8 | Checklist embargue (12 items) | ✅ Done |
+| 9 | Footer con fecha generación | ✅ Done |
+| 10 | Notas personales (espacio 6 líneas) | ✅ Done |
+
+**Premium:** Solo usuarios con sesión activa pueden exportar.
+
 ---
 
 ## 🚀 SPRINT 17: IST - Índice de Saturación Turística (2026-04-22)
