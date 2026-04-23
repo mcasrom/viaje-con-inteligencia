@@ -38,20 +38,26 @@ async function getUserStats() {
 }
 
 async function getNewsletterStats() {
+  console.log('[Newsletter] Starting with supabaseAdmin:', !!supabaseAdmin);
+  console.log('[Newsletter] URL:', process.env.NEXT_PUBLIC_SUPABASE_URL);
+  
   if (!supabaseAdmin) return { total: 0, pending: 0 };
   
-  const { count: total } = await supabaseAdmin
-    .from('newsletter_subscribers')
-    .select('*', { count: 'exact', head: true })
-    .eq('verified', true)
-    .is('unsubscribed_at', null);
+  try {
+    const { data: all, error } = await supabaseAdmin
+      .from('newsletter_subscribers')
+      .select('verified, unsubscribed_at');
     
-  const { count: pending } = await supabaseAdmin
-    .from('newsletter_subscribers')
-    .select('*', { count: 'exact', head: true })
-    .eq('verified', false);
+    console.log('[Newsletter] All rows:', all?.length, 'error:', error);
     
-  return { total: total || 0, pending: pending || 0 };
+    const verified = all?.filter(s => s.verified && !s.unsubscribed_at).length || 0;
+    const pending = all?.filter(s => !s.verified).length || 0;
+    
+    return { total: verified, pending };
+  } catch (e) {
+    console.error('[Newsletter] Error:', e);
+    return { total: 0, pending: 0 };
+  }
 }
 
 async function getAlertsStats() {
