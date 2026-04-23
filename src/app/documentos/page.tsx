@@ -156,30 +156,27 @@ export default function TravelDocumentsPage() {
   };
 
   const handleDownload = async (doc: TravelDocument) => {
-    try {
-      const dataUrl = doc.imageData || doc.pdfData;
-      if (!dataUrl) {
-        showToastMessage('❌ Documento sin archivo');
-        return;
-      }
-      
-      // Open in new tab (works on mobile)
-      const opened = window.open(dataUrl, '_blank');
-      
-      if (opened) {
-        showToastMessage('📂 Abriendo...');
-      } else {
-        // Fallback for blocked popups
-        const link = document.createElement('a');
-        link.href = dataUrl;
-        const ext = dataUrl.startsWith('data:image') ? 'jpg' : 'pdf';
-        link.download = `${doc.title.replace(/[^a-z0-9]/gi, '_')}.${ext}`;
-        link.click();
-        showToastMessage('⬇️ Descarga iniciada');
-      }
-    } catch (e) {
-      showToastMessage('❌ Error al abrir');
+    const dataUrl = doc.imageData || doc.pdfData;
+    console.log('Download attempt:', doc.title, 'hasImageData:', !!doc.imageData, 'hasPdfData:', !!doc.pdfData);
+    
+    if (!dataUrl) {
+      showToastMessage('❌ Sin archivo adjunto');
+      return;
     }
+    
+    // For PDFs - directly download
+    if (doc.pdfData && !doc.imageData) {
+      const link = document.createElement('a');
+      link.href = doc.pdfData;
+      link.download = `${doc.title.replace(/[^a-z0-9]/gi, '_')}.pdf`;
+      link.click();
+      showToastMessage('📥 Descargando PDF...');
+      return;
+    }
+    
+    // For images - open in new window
+    window.open(doc.imageData, '_blank');
+    showToastMessage('📂 Abriendo imagen...');
   };
 
   const formatDate = (date: Date) => {
