@@ -367,11 +367,14 @@ function BlogContent() {
   );
 }
 
-const photos = ['/photos/byron-bay.jpg', '/photos/currumbi.jpg', '/photos/lighthouse.jpg', '/photos/lorca.jpg'];
+// Fotos en /public/photos/ se añaden automáticamente
+// Nombra: 1.jpg, 2.jpg, 3.jpg... (sin código necesario)
+const MAX_PHOTOS = 20;
 function getDailyPhoto() {
   const today = new Date();
   const dayOfYear = Math.floor((today.getTime() - new Date(today.getFullYear(), 0, 0).getTime()) / (1000 * 60 * 60 * 24));
-  return photos[dayOfYear % photos.length];
+  const idx = (dayOfYear % MAX_PHOTOS) + 1;
+  return `/photos/${idx}.jpg`;
 }
 
 export default function BlogPage() {
