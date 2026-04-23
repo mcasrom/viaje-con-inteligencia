@@ -5,7 +5,7 @@ date: "2026-04-05"
 author: "Viaje con Inteligencia"
 category: "Seguridad"
 readTime: "8 min"
-image: https://images.unsplash.com/photo-1583267318073-795748127e8b?w=800
+image: https://images.unsplash.com/photo-1518638150340-f706e86654de?w=800
 tags: ["México", "seguridad", "zonas riesgo", "travel warnings"]
 excerpt: "Guía completa sobre cómo identificar y evitar zonas de riesgo en México. Información actualizada sobre áreas seguras para turistas."
 ---

@@ -6,7 +6,7 @@ date: "2026-04-20"
 author: "M. Castillo"
 category: "Básicos"
 readTime: "8 min"
-image: https://images.unsplash.com/photo-1436491865332-5a1a5b?w=800
+image: https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=800
 keywords: "cancelación vuelos Oriente Medio, derechos pasajeros vuelo cancelado, indemnización UE 261, conflicto Iran Israel vuelos, reembolso aerolinea"
 excerpt: "Qué hacer si cancelan tu vuelo por el conflicto en Oriente Medio. Derechos del pasajero, reembolsos, alternativas y estrategias inteligentes para viajeros."
 ---

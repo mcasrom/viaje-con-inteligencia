@@ -3,7 +3,7 @@ title: "Apps de viaje esenciales 2026: las 25 herramientas que todo viajero nece
 description: "Las mejores apps para planificar viajes, navegar sin internet, traducir, buscar vuelos baratos y stay seguros. Guía completa actualizada."
 date: "2026-04-19"
 slug: apps-viaje-esenciales-2026
-image: https://images.unsplash.com/photo-1512428559087-560fa0db72b9?w=800
+image: https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=800
 author: Miguel Castillo
 readingTime: 8 minutos
 tags: [apps, tecnología, herramientas,, hoteles, maps]

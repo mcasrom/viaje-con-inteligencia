@@ -136,7 +136,7 @@ export async function GET(request: Request) {
   };
 
   if (type === 'summary') {
-    return NextResponse.json({ summary, grouped: { critical: grouped.critical.length, warning: grouped.warning.length } });
+    return NextResponse.json({ summary, grouped: { critical: summary.critical, warning: summary.warning } });
   }
 
   if (type === 'airports') return NextResponse.json({ data: airports });

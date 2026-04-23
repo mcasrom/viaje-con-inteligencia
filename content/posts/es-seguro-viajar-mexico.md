@@ -5,7 +5,7 @@ date: "2026-04-21"
 author: "M. Castillo"
 category: "Destinos"
 readTime: "12 min"
-image: https://images.unsplash.com/photo-1518105779142-d3f702918b1a?w=800
+image: https://images.unsplash.com/photo-1518638150340-f706e86654de?w=800
 keywords: "mexico seguridad viaje, riesgo mexico 2026, es seguro mexico, alertas mexico, viaje mexico peligroso, turismo mexico, consejos mexico, cancun safety"
 tags: ["Análisis"]
 excerpt: "Análisis COMPLETO de seguridad en México 2026. Conoce el nivel de riesgo real, zonas seguras, consejos prácticos y todo lo que necesitas para viajar seguro a México."
