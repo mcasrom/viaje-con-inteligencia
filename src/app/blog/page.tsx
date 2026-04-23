@@ -177,11 +177,14 @@ function BlogContent() {
       <main className="max-w-6xl mx-auto px-6 py-12">
         <div className="relative mb-10 rounded-2xl overflow-hidden">
           <img 
-            src="/blog-header.jpg" 
+            src={getDailyPhoto()} 
             alt="Viajes" 
-            className="w-full h-48 md:h-64 object-cover"
+            className="w-full h-48 md:h-64 object-cover opacity-40 grayscale-[30%]"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/70 to-transparent" />
+          <div className="absolute bottom-0 right-0 p-4 text-xs text-slate-500">
+            Foto del día
+          </div>
           <div className="absolute bottom-0 left-0 right-0 p-8">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-blue-500/30 text-blue-300 rounded-full text-sm font-medium mb-3 backdrop-blur-sm">
               <BookOpen className="w-4 h-4" />
@@ -362,6 +365,13 @@ function BlogContent() {
       </footer>
     </div>
   );
+}
+
+const photos = ['/photos/byron-bay.jpg', '/photos/currumbi.jpg', '/photos/lighthouse.jpg', '/photos/lorca.jpg'];
+function getDailyPhoto() {
+  const today = new Date();
+  const dayOfYear = Math.floor((today.getTime() - new Date(today.getFullYear(), 0, 0).getTime()) / (1000 * 60 * 60 * 24));
+  return photos[dayOfYear % photos.length];
 }
 
 export default function BlogPage() {
