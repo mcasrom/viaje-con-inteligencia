@@ -156,18 +156,17 @@ export default function TravelDocumentsPage() {
   };
 
   const handleDownload = (doc: TravelDocument) => {
+    let clicked = false;
     if (doc.imageData) {
-      const link = document.createElement('a');
-      link.href = doc.imageData;
-      const ext = doc.imageData.includes('image/png') ? 'png' : 'jpg';
-      link.download = `${doc.title.replace(/\s+/g, '_')}.${ext}`;
-      link.click();
+      window.open(doc.imageData, '_blank');
+      clicked = true;
     }
     if (doc.pdfData) {
-      const link = document.createElement('a');
-      link.href = doc.pdfData;
-      link.download = `${doc.title.replace(/\s+/g, '_')}.pdf`;
-      link.click();
+      window.open(doc.pdfData, '_blank');
+      clicked = true;
+    }
+    if (clicked) {
+      showToastMessage('⬇️ Abriendo en nueva pestaña');
     }
   };
 
@@ -333,7 +332,7 @@ export default function TravelDocumentsPage() {
                     <button
                       onClick={(e) => { e.stopPropagation(); handleDownload(doc); }}
                       className="p-2 bg-slate-800 rounded-full"
-                      title="Descargar"
+                      title="Ver / Descargar"
                     >
                       <Download className="w-4 h-4" />
                     </button>
@@ -485,7 +484,7 @@ export default function TravelDocumentsPage() {
                   className="flex-1 py-3 bg-blue-500 rounded-full font-medium flex items-center justify-center gap-2"
                 >
                   <Download className="w-4 h-4" />
-                  Descargar
+                  Ver / Descargar
                 </button>
               )}
               <button
