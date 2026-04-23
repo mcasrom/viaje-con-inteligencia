@@ -114,7 +114,7 @@ Nombre, teléfono y email dentro y fuera de la maleta.
 Cada kilo extra puede costar entre 10-50€ dependiendo de la aeroínea.
 
 ### 2. Maletas demasiado grandes
-Medio centímetro puede significar pagar额外.
+Medio centímetro puede significar pagar.
 
 ### 3. Líquidos incorrectos
 Recordar: máximo 100ml por recipiente en bolsa transparente.

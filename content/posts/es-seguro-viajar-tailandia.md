@@ -15,7 +15,7 @@ excerpt: "Análisis COMPLETO de seguridad en Tailandia 2026. Conoce el nivel de 
 
 **🇹🇭 Nivel de riesgo según MAEC: BAJO/MEDIO**
 
-Tailandia es uno de los destinos más populares del Sudeste Asiático. Con millones de visitantes anuales, es fundamental conocer la situación реальной de seguridad antes de planificar tu viaje.
+Tailandia es uno de los destinos más populares del Sudeste Asiático. Con millones de visitantes anuales, es fundamental conocer la situación de seguridad antes de planificar tu viaje.
 
 ---
 
@@ -150,7 +150,7 @@ El MAEC clasifica Tailandia como **riesgo bajo/medio**.
 
 - Tuk-tuk: Negotiate precio antes
 - Songthaew: Trucks compartidos
-- Moto-taxi:危险性 (usar con precaución)
+- Moto-taxi: (usar con precaución)
 - Taxi airport: Recomendado
 
 ### 💡 Consejos

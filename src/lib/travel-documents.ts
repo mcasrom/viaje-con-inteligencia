@@ -6,6 +6,7 @@ export interface TravelDocument {
   createdAt: Date;
   image?: Blob;
   imageData?: string;
+  pdfData?: string;
   text: string;
   extractedText?: string;
   location?: {

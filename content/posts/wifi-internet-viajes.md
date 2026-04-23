@@ -26,10 +26,10 @@ En mis primeros viajes, decidí "desconectarme" voluntariamente. Fue un error. S
 
 **La tecnología debe ser tu aliada, no tu enemiga.** Con los consejos de esta guía, podrás:
 
-✅ Navegar sin ansiedad por datos  
-✅ Proteger tu información personal  
-✅ Ahorrar dinero en telecomunicaciones  
-✅ Mantenerte en contacto con tus seres queridos  
+✅ Navegar sin ansiedad por datos 
+✅ Proteger tu información personal 
+✅ Ahorrar dinero en telecomunicaciones 
+✅ Mantenerte en contacto con tus seres queridos 
 
 ---
 
@@ -74,8 +74,8 @@ En mis primeros viajes, decidí "desconectarme" voluntariamente. Fue un error. S
 
 ### Opción 1: Tu Operador Español con Roaming
 
-**Pros**: Sin cambiar número, sin configurar nada  
-**Contras**: Caro fuera de UE  
+**Pros**: Sin cambiar número, sin configurar nada 
+**Contras**: Caro fuera de UE 
 
 | Operador | roaming UE/día | roaming Mundial/día |
 |----------|---------------|-------------------|
@@ -89,10 +89,10 @@ En mis primeros viajes, decidí "desconectarme" voluntariamente. Fue un error. S
 
 ### Opción 2: SIM Local del País
 
-**Pros**: Barata, datos plentiful, coverage local  
-**Contras**: Necesitas teléfono liberado o doble SIM  
+**Pros**: Barata, datos plentiful, coverage local 
+**Contras**: Necesitas teléfono liberado o doble SIM 
 
-Precios примеры por país:
+Precios por país:
 
 | País | SIM 1 mes | Datos Incluidos |
 |------|-----------|----------------|
@@ -183,7 +183,7 @@ Popular en Japón y algunos países asiáticos.
 - Mapas detallados incluso rurales
 - Funciona 100% offline
 - Busca cualquier dirección sin conexión
--导航 por voz offline
+- por voz offline
 
 **Desventajas**:
 - Menos negocios indexados
@@ -233,10 +233,10 @@ Las redes WiFi públicas son **terreno de caza para hackers**. En una red sin pr
 
 ### Redes que Debes Evitar
 
-❌ Redes sin contraseña  
-❌ Redes con nombres genéricos ("Free WiFi")  
-❌ Redes que parecen oficiales pero aren't  
-❌ Cualquier red en la que no hayas verificado el proveedor  
+❌ Redes sin contraseña 
+❌ Redes con nombres genéricos ("Free WiFi") 
+❌ Redes que parecen oficiales pero aren't 
+❌ Cualquier red en la que no hayas verificado el proveedor 
 
 ---
 
@@ -245,7 +245,7 @@ Las redes WiFi públicas son **terreno de caza para hackers**. En una red sin pr
 ### Antes de Viajar
 
 1. **eSIM Airalo**: Configurada antes de salir (datos de reserva)
-2. **VPN NordVPN**: Suscrita y activada  
+2. **VPN NordVPN**: Suscrita y activada 
 3. **Google Maps offline**: Descargados mapas de ciudades objetivo
 4. **Maps.me**: Mapas offline descargados
 5. **Netflix downloaded**: Series/Películas para vuelos
@@ -305,6 +305,6 @@ Las redes WiFi públicas son **terreno de caza para hackers**. En una red sin pr
 4. **Descarga contenido**: Para cuando no haya conexión
 5. **Desactiva datos automáticos**: Evita disgustos
 
-La nächsten大型智能手机 tiene una capacidad de datos muchoreducir, y la mayoría de opciones son móvessich刚才 he detallado. Mit estos consejos,podermás conectada y segura en tus viajes.
+La nächsten tiene una capacidad de datos muchoreducir, y la mayoría de opciones son móvessich he detallado. Mit estos consejos,podermás conectada y segura en tus viajes.
 
 **¿Tienes alguna pregunta específica sobre conectividad en algún destino?** Pregunta en comentarios y te ayudaré.

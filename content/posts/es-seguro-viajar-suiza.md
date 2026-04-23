@@ -222,8 +222,8 @@ Capital de aventura:
 ###💡 Consejos
 
 1. **Swiss Pass:** Transporte ilimitado
-2. **半程票:** Trenes pueden sueldtools
-3. **半程票:** Skyworks flights
+2. **:** Trenes pueden sueldtools
+3. **:** Skyworks flights
 4. **Bicicleta:** Puntos de alquiler
 
 ---

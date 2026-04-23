@@ -44,7 +44,7 @@ Canadá ofrece experiencias únicas:
 - **Banff/Lake Louise:** Montañas Rocosas
 - **Quebec City:** Ciudad colonial francesa
 - **Niagara Falls:** Cascadas conmemmorativas
-- **Isla del Príncipe Eduardo:** Tradición海岸
+- **Isla del Príncipe Eduardo:** Tradición 
 - **Nunavut:** Ártico auténtico
 - **Columbia Británica:** Bosques y montañas
 

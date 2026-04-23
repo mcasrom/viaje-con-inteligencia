@@ -190,7 +190,7 @@ Brasil tiene un sistema de salud mixto:
 
 **Playas:**
 
-- Corrientes de resaca (重点: seguir banderas)
+- Corrientes de resaca (: seguir banderas)
 - Hurones (especialmente nordeste)
 - Robo de pertenencias
 

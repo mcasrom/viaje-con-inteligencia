@@ -184,7 +184,7 @@ Esta guía proporciona información esencial para ayudarlo a tomar decisiones in
 - La preparación meticulosa es esencial para un viaje exitoso
 - Conocer sus derechos le permite afrontar situaciones difíciles con mayor seguridad
 - Mantenerse informado sobre las condiciones actuales de destino
-- La flexibilidad y la позитивная actitud son invaluables
+- La flexibilidad y la actitud son invaluables
 
 ### Llamada a la Acción
 

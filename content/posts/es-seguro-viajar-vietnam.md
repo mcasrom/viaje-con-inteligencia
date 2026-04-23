@@ -300,7 +300,7 @@ Patrimonio UNESCO:
 
 - **Tet (Año Nuevo):** Enero/Febrero
 - **Reunificación:** 30 Abril
-- **Festival de灯笼:** 15° día del 1° mes lunar
+- **Festival de:** 15° día del 1° mes lunar
 
 ---
 

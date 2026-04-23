@@ -147,7 +147,7 @@ El Ministerio de Asuntos Exteriores de España clasifica Italia como **riesgo mu
 **Riesgo: Bajo-Medio**
 
 - Manifestaciones políticas (evitar)
-- Temporalmente:房价 elevadas
+- Temporalmente: elevadas
 
 ---
 

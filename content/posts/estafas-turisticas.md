@@ -97,7 +97,7 @@ Un "guía" me siguió durante 30 minutos ofreciendo ayuda. Finalmente me llevó 
 
 **Señales de alerta**:
 - "Solo aceptamos efectivo"
-- Te指的 un cajero específico
+- Te un cajero específico
 - Ese cajero cobra comisiones altas
 
 **Mi experiencia (Lisboa)**:
@@ -223,13 +223,13 @@ Un "ayudante" tomó mi maleta y refusó devolverla sin dinero. Tuve que negociar
 
 Señales que algo NO va bien:
 
-🚩 **Demasiada amabilidad estranjera**  
-🚩 **Te pressionan a decidir rápidamente**  
-🚩 **Evitan responder preguntas directas**  
-🚩 **Te mantienen solo/sola**  
-🚩 **No quieren que contacts a otros**  
-🚩 **El precio parece terlalu bueno** (probablemente lo es)  
-🚩 **Te cuentan historias inmue blanditas**  
+🚩 **Demasiada amabilidad estranjera** 
+🚩 **Te pressionan a decidir rápidamente** 
+🚩 **Evitan responder preguntas directas** 
+🚩 **Te mantienen solo/sola** 
+🚩 **No quieren que contacts a otros** 
+🚩 **El precio parece terlalu bueno** (probablemente lo es) 
+🚩 **Te cuentan historias inmue blanditas** 
 
 ---
 
@@ -298,11 +298,11 @@ Señales que algo NO va bien:
 
 Las estafas existen, pero con conocimiento las puedes evitar:
 
-✅ **Desconfía de desconocidos muy amables**  
-✅ **Investiga antes de ir a zones turísticas**  
-✅ **Lleva efectivo exacto**  
-✅ **Usa apps de confianza**  
-✅ **Usa sentido común**  
+✅ **Desconfía de desconocidos muy amables** 
+✅ **Investiga antes de ir a zones turísticas** 
+✅ **Lleva efectivo exacto** 
+✅ **Usa apps de confianza** 
+✅ **Usa sentido común** 
 
 El 90% de las estafas funcionan porque el turista no está preparado. Esta guía te da el conocimiento para no ser una víctima más.
 

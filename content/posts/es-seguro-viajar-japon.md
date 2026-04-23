@@ -15,7 +15,7 @@ excerpt: "Análisis COMPLETO de seguridad en Japón 2026. Conoce el nivel de rie
 
 **🇯🇵 Nivel de riesgo según MAEC: MUY BAJO**
 
-Japón es uno de los destinos más seguros, fascinantes y bien organizados del mundo. Este archipiélago del Pacífico combina perfectamente tradición milenaria con tecnología de vanguardia, ofreciendo a los viajeros una experiencia única e inolvidable. Desde los rascacielos de Tokio hasta los templos古老的 de Kioto, pasando por los onsen termales y los cerezos en flor, Japón cautiva con su mezcla única de modernidad y tradición.
+Japón es uno de los destinos más seguros, fascinantes y bien organizados del mundo. Este archipiélago del Pacífico combina perfectamente tradición milenaria con tecnología de vanguardia, ofreciendo a los viajeros una experiencia única e inolvidable. Desde los rascacielos de Tokio hasta los templos de Kioto, pasando por los onsen termales y los cerezos en flor, Japón cautiva con su mezcla única de modernidad y tradición.
 
 Con una población de 125 millones de habitantes y una tasa de criminalidad extremadamente baja, Japón es frecuentemente citado como uno de los países más seguros del mundo para turistas. El país ofrece infraestructura de primer nivel, transporte eficiente y una hospitalidad excepcional conocida como "omotenashi". En esta guía exhaustiva analizamos todos los aspectos de seguridad para visitar Japón en 2026.
 
@@ -284,7 +284,7 @@ Japón tiene una cultura única con normas específicas.
 - **Puntualidad:** Extremadamente valorada
 - **Silencio:** En transporte público
 - **Zapatos:** Quitarse en casas y templos
-- **Propinas:** No традиционна (puede ofender)
+- **Propinas:** No (puede ofender)
 - **Idioma:** Japonés, algo de inglés
 
 ### 🇯🇵 Costumbres importantes

@@ -331,7 +331,7 @@ Colombia tiene una cultura cálida y acogedora.
 ### ⚠️ Errores comuns
 
 1. No critiquear al país
-2. No inmue免 sobre conflicto
+2. No inmue sobre conflicto
 3. No comparer con Venezuela
 4. No rechazar café (ofensa)
 
@@ -384,7 +384,7 @@ Colombia tiene una cultura cálida y acogedora.
 ### ❌ Lo que NO DEBES hacer
 
 - [ ] No ir a zonas de conflicto
-- [ ] No inmue免 en drogas
+- [ ] No inmue en drogas
 - [ ] No resistiresistir en robo
 - [ ] No transitar zonas marginales
 

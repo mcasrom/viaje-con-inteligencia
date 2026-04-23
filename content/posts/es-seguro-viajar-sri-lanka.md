@@ -213,7 +213,7 @@ Ciudad cultural:
 **Autobuses:**
 
 - económicos pero lentos
-- larga distancia:不错的选择
+- larga distancia: 
 
 **Taxis:**
 

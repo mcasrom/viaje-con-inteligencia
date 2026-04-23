@@ -6,7 +6,7 @@ slug: roaming-internacional
 image: https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=800
 author: Miguel Castillo
 readingTime: 9 minutos
-tags: [roaming, móviles, telecomunicaciones, datos, economia,旅行, tecnologia, SIM]
+tags: [roaming, móviles, telecomunicaciones, datos, economia,, tecnologia, SIM]
 categories: [Tecnología]
 keywords: "roaming internacional, datos móveis abroad, eSIM viaje, roaming España, SIM local, datos internacionales"
 ---
@@ -197,7 +197,7 @@ Una eSIM es una SIM digital sin tarjeta física. La instalas desde una app antes
 - **Activa alertas de gasto**: En tu operador (generalmente gratis)
 - **Desactiva datos móviles**: Si no tienes pack, apaga datos hasta comprar
 - **Revisa el billing**: Consulta regularmente tu uso
-- **Establece límites**: Algunos operadores permiten设置topes
+- **Establece límites**: Algunos operadores permiten topes
 
 ### Mi Banco Bloqueó Mi Tarjeta
 
@@ -209,7 +209,7 @@ Una eSIM es una SIM digital sin tarjeta física. La instalas desde una app antes
 **Solución**:
 - Avisa a tu banco antes de viajar
 - Configura viaje y fechas
-- Ten备用 payment method (otra tarjeta)
+- Ten payment method (otra tarjeta)
 - Ten número de atención internacional
 
 ### eSIM No Funciona

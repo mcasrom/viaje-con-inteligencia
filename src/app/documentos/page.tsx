@@ -11,6 +11,7 @@ interface TravelDocument {
   type: 'ticket' | 'vuelo' | 'hotel' | 'nota' | 'ref';
   createdAt: Date;
   imageData?: string;
+  pdfData?: string;
   text: string;
   title: string;
 }
@@ -84,29 +85,39 @@ export default function TravelDocumentsPage() {
     
     reader.onload = async () => {
       let imageData: string | undefined;
-      let text: string = '';
+      let pdfData: string | undefined;
       
       if (isPdf) {
-        text = `PDF: ${file.name} (${(file.size / 1024).toFixed(0)}KB)`;
+        const pdfReader = new FileReader();
+        pdfReader.onload = async () => {
+          pdfData = pdfReader.result as string;
+          const fileName = file.name.replace(/\.[^/.]+$/, '').replace(/[-_]/g, ' ');
+          await addDocument({
+            type: docType,
+            title: fileName || `${docType} - ${new Date().toLocaleDateString('es-ES')}`,
+            text: `PDF: ${file.name} (${(file.size / 1024).toFixed(0)}KB)`,
+            pdfData,
+            createdAt: new Date(),
+          });
+          showToastMessage('✓ PDF guardado');
+          loadDocuments();
+        };
+        pdfReader.readAsDataURL(file);
       } else {
         imageData = reader.result as string;
+        const fileName = file.name.replace(/\.[^/.]+$/, '').replace(/[-_]/g, ' ');
+        const docLabel = DOC_TYPES.find(t => t.id === docType)?.label || docType;
+        await addDocument({
+          type: docType,
+          title: fileName || `${docType} - ${new Date().toLocaleDateString('es-ES')}`,
+          text: '',
+          imageData,
+          createdAt: new Date(),
+        });
+        showToastMessage(`✓ ${docLabel} guardado`);
+        loadDocuments();
       }
-      
-      const fileName = file.name.replace(/\.[^/.]+$/, '').replace(/[-_]/g, ' ');
-      const docLabel = DOC_TYPES.find(t => t.id === docType)?.label || docType;
-      await addDocument({
-        type: docType,
-        title: fileName || `${docType} - ${new Date().toLocaleDateString('es-ES')}`,
-        text,
-        imageData,
-        createdAt: new Date(),
-      });
-      showToastMessage(`✓ ${docLabel} guardado`);
-      loadDocuments();
     };
-    
-    reader.readAsDataURL(file);
-    e.target.value = '';
   };
 
   const handleNoteSave = async () => {
@@ -152,8 +163,11 @@ export default function TravelDocumentsPage() {
       link.download = `${doc.title.replace(/\s+/g, '_')}.${ext}`;
       link.click();
     }
-    if (doc.text && doc.text.startsWith('PDF:')) {
-      showToastMessage('PDF: Descarga desde historial del navegador');
+    if (doc.pdfData) {
+      const link = document.createElement('a');
+      link.href = doc.pdfData;
+      link.download = `${doc.title.replace(/\s+/g, '_')}.pdf`;
+      link.click();
     }
   };
 
@@ -330,7 +344,7 @@ export default function TravelDocumentsPage() {
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
           {documents.map((doc) => {
             const typeInfo = getTypeInfo(doc.type);
-            const isPdf = doc.text?.startsWith('PDF:');
+            const isPdf = doc.text?.startsWith('PDF:') || doc.pdfData;
             return (
               <button
                 key={doc.id}
@@ -440,6 +454,15 @@ export default function TravelDocumentsPage() {
                 <img src={selectedDoc.imageData} alt={selectedDoc.title} className="w-full max-h-[60vh] object-contain" />
               </div>
             )}
+            {selectedDoc.pdfData && !selectedDoc.imageData && (
+              <div className="bg-red-900/30 p-6">
+                <div className="text-center">
+                  <FileText className="w-20 h-20 text-red-400 mx-auto mb-4" />
+                  <p className="text-red-400 font-medium">{selectedDoc.text}</p>
+                  <p className="text-slate-400 text-sm mt-2">Toca "Descargar" para guardar el PDF</p>
+                </div>
+              </div>
+            )}
             <div className="p-4">
               <div className="flex items-center gap-2 mb-2">
                 <span className={`w-3 h-3 rounded-full ${getTypeInfo(selectedDoc.type).color}`} />
@@ -452,7 +475,7 @@ export default function TravelDocumentsPage() {
               )}
             </div>
             <div className="flex gap-3 p-4 border-t border-slate-800">
-              {selectedDoc.imageData && (
+              {(selectedDoc.imageData || selectedDoc.pdfData) && (
                 <button
                   onClick={() => handleDownload(selectedDoc)}
                   className="flex-1 py-3 bg-blue-500 rounded-full font-medium flex items-center justify-center gap-2"

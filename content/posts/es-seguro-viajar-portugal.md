@@ -97,9 +97,9 @@ Portugal es un país generalmente seguro en su totalidad, pero como en cualquier
 
 ### Áreas a evitar
 
-Portugal no tiene áreas禁 strictamente "peligrosas", pero como en todas partes:
+Portugal no tiene áreas strictamente "peligrosas", pero como en todas partes:
 
-- Evitar zonas marginales已知 de madrugada
+- Evitar zonas marginales de madrugada
 - No deje pertenencias desatendidas en la playa
 
 ---
@@ -176,7 +176,7 @@ Portugal mantiene un entorno seguro para el turismo en 2026. No hay alertas espe
 - ✅ Estabilidad política
 - ✅ Economía turística madura
 - ✅ Seguridad general alta
-- ⚠️ Temporalmente:房价 elevados en verano
+- ⚠️ Temporalmente: elevados en verano
 
 ### Zonas de precaución estacional
 

@@ -265,7 +265,7 @@ Centro financiero:
 1. No llegar tarde
 2. No hablar fuerte
 3. No mezcl dinero
-4. No cruz sem红色 sin mirar
+4. No cruz sem sin mirar
 
 ---
 
@@ -318,7 +318,7 @@ Centro financiero:
 ### ❌ Lo que NO DEBES hacer
 
 - [ ] No llegar tarde
-- [ ] No cruz sem红色 sin mirar
+- [ ] No cruz sem sin mirar
 - [ ] No hablar fuerte
 
 ---

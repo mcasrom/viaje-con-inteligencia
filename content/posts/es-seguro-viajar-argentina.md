@@ -136,7 +136,7 @@ Los principales riesgos para turistas:
 
 - ✅ No mostrar objetos de valor
 - ✅ Usar bolsa anti-robo
-- ✅ Dejar objetos en酒店 caja fuerte
+- ✅ Dejar objetos en caja fuerte
 - ✅ No resistiresistir en asalto
 - ✅ Usar transporte oficial
 - ✅ Evitar zonas marginales
@@ -260,7 +260,7 @@ Argentina más segura:
 **Coche:**
 
 - Alquiler disponible
-- Conducción нормальная
+- Conducción 
 - Autopistas en zonas principales
 
 ### 💡 Consejos

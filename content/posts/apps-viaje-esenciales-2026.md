@@ -6,7 +6,7 @@ slug: apps-viaje-esenciales-2026
 image: https://images.unsplash.com/photo-1512428559087-560fa0db72b9?w=800
 author: Miguel Castillo
 readingTime: 8 minutos
-tags: [apps, tecnología, herramientas,航班, hoteles, maps]
+tags: [apps, tecnología, herramientas,, hoteles, maps]
 categories: [Tecnología]
 ---
 
@@ -68,7 +68,7 @@ En 2026, tener las apps correctas puede ahorrar cientos de euros y evitar proble
 ### 9. Google Maps
 - **Gratis**
 - Offline maps
--导航 turnos
+- turnos
 - Información en tiempo real
 
 ### 10. Maps.me

@@ -23,7 +23,7 @@ Sin embargo, la extensión geográfica del país y sus diferencias regionales si
 
 ## 1. Panorama General de Seguridad
 
-Estados Unidos es un país巨大 con 50 estados, cada uno con su propia personalidad, leyes y niveles de seguridad. Esta diversidad significa que la experiencia de seguridad puede variar dramáticamente dependiendo de tu destino específico.
+Estados Unidos es un país con 50 estados, cada uno con su propia personalidad, leyes y niveles de seguridad. Esta diversidad significa que la experiencia de seguridad puede variar dramáticamente dependiendo de tu destino específico.
 
 ### Datos clave de Estados Unidos
 
@@ -73,7 +73,7 @@ El Ministerio de Asuntos Exteriores y de Cooperación (MAEC) de España mantiene
 
 ### Recomendaciones del MAEC
 
-1. **Registro en consular:**强烈推荐 ( consular.maec.es )
+1. **Registro en consular:** ( consular.maec.es )
 2. **Seguro de viaje:** Imprescindible (costoso sin él)
 3. **Documentación:** Pasaporte vigente, ESTA para españoles
 4. **Zonas a evitar:** Conocer las áreas problemáticas de cada ciudad
@@ -133,7 +133,7 @@ Las tasas de criminalidad en Estados Unidos varían enormemente:
 
 **Ciudades grandes:**
 
-- Robo de pertenencias (bolsillo,租车)
+- Robo de pertenencias (bolsillo, )
 - Robos con violencia (raros en zonas turísticas)
 - Estafas turísticas (mayores en áreas muy turísticas)
 

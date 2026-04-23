@@ -80,7 +80,7 @@ Si eres ciudadano de un país UE:
 - **No cubre**: Repatriación ni hospitales privados fuera de UE
 - **Llévala siempre**: Tarjeta física o descarga app "Mi tarjeta sanitaria"
 
-**Dónde obtenerla**: Tu卡西na de seguridad social o online.
+**Dónde obtenerla**: Tu na de seguridad social o online.
 
 ### qué Llevar al Hospital
 
@@ -121,10 +121,10 @@ Si eres ciudadano de un país UE:
 - **Denuncia policial always**: Document mandatory
 - **Acude al consulado/embajada**: Tu país tendrá oficina
 - **Documentation needed**:
-  - Denuncia de policía
-  - Foto reciente
-  - Pasaporte anterior (si tienes copia)
-  - Cualquier ID con foto
+ - Denuncia de policía
+ - Foto reciente
+ - Pasaporte anterior (si tienes copia)
+ - Cualquier ID con foto
 
 - **Tiempo**: Varía de horas a días
 - **Coste**: Tasas de replacement
@@ -171,10 +171,10 @@ Si eres ciudadano de un país UE:
 
 1. **Acude a embajada/consulado**: España tiene embajadas en capital principal
 2. **Documentación needed**:
-   - Denuncia de policía
-   - Foto reciente
-   - Pasaporte anterior (si tienes copia)
-   - Cualquier documento de identity
+ - Denuncia de policía
+ - Foto reciente
+ - Pasaporte anterior (si tienes copia)
+ - Cualquier documento de identity
 
 3. **Tiempo de emisión**: Varía (horas a días)
 4. **Coste**: Tasas de replacement
@@ -248,11 +248,11 @@ He visto muchos casos donde no tener seguro ha resultado en desastre financiero.
 
 Coberturas ESSENCIALES:
 
-✅ **Gastos médicos**: Mínimo $50,000  
-✅ **Repatriación**: Including medical repatriation  
-✅ **Robo de equipaje**: Equipaje y objetos personales  
-✅ **Cancelación de viaje**: Por causes covered  
-✅ **Asistencia 24/7 en español**: Essential  
+✅ **Gastos médicos**: Mínimo $50,000 
+✅ **Repatriación**: Including medical repatriation 
+✅ **Robo de equipaje**: Equipaje y objetos personales 
+✅ **Cancelación de viaje**: Por causes covered 
+✅ **Asistencia 24/7 en español**: Essential 
 
 ### Coberturas Recomendadas
 

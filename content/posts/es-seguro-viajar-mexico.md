@@ -85,7 +85,7 @@ El MAEC recomienda evitar:
 1. **Registro consular:** Altamente recomendado
 2. **Seguro de viaje:** Imprescindible
 3. **Documentación:** Pasaporte vigente
-4. **Zonas seguras:** Usar только zonas turísticas
+4. **Zonas seguras:** Usar zonas turísticas
 5. **Transporte:** Solo taxis y autobuses autorizados
 
 ---
@@ -145,7 +145,7 @@ Los turistas NO son objetivo del crimen organizado en zonas turísticas. El 99.9
 
 **Precauciones:**
 
-- ✅ Usar только zonas turísticas
+- ✅ Usar zonas turísticas
 - ✅ Evitar estados del norte
 - ✅ No transitar carreteras de noche
 - ✅ Usar transporte autorizado
@@ -278,7 +278,7 @@ Península colonial:
 
 **Taxis:**
 
-- Usar только official taxis (sitio)
+- Usar official taxis (sitio)
 - No tomar taxis de calle
 - ADO: Autobuses de lujo
 
@@ -356,7 +356,7 @@ México tiene una cultura rica y acogedora.
 2. No comparar con EE.UU.
 3. No esperar puntualidad
 4. No rechazdar hospitalidad
-5. No фотографи military/política
+5. No military/política
 
 ---
 
@@ -403,7 +403,7 @@ México tiene una cultura rica y acogedora.
 
 - [ ] Quedarse en zonas turísticas
 - [ ] Contratar seguro de viaje
-- [ ] Usar только official taxis
+- [ ] Usar official taxis
 - [ ] No transitar carreteras de noche
 - [ ] Conocer zonas seguras
 - [ ] Usar sentido común

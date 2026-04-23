@@ -14,7 +14,7 @@ Viajar con una mochila a la espalda representa una filosofía de vida: libertad,
 
 ## La Regla de Oro: Menos es Más
 
-Antes de entrar en detalles, recuerda la regla fundamental del mochilero experimentado: **cuanto menos peses, más lejos llegarás**. Una mochila cargada excesivamente no solo causa fatiga física, sino que limita tu capacidad de moverte con agilidad, tomar transporte público espontáneo o caminar por ciudades陌生的.
+Antes de entrar en detalles, recuerda la regla fundamental del mochilero experimentado: **cuanto menos peses, más lejos llegarás**. Una mochila cargada excesivamente no solo causa fatiga física, sino que limita tu capacidad de moverte con agilidad, tomar transporte público espontáneo o caminar por ciudades.
 
 El peso ideal de una mochila oscila entre el 10-15% de tu peso corporal para viajes de varias semanas. Si pesas 70 kg, tu mochila no debería superar los 10-12 kg.
 

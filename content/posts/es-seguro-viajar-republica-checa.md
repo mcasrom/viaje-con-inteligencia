@@ -254,11 +254,11 @@ El inglés se habla ampliamente en zonas turísticas de Bali. En áreas rurales,
 
 ### Cultura Local
 
-Los balineses son conocidos por su hospitalidad y espiritualidad. La religion hindú местная influye en la vida diaria con templos y ceremonias. Es importante dressingmodestamente al visitar templos.
+Los balineses son conocidos por su hospitalidad y espiritualidad. La religion hindú influye en la vida diaria con templos y ceremonias. Es importante dressingmodestamente al visitar templos.
 
 ### Transporte Local
 
-En Bali, los туку-tuk (becaks) son comunes pero deben negociarse el precio antes. Los conductores de scooter son una opción económica. Para más comodidad, contratar un conductor con coche por día (30-50€).
+En Bali, los -tuk (becaks) son comunes pero deben negociarse el precio antes. Los conductores de scooter son una opción económica. Para más comodidad, contratar un conductor con coche por día (30-50€).
 
 ### Mejor Época para Visitar
 
@@ -266,7 +266,7 @@ La mejor época es durante la estación seca (April-Octubre). El monzón trae ll
 
 ### Seguridad General
 
-Bali es generally seguro para туристы. Los principales riesgos son小偷 de oportunidade y车祸 por scooter. Con precaución normal, puedes disfrutar de esta isla increíble.
+Bali es generally seguro para. Los principales riesgos son de oportunidade y por scooter. Con precaución normal, puedes disfrutar de esta isla increíble.
 
 ### Alojamiento
 
@@ -284,7 +284,7 @@ Entre las actividades más populares están el surfing, buceo, yoga, meditación
 
 1. Sempre llevar efectivo (cajeros automáticos limitados fuera de zonas turísticas)
 2. Respetar las costumbres locales
-3. Носить ropamodesta al visitar templos
+3. ropamodesta al visitar templos
 4. Contratar seguro de viaje (escasez de hospitales privados)
 5. Negociar precios em mercados y taxis
 

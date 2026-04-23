@@ -31,7 +31,7 @@ Viajar no tiene que ser caro. Con las estrategias correctas, puedes ahorrar hast
 
 ### Cómo Ahorrar en Vuelos
 
-- **Vol a aeropuertos secondary**: Stansted enместо de Heathrow, Beauvais en lugar de Orly
+- **Vol a aeropuertos secondary**: Stansted en de Heathrow, Beauvais en lugar de Orly
 - **Escalas**: Puede ahorrar 200€+ pero cuidado con el tiempo
 - **Equipaje de mano**: Evita facturar maletas
 - **Moneda local**: Paga en moneda local, no en euros
@@ -54,7 +54,7 @@ Viajar no tiene que ser caro. Con las estrategias correctas, puedes ahorrar hast
 - **Hostelworld**: Para hostales
 - **Camping**: En verano, hasta $20/noche
 
-### Alternativas创意
+### Alternativas 
 
 1. **House sitting**: Cuidar casas a cambio de free stay
 2. **Couchsurfing**: Quedarte con locales gratis

@@ -365,7 +365,7 @@ Capital de Queensland:
 |---------|-----------|
 | Seguridad general | ⭐⭐⭐⭐⭐ |
 | Turismo adaptado | ⭐⭐⭐⭐⭐ |
-| Fauna本地 | ⭐⭐⭐⭐ |
+| Fauna | ⭐⭐⭐⭐ |
 | Infraestructura | ⭐⭐⭐⭐⭐ |
 
 ---

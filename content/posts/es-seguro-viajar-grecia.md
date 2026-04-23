@@ -23,7 +23,7 @@ Con una población de aproximadamente 10 millones de habitantes y una economía 
 
 ## 1. Panorama General de Seguridad
 
-Grecia es un país巴尔干半岛 que consiste en mainland y más de 6.000 islas, de las cuales aproximadamente 227 están habitadas. Su地理位置stratégica en el Mediterráneo la ha convertido en crossroads de civilizaciones durante milenios.
+Grecia es un país que consiste en mainland y más de 6.000 islas, de las cuales aproximadamente 227 están habitadas. Su stratégica en el Mediterráneo la ha convertido en crossroads de civilizaciones durante milenios.
 
 ### Datos clave de Grecia
 
@@ -219,7 +219,7 @@ Isla grande:
 
 ### 💡 Consejos
 
-1. **Horarios:** Verificar天气预报
+1. **Horarios:** Verificar 
 2. **Reservas:** Summer requires anticipation
 3. **Puerto:** Checkterminales
 
@@ -256,7 +256,7 @@ Isla grande:
 ### 🇬🇷 Costumbres importantes
 
 1. **Filosofía:** Origen de la democracia
-2. **Comida:**橄榄油, feta, gyro
+2. **Comida:**, feta, gyro
 3. **Musica:** Rebetiko, Sirtaki
 4. **Hospitalidad:** Philoxenia
 

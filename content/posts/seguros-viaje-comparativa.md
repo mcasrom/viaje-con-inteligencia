@@ -42,7 +42,7 @@ keywords: "mejor seguro viaje 2026, comparativa seguros viaje, seguro viaje obli
 ### Coverage Avanzada
 - Deportes de riesgo
 - Embarazo
--疫情 (incluye COVID-19)
+- (incluye COVID-19)
 - Pre-existencias
 
 ---
@@ -82,7 +82,7 @@ keywords: "mejor seguro viaje 2026, comparativa seguros viaje, seguro viaje obli
 
 ## Conclusión
 
-**推介:** Iati para aventura, Mondo para largos plazos, Coverwise para budget.
+**:** Iati para aventura, Mondo para largos plazos, Coverwise para budget.
 
 Un seguro de 30€ puede ahorrate miles. No lo dudes.
 
