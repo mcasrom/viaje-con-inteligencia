@@ -158,6 +158,70 @@ export default function PDFExportButton({ trip }: PDFExportButtonProps) {
         y += 18;
       }
 
+      // ============ GEO MAP SECTION ============
+      if (pais && pais.mapaCoordenadas) {
+        checkNewPage(35);
+        
+        pdf.setTextColor(15, 23, 42);
+        pdf.setFontSize(14);
+        pdf.setFont('helvetica', 'bold');
+        pdf.text('MAPA GEOGRÁFICO', margin, y);
+        
+        y += 6;
+        pdf.setDrawColor(59, 130, 246);
+        pdf.setLineWidth(0.5);
+        pdf.line(margin, y, pageWidth - margin, y);
+        
+        y += 8;
+        
+        // Simple world map visualization (hemisphere-based)
+        const [lat, lng] = pais.mapaCoordenadas;
+        const isNorth = lat >= 0;
+        const isEast = lng >= 0;
+        
+        // Draw simple hemisphere grid
+        pdf.setDrawColor(203, 213, 225);
+        pdf.setLineWidth(0.2);
+        pdf.rect(margin, y, contentWidth, 25);
+        
+        // Equator line
+        pdf.line(margin, y + 12.5, pageWidth - margin, y + 12.5);
+        // Prime meridian (approx center)
+        pdf.line(pageWidth / 2, y, pageWidth / 2, y + 25);
+        
+        // Label N/S E/W
+        pdf.setFontSize(6);
+        pdf.setTextColor(148, 163, 184);
+        pdf.text('N', pageWidth - margin - 3, y + 3);
+        pdf.text('S', pageWidth - margin - 3, y + 23);
+        pdf.text('W', margin + 2, y + 3);
+        pdf.text('E', pageWidth - margin - 5, y + 3);
+        
+        // Calculate position on the mini-map
+        const mapX = pageWidth / 2 + (lng / 180) * (contentWidth / 2);
+        const mapY = y + 12.5 - (lat / 90) * 10;
+        
+        // Draw marker
+        pdf.setFillColor(239, 68, 68);
+        pdf.circle(mapX, mapY, 3, 'F');
+        
+        // Country info
+        pdf.setTextColor(15, 23, 42);
+        pdf.setFontSize(9);
+        pdf.setFont('helvetica', 'bold');
+        pdf.text(`${pais.nombre} • ${pais.capital}`, margin, y + 20);
+        
+        pdf.setFont('helvetica', 'normal');
+        pdf.setFontSize(8);
+        pdf.setTextColor(71, 85, 105);
+        const zona = `${isNorth ? 'N' : 'S'}${Math.abs(lat).toFixed(1)}° • ${isEast ? 'E' : 'W'}${Math.abs(lng).toFixed(1)}° • ${pais.zonaHoraria}`;
+        pdf.text(zona, margin, y + 27);
+        
+        pdf.text(`${pais.continente} • ${pais.moneda}`, margin + 55, y + 27);
+        
+        y += 35;
+      }
+
       // ============ PAGE 2: Itinerary ============
       if (trip.itinerary_raw) {
         checkNewPage(60);
