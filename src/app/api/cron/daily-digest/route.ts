@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
+import { supabaseAdmin } from '@/lib/supabase-admin';
 import { Resend } from 'resend';
 
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
@@ -21,15 +21,15 @@ async function getUptimeStatus(): Promise<{ status: string; latency: number }> {
 }
 
 async function getUserStats() {
-  if (!supabase) return { total: 0, newToday: 0 };
+  if (!supabaseAdmin) return { total: 0, newToday: 0 };
   
   const today = new Date().toISOString().split('T')[0];
   
-  const { count: total } = await supabase
+  const { count: total } = await supabaseAdmin
     .from('users')
     .select('*', { count: 'exact', head: true });
     
-  const { count: newToday } = await supabase
+  const { count: newToday } = await supabaseAdmin
     .from('users')
     .select('*', { count: 'exact', head: true })
     .gte('created_at', `${today}T00:00:00Z`);
@@ -38,15 +38,15 @@ async function getUserStats() {
 }
 
 async function getNewsletterStats() {
-  if (!supabase) return { total: 0, pending: 0 };
+  if (!supabaseAdmin) return { total: 0, pending: 0 };
   
-  const { count: total } = await supabase
+  const { count: total } = await supabaseAdmin
     .from('newsletter_subscribers')
     .select('*', { count: 'exact', head: true })
     .eq('verified', true)
     .is('unsubscribed_at', null);
     
-  const { count: pending } = await supabase
+  const { count: pending } = await supabaseAdmin
     .from('newsletter_subscribers')
     .select('*', { count: 'exact', head: true })
     .eq('verified', false);
@@ -55,16 +55,16 @@ async function getNewsletterStats() {
 }
 
 async function getAlertsStats() {
-  if (!supabase) return { newToday: 0, total: 0 };
+  if (!supabaseAdmin) return { newToday: 0, total: 0 };
   
   const today = new Date().toISOString().split('T')[0];
   
-  const { count: newToday } = await supabase
+  const { count: newToday } = await supabaseAdmin
     .from('risk_alerts')
     .select('*', { count: 'exact', head: true })
     .gte('created_at', `${today}T00:00:00Z`);
     
-  const { count: total } = await supabase
+  const { count: total } = await supabaseAdmin
     .from('risk_alerts')
     .select('*', { count: 'exact', head: true });
     
@@ -72,16 +72,16 @@ async function getAlertsStats() {
 }
 
 async function getScraperStats() {
-  if (!supabase) return { runs: 0, errors: 0 };
+  if (!supabaseAdmin) return { runs: 0, errors: 0 };
   
   const today = new Date().toISOString().split('T')[0];
   
-  const { count: runs } = await supabase
+  const { count: runs } = await supabaseAdmin
     .from('scraper_logs')
     .select('*', { count: 'exact', head: true })
     .gte('created_at', `${today}T00:00:00Z`);
     
-  const { count: errors } = await supabase
+  const { count: errors } = await supabaseAdmin
     .from('scraper_logs')
     .select('*', { count: 'exact', head: true })
     .gte('created_at', `${today}T00:00:00Z`)
@@ -91,13 +91,13 @@ async function getScraperStats() {
 }
 
 async function getBotStats() {
-  if (!supabase) return { users: 0, messages: 0 };
+  if (!supabaseAdmin) return { users: 0, messages: 0 };
   
-  const { count: users } = await supabase
+  const { count: users } = await supabaseAdmin
     .from('bot_users')
     .select('*', { count: 'exact', head: true });
     
-  const { count: messages } = await supabase
+  const { count: messages } = await supabaseAdmin
     .from('bot_messages')
     .select('*', { count: 'exact', head: true })
     .gte('created_at', `${new Date().toISOString().split('T')[0]}T00:00:00Z`);
