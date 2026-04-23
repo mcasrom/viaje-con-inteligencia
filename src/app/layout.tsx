@@ -17,6 +17,7 @@ const geistSans = Geist({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://www.viajeinteligencia.com"),
   title: "Viaje con Inteligencia | Mapa de Riesgos de Viaje MAEC - Riesgo Zero",
   description: "Tu guía completa de viajes seguros. Mapa interactivo de riesgos por país según MAEC español. Embajadas, requisitos, consejos, qué hacer y qué no hacer en cada destino. Viaja con inteligencia, viajanSeguro.",
   keywords: "viaje seguro, mapa de riesgos, MAEC, embajadas, requisitos viaje, travel risk, países riesgo, seguro viaje,外交部, risk assessment, travel advisory",
@@ -92,7 +93,6 @@ export default function RootLayout({
             }),
           }}
         />
-        <link rel="canonical" href="https://www.viajeinteligencia.com" />
         <link rel="icon" href="/logo.png" type="image/png" sizes="32x32" />
         <link rel="apple-touch-icon" href="/logo.png" />
         <link rel="alternate" hrefLang="es" href="https://www.viajeinteligencia.com" />
