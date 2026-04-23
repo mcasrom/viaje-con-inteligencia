@@ -196,6 +196,7 @@ export default function TravelDocumentsPage() {
             type="file"
             accept="image/*,.pdf,application/pdf"
             className="hidden"
+            ref={fileInputRef}
             onChange={handleFileChange}
           />
         </label>
