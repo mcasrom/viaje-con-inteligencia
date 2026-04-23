@@ -2,8 +2,7 @@
 
 import { useCallback, useRef, useState } from 'react';
 import { jsPDF } from 'jspdf';
-import html2canvas from 'html2canvas';
-import { FileDown, Loader2 } from 'lucide-react';
+import { FileDown, Loader2, Crown } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import type { Trip } from '@/lib/supabase';
 import { paisesData, DatoPais } from '@/data/paises';
@@ -33,7 +32,7 @@ const checklistItems = [
   'Teléfono cargado',
   'Adaptador enchufe',
   'Medicación habitual',
-  'Vaccines si requeridas',
+  'Vacunas si requeridas',
   'Copias documentos',
   'Autorización menores',
   'App transporte local',
@@ -42,8 +41,6 @@ const checklistItems = [
 export default function PDFExportButton({ trip }: PDFExportButtonProps) {
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
-  const contentRef = useRef<HTMLDivElement>(null);
-  const [showPreview, setShowPreview] = useState(false);
 
   const getCountryData = (destino: string): DatoPais | null => {
     const codigo = destino.toLowerCase().slice(0, 2);
@@ -61,10 +58,23 @@ export default function PDFExportButton({ trip }: PDFExportButtonProps) {
       const margin = 15;
       const contentWidth = pageWidth - margin * 2;
       let y = margin;
+      let currentPage = 1;
 
       const pais = getCountryData(trip.destination);
       const countryCode = pais?.codigo || trip.destination?.toLowerCase().slice(0, 2) || 'xx';
 
+      const checkNewPage = (neededSpace: number) => {
+        if (y + neededSpace > pageHeight - 25) {
+          pdf.addPage();
+          currentPage++;
+          y = margin;
+          return true;
+        }
+        return false;
+      };
+
+      // ============ PAGE 1: Header + Trip Info + Risk ============
+      
       // Header
       pdf.setFillColor(15, 23, 42);
       pdf.rect(0, 0, pageWidth, 40, 'F');
@@ -81,8 +91,17 @@ export default function PDFExportButton({ trip }: PDFExportButtonProps) {
       pdf.setFontSize(10);
       pdf.text('viajeinteligencia.com', pageWidth - margin - 45, 28);
 
-      // Trip Info Box
+      // Premium Badge
+      pdf.setFillColor(234, 179, 8);
+      pdf.roundedRect(pageWidth - margin - 30, 8, 28, 8, 1, 1, 'F');
+      pdf.setTextColor(0, 0, 0);
+      pdf.setFontSize(6);
+      pdf.setFont('helvetica', 'bold');
+      pdf.text('PREMIUM', pageWidth - margin - 27, 13.5, { align: 'center' });
+
       y = 50;
+
+      // Trip Info Box
       pdf.setFillColor(241, 245, 249);
       pdf.roundedRect(margin, y, contentWidth, 35, 3, 3, 'F');
       
@@ -111,7 +130,7 @@ export default function PDFExportButton({ trip }: PDFExportButtonProps) {
       pdf.text(duracionTexto, margin + 5, y);
       
       y += 5;
-      const presupuestoTexto = `Presupuesto: ${trip.budget === 'low' ? 'Económico (<50€/día)' : trip.budget === 'moderate' ? 'Moderado (50-150€/día)' : 'Alto (>150€/día)'}`;
+      const presupuestoTexto = `Presupuesto: ${trip.budget === 'low' ? 'Económico (<50€/dayo)' : trip.budget === 'moderate' ? 'Moderado (50-150€/día)' : 'Alto (>150€/día)'}`;
       pdf.text(presupuestoTexto, margin + 5, y);
 
       y = 95;
@@ -139,8 +158,10 @@ export default function PDFExportButton({ trip }: PDFExportButtonProps) {
         y += 18;
       }
 
-      // Itinerary Section
+      // ============ PAGE 2: Itinerary ============
       if (trip.itinerary_raw) {
+        checkNewPage(60);
+        
         pdf.setTextColor(15, 23, 42);
         pdf.setFontSize(14);
         pdf.setFont('helvetica', 'bold');
@@ -160,9 +181,8 @@ export default function PDFExportButton({ trip }: PDFExportButtonProps) {
         const maxLineWidth = contentWidth - 5;
         
         for (const line of itineraryLines) {
-          if (y > pageHeight - 40) {
-            pdf.addPage();
-            y = margin;
+          if (y > pageHeight - 30) {
+            checkNewPage(20);
           }
           
           const lines = pdf.splitTextToSize(line, maxLineWidth);
@@ -175,11 +195,8 @@ export default function PDFExportButton({ trip }: PDFExportButtonProps) {
         y += 10;
       }
 
-      // New page for checklist and emergency
-      if (y > pageHeight - 80) {
-        pdf.addPage();
-        y = margin;
-      }
+      // ============ PAGE 3: Checklist + Emergency + Notes ============
+      checkNewPage(100);
 
       // Checklist
       pdf.setTextColor(15, 23, 42);
@@ -188,29 +205,31 @@ export default function PDFExportButton({ trip }: PDFExportButtonProps) {
       pdf.text('CHECKLIST DE EMBARQUE', margin, y);
       
       y += 6;
-      pdf.setDrawColor(59, 130,246);
+      pdf.setDrawColor(59, 130, 246);
       pdf.setLineWidth(0.5);
       pdf.line(margin, y, pageWidth - margin, y);
       
-      y += 5;
+      y += 8;
       pdf.setFontSize(9);
       
       for (let i = 0; i < checklistItems.length; i++) {
         const col = i < 6 ? 0 : 1;
         const row = i % 6;
         const x = margin + col * (contentWidth / 2);
-        const itemY = y + row * 6;
+        const itemY = y + row * 8;
         
         pdf.setFillColor(241, 245, 249);
-        pdf.circle(x + 2, itemY - 1, 2, 'F');
+        pdf.circle(x + 2, itemY - 1.5, 2, 'F');
         pdf.setTextColor(55, 65, 81);
         pdf.setFont('helvetica', 'normal');
         pdf.text(checklistItems[i], x + 6, itemY);
       }
 
-      y += 45;
+      y += 55;
 
       // Emergency Contacts
+      checkNewPage(40);
+      
       pdf.setTextColor(15, 23, 42);
       pdf.setFontSize(14);
       pdf.setFont('helvetica', 'bold');
@@ -221,7 +240,7 @@ export default function PDFExportButton({ trip }: PDFExportButtonProps) {
       pdf.setLineWidth(0.5);
       pdf.line(margin, y, pageWidth - margin, y);
       
-      y += 8;
+      y += 10;
       pdf.setFontSize(10);
       
       const emergency = emergencyContacts[countryCode] || emergencyContacts['es'];
@@ -231,15 +250,17 @@ export default function PDFExportButton({ trip }: PDFExportButtonProps) {
       pdf.setFont('helvetica', 'normal');
       pdf.text(emergency.phone, margin + 38, y);
       
-      y += 6;
+      y += 7;
       pdf.setFont('helvetica', 'bold');
       pdf.text('• Teléfono emergencia local: ', margin, y);
       pdf.setFont('helvetica', 'normal');
       pdf.text(pais?.prefijoTelefono ? `${pais.prefijoTelefono}` : '112', margin + 45, y);
-      
-      y += 12;
+
+      y += 15;
 
       // Notes section
+      checkNewPage(35);
+      
       pdf.setTextColor(15, 23, 42);
       pdf.setFontSize(14);
       pdf.setFont('helvetica', 'bold');
@@ -250,25 +271,38 @@ export default function PDFExportButton({ trip }: PDFExportButtonProps) {
       pdf.setLineWidth(0.5);
       pdf.line(margin, y, pageWidth - margin, y);
       
-      y += 5;
+      y += 8;
       pdf.setFillColor(255, 255, 255);
       pdf.setDrawColor(203, 213, 225);
       pdf.setLineWidth(0.3);
       
-      for (let i = 0; i < 6; i++) {
+      for (let i = 0; i < 5; i++) {
         pdf.rect(margin, y + i * 10, contentWidth, 8);
       }
 
-      // Footer
+      // ============ FOOTER (all pages) ============
       const totalPages = pdf.getNumberOfPages();
       for (let i = 1; i <= totalPages; i++) {
         pdf.setPage(i);
+        pdf.setFillColor(241, 245, 249);
+        pdf.rect(0, pageHeight - 15, pageWidth, 15, 'F');
+        
+        pdf.setTextColor(100, 116, 139);
         pdf.setFontSize(8);
-        pdf.setTextColor(148, 163, 184);
+        pdf.setFont('helvetica', 'normal');
         pdf.text(
           `Generado por Viaje con Inteligencia • ${new Date().toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })} • Página ${i} de ${totalPages}`,
-          margin,
-          pageHeight - 8
+          pageWidth / 2,
+          pageHeight - 6,
+          { align: 'center' }
+        );
+        
+        pdf.setFontSize(7);
+        pdf.text(
+          'Solo para usuarios Premium',
+          pageWidth / 2,
+          pageHeight - 2,
+          { align: 'center' }
         );
       }
 
@@ -284,22 +318,17 @@ export default function PDFExportButton({ trip }: PDFExportButtonProps) {
   }, [trip, user]);
 
   return (
-    <>
-      <button
-        onClick={generatePDF}
-        disabled={loading}
-        className="bg-blue-600 hover:bg-blue-700 disabled:bg-slate-600 text-white px-4 py-2 rounded-lg transition-colors flex items-center gap-2 text-sm"
-      >
-        {loading ? (
-          <Loader2 className="w-4 h-4 animate-spin" />
-        ) : (
-          <FileDown className="w-4 h-4" />
-        )}
-        Exportar PDF
-      </button>
-
-      {/* Hidden preview container */}
-      <div ref={contentRef} className="hidden" />
-    </>
+    <button
+      onClick={generatePDF}
+      disabled={loading}
+      className="bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 disabled:from-slate-600 disabled:to-slate-600 text-black px-4 py-2 rounded-lg transition-all flex items-center gap-2 text-sm font-semibold"
+    >
+      {loading ? (
+        <Loader2 className="w-4 h-4 animate-spin" />
+      ) : (
+        <Crown className="w-4 h-4" />
+      )}
+      Exportar PDF
+    </button>
   );
 }
