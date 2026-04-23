@@ -1,11 +1,96 @@
 'use client';
 
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useState, useEffect } from 'react';
 import { jsPDF } from 'jspdf';
 import { FileDown, Loader2, Crown } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import type { Trip } from '@/lib/supabase';
 import { paisesData, DatoPais } from '@/data/paises';
+import logoImage from '@/../logo_ok.png';
+
+function getBase64Image(img: typeof logoImage): string {
+  if (typeof img === 'string') return img;
+  return img.src;
+}
+
+interface NearbyLocation {
+  name: string;
+  country: string;
+  distance: number;
+}
+
+const nearbyCountries: Record<string, NearbyLocation[]> = {
+  es: [
+    { name: 'Lisboa', country: 'Portugal', distance: 625 },
+    { name: 'Paris', country: 'Francia', distance: 1050 },
+    { name: 'Marrakech', country: 'Marruecos', distance: 850 },
+    { name: 'Andorra', country: 'Andorra', distance: 450 },
+    { name: 'Tanger', country: 'Marruecos', distance: 400 },
+    { name: 'Gibraltar', country: 'Reino Unido', distance: 130 },
+  ],
+  pt: [
+    { name: 'Madrid', country: 'España', distance: 650 },
+    { name: 'Lisboa', country: 'Portugal', distance: 210 },
+    { name: 'Santiago', country: 'España', distance: 280 },
+    { name: 'Casablanca', country: 'Marruecos', distance: 450 },
+  ],
+  fr: [
+    { name: 'Paris', country: 'Francia', distance: 350 },
+    { name: 'Bruselas', country: 'Bélgica', distance: 270 },
+    { name: 'Ginebra', country: 'Suiza', distance: 240 },
+    { name: 'Milán', country: 'Italia', distance: 280 },
+    { name: 'Barcelona', country: 'España', distance: 830 },
+    { name: 'Londres', country: 'Reino Unido', distance: 350 },
+  ],
+  it: [
+    { name: 'Roma', country: 'Italia', distance: 280 },
+    { name: 'Venecia', country: 'Italia', distance: 250 },
+    { name: 'Florencia', country: 'Italia', distance: 230 },
+    { name: 'Milán', country: 'Italia', distance: 400 },
+    { name: 'Niza', country: 'Francia', distance: 300 },
+    { name: 'Viena', country: 'Austria', distance: 520 },
+  ],
+  de: [
+    { name: 'Berlin', country: 'Alemania', distance: 280 },
+    { name: 'Munich', country: 'Alemania', distance: 390 },
+    { name: 'Praga', country: 'Rep.Checa', distance: 250 },
+    { name: 'Viena', country: 'Austria', distance: 530 },
+    { name: 'Amsterdam', country: 'Países Bajos', distance: 440 },
+  ],
+  gb: [
+    { name: 'Londres', country: 'Reino Unido', distance: 220 },
+    { name: 'Edimburgo', country: 'Reino Unido', distance: 650 },
+    { name: 'Dublín', country: 'Irlanda', distance: 460 },
+    { name: 'París', country: 'Francia', distance: 340 },
+    { name: 'Amsterdam', country: 'Países Bajos', distance: 350 },
+  ],
+  us: [
+    { name: 'Nueva York', country: 'EEUU', distance: 350 },
+    { name: 'Los Angeles', country: 'EEUU', distance: 3800 },
+    { name: 'Miami', country: 'EEUU', distance: 1600 },
+    { name: 'Chicago', country: 'EEUU', distance: 1150 },
+    { name: 'Toronto', country: 'Canadá', distance: 800 },
+    { name: 'Ciudad Mexico', country: 'México', distance: 2000 },
+  ],
+  mx: [
+    { name: 'Ciudad Mexico', country: 'México', distance: 450 },
+    { name: 'Cancun', country: 'México', distance: 1300 },
+    { name: 'Guadalajara', country: 'México', distance: 550 },
+    { name: 'Los Angeles', country: 'EEUU', distance: 2500 },
+    { name: 'Miami', country: 'EEUU', distance: 2000 },
+  ],
+  ma: [
+    { name: 'Marrakech', country: 'Marruecos', distance: 450 },
+    { name: 'Tanger', country: 'Marruecos', distance: 350 },
+    { name: 'Fez', country: 'Marruecos', distance: 550 },
+    { name: 'Madrid', country: 'España', distance: 900 },
+    { name: 'Algeciras', country: 'España', distance: 250 },
+  ],
+};
+
+function getNearbyLocations(countryCode: string, pais: DatoPais): NearbyLocation[] {
+  return nearbyCountries[countryCode] || nearbyCountries[countryCode.slice(0, 2)] || [];
+}
 
 interface PDFExportButtonProps {
   trip: Trip;
@@ -79,14 +164,23 @@ export default function PDFExportButton({ trip }: PDFExportButtonProps) {
       pdf.setFillColor(15, 23, 42);
       pdf.rect(0, 0, pageWidth, 40, 'F');
       
+      // Logo
+      try {
+        const logoSrc = getBase64Image(logoImage);
+        pdf.addImage(logoSrc, 'PNG', margin + 2, 8, 20, 20);
+      } catch {
+        pdf.setFillColor(234, 179, 8);
+        pdf.roundedRect(margin + 5, 10, 16, 16, 2, 2, 'F');
+      }
+      
       pdf.setTextColor(255, 255, 255);
       pdf.setFontSize(22);
       pdf.setFont('helvetica', 'bold');
-      pdf.text('VIAJE CON INTELIGENCIA', margin, 18);
+      pdf.text('VIAJE CON INTELIGENCIA', margin + 28, 18);
       
       pdf.setFontSize(12);
       pdf.setFont('helvetica', 'normal');
-      pdf.text('Itinerario Personalizado', margin, 28);
+      pdf.text('Itinerario Personalizado', margin + 28, 28);
       
       pdf.setFontSize(10);
       pdf.text('viajeinteligencia.com', pageWidth - margin - 45, 28);
@@ -160,7 +254,7 @@ export default function PDFExportButton({ trip }: PDFExportButtonProps) {
 
       // ============ GEO MAP SECTION ============
       if (pais && pais.mapaCoordenadas) {
-        checkNewPage(35);
+        checkNewPage(55);
         
         pdf.setTextColor(15, 23, 42);
         pdf.setFontSize(14);
@@ -172,54 +266,95 @@ export default function PDFExportButton({ trip }: PDFExportButtonProps) {
         pdf.setLineWidth(0.5);
         pdf.line(margin, y, pageWidth - margin, y);
         
-        y += 8;
+        y += 10;
         
-        // Simple world map visualization (hemisphere-based)
+        // Hemisphere grid with coordinate system
         const [lat, lng] = pais.mapaCoordenadas;
         const isNorth = lat >= 0;
         const isEast = lng >= 0;
         
-        // Draw simple hemisphere grid
+        // Main hemisphere rectangle
+        pdf.setFillColor(248, 250, 252);
         pdf.setDrawColor(203, 213, 225);
-        pdf.setLineWidth(0.2);
-        pdf.rect(margin, y, contentWidth, 25);
+        pdf.setLineWidth(0.5);
+        pdf.roundedRect(margin, y, contentWidth, 25, 2, 2, 'FD');
         
-        // Equator line
+        // Grid lines
+        pdf.setDrawColor(226, 232, 240);
+        pdf.setLineWidth(0.2);
+        for (let i = 1; i < 4; i++) {
+          const x = margin + (contentWidth / 4) * i;
+          pdf.line(x, y, x, y + 25);
+        }
+        for (let i = 1; i < 4; i++) {
+          const lineY = y + (25 / 4) * i;
+          pdf.line(margin, lineY, pageWidth - margin, lineY);
+        }
+        
+        // Equator (bold)
+        pdf.setDrawColor(59, 130, 246);
+        pdf.setLineWidth(0.5);
         pdf.line(margin, y + 12.5, pageWidth - margin, y + 12.5);
-        // Prime meridian (approx center)
+        
+        // Prime meridian (bold)
         pdf.line(pageWidth / 2, y, pageWidth / 2, y + 25);
         
-        // Label N/S E/W
+        // Hemisphere labels
         pdf.setFontSize(6);
-        pdf.setTextColor(148, 163, 184);
-        pdf.text('N', pageWidth - margin - 3, y + 3);
-        pdf.text('S', pageWidth - margin - 3, y + 23);
-        pdf.text('W', margin + 2, y + 3);
-        pdf.text('E', pageWidth - margin - 5, y + 3);
+        pdf.setTextColor(100, 116, 139);
+        pdf.text('N', pageWidth - margin - 4, y + 4);
+        pdf.text('S', pageWidth - margin - 4, y + 23);
+        pdf.text('W', margin + 2, y + 4);
+        pdf.text('E', pageWidth - margin - 6, y + 4);
         
-        // Calculate position on the mini-map
-        const mapX = pageWidth / 2 + (lng / 180) * (contentWidth / 2);
+        // Calculate position
+        const mapX = pageWidth / 2 + (lng / 180) * (contentWidth / 2) - 3;
         const mapY = y + 12.5 - (lat / 90) * 10;
         
-        // Draw marker
+        // Destination marker with pulse effect
         pdf.setFillColor(239, 68, 68);
-        pdf.circle(mapX, mapY, 3, 'F');
+        pdf.circle(mapX + 3, mapY, 4, 'F');
+        pdf.setFillColor(255, 255, 255);
+        pdf.circle(mapX + 3, mapY, 1.5, 'F');
         
-        // Country info
+        // Country info box
+        y += 30;
+        pdf.setFillColor(241, 245, 249);
+        pdf.roundedRect(margin, y, contentWidth, 18, 2, 2, 'F');
+        
         pdf.setTextColor(15, 23, 42);
-        pdf.setFontSize(9);
+        pdf.setFontSize(11);
         pdf.setFont('helvetica', 'bold');
-        pdf.text(`${pais.nombre} • ${pais.capital}`, margin, y + 20);
+        pdf.text(`${pais.nombre} / ${pais.capital}`, margin + 5, y + 6);
         
+        pdf.setFontSize(9);
         pdf.setFont('helvetica', 'normal');
-        pdf.setFontSize(8);
         pdf.setTextColor(71, 85, 105);
-        const zona = `${isNorth ? 'N' : 'S'}${Math.abs(lat).toFixed(1)}° • ${isEast ? 'E' : 'W'}${Math.abs(lng).toFixed(1)}° • ${pais.zonaHoraria}`;
-        pdf.text(zona, margin, y + 27);
+        const coordText = `${isNorth ? 'N' : 'S'}${Math.abs(lat).toFixed(2)}° ${isEast ? 'E' : 'W'}${Math.abs(lng).toFixed(2)}° • ${pais.zonaHoraria}`;
+        pdf.text(coordText, margin + 5, y + 12);
         
-        pdf.text(`${pais.continente} • ${pais.moneda}`, margin + 55, y + 27);
+        pdf.text(`${pais.continente} • ${pais.moneda} • Conduce: ${pais.conduccion === 'derecha' ? 'D' : 'I'}`, margin + 90, y + 12);
         
-        y += 35;
+        y += 25;
+        
+        // Nearby countries / cities section
+        const nearbyLocations = getNearbyLocations(countryCode, pais);
+        if (nearbyLocations.length > 0) {
+          pdf.setTextColor(15, 23, 42);
+          pdf.setFontSize(11);
+          pdf.setFont('helvetica', 'bold');
+          pdf.text('CIudades cercanas / Countries vecinos:', margin, y);
+          
+          y += 6;
+          pdf.setFontSize(9);
+          pdf.setFont('helvetica', 'normal');
+          pdf.setTextColor(71, 85, 105);
+          
+          for (const loc of nearbyLocations.slice(0, 6)) {
+            pdf.text(`• ${loc.name} (${loc.country}) - ${loc.distance}km`, margin + 3, y);
+            y += 4.5;
+          }
+        }
       }
 
       // ============ PAGE 2: Itinerary ============

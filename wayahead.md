@@ -313,8 +313,9 @@ I = 0.4A + 0.3M + 0.3S
 | 8 | Checklist embargue (12 items) | ✅ Done |
 | 9 | Footer con fecha generación | ✅ Done |
 | 10 | Notas personales (espacio 6 líneas) | ✅ Done |
-
-**Premium:** Solo usuarios con sesión activa pueden exportar.
+| 11 | Badge "PREMIUM" + disclaimer | ✅ Done |
+| 12 | **Mapa geográfico (coordenadas)** | ✅ Done |
+| 13 | Spacing dinámico (checkNewPage) | ✅ Done |
 
 ---
 
