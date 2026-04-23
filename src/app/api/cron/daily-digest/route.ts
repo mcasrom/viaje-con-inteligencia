@@ -7,16 +7,16 @@ const BASE_URL = process.env.APP_BASE_URL || 'https://www.viajeinteligencia.com'
 const TO_EMAIL = 'info@viajeinteligencia.com';
 
 async function getUptimeStatus(): Promise<{ status: string; latency: number }> {
+  const start = Date.now();
   try {
-    const start = Date.now();
-    const response = await fetch(`${BASE_URL}/api/scraper-status`, { 
-      method: 'GET',
-      signal: { timeout: 5000 } as any 
+    const response = await fetch(`${BASE_URL}/`, { 
+      method: 'HEAD',
+      cache: 'no-store'
     });
     const latency = Date.now() - start;
     return { status: response.ok ? 'online' : 'error', latency };
   } catch {
-    return { status: 'offline', latency: 0 };
+    return { status: 'offline', latency: Date.now() - start };
   }
 }
 
@@ -117,10 +117,11 @@ async function generateDigest() {
   
   const now = new Date();
   const dateStr = now.toISOString().split('T')[0];
+  const timeStr = now.toTimeString().split(' ')[0].split(':').slice(0,2).join(':');
   
   const digest = `📊 Daily Digest - Viaje con Inteligencia
 =====================================
-🕐 ${dateStr} 00:00 UTC
+🕐 ${dateStr} ${timeStr} UTC
 
 ✅ SISTEMA
 ├── Estado: ${uptime.status === 'online' ? '🟢 ONLINE' : '🔴 OFFLINE'}
