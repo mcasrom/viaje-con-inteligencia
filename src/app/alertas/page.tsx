@@ -141,6 +141,9 @@ export default function AlertsPage() {
           <p className="text-slate-400">
             Recibe notificaciones cuando cambie el nivel de riesgo de tus países favoritos
           </p>
+          <p className="text-slate-500 text-sm mt-2">
+            💡 <strong>Complemento alBot:</strong> Aquí configuras alertas de <em>riesgo país</em> (MAEC). En el Bot usa <code>/alertasviaje</code> para <em>retrasos de vuelos, trenes y clima</em>.
+          </p>
         </div>
 
         <div className="grid md:grid-cols-2 gap-4 mb-8">
@@ -271,7 +274,7 @@ export default function AlertsPage() {
             🔔 ¿Por qué configurar alertas?
           </h3>
           <p className="text-white/80 text-sm mb-4">
-            El MAEC actualiza regularmente los niveles de riesgo. Recibe notificaciones inmediatas.
+            El MAEC actualiza los niveles de riesgo. Recibe notificaciones inmediatas.
           </p>
           <div className="flex justify-center gap-6 text-sm">
             <div className="flex items-center gap-2 text-white/80">
@@ -280,6 +283,10 @@ export default function AlertsPage() {
             <div className="flex items-center gap-2 text-white/80">
               <Mail className="w-4 h-4" /> Email
             </div>
+          </div>
+          <div className="mt-4 pt-4 border-t border-white/20 text-xs text-white/60">
+            <p className="mb-1"><strong>Nota:</strong> Esta página es para <em>alertas de riesgo país</em>.</p>
+            <p>Usa el Bot <code>@ViajeConInteligenciaBot</code> para <em>alertas de viajes</em> (vuelos, trenes, clima).</p>
           </div>
         </div>
       </div>
