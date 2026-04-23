@@ -38,9 +38,6 @@ async function getUserStats() {
 }
 
 async function getNewsletterStats() {
-  console.log('[Newsletter] Starting with supabaseAdmin:', !!supabaseAdmin);
-  console.log('[Newsletter] URL:', process.env.NEXT_PUBLIC_SUPABASE_URL);
-  
   if (!supabaseAdmin) return { total: 0, pending: 0 };
   
   try {
@@ -48,7 +45,7 @@ async function getNewsletterStats() {
       .from('newsletter_subscribers')
       .select('verified, unsubscribed_at');
     
-    console.log('[Newsletter] All rows:', all?.length, 'error:', error);
+    console.log('[Newsletter] Query result:', { count: all?.length, error });
     
     const verified = all?.filter(s => s.verified && !s.unsubscribed_at).length || 0;
     const pending = all?.filter(s => !s.verified).length || 0;
