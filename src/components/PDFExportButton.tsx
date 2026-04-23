@@ -786,7 +786,7 @@ export default function PDFExportButton({ trip }: PDFExportButtonProps) {
       pdf.setFont('helvetica', 'bold');
       pdf.text('• Teléfono emergencia local: ', margin, y);
       pdf.setFont('helvetica', 'normal');
-      pdf.text(pais?.prefijoTelefono ? `${pais.prefijoTelefono}` : '112', margin + 45, y);
+      pdf.text(pais?.prefijoTelefono ? `${pais.prefijoTelefono}` : '112', margin + 52, y);
 
       y += 15;
 
