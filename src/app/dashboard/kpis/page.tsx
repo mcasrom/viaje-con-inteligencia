@@ -2,7 +2,17 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Globe, Plane, Shield, AlertTriangle, TrendingUp, Activity, Map, BarChart3, AlertCircle, CheckCircle, XCircle, ArrowRight, Search, Filter, Clock } from 'lucide-react';
+import { ArrowLeft, Globe, Plane, Shield, AlertTriangle, TrendingUp, Activity, Map, BarChart3, AlertCircle, CheckCircle, XCircle, ArrowRight, Search, Filter, Clock, RefreshCw } from 'lucide-react';
+
+interface FlightAlert {
+  flight: string;
+  airline: string;
+  departure: string;
+  arrival: string;
+  status: string;
+  delay: number;
+  time: string;
+}
 
 const KPIData = [
   { country: 'España', code: 'ES', riesgoPolitico: 15, riesgoAereo: 8, restricciones: 5, score: 87, status: 'seguro' },
@@ -34,14 +44,6 @@ const AIRISKData = [
   { region: 'Asia-Pacífico', cancelaciones: 4.8, cierres: 1.2, incidentes: 8, status: 'precaución' },
   { region: 'Latinoamérica', cancelaciones: 6.5, cierres: 2.1, incidentes: 12, status: 'precaución' },
   { region: 'África', cancelaciones: 8.2, cierres: 3.5, incidentes: 18, status: 'precaución' },
-];
-
-const ALERTS = [
-  { time: '14:32', type: 'warning', message: 'Espacio aéreo Israel cerrado por 6 horas', country: 'IL' },
-  { time: '12:15', type: 'alert', message: 'Protestas en París - zona centro', country: 'FR' },
-  { time: '10:45', type: 'info', message: 'Alerta de tormentas para España oriental', country: 'ES' },
-  { time: '09:22', type: 'warning', message: 'Cancelaciones masivo en Dubái', country: 'AE' },
-  { time: '08:10', type: 'info', message: 'Abierto frontera España-Portugal sin restricciones', country: 'PT' },
 ];
 
 function getStatusColor(status: string) {
@@ -117,6 +119,27 @@ export default function KPIsPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState<'score' | 'politico' | 'aereo'>('score');
   const [selectedCountries, setSelectedCountries] = useState<string[]>(['ES', 'FR', 'MX']);
+  const [flightAlerts, setFlightAlerts] = useState<FlightAlert[]>([]);
+  const [loadingAlerts, setLoadingAlerts] = useState(true);
+  const [lastUpdate, setLastUpdate] = useState<string>(new Date().toISOString());
+
+  useEffect(() => {
+    async function fetchFlightAlerts() {
+      try {
+        const res = await fetch('/api/flights/delays');
+        const data = await res.json();
+        if (data.flights) {
+          setFlightAlerts(data.flights);
+          setLastUpdate(data.timestamp);
+        }
+      } catch (e) {
+        console.error('Error fetching alerts:', e);
+      } finally {
+        setLoadingAlerts(false);
+      }
+    }
+    fetchFlightAlerts();
+  }, []);
 
   const filteredData = KPIData
     .filter(d => d.country.toLowerCase().includes(searchTerm.toLowerCase()) || d.code.toLowerCase().includes(searchTerm.toLowerCase()))
@@ -400,30 +423,69 @@ export default function KPIsPage() {
           </div>
           
           <div className="bg-slate-800 rounded-2xl p-6 border border-slate-700">
-            <div className="space-y-3">
-              {ALERTS.map((alert, idx) => (
-                <div 
-                  key={idx} 
-                  className={`flex items-start gap-4 p-4 rounded-xl border ${
-                    alert.type === 'warning' ? 'bg-yellow-500/10 border-yellow-500/30' :
-                    alert.type === 'alert' ? 'bg-red-500/10 border-red-500/30' :
-                    'bg-blue-500/10 border-blue-500/30'
-                  }`}
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <Plane className="w-5 h-5 text-blue-400" />
+                <h3 className="text-white font-semibold">Alertas de Vuelo</h3>
+              </div>
+              <div className="flex items-center gap-2">
+                <button 
+                  onClick={() => window.location.reload()}
+                  className="p-2 text-slate-400 hover:text-white transition-colors"
+                  title="Actualizar"
                 >
-                  <AlertCircle className={`w-5 h-5 mt-0.5 flex-shrink-0 ${
-                    alert.type === 'warning' ? 'text-yellow-400' :
-                    alert.type === 'alert' ? 'text-red-400' :
-                    'text-blue-400'
-                  }`} />
-                  <div className="flex-1">
-                    <div className="flex items-center justify-between">
-                      <span className="text-slate-500 text-sm">{alert.time}</span>
-                      <span className="text-2xl">{alert.country === 'IL' ? '🇮🇱' : alert.country === 'FR' ? '🇫🇷' : alert.country === 'ES' ? '🇪🇸' : alert.country === 'AE' ? '🇦🇪' : '🌍'}</span>
-                    </div>
-                    <p className="text-white font-medium">{alert.message}</p>
-                  </div>
+                  <RefreshCw className={`w-4 h-4 ${loadingAlerts ? 'animate-spin' : ''}`} />
+                </button>
+                {flightAlerts.length > 0 ? (
+                  <span className="px-2 py-1 bg-green-500/20 text-green-400 rounded-full text-xs font-medium">
+                    EN VIVO
+                  </span>
+                ) : (
+                  <span className="px-2 py-1 bg-slate-700 text-slate-400 rounded-full text-xs">
+                    {loadingAlerts ? 'Cargando...' : 'Sin datos'}
+                  </span>
+                )}
+              </div>
+            </div>
+            
+            <div className="space-y-3">
+              {loadingAlerts ? (
+                <div className="text-center py-8 text-slate-500">
+                  <RefreshCw className="w-6 h-6 animate-spin mx-auto mb-2" />
+                  Cargando alertas...
                 </div>
-              ))}
+              ) : flightAlerts.length === 0 ? (
+                <div className="text-center py-8 text-slate-500">
+                  No hay alertas de vuelo activas
+                </div>
+              ) : (
+                flightAlerts.map((alert, idx) => (
+                  <div 
+                    key={idx} 
+                    className={`flex items-start gap-4 p-4 rounded-xl border ${
+                      alert.delay > 30 ? 'bg-red-500/10 border-red-500/30' :
+                      alert.delay > 15 ? 'bg-yellow-500/10 border-yellow-500/30' :
+                      'bg-green-500/10 border-green-500/30'
+                    }`}
+                  >
+                    <Plane className={`w-5 h-5 mt-0.5 flex-shrink-0 ${
+                      alert.delay > 30 ? 'text-red-400' :
+                      alert.delay > 15 ? 'text-yellow-400' :
+                      'text-green-400'
+                    }`} />
+                    <div className="flex-1">
+                      <div className="flex items-center justify-between">
+                        <span className="text-slate-500 text-sm">{alert.flight}</span>
+                        <span className="text-2xl">{alert.departure} → {alert.arrival}</span>
+                      </div>
+                      <p className="text-white font-medium">{alert.airline}</p>
+                      <p className="text-slate-400 text-sm">
+                        {alert.delay > 0 ? `Retraso: ${alert.delay} min` : 'Sin retraso'}
+                      </p>
+                    </div>
+                  </div>
+                ))
+              )}
             </div>
           </div>
         </section>
