@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { groqClient } from '@/lib/groq-ai';
 import { paisesData } from '@/data/paises';
+import { getTourismStats, formatTourismStats } from '@/data/tourism';
 
 export const runtime = 'edge';
 
@@ -47,6 +48,9 @@ async function generateInforme(pais: string) {
     return { error: `País ${pais} no encontrado` };
   }
 
+  const tourismStats = getTourismStats(pais);
+  const tourismInfo = tourismStats ? formatTourismStats(tourismStats) : 'No disponible';
+
   const prompt = `Genera un informe completo de viaje para ${paisData.nombre} ${paisData.bandera}
 
 DATOS DEL PAÍS:
@@ -60,6 +64,9 @@ DATOS DEL PAÍS:
 - Cambio aprox: ${paisData.tipoCambio}/EUR
 - Última actualización: ${paisData.ultimoInforme}
 
+TURISMO (datos 2024):
+- ${tourismInfo}
+
 Incluye:
 1. **Resumen ejecutivo** (2-3 líneas)
 2. **Nivel de riesgo** con explicación
@@ -70,7 +77,7 @@ Incluye:
 7. **Seguridad** (consejos prácticos)
 8. **Embajada de España** (dirección y tfno si disponible)
 9. **Teléfonos de emergencia**
-10. ** Checklist** de preparación
+10. **Checklist** de preparación
 
 Formato: Markdown estructurado. Sé conciso pero útil.`;
 
