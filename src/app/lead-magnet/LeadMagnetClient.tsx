@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Check, Download, Loader2, Mail, Gift, ArrowRight, Star, Zap, Shield } from 'lucide-react';
+import { Check, Download, Loader2, Mail, Gift, ArrowRight, Star, Zap, Shield, Plane } from 'lucide-react';
 
 const PREMIUM_CHECKLIST_ITEMS = [
   { category: 'Documentos', items: ['Pasaporte vigente (6+ meses)', 'Billetes confirmación', 'Reserva hotel', 'Seguro viaje (PDF)', 'Autorización menores (si aplica)', 'Visa entradas (si aplica)'] },
@@ -52,7 +52,36 @@ export default function LeadMagnetClient() {
             <Check className="w-16 h-16 text-green-400 mx-auto mb-4" />
             <h1 className="text-2xl font-bold text-white mb-2">¡Descargado!</h1>
             <p className="text-slate-300 mb-6">Tu checklist premium se ha descargado. También recibirás nuestro resumen semanal.</p>
-            <Link href="/" className="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300">
+            
+            <div className="space-y-3 text-left">
+              <p className="text-slate-400 text-sm font-medium">📱 También disponible en:</p>
+              <a 
+                href="https://t.me/ViajeConInteligenciaBot" 
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 w-full p-3 bg-blue-600/20 hover:bg-blue-600/30 border border-blue-500/30 rounded-lg transition-colors"
+              >
+                <Plane className="w-5 h-5 text-blue-400" />
+                <div className="text-left">
+                  <p className="text-white text-sm font-medium">Bot de Alertas</p>
+                  <p className="text-slate-400 text-xs">/alertasviaje para机场, trenes, clima</p>
+                </div>
+              </a>
+              <a 
+                href="https://t.me/ViajeConInteligencia" 
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 w-full p-3 bg-purple-600/20 hover:bg-purple-600/30 border border-purple-500/30 rounded-lg transition-colors"
+              >
+                <Mail className="w-5 h-5 text-purple-400" />
+                <div className="text-left">
+                  <p className="text-white text-sm font-medium">Canal Telegram</p>
+                  <p className="text-slate-400 text-xs">Resumen diario de alertas</p>
+                </div>
+              </a>
+            </div>
+            
+            <Link href="/" className="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 mt-6">
               <ArrowRight className="w-4 h-4" />
               Volver al mapa
             </Link>

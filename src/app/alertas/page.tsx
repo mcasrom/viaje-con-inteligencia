@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Bell, BellOff, Plus, Trash2, Globe, Mail, Smartphone, AlertTriangle, CheckCircle, Loader2 } from 'lucide-react';
+import { Bell, BellOff, Plus, Trash2, Globe, Mail, Smartphone, AlertTriangle, CheckCircle, Loader2, Plane } from 'lucide-react';
 
 interface AlertPreference {
   country_code: string;
@@ -141,6 +141,33 @@ export default function AlertsPage() {
           <p className="text-slate-400">
             Recibe notificaciones cuando cambie el nivel de riesgo de tus países favoritos
           </p>
+        </div>
+
+        <div className="grid md:grid-cols-2 gap-4 mb-8">
+          <a 
+            href="https://t.me/ViajeConInteligenciaBot" 
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-3 p-4 bg-blue-600/20 hover:bg-blue-600/30 border border-blue-500/30 rounded-lg transition-colors cursor-pointer"
+          >
+            <Plane className="w-6 h-6 text-blue-400" />
+            <div>
+              <p className="text-white font-medium">🤖 Bot de Alertas</p>
+              <p className="text-slate-400 text-sm">/alertasviaje para机场, trenes, clima</p>
+            </div>
+          </a>
+          <a 
+            href="https://t.me/ViajeConInteligencia" 
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-3 p-4 bg-purple-600/20 hover:bg-purple-600/30 border border-purple-500/30 rounded-lg transition-colors cursor-pointer"
+          >
+            <Bell className="w-6 h-6 text-purple-400" />
+            <div>
+              <p className="text-white font-medium">📢 Canal de Alertas</p>
+              <p className="text-slate-400 text-sm">Resumen diario automático</p>
+            </div>
+          </a>
         </div>
 
         {notification && (
