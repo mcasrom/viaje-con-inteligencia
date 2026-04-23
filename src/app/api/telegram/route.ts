@@ -76,7 +76,21 @@ const translations = {
     aiThinking: () => '🤖 Pensando...',
     aiExit: () => 'Volviendo al menú principal.',
     notUnderstood: () => '🤖 No entendí. Usa los botones o prueba:\n• Escribe un país (ej: "Japón")\n• /help para ayuda',
-    help: () => `*📚 Comandos disponibles:*\n\n/start - Iniciar bot\n/pais [nombre] - Info de un país\n/clima [país] - Ver clima actual\n/chat o /ia - Chat con IA\n/alertas - Ver riesgos\n/cambio - Tipos de cambio\n/checklist - Preview checklist\n/premium - Info premium\n/lang - Cambiar idioma (EN/ES/PT)\n/help - Esta ayuda`,
+    help: () => `*📚 Comandos disponibles:*
+
+/start - Iniciar bot
+/pais [nombre] - Info de un país
+/clima [país] - Ver clima actual
+/chat o /ia - Chat con IA
+/alertas - Riesgos países (MAEC)
+✈️🛤️ Alertas viaje - Vuelos/trenes/clima
+/cambio - Tipos de cambio
+/checklist - Preview checklist
+/premium - Info premium
+/lang - Cambiar idioma (EN/ES/PT)
+/help - Esta ayuda
+
+💡 *Usa /alertasviaje para alertas de viaje!*`,
     aiNotAvailable: () => '🤖 IA no disponible. Configure GROQ_API_KEY en Vercel para activar el chat IA.',
     aiError: () => '🤖 Error de IA. Intenta de nuevo.',
     aiConnectionError: () => '🤖 Error de conexión con IA. Intenta de nuevo.',
