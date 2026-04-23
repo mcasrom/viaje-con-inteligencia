@@ -83,7 +83,19 @@
 - ✅ Telegram: posts blog + países riesgo
 - ✅ Channel: @ViajeConInteligencia
 - ✅ Frecuencia: cada lunes 8:00 UTC
-- ⚠️ Scraping MAEC no funcional (web institucional)
+### 🚂 SISTEMA DE ALERTAS DE VIAJE (Completado)
+
+#### APIs Integradas
+| API | Función | Fuente | Estado |
+|-----|--------|--------|--------|
+| /api/alerts/travel | Unificada todas | Aggregator | ✅ |
+| /api/airport-delays | Retrasos aéreos | FlightLabs (mock) | ✅ |
+| /api/train-delays | Retrasos trenes | TrainsTracking | ✅ |
+| /api/weather/extreme | Meteorología extrema | Open-Meteo | ✅ |
+
+#### 🕐 REVISIÓN SEMANAL - APIs
+- Buscar nuevas APIs gratuitas para alertas
+- Testing: curl viaje-con-inteligencia.vercel.app/api/alerts/travel?type=summary
 
 ---
 

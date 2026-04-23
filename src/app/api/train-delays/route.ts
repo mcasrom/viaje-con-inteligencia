@@ -1,6 +1,19 @@
 import { NextResponse } from 'next/server';
 
-const TRAINS_BASE = 'https://trainstracking.com/api';
+const TRAINS_TRACKING_API = 'https://trainstracking.com/api/live/realtime';
+
+async function fetchTrainsFromAPI(country?: string) {
+  try {
+    const url = country ? `${TRAINS_TRACKING_API}?source=${country}` : TRAINS_TRACKING_API;
+    const res = await fetch(url, { next: { revalidate: 60 } });
+    if (!res.ok) throw new Error(`API error: ${res.status}`);
+    const data = await res.json();
+    return data.trains || [];
+  } catch (e) {
+    console.log('TrainsTracking API unavailable, using fallback');
+    return null;
+  }
+}
 
 function getCountryInfo(country: string) {
   const info: Record<string, { name: string, stations: string[] }> = {
@@ -56,11 +69,31 @@ export async function GET(request: Request) {
   }
 
   const allTrains: any[] = [];
+  let useAPI = false;
   
   for (const c of countries) {
-    const trains = generateMockTrains(c);
-    allTrains.push(...trains.map((t: any) => ({ ...t, country: c })));
+    let trains = await fetchTrainsFromAPI(c);
+    if (trains && trains.length > 0) {
+      useAPI = true;
+      allTrains.push(...trains.map((t: any) => ({
+        id: t.id || t.trainCode,
+        trainCode: t.trainCode || t.id,
+        origin: t.name?.split(' → ')[0] || 'N/A',
+        destination: t.name?.split(' → ')[1] || 'N/A',
+        scheduledTime: t.scheduledTime || t.time,
+        delay: t.delay || 0,
+        status: t.delay > 5 ? 'delayed' : 'on_time',
+        platform: t.platform || 'N/A',
+        lastUpdated: t.lastUpdated || new Date().toISOString(),
+        country: c,
+      })));
+    } else {
+      const mock = generateMockTrains(c);
+      allTrains.push(...mock.map((t: any) => ({ ...t, country: c })));
+    }
   }
+
+  const source = useAPI ? 'TrainsTracking API (live)' : 'TrainsTracking API (mock fallback)';
 
   if (format === 'text') {
     const lines = allTrains.map(t => 
@@ -89,7 +122,11 @@ export async function GET(request: Request) {
   return NextResponse.json({
     summary,
     data: allTrains,
-    source: 'TrainsTracking API (mock)',
+    source,
     timestamp: new Date().toISOString(),
+    apiCheck: {
+      trainsTracking: useAPI ? 'active' : 'fallback',
+      note: 'Free public API. Consider attribution per ToS.',
+    },
   });
 }
