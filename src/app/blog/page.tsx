@@ -3,7 +3,7 @@
 import { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { ArrowLeft, Calendar, Clock, BookOpen, TrendingUp, Clock3, Tag, Flame, ChevronLeft, ChevronRight, Filter, ArrowUpDown } from 'lucide-react';
+import { ArrowLeft, Calendar, Clock, BookOpen, TrendingUp, Clock3, Tag, Flame, ChevronLeft, ChevronRight, Filter, ArrowUpDown, Search } from 'lucide-react';
 import NewsletterSignup from '@/components/NewsletterSignup';
 
 interface Post {
@@ -104,10 +104,11 @@ function BlogContent() {
   const [categories, setCategories] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState(tab);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     fetchPosts();
-  }, [page, category, sort, tab]);
+  }, [page, category, sort, tab, searchQuery]);
 
   useEffect(() => {
     fetchCategories();
@@ -125,6 +126,7 @@ function BlogContent() {
         perPage: '50',
         category: category,
         sort: activeTab === 'populares' ? 'popular' : sort,
+        search: searchQuery,
       });
       const res = await fetch(`/api/posts?${params}`);
       const data = await res.json();
@@ -217,6 +219,26 @@ function BlogContent() {
           </div>
 
           <div className="flex items-center gap-2 ml-auto">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <input
+                type="text"
+                placeholder="Buscar posts..."
+                value={searchQuery}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  if (e.target.value.length >= 2) {
+                    updateParams('search', e.target.value);
+                  }
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    updateParams('search', searchQuery);
+                  }
+                }}
+                className="bg-slate-700 text-white pl-10 pr-4 py-2 rounded-lg text-sm border border-slate-600 focus:border-blue-500 w-48"
+              />
+            </div>
             <Filter className="w-4 h-4 text-slate-400" />
             <select
               value={category}

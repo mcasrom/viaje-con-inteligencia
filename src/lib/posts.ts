@@ -96,6 +96,7 @@ export function getPostBySlug(slug: string): Post | null {
 export interface PostsFilter {
   category?: string;
   sort?: 'recent' | 'oldest';
+  search?: string;
 }
 
 export function getAllPosts(filter?: PostsFilter): PostMeta[] {
@@ -123,6 +124,16 @@ export function getAllPosts(filter?: PostsFilter): PostMeta[] {
 
   if (filter?.sort === 'oldest') {
     posts = posts.reverse();
+  }
+
+  if (filter?.search) {
+    const s = filter.search.toLowerCase();
+    posts = posts.filter(p => 
+      p.title.toLowerCase().includes(s) ||
+      p.excerpt?.toLowerCase().includes(s) ||
+      p.tags?.some((t: string) => t.toLowerCase().includes(s)) ||
+      p.keywords?.toLowerCase().includes(s)
+    );
   }
 
   return posts;

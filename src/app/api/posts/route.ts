@@ -11,6 +11,7 @@ export async function GET(request: NextRequest) {
   const perPage = parseInt(searchParams.get('perPage') || '20');
   const category = searchParams.get('category') || undefined;
   const sort = searchParams.get('sort') || 'recent';
+  const search = searchParams.get('search') || undefined;
 
   if (sort === 'popular') {
     const { posts, totalPages } = getPostsPagination(page, perPage, { category, sort: 'recent' });
@@ -35,8 +36,8 @@ export async function GET(request: NextRequest) {
   }
 
   const filter = category && category !== 'all' 
-    ? { category, sort: sort as 'recent' | 'oldest' }
-    : { sort: sort as 'recent' | 'oldest' };
+    ? { category, sort: sort as 'recent' | 'oldest', search }
+    : { sort: sort as 'recent' | 'oldest', search };
 
   const { posts, totalPages } = getPostsPagination(page, perPage, filter);
   
