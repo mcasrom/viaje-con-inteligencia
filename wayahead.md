@@ -106,6 +106,12 @@
 - Menú botones: `✈️🛤️ Alertas viaje` → submenú
 - Submenú: Aeropuertos | Trenes | Clima | Actualizar | Volver
 - Menú principal: ⚠️ Alertas de riesgo | ✈️🛤️ Alertas viaje
+- Diferencia clara: riesgo país (MAEC) vs alertas viaje (vuelos/trenes/clima)
+
+#### 📄 Documentos (Completado)
+- Subir imágenes y PDFs (tickets hotel, billete vuelo)
+- Guardado 100% local (IndexedDB)
+- Ver/Descargar en nueva pestaña (mobile-friendly)
 
 #### 🕐 REVISIÓN SEMANAL - APIs
 - Buscar nuevas APIs gratuitas para alertas
