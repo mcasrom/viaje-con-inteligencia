@@ -865,6 +865,60 @@ Módulo PWA de almacenamiento local (IndexedDB) para documentos de viaje/offline
 
 ---
 
+## 🚀 SPRINT 23: ML/AI + KPIs Turismo (2026-04-25)
+
+### 📊 Roadmap 1 mes
+
+| # | Feature | Priority | Estado |
+|---|---------|----------|--------|
+| 1 | Gen AI docs - Generación documentos | 🔴 Alta | ⏳ Pendiente |
+| 2 | API KPIs turismo UNWTO + riesgo | 🔴 Alta | ⏳ Pendiente |
+| 3 | Dashboard KPIs turismo visual | 🟠 Media | ⏳ Pendiente |
+| 4 | Clustering destinos | 🟡 Media | ⏳ Pendiente |
+| 5 | Predicción riesgo IA | 🟡 Baja | ⏳ Pendiente |
+| 6 | Anomaly detection alertas | 🟡 Baja | ⏳ Pendiente |
+
+### 📋 Datos UNWTO (OMT) - Fuentes gratuitas
+
+| Métrica | Descripción | Disponibilidad |
+|--------|------------|--------------|
+| Llegadas turísticas | Visitantes internacionales por país | UNWTO Open Data |
+| Ingresos turismo | Divisas generadas | UNWTO Open Data |
+| Empleo sector | Jobs en turismo | UNWTO data |
+| PIB turismo | Contribución al PIB% | UNWTO stats |
+
+### 🧠 Gen AI Docs - MVP
+
+**Input:** país, tipo de documento, preferencias
+**Output:** Documento generado con IA
+
+| Tipo documento | Contenido |
+|-----------------|------------|
+| Informe país | Datos riesgo + turismo + recomendaciones |
+| Resumen viaje | Itinerario + alertas + Checklist |
+| comparativa | Análisis comparativo países |
+
+### 🏙️ Clustering Destinos
+
+**Factores de similitud:**
+- Clima (temperatura, precipitación)
+- Coste vida (IPC)
+- Nivel riesgo (MAEC)
+- Idioma
+- Turistas/año
+
+**Algoritmo:** K-means clustering (sklearn similar)
+
+### 📐 Arquitectura ML
+
+```
+[datos: paisesData + UNWTO] → [feature engineering] → [modelos ML]
+                                                              ↓
+[API: gen-doc, clustering, prediction] → [Dashboard / UI]
+```
+
+---
+
 ## 📊 COBERTURA ACTUAL (2026-04-22)
 
 | Feature | Estado |

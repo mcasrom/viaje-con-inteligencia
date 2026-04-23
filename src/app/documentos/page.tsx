@@ -330,20 +330,21 @@ export default function TravelDocumentsPage() {
                 )}
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-3">
-                  <span className={`w-2 h-2 rounded-full ${typeInfo.color}`} />
-                  <span className="text-xs text-slate-400">{typeInfo.label}</span>
-                  {(doc.imageData || doc.pdfData) && (
-                    <button
-                      onClick={(e) => { e.stopPropagation(); handleDownload(doc); }}
-                      className="ml-auto p-2 bg-blue-500 rounded-full"
-                      title="Ver / Descargar"
-                    >
-                      <Download className="w-4 h-4 text-white" />
-                    </button>
-                  )}
+                    <span className={`w-2 h-2 rounded-full ${typeInfo.color}`} />
+                    <span className="text-xs text-slate-400">{typeInfo.label}</span>
+                    {(doc.imageData || doc.pdfData) && (
+                      <button
+                        onClick={(e) => { e.stopPropagation(); handleDownload(doc); }}
+                        className="ml-auto p-2 bg-blue-500 rounded-full"
+                        title="Ver / Descargar"
+                      >
+                        <Download className="w-4 h-4 text-white" />
+                      </button>
+                    )}
+                  </div>
+                  <p className="text-sm font-medium truncate">{doc.title}</p>
+                  <p className="text-xs text-slate-500">{formatDate(doc.createdAt)}</p>
                 </div>
-                <p className="text-sm font-medium truncate">{doc.title}</p>
-                <p className="text-xs text-slate-500">{formatDate(doc.createdAt)}</p>
               </button>
             );
           })}
