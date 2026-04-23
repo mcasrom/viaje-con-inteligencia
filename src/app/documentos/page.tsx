@@ -60,6 +60,8 @@ export default function TravelDocumentsPage() {
     loadDocuments();
   }, [loadDocuments]);
 
+  const [fileInputKey, setFileInputKey] = useState(0);
+
   const handleCaptureImage = (type: 'vuelo' | 'hotel' | 'ticket') => {
     if (fileInputRef.current) {
       fileInputRef.current.dataset.docType = type;
@@ -69,44 +71,40 @@ export default function TravelDocumentsPage() {
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    const docType = (e.target.dataset.docType || 'ticket') as 'vuelo' | 'hotel' | 'ticket';
-    
     if (!file) return;
 
-    const MAX_SIZE = 5 * 1024 * 1024; // 5MB
+    const docType = (e.target.dataset.docType || 'ticket') as 'vuelo' | 'hotel' | 'ticket';
+    const MAX_SIZE = 5 * 1024 * 1024;
+    
     if (file.size > MAX_SIZE) {
-      alert(`Archivo muy grande (${(file.size / 1024 / 1024).toFixed(1)}MB). Máximo: 5MB`);
-      e.target.value = '';
+      alert(`Archivo muy grande. Máximo: 5MB`);
       return;
     }
 
     const isPdf = file.type === 'application/pdf';
-    const reader = new FileReader();
     
-    reader.onload = async () => {
-      let imageData: string | undefined;
-      let pdfData: string | undefined;
-      
-      if (isPdf) {
-        const pdfReader = new FileReader();
-        pdfReader.onload = async () => {
-          pdfData = pdfReader.result as string;
-          const fileName = file.name.replace(/\.[^/.]+$/, '').replace(/[-_]/g, ' ');
-          await addDocument({
-            type: docType,
-            title: fileName || `${docType} - ${new Date().toLocaleDateString('es-ES')}`,
-            text: `PDF: ${file.name} (${(file.size / 1024).toFixed(0)}KB)`,
-            pdfData,
-            createdAt: new Date(),
-          });
-          showToastMessage('✓ PDF guardado');
-          loadDocuments();
-        };
-        pdfReader.readAsDataURL(file);
-      } else {
-        imageData = reader.result as string;
+    if (isPdf) {
+      const reader = new FileReader();
+      reader.onload = async () => {
+        const pdfData = reader.result as string;
         const fileName = file.name.replace(/\.[^/.]+$/, '').replace(/[-_]/g, ' ');
-        const docLabel = DOC_TYPES.find(t => t.id === docType)?.label || docType;
+        await addDocument({
+          type: docType,
+          title: fileName || `${docType} - ${new Date().toLocaleDateString('es-ES')}`,
+          text: `PDF: ${file.name} (${(file.size / 1024).toFixed(0)}KB)`,
+          pdfData,
+          createdAt: new Date(),
+        });
+        showToastMessage('✓ PDF guardado');
+        loadDocuments();
+        setFileInputKey(k => k + 1);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      const reader = new FileReader();
+      reader.onload = async () => {
+        const imageData = reader.result as string;
+        const fileName = file.name.replace(/\.[^/.]+$/, '').replace(/[-_]/g, ' ');
         await addDocument({
           type: docType,
           title: fileName || `${docType} - ${new Date().toLocaleDateString('es-ES')}`,
@@ -114,10 +112,12 @@ export default function TravelDocumentsPage() {
           imageData,
           createdAt: new Date(),
         });
-        showToastMessage(`✓ ${docLabel} guardado`);
+        showToastMessage('✓ Imagen guardada');
         loadDocuments();
-      }
-    };
+        setFileInputKey(k => k + 1);
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   const handleNoteSave = async () => {
@@ -179,15 +179,19 @@ export default function TravelDocumentsPage() {
 
   return (
     <div className="min-h-screen bg-slate-950 text-white p-4">
-      <input
-        ref={fileInputRef}
-        type="file"
-        accept="image/*,.pdf,application/pdf"
-        capture="environment"
-        className="hidden"
-        data-doc-type=""
-        onChange={handleFileChange}
-      />
+      <div className="flex gap-2 mb-4 p-3 bg-slate-800 rounded-xl">
+        <label className="flex-1 flex items-center justify-center gap-2 py-3 bg-blue-600 rounded-lg cursor-pointer hover:bg-blue-700 font-medium">
+          <Upload className="w-5 h-5" />
+          <span>Subir imagen o PDF</span>
+          <input
+            key={fileInputKey}
+            type="file"
+            accept="image/*,.pdf,application/pdf"
+            className="hidden"
+            onChange={handleFileChange}
+          />
+        </label>
+      </div>
 
       <header className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
