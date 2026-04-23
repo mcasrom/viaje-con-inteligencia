@@ -204,6 +204,8 @@ export async function GET(request: Request) {
     console.log('[DailyDigest] supabaseAdmin:', !!supabaseAdmin);
     console.log('[DailyDigest] URL:', process.env.NEXT_PUBLIC_SUPABASE_URL);
     console.log('[DailyDigest] SERVICE_KEY exists:', !!process.env.SUPABASE_SERVICE_ROLE_KEY);
+    console.log('[DailyDigest] SERVICE_KEY first10:', process.env.SUPABASE_SERVICE_ROLE_KEY?.substring(0, 10));
+    console.log('[DailyDigest] Using placeholder?:', process.env.SUPABASE_SERVICE_ROLE_KEY?.includes('placeholder') || process.env.SUPABASE_SERVICE_KEY?.includes('placeholder'));
     
     const digest = await generateDigest();
     const emailSent = await sendDailyEmail(digest);
