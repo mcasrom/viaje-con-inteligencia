@@ -36,7 +36,8 @@ export function getMainKeyboard() {
       keyboard: [
         [{ text: '🌍 Buscar país' }],
         [{ text: '🌤️ Clima' }, { text: '🤖 Chat IA' }],
-        [{ text: '⚠️ Alertas de riesgo' }, { text: '🏦 Tipo cambio' }],
+        [{ text: '⚠️ Alertas de riesgo' }, { text: '✈️🛤️ Alertas viaje' }],
+        [{ text: '🏦 Tipo cambio' }],
         [{ text: '📋 Checklist viaje' }],
         [{ text: '⭐ Premium' }],
       ],
@@ -381,7 +382,7 @@ export function getChecklistPreview(): string {
 
 /* =========================
    PREMIUM INFO
-========================= */
+ ========================= */
 
 export function getPremiumInfo(): string {
   let message = `*⭐ Viaje con Inteligencia PRO*\n`;
@@ -395,4 +396,110 @@ export function getPremiumInfo(): string {
   message += `• Historial guardado\n\n`;
   message += `🔗 https://www.viajeinteligencia.com/premium`;
   return message;
+}
+
+/* =========================
+   TRAVEL ALERTS
+ ========================= */
+
+const BASE_URL = process.env.APP_BASE_URL || 'https://www.viajeinteligencia.com';
+
+export async function getTravelAlertsSummary(): Promise<any> {
+  try {
+    const res = await fetch(`${BASE_URL}/api/alerts/travel?type=summary`);
+    if (!res.ok) return null;
+    return await res.json();
+  } catch (e) {
+    console.error('[TravelAlerts] Error:', e);
+    return null;
+  }
+}
+
+export async function getTravelAlertsAll(): Promise<any> {
+  try {
+    const res = await fetch(`${BASE_URL}/api/alerts/travel?type=all`);
+    if (!res.ok) return null;
+    return await res.json();
+  } catch (e) {
+    console.error('[TravelAlerts] Error:', e);
+    return null;
+  }
+}
+
+export function formatTravelAlertsShort(data: any): string {
+  if (!data?.summary) return 'No hay datos de alertas disponibles.';
+  
+  const { summary, grouped } = data;
+  const emoji = summary.critical > 0 ? '🔴' : summary.warning > 0 ? '⚠️' : '✅';
+  
+  let msg = `${emoji} *Alertas de Viaje*\n`;
+  msg += `━━━━━━━━━━━━━━━━\n`;
+  msg += `Total: ${summary.total} | 🔴${summary.critical} | ⚠️${summary.warning} | 🟢${summary.ok}\n\n`;
+  
+  if (summary.critical > 0) {
+    msg += `*CRÍTICAS:*\n`;
+  }
+  if (summary.warning > 0) {
+    msg += `*AVISOS:*\n`;
+  }
+  
+  msg += `\n🔗 /alertas - Ver detalle`;
+  return msg;
+}
+
+export function formatTravelAlertsDetailed(data: any): string {
+  if (!data?.summary) return 'No hay datos de alertas disponibles.';
+  
+  const { summary, allAlerts } = data;
+  const critical = (allAlerts || []).filter((a: any) => a.status === 'critical' || a.level === 'critical');
+  const warning = (allAlerts || []).filter((a: any) => a.status === 'warning' || a.level === 'warning');
+  
+  let msg = `✈️🚂🌧️ *Alertas de Viaje*\n`;
+  msg += `━━━━━━━━━━━━━━━━━━━━\n`;
+  msg += `📊 Resumen: ${summary.total} total | 🔴${summary.critical} | ⚠️${summary.warning} | 🟢${summary.ok}\n\n`;
+  
+  if (critical.length > 0) {
+    msg += `*🔴 CRÍTICAS:*\n`;
+    critical.slice(0, 5).forEach((a: any) => {
+      const name = a.name || a.code || a.location || 'N/A';
+      const delay = a.delay || a.delayMin || '-';
+      msg += `• ${name}: ${delay}min\n`;
+    });
+    msg += `\n`;
+  }
+  
+  if (warning.length > 0) {
+    msg += `*⚠️ AVISOS:*\n`;
+    warning.slice(0, 10).forEach((a: any) => {
+      const name = a.name || a.code || a.location || 'N/A';
+      const delay = a.delay || a.delayMin || '-';
+      const type = a.type || 'viaje';
+      const icon = type === 'airport' ? '✈️' : type === 'train' ? '🚂' : '🌧️';
+      msg += `${icon} ${name}: ${delay}min\n`;
+    });
+  }
+  
+  if (critical.length === 0 && warning.length === 0) {
+    msg += `✅ *Sin alertas activas*\n`;
+    msg += `Todo fluida en aeropuertos, trenes y meteorología.\n`;
+  }
+  
+  msg += `\n━━━━━━━━━━━━━━━━━━━━\n`;
+  msg += `🔗 https://viaje-con-inteligencia.vercel.app/alertas`;
+  return msg;
+}
+
+export function getAlertsKeyboard() {
+  return {
+    reply_markup: {
+      keyboard: [
+        [{ text: '✈️ Ver aeropuertos' }],
+        [{ text: '🚂 Ver trenes' }],
+        [{ text: '🌧️ Ver clima' }],
+        [{ text: '🔄 Actualizar alertas' }],
+        [{ text: '« Volver' }],
+      ],
+      resize_keyboard: true,
+    },
+  };
 }

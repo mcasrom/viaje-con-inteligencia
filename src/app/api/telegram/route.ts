@@ -12,7 +12,12 @@ import {
   getChecklistPreview,
   getPremiumInfo,
   searchCountry,
-  getWeatherForCountry
+  getWeatherForCountry,
+  getTravelAlertsSummary,
+  getTravelAlertsAll,
+  formatTravelAlertsShort,
+  formatTravelAlertsDetailed,
+  getAlertsKeyboard
 } from '@/lib/telegram-bot';
 
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || '';
@@ -419,6 +424,15 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ ok: true });
     }
     
+    if (text === '✈️🛤️ Alertas viaje' || text === '✈️🛤️ Travel alerts') {
+      const alerts = await getTravelAlertsSummary();
+      const formatted = formatTravelAlertsShort(alerts);
+      await sendMessage(chatId, formatted, {
+        reply_markup: t.menu()
+      });
+      return NextResponse.json({ ok: true });
+    }
+    
     if (text === '🏦 Tipo cambio' || text === '🏦 Exchange rate' || text === '🏦 Câmbio') {
       await sendMessage(chatId, getTipoCambioInfo(), {
         reply_markup: t.menu()
@@ -643,6 +657,24 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ ok: true });
     }
     
+    if (text === '/alertasviaje' || text === '/travelalerts' || text === '/viaje') {
+      const alerts = await getTravelAlertsSummary();
+      const formatted = formatTravelAlertsShort(alerts);
+      await sendMessage(chatId, formatted, {
+        reply_markup: t.menu()
+      });
+      return NextResponse.json({ ok: true });
+    }
+    
+    if (text === '/alertasviaje full' || text === '/travelalerts full') {
+      const alerts = await getTravelAlertsAll();
+      const formatted = formatTravelAlertsDetailed(alerts);
+      await sendMessage(chatId, formatted, {
+        reply_markup: getAlertsKeyboard() as any
+      });
+      return NextResponse.json({ ok: true });
+    }
+    
     if (text.startsWith('/clima ') || text.startsWith('/weather ')) {
       const query = text.replace(/^\/(clima|weather)\s+/i, '').trim();
       const paisesModule = await import('@/data/paises');
@@ -707,8 +739,8 @@ export async function GET() {
   return NextResponse.json({ 
     status: 'Telegram Bot API endpoint',
     usage: 'POST updates here',
-    commands: ['/start', '/pais', '/alertas', '/cambio', '/checklist', '/premium', '/help', '/salir'],
-    features: ['inline_search', 'currency_converter']
+    commands: ['/start', '/pais', '/alertas', '/alertasviaje', '/cambio', '/checklist', '/premium', '/help', '/salir'],
+    features: ['inline_search', 'currency_converter', 'travel_alerts']
   });
 }
 

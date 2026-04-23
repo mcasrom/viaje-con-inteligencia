@@ -90,8 +90,14 @@
 |-----|--------|--------|--------|
 | /api/alerts/travel | Unificada todas | Aggregator | ✅ |
 | /api/airport-delays | Retrasos aéreos | FlightLabs (mock) | ✅ |
-| /api/train-delays | Retrasos trenes | TrainsTracking | ✅ |
+| /api/train-delays | Retraso trenes | TrainsTracking | ✅ |
 | /api/weather/extreme | Meteorología extrema | Open-Meteo | ✅ |
+
+#### 📤 Distribución (Completado)
+| Canal | Frecuencia | Contenido |
+|-------|-----------|-----------|
+| Email (info@) | Diario 00:00 UTC | Resumen alertas + stats sistema |
+| Telegram @ViajeConInteligencia | Diario 00:00 UTC | Resumen alertas + stats sistema |
 
 #### 🕐 REVISIÓN SEMANAL - APIs
 - Buscar nuevas APIs gratuitas para alertas
