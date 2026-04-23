@@ -155,18 +155,30 @@ export default function TravelDocumentsPage() {
     URL.revokeObjectURL(url);
   };
 
-  const handleDownload = (doc: TravelDocument) => {
-    let clicked = false;
-    if (doc.imageData) {
-      window.open(doc.imageData, '_blank');
-      clicked = true;
-    }
-    if (doc.pdfData) {
-      window.open(doc.pdfData, '_blank');
-      clicked = true;
-    }
-    if (clicked) {
-      showToastMessage('⬇️ Abriendo en nueva pestaña');
+  const handleDownload = async (doc: TravelDocument) => {
+    try {
+      const dataUrl = doc.imageData || doc.pdfData;
+      if (!dataUrl) {
+        showToastMessage('❌ Documento sin archivo');
+        return;
+      }
+      
+      // Open in new tab (works on mobile)
+      const opened = window.open(dataUrl, '_blank');
+      
+      if (opened) {
+        showToastMessage('📂 Abriendo...');
+      } else {
+        // Fallback for blocked popups
+        const link = document.createElement('a');
+        link.href = dataUrl;
+        const ext = dataUrl.startsWith('data:image') ? 'jpg' : 'pdf';
+        link.download = `${doc.title.replace(/[^a-z0-9]/gi, '_')}.${ext}`;
+        link.click();
+        showToastMessage('⬇️ Descarga iniciada');
+      }
+    } catch (e) {
+      showToastMessage('❌ Error al abrir');
     }
   };
 
@@ -328,16 +340,14 @@ export default function TravelDocumentsPage() {
                   <p className="text-xs text-slate-500">{formatDate(doc.createdAt)}</p>
                 </div>
                 <div className="flex gap-1">
-                  {doc.imageData && (
-                    <button
-                      onClick={(e) => { e.stopPropagation(); handleDownload(doc); }}
-                      className="p-2 bg-slate-800 rounded-full"
-                      title="Ver / Descargar"
-                    >
-                      <Download className="w-4 h-4" />
-                    </button>
-                  )}
-                  <Eye className="w-5 h-5 text-slate-500" />
+                  <button
+                    onClick={(e) => { e.stopPropagation(); handleDownload(doc); }}
+                    className={`p-2 rounded-full ${doc.imageData || doc.pdfData ? 'bg-blue-600 hover:bg-blue-700' : 'bg-slate-800 opacity-50 cursor-not-allowed'}`}
+                    title={doc.imageData || doc.pdfData ? "Ver / Descargar" : "Sin archivo"}
+                    disabled={!doc.imageData && !doc.pdfData}
+                  >
+                    <Download className="w-4 h-4" />
+                  </button>
                 </div>
               </button>
             );
