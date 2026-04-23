@@ -17,6 +17,7 @@ export async function GET(request: NextRequest) {
       method: 'K-Means (simple)',
       nClusters,
       clusters,
+      numDestinations: destinations.length,
       ...(showFeatures && { destinations: destinations.slice(0, 30) }),
     });
   } catch (error) {
