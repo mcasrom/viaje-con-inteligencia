@@ -66,9 +66,8 @@ const translations = {
       keyboard: [
         [{ text: '🌍 Buscar país' }],
         [{ text: '🌤️ Clima' }, { text: '🤖 Chat IA' }],
-        [{ text: '⚠️ Alertas de riesgo' }, { text: '🏦 Tipo cambio' }],
-        [{ text: '📋 Checklist viaje' }],
-        [{ text: '⭐ Premium' }],
+        [{ text: '⚠️ Alertas de riesgo' }, { text: '✈️🛤️ Alertas viaje' }],
+        [{ text: '📋 Checklist viaje' }, { text: '⭐ Premium' }],
       ],
     }),
     selectCountry: () => '🔍 *Selecciona un país*\n\n_Escribe el código (ej: ES, FR, DE) o elige de los ejemplos abajo._',
