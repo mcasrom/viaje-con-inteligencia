@@ -2,11 +2,39 @@ import MapaMundial from '@/components/MapaMundial';
 import Testimonios from '@/components/Testimonios';
 import NewsletterSignup from '@/components/NewsletterSignup';
 import Link from 'next/link';
-import { Activity, Shield, AlertTriangle, Globe, FileText, Camera, Plane } from 'lucide-react';
+import { Activity, Shield, AlertTriangle, Globe, FileText, Camera, Plane, Gift, CheckCircle } from 'lucide-react';
 
 export default function Home() {
   return (
     <>
+      {/* LEAD MAGNET - Banner destacado */}
+      <div className="max-w-6xl mx-auto px-6 py-6">
+        <div className="bg-gradient-to-r from-emerald-600 to-teal-600 rounded-2xl p-6 shadow-lg shadow-emerald-500/20 border border-emerald-400/30">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-4">
+              <div className="w-14 h-14 bg-white/20 rounded-xl flex items-center justify-center">
+                <Gift className="w-8 h-8 text-white" />
+              </div>
+              <div>
+                <div className="flex items-center gap-2 mb-1">
+                  <h3 className="text-xl font-bold text-white">🎁 Checklist Premium Gratis</h3>
+                  <span className="px-2 py-0.5 bg-white/20 text-white text-xs font-bold rounded-full">FREE</span>
+                </div>
+                <p className="text-emerald-100 text-sm">
+                  30 items esenciales para viajar seguro. Descárgalo ahora →</p>
+              </div>
+            </div>
+            <Link 
+              href="/lead-magnet" 
+              className="px-6 py-3 bg-white text-emerald-600 font-bold rounded-xl hover:bg-emerald-50 transition-all whitespace-nowrap flex items-center gap-2"
+            >
+              <CheckCircle className="w-5 h-5" />
+              Obtener Gratis
+            </Link>
+          </div>
+        </div>
+      </div>
+
       <MapaMundial />
       
       {/* Memoria de Viaje - PREMIUM */}
