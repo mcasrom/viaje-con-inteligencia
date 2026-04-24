@@ -6,7 +6,7 @@ import { getPostBySlug, getPostSlugs, getRelatedPosts } from '@/lib/posts';
 import ShareButtons from '@/components/ShareButtons';
 import BlogPostPage from './page.client';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 3600; // ISR cada hora
 
 interface PageProps {
   params: Promise<{ slug: string }>;
