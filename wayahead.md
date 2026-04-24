@@ -773,6 +773,50 @@ Scraping y alertas automatizadas mediante Vercel Cron Jobs para mantener datos a
 
 ---
 
+## 🔒 SEGURIDAD Y BACKUP (2026-04-24) - COMPLETADO ✅
+
+### Variables de Entorno
+Backups de variables de entorno para evitar corrupciones y pérdida de configuración.
+
+### ✅ Completado
+| Feature | Estado |
+|---------|--------|
+| Script backup-env.sh | ✅ Done |
+| Backup automático | ✅ Done |
+| Restore script | ✅ Done |
+| Backup latest | ✅ Done (2026-04-24) |
+
+### 📋 Uso
+```bash
+# Crear backup
+./scripts/backup-env.sh
+
+# Restaurar (manual)
+./scripts/restore-env.sh
+```
+
+### 📁 Archivos
+- Backup: =env_backup_YYYYMMDD_HHMMSS.txt=
+- Script: =scripts/backup-env.sh=
+- Restore: =scripts/restore-env.sh=
+
+### 🔐 Variables Críticas
+| Variable | Descripción | Ubicación |
+|----------|------------|-----------|
+| SUPABASE_SERVICE_ROLE_KEY | Admin DB | Vercel |
+| CRON_SECRET | Cron auth | Vercel |
+| RESEND_API_KEY | Email | Vercel |
+| GROQ_API_KEY | IA | Vercel |
+| TELEGRAM_BOT_TOKEN | Bot | Vercel |
+| STRIPE_SECRET_KEY | Pagos | Vercel |
+
+### ⚠️ Notas
+- Nunca commits de valores reales
+- Backup en 1Password/Bitwarden
+- Rotation monthly recomendada
+
+---
+
 ## 🚀 CRON Jobs Verificados (2026-04-24) - COMPLETADO ✅
 
 ### 📊 Resultado Test
@@ -985,7 +1029,7 @@ Módulo PWA de almacenamiento local (IndexedDB) para documentos de viaje/offline
 
 | Feature | Estado |
 |---------|--------|
-| Países en mapa riesgos | 95 |
+| Países en mapa riesgos | 95 → 100 |
 | Posts blog | 52 |
 | KPIs Index | ✅ Nuevo |
 | Memoria de Viaje (PWA) | ✅ Completado |

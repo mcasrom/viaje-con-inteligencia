@@ -51,6 +51,19 @@
     https://viaje-con-inteligencia.vercel.app/api/cron/check-alerts
   #+END_SRC
 
+*** BACKUP Variables Entorno
+- Script: =scripts/backup-env.sh= (crea backup automático)
+- Backup: =env_backup_YYYYMMDD_HHMMSS.txt=
+- Ubicación: raíz del proyecto (ignorado por Git)
+- Restore: =scripts/restore-env.sh=
+- Backup más reciente: =env_backup_20260424_102608.txt=
+
+*** Seguridad y Backup
+- [X] Script backup automático (scripts/backup-env.sh)
+- [X] Backup manual en gestor contraseñas
+- [-] Integrar en CI/CD (pendiente)
+- [-] Rotación de secrets mensual (pendiente)
+
 ** Estados
 - [X] MVP completado
 - [X] Blog SEO (27 posts)
