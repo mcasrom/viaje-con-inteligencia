@@ -6,7 +6,7 @@ export async function GET() {
   const manifest = {
     name: "Viaje con Inteligencia",
     short_name: "Viaje IA",
-    description: "Mapa de riesgos de viaje por país - MAEC",
+    description: "Mapa interactivo de riesgos de viaje - Información oficial MAEC español",
     start_url: "/",
     display: "standalone",
     background_color: "#0f172a",
@@ -14,21 +14,34 @@ export async function GET() {
     orientation: "portrait-primary",
     icons: [
       {
-        src: "/favicon.ico",
-        sizes: "48x48",
-        type: "image/x-icon",
-        purpose: "maskable any"
-      },
-      {
-        src: "/apple-touch-icon.png",
-        sizes: "180x180",
+        src: "/icon-192.png",
+        sizes: "192x192",
         type: "image/png",
         purpose: "any"
+      },
+      {
+        src: "/icon-192.png",
+        sizes: "192x192",
+        type: "image/png",
+        purpose: "maskable"
+      },
+      {
+        src: "/icon-512.png",
+        sizes: "512x512",
+        type: "image/png",
+        purpose: "any"
+      },
+      {
+        src: "/icon-512.png",
+        sizes: "512x512",
+        type: "image/png",
+        purpose: "maskable"
       }
     ],
-    categories: ["travel", "navigation"],
+    categories: ["travel", "navigation", "weather"],
     lang: "es",
     scope: "/",
+    prefer_related_applications: false,
     shortcuts: [
       {
         name: "Buscar País",
@@ -39,8 +52,16 @@ export async function GET() {
         url: "/blog"
       },
       {
+        name: "Alertas",
+        url: "/alertas"
+      },
+      {
         name: "Relojes Mundiales",
         url: "/relojes"
+      },
+      {
+        name: "Premium",
+        url: "/premium"
       }
     ]
   };

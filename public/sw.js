@@ -1,4 +1,4 @@
-const CACHE_NAME = 'viaje-ia-v2';
+const CACHE_NAME = 'viaje-ia-v3';
 const STATIC_ASSETS = [
   '/',
   '/manifest.json',
@@ -6,8 +6,15 @@ const STATIC_ASSETS = [
   '/favicon.jpg',
   '/icon-192.png',
   '/icon-512.png',
-  '/offline.html'
+  '/offline.html',
+  '/logo.png',
+  '/checklist',
+  '/relojes',
+  '/blog'
 ];
+
+const API_CACHE_NAME = 'viaje-ia-api-v1';
+const API_CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 
 const STATIC_ASSETS_FALLBACK = [
   '/static/',
