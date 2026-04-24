@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, Bot, Bell, FileCheck, Map, TrendingUp, Star, Check, CreditCard, Globe, Zap, AlertTriangle, MessageSquare, Plane, Wallet, FileText, Calculator, Briefcase, FileDown } from 'lucide-react';
+import { jsPDF } from 'jspdf';
 
 const PLANS = [
   {
@@ -44,7 +45,7 @@ const PLANS = [
 export default function PremiumPage() {
   const [loading, setLoading] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<'itinerary' | 'chat' | 'seismos' | 'conflicts' | 'expenses' | 'visa' | 'packing' | 'indices'>('indices');
+  const [activeTab, setActiveTab] = useState<'itinerary' | 'chat' | 'seismos' | 'conflicts' | 'expenses' | 'visa' | 'packing' | 'indices' | 'reclamaciones'>('indices');
   const [itineraryLoading, setItineraryLoading] = useState(false);
   const [itineraryResult, setItineraryResult] = useState<string>('');
   const [chatMessages, setChatMessages] = useState<{role: string; content: string}[]>([]);
@@ -67,6 +68,19 @@ export default function PremiumPage() {
   const [packingType, setPackingType] = useState('viaje');
   const [packingResult, setPackingResult] = useState<string>('');
   const [packingLoading, setPackingLoading] = useState(false);
+  const [reclamacionForm, setReclamacionForm] = useState({
+    tipo: 'cancelacion',
+    fecha: '',
+    destino: '',
+    proveedor: '',
+    importe: '',
+    descripcion: '',
+    nombre: '',
+    email: '',
+    telefono: ''
+  });
+  const [reclamacionLoading, setReclamacionLoading] = useState(false);
+  const [reclamacionGenerated, setReclamacionGenerated] = useState(false);
 
   useEffect(() => {
     loadSeismos();
@@ -252,6 +266,102 @@ export default function PremiumPage() {
     }
   };
 
+  const tipoLabels: Record<string, string> = {
+    cancelacion_vuelo: 'Cancelación de vuelo',
+    retraso_vuelo: 'Retraso de vuelo (+3 horas)',
+    cancelacion_hotel: 'Cancelación de hotel',
+    servicio_deficiente: 'Servicio deficiente',
+    equipaje: 'Equipaje extraviado o dañado',
+    paquete_perdido: 'Paquete perdido',
+    otro: 'Otro'
+  };
+
+  const generateReclamacionPDF = async () => {
+    if (!reclamacionForm.fecha || !reclamacionForm.destino || !reclamacionForm.nombre) return;
+    setReclamacionLoading(true);
+    setReclamacionGenerated(false);
+    try {
+      const doc = new jsPDF();
+      const pageWidth = doc.internal.pageSize.getWidth();
+      
+      doc.setFontSize(16);
+      doc.setFont('helvetica', 'bold');
+      doc.text('FORMULARIO DE RECLAMACIÓN', pageWidth / 2, 20, { align: 'center' });
+      
+      doc.setFontSize(11);
+      doc.setFont('helvetica', 'normal');
+      doc.text(`Fecha: ${new Date().toLocaleDateString('es-ES')}`, pageWidth - 20, 30, { align: 'right' });
+      
+      doc.setLineWidth(0.5);
+      doc.line(20, 35, pageWidth - 20, 35);
+      
+      doc.setFontSize(12);
+      doc.setFont('helvetica', 'bold');
+      doc.text('DATOS DEL RECLAMANTE', 20, 45);
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(10);
+      doc.text(`Nombre: ${reclamacionForm.nombre}`, 20, 52);
+      doc.text(`Email: ${reclamacionForm.email}`, 20, 58);
+      doc.text(`Teléfono: ${reclamacionForm.telefono}`, 20, 64);
+      
+      doc.setFontSize(12);
+      doc.setFont('helvetica', 'bold');
+      doc.text('DETALLE DE LA RECLAMACIÓN', 20, 75);
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(10);
+      doc.text(`Tipo: ${tipoLabels[reclamacionForm.tipo] || reclamacionForm.tipo}`, 20, 82);
+      doc.text(`Fecha incidencia: ${reclamacionForm.fecha}`, 20, 88);
+      doc.text(`Servicio: ${reclamacionForm.destino}`, 20, 94);
+      doc.text(`Proveedor: ${reclamacionForm.proveedor}`, 20, 100);
+      if (reclamacionForm.importe) {
+        doc.text(`Importe: ${reclamacionForm.importe}€`, 20, 106);
+      }
+      
+      doc.setFontSize(12);
+      doc.setFont('helvetica', 'bold');
+      doc.text('HECHOS', 20, 115);
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(10);
+      
+      const descripcion = reclamacionForm.descripcion || 'Sin descripción aportada.';
+      const splitDescripcion = doc.splitTextToSize(descripcion, pageWidth - 40);
+      doc.text(splitDescripcion, 20, 122);
+      
+      const descHeight = splitDescripcion.length * 5;
+      const yPos = 130 + descHeight;
+      
+      doc.setFontSize(12);
+      doc.setFont('helvetica', 'bold');
+      doc.text('SOLICITUD', 20, yPos);
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(10);
+      doc.text('Se solicita la devolución del importe indicado o compensación según la normativa vigente.', 20, yPos + 7);
+      doc.text('Se reserva el derecho a reclamar daños y perjuicios si los hubiera.', 20, yPos + 13);
+      
+      doc.setFontSize(12);
+      doc.setFont('helvetica', 'bold');
+      doc.text('DOCUMENTACIÓN ADJUNTA', 20, yPos + 25);
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(10);
+      doc.text('☐ Reserva/Billete  ☐ Comprobante de pago  ☐ Correos anteriores', 20, yPos + 32);
+      
+      doc.setLineWidth(0.5);
+      doc.line(20, yPos + 50, pageWidth - 20, yPos + 50);
+      
+      doc.setFontSize(9);
+      doc.text('Viaje con Inteligencia - Generador de Reclamaciones', pageWidth / 2, yPos + 60, { align: 'center' });
+      doc.text('https://viajeinteligencia.com/premium', pageWidth / 2, yPos + 65, { align: 'center' });
+      
+      doc.save(`reclamacion-${reclamacionForm.tipo}-${reclamacionForm.fecha}.pdf`);
+      setReclamacionGenerated(true);
+      setTimeout(() => setReclamacionGenerated(false), 5000);
+    } catch (err) {
+      console.error('Error generating PDF:', err);
+    } finally {
+      setReclamacionLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-slate-900">
       <header className="bg-slate-800 border-b border-slate-700">
@@ -433,6 +543,17 @@ export default function PremiumPage() {
                 >
                   <Briefcase className="w-4 h-4" />
                   Lista Equipaje
+                </button>
+                <button
+                  onClick={() => setActiveTab('reclamaciones')}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors ${
+                    activeTab === 'reclamaciones'
+                      ? 'bg-red-500 text-white'
+                      : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
+                  }`}
+                >
+                  <FileDown className="w-4 h-4" />
+                  Reclamaciones
                 </button>
               </div>
 
@@ -905,6 +1026,139 @@ export default function PremiumPage() {
                   {packingResult && (
                     <div className="mt-4 bg-slate-700/50 rounded-lg p-4 max-h-96 overflow-y-auto">
                       <pre className="text-slate-300 text-sm whitespace-pre-wrap font-sans">{packingResult}</pre>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {activeTab === 'reclamaciones' && (
+                <div className="mt-6 bg-slate-800 rounded-2xl p-6 border border-slate-700">
+                  <h3 className="text-xl font-bold text-white mb-2 flex items-center gap-2">
+                    <FileDown className="w-6 h-6 text-red-500" />
+                    📝 Generator de Reclamaciones
+                  </h3>
+                  <p className="text-slate-400 text-sm mb-4">
+                    Genera formularios de reclamación para cancelaciones de vuelos, hoteles, paquetes turísticos y más.
+                    Completa los datos y descarga un PDF listo para imprimir o enviar.
+                  </p>
+                  
+                  <div className="grid md:grid-cols-2 gap-4 mb-4">
+                    <div>
+                      <label className="block text-slate-400 text-sm mb-1">Tipo de incidencia</label>
+                      <select
+                        value={reclamacionForm.tipo}
+                        onChange={(e) => setReclamacionForm({...reclamacionForm, tipo: e.target.value})}
+                        className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:outline-none focus:border-red-500"
+                      >
+                        <option value="cancelacion_vuelo">✈️ Cancelación de vuelo</option>
+                        <option value="retraso_vuelo">⏰ Retraso de vuelo (+3h)</option>
+                        <option value="cancelacion_hotel">🏨 Cancelación de hotel</option>
+                        <option value="servicio_deficiente">⚠️ Servicio deficiente</option>
+                        <option value="equipaje">🧳 Equipaje extraviado/dañado</option>
+                        <option value="paquete_perdido">📦 Paquete perdido</option>
+                        <option value="otro">❓ Otro</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-slate-400 text-sm mb-1">Fecha de incidencia</label>
+                      <input
+                        type="date"
+                        value={reclamacionForm.fecha}
+                        onChange={(e) => setReclamacionForm({...reclamacionForm, fecha: e.target.value})}
+                        className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:outline-none focus:border-red-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-slate-400 text-sm mb-1">Destino/Servicio afectado</label>
+                      <input
+                        type="text"
+                        value={reclamacionForm.destino}
+                        onChange={(e) => setReclamacionForm({...reclamacionForm, destino: e.target.value})}
+                        placeholder="Ej:	Vuelo IB1234 Madrid-Barcelona"
+                        className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-red-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-slate-400 text-sm mb-1">Proveedor/Compañía</label>
+                      <input
+                        type="text"
+                        value={reclamacionForm.proveedor}
+                        onChange={(e) => setReclamacionForm({...reclamacionForm, proveedor: e.target.value})}
+                        placeholder="Ej: Iberia, Booking, Renfe..."
+                        className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-red-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-slate-400 text-sm mb-1">Importe solicitado (€)</label>
+                      <input
+                        type="number"
+                        value={reclamacionForm.importe}
+                        onChange={(e) => setReclamacionForm({...reclamacionForm, importe: e.target.value})}
+                        placeholder="Ej: 450"
+                        className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-red-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-slate-400 text-sm mb-1">Tu nombre completo</label>
+                      <input
+                        type="text"
+                        value={reclamacionForm.nombre}
+                        onChange={(e) => setReclamacionForm({...reclamacionForm, nombre: e.target.value})}
+                        placeholder="Ej: Juan García Pérez"
+                        className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-red-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-slate-400 text-sm mb-1">Email</label>
+                      <input
+                        type="email"
+                        value={reclamacionForm.email}
+                        onChange={(e) => setReclamacionForm({...reclamacionForm, email: e.target.value})}
+                        placeholder="juan@email.com"
+                        className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-red-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-slate-400 text-sm mb-1">Teléfono</label>
+                      <input
+                        type="tel"
+                        value={reclamacionForm.telefono}
+                        onChange={(e) => setReclamacionForm({...reclamacionForm, telefono: e.target.value})}
+                        placeholder="+34 612 345 678"
+                        className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-red-500"
+                      />
+                    </div>
+                  </div>
+                  <div className="mb-4">
+                    <label className="block text-slate-400 text-sm mb-1">Descripción detallada de los hechos</label>
+                    <textarea
+                      value={reclamacionForm.descripcion}
+                      onChange={(e) => setReclamacionForm({...reclamacionForm, descripcion: e.target.value})}
+                      placeholder="Describe what happened: fecha, hora, circunstancias, conversaciónes..."
+                      rows={4}
+                      className="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-red-500 resize-none"
+                    />
+                  </div>
+                  <button
+                    onClick={generateReclamacionPDF}
+                    disabled={reclamacionLoading || !reclamacionForm.fecha || !reclamacionForm.destino || !reclamacionForm.nombre}
+                    className="w-full py-3 bg-gradient-to-r from-red-600 to-orange-600 text-white rounded-lg font-bold hover:from-red-500 hover:to-orange-500 disabled:opacity-50 flex items-center justify-center gap-2"
+                  >
+                    {reclamacionLoading ? (
+                      <>
+                        <span className="animate-spin w-5 h-5 border-2 border-white border-t-transparent rounded-full"></span>
+                        Generando PDF...
+                      </>
+                    ) : (
+                      <>
+                        <FileDown className="w-5 h-5" />
+                        Descargar PDF de Reclamación
+                      </>
+                    )}
+                  </button>
+                  {reclamacionGenerated && (
+                    <div className="mt-4 p-4 bg-green-900/50 rounded-lg">
+                      <p className="text-green-300 text-center">✅ PDF generado correctamente. Revisa tu carpeta de descargas.</p>
                     </div>
                   )}
                 </div>

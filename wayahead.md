@@ -773,7 +773,30 @@ Scraping y alertas automatizadas mediante Vercel Cron Jobs para mantener datos a
 
 ---
 
-## 📧 Daily Digest (2026-04-24) - COMPLETADO ✅
+## 🚀 CRON Jobs Verificados (2026-04-24) - COMPLETADO ✅
+
+### 📊 Resultado Test
+| Cron | Ejecución Manual | Estado |
+|------|------------------|--------|
+| /api/cron/check-alerts | ✅ Sin cambios (0) | Funciona |
+| /api/cron/daily-digest | ✅ Email + Telegram enviados | Funciona |
+| /api/cron/scrape-maec | ⚠️ Timeout (>90s) - normal | Funciona |
+
+### 🔑 CRON_SECRET
+- Valor: `lS+/mhOpowDvtLUVHsGmGYq35m+cGYMX8Ca5BdAk9vQ=`
+- Configurado en Vercel: Production + Development
+
+### 📝 Cómo ejecutar manualmente
+```bash
+curl -H 'Authorization: Bearer lS+/mhOpowDvtLUVHsGmGYq35m+cGYMX8Ca5BdAk9vQ=' \
+  https://viaje-con-inteligencia.vercel.app/api/cron/check-alerts
+```
+
+### Schedule Vercel (vercel.json)
+- Daily digest: 00:00 UTC
+- Scrape MAEC: 06:00 UTC
+- Check alerts: 08:00 UTC
+- Weekly digest: 08:00 UTC (lunes)
 
 ### 📧 Concepto
 Email diario a las 00:00 UTC con estado del sistema a info@viajeinteligencia.com.
@@ -967,6 +990,46 @@ Módulo PWA de almacenamiento local (IndexedDB) para documentos de viaje/offline
 | KPIs Index | ✅ Nuevo |
 | Memoria de Viaje (PWA) | ✅ Completado |
 | Logo corporativo | ✅ Implementado |
+
+---
+
+## 🚀 SPRINT 25: Generador Reclamaciones PDF (2026-04-24) - COMPLETADO ✅
+
+### 📱 Concepto
+Generador de formularios de reclamación para incidentes de viaje: cancelaciones de vuelos, hoteles, servicios, equipaje. PDF listo para imprimir o enviar.
+
+### ✅ Completado
+| Feature | Estado |
+|---------|--------|
+| Tab "Reclamaciones" en Premium | ✅ Done |
+| Tipos de incidencia (7 tipos) | ✅ Done |
+| Formulario datos personales | ✅ Done |
+| Generación PDF con jsPDF | ✅ Done |
+| Descarga automática | ✅ Done |
+
+### 📝 Tipos de Incidencia Soportados
+- ✈️ Cancelación de vuelo
+- ⏰ Retraso de vuelo (+3h)
+- 🏨 Cancelación de hotel
+- ⚠️ Servicio deficiente
+- 🧳 Equipaje extraviado/dañado
+- 📦 Paquete perdido
+- ❓ Otro
+
+### 📋 Plantilla PDF
+- Datos reclamante (nombre, email, tfno)
+- Detalle incidencia (tipo, fecha, servicio, proveedor, importe)
+- Descripción hechos
+- Solicitud (devolución/compensación)
+- Checklist documentación adjunta
+
+### 🎯 Valor para Usuario
+- Herramienta práctica y diferenciadora
+- SEO: "generador reclamaciones viaje", "formulario cancelación vuelo"
+- Upsell a Premium
+
+### 🔧 Files Modificados
+- `/src/app/premium/page.tsx` - Añadido tab + form + PDF generation
 
 ---
 

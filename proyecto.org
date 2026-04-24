@@ -34,14 +34,35 @@
 - Open-Meteo API (clima)
 - node-telegram-bot-api
 
+** CRON Jobs Vercel
+| Cron | Schedule | Path | Función | Estado |
+|------|----------|------|---------|--------|
+| daily-digest | 0 0 * * * | /api/cron/daily-digest | Email + Telegram 00:00 UTC | ✅ Configurado |
+| scrape-maec | 0 6 * * * | /api/cron/scrape-maec | Scraping MAEC 06:00 UTC | ✅ Configurado |
+| check-alerts | 0 8 * * * | /api/cron/check-alerts | Verificar alertas 08:00 UTC | ✅ Configurado |
+| weekly-digest | 0 8 * * 1 | /api/cron/weekly-digest | Newsletter semanal lun 08:00 | ✅ Configurado |
+
+*** CRON_SECRET
+- Valor: ~lS+/mhOpowDvtLUVHsGmGYq35m+cGYMX8Ca5BdAk9vQ=~
+- Configurado en Vercel Environment Variables (Production + Development)
+- Para ejecutar manualmente:
+  #+BEGIN_SRC bash
+  curl -H 'Authorization: Bearer lS+/mhOpowDvtLUVHsGmGYq35m+cGYMX8Ca5BdAk9vQ=' \
+    https://viaje-con-inteligencia.vercel.app/api/cron/check-alerts
+  #+END_SRC
+
 ** Estados
 - [X] MVP completado
 - [X] Blog SEO (27 posts)
 - [X] Supabase (auth + DB)
 - [X] Premium features (chat IA, itinerario)
 - [X] PWA básico
+- [X] CRON jobs configurados
 - [ ] Programa afiliados
 - [ ] Stripe
+
+** SEO + Captación
+- [X] Lead magnet (/lead-magnet + checklist premium)
 
 * FUNCIONALIDADES
 
