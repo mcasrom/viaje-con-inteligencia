@@ -25,10 +25,14 @@ export async function generateMetadata({ params }: PageProps) {
     return { title: 'Post no encontrado' };
   }
 
+  const keywordsMeta = Array.isArray(post.keywords) 
+    ? post.keywords.join(', ') 
+    : post.keywords || '';
+
   return {
     title: `${post.title} | Viaje con Inteligencia`,
     description: post.excerpt,
-    keywords: post.keywords,
+    keywords: keywordsMeta,
     alternates: {
       canonical: `https://www.viajeinteligencia.com/blog/${slug}`,
     },

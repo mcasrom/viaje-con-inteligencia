@@ -12,7 +12,7 @@ export interface PostMeta {
   category: string;
   readTime: string;
   image: string;
-  keywords: string;
+  keywords: string | string[];
   excerpt: string;
   tags?: string[];
 }
@@ -132,7 +132,8 @@ export function getAllPosts(filter?: PostsFilter): PostMeta[] {
       p.title.toLowerCase().includes(s) ||
       p.excerpt?.toLowerCase().includes(s) ||
       p.tags?.some((t: string) => t.toLowerCase().includes(s)) ||
-      p.keywords?.toLowerCase().includes(s)
+      (typeof p.keywords === 'string' && p.keywords.toLowerCase().includes(s)) ||
+      (Array.isArray(p.keywords) && p.keywords.some((k: string) => k.toLowerCase().includes(s)))
     );
   }
 
@@ -182,7 +183,9 @@ export function getRelatedPosts(currentSlug: string, limit: number = 3): PostMet
 
   const currentTags = currentPost.tags || [];
   const currentCategory = currentPost.category;
-  const currentKeywords = currentPost.keywords?.split(',').map(k => k.trim().toLowerCase()) || [];
+  const currentKeywords = Array.isArray(currentPost.keywords)
+    ? currentPost.keywords.map(k => k.toLowerCase())
+    : currentPost.keywords?.split(',').map(k => k.trim().toLowerCase()) || [];
 
   const scored = allPosts
     .filter(p => p.slug !== currentSlug)
@@ -192,7 +195,9 @@ export function getRelatedPosts(currentSlug: string, limit: number = 3): PostMet
       if (post.category === currentCategory) score += 2;
       
       const postTags = post.tags || [];
-      const postKeywords = post.keywords?.split(',').map(k => k.trim().toLowerCase()) || [];
+      const postKeywords = Array.isArray(post.keywords) 
+        ? post.keywords.map(k => k.toLowerCase()) 
+        : post.keywords?.split(',').map(k => k.trim().toLowerCase()) || [];
       
       const commonTags = currentTags.filter(t => postTags.includes(t));
       score += commonTags.length * 3;
@@ -219,13 +224,21 @@ export function getPostsByRisk(riskLevel: string, limit: number = 10): PostMeta[
   };
   
   const keywords = riskKeywords[riskLevel] || [];
+  
+  const getKeywordsArray = (kw: string | string[] | undefined): string[] => {
+    if (Array.isArray(kw)) return kw;
+    if (typeof kw === 'string') return kw.split(',').map(k => k.trim());
+    return [];
+  };
+
   return allPosts
     .filter(p => 
-      keywords.some(k => 
-        p.keywords?.toLowerCase().includes(k.toLowerCase()) ||
-        p.title.toLowerCase().includes(k.toLowerCase()) ||
-        p.tags?.some(t => t.toLowerCase().includes(k.toLowerCase()))
-      )
+      keywords.some(k => {
+        const pKeywords = getKeywordsArray(p.keywords);
+        return pKeywords.some(pk => pk.toLowerCase().includes(k.toLowerCase())) ||
+          p.title.toLowerCase().includes(k.toLowerCase()) ||
+          p.tags?.some(t => t.toLowerCase().includes(k.toLowerCase()));
+      })
     )
     .slice(0, limit);
 }
