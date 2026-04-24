@@ -41,7 +41,7 @@
 
 ** Diagrama de Arquitectura
 #+begin_src plantuml
-@startuml
+@startuml :file arquitectura.png
 !theme plain
 skinparam componentStyle uml2
 
@@ -298,7 +298,7 @@ curl -H 'Authorization: Bearer CRON_SECRET' \
 * ANEXO: Esquema de Base de Datos
 
 #+begin_src plantuml
-@startuml
+@startuml : esquemadbs.png
 !theme plain
 entity "users" {
   * id : uuid

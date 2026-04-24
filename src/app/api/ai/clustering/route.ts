@@ -8,8 +8,8 @@ export async function GET(request: NextRequest) {
   const showFeatures = request.nextUrl.searchParams.get('features') === 'true';
 
   try {
-    const clusters = clusterDestinations(nClusters);
     const destinations = getDestinationsWithFeatures();
+    const clusters = clusterDestinations(nClusters);
 
     return NextResponse.json({
       success: true,

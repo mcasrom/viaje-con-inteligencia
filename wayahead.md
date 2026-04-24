@@ -591,8 +591,8 @@ Sistema OSINT de inteligencia de transporte: clima, retrasos, alertas para viaje
 **Capa meteorológica:**
 | Fuente | Uso | Costo |
 |--------|-----|-------|
-| METAR/TAF | Meteorología aviacion | Gratis |
-| OpenWeather API | Clima global, tormentas | Freemium |
+| METAR/TAF | Meteorología aviacion | Gratis (propia API) |
+| OpenWeather API | Clima global, tormentas | Freemium (propia API) |
 | NOAA | Eventos extremos | Gratis |
 
 **Capa IA:**
@@ -614,13 +614,12 @@ Sistema OSINT de inteligencia de transporte: clima, retrasos, alertas para viaje
 ### 📋 Roadmap
 | # | Feature | Estado | SEO |
 |---|---------|--------|-----|
-| 1 | Integración OpenWeather API | ⏳ Pendiente | ✅ |
-| 2 | METAR/TAF parser | ⏳ Pendiente | ✅ |
-| 3 | Dashboard retrasos | ⏳ Pendiente | ✅ |
+| 1 | Integración OpenWeather API | ✅ Done (`/api/weather`) | ✅ |
+| 2 | METAR/TAF parser | ✅ Done (`/api/metar`) | ✅ |
+| 3 | Dashboard retrasos /viajes/clima | ✅ Done | ✅ |
 | 4 | Alertas Telegram clima | ⏳ Pendiente | ✅ |
 | 5 | Correlación IA (clima↔retrasos) | ⏳ Pendiente | ✅ |
-| 6 | Página /alertas-vuelos | ⏳ Pendiente | ✅ |
-| 7 | Posts blog SEO clima | ⏳ Pendiente | ✅ |
+| 6 | Posts blog SEO clima | ⏳ Pendiente | ✅ |
 
 ### 📈 MARKETING EXPANSIÓN
 | # | Tarea | Prioridad | Estado |
@@ -943,17 +942,16 @@ Módulo PWA de almacenamiento local (IndexedDB) para documentos de viaje/offline
 | Blog search button | ✅ | Busca por título, tags, keywords |
 | Flight alerts API real | ✅ | `/api/flights/delays` AviationStack |
 | Fotos diarias rotatorias | ✅ | `/public/photos/1.jpg, 2.jpg...` |
-| Clustering ML K-Means | ⚠️ | API `/api/ai/clustering` devuelve vacío |
-| UI clustering | ✅ | Página `/clustering` (sin datos) |
+| Clustering ML K-Means | ✅ Done | API `/api/ai/clustering` 20 destinos |
+| UI clustering | ✅ | Página `/clustering` |
 
 ### 📋 Pendiente
 
 | Feature | Priority | Estado |
 |---------|----------|--------|
-| Fix clustering bug producción | 🔴 Alta | Devuelve vacío |
 | AviationStack API key | 🟠 Media | Configurar en Vercel |
-| Fotos en más páginas | 🟡 Baja | Home, clustering |
-| Predicción riesgo | 🟡 Baja | Sin datos históricos |
+| Dashboard retrasos | 🟡 Media | Pending |
+| Predicción riesgo IA | 🟡 Baja | Sin datos históricos |
 | Anomaly detection | 🟡 Baja | - |
 
 ### 📊 ML Implementado
@@ -1023,6 +1021,24 @@ Módulo PWA de almacenamiento local (IndexedDB) para documentos de viaje/offline
 [API: gen-doc, clustering, prediction] → [Dashboard / UI]
 ```
 
+### 📊 Reference - Proyectos ML Turismo
+
+| Proyecto | Algoritmo | Precision | URL |
+|----------|----------|----------|-----|
+| Tourism-Prediction-ML | Random Forest | 98% | tourism-prediction-ml.streamlit.app |
+| NLP Tourist Arrivals | BERT + AdaBoost | 85% | Springer 2024 |
+| Travel Risk ML | sklearn | En desarrollo | Nuestro proyecto |
+
+### 🔧 Opciones ML por Implementar
+
+| Opcion | Complejidad | Datos Needed |
+|-------|-------------|-------------|
+| K-Means clustering | Baja | riesgo, IPC, distancia |
+| Random Forest riesgo | Media | Historial 100+ paises |
+| Prediccion llegadas UNWTO | Media | Series 10 anos |
+| Anomaly detection | Alta | Logs alertas |
+| NLP analisis reviews | Alta | TripAdvisor |
+
 ---
 
 ## 📊 COBERTURA ACTUAL (2026-04-22)
@@ -1085,3 +1101,68 @@ Generador de formularios de reclamación para incidentes de viaje: cancelaciones
 | 2 | Documentos: add ref={fileInputRef} input file (cámara/PDF) | src/app/documentos/page.tsx | ✅ Done |
 | 3 | PDF: offset teléfono emergencia +57 45→52 | src/components/PDFExportButton.tsx | ✅ Done |
 | 4 | Post blog: Crisis de Combustible 2026 - derechos pasajeros | content/posts/ | ✅ Done |
+
+---
+
+## 🚀 SPRINT 26: ML APIs + Dashboard Turismo (2026-04-24) - COMPLETADO ✅
+
+### 📱 Concepto
+APIs de ML simples para encontrar destinos similares y dashboard visual con estadísticas UNWTO.
+
+### ✅ Completado
+| Feature | Estado | API/URL |
+|---------|--------|---------|
+| Similar destinations | ✅ Done | `/api/ai/similar?code=es` |
+| KPIs Tourism API | ✅ Done | `/api/kpis/tourism?metric=all` |
+| Dashboard Turismo | ✅ Done | `/turismo` |
+| Clustering (fix) | ✅ Done | `/api/ai/clustering` |
+
+### 📊 Datos ML Implementados
+
+| Datos | Fuente | Países |
+|-------|--------|--------|
+| Llegadas turísticas | UNWTO 2024 | 15 |
+| Ingresos turismo | UNWTO 2024 | 15 |
+| Gasto/día USD | UNWTO 2024 | 15 |
+| Estancia media | UNWTO 2024 | 15 |
+| IPC (índice) | Macro | 30 |
+| GPI (paz) | IEP | 46 |
+| Riesgo MAEC | España | 100 |
+
+### 🔧 APIs Creadas
+
+```
+/api/ai/similar?code=es&limit=5
+  → { code, nombre, bandera, score, reason }
+
+/api/kpis/tourism?metric=arrivals|receipts|spendPerDay|all
+  → { top: [{ code, arrivals, receipts, spendPerDay, stayAvg }] }
+
+/api/ai/clustering?clusters=4
+  → { clusters: [{ label, destinations: [] }] }
+```
+
+### 📈 Página Nueva: /turismo
+
+- Stats globales: 538M llegadas, $598B ingresos, $68 media gasto/día
+- Top 10 destinos en grid visual con banderas
+- Tabla ordenable por llegadas/ingresos/gasto
+- Buscador
+- Info UNWTO
+
+### 🎯 Valor para Usuario
+- SEO: "estadísticas turismo", "mejores destinos"
+-Dashboard diferenciador
+- Base para expansión ML
+
+### Pendiente (Sprint 27)
+| Feature | Priority | Estado |
+|---------|----------|--------|
+| AviationStack API | 🟠 Media | Pending |
+| Más países tourism | 🟡 Baja | Pending |
+| Predicción riesgo | 🟡 Baja | Pending |
+| Anomaly detection | 🟡 Baja | Pending |
+
+### 🔧 Notas
+- Clustering: ✅ Fixed (datos hardcodeados, 24 países)
+- Otros APIs (/turismo, /similar, /weather) OK

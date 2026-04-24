@@ -107,7 +107,29 @@ export default function FuentesOSINTPage() {
           </div>
 
           <div className="bg-slate-800 rounded-xl p-6 border border-slate-700">
-            <h3 className="text-lg font-semibold text-white mb-4">EEUU / Privadas</h3>
+            <h3 className="text-lg font-semibold text-white mb-4">España - MAEC</h3>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-slate-700">
+                    <th className="text-left py-3 px-4 text-slate-400 font-medium">Fuente</th>
+                    <th className="text-left py-3 px-4 text-slate-400 font-medium">URL</th>
+                    <th className="text-left py-3 px-4 text-slate-400 font-medium">Datos</th>
+                  </tr>
+                </thead>
+                <tbody className="text-slate-300">
+                  <tr className="border-b border-slate-700/50">
+                    <td className="py-3 px-4 font-medium text-white">MAEC (Ministerio AA.EE.)</td>
+                    <td className="py-3 px-4"><a href="https://www.exteriores.gob.es/es/servicios/alertas" target="_blank" className="text-blue-400 hover:underline">exteriores.gob.es</a></td>
+                    <td className="py-3 px-4">Niveles riesgo país, alertas viaje</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div className="bg-slate-800 rounded-xl p-6 border border-slate-700">
+            <h3 className="text-lg font-semibold text-white mb-4">EE.UU / Privadas</h3>
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
@@ -123,254 +145,40 @@ export default function FuentesOSINTPage() {
                     <td className="py-3 px-4"><a href="https://wwwnc.cdc.gov/travel" target="_blank" className="text-blue-400 hover:underline">cdc.gov/travel</a></td>
                     <td className="py-3 px-4">RSS / HTML</td>
                   </tr>
-                  <tr className="border-b border-slate-700/50">
-                    <td className="py-3 px-4 font-medium text-white">HealthMap</td>
-                    <td className="py-3 px-4"><a href="https://www.healthmap.org" target="_blank" className="text-blue-400 hover:underline">healthmap.org</a></td>
-                    <td className="py-3 px-4">API / RSS</td>
-                  </tr>
-                  <tr>
-                    <td className="py-3 px-4 font-medium text-white">ProMED-mail</td>
-                    <td className="py-3 px-4"><a href="https://promedmail.org" target="_blank" className="text-blue-400 hover:underline">promedmail.org</a></td>
-                    <td className="py-3 px-4">RSS / Email</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </section>
-
-        {/* Seguridad y Conflictos */}
-        <section className="mb-12">
-          <div className="flex items-center gap-3 mb-6">
-            <Shield className="w-8 h-8 text-amber-400" />
-            <h2 className="text-2xl font-bold text-white">Seguridad, Conflictos y Alertas Diplomáticas</h2>
-          </div>
-          
-          <div className="bg-slate-800 rounded-xl p-6 border border-slate-700 mb-6">
-            <h3 className="text-lg font-semibold text-white mb-4">Alertas Diplomáticas por País</h3>
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-slate-700">
-                    <th className="text-left py-3 px-4 text-slate-400 font-medium">País</th>
-                    <th className="text-left py-3 px-4 text-slate-400 font-medium">URL</th>
-                    <th className="text-left py-3 px-4 text-slate-400 font-medium">Formato</th>
-                  </tr>
-                </thead>
-                <tbody className="text-slate-300">
-                  <tr className="border-b border-slate-700/50">
-                    <td className="py-3 px-4 font-medium text-white">🇪🇸 España (MAEC)</td>
-                    <td className="py-3 px-4"><a href="https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Recomendaciones-de-viaje.aspx" target="_blank" className="text-blue-400 hover:underline">exteriores.gob.es</a></td>
-                    <td className="py-3 px-4">Web</td>
-                  </tr>
-                  <tr className="border-b border-slate-700/50">
-                    <td className="py-3 px-4 font-medium text-white">🇺🇸 EEUU (State Dept)</td>
-                    <td className="py-3 px-4"><a href="https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories.html" target="_blank" className="text-blue-400 hover:underline">travel.state.gov</a></td>
-                    <td className="py-3 px-4">RSS + JSON</td>
-                  </tr>
-                  <tr className="border-b border-slate-700/50">
-                    <td className="py-3 px-4 font-medium text-white">🇬🇧 UK (FCDO)</td>
-                    <td className="py-3 px-4"><a href="https://www.gov.uk/foreign-travel-advice" target="_blank" className="text-blue-400 hover:underline">gov.uk/foreign-travel-advice</a></td>
-                    <td className="py-3 px-4">RSS</td>
-                  </tr>
-                  <tr className="border-b border-slate-700/50">
-                    <td className="py-3 px-4 font-medium text-white">🇩🇪 Alemania (AA)</td>
-                    <td className="py-3 px-4"><a href="https://www.auswaertiges-amt.de/de/ReiseUndSicherheit" target="_blank" className="text-blue-400 hover:underline">auswaertiges-amt.de</a></td>
-                    <td className="py-3 px-4">Web</td>
-                  </tr>
-                  <tr>
-                    <td className="py-3 px-4 font-medium text-white">🇫🇷 Francia (MAE)</td>
-                    <td className="py-3 px-4"><a href="https://www.diplomatie.gouv.fr/fr/conseils-aux-voyageurs" target="_blank" className="text-blue-400 hover:underline">diplomatie.gouv.fr</a></td>
-                    <td className="py-3 px-4">RSS</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          <div className="bg-slate-800 rounded-xl p-6 border border-slate-700">
-            <h3 className="text-lg font-semibold text-white mb-4">Organismos ONU / Seguridad</h3>
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-slate-700">
-                    <th className="text-left py-3 px-4 text-slate-400 font-medium">Fuente</th>
-                    <th className="text-left py-3 px-4 text-slate-400 font-medium">URL</th>
-                    <th className="text-left py-3 px-4 text-slate-400 font-medium">Formato</th>
-                  </tr>
-                </thead>
-                <tbody className="text-slate-300">
-                  <tr className="border-b border-slate-700/50">
-                    <td className="py-3 px-4 font-medium text-white">ACLED</td>
-                    <td className="py-3 px-4"><a href="https://acleddata.com" target="_blank" className="text-blue-400 hover:underline">acleddata.com</a></td>
-                    <td className="py-3 px-4">API JSON/CSV</td>
-                  </tr>
-                  <tr className="border-b border-slate-700/50">
-                    <td className="py-3 px-4 font-medium text-white">UCDP</td>
-                    <td className="py-3 px-4"><a href="https://ucdp.uu.se" target="_blank" className="text-blue-400 hover:underline">ucdp.uu.se</a></td>
-                    <td className="py-3 px-4">API JSON</td>
-                  </tr>
-                  <tr className="border-b border-slate-700/50">
-                    <td className="py-3 px-4 font-medium text-white">GTD (Terrorism Database)</td>
-                    <td className="py-3 px-4"><a href="https://www.start.umd.edu/gtd" target="_blank" className="text-blue-400 hover:underline">start.umd.edu/gtd</a></td>
-                    <td className="py-3 px-4">CSV</td>
-                  </tr>
-                  <tr>
-                    <td className="py-3 px-4 font-medium text-white">IEP Global Peace Index</td>
-                    <td className="py-3 px-4"><a href="https://www.visionofhumanity.org" target="_blank" className="text-blue-400 hover:underline">visionofhumanity.org</a></td>
-                    <td className="py-3 px-4">PDF/CSV</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </section>
-
-        {/* Desastres Naturales */}
-        <section className="mb-12">
-          <div className="flex items-center gap-3 mb-6">
-            <AlertTriangle className="w-8 h-8 text-orange-400" />
-            <h2 className="text-2xl font-bold text-white">Desastres Naturales y Emergencias</h2>
-          </div>
-          
-          <div className="bg-slate-800 rounded-xl p-6 border border-slate-700">
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-slate-700">
-                    <th className="text-left py-3 px-4 text-slate-400 font-medium">Fuente</th>
-                    <th className="text-left py-3 px-4 text-slate-400 font-medium">URL</th>
-                    <th className="text-left py-3 px-4 text-slate-400 font-medium">Datos</th>
-                  </tr>
-                </thead>
-                <tbody className="text-slate-300">
-                  <tr className="border-b border-slate-700/50">
-                    <td className="py-3 px-4 font-medium text-white">GDACS (UNOCHA)</td>
-                    <td className="py-3 px-4"><a href="https://www.gdacs.org" target="_blank" className="text-blue-400 hover:underline">gdacs.org</a></td>
-                    <td className="py-3 px-4">Hurricanes, sismos, inundaciones</td>
-                  </tr>
-                  <tr className="border-b border-slate-700/50">
-                    <td className="py-3 px-4 font-medium text-white">USGS Earthquake</td>
-                    <td className="py-3 px-4"><a href="https://earthquake.usgs.gov" target="_blank" className="text-blue-400 hover:underline">earthquake.usgs.gov</a></td>
-                    <td className="py-3 px-4">Sismos M2.5+ tiempo real</td>
-                  </tr>
-                  <tr className="border-b border-slate-700/50">
-                    <td className="py-3 px-4 font-medium text-white">NOAA NHC</td>
-                    <td className="py-3 px-4"><a href="https://www.nhc.noaa.gov" target="_blank" className="text-blue-400 hover:underline">nhc.noaa.gov</a></td>
-                    <td className="py-3 px-4">Ciclones tropicales</td>
-                  </tr>
-                  <tr className="border-b border-slate-700/50">
-                    <td className="py-3 px-4 font-medium text-white">GVP Smithsonian</td>
-                    <td className="py-3 px-4"><a href="https://volcano.si.edu" target="_blank" className="text-blue-400 hover:underline">volcano.si.edu</a></td>
-                    <td className="py-3 px-4">Actividad volcánica</td>
-                  </tr>
-                  <tr className="border-b border-slate-700/50">
-                    <td className="py-3 px-4 font-medium text-white">FIRMS NASA</td>
-                    <td className="py-3 px-4"><a href="https://firms.modaps.eosdis.nasa.gov" target="_blank" className="text-blue-400 hover:underline">firms.modaps.eosdis.nasa.gov</a></td>
-                    <td className="py-3 px-4">Focos incendio</td>
-                  </tr>
-                  <tr>
-                    <td className="py-3 px-4 font-medium text-white">EONET NASA</td>
-                    <td className="py-3 px-4"><a href="https://eonet.gsfc.nasa.gov" target="_blank" className="text-blue-400 hover:underline">eonet.gsfc.nasa.gov</a></td>
-                    <td className="py-3 px-4">Eventos naturales</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </section>
-
-        {/* Movilidad y Fronteras */}
-        <section className="mb-12">
-          <div className="flex items-center gap-3 mb-6">
-            <Plane className="w-8 h-8 text-blue-400" />
-            <h2 className="text-2xl font-bold text-white">Movilidad, Fronteras y Requisitos de Entrada</h2>
-          </div>
-          
-          <div className="bg-slate-800 rounded-xl p-6 border border-slate-700">
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-slate-700">
-                    <th className="text-left py-3 px-4 text-slate-400 font-medium">Fuente</th>
-                    <th className="text-left py-3 px-4 text-slate-400 font-medium">URL</th>
-                    <th className="text-left py-3 px-4 text-slate-400 font-medium">Datos</th>
-                  </tr>
-                </thead>
-                <tbody className="text-slate-300">
-                  <tr className="border-b border-slate-700/50">
-                    <td className="py-3 px-4 font-medium text-white">IATA TravelCentre</td>
-                    <td className="py-3 px-4"><a href="https://www.iata.org/en/publications/timatic" target="_blank" className="text-blue-400 hover:underline">iata.org</a></td>
-                    <td className="py-3 px-4">Visados, vacunas</td>
-                  </tr>
-                  <tr className="border-b border-slate-700/50">
-                    <td className="py-3 px-4 font-medium text-white">Sherpa</td>
-                    <td className="py-3 px-4"><a href="https://www.joinsherpa.com" target="_blank" className="text-blue-400 hover:underline">joinsherpa.com</a></td>
-                    <td className="py-3 px-4">Restricciones entrada</td>
-                  </tr>
-                  <tr className="border-b border-slate-700/50">
-                    <td className="py-3 px-4 font-medium text-white">FlightAware</td>
-                    <td className="py-3 px-4"><a href="https://flightaware.com" target="_blank" className="text-blue-400 hover:underline">flightaware.com</a></td>
-                    <td className="py-3 px-4">Estado vuelos</td>
-                  </tr>
-                  <tr className="border-b border-slate-700/50">
-                    <td className="py-3 px-4 font-medium text-white">OpenSky Network</td>
-                    <td className="py-3 px-4"><a href="https://opensky-network.org" target="_blank" className="text-blue-400 hover:underline">opensky-network.org</a></td>
-                    <td className="py-3 px-4">Tráfico aéreo ADS-B</td>
-                  </tr>
-                  <tr>
-                    <td className="py-3 px-4 font-medium text-white">Frontex</td>
-                    <td className="py-3 px-4"><a href="https://frontex.europa.eu" target="_blank" className="text-blue-400 hover:underline">frontex.europa.eu</a></td>
-                    <td className="py-3 px-4">Migración / Frontera</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </section>
-
-        {/* Económicas */}
-        <section className="mb-12">
-          <div className="flex items-center gap-3 mb-6">
-            <Globe className="w-8 h-8 text-green-400" />
-            <h2 className="text-2xl font-bold text-white">Económicas y Coste de Vida</h2>
-          </div>
-          
-          <div className="bg-slate-800 rounded-xl p-6 border border-slate-700">
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-slate-700">
-                    <th className="text-left py-3 px-4 text-slate-400 font-medium">Fuente</th>
-                    <th className="text-left py-3 px-4 text-slate-400 font-medium">URL</th>
-                    <th className="text-left py-3 px-4 text-slate-400 font-medium">Datos</th>
-                  </tr>
-                </thead>
-                <tbody className="text-slate-300">
-                  <tr className="border-b border-slate-700/50">
-                    <td className="py-3 px-4 font-medium text-white">Numbeo</td>
-                    <td className="py-3 px-4"><a href="https://www.numbeo.com" target="_blank" className="text-blue-400 hover:underline">numbeo.com</a></td>
-                    <td className="py-3 px-4">Coste vida por ciudad</td>
-                  </tr>
-                  <tr className="border-b border-slate-700/50">
-                    <td className="py-3 px-4 font-medium text-white">IMF World Economic Outlook</td>
-                    <td className="py-3 px-4"><a href="https://www.imf.org/en/Publications/WEO" target="_blank" className="text-blue-400 hover:underline">imf.org</a></td>
-                    <td className="py-3 px-4">PIB, inflación, deuda</td>
-                  </tr>
-                  <tr className="border-b border-slate-700/50">
-                    <td className="py-3 px-4 font-medium text-white">World Bank Open Data</td>
-                    <td className="py-3 px-4"><a href="https://data.worldbank.org" target="_blank" className="text-blue-400 hover:underline">data.worldbank.org</a></td>
-                    <td className="py-3 px-4">Indicadores desarrollo</td>
-                  </tr>
-                  <tr className="border-b border-slate-700/50">
+<tr className="border-b border-slate-700/50">
                     <td className="py-3 px-4 font-medium text-white">Eurostat Tourism</td>
                     <td className="py-3 px-4"><a href="https://ec.europa.eu/eurostat/web/tourism" target="_blank" className="text-blue-400 hover:underline">ec.europa.eu/tourism</a></td>
                     <td className="py-3 px-4">Turismo UE</td>
                   </tr>
+                  <tr className="border-b border-slate-700/50">
+                    <td className="py-3 px-4 font-medium text-white">IEP (Vision of Humanity)</td>
+                    <td className="py-3 px-4"><a href="https://www.visionofhumanity.org" target="_blank" className="text-blue-400 hover:underline">visionofhumanity.org</a></td>
+                    <td className="py-3 px-4">GPI (Paz), GTI (Terrorismo) - 46 países</td>
+                  </tr>
+<tr className="border-b border-slate-700/50">
+                    <td className="py-3 px-4 font-medium text-white">UNWTO / UN Tourism</td>
+                    <td className="py-3 px-4"><a href="https://www.unwto.org/tourism-statistics" target="_blank" className="text-blue-400 hover:underline">unwto.org</a> / <a href="https://www.unwto.org/unwto-tourism-recovery-tracker" target="_blank" className="text-blue-400 hover:underline">dashboard</a> / <a href="https://www.unwto.org/node/14904" target="_blank" className="text-blue-400 hover:underline">barometer</a></td>
+                    <td className="py-3 px-4">Llegadas (102M Francia, 93.8M España), Ingresos ($215B USA, $106B España), Gasto/día, PIB turismo - 220 países</td>
+                  </tr>
+                  <tr className="border-b border-slate-700/50">
+                    <td className="py-3 px-4 font-medium text-white">Macro</td>
+                    <td className="py-3 px-4"><a href="https://macrotrends.net" target="_blank" className="text-blue-400 hover:underline">macrotrends.net</a></td>
+                    <td className="py-3 px-4">IPC (Inflación) - 55 países</td>
+                  </tr>
+                  <tr className="border-b border-slate-700/50">
+                    <td className="py-3 px-4 font-medium text-white">Open-Meteo</td>
+                    <td className="py-3 px-4"><a href="https://open-meteo.com" target="_blank" className="text-blue-400 hover:underline">open-meteo.com</a></td>
+                    <td className="py-3 px-4">Meteorología, alertas extremas</td>
+                  </tr>
+                  <tr className="border-b border-slate-700/50">
+                    <td className="py-3 px-4 font-medium text-white">USGS</td>
+                    <td className="py-3 px-4"><a href="https://earthquake.usgs.gov" target="_blank" className="text-blue-400 hover:underline">usgs.gov/earthquake</a></td>
+                    <td className="py-3 px-4">Sismos en tiempo real</td>
+                  </tr>
                   <tr>
-                    <td className="py-3 px-4 font-medium text-white">UNWTO</td>
+                    <td className="py-3 px-4 font-medium text-white">UNWTO / OMT</td>
                     <td className="py-3 px-4"><a href="https://www.unwto.org/tourism-statistics" target="_blank" className="text-blue-400 hover:underline">unwto.org</a></td>
-                    <td className="py-3 px-4">Estadísticas turismo</td>
+                    <td className="py-3 px-4">Llegadas turísticas, ingresos, gasto/día, estancia media - 25 países</td>
                   </tr>
                 </tbody>
               </table>
