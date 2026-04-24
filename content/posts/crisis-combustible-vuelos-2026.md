@@ -209,11 +209,20 @@ Revisa tu póliza de seguro contratado. Muchos seguros de 2026 ya incluyen **cob
 
 La crisis de combustible de 2026 está poniendo a prueba tanto a las aerolineas como a los pasajeros. La información es tu mejor herramienta: conoce tus derechos, documenta todo, y actúa con estrategia. No permitas que dificultades logísticas ajenas se conviertan en pérdidas económicas tuyas.
 
-¿Vuelas pronto y quieres revisar los riesgos de tu destino? Consulta nuestros mapas de alertas actualizado con información en tiempo real sobre restricciones aéreas y ситуации.
-
+¿Vuelas pronto y quieres revisar los riesgos de tu destino? Consulta nuestros mapas de alertas actualizado con información en tiempo real sobre restricciones aéreas y situaciones.
 
 ---
 
-*M. Castillo - Privacy Tools © 2026 ViajeInteligencia.com*
+### 📝 Herramienta Premium: Generador de Reclamaciones
+
+Si tu vuelo ha sido cancelado o retrasado, puedes usar nuestro **generador de reclamaciones** para crear un formulario listo para enviar:
+
+**[Acceder a Reclamaciones Premium →](/premium?tab=reclamaciones)**
+
+Esta herramienta gratuíta para usuarios Premium genera un PDF con todos los datos necesarios para reclamar a la aerolinea o compañía afectada.
+
+---
+
+*M. Castillo
 
 *Fuentes consultadas: Reglamento CE 261/2004, Agencia Europea de Seguridad Aérea (EASA), Tribunal de Justicia de la UE - Sentencias relevantes sobre circumstâncias extraordinarias.*

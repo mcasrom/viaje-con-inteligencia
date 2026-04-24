@@ -1035,11 +1035,12 @@ export default function PremiumPage() {
                 <div className="mt-6 bg-slate-800 rounded-2xl p-6 border border-slate-700">
                   <h3 className="text-xl font-bold text-white mb-2 flex items-center gap-2">
                     <FileDown className="w-6 h-6 text-red-500" />
-                    📝 Generator de Reclamaciones
+                    📝 Generador de Reclamaciones
                   </h3>
                   <p className="text-slate-400 text-sm mb-4">
                     Genera formularios de reclamación para cancelaciones de vuelos, hoteles, paquetes turísticos y más.
                     Completa los datos y descarga un PDF listo para imprimir o enviar.
+                    <a href="https://viaje-con-inteligencia.vercel.app/checklist-incidencias-viaje.pdf" target="_blank" className="text-cyan-400 underline ml-1">Ver checklist static</a>
                   </p>
                   
                   <div className="grid md:grid-cols-2 gap-4 mb-4">
