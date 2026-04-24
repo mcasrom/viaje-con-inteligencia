@@ -99,9 +99,12 @@ function getClimateData(): { tempMin: number; tempMax: number; rainDays: number;
   ];
 }
 
-export async function GET(request: Request) {
+export async function GET(request: Request, { params }: { params: Promise<{ codigo: string }> }) {
+  const { codigo: codigoParams } = await params;
   const { searchParams } = new URL(request.url);
-  const countryCode = searchParams.get('country')?.toLowerCase();
+  const queryCountry = searchParams.get('country')?.toLowerCase();
+  
+  const countryCode = queryCountry || codigoParams?.toLowerCase();
   
   if (!countryCode) {
     return NextResponse.json({ error: 'Country code required' }, { status: 400 });
