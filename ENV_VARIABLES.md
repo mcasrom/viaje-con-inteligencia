@@ -116,3 +116,6 @@ grep -r "process\.env\." src --include="*.ts" | grep -oP "process\.env\.\K[A-Z_]
 ---
 
 *Última actualización: 2026-04-24*
+
+curl -H "Authorization: Bearer TU_CRON_SECRET" \
+  https://viaje-con-inteligencia.vercel.app/api/cron/daily-digest

@@ -33,7 +33,7 @@ function PostCard({ post }: { post: Post }) {
             <img 
               src={post.image} 
               alt={post.title}
-              className="w-full h-full object-cover opacity-40 blur-[1px] scale-110"
+              className="w-full h-full object-cover opacity-60 grayscale-[20%] scale-105"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/50 to-transparent" />
             <div className="absolute inset-0 flex items-center justify-center">
@@ -45,7 +45,7 @@ function PostCard({ post }: { post: Post }) {
             <img 
               src="/blog-header.jpg" 
               alt={post.title}
-              className="w-full h-full object-cover opacity-30"
+              className="w-full h-full object-cover opacity-60 grayscale-[20%]"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/50 to-transparent" />
             <div className="absolute inset-0 flex items-center justify-center">
@@ -179,7 +179,7 @@ function BlogContent() {
           <img 
             src={getDailyPhoto()} 
             alt="Viajes" 
-            className="w-full h-48 md:h-64 object-cover opacity-40 grayscale-[30%]"
+            className="w-full h-48 md:h-64 object-cover opacity-60 grayscale-[20%]"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/70 to-transparent" />
           <div className="absolute bottom-0 right-0 p-4 text-xs text-slate-500">

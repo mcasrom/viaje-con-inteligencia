@@ -28,7 +28,7 @@ interface DailyPhotoProps {
 
 export default function DailyPhoto({ 
   type = 'hero', 
-  opacity = 0.3,
+  opacity = 0.5,
   grayscale = true 
 }: DailyPhotoProps) {
   const [photo, setPhoto] = useState(photos[0]);

@@ -172,11 +172,11 @@ export default function BlogPostPage({ post }: { post: Post }) {
           <div className="mt-8">
             {post.image && post.image.trim() !== '' ? (
               <div className="rounded-2xl overflow-hidden">
-                <img src={post.image} alt={post.title} className="w-full h-48 md:h-64 object-cover" />
+                <img src={post.image} alt={post.title} className="w-full h-48 md:h-64 object-cover opacity-70 grayscale-[20%]" />
               </div>
             ) : (
               <div className="rounded-2xl overflow-hidden">
-                <img src="/blog-header.jpg" alt={post.title} className="w-full h-48 md:h-64 object-cover opacity-80" />
+                <img src="/blog-header.jpg" alt={post.title} className="w-full h-48 md:h-64 object-cover opacity-70 grayscale-[20%]" />
               </div>
             )}
           </div>
