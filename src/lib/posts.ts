@@ -168,8 +168,8 @@ export function getPostsByCountry(countryName: string, limit: number = 3): PostM
   return allPosts
     .filter(p => 
       p.title.toLowerCase().includes(name) ||
-      p.keywords?.toLowerCase().includes(name) ||
-      p.excerpt?.toLowerCase().includes(name)
+      (p.keywords && Array.isArray(p.keywords) && p.keywords.some((k: string) => k.toLowerCase().includes(name))) ||
+      (p.excerpt?.toLowerCase().includes(name))
     )
     .slice(0, limit);
 }
