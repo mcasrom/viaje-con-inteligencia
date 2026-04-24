@@ -15,6 +15,51 @@ export interface Requisito {
   items: string[];
 }
 
+export interface Aeropuerto {
+  nombre: string;
+  iata: string;
+  ciudad: string;
+  tipo: 'internacional' | 'nacional' | 'carga';
+}
+
+export interface Puerto {
+  nombre: string;
+  ciudad: string;
+  tipo: 'pasajeros' | 'carga' | 'pesquero' | 'yates';
+}
+
+export interface DatosTransporte {
+  aeropuertos: Aeropuerto[];
+  puertos: Puerto[];
+  viasFerreas: string;
+  carreteras: string;
+  metro: boolean;
+  trenAltaVelocidad: boolean;
+  conduccion: 'derecha' | 'izquierda';
+  licenciaES: boolean;
+  seguroObligatorio: boolean;
+  peajes: boolean;
+}
+
+export interface DatosTuristicos {
+  turistasAnio: string;
+  ingresosTurismo: string;
+  principalesMercados: string[];
+  estanciaMedia: string;
+  temporadaAlta: string[];
+  destinosPopulares: string[];
+}
+
+export interface DatosEconomicos {
+  pib: string;
+  pibPerCapita: string;
+  poblacion: string;
+  ipc: string;
+  desempleo: string;
+  moneda: string;
+  tipoCambio: string;
+}
+
 export interface DatoPais {
   codigo: string;
   nombre: string;
@@ -43,6 +88,9 @@ export interface DatoPais {
   urlsUtiles: { nombre: string; url: string }[];
   bandera: string;
   mapaCoordenadas: [number, number];
+  transporte?: DatosTransporte;
+  turisticos?: DatosTuristicos;
+  economicos?: DatosEconomicos;
   visible?: boolean;
 }
 
@@ -102,7 +150,40 @@ export const paisesData: Record<string, DatoPais> = {
       { nombre: 'MAEC España', url: 'https://www.exteriores.gob.es' }
     ],
     bandera: '🇪🇸',
-    mapaCoordenadas: [40.4637, -3.7492]
+    mapaCoordenadas: [40.4637, -3.7492],
+    transporte: {
+      conduccion: 'derecha',
+      licenciaES: true,
+      seguroObligatorio: true,
+      peajes: true,
+      viasFerreas: '15,000 km',
+      carreteras: '685,000 km',
+      metro: true,
+      trenAltaVelocidad: true,
+      aeropuertos: [
+        { nombre: 'Aeropuerto Adolfo Suárez Madrid-Barajas', iata: 'MAD', ciudad: 'Madrid', tipo: 'internacional' },
+        { nombre: 'Aeropuerto de Barcelona-El Prat', iata: 'BCN', ciudad: 'Barcelona', tipo: 'internacional' },
+        { nombre: 'Aeropuerto de Málaga-Costa del Sol', iata: 'AGP', ciudad: 'Málaga', tipo: 'internacional' },
+        { nombre: 'Aeropuerto de Palma de Mallorca', iata: 'PMI', ciudad: 'Palma', tipo: 'internacional' },
+        { nombre: 'Aeropuerto de Valencia', iata: 'VLC', ciudad: 'Valencia', tipo: 'internacional' },
+        { nombre: 'Aeropuerto de Sevilla', iata: 'SVQ', ciudad: 'Sevilla', tipo: 'internacional' },
+      ],
+      puertos: [
+        { nombre: 'Puerto de Barcelona', ciudad: 'Barcelona', tipo: 'pasajeros' },
+        { nombre: 'Puerto de Valencia', ciudad: 'Valencia', tipo: 'pasajeros' },
+        { nombre: 'Puerto de Málaga', ciudad: 'Málaga', tipo: 'pasajeros' },
+        { nombre: 'Puerto de Palma', ciudad: 'Palma', tipo: 'pasajeros' },
+        { nombre: 'Puerto de Algeciras', ciudad: 'Algeciras', tipo: 'carga' },
+      ]
+    },
+    turisticos: {
+      turistasAnio: '85M',
+      ingresosTurismo: '$108B',
+      principalesMercados: ['Francia', 'Reino Unido', 'Alemania', 'Italia'],
+      estanciaMedia: '7 noches',
+      temporadaAlta: ['Junio', 'Julio', 'Agosto'],
+      destinosPopulares: ['Barcelona', 'Madrid', 'Andalucía', 'Islas Baleares', 'Canarias']
+    }
   },
   fr: {
     codigo: 'fr',
@@ -216,7 +297,36 @@ export const paisesData: Record<string, DatoPais> = {
       { nombre: 'MAEC - Alemania', url: 'https://www.exteriores.gob.es/Embajadas/Berlin' }
     ],
     bandera: '🇩🇪',
-    mapaCoordenadas: [51.1657, 10.4515]
+    mapaCoordenadas: [51.1657, 10.4515],
+    transporte: {
+      conduccion: 'derecha',
+      licenciaES: true,
+      seguroObligatorio: true,
+      peajes: true,
+      viasFerreas: '33,000 km',
+      carreteras: '625,000 km',
+      metro: true,
+      trenAltaVelocidad: true,
+      aeropuertos: [
+        { nombre: 'Aeropuerto de Frankfurt', iata: 'FRA', ciudad: 'Frankfurt', tipo: 'internacional' },
+        { nombre: 'Aeropuerto de Múnich', iata: 'MUC', ciudad: 'Múnich', tipo: 'internacional' },
+        { nombre: 'Aeropuerto de Berlín-Brandeburgo', iata: 'BER', ciudad: 'Berlín', tipo: 'internacional' },
+        { nombre: 'Aeropuerto de Hamburgo', iata: 'HAM', ciudad: 'Hamburgo', tipo: 'internacional' },
+        { nombre: 'Aeropuerto de Düsseldorf', iata: 'DUS', ciudad: 'Düsseldorf', tipo: 'internacional' },
+      ],
+      puertos: [
+        { nombre: 'Puerto de Hamburgo', ciudad: 'Hamburgo', tipo: 'carga' },
+        { nombre: 'Puerto de Bremen', ciudad: 'Bremen', tipo: 'carga' },
+      ]
+    },
+    turisticos: {
+      turistasAnio: '35M',
+      ingresosTurismo: '$42B',
+      principalesMercados: ['Países Bajos', 'Suiza', 'Austria', 'EE.UU.'],
+      estanciaMedia: '4 noches',
+      temporadaAlta: ['Junio', 'Julio', 'Agosto'],
+      destinosPopulares: ['Berlín', 'Múnich', 'Frankfurt', 'Hamburgo', 'Baviera']
+    }
   },
   it: {
     codigo: 'it',
@@ -273,7 +383,38 @@ export const paisesData: Record<string, DatoPais> = {
       { nombre: 'MAEC - Italia', url: 'https://www.exteriores.gob.es/Embajadas/Roma' }
     ],
     bandera: '🇮🇹',
-    mapaCoordenadas: [41.8719, 12.5674]
+    mapaCoordenadas: [41.8719, 12.5674],
+    transporte: {
+      conduccion: 'derecha',
+      licenciaES: true,
+      seguroObligatorio: true,
+      peajes: true,
+      viasFerreas: '24,000 km',
+      carreteras: '658,000 km',
+      metro: true,
+      trenAltaVelocidad: true,
+      aeropuertos: [
+        { nombre: 'Aeropuerto de Roma-Fiumicino', iata: 'FCO', ciudad: 'Roma', tipo: 'internacional' },
+        { nombre: 'Aeropuerto de Milano-Malpensa', iata: 'MXP', ciudad: 'Milán', tipo: 'internacional' },
+        { nombre: 'Aeropuerto de Venezia-Marco Polo', iata: 'VCE', ciudad: 'Venecia', tipo: 'internacional' },
+        { nombre: 'Aeropuerto de Napoli-Capodichino', iata: 'NAP', ciudad: 'Nápoles', tipo: 'internacional' },
+        { nombre: 'Aeropuerto de Catania-Fontanarossa', iata: 'CTA', ciudad: 'Catania', tipo: 'internacional' },
+      ],
+      puertos: [
+        { nombre: 'Puerto de Génova', ciudad: 'Génova', tipo: 'pasajeros' },
+        { nombre: 'Puerto de Nápoles', ciudad: 'Nápoles', tipo: 'pasajeros' },
+        { nombre: 'Puerto de Palermo', ciudad: 'Palermo', tipo: 'pasajeros' },
+        { nombre: 'Puerto de Civitavecchia', ciudad: 'Civitavecchia', tipo: 'pasajeros' },
+      ]
+    },
+    turisticos: {
+      turistasAnio: '57M',
+      ingresosTurismo: '$48B',
+      principalesMercados: ['Alemania', 'Francia', 'EE.UU.', 'Suiza'],
+      estanciaMedia: '5 noches',
+      temporadaAlta: ['Mayo', 'Junio', 'Julio', 'Septiembre'],
+      destinosPopulares: ['Roma', 'Venecia', 'Florencia', 'Milán', 'Costa Amalfitana']
+    }
   },
   pt: {
     codigo: 'pt',
