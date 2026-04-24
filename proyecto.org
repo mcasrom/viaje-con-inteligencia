@@ -73,7 +73,7 @@
 - [X] PWA básico
 - [X] CRON jobs configurados
 - [ ] Programa afiliados
-- [ ] Stripe
+- [X] Stripe (configurado 2026-04-24)
 
 ** SEO + Captación
 - [X] Lead magnet (/lead-magnet + checklist premium)
@@ -297,11 +297,12 @@ GROQ_API_KEY=xxx
 NEXT_PUBLIC_SUPABASE_URL=https://xxx.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=xxx
 
-# Stripe (PENDIENTE)
-STRIPE_SECRET_KEY=xxx
-STRIPE_WEBHOOK_SECRET=xxx
-NEXT_PUBLIC_STRIPE_PRICE_MONTHLY=price_xxx
-NEXT_PUBLIC_STRIPE_PRICE_YEARLY=price_xxx
+# Stripe (CONFIGURADO 2026-04-24) ✅
+STRIPE_SECRET_KEY=sk_live_xxx  # En Vercel
+STRIPE_WEBHOOK_SECRET=whsec_xxx  # En Vercel
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_live_xxx  # En Vercel
+STRIPE_PRICE_MONTHLY=price_1TNvdo1yXjIoL1LjxAec6d2C  # €4.99/mes
+STRIPE_PRICE_YEARLY=price_1TNvdp1yXjIoL1LjdT2GIdRO  # €19.99/año
 #+END_SRC
 
 ** Deploy

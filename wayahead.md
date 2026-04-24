@@ -68,9 +68,15 @@
 | 6 | Corregir textos EN en páginas ES | B | ⚠️ Pendiente refactor i18n
 | 7 | Email profesional dominio propio | ✅ Completado (viajeinteligencia.com + Cloudflare)
 
+### ✅ COMPLETADOS (2026-04-24)
+- Stripe configurado ✅ ( checkout, precios, webhooks)
+- Newsletter funcionando ✅ (12 suscriptores, emails enviándose)
+- Climate API + METAR ✅ (/api/weather, /api/metar, /viajes/clima)
+- Lead Magnet + Banner Homepage ✅ (/lead-magnet)
+- Redirect Cloudflare → Vercel (pendiente 30 días por Cloudflare Free)
+
 ### ⚠️ PENDIENTES
-- Stripe + auth (config manual Vercel)
-- Redirect viajeinteligencia.com → vercel.app (Cloudflare)
+- Redirect viajeinteligencia.com → vercel.app (pendiente - Cloudflare Free sin Workers)
 
 ### 🟡 PRIORIDAD SPRINT 4 - PAÍSES
 | # | Mejora | Complejidad |
