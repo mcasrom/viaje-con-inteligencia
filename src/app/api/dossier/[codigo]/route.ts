@@ -173,7 +173,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ codi
       licencias: pais.transporte?.licenciaES 
         ? 'Española válida con traducción' 
         : 'Consultar requisitos específicos',
-      aeropuertos: pais.transporte?.aeropuertos?.map(a => ({
+      airports: pais.transporte?.aeropuertos?.map(a => ({
         nombre: a.nombre,
         iata: a.iata,
         ciudad: a.ciudad,
