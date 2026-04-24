@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="M. Castillo" />
+  <title>Viaje con Inteligencia - Documentación Técnica</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Viaje con Inteligencia - Documentación Técnica</h1>
+<p class="author">M. Castillo</p>
+</header>
+<h1 id="ficha-técnica-del-proyecto">FICHA TÉCNICA DEL PROYecto</h1>
+<h2 id="información-general">Información General</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Campo</th>
+<th>Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Nombre</td>
+<td>Viaje con Inteligencia</td>
+</tr>
+<tr class="even">
+<td>URL</td>
+<td><a
+href="https://viajeinteligencia.com">https://viajeinteligencia.com</a></td>
+</tr>
+<tr class="odd">
+<td>URL Vercel</td>
+<td><a
+href="https://viaje-con-inteligencia.vercel.app">https://viaje-con-inteligencia.vercel.app</a></td>
+</tr>
+<tr class="even">
+<td>Repo</td>
+<td><a
+href="https://github.com/mcasrom/viaje-con-inteligencia">https://github.com/mcasrom/viaje-con-inteligencia</a></td>
+</tr>
+<tr class="odd">
+<td>Dominio</td>
+<td>viajeinteligencia.com (Cloudflare)</td>
+</tr>
+<tr class="even">
+<td>Email</td>
+<td>info@viajeinteligencia.com</td>
+</tr>
+<tr class="odd">
+<td>Bot Telegram</td>
+<td>@ViajeConInteligenciaBot</td>
+</tr>
+<tr class="even">
+<td>Canal Telegram</td>
+<td>@ViajeConInteligencia</td>
+</tr>
+</tbody>
+</table>
+<h2 id="stack-tecnológico">Stack Tecnológico</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Tecnología</th>
+<th>Uso</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Next.js 16</td>
+<td>Framework</td>
+</tr>
+<tr class="even">
+<td>React 19</td>
+<td>UI</td>
+</tr>
+<tr class="odd">
+<td>TypeScript</td>
+<td>Tipado</td>
+</tr>
+<tr class="even">
+<td>Tailwind CSS 4</td>
+<td>Estilos</td>
+</tr>
+<tr class="odd">
+<td>Groq AI</td>
+<td>Chat + Itinerarios</td>
+</tr>
+<tr class="even">
+<td>Supabase</td>
+<td>Auth + DB</td>
+</tr>
+<tr class="odd">
+<td>Vercel</td>
+<td>Hosting + Cron</td>
+</tr>
+<tr class="even">
+<td>Cloudflare</td>
+<td>DNS + SSL</td>
+</tr>
+<tr class="odd">
+<td>Resend</td>
+<td>Newsletter</td>
+</tr>
+<tr class="even">
+<td>Telegram API</td>
+<td>Bot + Channel</td>
+</tr>
+<tr class="odd">
+<td>Open-Meteo</td>
+<td>Meteorología</td>
+</tr>
+<tr class="even">
+<td>jsPDF</td>
+<td>Generación PDFs</td>
+</tr>
+</tbody>
+</table>
+<p>—</p>
+<h1 id="arquitectura-del-sistema">ARQUITECTURA DEL SISTEMA</h1>
+<h2 id="diagrama-de-arquitectura">Diagrama de Arquitectura</h2>
+<pre class="plantuml"><code>@startuml
+!theme plain
+skinparam componentStyle uml2
+
+actor Usuario
+node &quot;Frontend&quot; {
+  component &quot;Next.js 16&quot;
+  component &quot;React 19&quot;
+  component &quot;Tailwind CSS&quot;
+}
+node &quot;PWA&quot; {
+  component &quot;Service Worker&quot;
+  component &quot;Manifest&quot;
+}
+node &quot;APIs&quot; {
+  component &quot;/api/ai/chat&quot;
+  component &quot;/api/weather&quot;
+  component &quot;/api/cron/*&quot;
+  component &quot;/api/telegram&quot;
+}
+node &quot;Servicios&quot; {
+  component &quot;Groq AI&quot;
+  component &quot;Resend&quot;
+  component &quot;Telegram&quot;
+}
+database &quot;Supabase&quot; {
+  component &quot;Auth&quot;
+  component &quot;Profiles&quot;
+  component &quot;Favoritos&quot;
+}
+cloud &quot;APIs Externas&quot; {
+  component &quot;MAEC&quot;
+  component &quot;Open-Meteo&quot;
+  component &quot;World Bank&quot;
+  component &quot;USGS&quot;
+}
+
+Usuario --&gt; Frontend
+Frontend --&gt; PWA
+Frontend --&gt; APIs
+APIs --&gt; Servicios
+APIs --&gt; Supabase
+APIs --&gt; &quot;APIs Externas&quot;
+@enduml
+</code></pre>
+<h2 id="flujo-de-datos">Flujo de Datos</h2>
+<pre class="plantuml"><code>@startuml
+!theme plain
+
+[Usuario] --&gt; [Next.js]
+[Next.js] --&gt; [API Routes]
+[API Routes] --&gt; [Groq AI]
+[API Routes] --&gt; [Supabase]
+[API Routes] --&gt; [Telegram]
+[CRON Jobs] --&gt; [Scraper MAEC]
+[Scraper MAEC] --&gt; [Supabase DB]
+[Telegram] --&gt; [Canal]
+[Resend] --&gt; [Email]
+@enduml
+</code></pre>
+<p>—</p>
+<h1 id="funcionalidades-principales">FUNCIONALIDADES PRINCIPALES</h1>
+<h2 id="core-features">Core Features</h2>
+<table>
+<thead>
+<tr class="header">
+<th>#</th>
+<th>Feature</th>
+<th>Descripción</th>
+<th>Estado</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>Mapa interactivo 100 países</td>
+<td>Riesgo MAEC</td>
+<td>[OK]</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>Fichas país detalladas</td>
+<td>info + emergencias</td>
+<td>[OK]</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>Chat IA Groq</td>
+<td>Llama 3.1</td>
+<td>[OK]</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>Generador itinerarios</td>
+<td>IA</td>
+<td>[OK]</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td>Comparar países</td>
+<td>IA</td>
+<td>[OK]</td>
+</tr>
+<tr class="even">
+<td>6</td>
+<td>Checklist 80+ items</td>
+<td>Imprimible</td>
+<td>[OK]</td>
+</tr>
+<tr class="odd">
+<td>7</td>
+<td>Blog 52 posts</td>
+<td>SEO</td>
+<td>[OK]</td>
+</tr>
+<tr class="even">
+<td>8</td>
+<td>Newsletter</td>
+<td>Resend</td>
+<td>[OK]</td>
+</tr>
+<tr class="odd">
+<td>9</td>
+<td>Bot Telegram</td>
+<td>Comandos</td>
+<td>[OK]</td>
+</tr>
+<tr class="even">
+<td>10</td>
+<td>PWA offline</td>
+<td>Service Worker</td>
+<td>[OK]</td>
+</tr>
+<tr class="odd">
+<td>11</td>
+<td>KPIs Index</td>
+<td>6 capas</td>
+<td>[OK]</td>
+</tr>
+<tr class="even">
+<td>12</td>
+<td>Memoria de viaje</td>
+<td>IndexedDB</td>
+<td>[OK]</td>
+</tr>
+<tr class="odd">
+<td>13</td>
+<td>Reclamaciones PDF</td>
+<td>jsPDF</td>
+<td>[OK]</td>
+</tr>
+<tr class="even">
+<td>14</td>
+<td>Dossier Premium</td>
+<td>Datos OSINT</td>
+<td>[OK]</td>
+</tr>
+</tbody>
+</table>
+<h2 id="páginas-del-sitio">Páginas del Sitio</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Ruta</th>
+<th>Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>/</td>
+<td>Mapa riesgos 100 países</td>
+</tr>
+<tr class="even">
+<td><em>pais</em>[codigo]</td>
+<td>Ficha país</td>
+</tr>
+<tr class="odd">
+<td>/premium</td>
+<td>Chat IA + herramientas</td>
+</tr>
+<tr class="even">
+<td>/comparar</td>
+<td>Comparar destinos</td>
+</tr>
+<tr class="odd">
+<td>/itinerario</td>
+<td>Generador itinerarios</td>
+</tr>
+<tr class="even">
+<td>/checklist</td>
+<td>Lista viaje</td>
+</tr>
+<tr class="odd">
+<td>/blog</td>
+<td>Artículos</td>
+</tr>
+<tr class="even">
+<td>/dashboard</td>
+<td>Usuario + favoritos</td>
+</tr>
+<tr class="odd">
+<td>/relojes</td>
+<td>Relojes mundiales</td>
+</tr>
+<tr class="even">
+<td>/alertas</td>
+<td>Alertas MAEC</td>
+</tr>
+<tr class="odd">
+<td>/indices</td>
+<td>KPIs Index 6 capas</td>
+</tr>
+<tr class="even">
+<td>/documentos</td>
+<td>Memoria viaje PWA</td>
+</tr>
+<tr class="odd">
+<td><em>dossier</em>[codigo]</td>
+<td>Dossier Premium</td>
+</tr>
+</tbody>
+</table>
+<h2 id="apis-disponibles">APIs Disponibles</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Endpoint</th>
+<th>Función</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>/api/ai/chat</td>
+<td>Chat Groq</td>
+</tr>
+<tr class="even">
+<td>/api/ai/itinerary</td>
+<td>Itinerario IA</td>
+</tr>
+<tr class="odd">
+<td>/api/ai/compare</td>
+<td>Comparar IA</td>
+</tr>
+<tr class="even">
+<td>/api/weather/extreme</td>
+<td>Clima extremo</td>
+</tr>
+<tr class="odd">
+<td><em>api/dossier</em>[codigo]</td>
+<td>Dossier país</td>
+</tr>
+<tr class="even">
+<td>/api/country-data</td>
+<td>World Bank</td>
+</tr>
+<tr class="odd">
+<td>/api/cron/*</td>
+<td>Tareas Cron</td>
+</tr>
+<tr class="even">
+<td>/api/telegram</td>
+<td>Webhook bot</td>
+</tr>
+<tr class="odd">
+<td>/api/newsletter/*</td>
+<td>Suscripciones</td>
+</tr>
+<tr class="even">
+<td>/api/auth/*</td>
+<td>Login/Favoritos</td>
+</tr>
+<tr class="odd">
+<td>/api/push/*</td>
+<td>Notificaciones push</td>
+</tr>
+</tbody>
+</table>
+<p>—</p>
+<h1 id="fuentes-osint">FUENTES OSINT</h1>
+<h2 id="fuentes-de-datos">Fuentes de Datos</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Fuente</th>
+<th>Tipo</th>
+<th>Uso</th>
+<th>URL</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>MAEC España</td>
+<td>Oficial</td>
+<td>Riesgos viaje</td>
+<td>exteriores.gob.es</td>
+</tr>
+<tr class="even">
+<td>World Bank</td>
+<td>Económico</td>
+<td>PIB, turismo</td>
+<td>data.worldbank.org</td>
+</tr>
+<tr class="odd">
+<td>Open-Meteo</td>
+<td>Meteorología</td>
+<td>Alertas clima</td>
+<td>open-meteo.com</td>
+</tr>
+<tr class="even">
+<td>Groq AI</td>
+<td>IA</td>
+<td>Chat, itinerarios</td>
+<td>groq.com</td>
+</tr>
+<tr class="odd">
+<td>Resend</td>
+<td>Email</td>
+<td>Newsletter</td>
+<td>resend.com</td>
+</tr>
+<tr class="even">
+<td>Telegram</td>
+<td>Mensajería</td>
+<td>Bot + Channel</td>
+<td>core.telegram.org</td>
+</tr>
+<tr class="odd">
+<td>USGS</td>
+<td>Sismos</td>
+<td>Terremotos</td>
+<td>earthquake.usgs.gov</td>
+</tr>
+<tr class="even">
+<td>IEP</td>
+<td>Paz</td>
+<td>GPI, GTI</td>
+<td>visionofhumanity.org</td>
+</tr>
+</tbody>
+</table>
+<h2 id="datos-por-país">Datos por País</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Dato</th>
+<th>Fuente</th>
+<th>Actualización</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Nivel riesgo</td>
+<td>MAEC</td>
+<td>Diaria (cron)</td>
+</tr>
+<tr class="even">
+<td>Temperatura</td>
+<td>Open-Meteo</td>
+<td>Tiempo real</td>
+</tr>
+<tr class="odd">
+<td>PIB per cápita</td>
+<td>World Bank</td>
+<td>Anual</td>
+</tr>
+<tr class="even">
+<td>Turistas/año</td>
+<td>World Bank</td>
+<td>Anual</td>
+</tr>
+<tr class="odd">
+<td>Sismos</td>
+<td>USGS</td>
+<td>Tiempo real</td>
+</tr>
+<tr class="even">
+<td>Conflictos</td>
+<td>Fallback</td>
+<td>Semanal</td>
+</tr>
+</tbody>
+</table>
+<p>—</p>
+<h1 id="cron-jobs">CRON JOBS</h1>
+<h2 id="tareas-programadas">Tareas Programadas</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Job</th>
+<th>Schedule</th>
+<th>Función</th>
+<th>Estado</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>daily-digest</td>
+<td>0 0 * * *</td>
+<td>Email + Telegram stats</td>
+<td>[OK]</td>
+</tr>
+<tr class="even">
+<td>scrape-maec</td>
+<td>0 6 * * *</td>
+<td>Scraping MAEC</td>
+<td>[OK]</td>
+</tr>
+<tr class="odd">
+<td>check-alerts</td>
+<td>0 8 * * *</td>
+<td>Verificar alertas</td>
+<td>[OK]</td>
+</tr>
+<tr class="even">
+<td>weekly-digest</td>
+<td>0 8 * 1</td>
+<td>Newsletter semanal</td>
+<td>[OK]</td>
+</tr>
+</tbody>
+</table>
+<h2 id="ejecución-manual">Ejecución Manual</h2>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-H</span> <span class="st">&#39;Authorization: Bearer CRON_SECRET&#39;</span> <span class="dt">\</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  https://viaje-con-inteligencia.vercel.app/api/cron/check-alerts</span></code></pre></div>
+<p>—</p>
+<h1 id="variables-de-entorno">VARIABLES DE ENTORNO</h1>
+<h2 id="variables-requeridas">Variables Requeridas</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Variable</th>
+<th>Descripción</th>
+<th>Scope</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>SUPABASE<sub>URL</sub></td>
+<td>Proyecto Supabase</td>
+<td>All</td>
+</tr>
+<tr class="even">
+<td>SUPABASE<sub>ANONKEY</sub></td>
+<td>Clave pública</td>
+<td>All</td>
+</tr>
+<tr class="odd">
+<td>SERVICE<sub>ROLEKEY</sub></td>
+<td>Clave admin</td>
+<td>Production</td>
+</tr>
+<tr class="even">
+<td>RESEND<sub>APIKEY</sub></td>
+<td>Email</td>
+<td>Production</td>
+</tr>
+<tr class="odd">
+<td>GROQ<sub>APIKEY</sub></td>
+<td>IA</td>
+<td>Production</td>
+</tr>
+<tr class="even">
+<td>CRON<sub>SECRET</sub></td>
+<td>Auth cron</td>
+<td>Production</td>
+</tr>
+<tr class="odd">
+<td>TELEGRAM<sub>BOTTOKEN</sub></td>
+<td>Bot</td>
+<td>Production</td>
+</tr>
+<tr class="even">
+<td>TELEGRAM<sub>CHANNELID</sub></td>
+<td>Canal</td>
+<td>Production</td>
+</tr>
+<tr class="odd">
+<td>STRIPE<sub>SECRETKEY</sub></td>
+<td>Pagos</td>
+<td>Production</td>
+</tr>
+</tbody>
+</table>
+<h2 id="scripts-de-backup">Scripts de Backup</h2>
+<ul>
+<li><code class="verbatim">scripts/backup-env.sh</code> - Crear
+backup</li>
+<li><code class="verbatim">scripts/restore-env.sh</code> -
+Restaurar</li>
+</ul>
+<p>—</p>
+<h1 id="seguridad-y-resiliencia">SEGURIDAD Y RESILIENCIA</h1>
+<h2 id="medidas-de-seguridad">Medidas de Seguridad</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Medida</th>
+<th>Implementación</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Auth</td>
+<td>Supabase Auth</td>
+</tr>
+<tr class="even">
+<td>API Keys</td>
+<td>Vars entorno Vercel</td>
+</tr>
+<tr class="odd">
+<td>CSRF</td>
+<td>Next.js built-in</td>
+</tr>
+<tr class="even">
+<td>Rate Limiting</td>
+<td>Manual (opcional)</td>
+</tr>
+<tr class="odd">
+<td>Backup vars</td>
+<td>scripts/backup-env.sh</td>
+</tr>
+</tbody>
+</table>
+<h2 id="auto-recuperación">Auto-recuperación</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Mecanismo</th>
+<th>Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Vercel retries</td>
+<td>3 reintentos por defecto</td>
+</tr>
+<tr class="even">
+<td>Error Boundary</td>
+<td>src/app/error.tsx</td>
+</tr>
+<tr class="odd">
+<td>Offline fallback</td>
+<td>sw.js → offline.html</td>
+</tr>
+<tr class="even">
+<td>Health check</td>
+<td>/api/health (futuro)</td>
+</tr>
+</tbody>
+</table>
+<p>—</p>
+<h1 id="métricas-y-analytics">MÉTRICAS Y ANALYTICS</h1>
+<h2 id="kpis-actuales-2026">KPIs Actuales (2026)</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Métrica</th>
+<th>Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Países</td>
+<td>100</td>
+</tr>
+<tr class="even">
+<td>Posts blog</td>
+<td>52</td>
+</tr>
+<tr class="odd">
+<td>Visitantes/mes</td>
+<td>~500</td>
+</tr>
+<tr class="even">
+<td>Suscriptores</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<td>Usuarios Telegram</td>
+<td>~50</td>
+</tr>
+</tbody>
+</table>
+<h2 id="analytics">Analytics</h2>
+<table>
+<thead>
+<tr class="header">
+<th>Herramienta</th>
+<th>Uso</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Vercel Analytics</td>
+<td>Visitantes</td>
+</tr>
+<tr class="even">
+<td>Speed Insights</td>
+<td>Rendimiento</td>
+</tr>
+<tr class="odd">
+<td>Google Search Console</td>
+<td>SEO</td>
+</tr>
+<tr class="even">
+<td>Sitemap</td>
+<td>Indexación</td>
+</tr>
+</tbody>
+</table>
+<p>—</p>
+<h1 id="roadmap">ROADMAP</h1>
+<h2 id="pending-features">Pending Features</h2>
+<table>
+<thead>
+<tr class="header">
+<th>#</th>
+<th>Feature</th>
+<th>Prioridad</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>Programa afiliados</td>
+<td>Media</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>Stripe pagos</td>
+<td>Alta</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>更多 países Asia</td>
+<td>Media</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>AI predicción riesgo</td>
+<td>Baja</td>
+</tr>
+</tbody>
+</table>
+<h2 id="notas-de-desarrollo">Notas de Desarrollo</h2>
+<ul>
+<li>Build: ~3 min</li>
+<li>Deploy automático: GitHub push</li>
+<li>Preview: PRs automáticas</li>
+</ul>
+<p>—</p>
+<h1 id="contacto">CONTACTO</h1>
+<table>
+<thead>
+<tr class="header">
+<th>Canal</th>
+<th>URL</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Email</td>
+<td>info@viajeinteligencia.com</td>
+</tr>
+<tr class="even">
+<td>Telegram Bot</td>
+<td>@ViajeConInteligenciaBot</td>
+</tr>
+<tr class="odd">
+<td>Telegram Canal</td>
+<td>@ViajeConInteligencia</td>
+</tr>
+<tr class="even">
+<td>GitHub</td>
+<td>github.com/mcasrom</td>
+</tr>
+</tbody>
+</table>
+<p>—</p>
+<h1 id="anexo-esquema-de-base-de-datos">ANEXO: Esquema de Base de
+Datos</h1>
+<pre class="plantuml"><code>@startuml
+!theme plain
+entity &quot;users&quot; {
+  * id : uuid
+  --
+  * email
+  * created_at
+}
+
+entity &quot;profiles&quot; {
+  * id : uuid (FK)
+  --
+  * username
+  * plan
+}
+
+entity &quot;favorites&quot; {
+  * id : uuid
+  * user_id : uuid (FK)
+  * country_code
+  * created_at
+}
+
+entity &quot;risk_alerts&quot; {
+  * id : uuid
+  * country_code
+  * old_risk
+  * new_risk
+  * created_at
+}
+
+entity &quot;scraper_logs&quot; {
+  * id : uuid
+  * source
+  * status
+  * created_at
+}
+
+users ||--o{ profiles
+users ||--o{ favorites
+@enduml
+</code></pre>
+</body>
+</html>

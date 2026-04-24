@@ -1,0 +1,360 @@
+```{=org}
+#+STARTUP: content
+```
+```{=org}
+#+CATEGORY: documentación
+```
+# FICHA TÉCNICA DEL PROYecto
+
+## Información General
+
+  Campo            Valor
+  ---------------- -----------------------------------------------------
+  Nombre           Viaje con Inteligencia
+  URL              <https://viajeinteligencia.com>
+  URL Vercel       <https://viaje-con-inteligencia.vercel.app>
+  Repo             <https://github.com/mcasrom/viaje-con-inteligencia>
+  Dominio          viajeinteligencia.com (Cloudflare)
+  Email            info@viajeinteligencia.com
+  Bot Telegram     \@ViajeConInteligenciaBot
+  Canal Telegram   \@ViajeConInteligencia
+
+## Stack Tecnológico
+
+  Tecnología       Uso
+  ---------------- --------------------
+  Next.js 16       Framework
+  React 19         UI
+  TypeScript       Tipado
+  Tailwind CSS 4   Estilos
+  Groq AI          Chat + Itinerarios
+  Supabase         Auth + DB
+  Vercel           Hosting + Cron
+  Cloudflare       DNS + SSL
+  Resend           Newsletter
+  Telegram API     Bot + Channel
+  Open-Meteo       Meteorología
+  jsPDF            Generación PDFs
+
+---
+
+# ARQUITECTURA DEL SISTEMA
+
+## Diagrama de Arquitectura
+
+``` plantuml
+@startuml
+!theme plain
+skinparam componentStyle uml2
+
+actor Usuario
+node "Frontend" {
+  component "Next.js 16"
+  component "React 19"
+  component "Tailwind CSS"
+}
+node "PWA" {
+  component "Service Worker"
+  component "Manifest"
+}
+node "APIs" {
+  component "/api/ai/chat"
+  component "/api/weather"
+  component "/api/cron/*"
+  component "/api/telegram"
+}
+node "Servicios" {
+  component "Groq AI"
+  component "Resend"
+  component "Telegram"
+}
+database "Supabase" {
+  component "Auth"
+  component "Profiles"
+  component "Favoritos"
+}
+cloud "APIs Externas" {
+  component "MAEC"
+  component "Open-Meteo"
+  component "World Bank"
+  component "USGS"
+}
+
+Usuario --> Frontend
+Frontend --> PWA
+Frontend --> APIs
+APIs --> Servicios
+APIs --> Supabase
+APIs --> "APIs Externas"
+@enduml
+```
+
+## Flujo de Datos
+
+``` plantuml
+@startuml
+!theme plain
+
+[Usuario] --> [Next.js]
+[Next.js] --> [API Routes]
+[API Routes] --> [Groq AI]
+[API Routes] --> [Supabase]
+[API Routes] --> [Telegram]
+[CRON Jobs] --> [Scraper MAEC]
+[Scraper MAEC] --> [Supabase DB]
+[Telegram] --> [Canal]
+[Resend] --> [Email]
+@enduml
+```
+
+---
+
+# FUNCIONALIDADES PRINCIPALES
+
+## Core Features
+
+  \#   Feature                       Descripción          Estado
+  ---- ----------------------------- -------------------- --------
+  1    Mapa interactivo 100 países   Riesgo MAEC          \[OK\]
+  2    Fichas país detalladas        info + emergencias   \[OK\]
+  3    Chat IA Groq                  Llama 3.1            \[OK\]
+  4    Generador itinerarios         IA                   \[OK\]
+  5    Comparar países               IA                   \[OK\]
+  6    Checklist 80+ items           Imprimible           \[OK\]
+  7    Blog 52 posts                 SEO                  \[OK\]
+  8    Newsletter                    Resend               \[OK\]
+  9    Bot Telegram                  Comandos             \[OK\]
+  10   PWA offline                   Service Worker       \[OK\]
+  11   KPIs Index                    6 capas              \[OK\]
+  12   Memoria de viaje              IndexedDB            \[OK\]
+  13   Reclamaciones PDF             jsPDF                \[OK\]
+  14   Dossier Premium               Datos OSINT          \[OK\]
+
+## Páginas del Sitio
+
+  Ruta                  Descripción
+  --------------------- -------------------------
+  /                     Mapa riesgos 100 países
+  *pais*\[codigo\]      Ficha país
+  /premium              Chat IA + herramientas
+  /comparar             Comparar destinos
+  /itinerario           Generador itinerarios
+  /checklist            Lista viaje
+  /blog                 Artículos
+  /dashboard            Usuario + favoritos
+  /relojes              Relojes mundiales
+  /alertas              Alertas MAEC
+  /indices              KPIs Index 6 capas
+  /documentos           Memoria viaje PWA
+  *dossier*\[codigo\]   Dossier Premium
+
+## APIs Disponibles
+
+  Endpoint                  Función
+  ------------------------- ---------------------
+  /api/ai/chat              Chat Groq
+  /api/ai/itinerary         Itinerario IA
+  /api/ai/compare           Comparar IA
+  /api/weather/extreme      Clima extremo
+  *api/dossier*\[codigo\]   Dossier país
+  /api/country-data         World Bank
+  /api/cron/\*              Tareas Cron
+  /api/telegram             Webhook bot
+  /api/newsletter/\*        Suscripciones
+  /api/auth/\*              Login/Favoritos
+  /api/push/\*              Notificaciones push
+
+---
+
+# FUENTES OSINT
+
+## Fuentes de Datos
+
+  Fuente        Tipo           Uso                 URL
+  ------------- -------------- ------------------- ----------------------
+  MAEC España   Oficial        Riesgos viaje       exteriores.gob.es
+  World Bank    Económico      PIB, turismo        data.worldbank.org
+  Open-Meteo    Meteorología   Alertas clima       open-meteo.com
+  Groq AI       IA             Chat, itinerarios   groq.com
+  Resend        Email          Newsletter          resend.com
+  Telegram      Mensajería     Bot + Channel       core.telegram.org
+  USGS          Sismos         Terremotos          earthquake.usgs.gov
+  IEP           Paz            GPI, GTI            visionofhumanity.org
+
+## Datos por País
+
+  Dato             Fuente       Actualización
+  ---------------- ------------ ---------------
+  Nivel riesgo     MAEC         Diaria (cron)
+  Temperatura      Open-Meteo   Tiempo real
+  PIB per cápita   World Bank   Anual
+  Turistas/año     World Bank   Anual
+  Sismos           USGS         Tiempo real
+  Conflictos       Fallback     Semanal
+
+---
+
+# CRON JOBS
+
+## Tareas Programadas
+
+  Job             Schedule       Función                  Estado
+  --------------- -------------- ------------------------ --------
+  daily-digest    0 0 \* \* \*   Email + Telegram stats   \[OK\]
+  scrape-maec     0 6 \* \* \*   Scraping MAEC            \[OK\]
+  check-alerts    0 8 \* \* \*   Verificar alertas        \[OK\]
+  weekly-digest   0 8 \* 1       Newsletter semanal       \[OK\]
+
+## Ejecución Manual
+
+``` bash
+curl -H 'Authorization: Bearer CRON_SECRET' \
+  https://viaje-con-inteligencia.vercel.app/api/cron/check-alerts
+```
+
+---
+
+# VARIABLES DE ENTORNO
+
+## Variables Requeridas
+
+  Variable              Descripción         Scope
+  --------------------- ------------------- ------------
+  SUPABASE~URL~         Proyecto Supabase   All
+  SUPABASE~ANONKEY~     Clave pública       All
+  SERVICE~ROLEKEY~      Clave admin         Production
+  RESEND~APIKEY~        Email               Production
+  GROQ~APIKEY~          IA                  Production
+  CRON~SECRET~          Auth cron           Production
+  TELEGRAM~BOTTOKEN~    Bot                 Production
+  TELEGRAM~CHANNELID~   Canal               Production
+  STRIPE~SECRETKEY~     Pagos               Production
+
+## Scripts de Backup
+
+-   `scripts/backup-env.sh`{.verbatim} - Crear backup
+-   `scripts/restore-env.sh`{.verbatim} - Restaurar
+
+---
+
+# SEGURIDAD Y RESILIENCIA
+
+## Medidas de Seguridad
+
+  Medida          Implementación
+  --------------- -----------------------
+  Auth            Supabase Auth
+  API Keys        Vars entorno Vercel
+  CSRF            Next.js built-in
+  Rate Limiting   Manual (opcional)
+  Backup vars     scripts/backup-env.sh
+
+## Auto-recuperación
+
+  Mecanismo          Descripción
+  ------------------ --------------------------
+  Vercel retries     3 reintentos por defecto
+  Error Boundary     src/app/error.tsx
+  Offline fallback   sw.js → offline.html
+  Health check       /api/health (futuro)
+
+---
+
+# MÉTRICAS Y ANALYTICS
+
+## KPIs Actuales (2026)
+
+  Métrica             Valor
+  ------------------- -------
+  Países              100
+  Posts blog          52
+  Visitantes/mes      \~500
+  Suscriptores        0
+  Usuarios Telegram   \~50
+
+## Analytics
+
+  Herramienta             Uso
+  ----------------------- -------------
+  Vercel Analytics        Visitantes
+  Speed Insights          Rendimiento
+  Google Search Console   SEO
+  Sitemap                 Indexación
+
+---
+
+# ROADMAP
+
+## Pending Features
+
+  \#   Feature                Prioridad
+  ---- ---------------------- -----------
+  1    Programa afiliados     Media
+  2    Stripe pagos           Alta
+  3    更多 países Asia       Media
+  4    AI predicción riesgo   Baja
+
+## Notas de Desarrollo
+
+-   Build: \~3 min
+-   Deploy automático: GitHub push
+-   Preview: PRs automáticas
+
+---
+
+# CONTACTO
+
+  Canal            URL
+  ---------------- ----------------------------
+  Email            info@viajeinteligencia.com
+  Telegram Bot     \@ViajeConInteligenciaBot
+  Telegram Canal   \@ViajeConInteligencia
+  GitHub           github.com/mcasrom
+
+---
+
+# ANEXO: Esquema de Base de Datos
+
+``` plantuml
+@startuml
+!theme plain
+entity "users" {
+  * id : uuid
+  --
+  * email
+  * created_at
+}
+
+entity "profiles" {
+  * id : uuid (FK)
+  --
+  * username
+  * plan
+}
+
+entity "favorites" {
+  * id : uuid
+  * user_id : uuid (FK)
+  * country_code
+  * created_at
+}
+
+entity "risk_alerts" {
+  * id : uuid
+  * country_code
+  * old_risk
+  * new_risk
+  * created_at
+}
+
+entity "scraper_logs" {
+  * id : uuid
+  * source
+  * status
+  * created_at
+}
+
+users ||--o{ profiles
+users ||--o{ favorites
+@enduml
+```
