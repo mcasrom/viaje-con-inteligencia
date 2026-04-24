@@ -9,7 +9,7 @@
 - **Repo:** https://github.com/mcasrom/viaje-con-inteligencia
 
 ### Core Features
-- Mapa de riesgos 95 países (target 100)
+- Mapa de riesgos 94 países (target 100)
 - KPIs Index con 6 capas interactivas (GPI, GTI, HDI, IPC, Sismos, MAEC)
 - Detalle por país (embajadas, requisitos, qué hacer/no hacer)
 - Checklist imprimible (8 categorías, 80+ items)

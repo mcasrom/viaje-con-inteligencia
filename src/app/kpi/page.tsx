@@ -134,9 +134,9 @@ export default function KPIPage() {
             <div className="text-sm text-slate-500">Score: {GPI_DATA.find(p => p.code === 'ES')?.score}</div>
           </div>
           <div className="bg-slate-800 rounded-xl p-4 border border-slate-700">
-            <div className="text-slate-400 text-sm mb-1">Países analizados</div>
-            <div className="text-2xl font-bold text-blue-400">163</div>
-            <div className="text-sm text-slate-500">Global Peace Index</div>
+            <div className="text-slate-400 text-sm mb-1">Países GPI</div>
+            <div className="text-2xl font-bold text-blue-400">{GPI_DATA.length}</div>
+            <div className="text-sm text-slate-500">Global Peace Index 2025</div>
           </div>
         </div>
 

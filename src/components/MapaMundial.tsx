@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import { paisesData, getLabelRiesgo, NivelRiesgo } from '@/data/paises';
+import { getGlobalStats } from '@/lib/global-stats';
 import { AlertTriangle, ArrowRight, Globe, Search, ClipboardList, Star, BookOpen, RefreshCw, Clock, Gift, TrendingUp, Activity, BarChart3, Ticket } from 'lucide-react';
 import LanguageSelector from './LanguageSelector';
 import { useI18n } from '@/lib/i18n';
@@ -15,6 +16,7 @@ const MapaInteractivo = dynamic(() => import('./MapaInteractivo'), {
 
 const paises = Object.values(paisesData);
 const continentes = ['Todos', ...new Set(paises.map(p => p.continente))];
+const stats = getGlobalStats();
 
 interface CountryRatings {
   [key: string]: { average: number; count: number };
@@ -72,11 +74,6 @@ export default function MapaMundial() {
     const matchesRiesgo = selectedRiesgo === 'Todos' || pais.nivelRiesgo === selectedRiesgo;
     return matchesSearch && matchesContinente && matchesRiesgo;
   });
-
-  const paisesSinRiesgo = paises.filter(p => p.nivelRiesgo === 'sin-riesgo').length;
-  const paisesRiesgoBajo = paises.filter(p => p.nivelRiesgo === 'bajo').length;
-  const totalPaises = paises.length;
-  const totalContinentes = continentes.length - 1;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900/50 to-slate-900">
@@ -228,32 +225,32 @@ export default function MapaMundial() {
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           <div className="bg-green-500/10 border border-green-500/30 rounded-xl p-4 text-center">
-            <div className="text-3xl font-bold text-green-400">{paisesSinRiesgo + paisesRiesgoBajo}</div>
+            <div className="text-3xl font-bold text-green-400">{stats.seguroOBajo}</div>
             <div className="text-green-300 text-sm">Seguros o bajo riesgo</div>
           </div>
           <div className="bg-orange-500/10 border border-orange-500/30 rounded-xl p-4 text-center">
-            <div className="text-3xl font-bold text-orange-400">{paises.filter(p => p.nivelRiesgo === 'medio').length}</div>
+            <div className="text-3xl font-bold text-orange-400">{stats.riesgoMedio}</div>
             <div className="text-orange-300 text-sm">Riesgo medio</div>
           </div>
           <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-4 text-center">
-            <div className="text-3xl font-bold text-red-400">{paises.filter(p => p.nivelRiesgo === 'alto' || p.nivelRiesgo === 'muy-alto').length}</div>
+            <div className="text-3xl font-bold text-red-400">{stats.altoOMuyAlto}</div>
             <div className="text-red-300 text-sm">Alto/muy alto</div>
           </div>
           <div className="bg-blue-500/10 border border-blue-500/30 rounded-xl p-4 text-center">
-            <div className="text-3xl font-bold text-blue-400">{totalPaises}</div>
+            <div className="text-3xl font-bold text-blue-400">{stats.totalPaises}</div>
             <div className="text-blue-300 text-sm">Países analizados</div>
           </div>
         </div>
 
         <div className="flex flex-wrap gap-4 mb-8">
           <div className="bg-slate-800/50 rounded-lg px-3 py-1 text-sm text-slate-400">
-            <span className="text-green-400 font-bold">{paisesSinRiesgo}</span> Sin riesgo
+            <span className="text-green-400 font-bold">{stats.sinRiesgo}</span> Sin riesgo
           </div>
           <div className="bg-slate-800/50 rounded-lg px-3 py-1 text-sm text-slate-400">
-            <span className="text-yellow-400 font-bold">{paisesRiesgoBajo}</span> Riesgo bajo
+            <span className="text-yellow-400 font-bold">{stats.riesgoBajo}</span> Riesgo bajo
           </div>
           <div className="bg-slate-800/50 rounded-lg px-3 py-1 text-sm text-slate-400">
-            <span className="text-purple-400 font-bold">{totalContinentes}</span> Continentes
+            <span className="text-purple-400 font-bold">{stats.totalContinentes}</span> Continentes
           </div>
         </div>
 
