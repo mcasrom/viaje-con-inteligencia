@@ -72,7 +72,7 @@ export async function GET(request: Request) {
   let useAPI = false;
   
   for (const c of countries) {
-    let trains = await fetchTrainsFromAPI(c);
+    const trains = await fetchTrainsFromAPI(c);
     if (trains && trains.length > 0) {
       useAPI = true;
       allTrains.push(...trains.map((t: any) => ({

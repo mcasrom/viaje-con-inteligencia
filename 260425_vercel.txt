@@ -1,0 +1,52 @@
+# VERCEL ENVIRONMENT VARIABLES - 2026-04-25
+# Backup para restaurar configuración
+
+## 🔧 CONFIGURAR EN: Vercel Dashboard → Settings → Environment Variables
+
+```
+# STRIPE (OBLIGATORIO para Premium)
+STRIPE_SECRET_KEY=sk_live_xxx
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_live_xxx
+STRIPE_PRICE_MONTHLY=price_1TNvdo1yXjIoL1LjxAec6d2C
+STRIPE_PRICE_YEARLY=price_1TQ0Ng1yXjIoL1LjZTzKEfOF
+STRIPE_WEBHOOK_SECRET=whsec_xxx
+
+# GROQ AI (para Chat IA)
+GROQ_API_KEY=xxx
+
+# SUPABASE
+NEXT_PUBLIC_SUPABASE_URL=https://xxx.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=xxx
+SUPABASE_SERVICE_ROLE_KEY=xxx
+
+# TELEGRAM
+TELEGRAM_BOT_TOKEN=xxx
+TELEGRAM_CHANNEL_ID=-100xxx
+
+# CRON (para tareas programadas)
+CRON_SECRET=xxx
+
+# URL del sitio
+NEXT_PUBLIC_URL=https://viaje-con-inteligencia.vercel.app
+NEXT_PUBLIC_SITE_URL=https://www.viajeinteligencia.com
+```
+
+## 📝 NOTAS
+- Los valores xxx deben reemplazarse con los reales
+- STRIPE price IDs verificados: monthly=price_1TNvdo1yXjIoL1LjxAec6d2C, yearly=price_1TQ0Ng1yXjIoL1LjZTzKEfOF
+- Stripe configurado y funcionando (checkout Premium)
+- El proyecto está en: https://viaje-con-inteligencia.vercel.app
+
+## ✅ ESTADO ACTUAL (2026-04-25)
+- Stripe: ✅ Funcionando (4.99€/mes, 19.99€/año)
+- Blog: 52+ posts
+- Países: 95+
+- Chat IA: Groq funcionando
+- Newsletter: Funcionando
+- CRON jobs: Configurados
+
+## 🔄 RESTORE
+Para restaurar:
+1. Ve a Vercel Dashboard → Settings → Environment Variables
+2. Copia cada variable con su valor
+3. Redeploy si es necesario
