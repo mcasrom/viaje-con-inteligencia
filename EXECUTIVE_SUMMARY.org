@@ -202,7 +202,7 @@ Una plataforma web + PWA que integra:
 - [X] Photo opacity fixed
 
 **Q3 (Planeado)**
-- [ ] Stripe Premium
+- [X] Stripe Premium
 - [ ] Programa afiliados
 - [ ] 更多 datos World Bank
 - [ ] Dashboard Analytics
