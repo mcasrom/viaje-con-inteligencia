@@ -1195,6 +1195,9 @@ export default function PremiumPage() {
           <p className="text-slate-500 text-sm">
             ¿Ya tienes cuenta? <Link href="/dashboard" className="text-blue-400 hover:text-blue-300">Acceder a mi cuenta</Link>
           </p>
+          <p className="text-slate-500 text-sm mt-2">
+            ¿Tienes código promocional? <Link href="/free-trial" className="text-yellow-400 hover:text-yellow-300">Actívalo aquí →</Link>
+          </p>
         </div>
       </main>
 
