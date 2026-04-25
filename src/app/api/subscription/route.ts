@@ -15,12 +15,14 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Stripe no configurado' }, { status: 500 });
     }
 
+    const baseUrl = process.env.NEXT_PUBLIC_URL || 'https://viaje-con-inteligencia.vercel.app';
+    
     const session = await stripe.checkout.sessions.create({
       mode: 'subscription',
       payment_method_types: ['card'],
       line_items: [{ price: priceId, quantity: 1 }],
-      success_url: `${process.env.NEXT_PUBLIC_URL || 'https://viaje-con-inteligencia.vercel.app'}/dashboard?success=true`,
-      cancel_url: `${process.env.NEXT_PUBLIC_URL || 'https://viaje-con-inteligencia.vercel.app'}/premium?canceled=true`,
+      success_url: `${baseUrl}/dashboard?success=true`,
+      cancel_url: `${baseUrl}/premium?canceled=true`,
       metadata: { userId: userId || 'anonymous' },
       allow_promotion_codes: true,
     });
