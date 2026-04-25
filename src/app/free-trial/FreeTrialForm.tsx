@@ -7,9 +7,9 @@ import { PLANS } from '@/lib/stripe';
 
 const PROMO_CODES = [
   { code: 'FREE7', description: '7 días premium gratis', trialDays: 7 },
-  { code: 'WELCOME30', description: '30 días premium gratis', trialDays: 30 },
-  { code: 'WELCOME60', description: '60 días premium - Bienvenida', trialDays: 60 },
-  { code: 'LAUNCH50', description: '50% descuento primera suscripción', discount: 50 },
+  // { code: 'WELCOME30', description: '30 días premium gratis', trialDays: 30 },
+  // { code: 'WELCOME60', description: '60 días premium - Bienvenida', trialDays: 60 },
+  // { code: 'LAUNCH50', description: '50% descuento primera suscripción', discount: 50 },
 ];
 
 const MONTHLY_PRICE_ID = 'price_1TNvdo1yXjIoL1LjxAec6d2C';
