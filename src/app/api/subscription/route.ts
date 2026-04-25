@@ -2,10 +2,12 @@ import { NextRequest, NextResponse } from 'next/server';
 import { stripe, PLANS } from '@/lib/stripe';
 
 export async function POST(request: NextRequest) {
-  console.log('Subscription request received, priceId:', await request.json());
+  const body = await request.json();
+  const { priceId, userId } = body;
+  console.log('Subscription request received, priceId:', priceId);
   
   try {
-    const { priceId, userId } = await request.json();
+    if (!priceId) {
 
     if (!priceId) {
       return NextResponse.json({ error: 'Price ID required' }, { status: 400 });
