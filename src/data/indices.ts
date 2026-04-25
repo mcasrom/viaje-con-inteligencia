@@ -213,6 +213,7 @@ export const LAYERS = [
   { id: 'ipc', name: 'Inflación', shortName: 'IPC', source: 'Datos macro 2026', description: 'Índice de Precios al Consumo - Coste de vida', color: 'yellow' },
   { id: 'sismo', name: 'Terremotos', shortName: 'Sismo', source: 'USGS (tiempo real)', description: 'Actividad sísmica reciente', color: 'orange' },
   { id: 'maec', name: 'Riesgo MAEC', shortName: 'Riesgo', source: 'MAEC 2026', description: 'Nivel de riesgo oficial español', color: 'slate' },
+  { id: 'salud', name: 'Salud Global OMS', shortName: 'Salud', source: 'WHO GHO API', description: 'Índice salud: tuberculosis, VIH, vacunas, gasto sanitario', color: 'purple' },
 ] as const;
 
 export type LayerId = typeof LAYERS[number]['id'];
@@ -225,6 +226,7 @@ export function getLayerColors(layerId: LayerId): { low: string; medium: string;
     ipc: { low: '#22c55e', medium: '#eab308', high: '#f97316', extreme: '#dc2626' },
     sismo: { low: '#22c55e', medium: '#eab308', high: '#f97316', extreme: '#dc2626' },
     maec: { low: '#22c55e', medium: '#eab308', high: '#f97316', extreme: '#dc2626' },
+    salud: { low: '#22c55e', medium: '#eab308', high: '#f97316', extreme: '#dc2626' },
   };
   return colors[layerId];
 }

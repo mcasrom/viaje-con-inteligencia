@@ -292,107 +292,18 @@ export default function MapaMundial() {
           </div>
           <MapaInteractivo />
         </div>
-
-        <div className="bg-slate-800/70 rounded-xl p-4 mb-6 border border-slate-700">
-          <div className="flex flex-col lg:flex-row lg:items-center gap-4">
-            <div className="flex-1">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                <input
-                  type="text"
-                  placeholder="Buscar país, capital..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 pr-4 py-2.5 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-blue-500 transition-colors w-full"
-                />
-              </div>
-            </div>
-            <div className="flex flex-wrap gap-2 items-center">
-              <select
-                value={selectedContinente}
-                onChange={(e) => setSelectedContinente(e.target.value)}
-                className="px-3 py-2.5 bg-slate-700 border border-slate-600 rounded-lg text-white focus:outline-none focus:border-blue-500"
-              >
-                {continentes.map(c => (
-                  <option key={c} value={c}>{c}</option>
-                ))}
-              </select>
-              <select
-                value={selectedRiesgo}
-                onChange={(e) => setSelectedRiesgo(e.target.value as NivelRiesgo | 'Todos')}
-                className="px-3 py-2.5 bg-slate-700 border border-slate-600 rounded-lg text-white focus:outline-none focus:border-blue-500"
-              >
-                <option value="Todos">Todos</option>
-                <option value="sin-riesgo">Sin riesgo</option>
-                <option value="bajo">Riesgo bajo</option>
-                <option value="medio">Riesgo medio</option>
-                <option value="alto">Riesgo alto</option>
-                <option value="muy-alto">Muy alto</option>
-              </select>
-            </div>
-          </div>
-          <p className="text-slate-400 mt-3">
-            Mostrando <span className="text-white font-medium">{filteredPaises.length}</span> países
-            {selectedContinente !== 'Todos' && ` en ${selectedContinente}`}
-            {selectedRiesgo !== 'Todos' && ` con ${getLabelRiesgo(selectedRiesgo as NivelRiesgo).toLowerCase()}`}
-          </p>
+        
+        {/* BOTÓN VER PAÍSES */}
+        <div className="mt-6 text-center">
+          <Link
+            href="/paises"
+            className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-bold rounded-xl hover:from-blue-600 hover:to-cyan-600 transition-all shadow-lg shadow-blue-500/25"
+          >
+            <Globe className="w-5 h-5" />
+            Ver todos los países ({stats.totalPaises})
+            <ArrowRight className="w-5 h-5" />
+          </Link>
         </div>
-
-        <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-          {filteredPaises.map((pais) => (
-            <Link
-              key={pais.codigo}
-              href={`/pais/${pais.codigo}`}
-              className={`group relative bg-slate-800/70 rounded-xl p-4 border-2 transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-blue-500/10 ${
-                hoveredCountry === pais.codigo ? 'z-20' : ''
-              } ${riesgoColors[pais.nivelRiesgo].border}`}
-              onMouseEnter={() => setHoveredCountry(pais.codigo)}
-              onMouseLeave={() => setHoveredCountry(null)}
-            >
-              {ratings[pais.codigo] && (
-                <div className="absolute top-2 right-2 bg-yellow-500 text-slate-900 px-2 py-0.5 rounded-full text-xs font-bold flex items-center gap-1">
-                  <Star className="w-3 h-3 fill-current" />
-                  {ratings[pais.codigo].average}
-                </div>
-              )}
-              <div className="text-center">
-                <span className="text-4xl mb-2 block">{pais.bandera}</span>
-                <h3 className="text-white font-semibold">{pais.nombre}</h3>
-                <p className="text-slate-400 text-sm mb-2">{pais.capital}</p>
-                <div className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium text-white ${riesgoColors[pais.nivelRiesgo].bg}`}>
-                  <AlertTriangle className="w-3 h-3" />
-                  <span>{getLabelRiesgo(pais.nivelRiesgo)}</span>
-                </div>
-              </div>
-              {hoveredCountry === pais.codigo && (
-                <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 -translate-y-full bg-slate-900 rounded-lg p-3 shadow-xl border border-slate-600 w-56 z-30">
-                  <div className="text-center">
-                    <span className="text-2xl">{pais.bandera}</span>
-                    <h4 className="text-white font-bold mt-1">{pais.nombre}</h4>
-                    <p className="text-slate-400 text-xs mt-1">{pais.continente}</p>
-                    <div className="flex justify-center gap-4 mt-2 text-xs">
-                      <span className="text-slate-500">{pais.idioma}</span>
-                      <span className="text-slate-500">•</span>
-                      <span className="text-slate-500">{pais.prefijoTelefono}</span>
-                    </div>
-                    <p className="text-blue-400 text-xs mt-2 flex items-center justify-center gap-1">
-                      <ArrowRight className="w-3 h-3" />
-                      Ver detalles
-                    </p>
-                  </div>
-                </div>
-              )}
-            </Link>
-          ))}
-        </div>
-
-        {filteredPaises.length === 0 && (
-          <div className="text-center py-16">
-            <Globe className="w-16 h-16 text-slate-600 mx-auto mb-4" />
-            <h3 className="text-xl text-slate-400 mb-2">No se encontraron países</h3>
-            <p className="text-slate-500">Intenta ajustar los filtros de búsqueda</p>
-          </div>
-        )}
       </main>
     </div>
   );

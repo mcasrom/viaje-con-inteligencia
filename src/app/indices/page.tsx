@@ -93,6 +93,17 @@ const layerConfig: Record<LayerId, {
     unit: '',
     colorScale: { '0': '#22c55e', '1': '#4ade80', '2': '#eab308', '3': '#f97316', '4': '#dc2626' },
   },
+  salud: {
+    getLevel: (v) => v === 0 ? 'Bajo' : v === 1 ? 'Medio' : v === 2 ? 'Alto' : 'Muy Alto',
+    getColor: (v) => v === 0 ? '#22c55e' : v === 1 ? '#eab308' : v === 2 ? '#f97316' : '#dc2626',
+    getLabel: (v) => v === 0 ? 'Bajo Riesgo' : v === 1 ? 'Medio' : v === 2 ? 'Alto' : 'Muy Alto',
+    format: (v) => {
+      const labels = ['Bajo', 'Medio', 'Alto', 'Muy Alto'];
+      return labels[Math.min(v, 3)];
+    },
+    unit: '',
+    colorScale: { '0': '#22c55e', '1': '#eab308', '2': '#f97316', '3': '#dc2626' },
+  },
 };
 
 const PAIS_COORDS: Record<string, [number, number]> = {
@@ -117,7 +128,7 @@ const PAIS_COORDS: Record<string, [number, number]> = {
   SO: [5.1521, 46.1996], RS: [44.0166, 21.0059],
 };
 
-function getDataForLayer(layerId: LayerId) {
+function getDataForLayer(layerId: LayerId, healthData: any[] = []) {
   switch (layerId) {
     case 'gpi': return GPI_DATA;
     case 'gti': return GTI_DATA;
@@ -133,8 +144,40 @@ function getDataForLayer(layerId: LayerId) {
         score: riskScore[p.nivelRiesgo] || 2,
       };
     });
+    case 'salud': return healthData.map((c: any) => {
+      const riskScore: Record<string, number> = { 'low': 0, 'medium': 1, 'high': 2 };
+      return {
+        code: c.code2 || c.code,
+        country: c.country,
+        region: getRegion(c.code2 || c.code),
+        score: c.score ?? riskScore[c.riskLevel] ?? 1,
+        tuberculosis: c.tuberculosis,
+        hiv: c.hiv,
+        vaccination: c.vaccinationDTP3,
+        healthExpenditure: c.healthExpenditure,
+        lat: c.lat,
+        lng: c.lng,
+      };
+    });
     default: return [];
   }
+}
+
+function getRegion(code: string): string {
+  const europa = ['AL', 'AD', 'AT', 'BE', 'BG', 'HR', 'CY', 'CZ', 'DK', 'EE', 'FI', 'FR', 'DE', 'GR', 'HU', 'IE', 'IS', 'IT', 'LV', 'LT', 'LU', 'MT', 'MC', 'ME', 'NL', 'NO', 'PL', 'PT', 'RO', 'RU', 'SM', 'RS', 'SK', 'SI', 'ES', 'SE', 'CH', 'UA', 'GB', 'BY'];
+  const asia = ['AF', 'AM', 'AZ', 'BH', 'BD', 'BT', 'BN', 'KH', 'CN', 'CY', 'GE', 'IN', 'ID', 'IR', 'IQ', 'IL', 'JP', 'JO', 'KZ', 'KW', 'KG', 'LA', 'LB', 'MY', 'MV', 'MN', 'MM', 'NP', 'KP', 'OM', 'PK', 'PH', 'QA', 'SA', 'SG', 'KR', 'LK', 'SY', 'TW', 'TJ', 'TH', 'TL', 'TR', 'TM', 'AE', 'UZ', 'VN', 'YE'];
+  const norteamerica = ['CA', 'US', 'MX'];
+  const latinoamerica = ['AR', 'BO', 'BR', 'CL', 'CO', 'CR', 'CU', 'DO', 'EC', 'SV', 'GT', 'GY', 'HT', 'HN', 'JM', 'NI', 'PA', 'PY', 'PE', 'KN', 'LC', 'VC', 'SR', 'TT', 'UY', 'VE', 'AG', 'BB', 'BS', 'BZ', 'GD'];
+  const africa = ['DZ', 'AO', 'BJ', 'BW', 'BF', 'BI', 'CM', 'CV', 'CF', 'TD', 'KM', 'CG', 'CD', 'DJ', 'EG', 'GQ', 'ER', 'ET', 'GA', 'GM', 'GH', 'GN', 'GW', 'KE', 'LS', 'LR', 'LY', 'MG', 'MW', 'ML', 'MR', 'MU', 'MA', 'MZ', 'NA', 'NE', 'NG', 'RW', 'ST', 'SN', 'SC', 'SL', 'SO', 'ZA', 'SS', 'SD', 'SZ', 'TZ', 'TG', 'TN', 'UG', 'ZM', 'ZW'];
+  const oceania = ['AU', 'FJ', 'KI', 'MH', 'FM', 'NR', 'NZ', 'PW', 'PG', 'WS', 'SB', 'TO', 'TV', 'VU'];
+  
+  if (europa.includes(code)) return 'Europa';
+  if (asia.includes(code)) return 'Asia';
+  if (norteamerica.includes(code)) return 'Norteamérica';
+  if (latinoamerica.includes(code)) return 'Latinoamérica';
+  if (africa.includes(code)) return 'África';
+  if (oceania.includes(code)) return 'Oceanía';
+  return 'Otros';
 }
 
 export default function IndicesPage() {
@@ -144,6 +187,8 @@ export default function IndicesPage() {
   const [showTable, setShowTable] = useState(true);
   const [earthquakes, setEarthquakes] = useState<any[]>([]);
   const [loadingQuakes, setLoadingQuakes] = useState(false);
+  const [healthData, setHealthData] = useState<any[]>([]);
+  const [loadingHealth, setLoadingHealth] = useState(false);
   const [lastUpdate, setLastUpdate] = useState<string>('');
 
   useEffect(() => {
@@ -157,13 +202,23 @@ export default function IndicesPage() {
         })
         .catch(console.error)
         .finally(() => setLoadingQuakes(false));
+    } else if (activeLayer === 'salud') {
+      setLoadingHealth(true);
+      fetch('/api/kpis/health')
+        .then(res => res.json())
+        .then(data => {
+          setHealthData(data.countries || []);
+          setLastUpdate(data.timestamp || new Date().toISOString());
+        })
+        .catch(console.error)
+        .finally(() => setLoadingHealth(false));
     }
   }, [activeLayer]);
 
-  const config = layerConfig[activeLayer];
-  const baseData = getDataForLayer(activeLayer);
+const config = layerConfig[activeLayer];
+  const baseData = getDataForLayer(activeLayer, healthData);
   
-const filteredData = useMemo(() => {
+  const filteredData = useMemo(() => {
     let data = [...(baseData || [])];
     if (!data || data.length === 0) return [];
     
@@ -369,9 +424,11 @@ const filteredData = useMemo(() => {
               ) : (
                 filteredData.map((item: any) => {
                   const codeKey = (item.code || '').toUpperCase();
-                  const coords = PAIS_COORDS[codeKey as keyof typeof PAIS_COORDS];
+                  const coords = item.lat && item.lng 
+                    ? [item.lat, item.lng] as [number, number]
+                    : PAIS_COORDS[codeKey as keyof typeof PAIS_COORDS];
                   if (!coords) return null;
-                  const value = (item as any).score ?? (item as any).ipc ? parseFloat((item as any).ipc?.replace('%', '') || '0') : 0;
+                  const value = (item as any).score ?? 0;
                   
                   return (
                     <CircleMarker
@@ -390,6 +447,19 @@ const filteredData = useMemo(() => {
                           <strong>{item.country}</strong><br/>
                           {currentLayerInfo?.shortName}: {config.format(value)} {config.unit}<br/>
                           Nivel: {config.getLabel(value)}
+                          {activeLayer === 'salud' && item.tuberculosis && (
+                            <>
+                              <br/>Tuberculosis: {item.tuberculosis?.toFixed(1)}/100k
+                            </>
+                          )}
+                          {activeLayer === 'salud' && item.vaccination && (
+                            <>
+                              <br/>Vacunación DTP3: {item.vaccination?.toFixed(1)}%
+                            </>
+                          )}
+                          <br/><a href="https://www.who.int/data/global-health-observatory" target="_blank" rel="noopener" className="text-blue-500 text-xs underline">
+                            Fuente: WHO Global Health Observatory
+                          </a>
                         </div>
                       </Popup>
                     </CircleMarker>

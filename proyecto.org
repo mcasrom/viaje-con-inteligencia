@@ -35,6 +35,28 @@
 - Open-Meteo API (clima)
 - node-telegram-bot-api
 
+** Assets / Media
+
+*** Imágenes Fondo (PlanificadorSimple)
+- Ubicación: ~/viaje-con-inteligencia/public/photos/
+- Nomenclatura: ~1.jpg~, ~2.jpg~, ~3.jpg~... (número secuencial)
+- Formato: JPG (óptimo para fotos, menor tamaño)
+- Resolución recomendada: 1920x1080 (16:9) o superior
+- Tamaño máximo: 500KB (optimizar con https://squoosh.app o similar)
+- Rotación: Selectores ~photoIndex~ calculan día del mes
+- Actual: 4 imágenes (1.jpg a 4.jpg)
+
+*** Cómo añadir más imágenes
+1. Guardar imagen JPG optimizada (<500KB)
+2. Renombrar: siguiente número secuencial (5.jpg, 6.jpg...)
+3. Subir a ~/viaje-con-inteligencia/public/photos/
+4. Git add + commit + push → Vercel deploya automáticamente
+
+*** Optimización recomendada
+- Herramienta: https://squoosh.app (gratuito, browser-based)
+- Preset: MozJPEG, quality 75-80%
+- Target: <300KB por imagen
+
 ** CRON Jobs Vercel
 | Cron | Schedule | Path | Función | Estado |
 |------|----------|------|---------|--------|
@@ -58,6 +80,35 @@
 - Ubicación: raíz del proyecto (ignorado por Git)
 - Restore: =scripts/restore-env.sh=
 - Backup más reciente: =env_backup_20260424_102608.txt=
+
+** Sistema de Suscripción Premium
+
+*** Verificación de Acceso
+- API: ~/api/subscription/check~ - Verifica estado de suscripción
+- Componente: ~AccessStatus~ - Muestra estado de acceso con ayuda
+- Página: ~/diagnostico~ - Diagnóstico completo del sistema
+- Email soporte: info@viajeinteligencia.com
+
+*** Estados de Suscripción
+| Estado | Significado | Acción |
+|--------|-------------|--------|
+| no_configured | Sistema no configurado | Contactar soporte |
+| no_session | Sin sesión activa | Iniciar sesión |
+| invalid_session | Sesión expirada | Re-autenticar |
+| no_profile | Perfil no encontrado | Contactar soporte |
+| not_premium | No es suscriptor | Suscribirse a Premium |
+| error | Error de verificación | Contactar soporte |
+
+*** Estructura Base de Datos
+- Tabla: ~profiles~
+  - ~is_premium~ (boolean)
+  - ~subscription_status~ (text): 'active', 'canceled', 'trial', 'none'
+  - ~trial_end~ (timestamp)
+
+*** Componente AccessStatus
+- Props: status, message, showHelp, compact
+- Incluye botón email: info@viajeinteligencia.com
+- Uso: En páginas Premium cuando hay problemas de acceso
 
 *** Seguridad y Backup
 - [X] Script backup automático (scripts/backup-env.sh)

@@ -1175,25 +1175,63 @@ APIs de ML simples para encontrar destinos similares y dashboard visual con esta
 
 ## 📋 ACCIONES PENDIENTES (2026-04-25)
 
-### 🔴 ALTA PRIORIDAD - Planificador Simple
+### 🔴 ALTA PRIORIDAD - Planificador Simple + SEO
 | # | Acción | Estado |
 |---|--------|--------|
-| 1 | Planificador simple en Homepage | ⏳ Pendiente |
-| 2 | Ruta /analisis | ⏳ Pendiente |
-| 3 | Recomendaciones reglas | ⏳ Pendiente |
-| 4 | Programa afiliados | ⏳ Pendiente |
-| 5 | Stripe Webhooks | ⏳ Pendiente |
+| 1 | Planificador simple en Homepage | ✅ Completado (2026-04-25) |
+| 2 | Ruta /analisis | ✅ Completado (2026-04-25) |
+| 3 | Programa afiliados /afiliados | ✅ Completado (2026-04-25) |
+| 4 | Página /paises dedicada (SEO) | ✅ Completado (2026-04-25) |
+| 5 | Quitar cards de homepage | ✅ Completado (2026-04-25) |
+| 6 | Imagen watermark en PlanificadorSimple | ✅ Completado (2026-04-25) |
+| 7 | 12 países en selector (incl Asia) | ✅ Completado (2026-04-25) |
 
 ### 🟠 Media Prioridad
 | # | Acción | Estado |
 |---|--------|--------|
 | 1 | Códigos promo (FREE7, WELCOME30) | ⏳ Pendiente |
-| 2 | AviationStack API | ⏳ Pending |
+| 2 | AviationStack API | ⏳ Pendiente |
+| 3 | Capa Salud OMS en /indices | ✅ Completado (2026-04-25) |
+
+## ✅ Completados (2026-04-25)
+
+### 🚀 Sprint 25: Planificador Simple + SEO
+| Feature | Estado | Notas |
+|---------|--------|-------|
+| PlanificadorSimple | ✅ | 12 países, imagen watermark 50%, rotación diaria |
+| /analisis | ✅ | Recomendaciones por nivel riesgo |
+| /afiliados | ✅ | 20% comisión recurrente |
+| /paises | ✅ | Directorio completo (SEO) |
+| Homepage sin cards | ✅ | Solo mapa + botón |
+| Capa Salud OMS | ✅ | WHO GHO API, 330 países con coords |
+| Scoring colores | ✅ | Alto/Medio/Bajo visibles en mapa |
+
+### 🚀 Sprint 26: Códigos Promocionales
+| Feature | Estado | Notas |
+|---------|--------|-------|
+| API promo | ✅ | /api/promo, 4 códigos activos |
+| Landing /free-trial | ✅ | SEO "prueba gratis premium" |
+| Códigos: FREE7, WELCOME30, WELCOME60, LAUNCH50 | ✅ | days/percent tipos |
+
+### 📋 Pendientes
+| # | Acción | Prioridad |
+|---|--------|----------|
+| 2 | AviationStack API | Baja |
+
+---
+
+### 🛠️ Sistema Premium
+| Feature | Estado | Notas |
+|---------|--------|-------|
+| /diagnostico | ✅ | Página verificación sistema |
+| AccessStatus component | ✅ | Pantallas error con email |
+| API subscription/check | ✅ | Verificación estado |
+| 2 | AviationStack API | Baja |
 
 ### 🟡 Baja Prioridad
 | # | Acción | Estado |
 |---|--------|--------|
-| 1 | Predicción riesgo ML | ⏳ Pending |
+| 1 | Predicción riesgo ML | ⏳ Pendiente | |
 | 2 | App móvil | ⏳ Pendiente |
 
 ## 🎯 METRICAS Q2 2026
@@ -1231,7 +1269,7 @@ Bloque central en Homepage para planificar viajes rápidamente.
 
 | Fase | Tarea | Estado |
 |------|------|--------|
-| 1 | Planificador simple en Homepage | ⏳ Pendiente |
+| 1 | Planificador simple en Homepage | ✅ Done |
 | 2 | Ruta /analisis | ⏳ Pendiente |
 | 3 | Recomendaciones rules engine | ⏳ Pendiente |
 | 4 | SEO páginas país | ⏳ Pendiente |
