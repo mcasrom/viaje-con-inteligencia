@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { stripe, PLANS } from '@/lib/stripe';
 
 export async function POST(request: NextRequest) {
+  console.log('Subscription request received, priceId:', await request.json());
+  
   try {
     const { priceId, userId } = await request.json();
 
@@ -10,6 +12,7 @@ export async function POST(request: NextRequest) {
     }
 
     if (!stripe) {
+      console.log('Stripe not configured');
       return NextResponse.json({ 
         error: 'Stripe not configured',
         setup_needed: true,
@@ -42,11 +45,14 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ url: session.url });
   } catch (error) {
     console.error('Subscription error:', error);
-    return NextResponse.json({ error: 'Subscription failed' }, { status: 500 });
+    return NextResponse.json({ error: 'Subscription failed', details: error instanceof Error ? error.message : String(error) }, { status: 500 });
   }
 }
 
 export async function GET() {
+  console.log('GET /subscription - STRIPE_PRICE_MONTHLY:', process.env.STRIPE_PRICE_MONTHLY);
+  console.log('GET /subscription - STRIPE_PRICE_YEARLY:', process.env.STRIPE_PRICE_YEARLY);
+  
   return NextResponse.json({
     plans: Object.entries(PLANS).map(([key, plan]) => ({
       id: key,
