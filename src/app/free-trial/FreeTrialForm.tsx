@@ -12,6 +12,8 @@ const PROMO_CODES = [
   { code: 'LAUNCH50', description: '50% descuento primera suscripción', discount: 50 },
 ];
 
+const MONTHLY_PRICE_ID = 'price_1TNvdo1yXjIoL1LjxAec6d2C';
+
 export default function FreeTrialForm() {
   const [step, setStep] = useState<'select' | 'email' | 'loading' | 'success' | 'error'>('select');
   const [selectedCode, setSelectedCode] = useState('');
@@ -28,7 +30,7 @@ export default function FreeTrialForm() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
-          priceId: process.env.NEXT_PUBLIC_STRIPE_PRICE_MONTHLY,
+          priceId: MONTHLY_PRICE_ID,
           promoCode: selectedCode,
           email 
         }),
