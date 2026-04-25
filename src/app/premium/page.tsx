@@ -1191,13 +1191,11 @@ export default function PremiumPage() {
           </p>
         </div>
 
-        <div className="mt-8 text-center">
-          <p className="text-slate-500 text-sm">
-            ¿Ya tienes cuenta? <Link href="/dashboard" className="text-blue-400 hover:text-blue-300">Acceder a mi cuenta</Link>
-          </p>
-          <p className="text-slate-500 text-sm mt-2">
-            ¿Tienes código promocional? <Link href="/free-trial" className="text-yellow-400 hover:text-yellow-300">Actívalo aquí →</Link>
-          </p>
+        <div className="mt-8 p-6 bg-yellow-500/10 border border-yellow-500/40 rounded-2xl text-center">
+          <p className="text-yellow-400 font-bold text-lg mb-1">🎁 ¿Tienes código FREE7?</p>
+          <p className="text-slate-300 text-sm mb-4">Prueba 7 días gratis. No se cobra nada hasta el día 8.</p>
+          <Link href="/free-trial" className="inline-block px-6 py-3 bg-yellow-500 hover:bg-yellow-400 text-slate-900 font-bold rounded-xl transition-all">Activar código gratuito →</Link>
+          <p className="text-slate-500 text-sm mt-4">¿Ya tienes cuenta? <Link href="/dashboard" className="text-blue-400 hover:text-blue-300">Acceder a mi cuenta</Link></p>
         </div>
       </main>
 
