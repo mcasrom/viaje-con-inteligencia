@@ -7,7 +7,7 @@ export async function POST(req: NextRequest) {
   try {
     const { priceId, userId } = await req.json();
     
-    if (!priceId) {
+if (!priceId) {
       return NextResponse.json({ error: 'Price ID required' }, { status: 400 });
     }
 
@@ -15,9 +15,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Stripe no configurado' }, { status: 500 });
     }
 
-    const baseUrl = 'https://viaje-con-inteligencia.vercel.app';
-    
-    const session = await stripe.checkout.sessions.create({
+    const session = await stripe!.checkout.sessions.create({
       mode: 'subscription',
       payment_method_types: ['card'],
       line_items: [{ price: priceId, quantity: 1 }],
