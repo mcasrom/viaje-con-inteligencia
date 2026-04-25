@@ -102,7 +102,7 @@ export default function FreeTrialPage() {
             </div>
             <div className="flex items-center gap-2">
               <CreditCard className="w-4 h-4 text-green-400" />
-              <span>Sin necesidad de tarjeta</span>
+              <span>Se requiere tarjeta · 0€ durante 7 días · Cancela antes del día 8 y no pagas nada</span>
             </div>
           </div>
         </div>
