@@ -104,7 +104,10 @@ export default function FreeTrialForm() {
               required
             />
           </div>
-          
+          <div className="bg-slate-700/50 rounded-xl p-3 border border-slate-600 text-sm text-slate-300 flex gap-2">
+            <span>🔒</span>
+            <span>Se solicitará tarjeta para reservar tu acceso. <strong className="text-white">No se cobra nada hasta el día 8.</strong> Cancela en cualquier momento antes y no pagarás nada.</span>
+          </div>
           <button 
             onClick={handleStartTrial}
             disabled={!email}
