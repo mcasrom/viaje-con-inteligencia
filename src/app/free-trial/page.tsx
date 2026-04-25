@@ -1,11 +1,6 @@
 import Link from 'next/link';
-import { Gift, Clock, CheckCircle, Star, Zap, ArrowRight, Shield, CreditCard } from 'lucide-react';
-
-export const metadata = {
-  title: 'Prueba Premium Gratis - Viaje con Inteligencia',
-  description: 'Prueba premium gratis 7 días. Desbloquea todas las funciones premium: Chat IA, planner de viajes, alertas en tiempo real, análisis de riesgo y más.',
-  keywords: ['prueba gratis premium', 'trial premium viaje', 'suscripcion gratuita', 'viaje inteligente premium', 'chat ia viajes'],
-};
+import { CheckCircle, Shield, CreditCard } from 'lucide-react';
+import FreeTrialForm from './FreeTrialForm';
 
 const BENEFITS = [
   { icon: '🤖', title: 'Chat IA Groq', desc: 'Planifica tu viaje con inteligencia artificial' },
@@ -41,7 +36,7 @@ export default function FreeTrialPage() {
       <main className="max-w-6xl mx-auto px-6 py-12">
         <div className="text-center mb-12">
           <span className="inline-block px-4 py-1 bg-green-500/20 text-green-300 rounded-full text-sm font-medium mb-4">
-            🎁 Prueba Premium Gratis
+            Prueba Premium Gratis
           </span>
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
             7 días Premium <span className="text-yellow-400">gratis</span>
@@ -96,51 +91,7 @@ export default function FreeTrialPage() {
         </div>
 
         <div className="max-w-md mx-auto">
-          <div className="bg-slate-800/70 rounded-2xl p-8 border border-slate-700">
-            <div className="text-center mb-6">
-              <p className="text-slate-400 mb-2">Código promocional</p>
-              <div className="text-3xl font-bold text-yellow-400">FREE7</div>
-              <p className="text-green-400 text-sm mt-2">7 días premium gratis</p>
-            </div>
-
-            <form className="space-y-4">
-              <div>
-                <label className="block text-slate-300 text-sm mb-2">Tu email</label>
-                <input 
-                  type="email" 
-                  placeholder="tu@email.com"
-                  className="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-xl text-white placeholder-slate-400 focus:outline-none focus:border-purple-500"
-                />
-              </div>
-              
-              <button 
-                type="submit"
-                className="w-full px-6 py-4 bg-gradient-to-r from-yellow-500 to-orange-500 text-white font-bold rounded-xl hover:from-yellow-600 hover:to-orange-600 transition-all shadow-lg shadow-yellow-500/25 flex items-center justify-center gap-2"
-              >
-                <Gift className="w-5 h-5" />
-                Activar prueba gratis
-                <ArrowRight className="w-5 h-5" />
-              </button>
-            </form>
-
-            <p className="text-slate-500 text-xs text-center mt-4">
-              Sin compromiso. Cancela cuando quieras.
-            </p>
-          </div>
-        </div>
-
-        <div className="text-center mt-12">
-          <p className="text-slate-400 mb-4">También disponible:</p>
-          <div className="flex flex-wrap justify-center gap-4">
-            <div className="bg-slate-800/50 rounded-lg px-4 py-2 border border-slate-700">
-              <span className="text-yellow-400 font-bold">WELCOME30</span>
-              <span className="text-slate-400 text-sm ml-2">→ 30 días gratis</span>
-            </div>
-            <div className="bg-slate-800/50 rounded-lg px-4 py-2 border border-slate-700">
-              <span className="text-yellow-400 font-bold">LAUNCH50</span>
-              <span className="text-slate-400 text-sm ml-2">→ 50% descuento</span>
-            </div>
-          </div>
+          <FreeTrialForm />
         </div>
 
         <div className="mt-16 bg-slate-800/30 rounded-xl p-6 border border-slate-700/50">
@@ -152,10 +103,6 @@ export default function FreeTrialPage() {
             <div className="flex items-center gap-2">
               <CreditCard className="w-4 h-4 text-green-400" />
               <span>Sin necesidad de tarjeta</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Zap className="w-4 h-4 text-green-400" />
-              <span>Activación inmediata</span>
             </div>
           </div>
         </div>
