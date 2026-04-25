@@ -1175,11 +1175,14 @@ APIs de ML simples para encontrar destinos similares y dashboard visual con esta
 
 ## 📋 ACCIONES PENDIENTES (2026-04-25)
 
-### 🔴 Alta Prioridad
+### 🔴 ALTA PRIORIDAD - Planificador Simple
 | # | Acción | Estado |
 |---|--------|--------|
-| 1 | Programa afiliados | ⏳ Pendiente |
-| 2 | Stripe Webhooks (subscriber created) | ⏳ Pendiente |
+| 1 | Planificador simple en Homepage | ⏳ Pendiente |
+| 2 | Ruta /analisis | ⏳ Pendiente |
+| 3 | Recomendaciones reglas | ⏳ Pendiente |
+| 4 | Programa afiliados | ⏳ Pendiente |
+| 5 | Stripe Webhooks | ⏳ Pendiente |
 
 ### 🟠 Media Prioridad
 | # | Acción | Estado |
@@ -1199,3 +1202,49 @@ APIs de ML simples para encontrar destinos similares y dashboard visual con esta
 | Visitantes/mes | ~500 | 10,000 |
 | Suscripciones | 0 | 100 |
 | Países | 95 | 100 |
+
+---
+
+## 🚀 PLANIFICADOR SIMPLE - "Tu Viaje en 30s" (2026-04-25)
+
+### 📋 Concepto
+Bloque central en Homepage para planificar viajes rápidamente.
+
+**Input:** Origen, Destino, Fechas
+**Output:** Análisis rápido del viaje
+
+### 🎯 Objetivo
+- Primer "enganche" del usuario
+- Claridad inmediata
+- Usuario sabe qué hacer en <30 segundos
+
+### 📱 Implementación
+
+**Nueva ruta:** `/analisis?origen=XXX&destino=YYY`
+
+**Secciones:**
+1. Resumen destino (riesgo, semáforo)
+2. Recomendaciones rápidas (estático inicialmente)
+3. Simulación de viaje (visual simple)
+
+### 📋 Fases
+
+| Fase | Tarea | Estado |
+|------|------|--------|
+| 1 | Planificador simple en Homepage | ⏳ Pendiente |
+| 2 | Ruta /analisis | ⏳ Pendiente |
+| 3 | Recomendaciones rules engine | ⏳ Pendiente |
+| 4 | SEO páginas país | ⏳ Pendiente |
+| 5 | Checklist automático | ⏳ Pendiente |
+
+### 🔧 rulesEngine.ts (ejemplo)
+```js
+// /lib/rulesEngine.ts
+const rules = {
+  th: ["Evitar comida callejera sin control", "Atención a estafas", "Mejor llegar de día"],
+  in: ["信仰 importante", "Mejor época oct-marzoo"],
+  // ...
+}
+```
+
+---
