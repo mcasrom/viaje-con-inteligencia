@@ -1,6 +1,7 @@
 import MapaMundial from '@/components/MapaMundial';
 import Testimonios from '@/components/Testimonios';
 import NewsletterSignup from '@/components/NewsletterSignup';
+import PlanificadorSimple from '@/components/PlanificadorSimple';
 import Link from 'next/link';
 import { Activity, Shield, AlertTriangle, Globe, FileText, Camera, Plane, Gift, CheckCircle } from 'lucide-react';
 
@@ -8,6 +9,8 @@ export default function Home() {
   return (
     <>
       {/* LEAD MAGNET - Banner destacado */}
+      <PlanificadorSimple />
+      
       <div className="max-w-6xl mx-auto px-6 py-6">
         <div className="bg-gradient-to-r from-emerald-600 to-teal-600 rounded-2xl p-6 shadow-lg shadow-emerald-500/20 border border-emerald-400/30">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
