@@ -11,7 +11,7 @@ const PLANS = [
     name: 'Premium Mensual',
     price: '4.99',
     period: 'mes',
-    priceId: process.env.NEXT_PUBLIC_STRIPE_PRICE_MONTHLY || 'price_monthly_placeholder',
+    priceId: 'price_1TNvdo1yXjIoL1LjxAec6d2C',
     features: [
       'Todo lo del plan gratis',
       'Bot IA Groq (viajes, riesgos)',
@@ -28,7 +28,7 @@ const PLANS = [
     name: 'Premium Anual',
     price: '19.99',
     period: 'año',
-    priceId: process.env.NEXT_PUBLIC_STRIPE_PRICE_YEARLY || 'price_yearly_placeholder',
+    priceId: 'price_1TQ0Ng1yXjIoL1LjZTzKEfOF',
     popular: true,
     savings: 'Ahorra 40€',
     features: [
