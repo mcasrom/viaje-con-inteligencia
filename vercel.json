@@ -16,15 +16,6 @@
       ]
     }
   ],
-
-  "redirects": [
-    {
-      "source": "/(.*)",
-      "destination": "https://viajeinteligencia.com/$1",
-      "permanent": true
-    }
-  ],
-
   "crons": [
     {
       "path": "/api/cron/scrape-maec",
