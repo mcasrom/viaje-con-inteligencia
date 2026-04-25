@@ -1170,3 +1170,32 @@ APIs de ML simples para encontrar destinos similares y dashboard visual con esta
 ### 🔧 Notas
 - Clustering: ✅ Fixed (datos hardcodeados, 24 países)
 - Otros APIs (/turismo, /similar, /weather) OK
+
+---
+
+## 📋 ACCIONES PENDIENTES (2026-04-25)
+
+### 🔴 Alta Prioridad
+| # | Acción | Estado |
+|---|--------|--------|
+| 1 | Programa afiliados | ⏳ Pendiente |
+| 2 | Stripe Webhooks (subscriber created) | ⏳ Pendiente |
+
+### 🟠 Media Prioridad
+| # | Acción | Estado |
+|---|--------|--------|
+| 1 | Códigos promo (FREE7, WELCOME30) | ⏳ Pendiente |
+| 2 | AviationStack API | ⏳ Pending |
+
+### 🟡 Baja Prioridad
+| # | Acción | Estado |
+|---|--------|--------|
+| 1 | Predicción riesgo ML | ⏳ Pending |
+| 2 | App móvil | ⏳ Pendiente |
+
+## 🎯 METRICAS Q2 2026
+| Métrica | Actual | Target |
+|---------|--------|--------|
+| Visitantes/mes | ~500 | 10,000 |
+| Suscripciones | 0 | 100 |
+| Países | 95 | 100 |
