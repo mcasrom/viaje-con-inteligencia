@@ -74,6 +74,7 @@
 - [X] CRON jobs configurados
 - [ ] Programa afiliados
 - [X] Stripe (configurado 2026-04-24)
+- [X] Stripe Checkout funcionando (4.99€/mes, 19.99€/año)
 
 ** SEO + Captación
 - [X] Lead magnet (/lead-magnet + checklist premium)
