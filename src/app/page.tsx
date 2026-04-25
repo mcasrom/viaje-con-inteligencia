@@ -5,6 +5,8 @@ import PlanificadorSimple from '@/components/PlanificadorSimple';
 import Link from 'next/link';
 import { Activity, Shield, AlertTriangle, Globe, FileText, Camera, Plane, Gift, CheckCircle } from 'lucide-react';
 
+export const dynamic = 'force-dynamic';
+
 export default function Home() {
   return (
     <>
