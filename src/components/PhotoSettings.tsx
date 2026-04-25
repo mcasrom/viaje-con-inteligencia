@@ -25,7 +25,7 @@ export default function PhotoSettings() {
         className="fixed bottom-20 left-4 z-40 p-3 bg-slate-800 rounded-full border border-slate-700 text-slate-400 hover:text-white transition-colors md:hidden"
         title="Configurar fotos"
       >
-        <Image className="w-5 h-5" alt="" />
+        <Image className="w-5 h-5" />
       </button>
 
       {open && (
@@ -33,7 +33,7 @@ export default function PhotoSettings() {
           <div className="bg-slate-800 rounded-t-2xl md:rounded-2xl w-full md:max-w-sm p-6 border border-slate-700">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-white font-semibold flex items-center gap-2">
-                <Image className="w-5 h-5 text-purple-400" alt="" />
+                <Image className="w-5 h-5 text-purple-400" />
                 Fotos del día
               </h3>
               <button onClick={() => setOpen(false)} className="text-slate-400 hover:text-white">
