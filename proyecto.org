@@ -64,6 +64,7 @@
 | scrape-maec | 0 6 * * * | /api/cron/scrape-maec | Scraping MAEC 06:00 UTC | ✅ Configurado |
 | check-alerts | 0 8 * * * | /api/cron/check-alerts | Verificar alertas 08:00 UTC | ✅ Configurado |
 | weekly-digest | 0 8 * * 1 | /api/cron/weekly-digest | Newsletter semanal lun 08:00 | ✅ Configurado |
+| ine-scrape | 0 6 5 * * | /api/cron/ine-scrape | INE tourism mensual día 5 06:00 | ✅ Configurado |
 
 *** CRON_SECRET
 - Valor: ~lS+/mhOpowDvtLUVHsGmGYq35m+cGYMX8Ca5BdAk9vQ=~
@@ -295,7 +296,29 @@
 | INE turistas | ✅ Done |
 | MAEC riesgo | ✅ Live |
 | Wikidata FO | ✅ Backup |
-| IPC | ⚠️ Static |
+| INE Spain Tourism | ✅ Done (Sprint 27) |
+| ML Clustering España | ✅ Done (Sprint 27) |
+| Supabase storage | ✅ Done (Sprint 27) |
+
+*** 🎯 INE Spain Tourism (Sprint 27)
+| Feature | Estado | API |
+|---------|--------|---------|
+| Datos FRONTUR | ✅ Done | /api/ine/spain-tourism |
+| Datos EGATUR | ✅ Done | /api/ine/spain-tourism |
+| Clustering ML | ✅ Done | /api/ine/ml-clustering |
+| Predicción | ✅ Done | /api/ine/ml-clustering?predict=true |
+| Storage histórico | ✅ Done | Supabase (3 tablas) |
+| Cron monthly | ✅ Done | vercel.json (día 5) |
+
+*** 📊 ML Clustering España implementado
+Segmentos de turismo España:
+- Playa (50.7%, €1522, 8.5 días)
+- Cultural (16%, €1780, 4.2 días)
+- Familiar (12%, €1904, 6.8 días)
+- Rural (6%, €890, 3.2 días)
+- Negocios (4%, €1854, 2.1 días)
+- Salud (2%, €2450, 12.5 días)
+- Montaña (4%, €980, 4.5 días)
 
 *** 🎟️ Códigos Promocionales
 - [ ] Sistema de códigos descuento

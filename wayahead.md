@@ -1522,4 +1522,34 @@ GET /api/ai/clustering?clusters=4
 
 ---
 
+## 🚀 SPRINT 27: INE Spain Tourism ML + Storage (2026-04-26) - COMPLETADO ✅
+
+### ✅ Completado
+| Feature | Estado | API/URL |
+|---------|--------|---------|
+| INE Spain Tourism | ✅ Done | `/api/ine/spain-tourism` |
+| EGATUR gasto | ✅ Done | `/api/ine/spain-tourism?type=spend` |
+| Clustering ML | ✅ Done | `/api/ine/ml-clustering` |
+| Predicción ML | ✅ Done | `/api/ine/ml-clustering?predict=true` |
+| INE scraper | ✅ Done | `/api/ine/scraper?action=save` |
+| INE history storage | ✅ Done | Supabase 3 tablas |
+| Cron monthly | ✅ Done | vercel.json (día 5, 6:00 UTC) |
+
+### 📊 Segmentos ML España
+| Segmento | % | Gasto medio | Estancia |
+|----------|---|-----------|----------|
+| Playa | 50.7% | €1522 | 8.5 días |
+| Cultural | 16% | €1780 | 4.2 días |
+| Familiar | 12% | €1904 | 6.8 días |
+| Rural | 6% | €890 | 3.2 días |
+| Negocios | 4% | €1854 | 2.1 días |
+| Salud | 2% | €2450 | 12.5 días |
+| Montaña | 4% | €980 | 4.5 días |
+
+### 🎯 Valor diferenciador
+- Único sistema en español con clustering ML de turismo España
+- Datos reales INE (no aproximaciones)
+
+---
+
 *End of file - total 1580 lines)*
