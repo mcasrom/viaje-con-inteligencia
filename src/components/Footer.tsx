@@ -90,7 +90,12 @@ export default function Footer() {
                 </a>
               </li>
               <li>
-                <a href="https://www.viajeinteligencia.com/feed.xml" target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-white transition-colors flex items-center gap-2">
+                <a href="/pwa" className="text-slate-400 hover:text-white transition-colors">
+                  📱 Instalar App (PWA)
+                </a>
+              </li>
+              <li>
+                <a href="https://www.viajeinteligencia.com/feed.xml" target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-white transition-colors">
                   RSS Feed
                 </a>
               </li>
