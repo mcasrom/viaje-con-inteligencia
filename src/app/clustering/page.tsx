@@ -5,10 +5,14 @@ import Link from 'next/link';
 import { ArrowLeft, Map, Users, Globe, Target, RefreshCw, Sparkles, ChevronRight, Database, Eye, Info } from 'lucide-react';
 
 const dataSources = [
-  { name: 'paisesData', source: 'src/data/paises.ts', fields: ['nombre', 'continente', 'nivelRiesgo', 'ipc', 'banderas', 'coords'] },
-  { name: 'turismoData', source: 'paisesData.turisticos', fields: ['turistasAnio'] },
-  { name: 'MAEC', source: 'scraping diario', fields: ['nivelRiesgo'] },
-  { name: 'travelAttributes', source: 'hardcoded (30)', fields: ['playa', 'cultural', 'naturaleza', 'familiar'] },
+  { name: 'paisesData', source: 'src/data/paises.ts', fields: ['nombre', 'continente', 'nivelRiesgo', 'ipc', 'banderas', 'coords'], type: 'principal' },
+  { name: 'MAEC', source: 'scraping diario', fields: ['nivelRiesgo'], type: 'riesgo' },
+  { name: 'OpenStreetMap', source: 'OSM API', fields: ['faros', 'playas', 'parques', 'miradores'], type: 'geografico' },
+  { name: 'Wikidata', source: 'wikidata.org', fields: ['patrimonio', 'faros', 'relaciones'], type: 'semantico' },
+  { name: 'IGN/CNIG', source: 'ign.es', fields: ['elevacion', 'rutas', 'hidrografia'], type: 'topografico' },
+  { name: 'AEMET', source: 'aemet.es API', fields: ['temperatura', 'viento', 'estacion'], type: 'clima' },
+  { name: 'INE', source: 'ine.es', fields: ['turistas', 'densidad', 'estacionalidad'], type: 'turismo' },
+  { name: 'travelAttributes', source: 'hardcoded (30)', fields: ['playa', 'cultural', 'naturaleza', 'familiar'], type: 'ml' },
 ];
 
 interface Cluster {
@@ -107,20 +111,32 @@ export default function ClusteringPage() {
           <div className="max-w-7xl mx-auto px-6 py-4">
             <h3 className="text-white font-medium mb-3 flex items-center gap-2">
               <Database className="w-4 h-4" />
-              Fuentes de datos:
+              Fuentes de datos OSINT:
             </h3>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {dataSources.map(ds => (
-                <div key={ds.name} className="bg-slate-700 rounded-lg p-3">
-                  <div className="text-purple-400 font-medium text-sm">{ds.name}</div>
-                  <div className="text-slate-400 text-xs">{ds.source}</div>
-                  <div className="text-slate-500 text-xs mt-1">→ {ds.fields.join(', ')}</div>
-                </div>
-              ))}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              {dataSources.map(ds => {
+                const typeColors: Record<string, string> = {
+                  principal: 'bg-blue-900/50 border-blue-700',
+                  riesgo: 'bg-red-900/50 border-red-700',
+                  geografico: 'bg-green-900/50 border-green-700',
+                  semantico: 'bg-purple-900/50 border-purple-700',
+                  topografico: 'bg-amber-900/50 border-amber-700',
+                  clima: 'bg-cyan-900/50 border-cyan-700',
+                  turismo: 'bg-orange-900/50 border-orange-700',
+                  ml: 'bg-pink-900/50 border-pink-700',
+                };
+                return (
+                  <div key={ds.name} className={`rounded-lg p-3 border ${typeColors[ds.type] || 'bg-slate-700'}`}>
+                    <div className="text-white font-medium text-sm">{ds.name}</div>
+                    <div className="text-slate-400 text-xs">{ds.source}</div>
+                    <div className="text-slate-500 text-xs mt-1">{ds.fields.join(', ')}</div>
+                  </div>
+                );
+              })}
             </div>
             <p className="text-slate-500 text-xs mt-3 flex items-center gap-2">
               <Info className="w-3 h-3" />
-              distanciaES calculada via Haversine desde coordenadas GPS (paisesData.mapaCoordenadas)
+              distanciaES calculada via Haversine desde coordenadas GPS de paisesData
             </p>
           </div>
         </div>
