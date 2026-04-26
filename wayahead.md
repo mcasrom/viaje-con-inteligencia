@@ -1433,13 +1433,28 @@ SELECT ?place ?coord WHERE {
 }
 ```
 
-### 📊 Progreso actual
+### 📊 Progreso actual (2026-04-26)
 | Datos | Fuente | Estado |
 |------|-------|--------|
 | nivelRiesgo | MAEC | ✅ Live (cron 6:00) |
 | turistas | INE/UNWTO (32 países) | ✅ Done |
+| pernoctaciones | INE/UNWTO | ✅ Done |
+| estanciaMedia | INE/UNWTO | ✅ Done |
 | ipc | paisesData | ⚠️ Static |
 | travelAttributes | hardcoded | ⚠️ Manual |
+
+### 🔗 APIs creadas
+- `/api/ine/tourists` - 32 países, datos INE/UNWTO 2024
+- `/api/osm/pois` - OpenStreetMap faros/playas
+
+### 🧪 Testing
+```bash
+# Turistas INE
+curl https://viaje-con-inteligencia.vercel.app/api/ine/tourists
+
+# POIs OSM (faros España)
+curl https://viaje-con-inteligencia.vercel.app/api/osm/pois?country=es&type=lighthouse
+```
 
 ---
 
