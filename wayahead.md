@@ -1458,4 +1458,31 @@ curl https://viaje-con-inteligencia.vercel.app/api/osm/pois?country=es&type=ligh
 
 ---
 
-*End of file - total 1430 lines)*
+### 📊 Estado OSINT (2026-04-26)
+| Fuente | Datos | Cover | Estado |
+|--------|-------|-------|--------|
+| INE | turistas | 32 países | ✅ Done |
+| OSM | POIs | Top 10 países | ✅ Done |
+| MAEC | riesgo | 95 países | ✅ Live |
+
+#### 🏆 Top 10 países optimizado
+```
+es, fr, it, pt, gr, tr, mx, jp, th, us
+```
+Criterio: arrivals turísticas (INE/UNWTO)
+
+#### 🎯 Top 4 tipos POIs
+```
+lighthouse → Faros   (SEO alto)
+beach → Playas      (usuario alto valor)
+museum → Museos     (cultura)
+castle → Castillos (cultura)
+```
+
+#### ❌ Excluidos (no priorizado)
+- viewpoint, waterfall, ski_resort, theme_park (datos incompletos)
+- países fuera top 10 (rate limiting)
+
+---
+
+*End of file - total 1500 lines)*
