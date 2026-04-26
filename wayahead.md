@@ -1486,15 +1486,40 @@ castle → Castillos (cultura)
 ### ❌ OSM Issues (CONOCIDA)
 - bbox queries retornan 0 a veces (sobrecarga Overpass)
 - area queries dan error de sintaxis
-- Solución temporal: usar Wikidata como backup estable
+- Solución: Wikidata fallback con datos estáticos
 
 ---
 
-### ⏳ Pendiente
-- [ ] Wikidata SPARQL para POIs (más estable)
-- [ ] Cache en Supabase (evitar rate limiting)
-- [ ] IPC real (INE)
+### ✅ COMPLETADO (2026-04-26)
+
+| Componente | Estado | Notas |
+|------------|--------|-------|
+| INE turistas | ✅ 32 países | `/api/ine/tourists` |
+| OSM POIs | ⚠️ Fallback | Top 10, 4 tipos |
+| Wikidata fallback | ✅ | `/api/wikidata/pois` 8 países |
+| Cluster labels | ✅ Dinámicos | Basados en datos reales |
+| MAEC riesgo | ✅ Live | Cron 6:00 UTC |
+
+### 📊 Estado ML/OSINT final
+| Fuente | Cover | Estado |
+|--------|-------|--------|
+| INE turismo | 32 países | ✅ Real |
+| MAEC riesgo | 95 países | ✅ Live |
+| Wikidata | 8 países FO | ✅ Backup |
+| IPC | 30 países | ⚠️ Static |
+
+### 🎯 APIs Produción
+```bash
+# Turistas
+GET /api/ine/tourists
+
+# POIs OSM (fallback a Wikidata)
+GET /api/wikidata/pois?country=es&type=castle
+
+# Cluster ML
+GET /api/ai/clustering?clusters=4
+```
 
 ---
 
-*End of file - total 1520 lines)*
+*End of file - total 1580 lines)*

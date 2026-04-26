@@ -283,6 +283,20 @@
 - [X] API clustering (/api/ai/clustering)
 - [X] Dashboard turismo (/turismo)
 
+*** 🤖 ML/OSINT Implementado (2026-04-26)
+- [X] API /api/ine/tourists - 32 países turistas (INE/UNWTO)
+- [X] API /api/wikidata/pois - Fallback POIs para 8 países
+- [X] Clustering dinámico con labels reales
+- [X] PlanificadorSimple con preferencias ML
+
+** 📅 Estado ML/OSINT
+| Fuente | Estado |
+|--------|--------|
+| INE turistas | ✅ Done |
+| MAEC riesgo | ✅ Live |
+| Wikidata FO | ✅ Backup |
+| IPC | ⚠️ Static |
+
 *** 🎟️ Códigos Promocionales
 - [ ] Sistema de códigos descuento
 - [ ] FREE7 → 7 días premium gratis
