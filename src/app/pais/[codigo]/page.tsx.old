@@ -2,10 +2,8 @@ import { notFound } from 'next/navigation';
 import { getPaisPorCodigo } from '@/data/paises';
 import { getPostsByCountry, getSeoClusterContent } from '@/lib/posts';
 import DetallePaisClient from './DetallePaisClient';
-import { JsonLd } from '@/components/seo/JsonLd';
-import { generateCountryArticleSchema, generateFAQSchema, generateBreadcrumbSchema } from '@/lib/schemas';
 
-export const revalidate = 3600;
+export const revalidate = 3600; // ISR cada hora - cache de páginas países
 
 interface PageProps {
   params: Promise<{ codigo: string }>;
@@ -76,52 +74,5 @@ export default async function DetallePaisPage({ params }: PageProps) {
 
   const relatedPosts = getPostsByCountry(pais.nombre, 3);
 
-  // JSON-LD Schemas para SEO
-  const riesgoLabels: Record<string, string> = {
-    'sin-riesgo': 'sin riesgo',
-    'bajo': 'riesgo bajo',
-    'medio': 'riesgo medio',
-    'alto': 'riesgo alto',
-    'muy-alto': 'riesgo muy alto'
-  };
-  const riesgoTexto = riesgoLabels[pais.nivelRiesgo] || pais.nivelRiesgo;
-
-  const breadcrumbs = generateBreadcrumbSchema([
-    { name: 'Inicio', url: 'https://www.viajeinteligencia.com' },
-    { name: 'Países', url: 'https://www.viajeinteligencia.com/paises' },
-    { name: pais.nombre, url: `https://www.viajeinteligencia.com/pais/${codigo}` }
-  ]);
-
-  const articleSchema = generateCountryArticleSchema({
-    name: pais.nombre,
-    slug: codigo,
-    description: `Guía completa para viajar a ${pais.nombre}: requisitos de entrada, nivel de riesgo ${riesgoTexto}, embajadas, moneda ${pais.moneda} y consejos para viajeros.`,
-    lastUpdated: pais.ultimoInforme
-  });
-
-  const faqSchema = generateFAQSchema([
-    { 
-      question: `¿Necesito visa para viajar a ${pais.nombre}?`, 
-      answer: `Consulta los requisitos de entrada actualizados para ${pais.nombre} en nuestra guía. Los requisitos pueden variar según tu nacionalidad.`
-    },
-    { 
-      question: `¿Es seguro viajar a ${pais.nombre}?`, 
-      answer: `${pais.nombre} tiene actualmente un nivel de riesgo ${riesgoTexto} según el MAEC. Te recomendamos revisar las alertas y consejos de seguridad actualizados.`
-    },
-    { 
-      question: `¿Cuál es la moneda de ${pais.nombre}?`, 
-      answer: `La moneda oficial de ${pais.nombre} es ${pais.moneda}. Te recomendamos consultar el tipo de cambio actual antes de viajar.`
-    },
-    { 
-      question: `¿Qué idioma se habla en ${pais.nombre}?`, 
-      answer: `El idioma oficial de ${pais.nombre} es ${pais.idioma}. En zonas turísticas suele haber hablantes de inglés.`
-    }
-  ]);
-
-  return (
-    <>
-      <JsonLd data={[breadcrumbs, articleSchema, faqSchema]} />
-      <DetallePaisClient pais={pais} relatedPosts={relatedPosts} />
-    </>
-  );
+  return <DetallePaisClient pais={pais} relatedPosts={relatedPosts} />;
 }
