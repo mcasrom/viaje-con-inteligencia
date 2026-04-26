@@ -9,6 +9,7 @@ import {
   Plus, Mail, LogOut, Crown, Bell, Settings, Loader2,
   Cloud, CheckCircle, XCircle, Star, Sparkles, Activity
 } from 'lucide-react';
+import TrialStatusBanner from '@/components/TrialStatusBanner';
 import RecommendationsList from '@/components/RecommendationsList';
 import { paisesData, getLabelRiesgo } from '@/data/paises';
 import WeatherWidget from '@/components/WeatherWidget';
@@ -405,6 +406,9 @@ const handleAuth = async (e: React.FormEvent) => {
             <button onClick={() => setNotification(null)} className="ml-auto">✕</button>
           </div>
         )}
+
+        {/* TRIAL STATUS */}
+        <TrialStatusBanner />
 
         {/* Banner KPIs destacado */}
         <Link href="/dashboard/kpis" className="block mb-6 bg-gradient-to-r from-blue-600 to-cyan-600 rounded-xl p-4 hover:opacity-90 transition-opacity">

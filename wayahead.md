@@ -1437,8 +1437,8 @@ SELECT ?place ?coord WHERE {
 | Datos | Fuente | Estado |
 |------|-------|--------|
 | nivelRiesgo | MAEC | ✅ Live (cron 6:00) |
+| turistas | INE/UNWTO (32 países) | ✅ Done |
 | ipc | paisesData | ⚠️ Static |
-| turistas | paisesData.turisticos | ⚠️ Aproximado |
 | travelAttributes | hardcoded | ⚠️ Manual |
 
 ---
