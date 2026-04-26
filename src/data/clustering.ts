@@ -243,12 +243,33 @@ function kMeansSimple(
   return assignments;
 }
 
-const clusterLabels = [
-  { label: 'Economicos cerca', description: 'Coste bajo, cerca de España, riesgo bajo', color: 'green' },
-  { label: 'Turisticos populares', description: 'Mucho turismo, buena infraestructura', color: 'blue' },
-  { label: 'Exoticos aventura', description: 'Lejanos, riesgo medio-alto, experiencia única', color: 'orange' },
-  { label: 'Europeos cercanos', description: 'Europa, coste medio, muy seguros', color: 'cyan' },
-];
+function getClusterLabel(features: number[]): string {
+  const [risk, ipc, distancia, turismo] = features;
+  
+  // Distancia: <2000 = europeo cercano
+  // IPC: >80 = caro, <60 = barato  
+  // Turismo: >0.5 = popular
+  if (distancia < 0.15 && distancia > 0) return 'Europa occidental';
+  if (distancia < 0.3 && distancia >= 0.15) return 'Europa central';
+  if (distancia < 0.5 && ipc < 50) return 'Europa oriental económico';
+  if (ipc > 80) return 'Destinos premium';
+  if (turismo > 0.5) return 'Turismo masivo';
+  if (distancia > 0.7) return 'Larga distancia';
+  return 'Destinos various';
+}
+
+function getClusterDescription(features: number[]): string {
+  const [risk, ipc, distancia, turismo] = features;
+  const parts: string[] = [];
+  if (distancia < 0.2) parts.push('cerca');
+  else if (distancia > 0.6) parts.push('lejano');
+  if (ipc > 80) parts.push('caro');
+  else if (ipc < 50) parts.push('económico');
+  if (turismo > 0.5) parts.push('turístico');
+  return parts.join(', ') || 'mixto';
+}
+
+const clusterColors = ['green', 'blue', 'orange', 'cyan', 'purple', 'pink'];
 
 export function clusterDestinations(
   nClusters: number = 4
@@ -263,12 +284,31 @@ export function clusterDestinations(
     clusters[cluster].push(destinations[i].code);
   });
 
-  return Object.entries(clusters).map(([cluster, codes]) => ({
-    cluster: parseInt(cluster),
-    label: clusterLabels[parseInt(cluster)]?.label || `Grupo ${cluster}`,
-    description: clusterLabels[parseInt(cluster)]?.description || '',
-    destinations: codes,
-  }));
+  // Calcularcentroidspromediopara labels
+  const centroids: number[][] = Array(nClusters).fill(null).map(() => [0, 0, 0, 0]);
+  const counts = Array(nClusters).fill(0);
+  
+  assignments.forEach((cluster, i) => {
+    counts[cluster]++;
+    features[i].forEach((f, j) => centroids[cluster][j] += f);
+  });
+  
+  centroids.forEach((c, i) => {
+    if (counts[i] > 0) c.forEach((_, j) => c[j] /= counts[i]);
+  });
+
+  return Object.entries(clusters).map(([clusterIdx, codes]) => {
+    const cluster = parseInt(clusterIdx);
+    const centroid = centroids[cluster];
+    return {
+      cluster,
+      label: getClusterLabel(centroid),
+      description: getClusterDescription(centroid),
+      color: clusterColors[cluster % clusterColors.length],
+      destinations: codes,
+      _centroid: centroid.map((v: number) => Math.round(v * 100) / 100),
+    };
+  });
 }
 
 export interface ItineraryRecommendation {
