@@ -1,90 +1,67 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { getRecommendations, findSimilarDestinations, TravelPreference } from '@/data/clustering';
 import { getPaisPorCodigo, getTodosLosPaises } from '@/data/paises';
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const favorites = searchParams.get('favorites')?.split(',').filter(Boolean) || [];
-  const interests = searchParams.get('interests')?.split(',').filter(Boolean) || [];
-  const budget = searchParams.get('budget') || 'moderate';
-  const riskPreference = searchParams.get('risk') || 'all';
+  const preferencia = (searchParams.get('preferencia') || 'cultural') as TravelPreference;
+  const presupuesto = (searchParams.get('budget') || 'medio') as 'bajo' | 'medio' | 'alto';
+  const duracion = parseInt(searchParams.get('duracion') || '7');
+  const similar = searchParams.get('similar'); // código de país para similares
 
-  const allCountries = getTodosLosPaises();
-  const riskLevels: Record<string, number> = {
-    'sin-riesgo': 0,
-    'bajo': 1,
-    'medio': 2,
-    'alto': 3,
-    'muy-alto': 4,
-  };
-
-  let filtered = allCountries;
-
-  if (riskPreference !== 'all') {
-    const maxRisk = riskLevels[riskPreference] || 4;
-    filtered = allCountries.filter(p => riskLevels[p.nivelRiesgo] <= maxRisk);
+  // Modo similar: buscar destinos parecidos a uno dado
+  if (similar) {
+    const similares = findSimilarDestinations(similar, 6);
+    const recommendations = similares.map(s => {
+      const pais = getPaisPorCodigo(s.code);
+      return {
+        code: s.code,
+        name: s.nombre,
+        flag: s.bandera,
+        risk: pais?.nivelRiesgo || 'bajo',
+        capital: pais?.capital || '',
+        score: Math.round(s.score * 100),
+        reasons: [s.reason],
+      };
+    });
+    return NextResponse.json({ recommendations, count: recommendations.length, mode: 'similar' });
   }
 
-  const recommendations = filtered
-    .map(country => {
-      let score = 0;
-      const reasons: string[] = [];
+  // Modo recomendación por preferencias
+  const results = getRecommendations({ preferencia, presupuesto, duracion, desdeES: true }, 10);
 
-      if (favorites.includes(country.codigo)) {
-        score += 50;
-        reasons.push('En tus favoritos');
-      } else if (favorites.length > 0) {
-        const favoriteCountries = favorites.map(f => getPaisPorCodigo(f)).filter(Boolean);
-        const sameContinent = favoriteCountries.filter(f => f?.continente === country.continente);
-        if (sameContinent.length > 0) {
-          score += 20;
-          reasons.push(`Similar a ${sameContinent[0]?.nombre}`);
-        }
-      }
+  // Si hay favoritos, boost a países del mismo continente
+  const favoritePaises = favorites.map(f => getPaisPorCodigo(f)).filter(Boolean);
 
-      if (interests.length > 0) {
-        const interestLower = interests.map(i => i.toLowerCase());
-        if (interestLower.some(i => country.queHacer.some(q => q.toLowerCase().includes(i)))) {
-          score += 15;
-          reasons.push('Coincide con tus intereses');
-        }
-      }
+  const recommendations = results.map(r => {
+    const pais = getPaisPorCodigo(r.destination);
+    let score = r.score;
+    const reasons = [...r.highlights];
 
-      if (country.nivelRiesgo === 'sin-riesgo' || country.nivelRiesgo === 'bajo') {
-        score += 10;
-        reasons.push('Riesgo bajo');
-      }
+    // Boost si comparte continente con favoritos
+    if (favoritePaises.some(f => f?.continente === pais?.continente)) {
+      score += 15;
+      reasons.push(`Similar a tus favoritos`);
+    }
 
-      if (budget === 'low' && country.indicadores.indicePrecios === 'bajo') {
-        score += 10;
-        reasons.push('Económico');
-      } else if (budget === 'high' && country.indicadores.indicePrecios === 'alto') {
-        score += 10;
-        reasons.push('Premium');
-      }
-
-      return { country, score, reasons };
-    })
-    .filter(r => r.score > 0)
-    .sort((a, b) => b.score - a.score)
-    .slice(0, 10)
-    .map(r => ({
-      code: r.country.codigo,
-      name: r.country.nombre,
-      flag: r.country.bandera,
-      risk: r.country.nivelRiesgo,
-      capital: r.country.capital,
-      score: r.score,
-      reasons: r.reasons,
-    }));
+    return {
+      code: r.destination,
+      name: pais?.nombre || r.destination,
+      flag: pais?.bandera || '🌍',
+      risk: pais?.nivelRiesgo || 'bajo',
+      capital: pais?.capital || '',
+      score,
+      reasons: reasons.slice(0, 3),
+      days: r.days,
+      bestTime: r.bestTime,
+    };
+  }).sort((a, b) => b.score - a.score);
 
   return NextResponse.json({
     recommendations,
     count: recommendations.length,
-    basedOn: {
-      favoritesCount: favorites.length,
-      interests,
-      budget,
-      riskPreference,
-    },
+    mode: 'ml',
+    basedOn: { preferencia, presupuesto, duracion, favoritesCount: favorites.length },
   });
 }
