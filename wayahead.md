@@ -1483,6 +1483,18 @@ castle → Castillos (cultura)
 - viewpoint, waterfall, ski_resort, theme_park (datos incompletos)
 - países fuera top 10 (rate limiting)
 
+### ❌ OSM Issues (CONOCIDA)
+- bbox queries retornan 0 a veces (sobrecarga Overpass)
+- area queries dan error de sintaxis
+- Solución temporal: usar Wikidata como backup estable
+
 ---
 
-*End of file - total 1500 lines)*
+### ⏳ Pendiente
+- [ ] Wikidata SPARQL para POIs (más estable)
+- [ ] Cache en Supabase (evitar rate limiting)
+- [ ] IPC real (INE)
+
+---
+
+*End of file - total 1520 lines)*

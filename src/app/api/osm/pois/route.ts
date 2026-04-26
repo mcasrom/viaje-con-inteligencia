@@ -69,10 +69,15 @@ export async function GET(request: NextRequest) {
   const areaName = countryAreas[country] || country;
   const tag = topTypes[type];
 
+  // Usar bbox más específico para evitar errores de area
+  const bbox = priorityCountries[country];
+  const [s, w, n, e] = bbox;
+
   const query = `[out:json][timeout:30];
-area["name"="${areaName}"]["admin_level"=2]->.a;
-node["${tag}"](area.a);
-way["${tag}"](area.a);
+(
+  node["${tag}"](${s},${w},${n},${e});
+  way["${tag}"](${s},${w},${n},${e});
+);
 out center ${limit};
 `.trim();
 
