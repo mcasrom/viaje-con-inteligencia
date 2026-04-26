@@ -1,4 +1,6 @@
-//import { paisesData } from './paises';
+import { paisesData, DatoPais, NivelRiesgo } from './paises';
+
+const COORD_ES: [number, number] = [40.4168, -3.7038];
 
 export interface DestinationFeatures {
   code: string;
@@ -15,8 +17,19 @@ export interface DestinationFeatures {
   distanciaES: number;
 }
 
-function getRiskScore(nivelRiesgo: string): number {
-  const map: Record<string, number> = {
+function haversineDistance(coord1: [number, number], coord2: [number, number]): number {
+  const R = 6371;
+  const dLat = (coord2[0] - coord1[0]) * Math.PI / 180;
+  const dLon = (coord2[1] - coord1[1]) * Math.PI / 180;
+  const a = Math.sin(dLat / 2) ** 2 +
+    Math.cos(coord1[0] * Math.PI / 180) * Math.cos(coord2[0] * Math.PI / 180) *
+    Math.sin(dLon / 2) ** 2;
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return Math.round(R * c);
+}
+
+function getRiskScore(nivelRiesgo: NivelRiesgo): number {
+  const map: Record<NivelRiesgo, number> = {
     'sin-riesgo': 1,
     'bajo': 2,
     'medio': 3,
@@ -24,6 +37,10 @@ function getRiskScore(nivelRiesgo: string): number {
     'muy-alto': 5,
   };
   return map[nivelRiesgo] || 3;
+}
+
+function getIpcNumber(ipcStr: string): number {
+  return parseFloat(ipcStr.replace('%', '')) || 5;
 }
 
 function getClima(continente: string): string {
@@ -37,176 +54,85 @@ function getClima(continente: string): string {
   return climas[continente] || 'templado';
 }
 
-function getContinente(continente: string): string {
-  return continente || 'Europa';
-}
-
-const distanciaES: Record<string, number> = {
-  pt: 650, es: 0, fr: 1050, de: 1850, it: 1700, gb: 1750, nl: 1650,
-  be: 1550, at: 1900, ch: 1450, gr: 2900, tr: 3900, ru: 4500, ua: 3800,
-  us: 8900, ca: 8700, mx: 10200, br: 9800, ar: 11700, cl: 12000, co: 9500,
-  jp: 10800, cn: 9800, in: 8500, th: 10500, vn: 10500, id: 12500, my: 11500,
-  ph: 11500, au: 17000, nz: 19000, eg: 4000, ma: 1200, za: 7800, ke: 6500,
-  dz: 1800, tn: 2100, ly: 2800, et: 5500, tz: 6800, gh: 4800,
-  ng: 4300, np: 8200, lk: 9200, bd: 9100, pk: 7000, ir: 5800,
-  iq: 5000, sa: 5500, ae: 6000, il: 4500, jo: 4300, lb: 4000, sy: 4300,
-};
-
-// Datos hardcodeados para evitar tree-shaking con paisesData
-const paisesClustering: Record<string, { nombre: string; bandera: string; continente: string; nivelRiesgo: string }> = {
-  es: { nombre: 'España', bandera: '🇪🇸', continente: 'Europa', nivelRiesgo: 'sin-riesgo' },
-  fr: { nombre: 'Francia', bandera: '🇫🇷', continente: 'Europa', nivelRiesgo: 'sin-riesgo' },
-  it: { nombre: 'Italia', bandera: '🇮🇹', continente: 'Europa', nivelRiesgo: 'sin-riesgo' },
-  gb: { nombre: 'Reino Unido', bandera: '🇬🇧', continente: 'Europa', nivelRiesgo: 'sin-riesgo' },
-  de: { nombre: 'Alemania', bandera: '🇩🇪', continente: 'Europa', nivelRiesgo: 'sin-riesgo' },
-  pt: { nombre: 'Portugal', bandera: '🇵🇹', continente: 'Europa', nivelRiesgo: 'sin-riesgo' },
-  gr: { nombre: 'Grecia', bandera: '🇬🇷', continente: 'Europa', nivelRiesgo: 'sin-riesgo' },
-  us: { nombre: 'Estados Unidos', bandera: '🇺🇸', continente: 'Américas', nivelRiesgo: 'bajo' },
-  ca: { nombre: 'Canadá', bandera: '🇨🇦', continente: 'Américas', nivelRiesgo: 'sin-riesgo' },
-  mx: { nombre: 'México', bandera: '🇲🇽', continente: 'Américas', nivelRiesgo: 'bajo' },
-  br: { nombre: 'Brasil', bandera: '🇧🇷', continente: 'Américas', nivelRiesgo: 'bajo' },
-  ar: { nombre: 'Argentina', bandera: '🇦🇷', continente: 'Américas', nivelRiesgo: 'bajo' },
-  jp: { nombre: 'Japón', bandera: '🇯🇵', continente: 'Asia', nivelRiesgo: 'sin-riesgo' },
-  cn: { nombre: 'China', bandera: '🇨🇳', continente: 'Asia', nivelRiesgo: 'bajo' },
-  th: { nombre: 'Tailandia', bandera: '🇹🇭', continente: 'Asia', nivelRiesgo: 'medio' },
-  in: { nombre: 'India', bandera: '🇮🇳', continente: 'Asia', nivelRiesgo: 'medio' },
-  vn: { nombre: 'Vietnam', bandera: '🇻🇳', continente: 'Asia', nivelRiesgo: 'bajo' },
-  id: { nombre: 'Indonesia', bandera: '🇮🇩', continente: 'Asia', nivelRiesgo: 'bajo' },
-  au: { nombre: 'Australia', bandera: '🇦🇺', continente: 'Oceanía', nivelRiesgo: 'sin-riesgo' },
-  nz: { nombre: 'Nueva Zelanda', bandera: '🇳🇿', continente: 'Oceanía', nivelRiesgo: 'sin-riesgo' },
-  eg: { nombre: 'Egipto', bandera: '🇪🇬', continente: 'África', nivelRiesgo: 'medio' },
-  ma: { nombre: 'Marruecos', bandera: '🇲🇦', continente: 'África', nivelRiesgo: 'bajo' },
-  za: { nombre: 'Sudáfrica', bandera: '🇿🇦', continente: 'África', nivelRiesgo: 'medio' },
-  tr: { nombre: 'Turquía', bandera: '🇹🇷', continente: 'Asia', nivelRiesgo: 'bajo' },
-};
-
-const ipcData: Record<string, number> = {
-  ch: 130, no: 125, us: 110, de: 105, at: 105, nl: 105, be: 104,
-  se: 103, dk: 103, jp: 102, fi: 101, gb: 100, fr: 100, it: 98, ca: 97,
-  es: 95, au: 95, nz: 93, sg: 90, ie: 88, pt: 85, gr: 82, cz: 80,
-  kr: 78, mx: 75, pl: 72, hu: 70, ar: 65, br: 60, th: 55, cn: 52, in: 45,
-  ma: 42, eg: 40, tr: 38, co: 35, cl: 32, vn: 30, id: 28, ph: 25,
-};
-
-const turismoData: Record<string, { arrivals: number; receipts: number; spendPerDay: number; stayAvg: number }> = {
-  fr: { arrivals: 100000000, receipts: 65000000000, spendPerDay: 75, stayAvg: 7 },
-  es: { arrivals: 85000000, receipts: 92000000000, spendPerDay: 85, stayAvg: 8 },
-  us: { arrivals: 67000000, receipts: 175000000000, spendPerDay: 150, stayAvg: 10 },
-  it: { arrivals: 57000000, receipts: 48000000000, spendPerDay: 80, stayAvg: 7 },
-  tr: { arrivals: 55000000, receipts: 43000000000, spendPerDay: 50, stayAvg: 9 },
-  mx: { arrivals: 42000000, receipts: 28000000000, spendPerDay: 45, stayAvg: 8 },
-  gb: { arrivals: 38000000, receipts: 52000000000, spendPerDay: 95, stayAvg: 7 },
-  de: { arrivals: 33000000, receipts: 48000000, spendPerDay: 90, stayAvg: 6 },
-  gr: { arrivals: 33000000, receipts: 20000000, spendPerDay: 55, stayAvg: 8 },
-  pt: { arrivals: 25000000, receipts: 22000000, spendPerDay: 50, stayAvg: 7 },
-  th: { arrivals: 28000000, receipts: 46000000, spendPerDay: 45, stayAvg: 10 },
-  jp: { arrivals: 25000000, receipts: 34000000, spendPerDay: 100, stayAvg: 9 },
-  cn: { arrivals: 29000000, receipts: 55000000, spendPerDay: 60, stayAvg: 8 },
-  in: { arrivals: 18000000, receipts: 28000000, spendPerDay: 35, stayAvg: 11 },
-  eg: { arrivals: 14000000, receipts: 10000000, spendPerDay: 40, stayAvg: 9 },
-  ma: { arrivals: 13000000, receipts: 8500000, spendPerDay: 35, stayAvg: 8 },
-  au: { arrivals: 9500000, receipts: 22000000, spendPerDay: 85, stayAvg: 10 },
-  ca: { arrivals: 23000000, receipts: 20000000, spendPerDay: 90, stayAvg: 8 },
-  br: { arrivals: 6600000, receipts: 6100000, spendPerDay: 55, stayAvg: 10 },
-  ar: { arrivals: 5700000, receipts: 4900000, spendPerDay: 50, stayAvg: 9 },
-};
-
 const espanolHabla: Record<string, boolean> = {
   es: true, mx: true, ar: true, co: true, cl: true, pe: true, ve: true,
   uy: true, py: true, bo: true, gt: true, sv: true, hn: true, ni: true,
   cr: true, pa: true, do: true, cu: true, ec: true, gq: true, ph: true,
 };
 
+export type TravelPreference = 'playa' | 'cultural' | 'naturaleza' | 'familiar';
+
+export interface TravelAttributes {
+  playa: number;
+  cultural: number;
+  naturaleza: number;
+  familiar: number;
+  mejorEpoca: string[];
+  duracionOptima: number;
+}
+
+export const travelAttributes: Record<string, TravelAttributes> = {
+  es: { playa: 9, cultural: 9, naturaleza: 8, familiar: 9, mejorEpoca: ['Mayo', 'Jun', 'Sep'], duracionOptima: 7 },
+  fr: { playa: 6, cultural: 10, naturaleza: 7, familiar: 8, mejorEpoca: ['Jun', 'Jul', 'Sep'], duracionOptima: 5 },
+  it: { playa: 8, cultural: 10, naturaleza: 7, familiar: 8, mejorEpoca: ['Mayo', 'Jun', 'Sep'], duracionOptima: 7 },
+  pt: { playa: 9, cultural: 7, naturaleza: 7, familiar: 9, mejorEpoca: ['Mayo', 'Jun', 'Sep'], duracionOptima: 7 },
+  gr: { playa: 9, cultural: 8, naturaleza: 6, familiar: 7, mejorEpoca: ['Mayo', 'Jun', 'Jul'], duracionOptima: 7 },
+  tr: { playa: 9, cultural: 8, naturaleza: 6, familiar: 7, mejorEpoca: ['Mayo', 'Jun', 'Sep'], duracionOptima: 10 },
+  us: { playa: 7, cultural: 8, naturaleza: 8, familiar: 8, mejorEpoca: ['Mayo', 'Jun', 'Sep'], duracionOptima: 14 },
+  mx: { playa: 10, cultural: 9, naturaleza: 7, familiar: 9, mejorEpoca: ['Nov', 'Dic', 'Mar'], duracionOptima: 10 },
+  br: { playa: 9, cultural: 6, naturaleza: 9, familiar: 7, mejorEpoca: ['Dic', 'Jan', 'Feb'], duracionOptima: 10 },
+  ar: { playa: 5, cultural: 8, naturaleza: 6, familiar: 7, mejorEpoca: ['Mar', 'Apr', 'Oct'], duracionOptima: 14 },
+  jp: { playa: 5, cultural: 10, naturaleza: 9, familiar: 7, mejorEpoca: ['Mar', 'Apr', 'Oct'], duracionOptima: 10 },
+  th: { playa: 10, cultural: 7, naturaleza: 9, familiar: 6, mejorEpoca: ['Nov', 'Dic', 'Feb'], duracionOptima: 14 },
+  vn: { playa: 7, cultural: 7, naturaleza: 9, familiar: 6, mejorEpoca: ['Nov', 'Dic', 'Feb'], duracionOptima: 14 },
+  id: { playa: 10, cultural: 6, naturaleza: 9, familiar: 6, mejorEpoca: ['Mayo', 'Jun', 'Sep'], duracionOptima: 14 },
+  au: { playa: 9, cultural: 6, naturaleza: 9, familiar: 8, mejorEpoca: ['Dic', 'Jan', 'Feb'], duracionOptima: 14 },
+  nz: { playa: 7, cultural: 5, naturaleza: 10, familiar: 8, mejorEpoca: ['Dic', 'Jan', 'Feb'], duracionOptima: 14 },
+  ma: { playa: 9, cultural: 7, naturaleza: 6, familiar: 8, mejorEpoca: ['Mar', 'Apr', 'Mayo'], duracionOptima: 7 },
+  eg: { playa: 6, cultural: 10, naturaleza: 8, familiar: 6, mejorEpoca: ['Oct', 'Nov', 'Mar'], duracionOptima: 7 },
+  za: { playa: 7, cultural: 6, naturaleza: 9, familiar: 7, mejorEpoca: ['Oct', 'Nov', 'Mar'], duracionOptima: 10 },
+  gb: { playa: 4, cultural: 9, naturaleza: 6, familiar: 7, mejorEpoca: ['Mayo', 'Jun', 'Sep'], duracionOptima: 5 },
+  de: { playa: 3, cultural: 8, naturaleza: 7, familiar: 8, mejorEpoca: ['Mayo', 'Jun', 'Sep'], duracionOptima: 7 },
+  ca: { playa: 5, cultural: 6, naturaleza: 10, familiar: 9, mejorEpoca: ['Jun', 'Jul', 'Aug'], duracionOptima: 14 },
+  cn: { playa: 5, cultural: 9, naturaleza: 7, familiar: 6, mejorEpoca: ['Apr', 'Mayo', 'Oct'], duracionOptima: 10 },
+  in: { playa: 5, cultural: 10, naturaleza: 8, familiar: 5, mejorEpoca: ['Oct', 'Nov', 'Feb'], duracionOptima: 14 },
+  hr: { playa: 8, cultural: 7, naturaleza: 7, familiar: 8, mejorEpoca: ['Mayo', 'Jun', 'Sep'], duracionOptima: 7 },
+  cz: { playa: 2, cultural: 9, naturaleza: 6, familiar: 8, mejorEpoca: ['Mayo', 'Jun', 'Sep'], duracionOptima: 5 },
+  pl: { playa: 2, cultural: 8, naturaleza: 7, familiar: 8, mejorEpoca: ['Mayo', 'Jun', 'Sep'], duracionOptima: 7 },
+  nl: { playa: 5, cultural: 8, naturaleza: 6, familiar: 8, mejorEpoca: ['Mayo', 'Jun', 'Sep'], duracionOptima: 5 },
+  ch: { playa: 3, cultural: 8, naturaleza: 10, familiar: 7, mejorEpoca: ['Dic', 'Jan', 'Feb'], duracionOptima: 7 },
+};
+
 export function getDestinationsWithFeatures(): DestinationFeatures[] {
   const destinations: DestinationFeatures[] = [];
 
-  Object.entries(paisesClustering).forEach(([code, pais]) => {
-    const tourism = turismoData[code] || { arrivals: 0, receipts: 0 };
-    const ipc = ipcData[code] || 50;
+  Object.values(paisesData).forEach((pais) => {
+    if (pais.visible !== false) {
+      const coords = pais.mapaCoordenadas;
+      const ipcValue = getIpcNumber(pais.indicadores.ipc);
+      const distancia = haversineDistance(COORD_ES, coords);
+      const turistas = pais.turisticos?.turistasAnio
+        ? parseInt(pais.turisticos.turistasAnio.replace(/[^0-9]/g, '')) * 1000000
+        : 0;
 
-    if (tourism.arrivals > 0 || code === 'es') {
       destinations.push({
-        code,
+        code: pais.codigo,
         nombre: pais.nombre,
         bandera: pais.bandera,
-        arrivals: tourism.arrivals,
-        receipts: tourism.receipts,
+        arrivals: turistas,
+        receipts: 0,
         riskScore: 100 - (getRiskScore(pais.nivelRiesgo) * 20),
         riskLevel: getRiskScore(pais.nivelRiesgo),
-        ipc,
+        ipc: ipcValue,
         clima: getClima(pais.continente),
-        idiomaEspanol: espanolHabla[code] || false,
-        continente: getContinente(pais.continente),
-        distanciaES: distanciaES[code] || 5000,
+        idiomaEspanol: espanolHabla[pais.codigo] || pais.idioma === 'Español',
+        continente: pais.continente,
+        distanciaES: distancia,
       });
     }
   });
 
-  return destinations.sort((a, b) => b.arrivals - a.arrivals).slice(0, 50);
-}
-
-export interface SimilarResult {
-  code: string;
-  nombre: string;
-  bandera: string;
-  score: number;
-  reason: string;
-}
-
-export function findSimilarDestinations(
-  code: string,
-  limit: number = 5
-): SimilarResult[] {
-  const destinations = getDestinationsWithFeatures();
-  const target = destinations.find(d => d.code === code);
-  
-  if (!target) return [];
-  
-  const targetFeatures = normalizeSingle(destinations, target);
-  
-  const scored = destinations
-    .filter(d => d.code !== code)
-    .map(d => {
-      const features = normalizeSingle(destinations, d);
-      const score = 1 / (1 + euclideanDistance(targetFeatures, features));
-      return { ...d, score };
-    })
-    .sort((a, b) => b.score - a.score)
-    .slice(0, limit)
-    .map(d => ({
-      code: d.code,
-      nombre: d.nombre,
-      bandera: d.bandera,
-      score: Math.round(d.score * 100) / 100,
-      reason: getSimilarityReason(target, d),
-    }));
-  
-  return scored;
-}
-
-function normalizeSingle(
-  destinations: DestinationFeatures[],
-  dest: DestinationFeatures
-): number[] {
-  return [
-    dest.riskScore,
-    dest.ipc,
-    dest.distanciaES / 15000,
-    Math.log10(dest.arrivals + 1) / 8,
-  ];
-}
-
-function euclideanDistance(a: number[], b: number[]): number {
-  return Math.sqrt(a.reduce((sum, val, i) => sum + Math.pow(val - b[i], 2), 0));
-}
-
-function getSimilarityReason(target: DestinationFeatures, dest: DestinationFeatures): string {
-  const reasons: string[] = [];
-  if (Math.abs(target.riskScore - dest.riskScore) < 15) reasons.push('seguridad similar');
-  if (Math.abs(target.ipc - dest.ipc) < 15) reasons.push('coste similar');
-  if (target.continente === dest.continente) reasons.push('mismo continente');
-  if (target.idiomaEspanol === dest.idiomaEspanol && dest.idiomaEspanol) reasons.push('español');
-  return reasons.length > 0 ? reasons.join(', ') : 'perfil cercano';
+  return destinations.sort((a, b) => b.arrivals - a.arrivals).slice(0, 95);
 }
 
 export const clusteringFeatures = [
@@ -281,11 +207,10 @@ function kMeansSimple(
 }
 
 const clusterLabels = [
-  { label: 'Economicos cercan', description: 'Coste bajo, cerca de España, riesgo bajo', color: 'green' },
+  { label: 'Economicos cerca', description: 'Coste bajo, cerca de España, riesgo bajo', color: 'green' },
   { label: 'Turisticos populares', description: 'Mucho turismo, buena infraestructura', color: 'blue' },
-  { label: 'Exoticos aventura', description: 'Lejanos, riesgo medio-alto, experiencia unica', color: 'orange' },
+  { label: 'Exoticos aventura', description: 'Lejanos, riesgo medio-alto, experiencia única', color: 'orange' },
   { label: 'Europeos cercanos', description: 'Europa, coste medio, muy seguros', color: 'cyan' },
-  { label: 'Lujo caro', description: 'Coste alto, alta seguridad', color: 'purple' },
 ];
 
 export function clusterDestinations(
@@ -309,6 +234,157 @@ export function clusterDestinations(
   }));
 }
 
+export interface ItineraryRecommendation {
+  destination: string;
+  score: number;
+  reason: string;
+  days: number;
+  bestTime: string[];
+  highlights: string[];
+}
+
+export interface TravelPreferences {
+  preferencia: TravelPreference;
+  presupuesto: 'bajo' | 'medio' | 'alto';
+  duracion: number;
+  desdeES: boolean;
+}
+
+export function getRecommendations(
+  preferences: TravelPreferences,
+  limit: number = 3
+): ItineraryRecommendation[] {
+  const destinations = getDestinationsWithFeatures();
+  const preference = preferences.preferencia;
+  const budget = preferences.presupuesto;
+  
+  const scored = destinations
+    .filter(d => travelAttributes[d.code])
+    .map(d => {
+      const attrs = travelAttributes[d.code];
+      const pais = paisesData[d.code];
+      let score = 0;
+      const highlights: string[] = [];
+      
+      const prefScore = {
+        playa: attrs.playa,
+        cultural: attrs.cultural,
+        naturaleza: attrs.naturaleza,
+        familiar: attrs.familiar,
+      }[preference] || 5;
+      
+      score += prefScore * 3;
+      
+      if (prefScore >= 9) score += 20;
+      else if (prefScore >= 7) score += 12;
+      else if (prefScore >= 5) score += 5;
+      
+      if (budget === 'bajo') {
+        if (d.ipc < 50) score += 15;
+        else if (d.ipc < 70) score += 10;
+        else if (d.ipc < 90) score += 5;
+      } else if (budget === 'medio') {
+        if (d.ipc >= 50 && d.ipc < 100) score += 12;
+        else if (d.ipc >= 100) score += 5;
+      } else {
+        if (d.ipc >= 90) score += 15;
+        else if (d.ipc >= 70) score += 8;
+      }
+      
+      if (preferences.desdeES) {
+        if (d.distanciaES < 2000) score += 10;
+        else if (d.distanciaES < 5000) score += 6;
+        else if (d.distanciaES < 10000) score += 3;
+      }
+      
+      if (pais?.nivelRiesgo === 'sin-riesgo') score += 8;
+      else if (pais?.nivelRiesgo === 'bajo') score += 4;
+      else if (pais?.nivelRiesgo === 'medio') score -= 5;
+      
+      if (attrs.familiar >= 8) highlights.push('familiar');
+      if (attrs.naturaleza >= 8) highlights.push('naturaleza');
+      if (attrs.cultural >= 8) highlights.push('cultural');
+      if (attrs.playa >= 8) highlights.push('playa');
+      
+      return {
+        destination: d.code,
+        score,
+        reason: highlights.slice(0, 3).join(', ') || 'opción equilibrada',
+        days: attrs.duracionOptima,
+        bestTime: attrs.mejorEpoca,
+        highlights,
+      };
+    })
+    .sort((a, b) => b.score - a.score)
+    .slice(0, limit);
+  
+  return scored;
+}
+
+export interface SimilarResult {
+  code: string;
+  nombre: string;
+  bandera: string;
+  score: number;
+  reason: string;
+}
+
+function normalizeSingle(
+  destinations: DestinationFeatures[],
+  dest: DestinationFeatures
+): number[] {
+  return [
+    dest.riskScore,
+    dest.ipc,
+    dest.distanciaES / 15000,
+    Math.log10(dest.arrivals + 1) / 8,
+  ];
+}
+
+function euclideanDistance(a: number[], b: number[]): number {
+  return Math.sqrt(a.reduce((sum, val, i) => sum + Math.pow(val - b[i], 2), 0));
+}
+
+function getSimilarityReason(target: DestinationFeatures, dest: DestinationFeatures): string {
+  const reasons: string[] = [];
+  if (Math.abs(target.riskScore - dest.riskScore) < 15) reasons.push('seguridad相似');
+  if (Math.abs(target.ipc - dest.ipc) < 15) reasons.push('coste相似');
+  if (target.continente === dest.continente) reasons.push('同一大洲');
+  if (target.idiomaEspanol === dest.idiomaEspanol && dest.idiomaEspanol) reasons.push('西班牙语');
+  return reasons.length > 0 ? reasons.join(', ') : 'perfil cercano';
+}
+
+export function findSimilarDestinations(
+  code: string,
+  limit: number = 5
+): SimilarResult[] {
+  const destinations = getDestinationsWithFeatures();
+  const target = destinations.find(d => d.code === code);
+  
+  if (!target) return [];
+  
+  const targetFeatures = normalizeSingle(destinations, target);
+  
+  const scored = destinations
+    .filter(d => d.code !== code)
+    .map(d => {
+      const features = normalizeSingle(destinations, d);
+      const score = 1 / (1 + euclideanDistance(targetFeatures, features));
+      return { ...d, score };
+    })
+    .sort((a, b) => b.score - a.score)
+    .slice(0, limit)
+    .map(d => ({
+      code: d.code,
+      nombre: d.nombre,
+      bandera: d.bandera,
+      score: Math.round(d.score * 100) / 100,
+      reason: getSimilarityReason(target, d),
+    }));
+  
+  return scored;
+}
+
 export interface TourismKPI {
   arrivals: number;
   receipts: number;
@@ -316,29 +392,22 @@ export interface TourismKPI {
   stayAvg: number;
 }
 
+const turismoData: Record<string, TourismKPI> = {
+  es: { arrivals: 85000000, receipts: 92000000000, spendPerDay: 85, stayAvg: 8 },
+  fr: { arrivals: 100000000, receipts: 65000000000, spendPerDay: 75, stayAvg: 7 },
+  us: { arrivals: 67000000, receipts: 175000000000, spendPerDay: 150, stayAvg: 10 },
+  it: { arrivals: 57000000, receipts: 48000000000, spendPerDay: 80, stayAvg: 7 },
+};
+
 export function getTourismKPIs(): Record<string, TourismKPI> {
-  const kpis: Record<string, TourismKPI> = {};
-  Object.entries(turismoData).forEach(([code, data]) => {
-    kpis[code] = {
-      arrivals: data.arrivals,
-      receipts: data.receipts,
-      spendPerDay: data.spendPerDay || Math.round(data.receipts / data.arrivals),
-      stayAvg: data.stayAvg || 7,
-    };
-  });
-  return kpis;
+  return turismoData;
 }
 
 export function getTopDestinations(metric: string, limit: number = 10) {
   const destinations = getDestinationsWithFeatures();
   const sorted = [...destinations].sort((a, b) => {
     if (metric === 'arrivals') return b.arrivals - a.arrivals;
-    if (metric === 'receipts') return b.receipts - a.receipts;
-    if (metric === 'spendPerDay') {
-      const aSpend = turismoData[a.code]?.spendPerDay || 0;
-      const bSpend = turismoData[b.code]?.spendPerDay || 0;
-      return bSpend - aSpend;
-    }
+    if (metric === 'receipts') return b.receipts - b.receipts;
     return 0;
   });
 
@@ -348,7 +417,5 @@ export function getTopDestinations(metric: string, limit: number = 10) {
     bandera: d.bandera,
     arrivals: d.arrivals,
     receipts: d.receipts,
-    spendPerDay: turismoData[d.code]?.spendPerDay || 0,
-    stayAvg: turismoData[d.code]?.stayAvg || 0,
   }));
 }

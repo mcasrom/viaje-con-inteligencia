@@ -1286,3 +1286,67 @@ const rules = {
 ```
 
 ---
+
+## 🚀 ML RECOMENDACIONES - IMPLEMENTADO (2026-04-26)
+
+### ✅ Completado
+| Feature | Estado | Archivo |
+|---------|--------|---------|
+| Atributos viaje por país (30 países) | ✅ Done | `src/data/clustering.ts` |
+| API /api/ai/recommend | ✅ Done | `src/app/api/ai/recommend/route.ts` |
+| UI PlanificadorSimple | ✅ Done | `src/components/PlanificadorSimple.tsx` |
+| Selector preferencias | ✅ Done | UI integrada |
+
+### 📊 Sistema ML Implementado
+
+**Preferencias soportadas:**
+- 🏖️ Playa (playa: 1-10)
+- 🏛️ Cultural (cultural: 1-10)
+- 🏔️ Naturaleza (naturaleza: 1-10)
+- 👨‍👩‍👧‍👦 Familiar (familiar: 1-10)
+
+**Scoring ML mejorado:**
+```
+score = (prefScore × 3) + bonus_pref + bonus_budget + bonus_distancia + bonus_riesgo
+
+# Preferencias: ≥9 (+20), ≥7 (+12), ≥5 (+5)
+# Budget bajo: ipc<50 (+15), <70 (+10), <90 (+5)
+# Budget medio: 50-100 (+12), >100 (+5)
+# Budget alto: >90 (+15), >70 (+8)
+# Distancia: <2000km (+10), <5000 (+6), <10000 (+3)
+# Riesgo: sin-riesgo (+8), bajo (+4), medio (-5)
+```
+
+**Cobertura: 30 países**
+```
+Europa: es, fr, it, gb, de, pt, gr, hr, cz, pl, nl, ch
+Américas: us, ca, mx, br, ar
+Asia: jp, cn, th, in, vn, id, au, nz, tr
+África: eg, ma, za
+```
+
+**API:**
+```
+GET /api/ai/recommend?preferencia=playa&presupuesto=medio&duracion=7&limit=3
+→ { preferences, recommendations: [{ destination, nombre, bandera, nivelRiesgo, score, days, bestTime, highlights }] }
+```
+
+### 🎯 Experiencia de Usuario
+1. Seleccionar tipo de viaje (4 botones)
+2. Seleccionar presupuesto (dropdown)
+3. Seleccionar duración (dropdown)
+4. Click "Obtener Recomendaciones"
+5. Ver 3 opciones con scoring ML
+6. Click → análisis del destino
+
+### 📈 Datos Coverage
+- 30 países con atributos completos
+- scoring dinámico basado en:
+  - prefs (playa/cultural/naturaleza/familiar)
+  - ipc (coste vida)
+  - distanciaES
+  - nivelRiesgo (MAEC)
+
+---
+
+*End of file - total 1355 lines)*
