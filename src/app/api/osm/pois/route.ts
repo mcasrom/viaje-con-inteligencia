@@ -70,11 +70,9 @@ export async function GET(request: NextRequest) {
   const tag = topTypes[type];
 
   const query = `[out:json][timeout:30];
-area["name"="${areaName}"]->.a;
-(
-  node["${tag}"](area.a);
-  way["${tag}"](area.a);
-);
+area["name"="${areaName}"]["admin_level"=2]->.a;
+node["${tag}"](area.a);
+way["${tag}"](area.a);
 out center ${limit};
 `.trim();
 
