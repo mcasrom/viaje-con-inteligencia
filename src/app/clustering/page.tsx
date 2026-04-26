@@ -5,14 +5,13 @@ import Link from 'next/link';
 import { ArrowLeft, Map, Users, Globe, Target, RefreshCw, Sparkles, ChevronRight, Database, Eye, Info } from 'lucide-react';
 
 const dataSources = [
-  { name: 'paisesData', source: 'src/data/paises.ts', fields: ['nombre', 'continente', 'nivelRiesgo', 'ipc', 'banderas', 'coords'], type: 'principal' },
-  { name: 'MAEC', source: 'scraping diario', fields: ['nivelRiesgo'], type: 'riesgo' },
-  { name: 'OpenStreetMap', source: 'OSM API', fields: ['faros', 'playas', 'parques', 'miradores'], type: 'geografico' },
-  { name: 'Wikidata', source: 'wikidata.org', fields: ['patrimonio', 'faros', 'relaciones'], type: 'semantico' },
-  { name: 'IGN/CNIG', source: 'ign.es', fields: ['elevacion', 'rutas', 'hidrografia'], type: 'topografico' },
-  { name: 'AEMET', source: 'aemet.es API', fields: ['temperatura', 'viento', 'estacion'], type: 'clima' },
-  { name: 'INE', source: 'ine.es', fields: ['turistas', 'densidad', 'estacionalidad'], type: 'turismo' },
-  { name: 'travelAttributes', source: 'hardcoded (30)', fields: ['playa', 'cultural', 'naturaleza', 'familiar'], type: 'ml' },
+  { name: 'paisesData', source: 'src/data/paises.ts', fields: ['nombre', 'continente', 'nivelRiesgo', 'ipc', 'banderas', 'coords'], type: 'principal', dynamic: false, note: 'static' },
+  { name: 'MAEC', source: 'scraping diario', fields: ['nivelRiesgo'], type: 'riesgo', dynamic: true, note: 'cron 6:00 UTC' },
+  { name: 'OpenStreetMap', source: 'OSM API', fields: ['faros', 'playas', 'parques', 'miradores'], type: 'geografico', dynamic: false, note: 'sin usar' },
+  { name: 'Wikidata', source: 'wikidata.org', fields: ['patrimonio', 'faros', 'relaciones'], type: 'semantico', dynamic: false, note: 'sin usar' },
+  { name: 'INE', source: 'ine.es', fields: ['turistas', 'densidad', 'estacionalidad'], type: 'turismo', dynamic: false, note: 'sin integrar' },
+  { name: 'AEMET', source: 'aemet.es API', fields: ['temperatura', 'viento', 'estacion'], type: 'clima', dynamic: false, note: 'sin usar' },
+  { name: 'travelAttributes', source: 'hardcoded (30)', fields: ['playa', 'cultural', 'naturaleza', 'familiar'], type: 'ml', dynamic: false, note: '⚠️ manual' },
 ];
 
 interface Cluster {
@@ -41,13 +40,28 @@ export default function ClusteringPage() {
   const [clusters, setClusters] = useState<Cluster[]>([]);
   const [destinations, setDestinations] = useState<Destination[]>([]);
   const [loading, setLoading] = useState(true);
+  const [nClusters, setNClusters] = useState(4);
   const [selectedCluster, setSelectedCluster] = useState<number | null>(null);
   const [showSources, setShowSources] = useState(false);
-  const [nClusters, setNClusters] = useState(4);
+  const [lastUpdate, setLastUpdate] = useState<{maec?: string; clustering?: string}>({});
 
   useEffect(() => {
     fetchClustering();
+    fetchLastUpdate();
   }, [nClusters]);
+
+  const fetchLastUpdate = async () => {
+    try {
+      const res = await fetch('/api/cron/status');
+      const data = await res.json();
+      setLastUpdate({
+        maec: data.lastScrapeMaec,
+        clustering: new Date().toISOString(),
+      });
+    } catch (e) {
+      console.error('Error fetching status:', e);
+    }
+  };
 
   const fetchClustering = async () => {
     setLoading(true);
@@ -127,9 +141,13 @@ export default function ClusteringPage() {
                 };
                 return (
                   <div key={ds.name} className={`rounded-lg p-3 border ${typeColors[ds.type] || 'bg-slate-700'}`}>
-                    <div className="text-white font-medium text-sm">{ds.name}</div>
+                    <div className="flex items-center justify-between">
+                      <div className="text-white font-medium text-sm">{ds.name}</div>
+                      {ds.dynamic && <span className="text-green-400 text-xs">✓ live</span>}
+                      {!ds.dynamic && ds.note?.includes('⚠️') && <span className="text-red-400 text-xs">⚠️</span>}
+                    </div>
                     <div className="text-slate-400 text-xs">{ds.source}</div>
-                    <div className="text-slate-500 text-xs mt-1">{ds.fields.join(', ')}</div>
+                    <div className="text-slate-500 text-xs mt-1">{ds.note}</div>
                   </div>
                 );
               })}
@@ -154,6 +172,11 @@ export default function ClusteringPage() {
             <Target className="w-4 h-4" />
             ML no-supervisado • 50+ países • 4 features
           </p>
+          {lastUpdate.maec && (
+            <p className="text-slate-500 text-xs mt-2">
+              MAEC actualizado: {new Date(lastUpdate.maec).toLocaleString('es-ES')}
+            </p>
+          )}
         </div>
 
         <div className="flex items-center justify-center gap-4 mb-8">
