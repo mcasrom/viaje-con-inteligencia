@@ -5,6 +5,19 @@ export const runtime = 'edge';
 
 const OSM_OVERPASS = 'https://overpass-api.de/api/interpreter';
 
+const countryAreas: Record<string, string> = {
+  es: 'España',
+  fr: 'France',
+  it: 'Italia',
+  pt: 'Portugal',
+  gr: 'Ελλάδα',
+  tr: 'Türkiye',
+  mx: 'México',
+  jp: '日本',
+  th: 'ไทย',
+  us: 'United States',
+};
+
 const priorityCountries: Record<string, [number, number, number, number]> = {
   es: [36.0, -10.0, 44.0, 5.0],
   fr: [41.0, -6.0, 51.0, 10.0],
@@ -42,7 +55,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({
       error: 'País no soportado',
       validCountries: Object.keys(priorityCountries).sort(),
-      message: 'Solo países top 10 turismo disponibles',
+      message: 'Solo países top 10 turismo',
     }, { status: 400 });
   }
 
@@ -50,18 +63,17 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({
       error: 'Tipo no válido',
       validTypes: Object.keys(topTypes),
-      message: 'Solo lighthouse, beach, museum, castle',
     }, { status: 400 });
   }
 
-  const bbox = priorityCountries[country];
+  const areaName = countryAreas[country] || country;
   const tag = topTypes[type];
 
-  const query = `
-[out:json][timeout:30];
+  const query = `[out:json][timeout:30];
+area["name"="${areaName}"]->.a;
 (
-  node["${tag}"](${bbox[0]},${bbox[1]},${bbox[2]},${bbox[3]});
-  way["${tag}"](${bbox[0]},${bbox[1]},${bbox[2]},${bbox[3]});
+  node["${tag}"](area.a);
+  way["${tag}"](area.a);
 );
 out center ${limit};
 `.trim();
@@ -79,6 +91,16 @@ out center ${limit};
 
     const osmData = await response.json();
     
+    if (!osmData.elements || osmData.elements.length === 0) {
+      return NextResponse.json({
+        source: 'OpenStreetMap',
+        query: { country, type, typeName: topTypeNames[type] },
+        message: 'Sin resultados para esta query',
+        count: 0,
+        pois: [],
+      });
+    }
+
     const pois = osmData.elements.map((el: any) => {
       const tags = el.tags || {};
       return {
