@@ -1,8 +1,8 @@
 {
   "name": "Viaje con Inteligencia",
   "short_name": "ViajeInteligencia",
-  "description": "Documentos de viaje offline - Boarding passes, hotel confirmations, notas",
-  "start_url": "/documentos",
+  "description": "Tu guía de viajes inteligentes. Mapa de riesgos, alertas IA y herramientas premium.",
+  "start_url": "/",
   "display": "standalone",
   "background_color": "#0f172a",
   "theme_color": "#3b82f6",

@@ -20,7 +20,7 @@ export default function PWAPage() {
             <span>App Móvil - Instala Nuestra PWA</span>
           </div>
           <h1 className="text-3xl md:text-4xl font-bold mb-4">
-            🇺️ Viaje con Inteligencia
+            ✈️ Viaje con Inteligencia
           </h1>
           <p className="text-slate-400 text-lg">
             Añade la app a tu pantalla de inicio para acceso rápido como una aplicación nativa.
