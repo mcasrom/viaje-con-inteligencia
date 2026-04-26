@@ -1349,4 +1349,98 @@ GET /api/ai/recommend?preferencia=playa&presupuesto=medio&duracion=7&limit=3
 
 ---
 
-*End of file - total 1355 lines)*
+## 🚀 INTEGRACIÓN OSINT - Fuentes datos dinámicos (2026-04-26)
+
+### ⚠️ Problema actual
+Datos hardcoded que还需mejora:
+- `travelAttributes` (30 países) - manual
+- `turistas` - aproximado de paisesData
+- `ipc` - solo ~30 países
+
+### ✅ Fuentes OSINT a integrar
+
+| Fuente | Datos | API | Estado |
+|--------|-------|-----|------|
+| INE | turistas, densidad, estacionalidad | ine.es | ⏳ Pendiente |
+| AEMET | clima, temperatura | aemet.es API | ⏳ Pendiente |
+| OpenStreetMap | faros, playas, parques | overpass API | ⏳ Pendiente |
+| Wikidata | patrimonio, faros | wikidata.org | ⏳ Pendiente |
+| Macro API | IPC global | macrotrends | ⏳ Pendiente |
+
+### 📋 Plan integración
+
+#### Fase 1: INE (turistas)
+```
+API: https://www.ine.es/prodyser/tour小结/inicio.htm
+Scraping: tablas turistas por país
+Meta: extraer arrivals 2024 para 95 países
+```
+
+#### Fase 2: AEMET/clima
+```
+API: https://opendata.aemet.es/cierre-sun
+Web: scraping clima por región
+Meta: mejor época por destino
+```
+
+#### Fase 3: OpenStreetMap (POIs)
+```
+Overpass API: https://overpass-api.de
+Query: faros, playas, miradores
+Meta: clustering geográfico
+```
+
+#### Fase 4: Macro/IPC
+```
+API: https://api.macrotrends.io
+Meta: IPC real para 50+ países
+```
+
+### 🔧 Endpoints a crear
+- `/api/ine/tourists` - datos INE
+- `/api/osm/pois` - OpenStreetMap  
+- `/api/climate/best-season` - AEMET
+
+### 📌 Referencias APIs gratuitas
+
+**INE - Turistas:**
+- Portal: https://www.ine.es/prodyser/tour小结/inicio.htm
+- Datos: arrivals, pernoctaciones, estancia media
+- Frecuencia: anual
+- Formato: HTML таблицы
+
+**Overpass OSM:**
+- API: https://overpass-api.de/api/interpreter
+- Query ejemplo:
+```
+[out:json];
+node["man_made"="lighthouse"](37,-10,44,5);
+out;
+```
+
+**AEMET:**
+- API: https://opendata.aemet.es/cierre-sun
+- key: solicitar en aemet.es
+- Datos: temperatura, precipitación, viento
+
+**Wikidata SPARQL:**
+- Endpoint: https://query.wikidata.org/sparql
+- Query ejemplo:
+```
+SELECT ?place ?coord WHERE {
+  ?place wdt:P31 wd:Q39715.
+  ?place wdt:P625 ?coord.
+}
+```
+
+### 📊 Progreso actual
+| Datos | Fuente | Estado |
+|------|-------|--------|
+| nivelRiesgo | MAEC | ✅ Live (cron 6:00) |
+| ipc | paisesData | ⚠️ Static |
+| turistas | paisesData.turisticos | ⚠️ Aproximado |
+| travelAttributes | hardcoded | ⚠️ Manual |
+
+---
+
+*End of file - total 1430 lines)*
