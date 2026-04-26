@@ -1,23 +1,20 @@
 import { NextResponse } from 'next/server';
-import { supabase, isSupabaseConfigured } from '@/lib/supabase';
+import { createSupabaseServerClient } from '@/lib/supabase-server';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
-  if (!isSupabaseConfigured()) {
-    return NextResponse.json({ premium: false, status: 'no_configured' });
-  }
-
   try {
-    const { data: { user }, error } = await supabase!.auth.getUser();
+    const supabase = await createSupabaseServerClient();
+    const { data: { user }, error } = await supabase.auth.getUser();
 
     if (error || !user) {
       return NextResponse.json({ premium: false, status: 'no_session' });
     }
 
-    const { data: profile } = await supabase!
+    const { data: profile } = await supabase
       .from('profiles')
-      .select('is_premium, subscription_status, trial_end')
+      .select('is_premium, subscription_status, trial_start, trial_end')
       .eq('id', user.id)
       .single();
 
@@ -31,6 +28,7 @@ export async function GET() {
       email: user.email,
     });
   } catch (err) {
+    console.error('Subscription check error:', err);
     return NextResponse.json({ premium: false, status: 'error' });
   }
 }
