@@ -1,76 +1,36 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
+import { NextResponse } from 'next/server';
+import { supabase, isSupabaseConfigured } from '@/lib/supabase';
 
 export const dynamic = 'force-dynamic';
 
-export async function GET(req: NextRequest) {
+export async function GET() {
+  if (!isSupabaseConfigured()) {
+    return NextResponse.json({ premium: false, status: 'no_configured' });
+  }
+
   try {
-    const authHeader = req.headers.get('authorization');
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-    
-    if (!supabaseUrl || !supabaseKey) {
-      return NextResponse.json({ 
-        premium: false, 
-        status: 'no_configured',
-        message: 'Sistema de suscripciones no configurado' 
-      });
+    const { data: { user }, error } = await supabase!.auth.getUser();
+
+    if (error || !user) {
+      return NextResponse.json({ premium: false, status: 'no_session' });
     }
 
-    const supabase = createClient(supabaseUrl, supabaseKey);
-    
-    if (!authHeader) {
-      return NextResponse.json({ 
-        premium: false, 
-        status: 'no_session',
-        message: 'No has iniciado sesión' 
-      });
-    }
-
-    const token = authHeader.replace('Bearer ', '');
-    const { data: { user }, error: authError } = await supabase.auth.getUser(token);
-    
-    if (authError || !user) {
-      return NextResponse.json({ 
-        premium: false, 
-        status: 'invalid_session',
-        message: 'Sesión inválida' 
-      });
-    }
-
-    const { data: profile, error: profileError } = await supabase
+    const { data: profile } = await supabase!
       .from('profiles')
-      .select('*')
+      .select('is_premium, subscription_status, trial_end')
       .eq('id', user.id)
       .single();
 
-    if (profileError) {
-      return NextResponse.json({ 
-        premium: false, 
-        status: 'no_profile',
-        message: 'Perfil no encontrado',
-        user: user.id 
-      });
-    }
-
-    const isPremium = profile.is_premium || profile.subscription_status === 'active';
-    const subscriptionStatus = profile.subscription_status || 'none';
-    const trialEnd = profile.trial_end;
+    const isPremium = profile?.is_premium || profile?.subscription_status === 'active';
+    const trialEnd = profile?.trial_end || null;
 
     return NextResponse.json({
       premium: isPremium,
-      status: subscriptionStatus,
-      user: user.id,
-      email: user.email,
+      status: profile?.subscription_status || 'none',
       trialEnd,
-      message: isPremium ? 'Acceso premium activo' : 'Acceso premium no activo',
+      email: user.email,
     });
-  } catch (error) {
-    console.error('Subscription check error:', error);
-    return NextResponse.json({ 
-      premium: false, 
-      status: 'error',
-      message: 'Error al verificar suscripción' 
-    }, { status: 500 });
+  } catch (err) {
+    return NextResponse.json({ premium: false, status: 'error' });
   }
 }
