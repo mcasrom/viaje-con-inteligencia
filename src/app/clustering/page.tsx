@@ -2,7 +2,14 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Map, Users, Globe, Target, RefreshCw, Sparkles, ChevronRight } from 'lucide-react';
+import { ArrowLeft, Map, Users, Globe, Target, RefreshCw, Sparkles, ChevronRight, Database, Eye, Info } from 'lucide-react';
+
+const dataSources = [
+  { name: 'paisesData', source: 'src/data/paises.ts', fields: ['nombre', 'continente', 'nivelRiesgo', 'ipc', 'banderas', 'coords'] },
+  { name: 'turismoData', source: 'paisesData.turisticos', fields: ['turistasAnio'] },
+  { name: 'MAEC', source: 'scraping diario', fields: ['nivelRiesgo'] },
+  { name: 'travelAttributes', source: 'hardcoded (30)', fields: ['playa', 'cultural', 'naturaleza', 'familiar'] },
+];
 
 interface Cluster {
   cluster: number;
@@ -31,6 +38,7 @@ export default function ClusteringPage() {
   const [destinations, setDestinations] = useState<Destination[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedCluster, setSelectedCluster] = useState<number | null>(null);
+  const [showSources, setShowSources] = useState(false);
   const [nClusters, setNClusters] = useState(4);
 
   useEffect(() => {
@@ -84,8 +92,39 @@ export default function ClusteringPage() {
             <Sparkles className="w-5 h-5 text-purple-400" />
             <span className="text-purple-400 font-medium">Clustering ML</span>
           </div>
+          <button
+            onClick={() => setShowSources(!showSources)}
+            className="flex items-center gap-2 px-3 py-1 bg-slate-700 hover:bg-slate-600 rounded-lg text-slate-300 text-sm transition-colors"
+          >
+            <Database className="w-4 h-4" />
+            {showSources ? 'Ocultar fuentes' : 'Ver fuentes'}
+          </button>
         </div>
       </header>
+
+      {showSources && (
+        <div className="bg-slate-800 border-b border-slate-700">
+          <div className="max-w-7xl mx-auto px-6 py-4">
+            <h3 className="text-white font-medium mb-3 flex items-center gap-2">
+              <Database className="w-4 h-4" />
+              Fuentes de datos:
+            </h3>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {dataSources.map(ds => (
+                <div key={ds.name} className="bg-slate-700 rounded-lg p-3">
+                  <div className="text-purple-400 font-medium text-sm">{ds.name}</div>
+                  <div className="text-slate-400 text-xs">{ds.source}</div>
+                  <div className="text-slate-500 text-xs mt-1">→ {ds.fields.join(', ')}</div>
+                </div>
+              ))}
+            </div>
+            <p className="text-slate-500 text-xs mt-3 flex items-center gap-2">
+              <Info className="w-3 h-3" />
+              distanciaES calculada via Haversine desde coordenadas GPS (paisesData.mapaCoordenadas)
+            </p>
+          </div>
+        </div>
+      )}
 
       <main className="max-w-7xl mx-auto px-6 py-8">
         <div className="text-center mb-10">
