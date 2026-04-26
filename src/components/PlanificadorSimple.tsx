@@ -21,6 +21,8 @@ interface Recommendation {
   days: number;
   bestTime: string[];
   highlights: string[];
+  ipc?: number;
+  nivel?: string;
 }
 
 const preferenciaLabels: Record<TravelPreference, { label: string; icon: string; desc: string }> = {
@@ -163,8 +165,13 @@ export default function PlanificadorSimple() {
                         {rec.nivelRiesgo === 'sin-riesgo' ? '✓ Seguro' : rec.nivelRiesgo}
                       </span>
                     </div>
-                    <div className="text-xs text-slate-600 mb-2">
-                      {rec.highlights.slice(0, 2).join(' • ')}
+                    <div className="flex items-center gap-2 text-xs text-slate-600 mb-2">
+                      <span>{rec.highlights.slice(0, 2).join(' • ')}</span>
+                      {rec.ipc !== undefined && rec.ipc !== null && (
+                        <span className="ml-auto px-2 py-0.5 bg-slate-100 rounded-full">
+                          📊 {rec.ipc.toFixed(1)}% IPC
+                        </span>
+                      )}
                     </div>
                     <div className="flex items-center justify-between text-xs text-slate-500">
                       <span>⏱️ {rec.days} días</span>

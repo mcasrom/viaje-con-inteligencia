@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, Scale, AlertTriangle, Globe, Calendar, DollarSign, Shield, Check, X, Plane, Bot, Lock } from 'lucide-react';
 import { getTodosLosPaises, getLabelRiesgo, NivelRiesgo, DatoPais } from '@/data/paises';
@@ -29,6 +29,25 @@ export default function CompararPage() {
   const [aiLoading, setAiLoading] = useState(false);
   const [aiResult, setAiResult] = useState('');
   const [showLockedModal, setShowLockedModal] = useState(false);
+  const [ipcData, setIpcData] = useState<Record<string, { ipc: number; nivel: string }>>({});
+  const [ipcLoading, setIpcLoading] = useState(false);
+
+  useEffect(() => {
+    if (selected.length > 0) {
+      setIpcLoading(true);
+      fetch(`/api/rankings/compare?countries=${selected.join(',')}`)
+        .then(res => res.json())
+        .then(data => {
+          const ipcMap: Record<string, { ipc: number; nivel: string }> = {};
+          data.countries?.forEach((c: any) => {
+            if (c.ipc) ipcMap[c.code] = { ipc: c.ipc, nivel: c.ipcNivel };
+          });
+          setIpcData(ipcMap);
+        })
+        .catch(console.error)
+        .finally(() => setIpcLoading(false));
+    }
+  }, [selected]);
 
   const togglePais = (codigo: string) => {
     if (selected.includes(codigo)) {
@@ -281,12 +300,30 @@ export default function CompararPage() {
                   ))}
                 </tr>
                 <tr>
-                  <td className="p-4 text-slate-300">🛒 IPC (inflación)</td>
-                  {selectedPaises.map(p => (
-                    <td key={p?.codigo} className="p-4 text-center text-white">
-                      {p?.indicadores?.ipc || '-'}
-                    </td>
-                  ))}
+                  <td className="p-4 text-slate-300">📊 IPC (inflación 2024)</td>
+                  {selectedPaises.map(p => {
+                    const ipc = ipcData[p?.codigo];
+                    return (
+                      <td key={p?.codigo} className="p-4 text-center">
+                        {ipcLoading ? (
+                          <span className="text-slate-500">...</span>
+                        ) : ipc ? (
+                          <span className="text-white">
+                            {ipc.ipc.toFixed(1)}%
+                            <span className={`ml-1 text-xs ${
+                              ipc.nivel === 'Muy Bajo' || ipc.nivel === 'Bajo' ? 'text-green-400' :
+                              ipc.nivel === 'Medio' ? 'text-yellow-400' :
+                              'text-red-400'
+                            }`}>
+                              ({ipc.nivel})
+                            </span>
+                          </span>
+                        ) : (
+                          <span className="text-slate-500">-</span>
+                        )}
+                      </td>
+                    );
+                  })}
                 </tr>
                 <tr>
                   <td className="p-4 text-slate-300">💰 Coste vida</td>

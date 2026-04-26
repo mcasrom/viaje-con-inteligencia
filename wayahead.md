@@ -1574,4 +1574,62 @@ GET /api/ai/clustering?clusters=4
 
 ---
 
-*End of file - total 1580 lines)*
+## 🚀 SPRINT 28: Mejoras ML/OSINT (2026-04-26) - COMPLETADO ✅
+
+### ✅ Completado
+| # | Tarea | API |
+|---|--------|-----|
+| 1 | IPC real World Bank | `/api/wb/ipc` |
+| 2 | POIs en UI países | nueva tab "POIs" |
+| 3 | PlanificadorSimple + IPC | mostrar IPC en tarjetas |
+
+### 📊 Estado actual
+| Fuente | Cover | Estado |
+|--------|-------|--------|
+| INE turismo | 32 países | ✅ Real |
+| MAEC riesgo | 95 países | ✅ Live |
+| Wikidata POIs | 8 países | ✅ Live |
+| IPC World Bank | 50 países | ✅ Live (2024) |
+
+### 🎯 APIs Producción
+```bash
+# Turistas
+GET /api/ine/tourists
+
+# IPC (World Bank)
+GET /api/wb/ipc?country=es
+GET /api/wb/ipc?all=true
+
+# POIs
+GET /api/wikidata/pois?country=es&type=castle
+
+# Cluster ML
+GET /api/ai/clustering?clusters=4
+
+# Recomendaciones
+GET /api/ai/recommend?preferencia=playa&presupuesto=medio
+```
+
+---
+
+## 🚀 SPRINT 29: Potencial (2026-04-27)
+
+### ⏳ Pendiente
+| # | Tarea | Priority |
+|---|--------|----------|
+| 1 | API weather - forecast 7 días | Alta |
+| 2 | Ranking países por precio (IPC dynamic) | Media |
+| 3 | Comparador visual países | Media |
+| 4 | Tarea #4 | - |
+
+### 💡 Ideas Potenciales
+- Weather forecast 7 días (Open-Meteo ya en uso)
+- IPC dinámico rankings (usar /api/wb/ipc?all=true)
+- Comparador visual side-by-side
+- Mejora IST (índice saturación)
+- Alerts push personalizada
+- Cache redis (Upstash)
+
+---
+
+*End of file - total 1620 lines)*

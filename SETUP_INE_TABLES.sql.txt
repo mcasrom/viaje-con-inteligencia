@@ -1,0 +1,58 @@
+-- =====================================================
+-- INE TOURISM TABLES - Supabase SQL
+-- Ejecutar en Supabase SQL Editor
+-- =====================================================
+
+-- Tabla principal: datos mensuales tourism España
+CREATE TABLE IF NOT EXISTS ine_tourism_history (
+  id SERIAL PRIMARY KEY,
+  date TEXT NOT NULL UNIQUE,
+  year INT NOT NULL,
+  month INT NOT NULL,
+  total_tourists BIGINT DEFAULT 0,
+  variation FLOAT DEFAULT 0,
+  total_spend BIGINT DEFAULT 0,
+  avg_per_tourist FLOAT DEFAULT 0,
+  avg_daily FLOAT DEFAULT 0,
+  avg_stay FLOAT DEFAULT 0,
+  source TEXT DEFAULT 'INE-FRONTUR-EGATUR',
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Tabla: datos por comunidad autónoma
+CREATE TABLE IF NOT EXISTS ine_region_history (
+  id SERIAL PRIMARY KEY,
+  date TEXT NOT NULL,
+  year INT NOT NULL,
+  month INT NOT NULL,
+  region TEXT NOT NULL,
+  tourists BIGINT DEFAULT 0,
+  spend BIGINT DEFAULT 0,
+  segment TEXT DEFAULT 'mixto',
+  source TEXT DEFAULT 'INE-FRONTUR-EGATUR',
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  UNIQUE(date, region)
+);
+
+-- Tabla: datos por país de origen
+CREATE TABLE IF NOT EXISTS ine_country_history (
+  id SERIAL PRIMARY KEY,
+  date TEXT NOT NULL,
+  year INT NOT NULL,
+  month INT NOT NULL,
+  country TEXT NOT NULL,
+  tourists BIGINT DEFAULT 0,
+  spend BIGINT DEFAULT 0,
+  avg_stay FLOAT DEFAULT 0,
+  source TEXT DEFAULT 'INE-FRONTUR-EGATUR',
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  UNIQUE(date, country)
+);
+
+-- Índices
+CREATE INDEX idx_ine_tourism_date ON ine_tourism_history(date DESC);
+CREATE INDEX idx_ine_region_date ON ine_region_history(date DESC);
+CREATE INDEX idx_ine_region_region ON ine_region_history(region);
+CREATE INDEX idx_ine_country_date ON ine_country_history(date DESC);
+CREATE INDEX idx_ine_country_country ON ine_country_history(country);

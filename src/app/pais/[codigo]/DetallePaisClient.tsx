@@ -29,12 +29,15 @@ export default function DetallePaisClient({ pais, relatedPosts = [] }: DetallePa
   const { user, loading: authLoading } = useAuth();
   const [isFavorite, setIsFavorite] = useState(false);
   const [favLoading, setFavLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState<'info' | 'legal' | 'saturacion' | 'dinero' | 'emergencia'>('info');
+  const [activeTab, setActiveTab] = useState<'info' | 'legal' | 'saturacion' | 'dinero' | 'emergencia' | 'pois'>('info');
   const [maecData, setMaecData] = useState<any>(null);
   const [maecLoading, setMaecLoading] = useState(false);
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
   const [istData, setIstData] = useState<any>(null);
   const [istLoading, setIstLoading] = useState(false);
+  const [poisData, setPoisData] = useState<any[]>([]);
+  const [poisLoading, setPoisLoading] = useState(false);
+  const [poisType, setPoisType] = useState<string>('museum');
 
   useEffect(() => {
     if (!authLoading && user) {
@@ -56,6 +59,19 @@ export default function DetallePaisClient({ pais, relatedPosts = [] }: DetallePa
         .finally(() => setMaecLoading(false));
     }
   }, [activeTab, codigo, maecData]);
+
+  useEffect(() => {
+    if (activeTab === 'pois' && poisData.length === 0) {
+      setPoisLoading(true);
+      fetch(`/api/wikidata/pois?country=${codigo}&type=${poisType}&limit=6`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.pois) setPoisData(data.pois);
+        })
+        .catch(console.error)
+        .finally(() => setPoisLoading(false));
+    }
+  }, [activeTab, codigo, poisType, poisData.length]);
 
   const checkFavorite = async () => {
     try {
@@ -262,6 +278,7 @@ export default function DetallePaisClient({ pais, relatedPosts = [] }: DetallePa
             { id: 'legal', label: 'MAEC', icon: <Shield className="w-4 h-4" /> },
             { id: 'saturacion', label: 'IST', icon: <Users className="w-4 h-4" /> },
             { id: 'dinero', label: 'Dinero', icon: <Wallet className="w-4 h-4" /> },
+            { id: 'pois', label: 'POIs', icon: <MapPinned className="w-4 h-4" /> },
             { id: 'emergencia', label: 'Emerg.', icon: <Siren className="w-4 h-4" /> },
           ].map(tab => (
             <button
@@ -495,6 +512,56 @@ export default function DetallePaisClient({ pais, relatedPosts = [] }: DetallePa
                 <span className="text-white">5-10%</span>
               </div>
             </div>
+          </div>
+        )}
+
+        {activeTab === 'pois' && (
+          <div className="bg-slate-800 rounded-xl p-6 border border-slate-700 mb-6">
+            <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+              <MapPinned className="w-5 h-5 text-purple-400" />
+              Points of Interest
+            </h3>
+            
+            <div className="flex flex-wrap gap-2 mb-4">
+              {['museum', 'castle', 'beach', 'lighthouse'].map(type => (
+                <button
+                  key={type}
+                  onClick={() => { setPoisType(type); setPoisData([]); }}
+                  className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${
+                    poisType === type
+                      ? 'bg-purple-600 text-white'
+                      : 'bg-slate-700 text-slate-400 hover:text-white'
+                  }`}
+                >
+                  {type === 'museum' && '🏛️ Museos'}
+                  {type === 'castle' && '🏰 Castillos'}
+                  {type === 'beach' && '🏖️ Playas'}
+                  {type === 'lighthouse' && '🗼 Faros'}
+                </button>
+              ))}
+            </div>
+
+            {poisLoading ? (
+              <div className="text-center py-8">
+                <Loader2 className="w-6 h-6 animate-spin text-purple-400 mx-auto" />
+                <p className="text-slate-400 text-sm mt-2">Cargando POIs...</p>
+              </div>
+            ) : poisData.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                {poisData.map((poi: any, idx: number) => (
+                  <div key={idx} className="p-3 bg-slate-700/50 rounded-lg">
+                    <p className="text-white font-medium text-sm">{poi.label}</p>
+                    {poi.description && (
+                      <p className="text-slate-400 text-xs mt-1 line-clamp-2">{poi.description}</p>
+                    )}
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-8">
+                <p className="text-slate-400">No se encontraron POIs para este tipo</p>
+              </div>
+            )}
           </div>
         )}
 
