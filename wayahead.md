@@ -64,6 +64,40 @@ GET /api/rutas-espana?route=molinos&days=4&ml=true
 
 ---
 
+## 📅 2026-04-27 - SPRINT 29: RUTAS TEMÁTICAS + ML
+
+### ✅ Completado
+| Feature | Estado |
+|---------|--------|
+| Data rutas España (3) | ✅ Done |
+| API rutas-espanas | ✅ Done |
+| UI Homepage con imágenes | ✅ Done |
+| ML preference matching | ✅ Done |
+| Top Match badge | ✅ Done |
+| Imágenes Unsplash corregidas | ✅ Done |
+
+### 📊 Rutas implementadas
+| Ruta | Tags ML | Estado |
+|------|---------|--------|
+| Molinos La Mancha | cultural, familiar | ✅ |
+| Faros Costa España | playa, familiar, naturaleza | ✅ |
+| Murcia Interior | cultural, naturaleza, familiar | ✅ |
+
+### 🖼️ Opcional 2 (pendiente)
+- Galería visual en página /rutas
+
+### 📋 Pendientes para siguiente sprint
+- 🏔️ Rutas de Nieve (Pirineos)
+- 🏖️ Rutas de Playa  
+- 🍷 Rutas del Vino
+- 📸 Galería /rutas
+
+---
+
+*Sesión terminada -下一次 Sprint 30*
+
+---
+
 ## ⏰ SPRINT 2 (Completado)
 
 ### 📝 BLOG MEJORAS - COMPLETADAS ✅
