@@ -221,7 +221,21 @@ export async function getAllWBIPC(): Promise<WBIPCRow[]> {
   const cached = getCached<WBIPCRow[]>('all ipc');
   if (cached) return cached;
   
-  const results = [...IPC_DATA].sort((a, b) => b.ipc - a.ipc);
-  setCache('all ipc', results);
-  return results;
+  const codes = Object.keys(codeMap);
+  
+  const timeout = new Promise<WBIPCRow[]>((resolve) => {
+    setTimeout(() => resolve([]), 5000);
+  });
+  
+  const promises = codes.slice(0, 30).map(code => getWBIPC(code));
+  const results = await Promise.race([
+    Promise.all(promises),
+    timeout
+  ]);
+  
+  const filtered = results.filter((r): r is WBIPCRow => r !== null);
+  const sorted = filtered.sort((a, b) => b.ipc - a.ipc);
+  
+  setCache('all ipc', sorted);
+  return sorted;
 }
