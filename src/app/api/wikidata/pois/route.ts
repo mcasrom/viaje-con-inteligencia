@@ -47,19 +47,118 @@ const staticPOIs: Record<string, Record<string, Array<{name: string; lat: number
       { name: 'Château de Mont-Saint-Michel', lat: 48.6361, lon: -1.5114 },
     ],
   },
-  it: {
+gb: {
     lighthouse: [
-      { name: 'Faro di Capo Rizzuto', lat: 38.9225, lon: 17.0822 },
+      { name: 'Eddystone Lighthouse', lat: 50.1774, lon: -4.1353 },
+      { name: 'Lizard Point Lighthouse', lat: 49.9704, lon: -5.2046 },
+      { name: 'Needles Lighthouse', lat: 50.6599, lon: -1.8573 },
+      { name: 'Whitby Lighthouse', lat: 54.5397, lon: -0.6360 },
     ],
     beach: [
-      { name: 'Spiaggia Rimini', lat: 44.0633, lon: 12.5654 },
+      { name: 'Brighton Beach', lat: 50.8225, lon: -0.1372 },
+      { name: 'Bournemouth Beach', lat: 50.7192, lon: -1.8782 },
+      { name: 'Blackpool Beach', lat: 53.8104, lon: -3.0557 },
     ],
     museum: [
-      { name: 'Musei Vaticani', lat: 41.9042, lon: 12.4536 },
-      { name: 'Uffizi', lat: 43.7687, lon: 11.2551 },
+      { name: 'British Museum', lat: 51.5194, lon: -0.1270 },
+      { name: 'Natural History Museum', lat: 51.4964, lon: -0.1762 },
+      { name: 'V&A Museum', lat: 51.4980, lon: -0.1731 },
     ],
     castle: [
-      { name: 'Castello Sforzesco', lat: 45.4654, lon: 9.1852 },
+      { name: 'Tower of London', lat: 51.5081, lon: -0.0759 },
+      { name: 'Windsor Castle', lat: 51.4844, lon: -0.6069 },
+      { name: 'Edinburgh Castle', lat: 55.9486, lon: -3.1991 },
+    ],
+  },
+  de: {
+    lighthouse: [
+      { name: 'Leuchtturm Roter Sand', lat: 53.5097, lon: 7.4633 },
+      { name: 'Kampen Lighthouse', lat: 54.9545, lon: 8.3522 },
+    ],
+    beach: [
+      { name: 'Sylt Beach', lat: 54.8833, lon: 8.2667 },
+      { name: 'St. Peter-Ording Beach', lat: 54.2965, lon: 8.6702 },
+    ],
+    museum: [
+      { name: 'Pergamonmuseum', lat: 52.5169, lon: 13.3973 },
+      { name: 'Deutsches Museum', lat: 48.1293, lon: 11.5837 },
+    ],
+    castle: [
+      { name: 'Neuschwanstein Castle', lat: 47.5576, lon: 10.7498 },
+      { name: 'Schloss Charlottenburg', lat: 52.5200, lon: 13.2940 },
+    ],
+  },
+  pt: {
+    lighthouse: [
+      { name: 'Farol de Sagres', lat: 37.0144, lon: -8.9403 },
+      { name: 'Cabo da Roca', lat: 38.7744, lon: -9.4983 },
+    ],
+    beach: [
+      { name: 'Praia de Benagil', lat: 37.0874, lon: -8.4261 },
+      { name: 'Praia Formosa', lat: 36.9678, lon: -7.5201 },
+    ],
+    museum: [
+      { name: 'Museu Nacional Arte Antiga', lat: 38.7138, lon: -9.1334 },
+    ],
+    castle: [
+      { name: 'Castelo de São Jorge', lat: 38.7167, lon: -9.1392 },
+    ],
+  },
+  nl: {
+    lighthouse: [
+      { name: 'Scheveningen Lighthouse', lat: 52.1031, lon: 4.2692 },
+    ],
+    beach: [
+      { name: 'Zandvoort Beach', lat: 52.3721, lon: 4.5616 },
+      { name: 'Scheveningen Beach', lat: 52.1043, lon: 4.2817 },
+    ],
+    museum: [
+      { name: 'Rijksmuseum', lat: 52.3604, lon: 4.8851 },
+      { name: 'Van Gogh Museum', lat: 52.3583, lon: 4.8810 },
+    ],
+    castle: [
+      { name: 'Muiderslot', lat: 52.2706, lon: 5.4298 },
+    ],
+  },
+  gr: {
+    lighthouse: [
+      { name: 'Cape Matapan Lighthouse', lat: 36.3833, lon: 22.4833 },
+    ],
+    beach: [
+      { name: 'Navagio Beach', lat: 37.9233, lon: 20.7467 },
+      { name: 'Mykonos Beach', lat: 37.4333, lon: 25.3333 },
+    ],
+    museum: [
+      { name: 'Acropolis Museum', lat: 37.9686, lon: 23.7255 },
+    ],
+    castle: [
+      { name: 'Roca de Nafplio', lat: 37.5667, lon: 22.8000 },
+    ],
+  },
+  ie: {
+    lighthouse: [
+      { name: 'Fastnet Rock Lighthouse', lat: 51.3687, lon: -9.6011 },
+      { name: 'Hook Head Lighthouse', lat: 52.1214, lon: -6.9327 },
+      { name: 'Cape Clear Lighthouse', lat: 51.4282, lon: -8.8618 },
+      { name: 'Dunmore East Lighthouse', lat: 52.1431, lon: -6.9986 },
+      { name: 'Roches Point Lighthouse', lat: 51.4723, lon: -8.2525 },
+    ],
+    beach: [
+      { name: 'Brittas Bay', lat: 52.9996, lon: -6.0652 },
+      { name: 'Derrynane Beach', lat: 51.7874, lon: -9.7421 },
+      { name: 'Inchydoney Beach', lat: 51.4262, lon: -8.9789 },
+      { name: 'Dunmore Strand', lat: 52.1549, lon: -6.9349 },
+    ],
+    museum: [
+      { name: 'National Museum Ireland', lat: 53.3416, lon: -6.3091 },
+      { name: 'EPIC The Irish Emigration Museum', lat: 53.3424, lon: -6.3320 },
+      { name: 'Guinness Storehouse', lat: 53.3410, lon: -6.3077 },
+    ],
+    castle: [
+      { name: 'Dublin Castle', lat: 53.3409, lon: -6.2565 },
+      { name: 'Blarney Castle', lat: 51.9290, lon: -8.5703 },
+      { name: 'Dún Laoghaire Castle', lat: 53.2962, lon: -6.1293 },
+      { name: 'Rock of Cashel', lat: 52.3704, lon: -7.7785 },
     ],
   },
   pt: {
