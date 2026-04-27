@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase-server';
+import { supabaseAdmin } from '@/lib/supabase-admin';
 
 export const dynamic = 'force-dynamic';
 
@@ -12,17 +13,17 @@ export async function GET() {
       return NextResponse.json({ user: null });
     }
 
-    const { data: profile } = await supabase
+    const { data: profile } = await supabaseAdmin
       .from('profiles')
       .select('*')
       .eq('id', user.id)
       .single();
 
-    // Si no hay trial_start, es primer login → iniciar trial
+    // Si no hay trial_start → iniciar trial de 7 días
     if (profile && !profile.trial_start) {
       const now = new Date().toISOString();
       const trialEnd = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
-      await supabase
+      await supabaseAdmin
         .from('profiles')
         .update({ trial_start: now, trial_end: trialEnd })
         .eq('id', user.id);
