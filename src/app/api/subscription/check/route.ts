@@ -12,11 +12,14 @@ export async function GET() {
       return NextResponse.json({ premium: false, status: 'no_session' });
     }
 
-    const { data: profile } = await supabase
+    const { data: profile, error: profileError } = await supabase
       .from('profiles')
-      .select('is_premium, subscription_status, trial_start, trial_end')
+      .select('*')
       .eq('id', user.id)
       .single();
+
+    console.log('[subscription/check] profile:', JSON.stringify(profile));
+    console.log('[subscription/check] profileError:', profileError?.message);
 
     const isPremium = profile?.is_premium || profile?.subscription_status === 'active';
     const trialEnd = profile?.trial_end || null;
@@ -26,6 +29,7 @@ export async function GET() {
       status: profile?.subscription_status || 'none',
       trialEnd,
       email: user.email,
+      _debug: profile, // temporal para ver qué hay
     });
   } catch (err) {
     console.error('Subscription check error:', err);
