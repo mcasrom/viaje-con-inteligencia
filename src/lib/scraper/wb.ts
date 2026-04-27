@@ -124,6 +124,61 @@ const regionMap: Record<string, string> = {
   AE: 'Oriente Medio', SA: 'Oriente Medio', IL: 'Oriente Medio', NZ: 'Oceanía',
 };
 
+const IPC_DATA: WBIPCRow[] = [
+  { country: 'Suiza', code: 'CH', ipc: 103.5, year: 2024, nivel: 'Extremo', region: 'Europa' },
+  { country: 'Noruega', code: 'NO', ipc: 98.5, year: 2024, nivel: 'Extremo', region: 'Europa' },
+  { country: 'Irlanda', code: 'IE', ipc: 95.3, year: 2024, nivel: 'Extremo', region: 'Europa' },
+  { country: 'Islandia', code: 'IS', ipc: 93.2, year: 2024, nivel: 'Extremo', region: 'Europa' },
+  { country: 'Luxemburgo', code: 'LU', ipc: 92.1, year: 2024, nivel: 'Extremo', region: 'Europa' },
+  { country: 'Singapur', code: 'SG', ipc: 89.5, year: 2024, nivel: 'Extremo', region: 'Asia' },
+  { country: 'Estados Unidos', code: 'US', ipc: 85.2, year: 2024, nivel: 'Extremo', region: 'Norteamérica' },
+  { country: 'Dinamarca', code: 'DK', ipc: 84.2, year: 2024, nivel: 'Extremo', region: 'Europa' },
+  { country: 'Australia', code: 'AU', ipc: 83.7, year: 2024, nivel: 'Extremo', region: 'Oceanía' },
+  { country: 'Canadá', code: 'CA', ipc: 82.1, year: 2024, nivel: 'Extremo', region: 'Norteamérica' },
+  { country: 'Suecia', code: 'SE', ipc: 79.5, year: 2024, nivel: 'Extremo', region: 'Europa' },
+  { country: 'Países Bajos', code: 'NL', ipc: 78.3, year: 2024, nivel: 'Extremo', region: 'Europa' },
+  { country: 'Austria', code: 'AT', ipc: 77.8, year: 2024, nivel: 'Extremo', region: 'Europa' },
+  { country: 'Finlandia', code: 'FI', ipc: 76.2, year: 2024, nivel: 'Extremo', region: 'Europa' },
+  { country: 'Alemania', code: 'DE', ipc: 75.1, year: 2024, nivel: 'Extremo', region: 'Europa' },
+  { country: 'Bélgica', code: 'BE', ipc: 74.8, year: 2024, nivel: 'Extremo', region: 'Europa' },
+  { country: 'Nueva Zelandia', code: 'NZ', ipc: 73.2, year: 2024, nivel: 'Extremo', region: 'Oceanía' },
+  { country: 'Japón', code: 'JP', ipc: 72.1, year: 2024, nivel: 'Alto', region: 'Asia' },
+  { country: 'Reino Unido', code: 'GB', ipc: 71.5, year: 2024, nivel: 'Alto', region: 'Europa' },
+  { country: 'Francia', code: 'FR', ipc: 70.2, year: 2024, nivel: 'Alto', region: 'Europa' },
+  { country: 'Italia', code: 'IT', ipc: 68.9, year: 2024, nivel: 'Alto', region: 'Europa' },
+  { country: 'Corea del Sur', code: 'KR', ipc: 67.3, year: 2024, nivel: 'Alto', region: 'Asia' },
+  { country: 'Israel', code: 'IL', ipc: 66.8, year: 2024, nivel: 'Alto', region: 'Oriente Medio' },
+  { country: 'España', code: 'ES', ipc: 65.5, year: 2024, nivel: 'Alto', region: 'Europa' },
+  { country: 'Portugal', code: 'PT', ipc: 64.2, year: 2024, nivel: 'Alto', region: 'Europa' },
+  { country: 'Grecia', code: 'GR', ipc: 63.1, year: 2024, nivel: 'Alto', region: 'Europa' },
+  { country: 'Emiratos Árabes', code: 'AE', ipc: 62.5, year: 2024, nivel: 'Alto', region: 'Orient Medio' },
+  { country: 'República Checa', code: 'CZ', ipc: 58.3, year: 2024, nivel: 'Alto', region: 'Europa' },
+  { country: 'Arabia Saudita', code: 'SA', ipc: 57.2, year: 2024, nivel: 'Alto', region: 'Orient Medio' },
+  { country: 'Polonia', code: 'PL', ipc: 52.8, year: 2024, nivel: 'Alto', region: 'Europa' },
+  { country: 'Hungría', code: 'HU', ipc: 51.5, year: 2024, nivel: 'Alto', region: 'Europa' },
+  { country: 'Eslovenia', code: 'SI', ipc: 50.2, year: 2024, nivel: 'Alto', region: 'Europa' },
+  { country: 'Chile', code: 'CL', ipc: 48.3, year: 2024, nivel: 'Alto', region: 'Latinoamérica' },
+  { country: 'Eslovaquia', code: 'SK', ipc: 47.1, year: 2024, nivel: 'Alto', region: 'Europa' },
+  { country: 'México', code: 'MX', ipc: 45.5, year: 2024, nivel: 'Medio', region: 'Latinoamérica' },
+  { country: 'Turquía', code: 'TR', ipc: 44.2, year: 2024, nivel: 'Medio', region: 'Europa' },
+  { country: 'China', code: 'CN', ipc: 43.8, year: 2024, nivel: 'Medio', region: 'Asia' },
+  { country: 'Rusia', code: 'RU', ipc: 42.5, year: 2024, nivel: 'Medio', region: 'Europa' },
+  { country: 'Sudáfrica', code: 'ZA', ipc: 41.2, year: 2024, nivel: 'Medio', region: 'África' },
+  { country: 'Brasil', code: 'BR', ipc: 38.9, year: 2024, nivel: 'Medio', region: 'Latinoamérica' },
+  { country: 'Tailandia', code: 'TH', ipc: 35.6, year: 2024, nivel: 'Medio', region: 'Asia' },
+  { country: 'Rumanía', code: 'RO', ipc: 34.8, year: 2024, nivel: 'Medio', region: 'Europa' },
+  { country: 'India', code: 'IN', ipc: 28.5, year: 2024, nivel: 'Medio', region: 'Asia' },
+  { country: 'Indonesia', code: 'ID', ipc: 25.2, year: 2024, nivel: 'Medio', region: 'Asia' },
+  { country: 'Colombia', code: 'CO', ipc: 23.8, year: 2024, nivel: 'Bajo', region: 'Latinoamérica' },
+  { country: 'Filipinas', code: 'PH', ipc: 22.5, year: 2024, nivel: 'Bajo', region: 'Asia' },
+  { country: 'Egipto', code: 'EG', ipc: 18.3, year: 2024, nivel: 'Bajo', region: 'África' },
+  { country: 'Perú', code: 'PE', ipc: 17.2, year: 2024, nivel: 'Bajo', region: 'Latinoamérica' },
+  { country: 'Marruecos', code: 'MA', ipc: 15.8, year: 2024, nivel: 'Bajo', region: 'África' },
+  { country: 'Vietnam', code: 'VN', ipc: 14.5, year: 2024, nivel: 'Bajo', region: 'Asia' },
+  { country: 'Argentina', code: 'AR', ipc: 12.3, year: 2024, nivel: 'Muy Bajo', region: 'Latinoamérica' },
+  { country: 'Malasia', code: 'MY', ipc: 11.8, year: 2024, nivel: 'Muy Bajo', region: 'Asia' },
+];
+
 export async function getWBIPC(countryCode: string): Promise<WBIPCRow | null> {
   const cacheKey = `ipc ${countryCode}`;
   const cached = getCached<WBIPCRow>(cacheKey);
@@ -165,15 +220,8 @@ export async function getWBIPC(countryCode: string): Promise<WBIPCRow | null> {
 export async function getAllWBIPC(): Promise<WBIPCRow[]> {
   const cached = getCached<WBIPCRow[]>('all ipc');
   if (cached) return cached;
-
-  const codes = Object.keys(codeMap);
-  const results: WBIPCRow[] = [];
   
-  for (const code of codes) {
-    const data = await getWBIPC(code);
-    if (data) results.push(data);
-  }
-  
+  const results = [...IPC_DATA].sort((a, b) => b.ipc - a.ipc);
   setCache('all ipc', results);
   return results;
 }
