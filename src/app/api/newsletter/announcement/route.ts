@@ -3,6 +3,7 @@ import { supabase } from '@/lib/supabase';
 import { getAllPosts } from '@/lib/posts';
 import { getRecentChanges } from '@/lib/alerts-system';
 import { paisesData } from '@/data/paises';
+import { sendTelegramMessage } from '@/lib/telegram-channel';
 
 export async function GET(request: NextRequest) {
   const authHeader = request.headers.get('authorization');
@@ -14,6 +15,15 @@ export async function GET(request: NextRequest) {
   const changes = getRecentChanges(7);
   const paises = Object.values(paisesData);
   const altoRiesgo = paises.filter((p: any) => p.nivelRiesgo === 'alto' || p.nivelRiesgo === 'muy-alto');
+
+  // ============ SEND TO TELEGRAM CHANNEL ============
+  const telegramResults: boolean[] = [];
+  for (const post of recentPosts) {
+    const hashtags = post.tags?.map((t: string) => `#${t.replace(/\s+/g, '')}`).join(' ') || '#ViajeInteligencia #España';
+    const telegramPost = `📝 *${post.title}*\n\n${post.excerpt?.slice(0, 150)}...\n\n🔗 https://viajeinteligencia.com/blog/${post.slug}\n\n${hashtags}`;
+    const tgResult = await sendTelegramMessage(telegramPost);
+    telegramResults.push(tgResult);
+  }
 
   const emailHtml = `
 <!DOCTYPE html>
@@ -83,6 +93,10 @@ export async function GET(request: NextRequest) {
       posts: recentPosts.length,
       high_risk_countries: altoRiesgo.length,
       changes: changes.length,
+    },
+    telegram: {
+      sent: telegramResults.filter(Boolean).length,
+      failed: telegramResults.filter(f => !f).length,
     }
   });
 }
