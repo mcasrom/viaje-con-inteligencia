@@ -164,7 +164,3 @@ El mayor error financiero en los viajes no es el vuelo ni el hotel:
 Una decisión de segundos puede cambiar el coste total de tu viaje.
 
 ---
-
-# #SEO
-
-#viajes #finanzaspersonales #tipodecambio #tarjetascredito #wise #revolut #ahorroviajes #turismointeligente #economiaviajera #viajesinteligentes #pagosinternacionales
