@@ -36,6 +36,8 @@ interface RoutePreview {
   image: string;
   description: string;
   stats: { distance: string; time: string; difficulty: string };
+  tags: TravelPreference[];
+  mlScore: number;
 }
 
 const preferenciaLabels: Record<TravelPreference, { label: string; icon: string; desc: string }> = {
@@ -56,6 +58,8 @@ const routePreviews: RoutePreview[] = [
     image: 'https://images.unsplash.com/photo-1564369809793-5a5c5c4b9fa2?w=800&q=80',
     description: 'Don Quijote vio gigantes. Molinos monumentales, gastronomía y historia.',
     stats: { distance: '450 km', time: '4-5 días', difficulty: 'Fácil' },
+    tags: ['cultural', 'familiar'],
+    mlScore: 8.5,
   },
   {
     id: 'faros',
@@ -67,6 +71,8 @@ const routePreviews: RoutePreview[] = [
     image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&q=80',
     description: 'De Huelva a Gerona. Los faros más emblemáticos de la costa española.',
     stats: { distance: '2.100 km', time: '5-7 días', difficulty: 'Moderado' },
+    tags: ['playa', 'familiar', 'naturaleza'],
+    mlScore: 8.2,
   },
   {
     id: 'murcia',
@@ -78,6 +84,8 @@ const routePreviews: RoutePreview[] = [
     image: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=800&q=80',
     description: 'Caravaca, Calasparra, Moratalla. Pueblos monumentales y naturaleza.',
     stats: { distance: '280 km', time: '3-4 días', difficulty: 'Fácil' },
+    tags: ['cultural', 'naturaleza', 'familiar'],
+    mlScore: 8.8,
   },
 ];
 
@@ -116,6 +124,22 @@ export default function PlanificadorSimple() {
     if (nivel === 'bajo') return 'text-emerald-400';
     if (nivel === 'medio') return 'text-yellow-400';
     return 'text-red-400';
+  };
+
+  const getMatchingScore = (route: RoutePreview): number => {
+    const baseScore = route.mlScore;
+    const matchesPreference = route.tags.includes(preferencia) ? 1.5 : 0;
+    const matchesBudget = presupuesto === 'bajo' ? route.stats.difficulty === 'Fácil' ? 1 : 0 : presupuesto === 'alto' ? route.mlScore * 0.2 : 0.5;
+    return Math.min(10, baseScore * 0.7 + matchesPreference + matchesBudget);
+  };
+
+  const sortedRoutes = [...routePreviews].sort((a, b) => getMatchingScore(b) - getMatchingScore(a));
+
+  const getMatchBadge = (route: RoutePreview) => {
+    if (route.tags.includes(preferencia)) {
+      return { text: `✨ Match ${preferenciaLabels[preferencia].icon}`, color: 'bg-amber-500' };
+    }
+    return null;
   };
 
   return (
@@ -253,49 +277,49 @@ export default function PlanificadorSimple() {
         </div>
       </div>
 
-      {/* RUTAS TEMÁTICAS ESPAÑA - Nueva Sección */}
-      <div className="bg-gradient-to-r from-slate-800 to-slate-900 rounded-2xl p-5 shadow-lg border border-slate-700">
-        <div className="flex items-center justify-between mb-4">
-          <div>
-            <h3 className="text-xl font-bold text-white flex items-center gap-2">
-              <MapPin className="text-emerald-400" />
-              🛣️ Rutas Temáticas de España
-            </h3>
-            <p className="text-slate-400 text-sm mt-1">
-              Itinerarios diseñados por expertos. Selecciona duración yDescubre España de otra manera
-            </p>
+{/* RUTAS TEMÁTICAS ESPAÑA - ML-powered */}
+        <div className="bg-gradient-to-r from-slate-800 to-slate-900 rounded-2xl p-5 shadow-lg border border-slate-700">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+            <div>
+              <h3 className="text-xl font-bold text-white flex items-center gap-2">
+                <MapPin className="text-emerald-400" />
+                🛣️ Rutas Temáticas de España
+              </h3>
+              <p className="text-slate-400 text-sm mt-1">
+                🎯 Recomendadas para <span className="text-amber-400 font-medium">{preferenciaLabels[preferencia].desc}</span>
+              </p>
+            </div>
+            
+            {/* Selector duración global */}
+            <div className="flex items-center gap-2">
+              <Clock className="text-slate-400 w-4 h-4" />
+              <select
+                value={routeDuration}
+                onChange={(e) => setRouteDuration(e.target.value)}
+                className="bg-slate-700 text-white text-sm rounded-lg px-3 py-1.5 border border-slate-600"
+              >
+                <option value="3">3 días</option>
+                <option value="4">4 días</option>
+                <option value="5">5 días</option>
+              </select>
+            </div>
           </div>
-          
-          {/* Selector duración global */}
-          <div className="flex items-center gap-2">
-            <Clock className="text-slate-400 w-4 h-4" />
-            <select
-              value={routeDuration}
-              onChange={(e) => setRouteDuration(e.target.value)}
-              className="bg-slate-700 text-white text-sm rounded-lg px-3 py-1.5 border border-slate-600"
-            >
-              <option value="3">3 días</option>
-              <option value="4">4 días</option>
-              <option value="5">5 días</option>
-            </select>
-          </div>
-        </div>
 
-        {/* Cards de Rutas */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {routePreviews.map((route) => (
-            <button
-              key={route.id}
-              onClick={() => handleRouteClick(route.id)}
-              className="group relative overflow-hidden rounded-xl transition-all duration-300 hover:scale-[1.02] hover:shadow-xl h-64"
-            >
-              {/* Background image with overlay */}
-              <div 
-                className="absolute inset-0 bg-cover bg-center group-hover:scale-110 transition-transform duration-500"
-                style={{ backgroundImage: `url(${route.image})` }}
-              />
-              {/* Dark gradient overlay for text contrast */}
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/70 to-slate-900/30 group-hover:from-slate-900/90 group-hover:via-slate-900/60 transition-all" />
+          {/* Cards de Rutas - Ordenadas por ML score */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {sortedRoutes.map((route, idx) => (
+              <button
+                key={route.id}
+                onClick={() => handleRouteClick(route.id)}
+                className="group relative overflow-hidden rounded-xl transition-all duration-300 hover:scale-[1.02] hover:shadow-xl h-64"
+              >
+                {/* Background image with overlay */}
+                <div 
+                  className="absolute inset-0 bg-cover bg-center group-hover:scale-110 transition-transform duration-500"
+                  style={{ backgroundImage: `url(${route.image})` }}
+                />
+                {/* Dark gradient overlay for text contrast */}
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/70 to-slate-900/30 group-hover:from-slate-900/90 group-hover:via-slate-900/60 transition-all" />
               
               {/* Content */}
               <div className="absolute inset-0 p-4 flex flex-col justify-between text-left">
@@ -322,16 +346,23 @@ export default function PlanificadorSimple() {
                     {route.description}
                   </p>
 
-                  {/* Stats */}
-                  <div className="flex items-center gap-3 text-xs text-white/70 font-medium">
-                    <span className="flex items-center gap-1 bg-slate-900/50 px-2 py-1 rounded-full">
-                      <MapPin className="w-3 h-3" />
-                      {route.stats.distance}
-                    </span>
-                    <span className="flex items-center gap-1 bg-slate-900/50 px-2 py-1 rounded-full">
-                      <Clock className="w-3 h-3" />
-                      {route.stats.time}
-                    </span>
+                  {/* Stats - ML Score */}
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3 text-xs text-white/70 font-medium">
+                      <span className="flex items-center gap-1 bg-slate-900/50 px-2 py-1 rounded-full">
+                        <MapPin className="w-3 h-3" />
+                        {route.stats.distance}
+                      </span>
+                      <span className="flex items-center gap-1 bg-slate-900/50 px-2 py-1 rounded-full">
+                        <Clock className="w-3 h-3" />
+                        {route.stats.time}
+                      </span>
+                    </div>
+                    {idx === 0 && (
+                      <span className="text-xs bg-emerald-500 text-white px-2 py-1 rounded-full font-medium">
+                        ⭐ Top Match
+                      </span>
+                    )}
                   </div>
                 </div>
 
@@ -339,7 +370,7 @@ export default function PlanificadorSimple() {
                 <div className="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl" />
               </div>
             </button>
-          ))}
+            ))}
         </div>
 
         {/* Footer links */}
