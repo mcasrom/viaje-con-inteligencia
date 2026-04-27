@@ -11,7 +11,7 @@ const dataSources = [
   { name: 'Wikidata', source: 'wikidata.org', fields: ['patrimonio', 'faros', 'relaciones'], type: 'semantico', dynamic: false, note: 'sin usar' },
   { name: 'INE', source: 'ine.es', fields: ['turistas', 'densidad', 'estacionalidad'], type: 'turismo', dynamic: false, note: 'sin integrar' },
   { name: 'AEMET', source: 'aemet.es API', fields: ['temperatura', 'viento', 'estacion'], type: 'clima', dynamic: false, note: 'sin usar' },
-  { name: 'travelAttributes', source: 'hardcoded (30)', fields: ['playa', 'cultural', 'naturaleza', 'familiar'], type: 'ml', dynamic: false, note: '⚠️ manual' },
+  { name: 'travelAttributes', source: 'hardcoded (61)', fields: ['playa', 'cultural', 'naturaleza', 'familiar'], type: 'ml', dynamic: false, note: '⚠️ manual' },
 ];
 
 interface Cluster {
