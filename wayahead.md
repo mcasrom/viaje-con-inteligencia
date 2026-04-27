@@ -1,5 +1,38 @@
 # Pendiente - Viaje con Inteligencia
 
+## 📅 2026-04-27 - SPRINT 32: DOSSIER DOCUMENTAL (COMPLETADO)
+
+### ✅ Completado
+| Feature | Estado |
+|---------|--------|
+| Dossier tecnico-estrategico DOSSIER.org | ✅ Done |
+| Arquitectura diagramas | ✅ Done |
+| IA/ML descripcion completa | ✅ Done |
+| Diferenciacion competidores | ✅ Done |
+| Modelo negocio + proyecciones | ✅ Done |
+| Roadmap 2026 | ✅ Done |
+
+### 📊 Dossier contenido
+| Seccion | Contenido |
+|---------|-----------|
+| Introduccion |Vision, problema, propuesta valor |
+| Arquitectura | Stack tecnico, diagramas |
+| Fuentes datos | MAEC, INE, OMS, AEMET |
+| IA/ML | K-Means, scoring, clustering |
+| Diferenciacion | vs TripAdvisor, Lonely Planet |
+| Telegram | Arquitectura, comandos |
+| Mastodon | Publicacion automatica |
+| Modelo negocio | Free/Premium/yearly |
+| Crecimiento | Proyecciones 12 meses |
+| Tecnologia | Stack, dependencias |
+| Roadmap | Q2-Q4 2026 features |
+| Anexos | URLs, env vars, cron jobs |
+
+**Palabras:** ~2,800
+**Archivo:** `DOSSIER.org` (raiz proyecto)
+
+---
+
 ## 📅 2026-04-27 - SPRINT 31: RUTAS DEL VINO + TELEGRAM POSTS (COMPLETADO)
 
 ### ✅ Completado
