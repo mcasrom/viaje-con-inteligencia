@@ -33,6 +33,7 @@ interface RoutePreview {
   icon: React.ReactNode;
   color: string;
   gradient: string;
+  image: string;
   description: string;
   stats: { distance: string; time: string; difficulty: string };
 }
@@ -52,6 +53,7 @@ const routePreviews: RoutePreview[] = [
     icon: <span className="text-3xl">🌬️</span>,
     color: 'text-amber-400',
     gradient: 'from-amber-500 to-orange-600',
+    image: 'https://images.unsplash.com/photo-1564369809793-5a5c5c4b9fa2?w=800&q=80',
     description: 'Don Quijote vio gigantes. Molinos monumentales, gastronomía y historia.',
     stats: { distance: '450 km', time: '4-5 días', difficulty: 'Fácil' },
   },
@@ -62,7 +64,8 @@ const routePreviews: RoutePreview[] = [
     icon: <span className="text-3xl">🌅</span>,
     color: 'text-cyan-400',
     gradient: 'from-cyan-500 to-blue-600',
-    description: 'De Huelva a Gerona. Los faros más emblemáticos de España.',
+    image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&q=80',
+    description: 'De Huelva a Gerona. Los faros más emblemáticos de la costa española.',
     stats: { distance: '2.100 km', time: '5-7 días', difficulty: 'Moderado' },
   },
   {
@@ -72,6 +75,7 @@ const routePreviews: RoutePreview[] = [
     icon: <span className="text-3xl">🏔️</span>,
     color: 'text-emerald-400',
     gradient: 'from-emerald-500 to-teal-600',
+    image: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=800&q=80',
     description: 'Caravaca, Calasparra, Moratalla. Pueblos monumentales y naturaleza.',
     stats: { distance: '280 km', time: '3-4 días', difficulty: 'Fácil' },
   },
@@ -283,52 +287,56 @@ export default function PlanificadorSimple() {
             <button
               key={route.id}
               onClick={() => handleRouteClick(route.id)}
-              className="group relative overflow-hidden rounded-xl transition-all duration-300 hover:scale-[1.02] hover:shadow-xl"
+              className="group relative overflow-hidden rounded-xl transition-all duration-300 hover:scale-[1.02] hover:shadow-xl h-64"
             >
-              {/* Background gradient */}
-              <div className={`absolute inset-0 bg-gradient-to-br ${route.gradient} opacity-90 group-hover:opacity-100 transition-opacity`} />
+              {/* Background image with overlay */}
+              <div 
+                className="absolute inset-0 bg-cover bg-center group-hover:scale-110 transition-transform duration-500"
+                style={{ backgroundImage: `url(${route.image})` }}
+              />
+              {/* Dark gradient overlay for text contrast */}
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/70 to-slate-900/30 group-hover:from-slate-900/90 group-hover:via-slate-900/60 transition-all" />
               
               {/* Content */}
-              <div className="relative p-4 text-left">
+              <div className="absolute inset-0 p-4 flex flex-col justify-between text-left">
                 {/* Header */}
-                <div className="flex items-start justify-between mb-3">
+                <div className="flex items-start justify-between">
                   <div className={`p-2 rounded-lg bg-white/20 backdrop-blur ${route.color}`}>
                     {route.icon}
                   </div>
                   <ChevronRight className="text-white/60 group-hover:text-white group-hover:translate-x-1 transition-all" />
                 </div>
 
-                {/* Title */}
-                <h4 className="text-white font-bold text-lg mb-1 group-hover:text-white">
-                  {route.name}
-                </h4>
-                <p className="text-white/80 text-sm font-medium mb-2">
-                  {route.shortName}
-                </p>
+                {/* Bottom content */}
+                <div>
+                  {/* Title */}
+                  <h4 className="text-white font-bold text-lg mb-1 drop-shadow-lg">
+                    {route.name}
+                  </h4>
+                  <p className="text-white/90 text-sm font-medium mb-2 drop-shadow-md">
+                    {route.shortName}
+                  </p>
 
-                {/* Description */}
-                <p className="text-white/70 text-xs mb-3 line-clamp-2">
-                  {route.description}
-                </p>
+                  {/* Description */}
+                  <p className="text-white/80 text-xs mb-3 line-clamp-2 drop-shadow-sm">
+                    {route.description}
+                  </p>
 
-                {/* Stats */}
-                <div className="flex items-center gap-3 text-xs text-white/80">
-                  <span className="flex items-center gap-1">
-                    <MapPin className="w-3 h-3" />
-                    {route.stats.distance}
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <Clock className="w-3 h-3" />
-                    {route.stats.time}
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <Compass className="w-3 h-3" />
-                    {route.stats.difficulty}
-                  </span>
+                  {/* Stats */}
+                  <div className="flex items-center gap-3 text-xs text-white/70 font-medium">
+                    <span className="flex items-center gap-1 bg-slate-900/50 px-2 py-1 rounded-full">
+                      <MapPin className="w-3 h-3" />
+                      {route.stats.distance}
+                    </span>
+                    <span className="flex items-center gap-1 bg-slate-900/50 px-2 py-1 rounded-full">
+                      <Clock className="w-3 h-3" />
+                      {route.stats.time}
+                    </span>
+                  </div>
                 </div>
 
                 {/* Hover overlay */}
-                <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl" />
+                <div className="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl" />
               </div>
             </button>
           ))}
