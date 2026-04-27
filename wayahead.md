@@ -19,6 +19,48 @@
 | Vercel cron | ✅ Done |
 | Docs actualizado | ✅ Done |
 | Push producción | ✅ Done |
+| Rutas temáticas España | ✅ Done |
+| UI PlanificadorSimple + rutas | ✅ Done |
+| Página /rutas | ✅ Done |
+
+---
+
+## 🛣️ SPRINT 28: RUTAS TEMÁTICAS ESPAÑA (2026-04-26) - COMPLETADO ✅
+
+### ✅ Completado
+| Feature | Estado | Archivo |
+|---------|--------|---------|
+| Data rutas España | ✅ Done | `src/data/rutas-espanas.ts` |
+| API rutas | ✅ Done | `/api/rutas-espana` |
+| UI PlanificadorSimple | ✅ Done | Cards 3 rutas integradas |
+| Página /rutas | ✅ Done | Listado + detalle dinámico |
+| ML features | ✅ Done | Safety, Popularity, Value scores |
+
+### 📊 Rutas creadas
+| Ruta | Distancia | Días | Dificultad |
+|------|-----------|------|------------|
+| Molinos La Mancha | 450 km | 4-5 | Fácil |
+| Faros Costa España | 2.100 km | 5-7 | Moderado |
+| Murcia Interior | 280 km | 3-4 | Fácil |
+
+### 📋 APIs
+```bash
+# Listado rutas
+GET /api/rutas-espana
+
+# Ruta específica con días
+GET /api/rutas-espana?route=molinos&days=4&ml=true
+
+# Página
+/rutas
+/rutas?route=molinos&days=4
+```
+
+### 🎯 Próximas rutas (pendientes)
+- 🏔️ Rutas de Nieve (Pirineos)
+- 🏖️ Best Beaches (Costa del Sol)
+- 🍷 Rutas del Vino (Rioja, Ribera)
+- 🏛️ Ciudades Patrimonio
 
 ---
 

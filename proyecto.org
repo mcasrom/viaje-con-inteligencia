@@ -66,6 +66,12 @@
 | weekly-digest | 0 8 * * 1 | /api/cron/weekly-digest | Newsletter semanal lun 08:00 | ✅ Configurado |
 | ine-scrape | 0 6 5 * * | /api/cron/ine-scrape | INE tourism mensual día 5 06:00 | ✅ Configurado |
 
+** Páginas
+| Ruta | Descripción | Estado |
+|------|-------------|--------|
+| / | Mapa mundial + PlanificadorSimple | ✅ |
+| /rutas | Rutas temáticas España | ✅ (NUEVO) |
+
 *** CRON_SECRET
 - Valor: ~lS+/mhOpowDvtLUVHsGmGYq35m+cGYMX8Ca5BdAk9vQ=~
 - Configurado en Vercel Environment Variables (Production + Development)
@@ -304,11 +310,27 @@
 | Feature | Estado | API |
 |---------|--------|---------|
 | Datos FRONTUR | ✅ Done | /api/ine/spain-tourism |
-| Datos EGATUR | ✅ Done | /api/ine/spain-tourism |
+| EGATUR gasto | ✅ Done | /api/ine/spain-tourism?type=spend |
 | Clustering ML | ✅ Done | /api/ine/ml-clustering |
 | Predicción | ✅ Done | /api/ine/ml-clustering?predict=true |
 | Storage histórico | ✅ Done | Supabase (3 tablas) |
 | Cron monthly | ✅ Done | vercel.json (día 5) |
+
+*** 🛣️ Rutas Temáticas España (Sprint 28)
+| Feature | Estado | API/URL |
+|---------|--------|---------|
+| Data rutas | ✅ Done | /src/data/rutas-espanas.ts |
+| API rutas | ✅ Done | /api/rutas-espana |
+| UI PlanificadorSimple | ✅ Done | Cards 3 rutas |
+| Página /rutas | ✅ Done | Listado + detalle |
+| Rutas: Molinos, Faros, Murcia | ✅ Done | 3 rutas completas |
+| ML features | ✅ Done | Safety, Popularity, Value scores |
+
+*** 📊 Rutas ML Clustering implementado
+Segmentos de rutas España:
+- Molinos La Mancha (450km, 4-5 días, Fácil)
+- Faros Costa España (2100km, 5-7 días, Moderado)
+- Murcia Interior (280km, 3-4 días, Fácil)
 
 *** 📊 ML Clustering España implementado
 Segmentos de turismo España:
