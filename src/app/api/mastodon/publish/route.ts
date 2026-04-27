@@ -8,9 +8,12 @@ function getToken(): string | undefined {
 
 export async function GET() {
   const token = getToken();
+  // Debug: muestra primeros y últimos chars del token
+  const tokenPreview = token ? `${token.slice(0,4)}...${token.slice(-4)}` : null;
   return NextResponse.json({
     status: 'ok',
     tokenConfigured: !!token,
+    tokenPreview,
     endpoint: 'POST with { text: "message" } to publish',
   });
 }
