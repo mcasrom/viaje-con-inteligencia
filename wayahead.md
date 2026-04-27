@@ -1,5 +1,40 @@
 # Pendiente - Viaje con Inteligencia
 
+## 📅 2026-04-27 - SPRINT 31: RUTAS DEL VINO + TELEGRAM POSTS (COMPLETADO)
+
+### ✅ Completado
+| Feature | Estado |
+|---------|--------|
+| Data rutas vino (8 regiones) | ✅ Done |
+| Preferencias temporada (4 estaciones) | ✅ Done |
+| ML recommendation por presupuesto | ✅ Done |
+| ML optimization por mes/estacion | ✅ Done |
+| Posts automaticos a Telegram | ✅ Done |
+| Blog post IA/ML Telegram (2000+ words) | ✅ Done |
+
+### 🍷 Regiones vino implementadas
+| Region | DO | Provincia | Mejor epoca | Precio medio |
+|--------|-----|-----------|-------------|-------------|
+| La Rioja | DOCa Rioja | La Rioja | Abril-Mayo, Sept-Oct | 20€ |
+| Ribera del Duero | DO Ribera | Burgos | Abril-Junio | 25€ |
+| Rias Baixas | DO Rias Baixas | Pontevedra | Mayo-Agosto | 12€ |
+| Penedes | DO Penedes | Barcelona | Marzo-Mayo | 18€ |
+| Jumilla | DO Jumilla | Murcia | Marzo-Mayo | 10€ |
+| Montilla-Moriles | DO Montilla | Cordoba | Marzo-Mayo | 12€ |
+| Ronda | DO Ronda | Malaga | Primavera | 15€ |
+| Txakoli | DO Getariako | Gipuzkoa | Verano | 15€ |
+
+### 📱 Telegram Channel Posts
+- Digest semanal ahora envia posts automaticamente al canal @ViajeConInteligencia
+- Incluye: titulo, excerpt, enlace, hashtags
+
+### 📝 Blog post publicado
+- Titulo: "Viaje con Inteligencia: El Canal de Telegram que Usa IA y ML..."
+- URL: /blog/canal-telegram-inteligencia-artificial
+- SEO: 2500+ palabras, imagen Unsplash, hashtags
+
+---
+
 ## 📅 2026-04-26 - SESIÓN COMPLETA
 
 ### ✅ Completado Hoy (Sprint 27)
