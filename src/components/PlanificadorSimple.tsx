@@ -160,17 +160,17 @@ export default function PlanificadorSimple() {
   return (
     <div className="max-w-6xl mx-auto px-4 py-2 space-y-4">
       {/* Planificador Principal */}
-      <div className="relative bg-slate-950 rounded-2xl p-5 shadow-lg shadow-blue-900/40 border border-blue-800/60 overflow-hidden">
+      <div className="relative bg-gradient-to-br from-blue-50 via-white to-blue-100 rounded-2xl p-5 shadow-lg shadow-blue-200/50 border border-blue-300 overflow-hidden">
         <div 
-          className="absolute inset-0 bg-cover bg-center opacity-15"
+          className="absolute inset-0 bg-cover bg-center opacity-10"
           style={{ backgroundImage: `url(${bgPhoto})` }}
         />
         <div className="relative z-10">
           <div className="text-center mb-4">
-            <h2 className="text-2xl md:text-3xl font-bold text-white mb-2 tracking-wide">
+            <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-2 tracking-wide">
               ✈️ Planifica tu viaje en 30 segundos
             </h2>
-            <p className="text-blue-100 text-base font-medium">
+            <p className="text-slate-700 text-base font-medium">
               Selecciona tu tipo de viaje y obtén recomendaciones personalizadas con IA
             </p>
           </div>
@@ -178,7 +178,7 @@ export default function PlanificadorSimple() {
           {/* Selectores */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
             <div>
-              <label className="text-xs text-blue-200 font-bold mb-1 block uppercase tracking-wider">Tipo de viaje</label>
+              <label className="text-xs text-slate-700 font-bold mb-1 block uppercase tracking-wider">Tipo de viaje</label>
               <div className="grid grid-cols-2 gap-1">
                 {(['playa', 'cultural', 'naturaleza', 'familiar', 'gastronomia', 'enoturismo'] as TravelPreference[]).map((pref) => (
                   <button
@@ -187,7 +187,7 @@ export default function PlanificadorSimple() {
                     className={`p-2 rounded-lg text-xs font-medium transition-all ${
                       preferencia === pref
                         ? 'bg-white text-blue-600 shadow-md'
-                        : 'bg-white/20 text-white hover:bg-white/30'
+                        : 'bg-blue-100 text-slate-700 hover:bg-blue-200'
                     }`}
                   >
                     {preferenciaLabels[pref].icon}
@@ -197,7 +197,7 @@ export default function PlanificadorSimple() {
             </div>
 
             <div>
-              <label className="text-xs text-blue-200 font-bold mb-1 block uppercase tracking-wider">Presupuesto</label>
+              <label className="text-xs text-slate-700 font-bold mb-1 block uppercase tracking-wider">Presupuesto</label>
               <div className="flex flex-col gap-1">
                 {(['bajo', 'medio', 'alto'] as Budget[]).map((budget) => (
                   <button
@@ -206,7 +206,7 @@ export default function PlanificadorSimple() {
                     className={`p-2 rounded-lg text-xs font-medium capitalize transition-all ${
                       presupuesto === budget
                         ? 'bg-white text-blue-600 shadow-md'
-                        : 'bg-white/20 text-white hover:bg-white/30'
+                        : 'bg-blue-100 text-slate-700 hover:bg-blue-200'
                     }`}
                   >
                     {budget === 'bajo' ? '💰' : budget === 'medio' ? '💰💰' : '💎'} {budget}
@@ -216,7 +216,7 @@ export default function PlanificadorSimple() {
             </div>
 
             <div>
-              <label className="text-xs text-blue-200 font-bold mb-1 block uppercase tracking-wider">Duración</label>
+              <label className="text-xs text-slate-700 font-bold mb-1 block uppercase tracking-wider">Duración</label>
               <select
                 value={duracion}
                 onChange={(e) => setDuracion(e.target.value)}
@@ -286,9 +286,9 @@ export default function PlanificadorSimple() {
           )}
 
           <div className="flex flex-wrap gap-2 justify-center mt-4 text-sm">
-            <span className="text-blue-100 font-medium">Powered by </span>
-            <span className="text-white font-bold">ML Clustering</span>
-            <a href="/viajes/clima" className="text-cyan-300 hover:text-cyan-200 font-medium ml-2 underline underline-offset-2">
+            <span className="text-slate-600 font-medium">Powered by </span>
+            <span className="text-slate-900 font-bold">ML Clustering</span>
+            <a href="/viajes/clima" className="text-blue-600 hover:text-blue-700 font-medium ml-2 underline underline-offset-2">
               🌤️ Ver clima
             </a>
           </div>
