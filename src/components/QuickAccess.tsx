@@ -70,11 +70,12 @@ function QuickAccessInner() {
         <div className="space-y-2">
           <Link href="/comparar" className="block p-2 bg-orange-600/20 text-orange-400 rounded-lg hover:bg-orange-600/30">⚖️ Comparar países</Link>
           <Link href="/checklist" className="block p-2 bg-blue-600/20 text-blue-400 rounded-lg hover:bg-blue-600/30">📋 Checklist viaje</Link>
-          <Link href="/relojes" className="block p-2 bg-purple-600/20 text-purple-400 rounded-lg hover:bg-purple-600/30">🌍 Relojes mundiales</Link>
+          <Link href="/relojes" className="block p-2 bg-purple-600/20 text-purple-400 rounded-lg hover:bg-purple-600/30">🌍 Horario Global</Link>
           <Link href="/blog" className="block p-2 bg-green-600/20 text-green-400 rounded-lg hover:bg-green-600/30">📖 Blog recomendaciones</Link>
           <Link href="https://t.me/ViajeConInteligenciaBot" target="_blank" rel="noopener noreferrer" className="block p-2 bg-cyan-600/20 text-cyan-400 rounded-lg hover:bg-cyan-600/30">🤖 Bot Telegram</Link>
           <Link href="/premium" className="block p-2 bg-purple-600/20 text-purple-400 rounded-lg hover:bg-purple-600/30">💬 Chat IA</Link>
           <Link href="/kpi" className="block p-2 bg-green-600/20 text-green-400 rounded-lg hover:bg-green-600/30">🛡️ Índice de Paz</Link>
+          <Link href="/rutas?route=vino" className="block p-2 bg-red-600/20 text-red-400 rounded-lg hover:bg-red-600/30">🍷 Rutas del Vino</Link>
           <Link href="/dashboard" className="block p-2 bg-red-600/20 text-red-400 rounded-lg hover:bg-red-600/30">📊 Mi Dashboard</Link>
           <Link href="/premium?tab=reclamaciones" className="block p-2 bg-red-600/20 text-red-400 rounded-lg hover:bg-red-600/30">📝 Reclamaciones</Link>
           <div className="pt-2 mt-2 border-t border-slate-600">
