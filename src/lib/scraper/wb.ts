@@ -234,7 +234,7 @@ export async function getAllWBIPC(): Promise<WBIPCRow[]> {
   ]);
   
   const filtered = results.filter((r): r is WBIPCRow => r !== null);
-  const sorted = filtered.sort((a, b) => b.ipc - a.ipc);
+  const sorted = filtered.sort((a: WBIPCRow, b: WBIPCRow) => b.ipc - a.ipc);
   
   setCache('all ipc', sorted);
   return sorted;
