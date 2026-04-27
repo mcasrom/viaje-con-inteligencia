@@ -15,6 +15,7 @@
 - KPIs Turismo: https://viaje-con-inteligencia.vercel.app/turismo
 - Bot Telegram: https://t.me/ViajeConInteligenciaBot
 - Canal: @ViajeConInteligencia
+- Mastodon: https://mastodon.social/@viajeinteligencia
 - Repo: https://github.com/mcasrom/viaje-con-inteligencia
 - Admin bot: https://viaje-con-inteligencia.vercel.app/admin/bot-stats
 
@@ -160,7 +161,8 @@
 ** Páginas
 | Ruta | Descripción | Estado |
 |------|-------------|--------|
-| / | Mapa mundial | ✅ |
+| / | Mapa mundial + PlanificadorSimple | ✅ |
+| /rutas | Rutas temáticas España + ML | ✅ (NUEVO) |
 | /pais/[codigo] | Detalle país + clima | ✅ |
 | /premium | Planes + Chat IA | ✅ |
 | /itinerario | Generador itinerarios IA | ✅ |
@@ -205,7 +207,8 @@
 - [X] Canal: @ViajeConInteligencia
 - [X] Enlace unsubscribe (RGPD)
 
-** Blog Posts (48+)
+** Blog Posts (49+)
+- [X] Rutas Temáticas de España con IA (post nuevo SEO) 2026-04-27
 - [X] Posts SEO país "Es seguro viajar a..." (target 50)
 - [X] Francia (post premium: 2000+ palabras, imagen Unsplash, SEO)
 - [X] Italia, Alemania, Portugal, Países Bajos (mejora pendiente)
