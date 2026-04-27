@@ -200,6 +200,8 @@
 | /api/bot-stats | Stats Telegram |
 | /api/recommendations | Recomendaciones personalizadas |
 | /api/checklist-pdf | Descarga checklist PDF |
+| /api/mastodon/publish | Publicar en Mastodon | ✅ (NUEVO) |
+| /api/cron/mastodon-digest | Digest automático Mastodon | ✅ (NUEVO) |
 
 ** Newsletter
 - [X] Welcome email (Resend)

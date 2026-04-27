@@ -8,9 +8,9 @@ const today = new Date();
 const photoIndex = (today.getMonth() * 2 + today.getDate()) % photos.length;
 const bgPhoto = photos[photoIndex];
 
-type TravelPreference = 'playa' | 'cultural' | 'naturaleza' | 'familiar';
+type TravelPreference = 'playa' | 'cultural' | 'naturaleza' | 'familiar' | 'gastronomia' | 'enoturismo';
 type Budget = 'bajo' | 'medio' | 'alto';
-type RouteId = 'molinos' | 'faros' | 'murcia';
+type RouteId = 'molinos' | 'faros' | 'murcia' | 'vino';
 
 interface Recommendation {
   destination: string;
@@ -45,6 +45,8 @@ const preferenciaLabels: Record<TravelPreference, { label: string; icon: string;
   cultural: { label: '🏛️ Cultural', icon: '🎭', desc: 'Historia y museos' },
   naturaleza: { label: '🏔️ Naturaleza', icon: '🥾', desc: 'Aventura y paisajes' },
   familiar: { label: '👨‍👩‍👧‍👦 Familiar', icon: '🎢', desc: 'Apto para niños' },
+  gastronomia: { label: '🍽️ Gastronomía', icon: '🍽️', desc: 'Comida y vino' },
+  enoturismo: { label: '🍷 Enoturismo', icon: '🍷', desc: 'Bodegas y vino' },
 };
 
 const routePreviews: RoutePreview[] = [
@@ -86,6 +88,19 @@ const routePreviews: RoutePreview[] = [
     stats: { distance: '280 km', time: '3-4 días', difficulty: 'Fácil' },
     tags: ['cultural', 'naturaleza', 'familiar'],
     mlScore: 8.8,
+  },
+  {
+    id: 'vino',
+    name: 'Rutas del Vino',
+    shortName: 'Enoturismo',
+    icon: <span className="text-3xl">🍷</span>,
+    color: 'text-red-400',
+    gradient: 'from-red-500 to-rose-600',
+    image: 'https://images.unsplash.com/photo-1506377247377-2a5b2687098b?w=800&q=80',
+    description: 'Rioja, Ribera del Duero, Rías Baixas, Penedés, Jumilla. Enoturismo premium.',
+    stats: { distance: '1.200 km', time: '5-7 días', difficulty: 'Fácil' },
+    tags: ['cultural', 'gastronomia', 'enoturismo'],
+    mlScore: 8.0,
   },
 ];
 
@@ -165,7 +180,7 @@ export default function PlanificadorSimple() {
             <div>
               <label className="text-xs text-blue-200 mb-1 block">Tipo de viaje</label>
               <div className="grid grid-cols-2 gap-1">
-                {(['playa', 'cultural', 'naturaleza', 'familiar'] as TravelPreference[]).map((pref) => (
+                {(['playa', 'cultural', 'naturaleza', 'familiar', 'gastronomia', 'enoturismo'] as TravelPreference[]).map((pref) => (
                   <button
                     key={pref}
                     onClick={() => setPreferencia(pref)}

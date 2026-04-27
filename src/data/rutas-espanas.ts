@@ -1,6 +1,27 @@
-export type ThemeRoute = 'molinos' | 'faros' | 'murcia';
+export type ThemeRoute = 'molinos' | 'faros' | 'murcia' | 'vino';
 
-export type DurationOption = 3 | 4 | 5;
+export type DurationOption = 3 | 4 | 5 | 7;
+
+export interface WineSeason {
+  name: string;
+  months: string[];
+  crowdLevel: 'bajo' | 'medio' | 'alto';
+  priceMultiplier: number;
+  notes: string;
+}
+
+export interface WineRegion {
+  name: string;
+  do: string;
+  province: string;
+  coordinates: [number, number];
+  description: string;
+  wines: string[];
+  topWineries: string[];
+  visitTime: number;
+  avgTastingPrice: number;
+  requiresAppointment: boolean;
+}
 
 export interface Location {
   name: string;
@@ -66,61 +87,332 @@ export const molinosLocations: Location[] = [
     coordinates: [39.2667, -1.8833],
     description: 'Municipio de La Mancha con molinos históricos',
     highlights: ['Molinos de viento', 'Paraje natural', 'Vistas panorámicas'],
+visitTime: 3,
+  },
+];
+
+export const wineSeasons: WineSeason[] = [
+  {
+    name: 'Vendimia',
+    months: ['Septiembre', 'Octubre'],
+    crowdLevel: 'alto',
+    priceMultiplier: 1.3,
+    notes: 'Actividades de vendimia, experiencia autentica'
+  },
+  {
+    name: 'Invierno',
+    months: ['Diciembre', 'Enero', 'Febrero'],
+    crowdLevel: 'bajo',
+    priceMultiplier: 0.8,
+    notes: 'Bodegas tranquilas, mejores precios'
+  },
+  {
+    name: 'Primavera',
+    months: ['Marzo', 'Abril', 'Mayo'],
+    crowdLevel: 'medio',
+    priceMultiplier: 1.0,
+    notes: 'Tiempo moderado, paisajes verdes'
+  },
+  {
+    name: 'Verano',
+    months: ['Junio', 'Julio', 'Agosto'],
+    crowdLevel: 'alto',
+    priceMultiplier: 1.2,
+    notes: 'Catas al aire libre, temperaturas altas'
+  },
+];
+
+export const riojaLocations: WineRegion[] = [
+  {
+    name: 'Haro',
+    do: 'DOCa Rioja',
+    province: 'La Rioja',
+    coordinates: [42.5778, -2.9319],
+    description: 'Capital del vino Rioja con mas de 60 bodegas',
+    wines: ['Rioja Reserva', 'Rioja Gran Reserva'],
+    topWineries: ['Bilbao', 'Muga', 'Rodolfo', 'Carchoir'],
+    visitTime: 4,
+    avgTastingPrice: 25,
+    requiresAppointment: false,
+  },
+  {
+    name: 'Logrono',
+    do: 'DOCa Rioja',
+    province: 'La Rioja',
+    coordinates: [42.4687, -2.4456],
+    description: 'Ciudad con calle Laurel de tapas y bodegas historicas',
+    wines: ['Rioja Crianza', 'Rioja Reserva'],
+    topWineries: ['Marques de Riscal', 'Ontaion'],
+    visitTime: 3,
+    avgTastingPrice: 20,
+    requiresAppointment: false,
+  },
+  {
+    name: 'Briones',
+    do: 'DOCa Rioja',
+    province: 'La Rioja',
+    coordinates: [42.5167, -2.7833],
+    description: 'Pueblo con Museo del Vino dinamizado',
+    wines: ['Rioja Reserva', 'Rioja Blanco'],
+    topWineries: ['CVNE', 'Darien'],
+    visitTime: 2,
+    avgTastingPrice: 18,
+    requiresAppointment: false,
+  },
+  {
+    name: 'San Asensio',
+    do: 'DOCa Rioja',
+    province: 'La Rioja',
+    coordinates: [42.4167, -2.7833],
+    description: 'Tradicion vinicola desde 1879',
+    wines: ['Rioja Reserva', 'Rioja Gran Reserva'],
+    topWineries: ['Ontaion', 'Vina Lanciano'],
+    visitTime: 2,
+    avgTastingPrice: 22,
+    requiresAppointment: true,
+  },
+];
+
+export const riberaDueroLocations: WineRegion[] = [
+  {
+    name: 'Aranda de Duero',
+    do: 'DO Ribera del Duero',
+    province: 'Burgos',
+    coordinates: [41.6708, -3.6892],
+    description: 'Centrovinicola con mas de 100 bodegas',
+    wines: ['Ribera del Duero Reserva', 'Ribera del Duero Gran Reserva'],
+    topWineries: ['Vega Sicilia', 'Pingus', 'Dominio de Pingus'],
+    visitTime: 4,
+    avgTastingPrice: 30,
+    requiresAppointment: true,
+  },
+  {
+    name: 'Roa de Duero',
+    do: 'DO Ribera del Duero',
+    province: 'Burgos',
+    coordinates: [41.6833, -3.9333],
+    description: 'Pueblo medieval con vistas al rio',
+    wines: ['Ribera del Duero Reserva'],
+    topWineries: ['Aalto', 'Pago de los Capellanes'],
+    visitTime: 2,
+    avgTastingPrice: 18,
+    requiresAppointment: false,
+  },
+  {
+    name: 'Penafiel',
+    do: 'DO Ribera del Duero',
+    province: 'Valladolid',
+    coordinates: [41.5944, -4.1128],
+    description: 'Museo del Vino y Castillo',
+    wines: ['Ribera del Duero Reserva', 'Rosado'],
+    topWineries: ['Protos', 'Arrode'],
+    visitTime: 3,
+    avgTastingPrice: 15,
+    requiresAppointment: false,
+  },
+  {
+    name: 'Soria',
+    do: 'DO Ribera del Duero',
+    province: 'Soria',
+    coordinates: [41.9833, -2.4667],
+    description: 'Zona menos mas旅游, vinos unicos',
+    wines: ['Ribera del Duero'],
+    topWineries: ['Numanthia'],
+    visitTime: 3,
+    avgTastingPrice: 20,
+    requiresAppointment: true,
+  },
+];
+
+export const riasBaixasLocations: WineRegion[] = [
+  {
+    name: 'Cambados',
+    do: 'DO Rias Baixas',
+    province: 'Pontevedra',
+    coordinates: [42.5644, -8.8133],
+    description: 'Capital del Albariño con Museo del Vino',
+    wines: ['Albariño', 'Albariño Espumoso'],
+    topWineries: ['Santiago Ruiz', 'Perez Cambados', 'Fillaboa'],
+    visitTime: 3,
+    avgTastingPrice: 15,
+    requiresAppointment: false,
+  },
+  {
+    name: 'Sanxenxo',
+    do: 'DO Rias Baixas',
+    province: 'Pontevedra',
+    coordinates: [42.4000, -8.8000],
+    description: 'Zona costera con bodegas cerca del mar',
+    wines: ['Albariño', 'Rio'],
+    topWineries: ['Galiciauto', 'Adega Valdamor'],
+    visitTime: 2,
+    avgTastingPrice: 12,
+    requiresAppointment: false,
+  },
+  {
+    name: 'Meis',
+    do: 'DO Rias Baixas',
+    province: 'Pontevedra',
+    coordinates: [42.5167, -8.5833],
+    description: 'Valle del Salnes, epicentro del Albariño',
+    wines: ['Albariño'],
+    topWineries: ['Martin Codax', 'Paraje'],
+    visitTime: 2,
+    avgTastingPrice: 14,
+    requiresAppointment: false,
+  },
+  {
+    name: 'Ribadumia',
+    do: 'DO Rias Baixas',
+    province: 'Pontevedra',
+    coordinates: [42.4833, -8.7500],
+    description: 'Bodegas centenarios',
+    wines: ['Albariño', 'Treixadura'],
+    topWineries: ['Lagar de Cervera', 'Vina代数'],
+    visitTime: 2,
+    avgTastingPrice: 16,
+    requiresAppointment: false,
+  },
+];
+
+export const penedesLocations: WineRegion[] = [
+  {
+    name: 'Sant Sadurni d',
+    do: 'DO Penedes',
+    province: 'Barcelona',
+    coordinates: [41.4250, -1.7833],
+    description: 'Capital del Cava, primera DO 100% ecologica del mundo',
+    wines: ['Cava', 'Cava Reserva', 'Cava Gran Reserva'],
+    topWineries: ['Freixenet', 'Codorniu', 'Segura'],
+    visitTime: 3,
+    avgTastingPrice: 18,
+    requiresAppointment: false,
+  },
+  {
+    name: 'Subirats',
+    do: 'DO Penedes',
+    province: 'Barcelona',
+    coordinates: [41.4500, -1.9333],
+    description: 'Castillos y viñedos',
+    wines: ['Cava', 'Vino Blanco'],
+    topWineries: ['Juvi & Camps', 'M举杯'],
+    visitTime: 2,
+    avgTastingPrice: 20,
+    requiresAppointment: false,
+  },
+  {
+    name: 'El Pla del Penedes',
+    do: 'DO Penedes',
+    province: 'Barcelona',
+    coordinates: [41.3667, -1.7500],
+    description: 'Paisajes de viñedos cerca Barcelona',
+    wines: ['Cava Brut', 'Penedes Blanco'],
+    topWineries: ['Albet i Noya', 'Miquel Pons'],
+    visitTime: 2,
+    avgTastingPrice: 15,
+    requiresAppointment: false,
+  },
+];
+
+export const jumillaLocations: WineRegion[] = [
+  {
+    name: 'Jumilla',
+    do: 'DO Jumilla',
+    province: 'Murcia',
+    coordinates: [38.4833, -1.0833],
+    description: 'DO con vinos tintos potentes, clima unico',
+    wines: ['Jumilla Monastrell', 'Jumilla Reserva'],
+    topWineries: ['Borra', 'Juan Gil', 'Volver'],
+    visitTime: 3,
+    avgTastingPrice: 12,
+    requiresAppointment: false,
+  },
+  {
+    name: 'Yecla',
+    do: 'DO Yecla',
+    province: 'Murcia',
+    coordinates: [38.6167, -1.1167],
+    description: 'Vinos tintos con identidad propia',
+    wines: ['Yecla Monastrell'],
+    topWineries: ['Castillo de Jumilla', 'Barahonda'],
+    visitTime: 2,
+    avgTastingPrice: 10,
+    requiresAppointment: false,
+  },
+];
+
+export const vinoLocations: Location[] = [
+  {
+    name: 'La Rioja',
+    province: 'La Rioja',
+    region: 'Rioja',
+    coordinates: [42.4687, -2.4456],
+    description: 'Laregion vinicola mas prestigiosa de Espana',
+    highlights: ['Bodegas Haro', 'Barrio de la Laurel', 'Museo del Vino'],
+    visitTime: 4,
+  },
+  {
+    name: 'Ribera del Duero',
+    province: 'Burgos',
+    region: 'Castilla y Leon',
+    coordinates: [41.6708, -3.6892],
+    description: 'Vinos tintos intensos de alta montana',
+    highlights: ['Vega Sicilia', 'Aranda de Duero', 'Museo del Vino'],
+    visitTime: 4,
+  },
+  {
+    name: 'Rias Baixas',
+    province: 'Pontevedra',
+    region: 'Galicia',
+    coordinates: [42.5644, -8.8133],
+    description: 'Albariño, vino blanco rafinado',
+    highlights: ['Cambados', 'Albariño', 'Museo del Vino'],
     visitTime: 3,
   },
   {
-    name: 'Mota del Cuervo',
-    province: 'Cuenca',
-    region: 'Castilla-La Mancha',
-    coordinates: [39.5833, -2.8667],
-    description: 'Capital del molecismo con molinos del siglo XVI',
-    highlights: ['Molinos de La Manchuela', 'Museo del Molino', 'Bodegas'],
-    visitTime: 4,
-  },
-  {
-    name: 'Campo de Criptana',
-    province: 'Ciudad Real',
-    region: 'Castilla-La Mancha',
-    coordinates: [39.4081, -3.1247],
-    description: 'Famoso por sus molinos en crestón bergensant',
-    highlights: ['Molinos de Campo de Criptana', 'Teatro Cervantes', 'Bodegas'],
-    visitTime: 4,
-  },
-  {
-    name: 'Consuegra',
-    province: 'Toledo',
-    region: 'Castilla-La Mancha',
-    coordinates: [39.4597, -3.6097],
-    description: 'Molinos monumentales en colline delcastle',
-    highlights: ['12 Molinos de Consuegra', 'Castillo', 'Lavanda'],
-    visitTime: 5,
-  },
-  {
-    name: 'Almagro',
-    province: 'Ciudad Real',
-    region: 'Castilla-La Mancha',
-    coordinates: [38.8786, -3.2108],
-    description: 'Ciudad teatral y Corral de Comedias',
-    highlights: ['Corral de Comedias', 'Teatro Nacional', 'Museo del Encaje'],
-    visitTime: 4,
-  },
-  {
-    name: 'Cuenca',
-    province: 'Cuenca',
-    region: 'Castilla-La Mancha',
-    coordinates: [40.0789, -2.1356],
-    description: 'Ciudades collp s suspendidas',
-    highlights: ['Casas Colgadas', 'Catedral', 'Senderismo'],
-    visitTime: 6,
-  },
-  {
-    name: 'Albacete',
-    province: 'Albacete',
-    region: 'Castilla-La Mancha',
-    coordinates: [38.9942, -1.8589],
-    description: 'Capital de La Mancha',
-    highlights: ['Museo de la Cuchilleria', 'Parque Abelardo Sanchez', 'Gastronomia'],
+    name: 'Penedes',
+    province: 'Barcelona',
+    region: 'Cataluna',
+    coordinates: [41.4250, -1.7833],
+    description: 'Capital del Cava, DO 100% ecologica',
+    highlights: ['Cavas', 'Freixenet', 'Barcelonacerca'],
     visitTime: 3,
+  },
+  {
+    name: 'Jumilla',
+    province: 'Murcia',
+    region: 'Murcia',
+    coordinates: [38.4833, -1.0833],
+    description: 'Monastrell potente,mejor precio',
+    highlights: ['Borra', 'Juan Gil', 'Bodegasauthenticas'],
+    visitTime: 3,
+  },
+  {
+    name: 'Montilla-Moriles',
+    province: 'Cordoba',
+    region: 'Andalucia',
+    coordinates: [37.6000, -4.6333],
+    description: 'Vinos generosos uniques',
+    highlights: ['Fino', 'Oloroso', 'Pedro Ximenez'],
+    visitTime: 3,
+  },
+  {
+    name: 'Ronda',
+    province: 'Malaga',
+    region: 'Andalucia',
+    coordinates: [36.7333, -5.1500],
+    description: 'Vinos de montana en ciudad romantica',
+    highlights: ['Bodegas Gutierrez', 'Tajo', 'Viñedosmontana'],
+    visitTime: 2,
+  },
+  {
+    name: 'Txakoli Pais Vasco',
+    province: 'Gipuzkoa',
+    region: 'Pais Vasco',
+    coordinates: [43.3167, -1.9333],
+    description: 'Vino atlantico unico',
+    highlights: ['Txakoli', 'Getaria', 'Hondarribia'],
+    visitTime: 2,
   },
 ];
 
@@ -371,11 +663,11 @@ export const thematicRoutes: Record<ThemeRoute, ThematicRoute> = {
     ],
     locations: farosLocations,
   },
-  murcia: {
+murcia: {
     id: 'murcia',
     name: 'Interior de Murcia: Caravaca, Calasparra, Moratalla',
     shortName: 'Ruta Murcia',
-    description: 'Ruta por el interior de la Region de Murcia, descubriendo pueblos monumentales, gastronomía y naturaleza',
+    description: 'Ruta por el interior de la Region de Murcia, descubriendo pueblos monumentales, gastronomia y naturaleza',
     image: '/images/rutas/murcia-interior.jpg',
     category: 'interior',
     region: 'nacional',
@@ -396,6 +688,30 @@ export const thematicRoutes: Record<ThemeRoute, ThematicRoute> = {
     ],
     locations: murciaLocations,
   },
+  vino: {
+    id: 'vino',
+    name: 'Rutas del Vino de España',
+    shortName: 'Ruta Vino',
+    description: 'Recorre las principale regions vinicolas de Espana: Rioja, Ribera del Duero, Rias Baixas, Penedes, Jumilla y mas',
+    image: '/images/rutas/vino-espana.jpg',
+    category: 'cultural',
+    region: 'nacional',
+    totalDistance: 1200,
+    totalDrivingTime: 18,
+    bestSeason: ['Marzo', 'Abril', 'Mayo', 'Septiembre', 'Octubre', 'Noviembre'],
+    difficulty: 'facil',
+    roadType: 'autovia',
+    avgDailyCost: { bajo: 80, medio: 150, alto: 350 },
+    mlFeatures: { popularityScore: 7.0, safetyScore: 9.5, valueScore: 8.5 },
+    segments: [
+      { id: 1, name: 'La Rioja - Haro', from: 'Logrono', to: 'Haro', distance: 45, drivingTime: 0.5, locations: ['Logrono', 'Haro', 'Briones'] },
+      { id: 2, name: 'Rioja - Ribera del Duero', from: 'Haro', to: 'Aranda de Duero', distance: 180, drivingTime: 2, locations: ['San Asensio', 'Aranda de Duero'] },
+      { id: 3, name: 'Ribera del Duero - Rias Baixas', from: 'Aranda de Duero', to: 'Cambados', distance: 450, drivingTime: 5, locations: ['Penafiel', 'Cambados'] },
+      { id: 4, name: 'Rias Baixas - Penedes', from: 'Cambados', to: 'Sant Sadurni', distance: 900, drivingTime: 10, locations: ['Sant Sadurni'] },
+      { id: 5, name: 'Penedes - Jumilla', from: 'Sant Sadurni', to: 'Jumilla', distance: 550, drivingTime: 6, locations: ['Jumilla'] },
+    ],
+    locations: vinoLocations,
+  },
 };
 
 export function getRouteById(id: ThemeRoute): ThematicRoute | undefined {
@@ -405,10 +721,46 @@ export function getRouteById(id: ThemeRoute): ThematicRoute | undefined {
 export function getRoutesByDuration(duration: DurationOption): ThemeRoute[] {
   const map: Record<DurationOption, ThemeRoute[]> = {
     3: ['murcia', 'molinos'],
-    4: ['murcia', 'molinos', 'faros'],
-    5: ['molinos', 'faros'],
+    4: ['murcia', 'molinos', 'vino'],
+    5: ['molinos', 'faros', 'vino'],
+    7: ['vino'],
   };
   return map[duration];
+}
+
+export function getBestWineSeason(month: string): WineSeason | undefined {
+  return wineSeasons.find(s => s.months.includes(month));
+}
+
+export function getWineRouteRecommendation(
+  regions: string[],
+  month: string,
+  budget: 'bajo' | 'medio' | 'alto'
+): { region: string; score: number; reason: string }[] {
+  const season = getBestWineSeason(month);
+  const crowdPenalty = season ? (season.crowdLevel === 'alto' ? -10 : season.crowdLevel === 'bajo' ? 10 : 0) : 0;
+  
+  const regionScores: { region: string; score: number; reason: string }[] = regions.map(r => {
+    const location = vinoLocations.find(l => l.name.toLowerCase().includes(r.toLowerCase()));
+    if (!location) return { region: r, score: 50, reason: 'Region no encontrada' };
+    
+    let score = 70 + crowdPenalty;
+    let reason = '';
+    
+    if (budget === 'bajo') {
+      score += location.name.toLowerCase().includes('jumilla') || location.name.toLowerCase().includes('montilla') ? 20 : -5;
+      reason = 'Mejor relacion precio-calidad';
+    } else if (budget === 'alto') {
+      score += location.name.toLowerCase().includes('rioja') || location.name.toLowerCase().includes('ribera') ? 15 : 0;
+      reason = 'Vinos premium y experiencias exclusivas';
+    } else {
+      reason = 'Opcion equilibrada';
+    }
+    
+    return { region: r, score, reason };
+  });
+  
+  return regionScores.sort((a, b) => b.score - a.score);
 }
 
 export function generateDayByDay(

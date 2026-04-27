@@ -59,8 +59,7 @@ GET /api/rutas-espana?route=molinos&days=4&ml=true
 ### 🎯 Próximas rutas (pendientes)
 - 🏔️ Rutas de Nieve (Pirineos)
 - 🏖️ Best Beaches (Costa del Sol)
-- 🍷 Rutas del Vino (Rioja, Ribera)
-- 🏛️ Ciudades Patrimonio
+- 🍷 Rutas del Vino (Rioja, Ribera) - ✅ COMPLETADO
 
 ---
 
@@ -82,6 +81,38 @@ GET /api/rutas-espana?route=molinos&days=4&ml=true
 | Molinos La Mancha | cultural, familiar | ✅ |
 | Faros Costa España | playa, familiar, naturaleza | ✅ |
 | Murcia Interior | cultural, naturaleza, familiar | ✅ |
+| Rutas del Vino | cultural, gastronomia, enoturismo | ✅ |
+
+---
+
+## 📅 2026-04-27 - SPRINT 31: RUTAS DEL VINO (COMPLETADO)
+
+### ✅ Completado
+| Feature | Estado |
+|---------|--------|
+| Data rutas vino (8 regiones) | ✅ Done |
+| Preferencias temporada (4 estaciones) | ✅ Done |
+| ML recommendation por presupuesto | ✅ Done |
+| ML optimization por mes/estacion | ✅ Done |
+| Funcion getWineRouteRecommendation | ✅ Done |
+
+### 🍷 Regiones implementadas
+| Region | DO | Provincia | Mejor epoca | Precio medio |
+|--------|-----|-----------|-------------|-------------|
+| La Rioja | DOCa Rioja | La Rioja | Abril-Mayo, Sept-Oct | 20€ |
+| Ribera del Duero | DO Ribera | Burgos | Abril-Junio | 25€ |
+| Rias Baixas | DO Rias Baixas | Pontevedra | Mayo-Agosto | 12€ |
+| Penedes | DO Penedes | Barcelona | Marzo-Mayo | 18€ |
+| Jumilla | DO Jumilla | Murcia | Marzo-Mayo | 10€ |
+| Montilla-Moriles | DO Montilla | Cordoba | Marzo-Mayo | 12€ |
+| Ronda | DO Ronda | Malaga | Primavera | 15€ |
+| Txakoli | DO Getariako | Gipuzkoa | Verano | 15€ |
+
+### 🎯 ML Features implementadas
+- Preferencias por temporada: Vendimia, Invierno, Primavera, Verano
+- Crowd level analysis: bajo (0.8x), medio (1.0x), alto (1.3x)
+- Price optimization por budget: bajo, medio, alto
+- Region scoring dinamico
 
 ### 🖼️ Opcional 2 (pendiente)
 - Galería visual en página /rutas
