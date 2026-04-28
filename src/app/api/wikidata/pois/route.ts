@@ -147,6 +147,10 @@ ie: {
     museum: [
       { name: 'Museo Nacional Tokio', lat: 35.7156, lon: 139.7759 },
     ],
+    castle: [
+      { name: 'Himeji Castle', lat: 34.9931, lon: 134.9936 },
+      { name: 'Matsumoto Castle', lat: 36.2981, lon: 137.8547 },
+    ],
   },
   th: {
     lighthouse: [
@@ -155,8 +159,12 @@ ie: {
     beach: [
       { name: 'Patong Beach', lat: 7.8966, lon: 98.2967 },
     ],
-    museum: [],
-    castle: [],
+    museum: [
+      { name: 'Museo Nacional Bangkok', lat: 13.7718, lon: 100.5027 },
+    ],
+    castle: [
+      { name: 'Ayutthaya Historical Park', lat: 14.3532, lon: 100.5775 },
+    ],
   },
   us: {
     lighthouse: [
@@ -168,7 +176,10 @@ ie: {
     museum: [
       { name: 'Metropolitan Museum', lat: 40.7794, lon: -73.9632 },
     ],
-    castle: [],
+    castle: [
+      { name: 'Belmont Castle', lat: 45.6526, lon: -121.9336 },
+      { name: 'Biltmore Estate', lat: 35.1347, lon: -82.4670 },
+    ],
   },
 };
 
