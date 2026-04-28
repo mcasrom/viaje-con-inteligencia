@@ -1,24 +1,48 @@
-import { Suspense } from 'react';
+import { Suspense, useState, useEffect } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, MapPin, Clock, Compass, Euro, Calendar, ChevronRight, Star } from 'lucide-react';
+import { ArrowLeft, MapPin, Clock, ChevronRight, Star } from 'lucide-react';
+import { motion } from 'framer-motion';
 import RouteDetail from '@/components/RouteDetail';
 
 interface PageProps {
-  searchParams: Promise<{ route?: string; days?: string }>;
+  searchParams: Promise<{ route?: string; days?: string; all?: string }>;
+}
+
+const ALL_ROUTES = [
+  { id: 'molinos', title: 'Ruta de los Molinos', region: 'La Mancha', color: 'amber', days: '4-5', km: '450', difficulty: 'Fácil', desc: 'Don Quijote vio gigantes. Molinos monumentales, gastronomía manchega e historia.', icon: 'wind' },
+  { id: 'faros', title: 'Ruta de los Faros', region: 'Costa España', color: 'cyan', days: '5-7', km: '2100', difficulty: 'Moderado', desc: 'De Huelva a Gerona. Los faros más emblemáticos de la costa española.', icon: 'lighthouse' },
+  { id: 'murcia', title: 'Ruta de Murcia', region: 'Región de Murcia', color: 'emerald', days: '3-4', km: '280', difficulty: 'Fácil', desc: 'Caravaca, Calasparra, Moratalla. Pueblos monumentales y naturaleza.', icon: 'mountain' },
+  { id: 'rioja', title: 'Ruta del Vino', region: 'La Rioja', color: 'red', days: '3-4', km: '200', difficulty: 'Fácil', desc: 'Bodegas centenarias, viñedos y gastronomía riojana.', icon: 'wine' },
+  { id: 'pirineos', title: 'Ruta de Nieve', region: 'Pirineos', color: 'blue', days: '5-7', km: '350', difficulty: 'Alto', desc: 'Estaciones de esquí, pueblos medievales y montaña.', icon: 'snow' },
+  { id: 'costa', title: 'Best Beaches', region: 'Costa del Sol', color: 'yellow', days: '4-5', km: '300', difficulty: 'Fácil', desc: 'Las mejores playas de Málaga y Granada.', icon: 'beach' },
+  { id: 'norte', title: 'Gran Ruta Verde', region: 'España Verde', color: 'green', days: '7-10', km: '800', difficulty: 'Moderado', desc: 'Costa cantábrica: Asturias, Cantabria y País Vasco.', icon: 'forest' },
+  { id: 'patrimonio', title: 'Ciudades Patrimonio', region: 'Centro España', color: 'purple', days: '5-6', km: '600', difficulty: 'Fácil', desc: 'Toledo, Ávila, Salamanca. Cities patrimonio de la humanidad.', icon: 'building' },
+];
+
+const COLOR_MAP: Record<string, string> = {
+  amber: 'from-amber-600 to-orange-700', cyan: 'from-cyan-600 to-blue-700', emerald: 'from-emerald-600 to-teal-700',
+  red: 'from-red-600 to-rose-700', blue: 'from-blue-600 to-indigo-700', yellow: 'from-yellow-500 to-orange-600',
+  green: 'from-green-600 to-emerald-700', purple: 'from-purple-600 to-violet-700',
+};
+
+function getRotatedRoutes() {
+  const shuffled = [...ALL_ROUTES].sort(() => Math.random() - 0.5);
+  return shuffled.slice(0, 3);
 }
 
 export async function generateStaticParams() {
-  return [
-    { route: 'molinos' },
-    { route: 'faros' },
-    { route: 'murcia' },
-  ];
+  return ALL_ROUTES.map(r => ({ route: r.id }));
+}
+
+function getRotatedRoutes() {
+  return ALL_ROUTES.slice(0, 3);
 }
 
 export default async function RutasPage({ searchParams }: PageProps) {
   const params = await searchParams;
   const routeId = params.route;
   const days = parseInt(params.days || '4');
+  const allRoutes = routeId === 'all' ? ALL_ROUTES : getRotatedRoutes();
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800">
@@ -45,10 +69,32 @@ export default async function RutasPage({ searchParams }: PageProps) {
               </p>
             </div>
 
-            {/* Route Cards */}
-            <div className="grid md:grid-cols-3 gap-6">
-              {/* Molinos */}
-              <Link href="/rutas?route=molinos&days=4" className="group">
+            {/* Route Cards - 3 rotatorias */}
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="grid md:grid-cols-3 gap-6"
+            >
+              {allRoutes.map((route, idx) => (
+                <RouteCard key={`${route.id}-${idx}`} route={route} delay={idx * 0.1} />
+              ))}
+            </motion.div>
+
+            {/* Button Ver todas las rutas */}
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.4 }}
+              className="mt-10 text-center"
+            >
+              <Link 
+                href="/rutas?all=true" 
+                className="inline-flex items-center gap-2 px-8 py-4 bg-slate-700 hover:bg-slate-600 text-white rounded-full text-lg font-medium transition-all hover:scale-105"
+              >
+                Ver todas las rutas
+                <ChevronRight className="w-5 h-5" />
+              </Link>
+            </motion.div>
                 <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-amber-600 to-orange-700 h-96">
                   <div className="absolute inset-0 bg-[url('/images/rutas/molinos-la-mancha.jpg')] bg-cover bg-center opacity-30 group-hover:scale-110 transition-transform duration-500" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />

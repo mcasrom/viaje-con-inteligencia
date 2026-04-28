@@ -226,6 +226,9 @@ export default function ViajeClimaPage({ params }: { params: Promise<{ codigo: s
         </div>
 
         <div className="mt-6 flex justify-center gap-4">
+          <Link href="/" className="px-4 py-2 bg-slate-500 hover:bg-slate-600 text-white rounded-lg">
+            🗺️ Volver al mapa
+          </Link>
           <Link href={`/pais/${code}`} className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg">
             Ver país completo
           </Link>

@@ -162,7 +162,7 @@ export default function PlanificadorSimple() {
       {/* Planificador Principal */}
       <div className="relative bg-gradient-to-br from-blue-50 via-white to-blue-100 rounded-2xl p-5 shadow-lg shadow-blue-200/50 border border-blue-300 overflow-hidden">
         <div 
-          className="absolute inset-0 bg-cover bg-center opacity-10"
+          className="absolute inset-0 bg-cover bg-center opacity-25"
           style={{ backgroundImage: `url(${bgPhoto})` }}
         />
         <div className="relative z-10">

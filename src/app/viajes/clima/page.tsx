@@ -1,6 +1,6 @@
 'use client';
 import Link from 'next/link';
-import { Cloud, MapPin, Globe } from 'lucide-react';
+import { ArrowLeft, Cloud, MapPin, Globe } from 'lucide-react';
 
 const paisesClima = [
   { code: 'es', nombre: 'España', flag: '🇪🇸' },
@@ -19,6 +19,10 @@ export default function ClimaPage() {
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
       <div className="text-center mb-8">
+        <Link href="/" className="inline-flex items-center gap-2 text-slate-600 hover:text-slate-900 mb-4">
+          <ArrowLeft className="w-4 h-4" />
+          🗺️ Volver al mapa
+        </Link>
         <h1 className="text-3xl font-bold text-slate-900 flex items-center justify-center gap-3">
           <Cloud className="w-8 h-8 text-blue-500" />
           🌤️ Clima en Tiempo Real
