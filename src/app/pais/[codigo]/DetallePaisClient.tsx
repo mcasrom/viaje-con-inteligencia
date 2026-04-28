@@ -551,10 +551,8 @@ export default function DetallePaisClient({ pais, relatedPosts = [] }: DetallePa
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 {poisData.map((poi: any, idx: number) => (
                   <div key={idx} className="p-3 bg-slate-700/50 rounded-lg">
-                    <p className="text-white font-medium text-sm">{poi.label}</p>
-                    {poi.description && (
-                      <p className="text-slate-400 text-xs mt-1 line-clamp-2">{poi.description}</p>
-                    )}
+                    <p className="text-white font-medium text-sm">{poi.name}</p>
+                    <p className="text-slate-400 text-xs mt-1">{poi.lat?.toFixed(2)}, {poi.lon?.toFixed(2)}</p>
                   </div>
                 ))}
               </div>
