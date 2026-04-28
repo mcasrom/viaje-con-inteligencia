@@ -1812,15 +1812,49 @@ GET /api/ai/recommend?preferencia=playa&presupuesto=medio
 
 ---
 
-## 🚀 SPRINT 29: Potencial (2026-04-27)
+## 🚀 SPRINT 30: POIs + Clima + Contraste (2026-04-28)
 
-### ⏳ Pendiente
+### ✅ Completado
+| # | Tarea | Estado |
+|---|--------|--------|
+| 1 | API weather - forecast 7 días (capitales) | ✅ Done |
+| 2 | Ranking países IPC (52 países) | ✅ Done |
+| 3 | Página /viajes/clima con países | ✅ Done |
+| 4 | POIs (10 países, 4 tipos) | ✅ Done |
+| 5 | Contraste banner (texto negro) | ✅ Done |
+| 6 | QuickAccess (Horario Global, Vino) | ✅ Done |
+| 7 | Riesgo: "Sin datos MAEC" | ✅ Done |
+
+### 📊 APIs funcionando
+```bash
+# Weather (capitales)
+curl "/api/weather?code=es&days=7"
+
+# IPC Ranking
+curl "/api/wb/ipc?all=true"
+
+# POIs
+curl "/api/wikidata/pois?country=es&type=castle"
+curl "/api/wikidata/pois?country=ie&type=museum"
+```
+
+### 📋 Pendientes
 | # | Tarea | Priority |
 |---|--------|----------|
-| 1 | API weather - forecast 7 días | Alta |
-| 2 | Ranking países por precio (IPC dynamic) | Media |
-| 3 | Comparador visual países | Media |
-| 4 | Tarea #4 | - |
+| 1 | AviationStack API | Baja |
+| 2 | Predicción riesgo ML | Baja |
+| 3 | App móvil | Baja |
+
+---
+
+## 🚀 SPRINT 29: Potencial (2026-04-27) - COMPLETADO ✅
+
+### ✅ Completado
+| # | Tarea | Priority |
+|---|--------|----------|
+| 1 | API weather - forecast 7 días | Alta | ✅ Done (Sprint 30) |
+| 2 | Ranking países por precio (IPC dynamic) | Media | ✅ Done (Sprint 30) |
+| 3 | Comparador visual países | Media | ✅ Done |
 
 ### 💡 Ideas Potenciales
 - Weather forecast 7 días (Open-Meteo ya en uso)
