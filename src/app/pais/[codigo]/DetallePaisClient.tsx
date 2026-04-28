@@ -61,17 +61,18 @@ export default function DetallePaisClient({ pais, relatedPosts = [] }: DetallePa
   }, [activeTab, codigo, maecData]);
 
   useEffect(() => {
-    if (activeTab === 'pois' && poisData.length === 0) {
+    if (activeTab === 'pois' && poisData.length === 0 && !poisLoading) {
       setPoisLoading(true);
-      fetch(`/api/wikidata/pois?country=${codigo}&type=${poisType}&limit=6`)
+      fetch(`/api/wikidata/pois?country=${codigo.toLowerCase()}&type=${poisType}&limit=10`)
         .then(res => res.json())
         .then(data => {
+          console.log('POIs fetched:', data);
           if (data.pois) setPoisData(data.pois);
         })
         .catch(console.error)
         .finally(() => setPoisLoading(false));
     }
-  }, [activeTab, codigo, poisType, poisData.length]);
+  }, [activeTab, codigo, poisType]);
 
   const checkFavorite = async () => {
     try {
@@ -413,7 +414,8 @@ export default function DetallePaisClient({ pais, relatedPosts = [] }: DetallePa
                     {maecData.nivelRiesgo === 'alto' ? '🔴 Alto' :
                      maecData.nivelRiesgo === 'medio' ? '🟠 Medio' :
                      maecData.nivelRiesgo === 'bajo' ? '🟡 Bajo' :
-                     maecData.nivelRiesgo === 'sin-riesgo' ? '🟢 Sin riesgo' : '⚠️ Sin datos MAEC'}
+                     maecData.nivelRiesgo === 'sin-riesgo' ? '🟢 Sin riesgo' :
+                     maecData.nivelRiesgo === 'desconocido' ? '🟢 Sin riesgo' : '⚠️ Sin datos MAEC'}
                   </span>
                 </div>
                 
