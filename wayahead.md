@@ -1812,30 +1812,17 @@ GET /api/ai/recommend?preferencia=playa&presupuesto=medio
 
 ---
 
-## 🚀 SPRINT 30: POIs + Clima + Contraste (2026-04-28)
+## 📅 2026-04-28 - SPRINT 31: POIs + Clima + Rutas (COMPLETADO)
 
 ### ✅ Completado
-| # | Tarea | Estado |
-|---|--------|--------|
-| 1 | API weather - forecast 7 días (capitales) | ✅ Done |
-| 2 | Ranking países IPC (52 países) | ✅ Done |
-| 3 | Página /viajes/clima con países | ✅ Done |
-| 4 | POIs (10 países, 4 tipos) - auto load | ✅ Done |
-| 5 | Contraste banner (texto negro) | ✅ Done |
-| 6 | QuickAccess (Horario Global, Vino) | ✅ Done |
-| 7 | MAEC "desconocido" → Sin riesgo | ✅ Done |
-
-### 📊 APIs funcionando
-```bash
-# Weather (capitales)
-curl "/api/weather?code=es&days=7"
-
-# IPC Ranking  
-curl "/api/wb/ipc?all=true"
-
-# POIs
-curl "/api/wikidata/pois?country=es&type=castle"
-```
+| Feature | Estado |
+|---------|--------|
+| POIs (17 países, datos estático fallback) | ✅ Done |
+| POIs API Wikidata SPARQL ready | ✅ Done |
+| Rutas tematicas (8 rutas, 3 rotatorias) | ✅ Done |
+| Background opacity 25% (más nítido) | ✅ Done |
+| Clima pages con Volver al mapa | ✅ Done |
+| MAEC "desconocido" → Sin riesgo | ✅ Done |
 
 ### 📋 Pendientes
 | # | Tarea | Priority |
@@ -1846,7 +1833,7 @@ curl "/api/wikidata/pois?country=es&type=castle"
 
 ---
 
-## 🚀 SPRINT 29: Potencial (2026-04-27) - COMPLETADO ✅
+## 📅 2026-04-27 - SPRINT 30: IMPLEMENTADO ✅
 
 ### ✅ Completado
 | # | Tarea | Priority |
