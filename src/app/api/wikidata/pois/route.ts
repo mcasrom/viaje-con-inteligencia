@@ -90,13 +90,37 @@ gb: {
   },
 ie: {
     lighthouse: [
-      { name: 'Faro de Sagres', lat: 37.0108, lon: -8.9408 },
+      { name: 'Fastnet Rock Lighthouse', lat: 51.3687, lon: -9.6011 },
+      { name: 'Hook Head Lighthouse', lat: 52.1214, lon: -6.9327 },
     ],
     beach: [
-      { name: 'Praia de Nazaré', lat: 39.6008, lon: -9.0708 },
+      { name: 'Brittas Bay', lat: 52.9996, lon: -6.0652 },
+      { name: 'Derrynane Beach', lat: 51.7874, lon: -9.7421 },
+    ],
+    museum: [
+      { name: 'National Museum Ireland', lat: 53.3416, lon: -6.3091 },
+      { name: 'EPIC The Irish Emigration Museum', lat: 53.3424, lon: -6.3320 },
     ],
     castle: [
-      { name: 'Castelo de São Jorge', lat: 38.7137, lon: -9.1334 },
+      { name: 'Dublin Castle', lat: 53.3409, lon: -6.2565 },
+      { name: 'Blarney Castle', lat: 51.9290, lon: -8.5703 },
+      { name: 'Rock of Cashel', lat: 52.3704, lon: -7.7785 },
+    ],
+  },
+  pt: {
+    lighthouse: [
+      { name: 'Farol de Sagres', lat: 37.0144, lon: -8.9403 },
+      { name: 'Cabo da Roca', lat: 38.7744, lon: -9.4983 },
+    ],
+    beach: [
+      { name: 'Praia de Benagil', lat: 37.0874, lon: -8.4261 },
+      { name: 'Praia de Nazaré', lat: 39.6008, lon: -9.0708 },
+    ],
+    museum: [
+      { name: 'Museu Nacional Arte Antiga', lat: 38.7138, lon: -9.1334 },
+    ],
+    castle: [
+      { name: 'Castelo de São Jorge', lat: 38.7167, lon: -9.1392 },
     ],
   },
   mx: {
@@ -131,6 +155,8 @@ ie: {
     beach: [
       { name: 'Patong Beach', lat: 7.8966, lon: 98.2967 },
     ],
+    museum: [],
+    castle: [],
   },
   us: {
     lighthouse: [
@@ -142,6 +168,7 @@ ie: {
     museum: [
       { name: 'Metropolitan Museum', lat: 40.7794, lon: -73.9632 },
     ],
+    castle: [],
   },
 };
 
