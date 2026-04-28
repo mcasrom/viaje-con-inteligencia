@@ -412,7 +412,8 @@ export default function DetallePaisClient({ pais, relatedPosts = [] }: DetallePa
                   }`}>
                     {maecData.nivelRiesgo === 'alto' ? '🔴 Alto' :
                      maecData.nivelRiesgo === 'medio' ? '🟠 Medio' :
-                     maecData.nivelRiesgo === 'bajo' ? '🟡 Bajo' : '⚪ Desconocido'}
+                     maecData.nivelRiesgo === 'bajo' ? '🟡 Bajo' :
+                     maecData.nivelRiesgo === 'sin-riesgo' ? '🟢 Sin riesgo' : '⚠️ Sin datos MAEC'}
                   </span>
                 </div>
                 
