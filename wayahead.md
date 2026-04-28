@@ -1820,22 +1820,21 @@ GET /api/ai/recommend?preferencia=playa&presupuesto=medio
 | 1 | API weather - forecast 7 días (capitales) | ✅ Done |
 | 2 | Ranking países IPC (52 países) | ✅ Done |
 | 3 | Página /viajes/clima con países | ✅ Done |
-| 4 | POIs (10 países, 4 tipos) | ✅ Done |
+| 4 | POIs (10 países, 4 tipos) - auto load | ✅ Done |
 | 5 | Contraste banner (texto negro) | ✅ Done |
 | 6 | QuickAccess (Horario Global, Vino) | ✅ Done |
-| 7 | Riesgo: "Sin datos MAEC" | ✅ Done |
+| 7 | MAEC "desconocido" → Sin riesgo | ✅ Done |
 
 ### 📊 APIs funcionando
 ```bash
 # Weather (capitales)
 curl "/api/weather?code=es&days=7"
 
-# IPC Ranking
+# IPC Ranking  
 curl "/api/wb/ipc?all=true"
 
 # POIs
 curl "/api/wikidata/pois?country=es&type=castle"
-curl "/api/wikidata/pois?country=ie&type=museum"
 ```
 
 ### 📋 Pendientes
