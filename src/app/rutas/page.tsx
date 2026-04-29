@@ -52,7 +52,13 @@ export default async function RutasPage({ searchParams }: PageProps) {
   const days = parseInt(params.days || '4');
 
   const allMode = params.all === 'true';
-  const displayRoutes = allMode ? ALL_ROUTES : ALL_ROUTES.slice(0, 3);
+
+  function getRandomRoutes(count: number) {
+    const shuffled = [...ALL_ROUTES].sort(() => Math.random() - 0.5);
+    return shuffled.slice(0, count);
+  }
+  
+  const displayRoutes = allMode ? ALL_ROUTES : getRandomRoutes(3);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800">
