@@ -80,7 +80,7 @@ export default async function RutasPage({ searchParams }: PageProps) {
                 return (
                   <Link key={route.id} href={`/rutas?route=${route.id}&days=${route.days.split('-')[0]}`}>
                     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.1 }} className={`relative overflow-hidden rounded-2xl bg-gradient-to-br ${COLOR_MAP[route.color]} h-80`}>
-                      <div className="absolute inset-0 bg-cover bg-center opacity-40" style={{ backgroundImage: `url(${route.image})` }} />
+                      {route.image && <div className="absolute inset-0 bg-cover bg-center opacity-30" style={{ backgroundImage: `url(${route.image})` }} />}
                       <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" />
                       <div className="absolute bottom-0 left-0 right-0 p-5">
                         <div className={`flex items-center gap-2 mb-2 ${TEXT_COLORS[route.color]}`}>
