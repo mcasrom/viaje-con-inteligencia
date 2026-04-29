@@ -1812,24 +1812,32 @@ GET /api/ai/recommend?preferencia=playa&presupuesto=medio
 
 ---
 
-## 📅 2026-04-28 - SPRINT 31: POIs + Clima + Rutas (COMPLETADO)
+## 📅 2026-04-28 - SPRINT 31: Rutas + POIs + Clima (COMPLETADO)
 
 ### ✅ Completado
 | Feature | Estado |
 |---------|--------|
-| POIs (17 países, datos estático fallback) | ✅ Done |
-| POIs API Wikidata SPARQL ready | ✅ Done |
-| Rutas tematicas (8 rutas, 3 rotatorias) | ✅ Done |
-| Background opacity 25% (más nítido) | ✅ Done |
-| Clima pages con Volver al mapa | ✅ Done |
-| MAEC "desconocido" → Sin riesgo | ✅ Done |
+| 8 Rutas tematicas (molinos, faros, murcia, rioja, pirineos, costa, norte, patrimonio) | ✅ |
+| 3 rutas rotatorias con RouteCard | ✅ |
+| POIs API Wikidata SPARQL ready | ✅ |
+| Background opacity 25% | ✅ |
+| Clima pages + Volver al mapa | ✅ |
+| framer-motion instalado | ✅ |
+
+### 🌐 APIs
+```bash
+# Rutas
+curl "/rutas?all=true"  # Todas las rutas
+curl "/rutas"         # 3 rotatorias
+
+# POIs with SPARQL
+curl "/api/wikidata/pois?country=es&type=museum&sparql=true"
+```
 
 ### 📋 Pendientes
-| # | Tarea | Priority |
-|---|--------|----------|
-| 1 | AviationStack API | Baja |
-| 2 | Predicción riesgo ML | Baja |
-| 3 | App móvil | Baja |
+- AviationStack API
+- Predicción riesgo ML
+- App móvil
 
 ---
 
