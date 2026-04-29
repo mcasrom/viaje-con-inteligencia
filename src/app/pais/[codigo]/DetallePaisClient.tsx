@@ -125,13 +125,13 @@ export default function DetallePaisClient({ pais, relatedPosts = [] }: DetallePa
     <div className="min-h-screen bg-slate-900">
       <header className="bg-slate-800/80 backdrop-blur-sm border-b border-slate-700 sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-          <button 
-            onClick={() => router.back()}
+          <Link 
+            href="/" 
             className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors"
           >
             <ArrowLeft className="w-5 h-5" />
             <span>Volver al mapa</span>
-          </button>
+          </Link>
           <button
             onClick={toggleFavorite}
             disabled={favLoading}
