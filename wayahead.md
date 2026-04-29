@@ -1812,36 +1812,39 @@ GET /api/ai/recommend?preferencia=playa&presupuesto=medio
 
 ---
 
-## 📅 2026-04-28 - SPRINT 31: Rutas + POIs + Clima (COMPLETADO)
+## 📅 2026-04-29 - SPRINT 32: Rutas + POIs + Mejoras UI (EN PROGRESO)
 
 ### ✅ Completado
 | Feature | Estado |
 |---------|--------|
-| 8 Rutas tematicas (molinos, faros, murcia, rioja, pirineos, costa, norte, patrimonio) | ✅ |
-| 3 rutas rotatorias con RouteCard | ✅ |
-| POIs API Wikidata SPARQL ready | ✅ |
+| Rutas dinamicas (8 rutas) | ✅ |
+| 3 rutas aleatorias + "Ver todas" | ✅ |
+| Dynamic import SSR false | ✅ |
+| POIs Wikidata SPARQL ready | ✅ |
+| Volver al mapa con Link | ✅ |
 | Background opacity 25% | ✅ |
-| Clima pages + Volver al mapa | ✅ |
 | framer-motion instalado | ✅ |
 
 ### 🌐 APIs
 ```bash
 # Rutas
-curl "/rutas?all=true"  # Todas las rutas
-curl "/rutas"         # 3 rotatorias
+curl "/rutas"          # 3 rutas
+curl "/rutas?all=true"  # todas
 
-# POIs with SPARQL
+# POIs
+curl "/api/wikidata/pois?country=es&type=museum"
 curl "/api/wikidata/pois?country=es&type=museum&sparql=true"
 ```
 
 ### 📋 Pendientes
+- Imágenes Unsplash en rutas (error 500)
 - AviationStack API
 - Predicción riesgo ML
 - App móvil
 
 ---
 
-## 📅 2026-04-27 - SPRINT 30: IMPLEMENTADO ✅
+## 📅 2026-04-28 - SPRINT 31: COMPLETADO ✅
 
 ### ✅ Completado
 | # | Tarea | Priority |
