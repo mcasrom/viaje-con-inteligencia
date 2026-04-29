@@ -5,14 +5,14 @@ import { motion } from 'framer-motion';
 import RouteDetail from '@/components/RouteDetail';
 
 const ALL_ROUTES = [
-  { id: 'molinos', title: 'Ruta de los Molinos', region: 'La Mancha', color: 'amber', days: '4-5', km: '450', difficulty: 'Fácil', desc: 'Don Quijote vio gigantes. Molinos monumentales, gastronomía manchega e historia.', icon: 'wind' },
-  { id: 'faros', title: 'Ruta de los Faros', region: 'Costa España', color: 'cyan', days: '5-7', km: '2100', difficulty: 'Moderado', desc: 'De Huelva a Gerona. Los faros más emblemáticos de la costa española.', icon: 'lighthouse' },
-  { id: 'murcia', title: 'Ruta de Murcia', region: 'Región de Murcia', color: 'emerald', days: '3-4', km: '280', difficulty: 'Fácil', desc: 'Caravaca, Calasparra, Moratalla. Pueblos monumentales y naturaleza.', icon: 'mountain' },
-  { id: 'rioja', title: 'Ruta del Vino', region: 'La Rioja', color: 'red', days: '3-4', km: '200', difficulty: 'Fácil', desc: 'Bodegas centenarias, viñedos y gastronomía riojana.', icon: 'wine' },
-  { id: 'pirineos', title: 'Ruta de Nieve', region: 'Pirineos', color: 'blue', days: '5-7', km: '350', difficulty: 'Alto', desc: 'Estaciones de esquí, pueblos medievales y montaña.', icon: 'snow' },
-  { id: 'costa', title: 'Best Beaches', region: 'Costa del Sol', color: 'yellow', days: '4-5', km: '300', difficulty: 'Fácil', desc: 'Las mejores playas de Málaga y Granada.', icon: 'beach' },
-  { id: 'norte', title: 'Gran Ruta Verde', region: 'España Verde', color: 'green', days: '7-10', km: '800', difficulty: 'Moderado', desc: 'Costa cantábrica: Asturias, Cantabria y País Vasco.', icon: 'forest' },
-  { id: 'patrimonio', title: 'Ciudades Patrimonio', region: 'Centro España', color: 'purple', days: '5-6', km: '600', difficulty: 'Fácil', desc: 'Toledo, Ávila, Salamanca. Ciudades patrimonio de la humanidad.', icon: 'building' },
+  { id: 'molinos', title: 'Ruta de los Molinos', region: 'La Mancha', color: 'amber', days: '4-5', km: '450', difficulty: 'Fácil', desc: 'Don Quijote vio gigantes. Molinos monumentales, gastronomía manchega e historia.', icon: 'wind', image: 'https://images.unsplash.com/photo-1564053489984-317fa0d8bc2e?w=800&q=80' },
+  { id: 'faros', title: 'Ruta de los Faros', region: 'Costa España', color: 'cyan', days: '5-7', km: '2100', difficulty: 'Moderado', desc: 'De Huelva a Gerona. Los faros más emblemáticos de la costa española.', icon: 'lighthouse', image: 'https://images.unsplash.com/photo-1507003098321-0bfab38fda89?w=800&q=80' },
+  { id: 'murcia', title: 'Ruta de Murcia', region: 'Región de Murcia', color: 'emerald', days: '3-4', km: '280', difficulty: 'Fácil', desc: 'Caravaca, Calasparra, Moratalla. Pueblos monumentales y naturaleza.', icon: 'mountain', image: 'https://images.unsplash.com/photo-1539037116267-5dd7691cee47?w=800&q=80' },
+  { id: 'rioja', title: 'Ruta del Vino', region: 'La Rioja', color: 'red', days: '3-4', km: '200', difficulty: 'Fácil', desc: 'Bodegas centenarias, viñedos y gastronomía riojana.', icon: 'wine', image: 'https://images.unsplash.com/photo-1506377247377-2a5a0a2cee5d?w=800&q=80' },
+  { id: 'pirineos', title: 'Ruta de Nieve', region: 'Pirineos', color: 'blue', days: '5-7', km: '350', difficulty: 'Alto', desc: 'Estaciones de esquí, pueblos medievales y montaña.', icon: 'snow', image: 'https://images.unsplash.com/photo-1491553895911-0055eca6402e?w=800&q=80' },
+  { id: 'costa', title: 'Best Beaches', region: 'Costa del Sol', color: 'yellow', days: '4-5', km: '300', difficulty: 'Fácil', desc: 'Las mejores playas de Málaga y Granada.', icon: 'beach', image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&q=80' },
+  { id: 'norte', title: 'Gran Ruta Verde', region: 'España Verde', color: 'green', days: '7-10', km: '800', difficulty: 'Moderado', desc: 'Costa cantábrica: Asturias, Cantabria y País Vasco.', icon: 'forest', image: 'https://images.unsplash.com/photo-1469474968028-56623f02e01e?w=800&q=80' },
+  { id: 'patrimonio', title: 'Ciudades Patrimonio', region: 'Centro España', color: 'purple', days: '5-6', km: '600', difficulty: 'Fácil', desc: 'Toledo, Ávila, Salamanca. Ciudades patrimonio de la humanidad.', icon: 'building', image: 'https://images.unsplash.com/photo-1539037116267-5dd7691cee7?w=800&q=80' },
 ];
 
 const COLOR_MAP: Record<string, string> = {
@@ -74,24 +74,24 @@ export default async function RutasPage({ searchParams }: PageProps) {
               <p className="text-xl text-slate-300">Itinerarios diseñados para descubrir España de otra manera.</p>
             </div>
 
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="grid md:grid-cols-3 gap-6">
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
               {displayRoutes.map((route, idx) => {
                 const Icon = ICONS[route.icon] || ICONS.wind;
                 return (
                   <Link key={route.id} href={`/rutas?route=${route.id}&days=${route.days.split('-')[0]}`}>
-                    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.1 }} className={`relative overflow-hidden rounded-2xl bg-gradient-to-br ${COLOR_MAP[route.color]} h-96`}>
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-                      <div className="absolute bottom-0 left-0 right-0 p-6">
+                    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.1 }} className={`relative overflow-hidden rounded-2xl bg-gradient-to-br ${COLOR_MAP[route.color]} h-80`}>
+                      <div className="absolute inset-0 bg-cover bg-center opacity-40" style={{ backgroundImage: `url(${route.image})` }} />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" />
+                      <div className="absolute bottom-0 left-0 right-0 p-5">
                         <div className={`flex items-center gap-2 mb-2 ${TEXT_COLORS[route.color]}`}>
                           <Icon className="w-5 h-5" />
                           <span className="text-sm font-medium">{route.region}</span>
                         </div>
-                        <h3 className="text-2xl font-bold text-white mb-2">{route.title}</h3>
-                        <p className="text-slate-200 text-sm mb-4">{route.desc}</p>
-                        <div className="flex items-center gap-4 text-xs text-slate-300">
+                        <h3 className="text-xl font-bold text-white mb-2">{route.title}</h3>
+                        <p className="text-slate-200 text-sm mb-3">{route.desc}</p>
+                        <div className="flex items-center gap-3 text-xs text-slate-300">
                           <span className="flex items-center gap-1"><MapPin className="w-3 h-3" />{route.km} km</span>
                           <span className="flex items-center gap-1"><Clock className="w-3 h-3" />{route.days} días</span>
-                          <span>{route.difficulty === 'Fácil' ? '✅' : route.difficulty === 'Moderado' ? '⚠️' : '❄️'}</span>
                         </div>
                       </div>
                     </motion.div>
