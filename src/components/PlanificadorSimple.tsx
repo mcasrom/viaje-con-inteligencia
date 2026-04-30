@@ -363,7 +363,7 @@ export default function PlanificadorSimple() {
             href="/rutas"
             className="group flex items-center justify-center gap-3 w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold py-3 px-6 rounded-xl transition-all duration-300 hover:shadow-lg hover:shadow-emerald-500/25 hover:scale-[1.02]"
           >
-            <span>Explorar 4 rutas temáticas</span>
+            <span>Rutas Temáticas</span>
             <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
           </a>
           
