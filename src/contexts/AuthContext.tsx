@@ -1,5 +1,4 @@
 'use client';
-
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { supabase } from '@/lib/supabase';
 
@@ -17,6 +16,7 @@ interface AuthContextType {
   user: User | null;
   loading: boolean;
   signInWithEmail: (email: string) => Promise<{ error?: string }>;
+  signInWithPassword: (email: string, password: string) => Promise<{ error?: string }>;
   signInWithTelegram: (userId: string, username?: string) => Promise<{ error?: string }>;
   signOut: () => Promise<void>;
 }
@@ -28,20 +28,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!supabase) {
-      setLoading(false);
-      return;
-    }
-
+    if (!supabase) { setLoading(false); return; }
     supabase.auth.getUser().then(({ data: { user } }) => {
       setUser(user as User | null);
       setLoading(false);
     });
-
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user as User | null);
     });
-
     return () => subscription.unsubscribe();
   }, []);
 
@@ -49,8 +43,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (!supabase) return { error: 'Supabase no configurado' };
     const { error } = await supabase.auth.signInWithOtp({
       email,
-      options: { emailRedirectTo: `${window.location.origin}/dashboard` },
+      options: { emailRedirectTo: `${window.location.origin}/auth/callback?next=/dashboard` },
     });
+    return { error: error?.message };
+  };
+
+  const signInWithPassword = async (email: string, password: string) => {
+    if (!supabase) return { error: 'Supabase no configurado' };
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
     return { error: error?.message };
   };
 
@@ -69,7 +69,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, signInWithEmail, signInWithTelegram, signOut }}>
+    <AuthContext.Provider value={{ user, loading, signInWithEmail, signInWithPassword, signInWithTelegram, signOut }}>
       {children}
     </AuthContext.Provider>
   );
