@@ -1,17 +1,17 @@
 'use client';
-import { Suspense } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, MapPin, Calendar, Star, Shield, TrendingUp, Clock, ExternalLink } from 'lucide-react';
+import { ArrowLeft, MapPin, Calendar, Star, Shield, TrendingUp, Clock, ExternalLink, Loader2, Sparkles } from 'lucide-react';
 import { paisesData } from '@/data/paises';
 
-const INTEREST_ROUTES: Record<string, { label: string; emoji: string; routes: string[] }> = {
-  playa: { label: 'Playa', emoji: '🏖️', routes: ['faros', 'costa'] },
-  cultural: { label: 'Cultura', emoji: '🏛️', routes: ['molinos', 'patrimonio'] },
-  naturaleza: { label: 'Naturaleza', emoji: '🏔️', routes: ['murcia', 'norte', 'pirineos'] },
-  gastronomia: { label: 'Gastronomía', emoji: '🍽️', routes: ['vino', 'norte'] },
-  vino: { label: 'Vino', emoji: '🍷', routes: ['vino'] },
-  aventura: { label: 'Aventura', emoji: '🧗', routes: ['pirineos', 'murcia', 'norte'] },
+const INTEREST_ROUTES: Record<string, { label: string; emoji: string; routes: string[]; apiPreferencia?: string }> = {
+  playa: { label: 'Playa', emoji: '🏖️', routes: ['faros', 'costa'], apiPreferencia: 'playa' },
+  cultural: { label: 'Cultura', emoji: '🏛️', routes: ['molinos', 'patrimonio'], apiPreferencia: 'cultural' },
+  naturaleza: { label: 'Naturaleza', emoji: '🏔️', routes: ['murcia', 'norte', 'pirineos'], apiPreferencia: 'naturaleza' },
+  gastronomia: { label: 'Gastronomía', emoji: '🍽️', routes: ['vino', 'norte'], apiPreferencia: 'cultural' },
+  vino: { label: 'Vino', emoji: '🍷', routes: ['vino'], apiPreferencia: 'cultural' },
+  aventura: { label: 'Aventura', emoji: '🧗', routes: ['pirineos', 'murcia', 'norte'], apiPreferencia: 'naturaleza' },
 };
 
 const ROUTES_INFO: Record<string, { name: string; desc: string; color: string; icon: string }> = {
@@ -25,15 +25,96 @@ const ROUTES_INFO: Record<string, { name: string; desc: string; color: string; i
   patrimonio: { name: 'Ciudades Patrimonio', desc: 'Centro, 600km', color: 'from-purple-600 to-violet-600', icon: '🏛️' },
 };
 
+interface MLRecommendation {
+  routeId: string;
+  route: { name: string; desc: string; color: string; icon: string };
+  score: number;
+  reason: string;
+  source: 'api' | 'local';
+}
+
 function DestinosContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const destino = searchParams.get('destino');
   const fechas = searchParams.get('fechas');
   const interes = searchParams.get('interes');
+  const presupuesto = searchParams.get('presupuesto') || 'medio';
+
+  const [mlRecommendations, setMlRecommendations] = useState<MLRecommendation[]>([]);
+  const [loading, setLoading] = useState(false);
 
   const paisData = destino ? paisesData[destino] : null;
   const matchedRoutes = interes ? INTEREST_ROUTES[interes]?.routes || [] : [];
+
+  // Fetch ML recommendations from API
+  useEffect(() => {
+    if (!interes) return;
+
+    setLoading(true);
+    const apiPreferencia = INTEREST_ROUTES[interes]?.apiPreferencia || 'cultural';
+
+    fetch(`/api/ai/recommend?preferencia=${apiPreferencia}&presupuesto=${presupuesto}&duracion=7&limit=5`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.recommendations && data.recommendations.length > 0) {
+          // Map API recommendations to routes
+          const apiRecommendations: MLRecommendation[] = data.recommendations
+            .filter((r: any) => {
+              // Only include countries that match our routes
+              return matchedRoutes.some(routeId => {
+                const routeInfo = ROUTES_INFO[routeId];
+                return routeInfo && r.nombre?.toLowerCase().includes(routeInfo.name.toLowerCase().split(' ')[0]);
+              });
+            })
+            .map((r: any, idx: number) => ({
+              routeId: matchedRoutes[idx % matchedRoutes.length] || 'vino',
+              route: ROUTES_INFO[matchedRoutes[idx % matchedRoutes.length]] || ROUTES_INFO['vino'],
+              score: Math.min(98, 85 + Math.floor((data.recommendations.length - idx) * 3)),
+              reason: `${r.nombre} ${r.bandera || ''} • Riesgo: ${r.nivelRiesgo || 'bajo'}`,
+              source: 'api',
+            }));
+
+          if (apiRecommendations.length > 0) {
+            setMlRecommendations(apiRecommendations);
+          } else {
+            // Fallback to local scoring
+            setMlRecommendations(calculateLocalScores(matchedRoutes, interes));
+          }
+        } else {
+          setMlRecommendations(calculateLocalScores(matchedRoutes, interes));
+        }
+      })
+      .catch(() => {
+        setMlRecommendations(calculateLocalScores(matchedRoutes, interes));
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [interes, presupuesto]);
+
+  const calculateLocalScores = (routes: string[], int: string): MLRecommendation[] => {
+    return routes
+      .map((routeId) => {
+        const route = ROUTES_INFO[routeId];
+        if (!route) return null;
+
+        let score = 70;
+        let reason = 'Buena opción general';
+
+        if (int === 'vino' && routeId === 'vino') { score = 98; reason = 'Match perfecto con tu interés'; }
+        else if (int === 'gastronomia' && routeId === 'vino') { score = 92; reason = 'Excelente maridaje gastronómico'; }
+        else if (int === 'playa' && routeId === 'faros') { score = 95; reason = 'Ruta costera ideal'; }
+        else if (int === 'playa' && routeId === 'costa') { score = 96; reason = 'Las mejores playas'; }
+        else if (int === 'cultural' && routeId === 'molinos') { score = 90; reason = 'Patrimonio histórico único'; }
+        else if (int === 'cultural' && routeId === 'patrimonio') { score = 94; reason = 'Ciudades UNESCO'; }
+        else if (int === 'naturaleza' && routeId === 'norte') { score = 91; reason = 'Naturaleza exuberante'; }
+        else if (int === 'aventura' && routeId === 'pirineos') { score = 95; reason = 'Deportes de montaña'; }
+
+        return { routeId, route, score, reason, source: 'local' as const };
+      })
+      .filter(Boolean) as MLRecommendation[];
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800">
@@ -96,35 +177,15 @@ function DestinosContent() {
         {matchedRoutes.length > 0 && interes && (
           <div className="mb-8">
             <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
-              <Star className="w-5 h-5 text-amber-400" />
+              <Sparkles className="w-5 h-5 text-emerald-400" />
               Rutas recomendadas por IA para {INTEREST_ROUTES[interes]?.emoji} {INTEREST_ROUTES[interes]?.label}
+              {loading && <Loader2 className="w-4 h-4 animate-spin ml-2 text-slate-400" />}
             </h2>
             
-            {/* ML Scoring Logic */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {matchedRoutes
-                .map((routeId) => {
-                  const route = ROUTES_INFO[routeId];
-                  if (!route) return null;
-
-                  // Calculate ML Score
-                  let score = 70; // Base score
-                  let reason = 'Buena opción general';
-
-                  if (interes === 'vino' && routeId === 'vino') score = 98;
-                  else if (interes === 'gastronomia' && routeId === 'vino') { score = 92; reason = 'Excelente maridaje gastronómico'; }
-                  else if (interes === 'playa' && routeId === 'faros') { score = 95; reason = 'Ruta costera ideal'; }
-                  else if (interes === 'playa' && routeId === 'costa') { score = 96; reason = 'Las mejores playas'; }
-                  else if (interes === 'cultural' && routeId === 'molinos') { score = 90; reason = 'Patrimonio histórico único'; }
-                  else if (interes === 'cultural' && routeId === 'patrimonio') { score = 94; reason = 'Ciudades UNESCO'; }
-                  else if (interes === 'naturaleza' && routeId === 'norte') { score = 91; reason = 'Naturaleza exuberante'; }
-                  else if (interes === 'aventura' && routeId === 'pirineos') { score = 95; reason = 'Deportes de montaña'; }
-
-                  return { routeId, route, score, reason };
-                })
-                .filter(Boolean)
-                .sort((a: any, b: any) => b.score - a.score)
-                .map(({ routeId, route, score, reason }: any) => (
+              {(loading ? [] : mlRecommendations)
+                .sort((a, b) => b.score - a.score)
+                .map(({ routeId, route, score, reason, source }) => (
                   <Link key={routeId} href={`/rutas?route=${routeId}`}>
                     <div className={`relative bg-gradient-to-r ${route.color} rounded-xl p-5 cursor-pointer hover:scale-[1.02] transition-all group`}>
                       {/* ML Score Badge */}
@@ -134,6 +195,14 @@ function DestinosContent() {
                           {score}% Match
                         </span>
                       </div>
+
+                      {/* Source Indicator */}
+                      {source === 'api' && (
+                        <div className="absolute top-3 left-3 bg-emerald-500/80 backdrop-blur px-2 py-1 rounded-full flex items-center gap-1">
+                          <Sparkles className="w-3 h-3 text-white" />
+                          <span className="text-xs text-white font-medium">IA</span>
+                        </div>
+                      )}
 
                       <div className="flex items-start gap-4">
                         <span className="text-3xl bg-white/10 p-2 rounded-lg">{route.icon}</span>
@@ -155,6 +224,15 @@ function DestinosContent() {
                     </div>
                   </Link>
                 ))}
+
+              {loading && (
+                <div className="col-span-full flex items-center justify-center py-12">
+                  <div className="text-center">
+                    <Loader2 className="w-8 h-8 animate-spin text-emerald-400 mx-auto mb-3" />
+                    <p className="text-slate-400">Calculando recomendaciones con IA...</p>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         )}

@@ -1,7 +1,123 @@
 'use client';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, MapPin, Clock, ChevronRight, Star, Mountain, Wine, Landmark, Umbrella, Trees, Share2 } from 'lucide-react';
+import { ArrowLeft, MapPin, Clock, ChevronRight, Star, Mountain, Wine, Landmark, Umbrella, Trees, Share2, TrendingUp, TrendingDown, Users } from 'lucide-react';
+import {
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  BarChart,
+  Bar,
+  LineChart,
+  Line,
+  ComposedChart,
+} from 'recharts';
+
+// Monthly prediction data per route (price index 1-100, crowd level 1-100)
+const ROUTE_PREDICTIONS: Record<string, { month: string; price: number; crowd: number; weather: number }[]> = {
+  vino: [
+    { month: 'Ene', price: 55, crowd: 20, weather: 35 },
+    { month: 'Feb', price: 50, crowd: 25, weather: 40 },
+    { month: 'Mar', price: 60, crowd: 35, weather: 55 },
+    { month: 'Abr', price: 70, crowd: 45, weather: 70 },
+    { month: 'May', price: 75, crowd: 50, weather: 80 },
+    { month: 'Jun', price: 80, crowd: 60, weather: 90 },
+    { month: 'Jul', price: 85, crowd: 65, weather: 95 },
+    { month: 'Ago', price: 90, crowd: 70, weather: 90 },
+    { month: 'Sep', price: 75, crowd: 55, weather: 85 },
+    { month: 'Oct', price: 65, crowd: 40, weather: 70 },
+    { month: 'Nov', price: 55, crowd: 25, weather: 50 },
+    { month: 'Dic', price: 50, crowd: 30, weather: 35 },
+  ],
+  pirineos: [
+    { month: 'Ene', price: 70, crowd: 60, weather: 30 },
+    { month: 'Feb', price: 65, crowd: 55, weather: 35 },
+    { month: 'Mar', price: 75, crowd: 50, weather: 45 },
+    { month: 'Abr', price: 80, crowd: 65, weather: 55 },
+    { month: 'May', price: 85, crowd: 70, weather: 70 },
+    { month: 'Jun', price: 90, crowd: 80, weather: 85 },
+    { month: 'Jul', price: 95, crowd: 90, weather: 95 },
+    { month: 'Ago', price: 95, crowd: 95, weather: 90 },
+    { month: 'Sep', price: 80, crowd: 60, weather: 80 },
+    { month: 'Oct', price: 70, crowd: 45, weather: 60 },
+    { month: 'Nov', price: 60, crowd: 30, weather: 40 },
+    { month: 'Dic', price: 75, crowd: 65, weather: 25 },
+  ],
+  faros: [
+    { month: 'Ene', price: 50, crowd: 20, weather: 35 },
+    { month: 'Feb', price: 45, crowd: 15, weather: 40 },
+    { month: 'Mar', price: 55, crowd: 25, weather: 50 },
+    { month: 'Abr', price: 65, crowd: 40, weather: 65 },
+    { month: 'May', price: 75, crowd: 55, weather: 80 },
+    { month: 'Jun', price: 85, crowd: 70, weather: 90 },
+    { month: 'Jul', price: 95, crowd: 90, weather: 95 },
+    { month: 'Ago', price: 95, crowd: 95, weather: 95 },
+    { month: 'Sep', price: 80, crowd: 60, weather: 85 },
+    { month: 'Oct', price: 65, crowd: 35, weather: 70 },
+    { month: 'Nov', price: 50, crowd: 20, weather: 50 },
+    { month: 'Dic', price: 45, crowd: 15, weather: 35 },
+  ],
+  costa: [
+    { month: 'Ene', price: 45, crowd: 15, weather: 35 },
+    { month: 'Feb', price: 40, crowd: 10, weather: 40 },
+    { month: 'Mar', price: 50, crowd: 20, weather: 55 },
+    { month: 'Abr', price: 60, crowd: 35, weather: 70 },
+    { month: 'May', price: 75, crowd: 50, weather: 85 },
+    { month: 'Jun', price: 90, crowd: 75, weather: 95 },
+    { month: 'Jul', price: 100, crowd: 100, weather: 100 },
+    { month: 'Ago', price: 100, crowd: 100, weather: 95 },
+    { month: 'Sep', price: 85, crowd: 60, weather: 90 },
+    { month: 'Oct', price: 65, crowd: 35, weather: 75 },
+    { month: 'Nov', price: 50, crowd: 20, weather: 55 },
+    { month: 'Dic', price: 45, crowd: 15, weather: 40 },
+  ],
+  norte: [
+    { month: 'Ene', price: 50, crowd: 20, weather: 30 },
+    { month: 'Feb', price: 45, crowd: 15, weather: 35 },
+    { month: 'Mar', price: 55, crowd: 25, weather: 45 },
+    { month: 'Abr', price: 65, crowd: 40, weather: 60 },
+    { month: 'May', price: 75, crowd: 50, weather: 75 },
+    { month: 'Jun', price: 85, crowd: 65, weather: 85 },
+    { month: 'Jul', price: 90, crowd: 75, weather: 90 },
+    { month: 'Ago', price: 95, crowd: 85, weather: 85 },
+    { month: 'Sep', price: 80, crowd: 55, weather: 80 },
+    { month: 'Oct', price: 65, crowd: 40, weather: 65 },
+    { month: 'Nov', price: 55, crowd: 25, weather: 45 },
+    { month: 'Dic', price: 50, crowd: 20, weather: 30 },
+  ],
+  molinos: [
+    { month: 'Ene', price: 50, crowd: 20, weather: 30 },
+    { month: 'Feb', price: 45, crowd: 15, weather: 35 },
+    { month: 'Mar', price: 55, crowd: 30, weather: 50 },
+    { month: 'Abr', price: 65, crowd: 45, weather: 70 },
+    { month: 'May', price: 70, crowd: 50, weather: 80 },
+    { month: 'Jun', price: 75, crowd: 55, weather: 95 },
+    { month: 'Jul', price: 80, crowd: 60, weather: 100 },
+    { month: 'Ago', price: 85, crowd: 65, weather: 95 },
+    { month: 'Sep', price: 70, crowd: 45, weather: 85 },
+    { month: 'Oct', price: 60, crowd: 35, weather: 70 },
+    { month: 'Nov', price: 50, crowd: 25, weather: 50 },
+    { month: 'Dic', price: 45, crowd: 20, weather: 35 },
+  ],
+  patrimonio: [
+    { month: 'Ene', price: 55, crowd: 30, weather: 35 },
+    { month: 'Feb', price: 50, crowd: 25, weather: 40 },
+    { month: 'Mar', price: 60, crowd: 35, weather: 55 },
+    { month: 'Abr', price: 75, crowd: 55, weather: 70 },
+    { month: 'May', price: 80, crowd: 60, weather: 80 },
+    { month: 'Jun', price: 85, crowd: 70, weather: 90 },
+    { month: 'Jul', price: 90, crowd: 80, weather: 95 },
+    { month: 'Ago', price: 95, crowd: 85, weather: 90 },
+    { month: 'Sep', price: 80, crowd: 65, weather: 85 },
+    { month: 'Oct', price: 70, crowd: 50, weather: 70 },
+    { month: 'Nov', price: 60, crowd: 35, weather: 50 },
+    { month: 'Dic', price: 65, crowd: 45, weather: 35 },
+  ],
+};
 
 const ROUTES_DATA = [
   {
@@ -365,49 +481,140 @@ function RouteDetail({ route }: { route: any }) {
           </div>
         </div>
 
-        {/* ML Prediction: Cuándo Ir */}
+        {/* ML Prediction: Cuándo Ir - Visualización Predictiva */}
         <div className="bg-gradient-to-r from-slate-800 to-slate-900 rounded-xl p-6 mb-8 border border-emerald-500/30">
-          <div className="flex items-center gap-2 mb-4">
+          <div className="flex items-center gap-2 mb-6">
             <span className="text-2xl">🤖</span>
-            <h3 className="text-lg font-bold text-white">Predicción IA: ¿Cuándo ir?</h3>
+            <div>
+              <h3 className="text-lg font-bold text-white">Predicción IA: ¿Cuándo ir?</h3>
+              <p className="text-slate-400 text-sm">Análisis de precios, afluencia y clima mes a mes</p>
+            </div>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {/* Best Month */}
-            <div className="bg-emerald-500/10 rounded-lg p-4 border border-emerald-500/20">
-              <div className="text-emerald-400 text-sm font-bold mb-1">⭐ Mes Ideal</div>
-              <div className="text-white font-bold text-lg">
-                {route.id === 'vino' ? 'Octubre' :
-                 route.id === 'pirineos' ? 'Febrero' :
-                 route.id === 'faros' ? 'Junio' :
-                 route.id === 'costa' ? 'Julio' :
-                 route.id === 'norte' ? 'Septiembre' :
-                 'Mayo'}
-              </div>
-              <div className="text-emerald-300/70 text-xs mt-1">Mejor equilibrio clima/precio</div>
-            </div>
+          {/* AI Recommendation Summary */}
+          {(() => {
+            const predictions = ROUTE_PREDICTIONS[route.id] || ROUTE_PREDICTIONS['molinos'];
+            const bestMonth = predictions.reduce((best, m) => {
+              const score = (100 - m.price) * 0.4 + (100 - m.crowd) * 0.35 + m.weather * 0.25;
+              const bestScore = (100 - best.price) * 0.4 + (100 - best.crowd) * 0.35 + best.weather * 0.25;
+              return score > bestScore ? m : best;
+            });
+            const worstMonth = predictions.reduce((worst, m) => {
+              const score = m.price * 0.4 + m.crowd * 0.35 + (100 - m.weather) * 0.25;
+              const worstScore = worst.price * 0.4 + worst.crowd * 0.35 + (100 - worst.weather) * 0.25;
+              return score > worstScore ? m : worst;
+            });
+            
+            return (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                <div className="bg-emerald-500/10 rounded-lg p-4 border border-emerald-500/20">
+                  <div className="flex items-center gap-2 text-emerald-400 text-sm font-bold mb-1">
+                    <TrendingUp className="w-4 h-4" />
+                    <span>⭐ Mes Ideal</span>
+                  </div>
+                  <div className="text-white font-bold text-xl">{bestMonth.month}</div>
+                  <div className="text-emerald-300/70 text-xs mt-1">Mejor equilibrio clima/precio</div>
+                </div>
 
-            {/* Crowd Level */}
-            <div className="bg-amber-500/10 rounded-lg p-4 border border-amber-500/20">
-              <div className="text-amber-400 text-sm font-bold mb-1">👥 Afluencia</div>
-              <div className="text-white font-bold text-lg">
-                {route.id === 'vino' ? 'Baja' :
-                 route.id === 'costa' ? 'Muy Alta' :
-                 route.id === 'molinos' ? 'Media' :
-                 'Media'}
-              </div>
-              <div className="text-amber-300/70 text-xs mt-1">Menos turistas = Mejor experiencia</div>
-            </div>
+                <div className="bg-amber-500/10 rounded-lg p-4 border border-amber-500/20">
+                  <div className="flex items-center gap-2 text-amber-400 text-sm font-bold mb-1">
+                    <Users className="w-4 h-4" />
+                    <span>👥 Mes más tranquilo</span>
+                  </div>
+                  <div className="text-white font-bold text-xl">
+                    {predictions.reduce((min, m) => m.crowd < min.crowd ? m : min).month}
+                  </div>
+                  <div className="text-amber-300/70 text-xs mt-1">Menos turistas = Mejor experiencia</div>
+                </div>
 
-            {/* Price Prediction */}
-            <div className="bg-blue-500/10 rounded-lg p-4 border border-blue-500/20">
-              <div className="text-blue-400 text-sm font-bold mb-1">💰 Precio Estimado</div>
-              <div className="text-white font-bold text-lg">
-                {route.id === 'costa' || route.id === 'pirineos' ? 'Alto' :
-                 route.id === 'vino' ? 'Medio-Bajo' :
-                 'Medio'}
+                <div className="bg-rose-500/10 rounded-lg p-4 border border-rose-500/20">
+                  <div className="flex items-center gap-2 text-rose-400 text-sm font-bold mb-1">
+                    <TrendingDown className="w-4 h-4" />
+                    <span>⚠️ Evitar</span>
+                  </div>
+                  <div className="text-white font-bold text-xl">{worstMonth.month}</div>
+                  <div className="text-rose-300/70 text-xs mt-1">Más caro y masificado</div>
+                </div>
               </div>
-              <div className="text-blue-300/70 text-xs mt-1">Reserva con 2 meses de antelación</div>
+            );
+          })()}
+
+          {/* Price + Crowd Chart */}
+          <div className="bg-slate-800/50 rounded-lg p-4 mb-4">
+            <h4 className="text-sm font-bold text-white mb-4">📈 Precio vs Afluencia Mensual</h4>
+            <div className="h-64">
+              <ResponsiveContainer width="100%" height="100%">
+                <ComposedChart data={ROUTE_PREDICTIONS[route.id] || ROUTE_PREDICTIONS['molinos']}>
+                  <defs>
+                    <linearGradient id="priceGradient" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3}/>
+                      <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
+                    </linearGradient>
+                    <linearGradient id="crowdGradient" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#f59e0b" stopOpacity={0.3}/>
+                      <stop offset="95%" stopColor="#f59e0b" stopOpacity={0}/>
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
+                  <XAxis dataKey="month" stroke="#94a3b8" fontSize={12} />
+                  <YAxis stroke="#94a3b8" fontSize={12} domain={[0, 100]} />
+                  <Tooltip
+                    contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #334155', borderRadius: '8px', color: '#fff' }}
+                    labelStyle={{ color: '#94a3b8' }}
+                  />
+                  <Area
+                    type="monotone"
+                    dataKey="price"
+                    name="Precio"
+                    stroke="#3b82f6"
+                    fill="url(#priceGradient)"
+                    strokeWidth={2}
+                  />
+                  <Area
+                    type="monotone"
+                    dataKey="crowd"
+                    name="Afluencia"
+                    stroke="#f59e0b"
+                    fill="url(#crowdGradient)"
+                    strokeWidth={2}
+                  />
+                </ComposedChart>
+              </ResponsiveContainer>
+            </div>
+            <div className="flex justify-center gap-6 mt-2 text-xs">
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+                <span className="text-slate-300">Precio (índice)</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 bg-amber-500 rounded-full"></div>
+                <span className="text-slate-300">Afluencia turística</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Weather Chart */}
+          <div className="bg-slate-800/50 rounded-lg p-4">
+            <h4 className="text-sm font-bold text-white mb-4">🌤️ Clima Mensual (Índice 0-100)</h4>
+            <div className="h-48">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={ROUTE_PREDICTIONS[route.id] || ROUTE_PREDICTIONS['molinos']}>
+                  <defs>
+                    <linearGradient id="weatherGradient" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#10b981" stopOpacity={1}/>
+                      <stop offset="95%" stopColor="#059669" stopOpacity={0.5}/>
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
+                  <XAxis dataKey="month" stroke="#94a3b8" fontSize={12} />
+                  <YAxis stroke="#94a3b8" fontSize={12} domain={[0, 100]} />
+                  <Tooltip
+                    contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #334155', borderRadius: '8px', color: '#fff' }}
+                    labelStyle={{ color: '#94a3b8' }}
+                  />
+                  <Bar dataKey="weather" name="Clima" fill="url(#weatherGradient)" radius={[4, 4, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
             </div>
           </div>
         </div>
@@ -420,44 +627,36 @@ function RouteDetail({ route }: { route: any }) {
 
         {/* Smart Share buttons */}
         <div className="flex gap-3 mb-8">
-          <button
-            onClick={() => {
-              const url = encodeURIComponent(window.location.href);
-              const insight = `🤖 La IA recomienda ir en ${
-                route.id === 'vino' ? 'Octubre' : 
-                route.id === 'pirineos' ? 'Febrero' : 
-                route.id === 'faros' ? 'Junio' : 
-                route.id === 'costa' ? 'Julio' : 
-                route.id === 'norte' ? 'Septiembre' : 
-                'Mayo'
-              } (mejor precio/clima)`;
-              const text = encodeURIComponent(`🛣️ ${route.title}\n\n${route.desc}\n\n${insight}\n\nDescúbrelo en Viaje con Inteligencia:`);
-              window.open(`https://t.me/share/url?url=${url}&text=${text}`, '_blank');
-            }}
-            className="flex-1 bg-blue-600 hover:bg-blue-500 text-white font-medium py-2 px-4 rounded-xl flex items-center justify-center gap-2 transition-all"
-          >
-            <Share2 className="w-4 h-4" />
-            Compartir en Telegram
-          </button>
-          <button
-            onClick={() => {
-              const url = encodeURIComponent(window.location.href);
-              const insight = `🤖 La IA recomienda ir en ${
-                route.id === 'vino' ? 'Octubre' : 
-                route.id === 'pirineos' ? 'Febrero' : 
-                route.id === 'faros' ? 'Junio' : 
-                route.id === 'costa' ? 'Julio' : 
-                route.id === 'norte' ? 'Septiembre' : 
-                'Mayo'
-              } (mejor precio/clima)`;
-              const text = encodeURIComponent(`🛣️ ${route.title}\n\n${route.desc}\n\n${insight}\n\nDescúbrelo en Viaje con Inteligencia:`);
-              window.open(`https://api.whatsapp.com/send?text=${text}%20${url}`, '_blank');
-            }}
-            className="flex-1 bg-green-600 hover:bg-green-500 text-white font-medium py-2 px-4 rounded-xl flex items-center justify-center gap-2 transition-all"
-          >
-            <Share2 className="w-4 h-4" />
-            Compartir en WhatsApp
-          </button>
+          {(() => {
+            const predictions = ROUTE_PREDICTIONS[route.id] || ROUTE_PREDICTIONS['molinos'];
+            const bestMonth = predictions.reduce((best, m) => {
+              const score = (100 - m.price) * 0.4 + (100 - m.crowd) * 0.35 + m.weather * 0.25;
+              const bestScore = (100 - best.price) * 0.4 + (100 - best.crowd) * 0.35 + best.weather * 0.25;
+              return score > bestScore ? m : best;
+            });
+            const insight = `🤖 La IA recomienda ir en ${bestMonth.month} (mejor precio/clima)`;
+            const text = encodeURIComponent(`🛣️ ${route.title}\n\n${route.desc}\n\n${insight}\n\nDescúbrelo en Viaje con Inteligencia:`);
+            const url = encodeURIComponent(window.location.href);
+            
+            return (
+              <>
+                <button
+                  onClick={() => window.open(`https://t.me/share/url?url=${url}&text=${text}`, '_blank')}
+                  className="flex-1 bg-blue-600 hover:bg-blue-500 text-white font-medium py-2 px-4 rounded-xl flex items-center justify-center gap-2 transition-all"
+                >
+                  <Share2 className="w-4 h-4" />
+                  Compartir en Telegram
+                </button>
+                <button
+                  onClick={() => window.open(`https://api.whatsapp.com/send?text=${text}%20${url}`, '_blank')}
+                  className="flex-1 bg-green-600 hover:bg-green-500 text-white font-medium py-2 px-4 rounded-xl flex items-center justify-center gap-2 transition-all"
+                >
+                  <Share2 className="w-4 h-4" />
+                  Compartir en WhatsApp
+                </button>
+              </>
+            );
+          })()}
         </div>
 
         {/* Itinerary */}
