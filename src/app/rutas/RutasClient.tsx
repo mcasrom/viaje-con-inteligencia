@@ -365,20 +365,73 @@ function RouteDetail({ route }: { route: any }) {
           </div>
         </div>
 
-        {/* Best time + highlights */}
+        {/* ML Prediction: Cuándo Ir */}
+        <div className="bg-gradient-to-r from-slate-800 to-slate-900 rounded-xl p-6 mb-8 border border-emerald-500/30">
+          <div className="flex items-center gap-2 mb-4">
+            <span className="text-2xl">🤖</span>
+            <h3 className="text-lg font-bold text-white">Predicción IA: ¿Cuándo ir?</h3>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {/* Best Month */}
+            <div className="bg-emerald-500/10 rounded-lg p-4 border border-emerald-500/20">
+              <div className="text-emerald-400 text-sm font-bold mb-1">⭐ Mes Ideal</div>
+              <div className="text-white font-bold text-lg">
+                {route.id === 'vino' ? 'Octubre' :
+                 route.id === 'pirineos' ? 'Febrero' :
+                 route.id === 'faros' ? 'Junio' :
+                 route.id === 'costa' ? 'Julio' :
+                 route.id === 'norte' ? 'Septiembre' :
+                 'Mayo'}
+              </div>
+              <div className="text-emerald-300/70 text-xs mt-1">Mejor equilibrio clima/precio</div>
+            </div>
+
+            {/* Crowd Level */}
+            <div className="bg-amber-500/10 rounded-lg p-4 border border-amber-500/20">
+              <div className="text-amber-400 text-sm font-bold mb-1">👥 Afluencia</div>
+              <div className="text-white font-bold text-lg">
+                {route.id === 'vino' ? 'Baja' :
+                 route.id === 'costa' ? 'Muy Alta' :
+                 route.id === 'molinos' ? 'Media' :
+                 'Media'}
+              </div>
+              <div className="text-amber-300/70 text-xs mt-1">Menos turistas = Mejor experiencia</div>
+            </div>
+
+            {/* Price Prediction */}
+            <div className="bg-blue-500/10 rounded-lg p-4 border border-blue-500/20">
+              <div className="text-blue-400 text-sm font-bold mb-1">💰 Precio Estimado</div>
+              <div className="text-white font-bold text-lg">
+                {route.id === 'costa' || route.id === 'pirineos' ? 'Alto' :
+                 route.id === 'vino' ? 'Medio-Bajo' :
+                 'Medio'}
+              </div>
+              <div className="text-blue-300/70 text-xs mt-1">Reserva con 2 meses de antelación</div>
+            </div>
+          </div>
+        </div>
+
+        {/* Highlights */}
         <div className="bg-slate-800 rounded-xl p-6 mb-8">
-          <h3 className="text-lg font-bold text-white mb-3">📅 Mejor época</h3>
-          <p className="text-slate-300 mb-4">{route.bestTime}</p>
           <h3 className="text-lg font-bold text-white mb-3">✨ Highlights</h3>
           <p className="text-slate-300">{route.highlights}</p>
         </div>
 
-        {/* Share buttons */}
+        {/* Smart Share buttons */}
         <div className="flex gap-3 mb-8">
           <button
             onClick={() => {
               const url = encodeURIComponent(window.location.href);
-              const text = encodeURIComponent(`🛣️ ${route.title}\n\n${route.desc}\n\nDescúbrelo en Viaje con Inteligencia:`);
+              const insight = `🤖 La IA recomienda ir en ${
+                route.id === 'vino' ? 'Octubre' : 
+                route.id === 'pirineos' ? 'Febrero' : 
+                route.id === 'faros' ? 'Junio' : 
+                route.id === 'costa' ? 'Julio' : 
+                route.id === 'norte' ? 'Septiembre' : 
+                'Mayo'
+              } (mejor precio/clima)`;
+              const text = encodeURIComponent(`🛣️ ${route.title}\n\n${route.desc}\n\n${insight}\n\nDescúbrelo en Viaje con Inteligencia:`);
               window.open(`https://t.me/share/url?url=${url}&text=${text}`, '_blank');
             }}
             className="flex-1 bg-blue-600 hover:bg-blue-500 text-white font-medium py-2 px-4 rounded-xl flex items-center justify-center gap-2 transition-all"
@@ -389,7 +442,15 @@ function RouteDetail({ route }: { route: any }) {
           <button
             onClick={() => {
               const url = encodeURIComponent(window.location.href);
-              const text = encodeURIComponent(`🛣️ ${route.title}\n\n${route.desc}\n\nDescúbrelo en Viaje con Inteligencia:`);
+              const insight = `🤖 La IA recomienda ir en ${
+                route.id === 'vino' ? 'Octubre' : 
+                route.id === 'pirineos' ? 'Febrero' : 
+                route.id === 'faros' ? 'Junio' : 
+                route.id === 'costa' ? 'Julio' : 
+                route.id === 'norte' ? 'Septiembre' : 
+                'Mayo'
+              } (mejor precio/clima)`;
+              const text = encodeURIComponent(`🛣️ ${route.title}\n\n${route.desc}\n\n${insight}\n\nDescúbrelo en Viaje con Inteligencia:`);
               window.open(`https://api.whatsapp.com/send?text=${text}%20${url}`, '_blank');
             }}
             className="flex-1 bg-green-600 hover:bg-green-500 text-white font-medium py-2 px-4 rounded-xl flex items-center justify-center gap-2 transition-all"

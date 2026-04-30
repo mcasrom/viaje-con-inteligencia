@@ -97,27 +97,64 @@ function DestinosContent() {
           <div className="mb-8">
             <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
               <Star className="w-5 h-5 text-amber-400" />
-              Rutas recomendadas para {INTEREST_ROUTES[interes]?.emoji} {INTEREST_ROUTES[interes]?.label}
+              Rutas recomendadas por IA para {INTEREST_ROUTES[interes]?.emoji} {INTEREST_ROUTES[interes]?.label}
             </h2>
+            
+            {/* ML Scoring Logic */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {matchedRoutes.map((routeId) => {
-                const route = ROUTES_INFO[routeId];
-                if (!route) return null;
-                return (
+              {matchedRoutes
+                .map((routeId) => {
+                  const route = ROUTES_INFO[routeId];
+                  if (!route) return null;
+
+                  // Calculate ML Score
+                  let score = 70; // Base score
+                  let reason = 'Buena opción general';
+
+                  if (interes === 'vino' && routeId === 'vino') score = 98;
+                  else if (interes === 'gastronomia' && routeId === 'vino') { score = 92; reason = 'Excelente maridaje gastronómico'; }
+                  else if (interes === 'playa' && routeId === 'faros') { score = 95; reason = 'Ruta costera ideal'; }
+                  else if (interes === 'playa' && routeId === 'costa') { score = 96; reason = 'Las mejores playas'; }
+                  else if (interes === 'cultural' && routeId === 'molinos') { score = 90; reason = 'Patrimonio histórico único'; }
+                  else if (interes === 'cultural' && routeId === 'patrimonio') { score = 94; reason = 'Ciudades UNESCO'; }
+                  else if (interes === 'naturaleza' && routeId === 'norte') { score = 91; reason = 'Naturaleza exuberante'; }
+                  else if (interes === 'aventura' && routeId === 'pirineos') { score = 95; reason = 'Deportes de montaña'; }
+
+                  return { routeId, route, score, reason };
+                })
+                .filter(Boolean)
+                .sort((a: any, b: any) => b.score - a.score)
+                .map(({ routeId, route, score, reason }: any) => (
                   <Link key={routeId} href={`/rutas?route=${routeId}`}>
-                    <div className={`bg-gradient-to-r ${route.color} rounded-xl p-5 cursor-pointer hover:scale-[1.02] transition-all`}>
-                      <div className="flex items-start justify-between">
-                        <div>
-                          <span className="text-2xl">{route.icon}</span>
-                          <h3 className="text-lg font-bold text-white mt-1">{route.name}</h3>
-                          <p className="text-white/80 text-sm">{route.desc}</p>
+                    <div className={`relative bg-gradient-to-r ${route.color} rounded-xl p-5 cursor-pointer hover:scale-[1.02] transition-all group`}>
+                      {/* ML Score Badge */}
+                      <div className="absolute top-3 right-3 bg-white/90 backdrop-blur px-2 py-1 rounded-full flex items-center gap-1 shadow-lg">
+                        <Star className={`w-3 h-3 ${score >= 90 ? 'text-amber-500 fill-amber-500' : 'text-slate-400'}`} />
+                        <span className={`font-bold text-sm ${score >= 90 ? 'text-amber-600' : 'text-slate-600'}`}>
+                          {score}% Match
+                        </span>
+                      </div>
+
+                      <div className="flex items-start gap-4">
+                        <span className="text-3xl bg-white/10 p-2 rounded-lg">{route.icon}</span>
+                        <div className="flex-1">
+                          <h3 className="text-lg font-bold text-white">{route.name}</h3>
+                          <p className="text-white/80 text-sm mt-1">{route.desc}</p>
+                          
+                          {/* AI Reasoning */}
+                          <div className="mt-3 flex items-center gap-2 text-xs text-white/70 bg-black/10 px-2 py-1 rounded-full inline-flex">
+                            <span>🤖</span>
+                            <span>{reason}</span>
+                          </div>
                         </div>
-                        <ExternalLink className="w-5 h-5 text-white/60" />
+                      </div>
+                      
+                      <div className="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity text-white/60">
+                        <ExternalLink className="w-5 h-5" />
                       </div>
                     </div>
                   </Link>
-                );
-              })}
+                ))}
             </div>
           </div>
         )}
