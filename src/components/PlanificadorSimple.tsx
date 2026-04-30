@@ -297,24 +297,19 @@ export default function PlanificadorSimple() {
 
 {/* RUTAS TEMÁTICAS ESPAÑA - ML-powered */}
         <div className="bg-gradient-to-r from-slate-800 to-slate-900 rounded-2xl p-5 shadow-lg border border-slate-700">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
-            <div>
-              <h3 className="text-xl font-bold text-white flex items-center gap-2">
-                <MapPin className="text-emerald-400" />
-                🛣️ Rutas Temáticas de España
-              </h3>
-              <p className="text-slate-400 text-sm mt-1">
-                🎯 Recomendadas para <span className="text-amber-400 font-medium">{preferenciaLabels[preferencia].desc}</span>
-              </p>
-            </div>
+          {/* Header con selector */}
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-bold text-white flex items-center gap-2">
+              <MapPin className="text-emerald-400 w-5 h-5" />
+              🛣️ Rutas Temáticas
+            </h3>
             
-            {/* Selector duración global */}
             <div className="flex items-center gap-2">
               <Clock className="text-slate-400 w-4 h-4" />
               <select
                 value={routeDuration}
                 onChange={(e) => setRouteDuration(e.target.value)}
-                className="bg-slate-700 text-white text-sm rounded-lg px-3 py-1.5 border border-slate-600"
+                className="bg-slate-700 text-white text-xs rounded-lg px-2 py-1 border border-slate-600"
               >
                 <option value="3">3 días</option>
                 <option value="4">4 días</option>
@@ -323,84 +318,59 @@ export default function PlanificadorSimple() {
             </div>
           </div>
 
-          {/* Cards de Rutas - Ordenadas por ML score */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {sortedRoutes.map((route, idx) => (
-              <button
-                key={route.id}
-                onClick={() => handleRouteClick(route.id)}
-                className="group relative overflow-hidden rounded-xl transition-all duration-300 hover:scale-[1.02] hover:shadow-xl h-64"
-              >
-                {/* Background image with overlay */}
-                <div 
-                  className="absolute inset-0 bg-cover bg-center group-hover:scale-110 transition-transform duration-500"
-                  style={{ backgroundImage: `url(${route.image})` }}
-                />
-                {/* Dark gradient overlay for text contrast */}
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/70 to-slate-900/30 group-hover:from-slate-900/90 group-hover:via-slate-900/60 transition-all" />
-              
-              {/* Content */}
-              <div className="absolute inset-0 p-4 flex flex-col justify-between text-left">
-                {/* Header */}
-                <div className="flex items-start justify-between">
-                  <div className={`p-2 rounded-lg bg-white/20 backdrop-blur ${route.color}`}>
-                    {route.icon}
-                  </div>
-                  <ChevronRight className="text-white/60 group-hover:text-white group-hover:translate-x-1 transition-all" />
+          {/* Top Match Card - Destacada */}
+          <div className="relative overflow-hidden rounded-xl h-48 mb-4 group cursor-pointer"
+               onClick={() => sortedRoutes[0] && handleRouteClick(sortedRoutes[0].id)}>
+            <div 
+              className="absolute inset-0 bg-cover bg-center group-hover:scale-105 transition-transform duration-500"
+              style={{ backgroundImage: `url(${sortedRoutes[0]?.image})` }}
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/60 to-transparent" />
+            
+            <div className="absolute inset-0 p-4 flex flex-col justify-between">
+              <div className="flex items-start justify-between">
+                <div className={`p-2 rounded-lg bg-white/20 backdrop-blur ${sortedRoutes[0]?.color}`}>
+                  {sortedRoutes[0]?.icon}
                 </div>
-
-                {/* Bottom content */}
-                <div>
-                  {/* Title */}
-                  <h4 className="text-white font-bold text-lg mb-1 drop-shadow-lg">
-                    {route.name}
-                  </h4>
-                  <p className="text-white/90 text-sm font-medium mb-2 drop-shadow-md">
-                    {route.shortName}
-                  </p>
-
-                  {/* Description */}
-                  <p className="text-white/80 text-xs mb-3 line-clamp-2 drop-shadow-sm">
-                    {route.description}
-                  </p>
-
-                  {/* Stats - ML Score */}
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3 text-xs text-white/70 font-medium">
-                      <span className="flex items-center gap-1 bg-slate-900/50 px-2 py-1 rounded-full">
-                        <MapPin className="w-3 h-3" />
-                        {route.stats.distance}
-                      </span>
-                      <span className="flex items-center gap-1 bg-slate-900/50 px-2 py-1 rounded-full">
-                        <Clock className="w-3 h-3" />
-                        {route.stats.time}
-                      </span>
-                    </div>
-                    {idx === 0 && (
-                      <span className="text-xs bg-emerald-500 text-white px-2 py-1 rounded-full font-medium">
-                        ⭐ Top Match
-                      </span>
-                    )}
-                  </div>
-                </div>
-
-                {/* Hover overlay */}
-                <div className="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl" />
+                <span className="text-xs bg-emerald-500/90 text-white px-3 py-1 rounded-full font-medium backdrop-blur">
+                  ⭐ Top Match
+                </span>
               </div>
-            </button>
-            ))}
-        </div>
 
-        {/* Footer links */}
-        <div className="mt-4 pt-4 border-t border-slate-700 flex items-center justify-between">
-          <span className="text-slate-400 text-xs">
-            ✨ Más rutas soon: Nieve • Playa • Gastronomía • Vino
-          </span>
-          <a href="/rutas" className="text-emerald-400 text-sm font-medium hover:text-emerald-300 flex items-center gap-1">
-            Ver todas las rutas <ChevronRight className="w-4 h-4" />
+              <div>
+                <h4 className="text-white font-bold text-xl mb-1 drop-shadow-lg">
+                  {sortedRoutes[0]?.name}
+                </h4>
+                <p className="text-white/90 text-sm mb-2 drop-shadow-md">
+                  {sortedRoutes[0]?.description?.slice(0, 80)}...
+                </p>
+                <div className="flex items-center gap-3 text-xs text-white/80">
+                  <span className="flex items-center gap-1">
+                    <MapPin className="w-3 h-3" /> {sortedRoutes[0]?.stats.distance}
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <Clock className="w-3 h-3" /> {sortedRoutes[0]?.stats.time}
+                  </span>
+                  <span className="text-white/60">•</span>
+                  <span>{sortedRoutes[0]?.stats.difficulty}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Botón Hero - Ver todas las rutas */}
+          <a
+            href="/rutas"
+            className="group flex items-center justify-center gap-3 w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold py-3 px-6 rounded-xl transition-all duration-300 hover:shadow-lg hover:shadow-emerald-500/25 hover:scale-[1.02]"
+          >
+            <span>Explorar 4 rutas temáticas</span>
+            <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
           </a>
+          
+          <p className="text-center text-slate-500 text-xs mt-2">
+            Molinos • Faros • Murcia Interior • Vino
+          </p>
         </div>
-      </div>
     </div>
   );
 }
