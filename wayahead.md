@@ -26,24 +26,31 @@
 
 ---
 
-## 📅 2026-05 - SPRINT 34: ENGAGEMENT & DATA (OPCION 2) - FUTURO
+## 📅 2026-05 - SPRINT 34: ENGAGEMENT & DATA (OPCION 2) - COMPLETADO ✅
 
 ### 🎯 Objetivo: Fidelizar usuarios que ya entran
 
-#### Sistema "Tokens de Viajero" (Gamificación)
+#### ✅ Visualización Predictiva ("Cuándo ir")
+- Widget en ficha ruta con gráficos Recharts (líneas + barras)
+- Precio estimado por mes (índice 0-100)
+- Nivel de masificación por mes (índice 0-100)
+- Clima mensual con gráfico de barras
+- IA calcula mes ideal automáticamente (fórmula: precio*0.4 + crowd*0.35 + weather*0.25)
+- **Impacto:** 🔥 Alto | **Estado:** ✅ Done
+
+#### ✅ ML API Integration
+- DestinosClient.tsx conecta con `/api/ai/recommend`
+- Fallback a scoring local si API no disponible
+- Badge "IA" visible cuando viene del backend
+- Loading state mientras calcula
+
+#### ⏳ Sistema "Tokens de Viajero" (Gamificación) - Pendiente
 - Tabla `user_activity` en Supabase (login, generate_route, share_route)
 - Componente `UserLevel` en header: Explorador → Guía → Oráculo
 - Recompensa: Nivel "Guía" desbloquea PDF con mapa detallado (jsPDF)
 - **Esfuerzo:** 🟠 Medio | **Impacto:** 🟡 Medio
 
-#### Visualización Predictiva ("Cuándo ir")
-- Widget en ficha ruta con gráfico de líneas (Recharts)
-- Precio estimado (bajo/medio/alto por mes)
-- Nivel de masificación (datos wineSeasons extendidos)
-- **Valor:** "IA recomienda Octubre: 30% más barato, menos gente"
-- **Esfuerzo:** 🟠 Medio | **Impacto:** 🔥 Alto
-
-#### Viaje Compartido (Viralidad)
+#### ⏳ Viaje Compartido (Viralidad) - Pendiente
 - Botón "Invitar amigos a este viaje" → link único `?ref=trip_123`
 - Supabase guarda `trip_id` + lista emails invitados
 - Entradas: ven ruta precargada
