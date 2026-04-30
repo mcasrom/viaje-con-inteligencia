@@ -2,6 +2,7 @@ import MapaMundial from '@/components/MapaMundial';
 import Testimonios from '@/components/Testimonios';
 import NewsletterSignup from '@/components/NewsletterSignup';
 import PlanificadorSimple from '@/components/PlanificadorSimple';
+import QuickStart from '@/components/QuickStart';
 import Link from 'next/link';
 import { Activity, Shield, AlertTriangle, Globe, FileText, Camera, Plane, Gift, CheckCircle } from 'lucide-react';
 
@@ -97,6 +98,7 @@ export default function Home() {
         <NewsletterSignup variant="blog" />
       </div>
       <Testimonios />
+      <QuickStart />
     </>
   );
 }

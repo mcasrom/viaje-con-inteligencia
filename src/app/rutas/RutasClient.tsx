@@ -1,7 +1,7 @@
 'use client';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, MapPin, Clock, ChevronRight, Star, Mountain, Wine, Landmark, Umbrella, Trees } from 'lucide-react';
+import { ArrowLeft, MapPin, Clock, ChevronRight, Star, Mountain, Wine, Landmark, Umbrella, Trees, Share2 } from 'lucide-react';
 
 const ROUTES_DATA = [
   {
@@ -276,9 +276,23 @@ export default function RutasClient() {
                       <span className="flex items-center gap-1"><Clock className="w-3 h-3" />{r.days} días</span>
                     </div>
 
-                    <div className="mt-3 flex items-center gap-1 text-white/80 text-sm font-medium group-hover:text-white transition-colors">
-                      <span>Ver ruta completa</span>
-                      <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    <div className="mt-3 flex items-center justify-between">
+                      <div className="flex items-center gap-1 text-white/80 text-sm font-medium group-hover:text-white transition-colors">
+                        <span>Ver ruta completa</span>
+                        <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                      </div>
+                      <button
+                        onClick={(e) => {
+                          e.preventDefault();
+                          const url = encodeURIComponent(`https://www.viajeinteligencia.com/rutas?route=${r.id}`);
+                          const text = encodeURIComponent(`🛣️ ${r.title} - ${r.desc}\n\n`);
+                          window.open(`https://t.me/share/url?url=${url}&text=${text}`, '_blank');
+                        }}
+                        className="p-1.5 rounded-lg bg-white/10 hover:bg-white/20 transition-all"
+                        title="Compartir ruta"
+                      >
+                        <Share2 className="w-4 h-4 text-white/80" />
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -357,6 +371,32 @@ function RouteDetail({ route }: { route: any }) {
           <p className="text-slate-300 mb-4">{route.bestTime}</p>
           <h3 className="text-lg font-bold text-white mb-3">✨ Highlights</h3>
           <p className="text-slate-300">{route.highlights}</p>
+        </div>
+
+        {/* Share buttons */}
+        <div className="flex gap-3 mb-8">
+          <button
+            onClick={() => {
+              const url = encodeURIComponent(window.location.href);
+              const text = encodeURIComponent(`🛣️ ${route.title}\n\n${route.desc}\n\nDescúbrelo en Viaje con Inteligencia:`);
+              window.open(`https://t.me/share/url?url=${url}&text=${text}`, '_blank');
+            }}
+            className="flex-1 bg-blue-600 hover:bg-blue-500 text-white font-medium py-2 px-4 rounded-xl flex items-center justify-center gap-2 transition-all"
+          >
+            <Share2 className="w-4 h-4" />
+            Compartir en Telegram
+          </button>
+          <button
+            onClick={() => {
+              const url = encodeURIComponent(window.location.href);
+              const text = encodeURIComponent(`🛣️ ${route.title}\n\n${route.desc}\n\nDescúbrelo en Viaje con Inteligencia:`);
+              window.open(`https://api.whatsapp.com/send?text=${text}%20${url}`, '_blank');
+            }}
+            className="flex-1 bg-green-600 hover:bg-green-500 text-white font-medium py-2 px-4 rounded-xl flex items-center justify-center gap-2 transition-all"
+          >
+            <Share2 className="w-4 h-4" />
+            Compartir en WhatsApp
+          </button>
         </div>
 
         {/* Itinerary */}
