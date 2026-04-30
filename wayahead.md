@@ -1,5 +1,99 @@
 # Pendiente - Viaje con Inteligencia
 
+## 📅 2026-04-27 - SPRINT 33: QUICK WINS UX/IA (OPCION 1) - PENDIENTE
+
+### 🎯 Objetivo: Bajo código, alto impacto inmediato
+*Implementar mejoras esta semana sin romper nada*
+
+#### ✅ Quick Start IA (Homepage)
+- Mini-formulario flotante: "¿A dónde quieres ir? → [Destino] [Fechas]"
+- Submit redirige a /rutas filtrando por país
+- Reutiliza PlanificadorSimple.tsx como modal entrada
+- **Esfuerzo:** 🟢 Bajo | **Impacto:** 🔥 Alto
+
+#### ✅ SEO Landing Pages Automáticas
+- Ruta dinámica `/destinos/[pais]`
+- Genera página única: "Riesgo actual", "Mejor época", "Ruta recomendada"
+- Usa datos paisesData + ML
+- **Keywords:** "es seguro viajar a [pais]", "mejor época para viajar a [pais]"
+- **Esfuerzo:** 🟢 Bajo | **Impacto:** 🔥 Alto
+
+#### ✅ Botón "Compartir en Telegram/WhatsApp"
+- Botón en cada ruta → mensaje pre-formateado
+- "🛣️ He descubierto esta ruta en Viaje con Inteligencia: [URL]"
+- **Coste:** < 2 horas desarrollo
+- **Esfuerzo:** 🟢 Bajo | **Impacto:** 🟡 Medio
+
+---
+
+## 📅 2026-05 - SPRINT 34: ENGAGEMENT & DATA (OPCION 2) - FUTURO
+
+### 🎯 Objetivo: Fidelizar usuarios que ya entran
+
+#### Sistema "Tokens de Viajero" (Gamificación)
+- Tabla `user_activity` en Supabase (login, generate_route, share_route)
+- Componente `UserLevel` en header: Explorador → Guía → Oráculo
+- Recompensa: Nivel "Guía" desbloquea PDF con mapa detallado (jsPDF)
+- **Esfuerzo:** 🟠 Medio | **Impacto:** 🟡 Medio
+
+#### Visualización Predictiva ("Cuándo ir")
+- Widget en ficha ruta con gráfico de líneas (Recharts)
+- Precio estimado (bajo/medio/alto por mes)
+- Nivel de masificación (datos wineSeasons extendidos)
+- **Valor:** "IA recomienda Octubre: 30% más barato, menos gente"
+- **Esfuerzo:** 🟠 Medio | **Impacto:** 🔥 Alto
+
+#### Viaje Compartido (Viralidad)
+- Botón "Invitar amigos a este viaje" → link único `?ref=trip_123`
+- Supabase guarda `trip_id` + lista emails invitados
+- Entradas: ven ruta precargada
+- **Esfuerzo:** 🟠 Medio | **Impacto:** 🔥 Alto
+
+---
+
+## 📅 2026-06 - SPRINT 35: FULL AI EXPERIENCE (OPCION 3) - FUTURO LEJANO
+
+### 🎯 Objetivo: Diferenciación total frente a competencia
+
+#### Itinerario Interactivo con IA
+- Página `/planificador`: IA genera día a día
+- Drag-and-drop actividades
+- IA recalcula tiempos/distancias en tiempo real
+- **Tecnología:** Groq API + generateDayByDay mejorada
+- **Esfuerzo:** 🔴 Alto | **Impacto:** 🔥 Alto
+
+#### Newsletter Predictiva Personalizada
+- Cron semanal analiza `user_search_history` en Supabase
+- Si usuario buscó "Japón" 3x → email: "Bajan vuelos + Alerta riesgo"
+- **Tecnología:** Resend + template HTML dinámico
+- **Esfuerzo:** 🟠 Medio | **Impacto:** 🔥 Alto
+
+#### Chatbot Contextual en Rutas
+- Widget chat en `/rutas/[ruta]` responde sobre *esa* ruta específica
+- "¿Dónde comer cerca del Molino de Consuegra?"
+- Contexto inyectado automáticamente en prompt sistema
+- **Esfuerzo:** 🔴 Alto | **Impacto:** 🟡 Medio
+
+---
+
+## 📅 PLAN DE CRECIMIENTO 30 DÍAS
+
+| Semana | Acción | Objetivo |
+|--------|--------|----------|
+| **1** | Quick Start + SEO Landing Pages | Tráfico orgánico |
+| **2** | Botón Compartir Telegram/WhatsApp | Viralidad |
+| **3** | Visualización Predictiva (Precios/Multitudes) | Retención |
+| **4** | Gamificación (Tokens/Niveles) | Fidelización |
+
+| Prioridad | Acción | Objetivo |
+| :--- | :--- | :--- |
+| **Alta** | Simplificar registro/primer uso (Onboarding) | Retención inmediata |
+| **Media** | Contenido comparativo (IA vs Manual) | Tráfico orgánico |
+| **Media** | Sistema referidos por itinerarios | Crecimiento viral |
+| **Baja** | Refinamiento algoritmos ML secundarios | Mejora largo plazo |
+
+---
+
 ## 📅 2026-04-27 - SPRINT 32: DOSSIER DOCUMENTAL (COMPLETADO)
 
 ### ✅ Completado
