@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { useRouter, useParams } from 'next/navigation';
 import { ArrowLeft, MapPin, Calendar, DollarSign, Sparkles, Loader2, Send, Plane, Clock, Pencil, X, Check, FileDown } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
-import { supabase } from '@/lib/supabase';
 import type { Trip } from '@/lib/supabase';
 import PDFExportButton from '@/components/PDFExportButton';
 import { ShareTrip } from '@/components/ShareTrip';
@@ -47,28 +46,19 @@ export default function ViajeDetallePage() {
   }, [user, authLoading, router]);
 
   useEffect(() => {
-    if (!user || !tripId || !supabase) return;
-
-    const currentUser = user;
-    const client = supabase;
+    if (!user || !tripId) return;
 
     async function fetchTrip() {
       try {
-        const { data, error } = await client
-          .from('trips')
-          .select('*')
-          .eq('user_id', currentUser.id)
-          .eq('id', tripId)
-          .single();
-
-        if (error || !data) {
+        const res = await fetch(`/api/trips/${tripId}`, { cache: 'no-store' });
+        if (res.ok) {
+          const data = await res.json();
+          setTrip(data.trip);
+          setEditName(data.trip.name);
+          setEditStatus(data.trip.status);
+        } else {
           router.push('/viajes');
-          return;
         }
-
-        setTrip(data);
-        setEditName(data.name);
-        setEditStatus(data.status);
       } catch {
         router.push('/viajes');
       } finally {
@@ -80,9 +70,8 @@ export default function ViajeDetallePage() {
   }, [user, tripId, router]);
 
   const handleRegenerateItinerary = async () => {
-    if (!trip || !supabase) return;
+    if (!trip) return;
     setRegenerating(true);
-    const client = supabase;
 
     try {
       const res = await fetch('/api/ai/itinerary', {
@@ -98,10 +87,14 @@ export default function ViajeDetallePage() {
       const data = await res.json();
       if (data.itinerary) {
         setTrip(prev => prev ? { ...prev, itinerary_raw: data.itinerary } : null);
-        await client
-          .from('trips')
-          .update({ itinerary_raw: data.itinerary, updated_at: new Date().toISOString() })
-          .eq('id', tripId);
+        await fetch(`/api/trips/${tripId}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            itinerary_raw: data.itinerary,
+            updated_at: new Date().toISOString(),
+          }),
+        });
         trackActivity('generate_route', { trip_id: tripId, destination: trip.destination });
       }
     } catch {
@@ -112,25 +105,28 @@ export default function ViajeDetallePage() {
   };
 
   const handleSave = async () => {
-    if (!trip || !user || !supabase) return;
+    if (!trip || !user) return;
     setSaving(true);
     setError('');
 
     try {
-      const { data, error } = await supabase
-        .from('trips')
-        .update({
+      const res = await fetch(`/api/trips/${tripId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
           name: editName,
           status: editStatus,
-          updated_at: new Date().toISOString()
-        })
-        .eq('user_id', user.id)
-        .eq('id', tripId)
-        .select()
-        .single();
+          updated_at: new Date().toISOString(),
+        }),
+      });
 
-      if (error) throw error;
-      setTrip(data);
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || 'Error al guardar');
+      }
+
+      const data = await res.json();
+      setTrip(data.trip);
       setEditing(false);
     } catch (err: any) {
       setError(err.message || 'Error al guardar');
