@@ -56,8 +56,11 @@ export default function DashboardPage() {
   useEffect(() => {
     if (authUser) {
       setUser(authUser as User);
+      setLoading(false);
+    } else if (!authLoading) {
+      setLoading(false);
     }
-  }, [authUser]);
+  }, [authUser, authLoading]);
 
   useEffect(() => {
     if (user) {
@@ -324,7 +327,7 @@ export default function DashboardPage() {
     'muy-alto': { color: 'text-red-600', bg: 'bg-red-900' },
   };
 
-  if (authLoading || loading) {
+  if (authLoading) {
     return (
       <div className="min-h-screen bg-slate-900 flex items-center justify-center">
         <div className="text-center">
