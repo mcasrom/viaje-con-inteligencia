@@ -1,11 +1,27 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
+import { createServerClient } from '@supabase/ssr';
+import { cookies } from 'next/headers';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
-
-function getServiceClient() {
-  return createClient(supabaseUrl, supabaseServiceKey);
+async function getServerSupabase() {
+  const cookieStore = await cookies();
+  return createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return cookieStore.getAll();
+        },
+        setAll(cookiesToSet) {
+          try {
+            cookiesToSet.forEach(({ name, value, options }) =>
+              cookieStore.set(name, value, options)
+            );
+          } catch {}
+        },
+      },
+    }
+  );
 }
 
 export async function GET(
@@ -13,17 +29,17 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = await params;
-    const userId = request.headers.get('x-user-id');
-    if (!userId) {
+    const supabase = await getServerSupabase();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const supabase = getServiceClient();
+    const { id } = await params;
     const { data, error } = await supabase
       .from('trips')
       .select('*')
-      .eq('user_id', userId)
+      .eq('user_id', user.id)
       .eq('id', id)
       .single();
 
@@ -42,18 +58,18 @@ export async function PATCH(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = await params;
-    const userId = request.headers.get('x-user-id');
-    if (!userId) {
+    const supabase = await getServerSupabase();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    const { id } = await params;
     const body = await request.json();
-    const supabase = getServiceClient();
     const { data, error } = await supabase
       .from('trips')
       .update({ ...body, updated_at: new Date().toISOString() })
-      .eq('user_id', userId)
+      .eq('user_id', user.id)
       .eq('id', id)
       .select()
       .single();
@@ -73,17 +89,17 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = await params;
-    const userId = request.headers.get('x-user-id');
-    if (!userId) {
+    const supabase = await getServerSupabase();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const supabase = getServiceClient();
+    const { id } = await params;
     const { error } = await supabase
       .from('trips')
       .delete()
-      .eq('user_id', userId)
+      .eq('user_id', user.id)
       .eq('id', id);
 
     if (error) {
