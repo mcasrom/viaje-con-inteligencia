@@ -325,10 +325,12 @@ export default function DashboardPage() {
     }
   };
 
-  const filteredCountries = Object.values(paisesData).filter(p =>
-    p.nombre.toLowerCase().includes(searchCountry.toLowerCase()) ||
-    p.capital.toLowerCase().includes(searchCountry.toLowerCase())
-  ).slice(0, 8);
+  const filteredCountries = searchCountry
+    ? Object.values(paisesData).filter(p =>
+        p.nombre.toLowerCase().includes(searchCountry.toLowerCase()) ||
+        p.capital.toLowerCase().includes(searchCountry.toLowerCase())
+      )
+    : Object.values(paisesData).slice(0, 50);
 
   const riesgoConfig: Record<string, { color: string; bg: string }> = {
     'sin-riesgo': { color: 'text-green-400', bg: 'bg-green-500' },
@@ -709,7 +711,7 @@ export default function DashboardPage() {
               className="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-blue-500 mb-4"
               autoFocus
             />
-            <div className="space-y-2 max-h-64 overflow-y-auto">
+            <div className="space-y-2 max-h-96 overflow-y-auto">
               {filteredCountries.map((pais) => {
                 const isFavorite = favorites.some(f => f.country_code === pais.codigo);
                 return (
