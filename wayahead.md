@@ -66,6 +66,14 @@
 - Indicadores visuales de estado: "Conectado" (verde) vs "No logeado" (amarillo)
 - **Estado:** ✅ Done
 
+#### ✅ Favorites System Fix (2026-05-01)
+- **Bug:** Botón "+" no funcionaba para añadir países (session localStorage vs cookies mismatch)
+- **Root cause:** `AuthContext` usaba `createClient` (localStorage), API routes leían cookies
+- **Fix:** Migración a `@supabase/ssr` (`createBrowserClient` + `createServerClient`) para cookie-based auth consistente
+- **UX improvement:** Límite de países subió de 8 → 50 por defecto, sin límite al buscar
+- **Archivos modificados:** `AuthContext.tsx`, `dashboard/page.tsx`, `api/auth/favorites/route.ts`
+- **Estado:** ✅ Done
+
 ---
 
 ## 📅 2026-06 - SPRINT 35: FULL AI EXPERIENCE (OPCION 3) - FUTURO LEJANO
