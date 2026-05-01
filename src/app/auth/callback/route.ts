@@ -7,8 +7,9 @@ export async function GET(request: NextRequest) {
   const token_hash = searchParams.get('token_hash');
   const type = searchParams.get('type');
   const next = searchParams.get('next') ?? '/dashboard';
+  const reset = searchParams.get('reset');
 
-  console.log('[callback] params:', { code: !!code, token_hash: !!token_hash, type });
+  console.log('[callback] params:', { code: !!code, token_hash: !!token_hash, type, reset });
 
   // Flujo PKCE con code
   if (code) {
@@ -16,7 +17,8 @@ export async function GET(request: NextRequest) {
     const { error } = await supabase.auth.exchangeCodeForSession(code);
     console.log('[callback] exchangeCode error:', error?.message);
     if (!error) {
-      return NextResponse.redirect(`${origin}${next}`);
+      const redirectUrl = reset ? `${next}?reset=true` : next;
+      return NextResponse.redirect(`${origin}${redirectUrl}`);
     }
   }
 
@@ -26,7 +28,8 @@ export async function GET(request: NextRequest) {
     const { error } = await supabase.auth.verifyOtp({ token_hash, type: type as any });
     console.log('[callback] verifyOtp error:', error?.message);
     if (!error) {
-      return NextResponse.redirect(`${origin}${next}`);
+      const redirectUrl = reset ? `${next}?reset=true` : next;
+      return NextResponse.redirect(`${origin}${redirectUrl}`);
     }
   }
 

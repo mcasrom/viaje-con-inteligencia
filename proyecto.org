@@ -788,3 +788,48 @@ cd ~/viaje-con-inteligencia && npm install
 - Newsletter semanal a suscriptores
 - Envía via Telegram + Email (Resend)
 - Incluye: posts blog + países riesgo
+
+* SPRINTS COMPLETADOS
+
+** Sprint 34: Engagement & Data (2026-05-01) ✅
+
+| Feature | Estado | Archivos |
+|---------+--------+----------|
+| Visualización Predictiva (Recharts) | ✅ | RutasClient.tsx |
+| ML API Integration | ✅ | DestinosClient.tsx |
+| Tokens de Viajero (Gamificación) | ✅ | UserLevel.tsx, dashboard/page.tsx |
+| Viaje Compartido (Viralidad) | ✅ | ShareTrip.tsx, viaje-compartido/ |
+
+*** Tokens de Viajero (Gamificación)
+- Niveles: Explorador (0-149pts) → Guía (150-499pts) → Oráculo (500+pts)
+- Puntos por acción: login (+1), generar ruta (+10), compartir (+5), favorito (+3)
+- Componente =UserLevelBadge= en /dashboard
+- Tablas Supabase: =user_activity=
+- Funciones SQL: =get_user_total_points()=, =get_user_level()=
+
+*** Viaje Compartido (Viralidad)
+- Botón "Invitar amigos" en /viajes/[id]
+- Link único: /viaje-compartido?token=xxx
+- Share via Telegram, WhatsApp, Email
+- Tablas Supabase: =shared_trips=, =trip_invitees=
+
+*** SQL Migration
+- Archivos: =GAMIFICATION_SCHEMA.sql=, =GAMIFICATION_FUNCTIONS.sql=
+- Ejecutar en Supabase SQL Editor
+
+** Sprint 33: Quick Wins UX/IA (2026-04-27) ✅
+
+| Feature | Estado |
+|---------+--------|
+| Quick Start IA (Homepage) | ✅ |
+| SEO Landing Pages (/destinos) | ✅ |
+| Botón Compartir Telegram/WhatsApp | ✅ |
+
+** Sprint 32: Dossier Documental (2026-04-27) ✅
+- DOSSIER.org completo (~2,800 palabras)
+
+** Sprint 31: Rutas del Vino + Telegram (2026-04-27) ✅
+- 8 regiones vino con ML recommendations
+
+** Sprint 27-30: Rutas Temáticas España ✅
+- Molinos, Faros, Murcia, Vino, Pirineos, Costa, Norte, Patrimonio

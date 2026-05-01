@@ -17,6 +17,9 @@ interface AuthContextType {
   loading: boolean;
   signInWithEmail: (email: string) => Promise<{ error?: string }>;
   signInWithPassword: (email: string, password: string) => Promise<{ error?: string }>;
+  signUpWithPassword: (email: string, password: string) => Promise<{ error?: string }>;
+  resetPassword: (email: string) => Promise<{ error?: string }>;
+  updatePassword: (password: string) => Promise<{ error?: string }>;
   signInWithTelegram: (userId: string, username?: string) => Promise<{ error?: string }>;
   signOut: () => Promise<void>;
 }
@@ -54,6 +57,30 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return { error: error?.message };
   };
 
+  const signUpWithPassword = async (email: string, password: string) => {
+    if (!supabase) return { error: 'Supabase no configurado' };
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: { emailRedirectTo: `${window.location.origin}/auth/callback?next=/dashboard` },
+    });
+    return { error: error?.message };
+  };
+
+  const resetPassword = async (email: string) => {
+    if (!supabase) return { error: 'Supabase no configurado' };
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/auth/callback?next=/dashboard&reset=true`,
+    });
+    return { error: error?.message };
+  };
+
+  const updatePassword = async (password: string) => {
+    if (!supabase) return { error: 'Supabase no configurado' };
+    const { error } = await supabase.auth.updateUser({ password });
+    return { error: error?.message };
+  };
+
   const signInWithTelegram = async (userId: string, username?: string) => {
     if (!supabase) return { error: 'Supabase no configurado' };
     const { error } = await supabase.auth.signInWithOtp({
@@ -69,7 +96,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, signInWithEmail, signInWithPassword, signInWithTelegram, signOut }}>
+    <AuthContext.Provider value={{ user, loading, signInWithEmail, signInWithPassword, signUpWithPassword, resetPassword, updatePassword, signInWithTelegram, signOut }}>
       {children}
     </AuthContext.Provider>
   );
