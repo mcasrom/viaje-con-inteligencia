@@ -84,6 +84,18 @@
 - **Archivos modificados:** `AuthContext.tsx`, `dashboard/page.tsx`, `api/auth/favorites/route.ts`
 - **Estado:** ✅ Done
 
+#### ✅ Trips API Fix - Token-Based Auth (2026-05-01)
+- **Bug:** "new row violates row-level security policy for table trips" al crear viajes
+- **Root cause:** Mismo problema que favoritos — páginas `/viajes` usaban `supabase` directo (localStorage) que no era visible por RLS en servidor
+- **Fix definitivo:** Auth token-based explícito
+  - `AuthContext` expone `getSession()` que retorna access_token
+  - Todas las API routes aceptan `Authorization: Bearer <token>` como prioridad, cookies como fallback
+  - Todas las páginas envían token en cada llamada fetch
+- **Páginas unificadas:** `/viajes` (list), `/viajes/nuevo` (create), `/viajes/[id]` (detail/edit/delete)
+- **API routes:** `/api/trips` (GET/POST), `/api/trips/[id]` (GET/PATCH/DELETE)
+- **Archivos modificados:** `AuthContext.tsx`, `api/trips/route.ts`, `api/trips/[id]/route.ts`, `viajes/page.tsx`, `viajes/nuevo/page.tsx`, `viajes/[id]/page.tsx`
+- **Estado:** ✅ Done
+
 ---
 
 ## 📅 2026-06 - SPRINT 35: FULL AI EXPERIENCE (OPCION 3) - FUTURO LEJANO
