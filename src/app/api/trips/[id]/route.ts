@@ -1,40 +1,51 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createServerClient } from '@supabase/ssr';
-import { cookies } from 'next/headers';
 import { createClient } from '@supabase/supabase-js';
 
-async function getServerSupabase(request: NextRequest) {
-  const cookieStore = await cookies();
+function getServiceClient() {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
   
-  const authHeader = request.headers.get('authorization');
-  
-  if (authHeader) {
-    const token = authHeader.replace('Bearer ', '');
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
-    return createClient(supabaseUrl, supabaseAnonKey, {
-      global: { headers: { Authorization: `Bearer ${token}` } },
-    });
+  if (!serviceKey) {
+    throw new Error('SUPABASE_SERVICE_ROLE_KEY not configured');
   }
   
-  return createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll() {
-          return cookieStore.getAll();
-        },
-        setAll(cookiesToSet) {
-          try {
-            cookiesToSet.forEach(({ name, value, options }) =>
-              cookieStore.set(name, value, options)
-            );
-          } catch {}
-        },
-      },
+  return createClient(supabaseUrl, serviceKey, {
+    auth: { autoRefreshToken: false, persistSession: false },
+  });
+}
+
+async function verifyToken(request: NextRequest) {
+  const authHeader = request.headers.get('authorization');
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+  
+  let token: string | null = null;
+  
+  if (authHeader) {
+    token = authHeader.replace('Bearer ', '');
+  } else {
+    const cookieHeader = request.headers.get('cookie') || '';
+    const match = cookieHeader.match(/sb-[a-z]+-auth-token=([^;]+)/);
+    if (match) {
+      try {
+        const decoded = JSON.parse(decodeURIComponent(match[1]));
+        token = decoded.access_token;
+      } catch {
+        // Invalid cookie
+      }
     }
-  );
+  }
+  
+  if (!token) return null;
+  
+  const supabase = createClient(supabaseUrl, anonKey, {
+    global: { headers: { Authorization: `Bearer ${token}` } },
+  });
+  
+  const { data: { user }, error } = await supabase.auth.getUser(token);
+  if (error || !user) return null;
+  
+  return user;
 }
 
 export async function GET(
@@ -42,13 +53,13 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const supabase = await getServerSupabase(request);
-    const { data: { user } } = await supabase.auth.getUser();
+    const user = await verifyToken(request);
     if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      return NextResponse.json({ error: 'No autenticado' }, { status: 401 });
     }
 
     const { id } = await params;
+    const supabase = getServiceClient();
     const { data, error } = await supabase
       .from('trips')
       .select('*')
@@ -57,7 +68,7 @@ export async function GET(
       .single();
 
     if (error || !data) {
-      return NextResponse.json({ error: 'Trip not found' }, { status: 404 });
+      return NextResponse.json({ error: 'Viaje no encontrado' }, { status: 404 });
     }
 
     return NextResponse.json({ trip: data });
@@ -71,14 +82,14 @@ export async function PATCH(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const supabase = await getServerSupabase(request);
-    const { data: { user } } = await supabase.auth.getUser();
+    const user = await verifyToken(request);
     if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      return NextResponse.json({ error: 'No autenticado' }, { status: 401 });
     }
 
     const { id } = await params;
     const body = await request.json();
+    const supabase = getServiceClient();
     const { data, error } = await supabase
       .from('trips')
       .update({ ...body, updated_at: new Date().toISOString() })
@@ -102,13 +113,13 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const supabase = await getServerSupabase(request);
-    const { data: { user } } = await supabase.auth.getUser();
+    const user = await verifyToken(request);
     if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      return NextResponse.json({ error: 'No autenticado' }, { status: 401 });
     }
 
     const { id } = await params;
+    const supabase = getServiceClient();
     const { error } = await supabase
       .from('trips')
       .delete()

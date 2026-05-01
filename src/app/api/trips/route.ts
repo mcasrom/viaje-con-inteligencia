@@ -1,51 +1,61 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createServerClient } from '@supabase/ssr';
-import { cookies } from 'next/headers';
 import { createClient } from '@supabase/supabase-js';
 
-async function getServerSupabase(request: NextRequest) {
-  const cookieStore = await cookies();
+function getServiceClient() {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
   
-  const authHeader = request.headers.get('authorization');
-  
-  if (authHeader) {
-    const token = authHeader.replace('Bearer ', '');
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
-    return createClient(supabaseUrl, supabaseAnonKey, {
-      global: { headers: { Authorization: `Bearer ${token}` } },
-    });
+  if (!serviceKey) {
+    throw new Error('SUPABASE_SERVICE_ROLE_KEY not configured');
   }
   
-  return createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll() {
-          return cookieStore.getAll();
-        },
-        setAll(cookiesToSet) {
-          try {
-            cookiesToSet.forEach(({ name, value, options }) =>
-              cookieStore.set(name, value, options)
-            );
-          } catch {}
-        },
-      },
+  return createClient(supabaseUrl, serviceKey, {
+    auth: { autoRefreshToken: false, persistSession: false },
+  });
+}
+
+async function verifyToken(request: NextRequest) {
+  const authHeader = request.headers.get('authorization');
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+  
+  let token: string | null = null;
+  
+  if (authHeader) {
+    token = authHeader.replace('Bearer ', '');
+  } else {
+    const cookieHeader = request.headers.get('cookie') || '';
+    const match = cookieHeader.match(/sb-[a-z]+-auth-token=([^;]+)/);
+    if (match) {
+      try {
+        const decoded = JSON.parse(decodeURIComponent(match[1]));
+        token = decoded.access_token;
+      } catch {
+        // Invalid cookie
+      }
     }
-  );
+  }
+  
+  if (!token) return null;
+  
+  const supabase = createClient(supabaseUrl, anonKey, {
+    global: { headers: { Authorization: `Bearer ${token}` } },
+  });
+  
+  const { data: { user }, error } = await supabase.auth.getUser(token);
+  if (error || !user) return null;
+  
+  return user;
 }
 
 export async function GET(request: NextRequest) {
   try {
-    const supabase = await getServerSupabase(request);
-    const { data: { user } } = await supabase.auth.getUser();
-    
+    const user = await verifyToken(request);
     if (!user) {
       return NextResponse.json({ error: 'No autenticado' }, { status: 401 });
     }
 
+    const supabase = getServiceClient();
     const { data, error } = await supabase
       .from('trips')
       .select('*')
@@ -64,9 +74,7 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const supabase = await getServerSupabase(request);
-    const { data: { user } } = await supabase.auth.getUser();
-    
+    const user = await verifyToken(request);
     if (!user) {
       return NextResponse.json({ error: 'No autenticado' }, { status: 401 });
     }
@@ -78,6 +86,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Nombre y destino son requeridos' }, { status: 400 });
     }
 
+    const supabase = getServiceClient();
     const { data, error } = await supabase
       .from('trips')
       .insert([{
