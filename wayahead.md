@@ -66,6 +66,16 @@
 - Indicadores visuales de estado: "Conectado" (verde) vs "No logeado" (amarillo)
 - **Estado:** ✅ Done
 
+#### ✅ Onboarding Multi-Paso (2026-05-01)
+- Wizard de 5 pasos para nuevos usuarios (localStorage `onboarding_seen_v2`)
+- Pasos: Bienvenida → Mapa de Riesgos → Planificador Rutas IA → Dashboard/Favoritos → CTA
+- Barra de progreso, navegación entre pasos, indicadores visuales
+- CTAs directos: Explorar Mapa, Planificar Ruta, Dashboard
+- Dismissible con click en overlay o botón X
+- **Impacto:** 🔥 Alto (retención inmediata) | **Esfuerzo:** 🟢 Bajo
+- **Archivo:** `src/components/Onboarding.tsx`
+- **Estado:** ✅ Done
+
 #### ✅ Favorites System Fix (2026-05-01)
 - **Bug:** Botón "+" no funcionaba para añadir países (session localStorage vs cookies mismatch)
 - **Root cause:** `AuthContext` usaba `createClient` (localStorage), API routes leían cookies
@@ -112,7 +122,7 @@
 
 | Prioridad | Acción | Objetivo |
 | :--- | :--- | :--- |
-| **Alta** | Simplificar registro/primer uso (Onboarding) | Retención inmediata |
+| **Alta** | Simplificar registro/primer uso (Onboarding) | Retención inmediata ✅ Done |
 | **Media** | Contenido comparativo (IA vs Manual) | Tráfico orgánico |
 | **Media** | Sistema referidos por itinerarios | Crecimiento viral |
 | **Baja** | Refinamiento algoritmos ML secundarios | Mejora largo plazo |
