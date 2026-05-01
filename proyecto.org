@@ -833,3 +833,38 @@ cd ~/viaje-con-inteligencia && npm install
 
 ** Sprint 27-30: Rutas Temáticas España ✅
 - Molinos, Faros, Murcia, Vino, Pirineos, Costa, Norte, Patrimonio
+
+* SISTEMA DE AUTENTICACIÓN (Actualizado 2026-05-01)
+
+** Métodos de Login
+1. 🔑 Email + Contraseña (Nuevo)
+   - Registro con validación
+   - Login persistente
+   - Campo con toggle de visibilidad
+2. 🔗 Magic Link (Legacy)
+   - Envío de enlace por email (Supabase/Resend)
+   - Sin contraseña requerida
+3. 🤖 Telegram
+   - Login vía bot @ViajeConInteligenciaBot
+
+** Gestión de Contraseñas
+- **Registro**: Formulario completo en /dashboard
+- **Recuperación**: Enlace por email → Modal de cambio
+- **Cambio**: Modal en header del dashboard (botón 🔑)
+- **SQL Fix**: Si el email falla, se puede resetear password vía SQL:
+  #+BEGIN_SRC sql
+  UPDATE auth.users 
+  SET encrypted_password = crypt('NuevaPass', gen_salt('bf'))
+  WHERE email = 'user@email.com';
+  #+END_SRC
+
+** Indicadores de Estado (UI)
+- **Logeado**: Badge verde "Conectado" + email en header
+- **No Logeado**: Banner amarillo de advertencia + formulario
+
+** Archivos Clave
+- Contexto: =src/contexts/AuthContext.tsx= (Métodos: signIn, signUp, reset, update)
+- API: =src/app/api/auth/login/route.ts= (Maneja login, registro, reset)
+- Callback: =src/app/auth/callback/route.ts= (Redirección y verificación)
+- Dashboard: =src/app/dashboard/page.tsx= (UI completa de gestión)
+

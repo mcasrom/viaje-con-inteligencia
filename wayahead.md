@@ -58,6 +58,14 @@
 - Share via Telegram, WhatsApp, email
 - **Esfuerzo:** 🟠 Medio | **Impacto:** 🔥 Alto | **Estado:** ✅ Done
 
+#### ✅ Auth System Improvements
+- Login con Email + Contraseña (Password auth habilitado)
+- Formulario de Registro completo
+- Recuperación de contraseña (Reset link vía email)
+- Cambio de contraseña en Dashboard (Modal)
+- Indicadores visuales de estado: "Conectado" (verde) vs "No logeado" (amarillo)
+- **Estado:** ✅ Done
+
 ---
 
 ## 📅 2026-06 - SPRINT 35: FULL AI EXPERIENCE (OPCION 3) - FUTURO LEJANO
