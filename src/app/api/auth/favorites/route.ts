@@ -1,10 +1,23 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
+import { createClient } from '@supabase/supabase-js';
 import { isSupabaseConfigured } from '@/lib/supabase';
 
-async function getServerSupabase() {
+async function getServerSupabase(request: NextRequest) {
   const cookieStore = await cookies();
+  
+  const authHeader = request.headers.get('authorization');
+  
+  if (authHeader) {
+    const token = authHeader.replace('Bearer ', '');
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+    return createClient(supabaseUrl, supabaseAnonKey, {
+      global: { headers: { Authorization: `Bearer ${token}` } },
+    });
+  }
+  
   return createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -25,13 +38,13 @@ async function getServerSupabase() {
   );
 }
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   if (!isSupabaseConfigured()) {
     return NextResponse.json({ favorites: [] });
   }
 
   try {
-    const supabase = await getServerSupabase();
+    const supabase = await getServerSupabase(request);
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
       return NextResponse.json({ favorites: [] });
@@ -54,13 +67,13 @@ export async function GET() {
   }
 }
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   if (!isSupabaseConfigured()) {
     return NextResponse.json({ error: 'Supabase no configurado' }, { status: 500 });
   }
 
   try {
-    const supabase = await getServerSupabase();
+    const supabase = await getServerSupabase(request);
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
       return NextResponse.json({ error: 'No autenticado' }, { status: 401 });
@@ -89,13 +102,13 @@ export async function POST(request: Request) {
   }
 }
 
-export async function DELETE(request: Request) {
+export async function DELETE(request: NextRequest) {
   if (!isSupabaseConfigured()) {
     return NextResponse.json({ error: 'Supabase no configurado' }, { status: 500 });
   }
 
   try {
-    const supabase = await getServerSupabase();
+    const supabase = await getServerSupabase(request);
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
       return NextResponse.json({ error: 'No autenticado' }, { status: 401 });
