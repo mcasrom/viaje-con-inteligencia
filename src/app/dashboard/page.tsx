@@ -37,7 +37,7 @@ interface Favorite {
 }
 
 export default function DashboardPage() {
-  const { user: authUser, loading: authLoading, signInWithPassword: authSignInPassword, signUpWithPassword, resetPassword, signOut: authSignOut } = useAuth();
+  const { user: authUser, loading: authLoading, signInWithPassword: authSignInPassword, signUpWithPassword, resetPassword, signOut: authSignOut, signInWithEmail } = useAuth();
   const [user, setUser] = useState<User | null>(null);
   const [favorites, setFavorites] = useState<Favorite[]>([]);
   const [loading, setLoading] = useState(true);

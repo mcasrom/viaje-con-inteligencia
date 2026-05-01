@@ -1,18 +1,33 @@
-import { NextResponse } from 'next/server';
-import { supabase, isSupabaseConfigured } from '@/lib/supabase';
+import { NextResponse, NextRequest } from 'next/server';
+import { createClient } from '@supabase/supabase-js';
+import { isSupabaseConfigured } from '@/lib/supabase';
 
-export async function GET() {
+function getServerSupabase(request: NextRequest) {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+  
+  return createClient(supabaseUrl, supabaseAnonKey, {
+    global: {
+      headers: {
+        Cookie: request.headers.get('cookie') || '',
+      },
+    },
+  });
+}
+
+export async function GET(request: NextRequest) {
   if (!isSupabaseConfigured()) {
     return NextResponse.json({ favorites: [] });
   }
 
   try {
-    const { data: { user } } = await supabase!.auth.getUser();
+    const supabase = getServerSupabase(request);
+    const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
       return NextResponse.json({ favorites: [] });
     }
 
-    const { data: favorites, error } = await supabase!
+    const { data: favorites, error } = await supabase
       .from('favorites')
       .select('*')
       .eq('user_id', user.id)
@@ -29,13 +44,14 @@ export async function GET() {
   }
 }
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   if (!isSupabaseConfigured()) {
     return NextResponse.json({ error: 'Supabase no configurado' }, { status: 500 });
   }
 
   try {
-    const { data: { user } } = await supabase!.auth.getUser();
+    const supabase = getServerSupabase(request);
+    const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
       return NextResponse.json({ error: 'No autenticado' }, { status: 401 });
     }
@@ -46,7 +62,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Código de país requerido' }, { status: 400 });
     }
 
-    const { error } = await supabase!
+    const { error } = await supabase
       .from('favorites')
       .insert({ user_id: user.id, country_code: countryCode });
 
@@ -63,13 +79,14 @@ export async function POST(request: Request) {
   }
 }
 
-export async function DELETE(request: Request) {
+export async function DELETE(request: NextRequest) {
   if (!isSupabaseConfigured()) {
     return NextResponse.json({ error: 'Supabase no configurado' }, { status: 500 });
   }
 
   try {
-    const { data: { user } } = await supabase!.auth.getUser();
+    const supabase = getServerSupabase(request);
+    const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
       return NextResponse.json({ error: 'No autenticado' }, { status: 401 });
     }
@@ -81,7 +98,7 @@ export async function DELETE(request: Request) {
       return NextResponse.json({ error: 'Código requerido' }, { status: 400 });
     }
 
-    const { error } = await supabase!
+    const { error } = await supabase
       .from('favorites')
       .delete()
       .eq('user_id', user.id)
