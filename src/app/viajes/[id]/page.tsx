@@ -8,6 +8,8 @@ import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/lib/supabase';
 import type { Trip } from '@/lib/supabase';
 import PDFExportButton from '@/components/PDFExportButton';
+import { ShareTrip } from '@/components/ShareTrip';
+import { trackActivity } from '@/components/UserLevel';
 
 const statusOptions: { value: Trip['status']; label: string }[] = [
   { value: 'draft', label: 'Borrador' },
@@ -100,6 +102,7 @@ export default function ViajeDetallePage() {
           .from('trips')
           .update({ itinerary_raw: data.itinerary, updated_at: new Date().toISOString() })
           .eq('id', tripId);
+        trackActivity('generate_route', { trip_id: tripId, destination: trip.destination });
       }
     } catch {
       setError('Error al regenerar itinerario');
@@ -158,6 +161,7 @@ export default function ViajeDetallePage() {
             {trip && trip.itinerary_raw && (
               <PDFExportButton trip={trip} />
             )}
+            <ShareTrip tripId={tripId} tripName={trip.name} />
             <button
               onClick={() => setEditing(e => !e)}
               className="text-slate-400 hover:text-white transition-colors"

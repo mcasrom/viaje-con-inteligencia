@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import TrialStatusBanner from '@/components/TrialStatusBanner';
 import RecommendationsList from '@/components/RecommendationsList';
+import { UserLevelBadge, trackActivity } from '@/components/UserLevel';
 import { paisesData, getLabelRiesgo } from '@/data/paises';
 import WeatherWidget from '@/components/WeatherWidget';
 
@@ -230,6 +231,7 @@ const handleAuth = async (e: React.FormEvent) => {
         setShowAddCountry(false);
         setSearchCountry('');
         setNotification({ type: 'success', message: 'País añadido a favoritos' });
+        trackActivity('add_favorite', { country: countryCode });
       }
     } catch {
       setNotification({ type: 'error', message: 'Error al añadir favorito' });
@@ -409,6 +411,9 @@ const handleAuth = async (e: React.FormEvent) => {
 
         {/* TRIAL STATUS */}
         <TrialStatusBanner />
+
+        {/* USER LEVEL / GAMIFICATION */}
+        <UserLevelBadge />
 
         {/* Banner KPIs destacado */}
         <Link href="/dashboard/kpis" className="block mb-6 bg-gradient-to-r from-blue-600 to-cyan-600 rounded-xl p-4 hover:opacity-90 transition-opacity">
