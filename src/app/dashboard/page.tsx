@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { createClient } from '@supabase/supabase-js';
+import { createBrowserClient } from '@supabase/ssr';
 import { 
   ArrowLeft, Heart, MapPin, AlertTriangle, Trash2, 
   Plus, Mail, LogOut, Crown, Bell, Settings, Loader2,
@@ -20,7 +20,7 @@ import { useAuth } from '@/contexts/AuthContext';
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
 const supabaseClient = supabaseUrl && supabaseAnonKey 
-  ? createClient(supabaseUrl, supabaseAnonKey) 
+  ? createBrowserClient(supabaseUrl, supabaseAnonKey) 
   : null;
 
 interface User {
