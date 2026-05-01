@@ -17,7 +17,7 @@ const statusLabels: StatusConfig = {
 };
 
 export default function ViajesPage() {
-  const { user, loading: authLoading, signInWithEmail } = useAuth();
+  const { user, loading: authLoading, signInWithEmail, getSession } = useAuth();
   const [trips, setTrips] = useState<Trip[]>([]);
   const [loading, setLoading] = useState(true);
   const [deletingId, setDeletingId] = useState<string | null>(null);
@@ -40,7 +40,14 @@ export default function ViajesPage() {
 
     async function fetchTrips() {
       try {
-        const res = await fetch('/api/trips', { cache: 'no-store' });
+        const token = await getSession();
+        const headers: Record<string, string> = {};
+        if (token) headers['Authorization'] = `Bearer ${token}`;
+        
+        const res = await fetch('/api/trips', { 
+          cache: 'no-store',
+          headers,
+        });
         if (res.ok) {
           const data = await res.json();
           setTrips(data.trips || []);
@@ -77,7 +84,11 @@ export default function ViajesPage() {
     setDeletingId(tripId);
 
     try {
-      const res = await fetch(`/api/trips/${tripId}`, { method: 'DELETE' });
+      const token = await getSession();
+      const headers: Record<string, string> = {};
+      if (token) headers['Authorization'] = `Bearer ${token}`;
+      
+      const res = await fetch(`/api/trips/${tripId}`, { method: 'DELETE', headers });
       if (res.ok) {
         setTrips(prev => prev.filter(t => t.id !== tripId));
       }

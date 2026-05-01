@@ -21,7 +21,7 @@ const budgetOptions = [
 ];
 
 export default function NuevoViajePage() {
-  const { user, loading: authLoading } = useAuth();
+  const { user, loading: authLoading, getSession } = useAuth();
   const router = useRouter();
 
   const [step, setStep] = useState(1);
@@ -99,9 +99,13 @@ export default function NuevoViajePage() {
     setError('');
 
     try {
+      const token = await getSession();
+      const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+      if (token) headers['Authorization'] = `Bearer ${token}`;
+
       const res = await fetch('/api/trips', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         body: JSON.stringify({
           name,
           destination,

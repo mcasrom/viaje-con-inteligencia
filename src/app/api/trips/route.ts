@@ -1,9 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
+import { createClient } from '@supabase/supabase-js';
 
-async function getServerSupabase() {
+async function getServerSupabase(request: NextRequest) {
   const cookieStore = await cookies();
+  
+  const authHeader = request.headers.get('authorization');
+  
+  if (authHeader) {
+    const token = authHeader.replace('Bearer ', '');
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+    return createClient(supabaseUrl, supabaseAnonKey, {
+      global: { headers: { Authorization: `Bearer ${token}` } },
+    });
+  }
+  
   return createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -26,10 +39,11 @@ async function getServerSupabase() {
 
 export async function GET(request: NextRequest) {
   try {
-    const supabase = await getServerSupabase();
+    const supabase = await getServerSupabase(request);
     const { data: { user } } = await supabase.auth.getUser();
+    
     if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      return NextResponse.json({ error: 'No autenticado' }, { status: 401 });
     }
 
     const { data, error } = await supabase
@@ -42,7 +56,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    return NextResponse.json({ trips: data });
+    return NextResponse.json({ trips: data || [] });
   } catch {
     return NextResponse.json({ error: 'Internal error' }, { status: 500 });
   }
@@ -50,17 +64,11 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const supabase = await getServerSupabase();
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
-    
-    const cookieStore = await cookies();
-    const allCookies = cookieStore.getAll();
-    console.log('[TRIPS API] Cookies:', allCookies.map(c => c.name));
-    console.log('[TRIPS API] User:', user?.id || 'null');
-    console.log('[TRIPS API] Auth error:', authError?.message || 'none');
+    const supabase = await getServerSupabase(request);
+    const { data: { user } } = await supabase.auth.getUser();
     
     if (!user) {
-      return NextResponse.json({ error: 'No autenticado. Cierra sesión y vuelve a entrar.' }, { status: 401 });
+      return NextResponse.json({ error: 'No autenticado' }, { status: 401 });
     }
 
     const body = await request.json();
@@ -90,13 +98,11 @@ export async function POST(request: NextRequest) {
       .single();
 
     if (error) {
-      console.error('[TRIPS API] Insert error:', error);
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
     return NextResponse.json({ trip: data }, { status: 201 });
-  } catch (err: any) {
-    console.error('[TRIPS API] Catch error:', err);
+  } catch {
     return NextResponse.json({ error: 'Internal error' }, { status: 500 });
   }
 }
