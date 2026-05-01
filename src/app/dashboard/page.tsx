@@ -281,11 +281,16 @@ export default function DashboardPage() {
 
   const addFavorite = async (countryCode: string) => {
     try {
+      console.log('Adding favorite:', countryCode);
       const response = await fetch('/api/auth/favorites', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ countryCode }),
+        credentials: 'include',
       });
+
+      const data = await response.json();
+      console.log('Response:', response.status, data);
 
       if (response.ok) {
         await loadFavorites();
@@ -293,8 +298,14 @@ export default function DashboardPage() {
         setSearchCountry('');
         setNotification({ type: 'success', message: 'País añadido a favoritos' });
         trackActivity('add_favorite', { country: countryCode });
+      } else {
+        setNotification({ 
+          type: 'error', 
+          message: data.error || `Error (${response.status}) al añadir favorito` 
+        });
       }
-    } catch {
+    } catch (err) {
+      console.error('Add favorite error:', err);
       setNotification({ type: 'error', message: 'Error al añadir favorito' });
     }
   };
