@@ -1953,34 +1953,30 @@ GET /api/ai/recommend?preferencia=playa&presupuesto=medio
 
 ---
 
-## 📅 2026-04-29 - SPRINT 32: Rutas + POIs + Mejoras UI (EN PROGRESO)
+## 📅 2026-04-29 - SPRINT 32: Dev/Prod Setup + Tokens (COMPLETADO)
 
 ### ✅ Completado
 | Feature | Estado |
 |---------|--------|
-| Rutas dinamicas (8 rutas) | ✅ |
-| 3 rutas aleatorias + "Ver todas" | ✅ |
-| Dynamic import SSR false | ✅ |
-| POIs Wikidata SPARQL ready | ✅ |
-| Volver al mapa con Link | ✅ |
-| Background opacity 25% | ✅ |
-| framer-motion instalado | ✅ |
+| Rama `dev` creada y sincronizada | ✅ |
+| Entornos separados (Main=Prod, Dev=Preview) | ✅ |
+| Tokens Supabase actualizados (Prod + Dev) | ✅ |
+| `.env.local` con keys reales | ✅ |
+| Cero tokens nuevos necesarios | ✅ |
 
-### 🌐 APIs
-```bash
-# Rutas
-curl "/rutas"          # 3 rutas
-curl "/rutas?all=true"  # todas
+### 🔐 Configuración de Entornos
+| Entorno | Rama | URL | Vars |
+|---------|------|-----|------|
+| **Producción** | `main` | `viaje-con-inteligencia.vercel.app` | Production |
+| **Desarrollo** | `dev` | `vercel.app/...git-dev...` | Preview + Dev |
 
-# POIs
-curl "/api/wikidata/pois?country=es&type=museum"
-curl "/api/wikidata/pois?country=es&type=museum&sparql=true"
-```
+### 🔄 Flujo de Trabajo
+1. Push a `dev` -> Deploy Desarrollo
+2. Merge `dev` -> `main` -> Deploy Producción
 
 ### 📋 Pendientes
-- Imágenes Unsplash en rutas (error 500)
-- AviationStack API
-- Predicción riesgo ML
+- Imágenes Unsplash en rutas
+- AviaciónStack / FlightLabs
 - App móvil
 
 ---
