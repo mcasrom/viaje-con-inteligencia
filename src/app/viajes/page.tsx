@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Plus, MapPin, Calendar, Plane, Clock, ChevronRight, Trash2, Loader2, Lock, Mail, Send, CheckCircle } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
-import { supabase } from '@/lib/supabase';
 import type { Trip } from '@/lib/supabase';
 
 type StatusConfig = Record<Trip['status'], { label: string; color: string }>;
@@ -39,19 +38,12 @@ export default function ViajesPage() {
   useEffect(() => {
     if (!user) return;
 
-    const currentUser = user;
-
     async function fetchTrips() {
-      if (!supabase) return;
       try {
-        const { data, error } = await supabase
-          .from('trips')
-          .select('*')
-          .eq('user_id', currentUser.id)
-          .order('created_at', { ascending: false });
-
-        if (!error && data) {
-          setTrips(data);
+        const res = await fetch('/api/trips', { cache: 'no-store' });
+        if (res.ok) {
+          const data = await res.json();
+          setTrips(data.trips || []);
         }
       } catch (err) {
         console.error('Error fetching trips:', err);
@@ -81,17 +73,12 @@ export default function ViajesPage() {
   };
 
   const handleDelete = async (tripId: string) => {
-    if (!supabase) return;
     if (!confirm('¿Eliminar este viaje?')) return;
     setDeletingId(tripId);
 
     try {
-      const { error } = await supabase
-        .from('trips')
-        .delete()
-        .eq('id', tripId);
-
-      if (!error) {
+      const res = await fetch(`/api/trips/${tripId}`, { method: 'DELETE' });
+      if (res.ok) {
         setTrips(prev => prev.filter(t => t.id !== tripId));
       }
     } catch (err) {
