@@ -51,9 +51,16 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const supabase = await getServerSupabase();
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    
+    const cookieStore = await cookies();
+    const allCookies = cookieStore.getAll();
+    console.log('[TRIPS API] Cookies:', allCookies.map(c => c.name));
+    console.log('[TRIPS API] User:', user?.id || 'null');
+    console.log('[TRIPS API] Auth error:', authError?.message || 'none');
+    
     if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      return NextResponse.json({ error: 'No autenticado. Cierra sesión y vuelve a entrar.' }, { status: 401 });
     }
 
     const body = await request.json();
@@ -83,11 +90,13 @@ export async function POST(request: NextRequest) {
       .single();
 
     if (error) {
+      console.error('[TRIPS API] Insert error:', error);
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
     return NextResponse.json({ trip: data }, { status: 201 });
-  } catch {
+  } catch (err: any) {
+    console.error('[TRIPS API] Catch error:', err);
     return NextResponse.json({ error: 'Internal error' }, { status: 500 });
   }
 }
