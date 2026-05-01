@@ -44,17 +44,19 @@
 - Badge "IA" visible cuando viene del backend
 - Loading state mientras calcula
 
-#### ⏳ Sistema "Tokens de Viajero" (Gamificación) - Pendiente
+#### ✅ Sistema "Tokens de Viajero" (Gamificación)
 - Tabla `user_activity` en Supabase (login, generate_route, share_route)
-- Componente `UserLevel` en header: Explorador → Guía → Oráculo
+- Componente `UserLevel` en dashboard: Explorador → Guía → Oráculo
 - Recompensa: Nivel "Guía" desbloquea PDF con mapa detallado (jsPDF)
-- **Esfuerzo:** 🟠 Medio | **Impacto:** 🟡 Medio
+- Progress bar visible, perks por nivel, puntos por acción
+- **Esfuerzo:** 🟠 Medio | **Impacto:** 🟡 Medio | **Estado:** ✅ Done
 
-#### ⏳ Viaje Compartido (Viralidad) - Pendiente
+#### ✅ Viaje Compartido (Viralidad)
 - Botón "Invitar amigos a este viaje" → link único `?ref=trip_123`
 - Supabase guarda `trip_id` + lista emails invitados
-- Entradas: ven ruta precargada
-- **Esfuerzo:** 🟠 Medio | **Impacto:** 🔥 Alto
+- Página `/viaje-compartido?token=xxx` para invitados
+- Share via Telegram, WhatsApp, email
+- **Esfuerzo:** 🟠 Medio | **Impacto:** 🔥 Alto | **Estado:** ✅ Done
 
 ---
 
