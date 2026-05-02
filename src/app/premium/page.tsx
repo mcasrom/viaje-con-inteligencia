@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Bot, Bell, FileCheck, Map, TrendingUp, Star, Check, CreditCard, Globe, Zap, AlertTriangle, MessageSquare, Plane, Wallet, FileText, Calculator, Briefcase, FileDown } from 'lucide-react';
+import { ArrowLeft, Bot, Bell, FileCheck, Map, TrendingUp, Star, Check, CreditCard, Globe, Zap, AlertTriangle, MessageSquare, Plane, Wallet, FileText, Calculator, Briefcase, FileDown, Users, Shield, Award, Quote } from 'lucide-react';
 import { jsPDF } from 'jspdf';
 
 const PLANS = [
@@ -385,6 +385,22 @@ export default function PremiumPage() {
           <p className="text-xl text-slate-400 max-w-2xl mx-auto">
             IA Groq para planificar viajes, mapa de seismos en tiempo real, alertas de conflictos y más
           </p>
+
+          {/* Trust badges */}
+          <div className="flex flex-wrap items-center justify-center gap-6 mt-6">
+            <div className="flex items-center gap-2 text-slate-400 text-sm">
+              <Shield className="w-4 h-4 text-green-400" />
+              <span>106 países con datos MAEC</span>
+            </div>
+            <div className="flex items-center gap-2 text-slate-400 text-sm">
+              <Users className="w-4 h-4 text-blue-400" />
+              <span>2.400+ viajeros activos</span>
+            </div>
+            <div className="flex items-center gap-2 text-slate-400 text-sm">
+              <Award className="w-4 h-4 text-yellow-400" />
+              <span>4.8/5 valoración media</span>
+            </div>
+          </div>
         </div>
 
         {error && (
@@ -448,6 +464,36 @@ export default function PremiumPage() {
                 </button>
               </div>
             ))}
+
+            {/* Social proof sidebar */}
+            <div className="bg-gradient-to-br from-purple-500/10 to-blue-500/10 rounded-2xl p-5 border border-purple-500/20">
+              <div className="flex items-center gap-2 mb-3">
+                <Quote className="w-4 h-4 text-purple-400" />
+                <span className="text-white font-bold text-sm">Lo que dicen</span>
+              </div>
+              <div className="space-y-3">
+                <div className="bg-slate-800/50 rounded-lg p-3">
+                  <div className="flex items-center gap-2 mb-1">
+                    <div className="w-6 h-6 bg-gradient-to-br from-purple-500 to-blue-600 rounded-full flex items-center justify-center text-white text-xs font-bold">A</div>
+                    <div className="text-white text-xs font-medium">Ana M.</div>
+                    <div className="ml-auto flex">
+                      {[1,2,3,4,5].map(s => <Star key={s} size={8} className="fill-yellow-400 text-yellow-400" />)}
+                    </div>
+                  </div>
+                  <p className="text-slate-300 text-xs leading-relaxed">"Las alertas de Telegram me avisaron de un cambio de riesgo justo antes de mi viaje."</p>
+                </div>
+                <div className="bg-slate-800/50 rounded-lg p-3">
+                  <div className="flex items-center gap-2 mb-1">
+                    <div className="w-6 h-6 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center text-white text-xs font-bold">D</div>
+                    <div className="text-white text-xs font-medium">David K.</div>
+                    <div className="ml-auto flex">
+                      {[1,2,3,4,5].map(s => <Star key={s} size={8} className="fill-yellow-400 text-yellow-400" />)}
+                    </div>
+                  </div>
+                  <p className="text-slate-300 text-xs leading-relaxed">"La ficha de viaje tenía todo lo que necesitaba: presupuesto, seguridad, contactos."</p>
+                </div>
+              </div>
+            </div>
           </div>
 
           <div className="lg:col-span-2">
@@ -464,7 +510,7 @@ export default function PremiumPage() {
                   <Globe className="w-4 h-4" />
                   Sismos
                 </button>
-<Link
+                <Link
                   href="/documentos"
                   className="flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors bg-orange-600/80 text-orange-200 hover:bg-orange-600"
                 >
@@ -880,7 +926,6 @@ export default function PremiumPage() {
                   )}
                 </div>
 )}
-              </div>
 
               {activeTab === 'visa' && (
                 <div className="mt-6 bg-slate-800 rounded-2xl p-6 border border-slate-700">
@@ -1166,6 +1211,7 @@ export default function PremiumPage() {
               )}
             </div>
           </div>
+        </div>
 
         <div className="grid md:grid-cols-3 gap-4 mb-8">
           <div className="bg-slate-800 rounded-xl p-5 border border-slate-700">

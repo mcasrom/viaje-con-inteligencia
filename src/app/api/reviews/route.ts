@@ -1,62 +1,78 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { createClient } from '@supabase/supabase-js';
 
-const reviews: Record<string, any[]> = {
-  es: [
-    { id: '1', author: 'María G.', rating: 5, comment: 'España es muy seguro. Los turistas son bienvenidos.', date: '2026-03-15' },
-    { id: '2', author: 'Carlos R.', rating: 4, comment: 'Buen país para visitar. Ojo con los carteristas en Barcelona.', date: '2026-02-20' },
-  ],
-  fr: [
-    { id: '3', author: 'Pierre L.', rating: 4, comment: 'Francia es hermosa pero hay zonas que evitar de noche.', date: '2026-03-10' },
-  ],
-  jp: [
-    { id: '4', author: 'Ana M.', rating: 5, comment: 'Japón es increíblemente seguro. Perfecto para viajar solo.', date: '2026-04-01' },
-    { id: '5', author: 'David K.', rating: 5, comment: 'El país más seguro que he visitado.地震 no son un problema.', date: '2026-03-25' },
-  ],
-  us: [
-    { id: '6', author: 'Roberto S.', rating: 4, comment: 'EEUU tiene zonas muy seguras y otras que evitar. Investiga bien.', date: '2026-02-28' },
-  ],
-  mx: [
-    { id: '7', author: 'Laura P.', rating: 3, comment: 'Hay zonas turísticas muy seguras pero otras requieren precaución.', date: '2026-03-05' },
-  ],
-};
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const country = searchParams.get('country');
 
-  if (country) {
-    const countryReviews = reviews[country] || [];
-    const avgRating = countryReviews.length > 0
-      ? countryReviews.reduce((sum, r) => sum + r.rating, 0) / countryReviews.length
-      : null;
-    
+  try {
+    let query = supabase
+      .from('reviews')
+      .select('id, author, rating, comment, country, trip_date, verified, created_at')
+      .order('created_at', { ascending: false });
+
+    if (country) {
+      query = query.eq('country', country);
+    }
+
+    const { data, error, count } = await query;
+
+    if (error) throw error;
+
+    const reviews = data || [];
+
+    if (country) {
+      const avgRating = reviews.length > 0
+        ? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length
+        : null;
+
+      return NextResponse.json({
+        reviews: reviews.map(r => ({
+          ...r,
+          date: r.created_at,
+        })),
+        count: reviews.length,
+        averageRating: avgRating ? Math.round(avgRating * 10) / 10 : null,
+      });
+    }
+
+    // Get count by country
+    const { data: countryCounts } = await supabase
+      .from('reviews')
+      .select('country')
+      .not('country', 'is', null);
+
+    const byCountry = countryCounts?.reduce((acc: Record<string, number>, r) => {
+      if (r.country) acc[r.country] = (acc[r.country] || 0) + 1;
+      return acc;
+    }, {}) || {};
+
     return NextResponse.json({
-      reviews: countryReviews,
-      count: countryReviews.length,
-      averageRating: avgRating ? Math.round(avgRating * 10) / 10 : null,
+      reviews: reviews.map(r => ({
+        ...r,
+        date: r.created_at,
+      })),
+      count,
+      byCountry,
     });
+  } catch (error) {
+    console.error('Reviews GET error:', error);
+    return NextResponse.json({ error: 'Error al cargar reseñas' }, { status: 500 });
   }
-
-  const allReviews = Object.entries(reviews).flatMap(([country, countryReviews]) =>
-    countryReviews.map(r => ({ ...r, country }))
-  );
-
-  return NextResponse.json({
-    reviews: allReviews,
-    count: allReviews.length,
-    byCountry: Object.fromEntries(
-      Object.entries(reviews).map(([k, v]) => [k, v.length])
-    ),
-  });
 }
 
 export async function POST(request: NextRequest) {
   try {
     const { country, author, rating, comment } = await request.json();
 
-    if (!country || !author || !rating || !comment) {
+    if (!author || !rating || !comment) {
       return NextResponse.json(
-        { error: 'Todos los campos son requeridos' },
+        { error: 'Nombre, rating y comentario son requeridos' },
         { status: 400 }
       );
     }
@@ -68,27 +84,31 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const newReview = {
-      id: Date.now().toString(),
-      author: author.trim(),
-      rating: parseInt(rating),
-      comment: comment.trim(),
-      date: new Date().toISOString().split('T')[0],
-      country,
-    };
+    const { data, error } = await supabase
+      .from('reviews')
+      .insert({
+        author: author.trim(),
+        rating: parseInt(rating),
+        comment: comment.trim(),
+        country: country || null,
+        verified: false,
+      })
+      .select()
+      .single();
 
-    if (!reviews[country]) {
-      reviews[country] = [];
-    }
-    reviews[country].unshift(newReview);
+    if (error) throw error;
 
     return NextResponse.json({
       success: true,
-      review: newReview,
+      review: {
+        ...data,
+        date: data.created_at,
+      },
     });
   } catch (error) {
+    console.error('Reviews POST error:', error);
     return NextResponse.json(
-      { error: 'Error al guardar la review' },
+      { error: 'Error al guardar la reseña' },
       { status: 500 }
     );
   }
