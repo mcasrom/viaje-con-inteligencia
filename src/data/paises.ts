@@ -916,7 +916,7 @@ export const paisesData: Record<string, DatoPais> = {
       'No criticar gobierno',
       'No esperar internet fácil',
       'No bring drone',
-      'No photograph military sites',
+      'No fotografíes instalaciones militares',
       'No change money on black market'
     ],
     diarios: [
@@ -973,7 +973,7 @@ export const paisesData: Record<string, DatoPais> = {
       'No caminar zonas marginales noche',
       'No change money unofficial',
       'No accept drinks from strangers',
-      'No visit remote areas alone',
+      'No visites zonas remotas solo',
       'No exhibirt expensive jewelry'
     ],
     diarios: [
@@ -1087,7 +1087,7 @@ export const paisesData: Record<string, DatoPais> = {
       'No entrar a favelas alone',
       'No leave valuables on beach',
       'No walk alone at night',
-      'No photograph militares',
+      'No fotografíes instalaciones militares',
       'No do v sign (offensive)'
     ],
     diarios: [
@@ -1143,7 +1143,7 @@ export const paisesData: Record<string, DatoPais> = {
     queNoHacer: [
       'No change money on street',
       'No show expensive items',
-      'No walk night en peripheral areas',
+      'No camines de noche en zonas periféricas',
       'No confuse with Uruguay',
       'No bring meat products'
     ],
@@ -1202,7 +1202,7 @@ export const paisesData: Record<string, DatoPais> = {
       'No forget sunscreen',
       'No be unprepared for Andes',
       'No skip Valparaíso',
-      'No disrespect Mapuche culture'
+      'No faltes al respeto a Mapuche culture'
     ],
     diarios: [
       { nombre: 'El Mercurio', url: 'https://www.elmercurio.com' },
@@ -1369,7 +1369,7 @@ export const paisesData: Record<string, DatoPais> = {
       'Mercados flotantes'
     ],
     queNoHacer: [
-      'No disrespect monarchy',
+      'No faltes al respeto a monarchy',
       'No touch head of Thai people',
       'No point feet at Buddha',
       'No raise voice',
@@ -1430,7 +1430,7 @@ export const paisesData: Record<string, DatoPais> = {
       'No be rude about war',
       'No touch heads',
       'No refuse offered tea',
-      'No overprice without bargaining'
+      'No aceptes sobreprecios sin regatear'
     ],
     diarios: [
       { nombre: 'Vietnam News', url: 'https://vietnamnews.vn' },
@@ -1542,7 +1542,7 @@ export const paisesData: Record<string, DatoPais> = {
     queNoHacer: [
       'No speak about politics',
       'No share info with strangers',
-      'No photo military zones',
+      'No fotografíes zonas militares',
       'No cross streets with phone',
       'No send negative messages about China'
     ],
@@ -1600,7 +1600,7 @@ export const paisesData: Record<string, DatoPais> = {
       'No jaywalk',
       'No litter',
       'No chew gum',
-      'No drugs (death penalty)',
+      'No consumas drogas (pena de muerte)',
       'No tip (not expected)'
     ],
     diarios: [
@@ -1654,8 +1654,8 @@ export const paisesData: Record<string, DatoPais> = {
       'Ferrari World Abu Dhabi'
     ],
     queNoHacer: [
-      'No drink alcohol without license',
-      'No photograph locals without consent',
+      'No bebas alcohol sin licencia',
+      'No fotografíes a locales sin consentimiento',
       'No public displays of affection',
       'No eat/drink en público during Ramadan',
       'No obscene gestures'
@@ -1715,7 +1715,7 @@ export const paisesData: Record<string, DatoPais> = {
       'No walk alone at night',
       'No leave car windows open',
       'No ignore safety warnings',
-      'No swim without lifeguard flags'
+      'No nades sin banderas de socorrista'
     ],
     diarios: [
       { nombre: 'Mail & Guardian', url: 'https://mg.co.za' },
@@ -1768,11 +1768,11 @@ export const paisesData: Record<string, DatoPais> = {
       'Abu Simbel'
     ],
     queNoHacer: [
-      'No photograph inside mosques without permission',
+      'No fotografíes dentro de mezquitas sin permiso',
       'No show soles of feet',
       'No be rude about Islam',
       'No accept offers from touts',
-      'No photograph police/military'
+      'No fotografíes a policía o militares'
     ],
     diarios: [
       { nombre: 'Ahram Online', url: 'https://english.ahram.org.eg' },
@@ -1825,7 +1825,7 @@ export const paisesData: Record<string, DatoPais> = {
       'Fez y medina'
     ],
     queNoHacer: [
-      'No photograph without permission',
+      'No fotografíes sin permiso',
       'No enter mosques unauthorized',
       'No drink alcohol in public',
       'No show affection public',
@@ -1885,7 +1885,7 @@ export const paisesData: Record<string, DatoPais> = {
       'No leave vehicle en safari',
       'No show valuables',
       'No walk night Nairobi CBD',
-      'No take photos of locals without ask',
+      'No fotografíes a locales sin preguntar',
       'No touch animals'
     ],
     diarios: [
@@ -1940,10 +1940,10 @@ export const paisesData: Record<string, DatoPais> = {
     ],
     queNoHacer: [
       'No bring biosecurity items',
-      'No swim at unpatrolled beaches',
+      'No nades en playas sin socorrista',
       'No ignore sun protection',
       'No feed wildlife',
-      'No swim with jellyfish in north'
+      'No nades con medusas en el norte'
     ],
     diarios: [
       { nombre: 'The Australian', url: 'https://www.theaustralian.com.au' },
@@ -2000,7 +2000,7 @@ export const paisesData: Record<string, DatoPais> = {
       'No ignore earthquake safety',
       'No feed wildlife',
       'No assume English only',
-      'No disrespect Maori culture'
+      'No faltes al respeto a Maori culture'
     ],
     diarios: [
       { nombre: 'New Zealand Herald', url: 'https://www.nzherald.co.nz' },
@@ -2055,7 +2055,7 @@ export const paisesData: Record<string, DatoPais> = {
     queNoHacer: [
       'No discuss politics openly',
       'No show soles of feet',
-      'No ignore conservative areas',
+      'No ignores las zonas conservadoras',
       'No assume Istanbul is all Turkey',
       'No skip Ankara capital'
     ],
@@ -2343,7 +2343,7 @@ export const paisesData: Record<string, DatoPais> = {
       'Probar nasi lemak'
     ],
     queNoHacer: [
-      'No critiques la monarquía',
+      'No critiques a la monarquía',
       'No muestres afecto público',
       'No fotografíes sin permiso en templos',
       'No te vistas inapropiadamente',
@@ -2405,7 +2405,7 @@ export const paisesData: Record<string, DatoPais> = {
       'No critiques al gobierno',
       'No muestres afecto público excesivo',
       'No visites Mindanao sin precauciones',
-      'No ignores advisories locales'
+      'No ignores los avisos de seguridad locales'
     ],
     diarios: [
       { nombre: 'Philippine Daily Inquirer', url: 'https://www.inquirer.net' },
@@ -2691,7 +2691,7 @@ export const paisesData: Record<string, DatoPais> = {
       'No fotografíes militares',
       'No冬至en zonas militares',
       'No bebas alcohol en público',
-      'No ignores normas de vestimenta',
+      'No ignores las normas de vestimenta',
       'No demuestres afecto en público'
     ],
     diarios: [
@@ -2919,7 +2919,7 @@ om: {
       'No fotografíes checkpoints militares',
       'No critiques temas religiosos',
       'No entres en zonas restringidas',
-      'No ignores alertas de seguridad',
+      'No ignores las alertas de seguridad',
       'No lleves objetos punzantes'
     ],
     diarios: [
@@ -2974,7 +2974,7 @@ om: {
     ],
     queNoHacer: [
       'No discutas política',
-      'No ignores alertas de viaje',
+      'No ignores las alertas de viaje',
       'No vayas al sur del país',
       'No fotografíes manifestaciones',
       'No muestres objetos de valor'
@@ -3032,7 +3032,7 @@ om: {
     queNoHacer: [
       'No toques animales salvajes',
       'No bebas agua del grifo',
-      'No ignores consejos de malaria',
+      'No ignores los consejos sobre malaria',
       'No fotografíes sin permiso',
       'No discutas de política étnica'
     ],
@@ -3091,7 +3091,7 @@ om: {
       'No muestres dinero en público',
       'No uses dólares americanos',
       'No conduzcas de noche',
-      'No ignores avisos de embajada'
+      'No ignores los avisos de embajada'
     ],
     diarios: [
       { nombre: 'El Nacional', url: 'https://elnacional.com' },
@@ -3144,7 +3144,7 @@ om: {
     ],
     queNoHacer: [
       'No bebas agua del grifo',
-      'No ignores zonas de seguridad',
+      'No ignores las zonas de seguridad',
       'No acerques a animales salvajes',
       'No discutas de políticas',
       'No conduzcas de noche en carreteras'
@@ -3202,7 +3202,7 @@ om: {
     queNoHacer: [
       'No conduzcas fuera de carreteras',
       'No te acerques a glaciares sin guía',
-      'No ignoressubes de hielo',
+      'No ignores las subidas de hielo',
       'No pesques sin licencia',
       'No hagas fogo fuera de áreas'
     ],
@@ -3258,7 +3258,7 @@ om: {
     ],
     queNoHacer: [
       'No conduzcassin licencia internacional',
-      'No ignores las lluvias',
+      'No ignores la temporada de lluvias',
       'No discutas de política',
       'No entres a pubs sin saber horarios',
       'No ignores las señales de tráfico'
@@ -3314,11 +3314,11 @@ om: {
       'Montañas Tatra'
     ],
     queNoHacer: [
-      'No ignores el passado histórico',
+      'No ignores el pasado histórico',
       'No hagas gestos ofensivos',
       'No discutas de política',
       'No conduzcas borracho',
-      'No ignores zonas historical'
+      'No ignores las zonas históricas'
     ],
     diarios: [
       { nombre: 'Gazeta Wyborcza', url: 'https://wyborcza.pl' },
@@ -3371,10 +3371,10 @@ requerimientos: [
       'Cuevas de Karlštejn'
     ],
     queNoHacer: [
-      'No ignores turística crowded',
+      'No ignores las zonas turísticas',
       'No discutas de política',
       'No bebas excesivamente',
-      'No ignores precios turismo',
+      'No ignores los precios turísticos',
       'No tomes taxis sin acordar precio'
     ],
     diarios: [
@@ -3428,10 +3428,10 @@ requerimientos: [
       'Ferry a Hajógyar'
     ],
     queNoHacer: [
-      'No ignores historia',
+      'No ignores la historia local',
       'No bebas agua del Danubio',
       'No discutas de política',
-      'No ignores antis',
+      'No ignores las normas antisociales',
       'No tomes taxis sin acuerdo'
     ],
     diarios: [
@@ -3485,11 +3485,11 @@ requerimientos: [
       'Cuevas de hielo'
     ],
     queNoHacer: [
-      'No ignores zonas pedestrian',
+      'No ignora las zonas peatonales',
       'No hagas ruido en domingos',
       'No discutas de política',
       'No conduzcas sin neige',
-      'No ignores horarios tiendas'
+      'No ignores los horarios de tiendas'
     ],
     diarios: [
       { nombre: 'Der Standard', url: 'https://derstandard.at' },
@@ -3543,9 +3543,9 @@ requerimientos: [
     ],
     queNoHacer: [
       'No conduzcas por ciudades',
-      'No ignores idiomas',
+      'No ignores el idioma local',
       'No discutas de política',
-      'No ignores zonas seguro',
+      'No ignora las zonas seguras',
       'No tomes fotos en zonas prohibido'
     ],
     diarios: [
@@ -3600,10 +3600,10 @@ requerimientos: [
     ],
     queNoHacer: [
       'No bebas agua del grifo',
-      'No ignores zonas de malaria',
+      'No ignores las zonas de malaria',
       'No te acerques a animales',
       'No conduzcas de noche',
-      'No ignores el clima'
+      'No ignores las condiciones climáticas'
     ],
     diarios: [
       { nombre: 'La Nación', url: 'https://nacion.com' },
@@ -3656,7 +3656,7 @@ requerimientos: [
       'Fuerte de Portobelo'
     ],
     queNoHacer: [
-      'No ignores zonas caution',
+      'No ignores las zonas de precaución',
       'No bev agua del grifo',
       'No discutas política',
       'No conduzcas de noche',
@@ -3713,11 +3713,11 @@ requerimientos: [
       'Cascada de Damajagua'
     ],
     queNoHacer: [
-      'No ignores zonas caution',
+      'No ignores las zonas de precaución',
       'No bev agua del grifo',
       'No discutas política',
       'No conduzcas de noche',
-      'No ignores hurricanes'
+      'No ignores los avisos de huracanes'
     ],
     diarios: [
       { nombre: 'Listín Diario', url: 'https://listindiario.com' },
@@ -3750,7 +3750,7 @@ requerimientos: [
     contactos: [{ tipo: 'Embajada', nombre: 'Embajada de España en Abuja', direccion: '9.5, Plot 245, Adetokunbo Ademola Street', telefono: '+234 9 413 2400', email: 'emb.abuja@maec.es', horario: 'Lunes a viernes 8:00-16:00' }],
     requerimientos: [{ categoria: 'Documentación', icon: '📄', items: ['Pasaporte 6 meses', 'Visa requerida', 'Vacuna fiebre amarilla'] }, { categoria: 'Sanitario', icon: '🏥', items: ['Malaria presente', 'Agua embotellada', 'Urgencias: 112'] }, { categoria: 'General', icon: 'ℹ️', items: ['Naira', 'Evitar norte', 'Ciudades principales'] }],
     queHacer: ['Abuja moderna', 'Lagos nightlife', 'Reserva de Jos', 'Playas Lagos'],
-    queNoHacer: ['No viajes al norte', 'No bebas agua del grifo', 'No muestres wealth'],
+    queNoHacer: ['No viajes al norte', 'No bebas agua del grifo', 'No muestres riqueza'],
     diarios: [{ nombre: 'The Guardian', url: 'https://guardian.ng' }, { nombre: 'Punch', url: 'https://punchng.com' }],
     urlsUtiles: [{ nombre: 'Turismo Nigeria', url: 'https://nigeriatourism.gov.ng' }, { nombre: 'Embajada', url: 'https://www.exteriores.gob.es/embajadas/abuja' }],
     bandera: '🇳🇬',
@@ -3776,7 +3776,7 @@ requerimientos: [
     contactos: [{ tipo: 'Embajada', nombre: 'Embajada de España en Acra', direccion: 'Switchback Road, Cantonments', telefono: '+233 302 761 850', email: 'emb.acra@maec.es', horario: 'Lunes a viernes 8:00-16:00' }],
     requerimientos: [{ categoria: 'Documentación', icon: '📄', items: ['Pasaporte 6 meses', 'Sin visa para españoles', 'Carné de vacunación fiebre amarela'] }, { categoria: 'Sanitario', icon: '🏥', items: ['Hospitales modernos', 'Malaria seasonal', 'Urgencias: 193'] }, { categoria: 'General', icon: 'ℹ️', items: ['Cedi', 'English spoken', 'Friendly people'] }],
     queHacer: ['Castillos Costa Oro', 'Safari Kakum', 'Lagunas de Volta', 'Mercados Acra'],
-    queNoHacer: ['No fotgrafíes militares', 'No discutas política', 'No ignores advisories'],
+    queNoHacer: ['No fotgrafíes militares', 'No discutas política', 'No ignores los avisos de seguridad'],
     diarios: [{ nombre: 'Graphic', url: 'https://graphic.com.gh' }],
     urlsUtiles: [{ nombre: 'Turismo Ghana', url: 'https://visitghana.com' }, { nombre: 'Embajada', url: 'https://www.exteriores.gob.es/embajadas/acra' }],
     bandera: '🇬🇭',
@@ -3828,7 +3828,7 @@ requerimientos: [
     contactos: [{ tipo: 'Embajada', nombre: 'Embajada de España en Kigali', direccion: 'KG 7 Avenue, Kigali', telefono: '+250 252 590 100', email: 'emb.kigali@maec.es', horario: 'Lunes a viernes 8:00-16:00' }],
     requerimientos: [{ categoria: 'Documentación', icon: '📄', items: ['Pasaporte 6 meses', 'Sin visa para españoles', 'Sin vacunas obligatorias'] }, { categoria: 'Sanitario', icon: '🏥', items: ['Hospitales modernos', 'Altitude sickness', 'Urgencias: 912'] }, { categoria: 'General', icon: 'ℹ️', items: ['Franco ruandés', 'Clean country', 'Land of a Thousand Hills'] }],
     queHacer: ['Gorilla trekking', 'Lake Kivu', 'Parque Nacional Nyungwe', 'Memorial Genocide Kigali'],
-    queNoHacer: ['No uses plástico', 'No hables de genocide sin contexto', 'No ignores reglas ambientales'],
+    queNoHacer: ['No uses plástico', 'No hables de genocidio sin contexto', 'No ignores las normas ambientales'],
     diarios: [{ nombre: 'The New Times', url: 'https://newtimes.co.rw' }],
     urlsUtiles: [{ nombre: 'Turismo Ruanda', url: 'www.visitrwanda.com' }, { nombre: 'Embajada', url: 'https://www.exteriores.gob.es/embajadas/kigali' }],
     bandera: '🇷🇼',
@@ -3854,7 +3854,7 @@ requerimientos: [
     contactos: [{ tipo: 'Embajada', nombre: 'Embajada de España en Túnez', direccion: '52, Rue de la Palestine', telefono: '+216 71 782 014', email: 'emb.tunez@maec.es', horario: 'Lunes a viernes 8:00-16:00' }],
     requerimientos: [{ categoria: 'Documentación', icon: '📄', items: ['Pasaporte 6 meses', 'Sin visa para españoles', 'Sin vacunas obligatorias'] }, { categoria: 'Sanitario', icon: '🏥', items: ['Hospitales públicos', 'Clima mediterráneo', 'Urgencias: 190'] }, { categoria: 'General', icon: 'ℹ️', items: ['Dinar tunecino', 'Sitios romanos', 'Desierto Sáhara'] }],
     queHacer: ['Ruinas de Cartago', 'Medina de Túnez', 'Djerba', 'Chott el Jerid'],
-    queNoHacer: ['No fotgrafíes militares', 'No critiques Islam', 'No ignores zonas frontera'],
+    queNoHacer: ['No fotgrafíes militares', 'No critiques al Islam', 'No ignores las zonas fronterizas'],
     diarios: [{ nombre: 'Le Temps', url: 'https://letemps.com.tn' }],
     urlsUtiles: [{ nombre: 'Turismo Túnez', url: 'www.tunisie-tourisme.com' }, { nombre: 'Embajada', url: 'https://www.exteriores.gob.es/embajadas/tunez' }],
     bandera: '🇹🇳',
@@ -3880,7 +3880,7 @@ requerimientos: [
     contactos: [{ tipo: 'Embajada', nombre: 'Embajada de España en Dakar', direccion: '5, Rue Alpha Mamadou BO', telefono: '+221 33 889 4000', email: 'emb.dakar@maec.es', horario: 'Lunes a viernes 8:00-16:00' }],
     requerimientos: [{ categoria: 'Documentación', icon: '📄', items: ['Pasaporte 6 meses', 'Sin visa para españoles', 'Vacuna fiebre amarela recomendada'] }, { categoria: 'Sanitario', icon: '🏥', items: ['Hospitales privados', 'Malaria seasonal', 'Urgencias: 1510'] }, { categoria: 'General', icon: 'ℹ️', items: ['Franco CFA', 'Teranga senegalesa', 'Isla de Goree'] }],
     queHacer: ['Isla de Gorée', 'Delta del Saloum', 'Saint-Louis', 'Playas Dakar'],
-    queNoHacer: ['No fotgrafíes sin permiso', 'No ignores aduanas locales', 'No discutas política'],
+    queNoHacer: ['No fotgrafíes sin permiso', 'No ignores las normas aduaneras', 'No discutas política'],
     diarios: [{ nombre: 'Le Soleil', url: 'https://lesoleil.sn' }],
     urlsUtiles: [{ nombre: 'Turismo Senegal', url: 'www.visitsenegal.com' }, { nombre: 'Embajada', url: 'https://www.exteriores.gob.es/embajadas/dakar' }],
     bandera: '🇸🇳',
@@ -3906,7 +3906,7 @@ requerimientos: [
     contactos: [{ tipo: 'Embajada', nombre: 'Embajada de España en Gaborone', direccion: 'Plot 7, Moniatena Road, P.O. Box 1020', telefono: '+267 395 2000', email: 'emb.gaborone@maec.es', horario: 'Lunes a viernes 8:00-16:00' }],
     requerimientos: [{ categoria: 'Documentación', icon: '📄', items: ['Pasaporte 6 meses', 'Sin visa para españoles', 'Sin vacunas obligatorias'] }, { categoria: 'Sanitario', icon: '🏥', items: ['Hospitales modernos', 'Malaria en north', 'Urgencias: 997'] }, { categoria: 'General', icon: 'ℹ️', items: ['Pula', 'Okavango Delta', 'Diamantes'] }],
     queHacer: ['Delta del Okavango', 'Parque Nacional Chobe', 'Desierto del Kalahari', 'Reserva Moremi'],
-    queNoHacer: ['No ignores park rules', 'No te acerques wildlife', 'No ignores advice guías'],
+    queNoHacer: ['No ignores las normas del parque', 'No te acerques wildlife', 'No ignores los consejos de los guías'],
     diarios: [{ nombre: 'Mmegi', url: 'https://mmegi.bw' }],
     urlsUtiles: [{ nombre: 'Turismo Botsuana', url: 'www.botswanatourism.co.bw' }, { nombre: 'Embajada', url: 'https://www.exteriores.gob.es/embajadas/gaborone' }],
     bandera: '🇧🇼',
@@ -3932,7 +3932,7 @@ requerimientos: [
     contactos: [{ tipo: 'Embajada', nombre: 'Embajada de España en Port Louis', direccion: 'Level 8, NeXTeracom Tower, Cybercity', telefono: '+230 401 0150', email: 'emb.portlouis@maec.es', horario: 'Lunes a viernes 8:00-16:00' }],
     requerimientos: [{ categoria: 'Documentación', icon: '📄', items: ['Pasaporte 6 meses', 'Sin visa para españoles', 'Sin vacunas obligatorias'] }, { categoria: 'Sanitario', icon: '🏥', items: ['Hospitales privados excellents', 'Clima tropical', 'Urgencias: 114'] }, { categoria: 'General', icon: 'ℹ️', items: ['Rupia mauriciana', 'Isla paradise', 'Luxury resorts'] }],
     queHacer: ['Playas Paradise', 'Seven Colored Earths', 'Cascada Chamarel', 'Blue Bay Marine Park'],
-    queNoHacer: ['No uses environmental damaging', 'No ignores coral protection', 'No recolectes coral'],
+    queNoHacer: ['No uses productos que dañen el medio ambiente', 'No ignores la protección de corales', 'No recolectes coral'],
     diarios: [{ nombre: 'The Independent', url: 'https://independent.mu' }],
     urlsUtiles: [{ nombre: 'Turismo Mauricio', url: 'www.tourismmauritius.mu' }, { nombre: 'Embajada', url: 'https://www.exteriores.gob.es/embajadas/portlouis' }],
     bandera: '🇲🇺',
@@ -3958,7 +3958,7 @@ requerimientos: [
     contactos: [{ tipo: 'Embajada', nombre: 'Embajada de España en Daca', direccion: 'House #2, Road #11, Baridhara', telefono: '+880 2 881 2050', email: 'emb.dacca@maec.es', horario: 'Lunes a viernes 8:00-16:00' }],
     requerimientos: [{ categoria: 'Documentación', icon: '📄', items: ['Pasaporte 6 meses', 'Visa requerida', 'Vacuna cólera recomendada'] }, { categoria: 'Sanitario', icon: '🏥', items: ['Agua embotellada', 'Dengue seasonal', 'Urgencias: 199'] }, { categoria: 'General', icon: 'ℹ️', items: ['Taka', 'Ganges Delta', 'Cultura rica'] }],
     queHacer: ['Sundarbans mangrove', 'Templo Buddha', 'Playa Coxs Bazar', 'Daca antiguo'],
-    queNoHacer: ['No fotgrafíes mujeres sin permiso', 'No bebas agua grifo', 'No ignores flooding'],
+    queNoHacer: ['No fotgrafíes mujeres sin permiso', 'No bebas agua grifo', 'No ignores las zonas de inundación'],
     diarios: [{ nombre: 'The Daily Star', url: 'https://thedailystar.net' }],
     urlsUtiles: [{ nombre: 'Turismo Bangladesh', url: 'www.tourismboard.gov.bd' }, { nombre: 'Embajada', url: 'https://www.exteriores.gob.es/embajadas/dacca' }],
     bandera: '🇧🇩',
@@ -3984,7 +3984,7 @@ requerimientos: [
     contactos: [{ tipo: 'Embajada', nombre: 'Embajada de España en Islamabad', direccion: 'Sector G-5, Diplomatic Enclave', telefono: '+92 51 843 1000', email: 'emb.islamabad@maec.es', horario: 'Lunes a viernes 8:00-16:00' }],
     requerimientos: [{ categoria: 'Documentación', icon: '📄', items: ['Pasaporte 6 meses', 'Visa requerida', 'Registro con autoridades'] }, { categoria: 'Sanitario', icon: '🏥', items: ['Agua embotellada', 'Polio endemic', 'Urgencias: 1122'] }, { categoria: 'General', icon: 'ℹ️', items: ['Rupia pakistaní', 'K2 mountain', 'Historia antiga'] }],
     queHacer: ['K2 Base Camp', 'Lahore cultural', 'Playas Karachi', 'Ruinas Mohenjo-daro'],
-    queNoHacer: ['No fotgrafíes religiosos', 'No ignores security advisories', 'No bebas alcohol'],
+    queNoHacer: ['No fotgrafíes religiosos', 'No ignores los avisos de seguridad', 'No bebas alcohol'],
     diarios: [{ nombre: 'Dawn', url: 'https://dawn.com' }],
     urlsUtiles: [{ nombre: 'Turismo Pakistan', url: 'www.tourism.gov.pk' }, { nombre: 'Embajada', url: 'https://www.exteriores.gob.es/embajadas/islamabad' }],
     bandera: '🇵🇰',
@@ -4010,7 +4010,7 @@ requerimientos: [
     contactos: [{ tipo: 'Embajada', nombre: 'Embajada de España en Suva', direccion: '8th Floor, Reserve Bank Building', telefono: '+679 331 5900', email: 'emb.suva@maec.es', horario: 'Lunes a viernes 8:00-16:00' }],
     requerimientos: [{ categoria: 'Documentación', icon: '📄', items: ['Pasaporte 6 meses', 'Sin visa 4 meses', 'Billete salida'] }, { categoria: 'Sanitario', icon: '🏥', items: ['Hospitales públicos', 'Clima tropical', 'Urgencias: 911'] }, { categoria: 'General', icon: 'ℹ️', items: ['Dólar fiyiano', 'Islas paradise', 'Bounty location'] }],
     queHacer: ['Playas Nadi', 'Islas Yasawa', 'Mercados Suva', 'Coral Coast'],
-    queNoHacer: ['No uses environmental damaging', 'No ignores cyclone season', 'No ignores reef protection'],
+    queNoHacer: ['No uses productos que dañen el medio ambiente', 'No ignores la temporada de ciclones', 'No ignores la protección de arrecifes'],
     diarios: [{ nombre: 'Fiji Times', url: 'https://fijitimes.com.fj' }],
     urlsUtiles: [{ nombre: 'Turismo Fiyi', url: 'www.fiji.travel' }, { nombre: 'Embajada', url: 'https://www.exteriores.gob.es/embajadas/suva' }],
     bandera: '🇫🇯',
@@ -4036,7 +4036,7 @@ requerimientos: [
     contactos: [{ tipo: 'Embajada', nombre: 'Embajada de España en Port Moresby', direccion: 'MVS Building, Section 94', telefono: '+675 321 7500', email: 'emb.portmoresby@maec.es', horario: 'Lunes a viernes 8:00-16:00' }],
     requerimientos: [{ categoria: 'Documentación', icon: '📄', items: ['Pasaporte 6 meses', 'Visa requerida', 'Vacunas recomendadas'] }, { categoria: 'Sanitario', icon: '🏥', items: ['Hospitales limitados', 'Malaria endemic', 'Urgencias: 111'] }, { categoria: 'General', icon: 'ℹ️', items: ['Kina', 'Tribal culture', 'Jungle'] }],
     queHacer: ['Trekking Highlands', 'Kokoda Track', 'Fiordos Tufi', 'Buceo Port Moresby'],
-    queNoHacer: ['No ignores tribal lands', 'No fotgrafíes without permission', 'No ignores crime advisories'],
+    queNoHacer: ['No ignores las tierras tribales', 'No fotografíes sin permiso', 'No ignores los avisos de criminalidad'],
     diarios: [{ nombre: 'Papua New Guinea Post', url: 'https://postcourier.com.pg' }],
     urlsUtiles: [{ nombre: 'Turismo PNG', url: 'www.papuanewguinea.travel' }, { nombre: 'Embajada', url: 'https://www.exteriores.gob.es/embajadas/portmoresby' }],
     bandera: '🇵🇬',
@@ -4062,7 +4062,7 @@ requerimientos: [
     contactos: [{ tipo: 'Embajada', nombre: 'Embajada de España en Apia', direccion: 'Maseu Building', telefono: '+685 20 200', email: 'emb.apia@maec.es', horario: 'Lunes a viernes 8:00-16:00' }],
     requerimientos: [{ categoria: 'Documentación', icon: '📄', items: ['Pasaporte 6 meses', 'Sin visa 60 días', 'Billete salida'] }, { categoria: 'Sanitario', icon: '🏥', items: ['Hospitales básicos', 'Clima tropical', 'Urgencias: 996'] }, { categoria: 'General', icon: 'ℹ️', items: ['Tala', 'Polinesia cultura', 'Islands'] }],
     queHacer: ['To Sua ocean trench', 'Papaseea sliding rocks', 'Fiafiag dance', 'Playas'],
-    queNoHacer: ['No ignores matai system', 'No disrespect elders', 'No uses inappropriate clothing'],
+    queNoHacer: ['No ignores el sistema matai local', 'No faltes al respeto a los ancianos', 'No uses inappropriate clothing'],
     diarios: [{ nombre: 'Samoa Observer', url: 'https://samoaobserver.ws' }],
     urlsUtiles: [{ nombre: 'Turismo Samoa', url: 'www.samoa.travel' }, { nombre: 'Embajada', url: 'https://www.exteriores.gob.es/embajadas/apia' }],
     bandera: '🇼🇸',
@@ -4088,7 +4088,7 @@ requerimientos: [
     contactos: [{ tipo: 'Embajada', nombre: 'Embajada de España en Guatemala', direccion: '6a. Avenida 0-44, Zona 1', telefono: '+502 2230 2400', email: 'emb.guatemala@maec.es', horario: 'Lunes a viernes 8:00-16:00' }],
     requerimientos: [{ categoria: 'Documentación', icon: '📄', items: ['Pasaporte 6 meses', 'Sin visa para españoles', 'Sin vacunas obligatorias'] }, { categoria: 'Sanitario', icon: '🏥', items: ['Hospitales privados', 'Agua embotellada', 'Urgencias: 110'] }, { categoria: 'General', icon: 'ℹ️', items: ['Quetzal', 'Ruinas mayas', 'Antigua colonial'] }],
     queHacer: ['Ruinas Tikal', 'Antigua Guatemala', 'Lake Atitlán', 'Semuc Champey'],
-    queNoHacer: ['No fotgrafíes without permission', 'No ignores gang areas', 'No uses drugs'],
+    queNoHacer: ['No fotografíes sin permiso', 'No ignores las zonas de pandillas', 'No consumas drogas'],
     diarios: [{ nombre: 'Prensa Libre', url: 'https://prensalibre.com' }],
     urlsUtiles: [{ nombre: 'Turismo Guatemala', url: 'www.visitguatemala.com' }, { nombre: 'Embajada', url: 'https://www.exteriores.gob.es/embajadas/guatemala' }],
     bandera: '🇬🇹',
@@ -4114,7 +4114,7 @@ requerimientos: [
     contactos: [{ tipo: 'Embajada', nombre: 'Embajada de España en Kingston', direccion: '8-10 Retirement Road, Kingston 5', telefono: '+1 876 926 0055', email: 'emb.kingston@maec.es', horario: 'Lunes a viernes 8:00-16:00' }],
     requerimientos: [{ categoria: 'Documentación', icon: '📄', items: ['Pasaporte 6 meses', 'Sin visa para españoles', 'Sin vacunas obligatorias'] }, { categoria: 'Sanitario', icon: '🏥', items: ['Hospitales privados', 'Zika previous', 'Urgencias: 110'] }, { categoria: 'General', icon: 'ℹ️', items: ['Dólar jamaicano', 'Reggae', 'Playas'] }],
     queHacer: ['Seven Mile Beach', 'Museo Bob Marley', 'Dunn River Falls', 'Negril sunsets'],
-    queNoHacer: ['No uses drugs', 'No ignores areas Kingston', 'No fotgrafíes without consent'],
+    queNoHacer: ['No consumas drogas', 'No ignores las zonas de riesgo en Kingston', 'No fotografíes sin consentimiento'],
     diarios: [{ nombre: 'Jamaica Gleaner', url: 'https://jamaicagleaner.com' }],
     urlsUtiles: [{ nombre: 'Turismo Jamaica', url: 'www.visitjamaica.com' }, { nombre: 'Embajada', url: 'https://www.exteriores.gob.es/embajadas/kingston' }],
     bandera: '🇯🇲',
@@ -4140,7 +4140,7 @@ requerimientos: [
     contactos: [{ tipo: 'Embajada', nombre: 'Embajada de España en Puerto España', direccion: '5th Floor, Hope Gardens', telefono: '+1 868 628 1630', email: 'emb.portofspain@maec.es', horario: 'Lunes a viernes 8:00-16:00' }],
     requerimientos: [{ categoria: 'Documentación', icon: '📄', items: ['Pasaporte 6 meses', 'Sin visa para españoles', 'Sin vacunas obligatorias'] }, { categoria: 'Sanitario', icon: '🏥', items: ['Hospitales modernos', 'Zika previous', 'Urgencias: 990'] }, { categoria: 'General', icon: 'ℹ️', items: ['Dólar trinitense', 'Carnival', 'Oil country'] }],
     queHacer: ['Carnival Trinidad', 'Playas Tobago', 'Pitch Lake', 'Asa Wright Nature Centre'],
-    queNoHacer: ['No uses drugs', 'No ignores beaches safety', 'No fotgrafíes without permission'],
+    queNoHacer: ['No consumas drogas', 'No ignores las normas de seguridad en playas', 'No fotografíes sin permiso'],
     diarios: [{ nombre: 'Trinidad Express', url: 'https://trinidadexpress.com' }],
     urlsUtiles: [{ nombre: 'Turismo Trinidad y Tobago', url: 'www.visittrinidadandtobago.com' }, { nombre: 'Embajada', url: 'https://www.exteriores.gob.es/embajadas/portofspain' }],
     bandera: '🇹🇹',
@@ -4186,11 +4186,11 @@ requerimientos: [
       'Pescar en mar'
     ],
     queNoHacer: [
-      'No ignores clima frío',
+      'No ignores el clima frío',
       'No conduzcas sin neumáticos invierno',
-      'No ignores horarios de silencio',
+      'No ignores los horarios de silencio',
       'No discutas de política',
-      'No ignores tarifas peajes'
+      'No ignores las tarifas de peajes'
     ],
     diarios: [
       { nombre: 'Aftenposten', url: 'https://www.aftenposten.no' },
@@ -4243,11 +4243,11 @@ requerimientos: [
       'Auroras boreales norte'
     ],
     queNoHacer: [
-      'No ignoressilencio',
+      'No ignores el silencio',
       'No conduzcas rápido',
-      'No ignores horarios',
+      'No ignores los horarios locales',
       'No discutas de política',
-      'No ignores limpieza'
+      'No ignores las normas de limpieza'
     ],
     diarios: [
       { nombre: 'Dagens Nyheter', url: 'https://www.dn.se' },
@@ -4301,10 +4301,10 @@ requerimientos: [
     ],
     queNoHacer: [
       'No conduzcas en bicicleta',
-      'No ignores-cycling lanes',
-      'No ignores silencio',
+      'No ignores los carriles de ciclismo',
+      'No ignores las normas de silencio',
       'No discutas de política',
-      'No ignores horarios tiendas'
+      'No ignores los horarios de tiendas'
     ],
     diarios: [
       { nombre: 'Politiken', url: 'https://politiken.dk' },
@@ -4360,7 +4360,7 @@ requerimientos: [
       'No ignores frío extremo',
       'Noignes ruidos saunas',
       'No discutas de política',
-      'No ignores limpieza',
+      'No ignores las normas de limpieza',
       'No conduzcas sin cadenas'
     ],
     diarios: [
@@ -4414,10 +4414,10 @@ requerimientos: [
       'Islas Saaremaa'
     ],
     queNoHacer: [
-      'No ignores clima frío',
+      'No ignores el clima frío',
       'Noignes silencio oficinas',
       'No discutas de política',
-      'No ignores horarios',
+      'No ignores los horarios locales',
       'No conduzcas rápido'
     ],
     diarios: [
@@ -4471,10 +4471,10 @@ requerimientos: [
       'Castillos medievales'
     ],
     queNoHacer: [
-      'No ignores clima extremo',
+      'No ignores el clima extremo',
       'Noignes silencio',
       'No discutas de política',
-      'No ignores horarios',
+      'No ignores los horarios locales',
       'No conduzcas sin cuidado'
     ],
     diarios: [
@@ -4528,10 +4528,10 @@ requerimientos: [
       'Klaipeda y ferry'
     ],
     queNoHacer: [
-      'No ignores clima frío',
+      'No ignores el clima frío',
       'Noignes silencio',
       'No discutas de política',
-      'No ignores horarios',
+      'No ignores los horarios locales',
       'No conduzcas sin cadenas'
     ],
     diarios: [
@@ -4585,10 +4585,10 @@ requerimientos: [
       'Plavas y mergull'
     ],
     queNoHacer: [
-      'No ignores horarios siesta',
+      'No ignores los horarios locales siesta',
       'Noignes ruido excesivo',
       'No discutas de política',
-      'No ignores tides',
+      'No ignores las mareas',
       'No conduzcas después de beber'
     ],
     diarios: [
@@ -4646,7 +4646,7 @@ si: {
       'No forget sunscreen',
       'No be unprepared for mountains',
       'No skip coastal towns',
-      'No disrespect nature'
+      'No faltes al respeto a nature'
     ],
     diarios: [
       { nombre: 'Delo', url: 'https://www.delo.si' },
@@ -4700,7 +4700,7 @@ si: {
     ],
     queNoHacer: [
       'No drive under 18',
-      'No swim at night',
+      'No nades de noche',
       'No expect big cities',
       'No forget sunscreen',
       'No ignore siesta culture'
