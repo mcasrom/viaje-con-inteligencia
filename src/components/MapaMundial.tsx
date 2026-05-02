@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
-import { paisesData, getLabelRiesgo, NivelRiesgo } from '@/data/paises';
+import { paisesData, getTodosLosPaises, getLabelRiesgo, NivelRiesgo } from '@/data/paises';
 import { getGlobalStats } from '@/lib/global-stats';
 import { AlertTriangle, ArrowRight, Globe, Search, ClipboardList, Star, BookOpen, RefreshCw, Clock, Gift, TrendingUp, Activity, BarChart3, Ticket } from 'lucide-react';
 import LanguageSelector from './LanguageSelector';
@@ -14,7 +14,7 @@ const MapaInteractivo = dynamic(() => import('./MapaInteractivo'), {
   loading: () => <div className="h-[600px] bg-slate-800 animate-pulse rounded-xl" />
 });
 
-const paises = Object.values(paisesData);
+const paises = getTodosLosPaises();
 const continentes = ['Todos', ...new Set(paises.map(p => p.continente))];
 const stats = getGlobalStats();
 

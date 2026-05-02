@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { paisesData, NivelRiesgo } from '@/data/paises';
+import { paisesData, getTodosLosPaises, NivelRiesgo } from '@/data/paises';
 import { sendTelegramMessage } from '@/lib/telegram-channel';
 
 export const dynamic = 'force-dynamic';
@@ -54,12 +54,12 @@ export async function GET(request: NextRequest) {
   }
 
   if (type === 'all') {
-    const risky = Object.values(paisesData).filter(p => 
+    const risky = getTodosLosPaises().filter(p => 
       p.nivelRiesgo === 'alto' || p.nivelRiesgo === 'muy-alto'
     );
     return NextResponse.json({
-      total: Object.keys(paisesData).length,
-      highRisk: Object.values(paisesData).filter(p => p.nivelRiesgo === 'alto' || p.nivelRiesgo === 'muy-alto').length,
+      total: getTodosLosPaises().length,
+      highRisk: risky.length,
       countries: risky.map(p => ({
         codigo: p.codigo,
         nombre: p.nombre,

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { paisesData } from '@/data/paises';
+import { paisesData, getTodosLosPaises } from '@/data/paises';
 import { generateRiskChangeAlert, generateWeeklyDigest } from '@/lib/alerts-system';
 
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
@@ -57,7 +57,7 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ success: sentDigest });
 
       case 'list_high_risk':
-        const altoRiesgo = Object.values(paisesData)
+        const altoRiesgo = getTodosLosPaises()
           .filter(p => p.nivelRiesgo === 'alto' || p.nivelRiesgo === 'muy-alto')
           .map(p => ({
             code: p.codigo,
@@ -111,14 +111,14 @@ export async function POST(request: NextRequest) {
 }
 
 export async function GET() {
-  const altoRiesgo = Object.values(paisesData)
+  const altoRiesgo = getTodosLosPaises()
     .filter(p => p.nivelRiesgo === 'alto' || p.nivelRiesgo === 'muy-alto');
 
   return NextResponse.json({
     endpoint: '/api/notifications',
     status: 'online',
     high_risk_countries: altoRiesgo.length,
-    total_countries: Object.keys(paisesData).length,
+    total_countries: getTodosLosPaises().length,
     last_check: new Date().toISOString(),
   });
 }

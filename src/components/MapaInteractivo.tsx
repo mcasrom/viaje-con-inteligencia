@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
-import { paisesData, NivelRiesgo } from '@/data/paises';
+import { getTodosLosPaises, NivelRiesgo } from '@/data/paises';
 import { useI18n } from '@/lib/i18n';
 
 const riskColors: Record<NivelRiesgo, string> = {
@@ -61,7 +61,7 @@ export default function MapaInteractivo() {
     return <div className="h-[600px] bg-slate-800 animate-pulse rounded-xl" />;
   }
 
-  const paises = Object.values(paisesData);
+  const paises = getTodosLosPaises();
 
   return (
     <div className="relative">

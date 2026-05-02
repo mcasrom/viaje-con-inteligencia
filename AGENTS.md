@@ -19,8 +19,8 @@ This version has breaking changes — APIs, conventions, and file structure may 
 3. **GDPR notice newsletter** - Añadido enlace política de privacidad en formulario newsletter
 4. **Eliminar "Próximamente"** - Ocultada sección de QuickAccess hasta implementar
 
-### 📋 NIVEL 3 (medio plazo)
-- Añadir países MAEC alto riesgo faltantes (Sudan, Afganistán, Yemen, Siria, Libia, Haití)
+### ✅ NIVEL 3 (Completado)
+- **Añadir países MAEC alto riesgo faltantes** - Sudán, Afganistán, Yemen, Siria, Libia, Haití (106 países total, nivel `muy-alto`)
 - Testimonios / prueba social
 - Documentar clustering ML públicamente
 - España Premium itinerarios module
