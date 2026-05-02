@@ -14,7 +14,7 @@ function getServiceClient() {
   });
 }
 
-async function verifyToken(request: NextRequest) {
+export async function verifyToken(request: NextRequest) {
   const authHeader = request.headers.get('authorization');
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
   const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
