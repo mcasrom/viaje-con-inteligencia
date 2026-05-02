@@ -28,10 +28,14 @@ export async function verifyToken(request: NextRequest) {
     const match = cookieHeader.match(/sb-[a-z]+-auth-token=([^;]+)/);
     if (match) {
       try {
-        const decoded = JSON.parse(decodeURIComponent(match[1]));
+        let raw = match[1];
+        if (raw.startsWith('base64-')) {
+          raw = Buffer.from(raw.slice(7), 'base64').toString('utf-8');
+        }
+        const decoded = JSON.parse(decodeURIComponent(raw));
         token = decoded.access_token;
-      } catch {
-        // Invalid cookie
+      } catch (e) {
+        console.error('Cookie parse error:', e);
       }
     }
   }
