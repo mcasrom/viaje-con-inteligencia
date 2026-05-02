@@ -134,9 +134,9 @@ export function getAllPosts(filter?: PostsFilter): PostMeta[] {
     posts = posts.filter(p => 
       p.title.toLowerCase().includes(s) ||
       p.excerpt?.toLowerCase().includes(s) ||
-      p.tags?.some((t: string) => t.toLowerCase().includes(s)) ||
+      p.tags?.some((t: string) => t && t.toLowerCase().includes(s)) ||
       (typeof p.keywords === 'string' && p.keywords.toLowerCase().includes(s)) ||
-      (Array.isArray(p.keywords) && p.keywords.some((k: string) => k.toLowerCase().includes(s)))
+      (Array.isArray(p.keywords) && p.keywords.some((k: string) => k && k.toLowerCase().includes(s)))
     );
   }
 
