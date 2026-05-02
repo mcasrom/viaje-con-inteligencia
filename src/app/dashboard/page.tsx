@@ -344,10 +344,11 @@ export default function DashboardPage() {
 
   const filteredCountries = searchCountry
     ? Object.values(paisesData).filter(p =>
-        p.nombre.toLowerCase().includes(searchCountry.toLowerCase()) ||
-        p.capital.toLowerCase().includes(searchCountry.toLowerCase())
+        p.codigo !== 'cu' &&
+        (p.nombre.toLowerCase().includes(searchCountry.toLowerCase()) ||
+        p.capital.toLowerCase().includes(searchCountry.toLowerCase()))
       )
-    : Object.values(paisesData).slice(0, 50);
+    : Object.values(paisesData).filter(p => p.codigo !== 'cu').slice(0, 50);
 
   const riesgoConfig: Record<string, { color: string; bg: string }> = {
     'sin-riesgo': { color: 'text-green-400', bg: 'bg-green-500' },
