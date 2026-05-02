@@ -19,8 +19,8 @@ if (!priceId) {
       mode: 'subscription',
       payment_method_types: ['card'],
       line_items: [{ price: priceId, quantity: 1 }],
-      success_url: 'https://viaje-con-inteligencia.vercel.app/dashboard?success=true',
-      cancel_url: 'https://viaje-con-inteligencia.vercel.app/premium?canceled=true',
+      success_url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://www.viajeinteligencia.com'}/dashboard?success=true`,
+      cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://www.viajeinteligencia.com'}/premium?canceled=true`,
       metadata: { userId: userId || 'anonymous' },
       allow_promotion_codes: true,
     });

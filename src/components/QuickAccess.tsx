@@ -78,14 +78,6 @@ function QuickAccessInner() {
           <Link href="/rutas?route=vino" className="block p-2 bg-red-600/20 text-red-400 rounded-lg hover:bg-red-600/30">🍷 Rutas del Vino</Link>
           <Link href="/dashboard" className="block p-2 bg-red-600/20 text-red-400 rounded-lg hover:bg-red-600/30">📊 Mi Dashboard</Link>
           <Link href="/premium?tab=reclamaciones" className="block p-2 bg-red-600/20 text-red-400 rounded-lg hover:bg-red-600/30">📝 Reclamaciones</Link>
-          <div className="pt-2 mt-2 border-t border-slate-600">
-            <p className="text-slate-500 text-xs">Próximamente:</p>
-            <div className="flex flex-wrap gap-1 mt-1">
-              <span className="px-2 py-1 bg-slate-700/50 text-slate-400 text-xs rounded">🎲 Destino aleatorio</span>
-              <span className="px-2 py-1 bg-slate-700/50 text-slate-400 text-xs rounded">✈️ Vuelos</span>
-              <span className="px-2 py-1 bg-slate-700/50 text-slate-400 text-xs rounded">📄 Check visa</span>
-            </div>
-          </div>
         </div>
       </div>
       <div className="flex flex-col gap-2">

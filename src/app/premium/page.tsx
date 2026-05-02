@@ -1040,7 +1040,7 @@ export default function PremiumPage() {
                   <p className="text-slate-400 text-sm mb-4">
                     Genera formularios de reclamación para cancelaciones de vuelos, hoteles, paquetes turísticos y más.
                     Completa los datos y descarga un PDF listo para imprimir o enviar.
-                    <a href="https://viaje-con-inteligencia.vercel.app/checklist-incidencias-viaje.pdf" target="_blank" className="text-cyan-400 underline ml-1">Ver checklist static</a>
+                    <a href={`${process.env.NEXT_PUBLIC_SITE_URL || 'https://www.viajeinteligencia.com'}/checklist-incidencias-viaje.pdf`} target="_blank" className="text-cyan-400 underline ml-1">Ver checklist static</a>
                   </p>
                   
                   <div className="grid md:grid-cols-2 gap-4 mb-4">

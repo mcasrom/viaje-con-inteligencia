@@ -268,7 +268,7 @@ export default function StatsPage() {
               </li>
               <li className="flex justify-between">
                 <span>Actualización</span>
-                <span className="font-bold text-white">Abr 2026</span>
+                <span className="font-bold text-white">{new Date().toLocaleDateString('es-ES', { month: 'short', year: 'numeric' })}</span>
               </li>
             </ul>
           </div>

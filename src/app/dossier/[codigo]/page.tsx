@@ -65,7 +65,7 @@ interface DossierData {
 
 async function getDossier(countryCode: string): Promise<DossierData | null> {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_URL || 'https://viaje-con-inteligencia.vercel.app'}/api/dossier/${countryCode}`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL || 'https://www.viajeinteligencia.com'}/api/dossier/${countryCode}`, {
       next: { revalidate: 3600 }
     });
     if (!res.ok) return null;

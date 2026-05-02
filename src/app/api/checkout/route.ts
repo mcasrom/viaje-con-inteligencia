@@ -39,8 +39,8 @@ export async function POST(req: NextRequest) {
         price: priceId, 
         quantity: 1 
       }],
-      success_url: 'https://viaje-con-inteligencia.vercel.app/dashboard?success=true',
-      cancel_url: 'https://viaje-con-inteligencia.vercel.app/free-trial?canceled=true',
+      success_url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://www.viajeinteligencia.com'}/dashboard?success=true`,
+      cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://www.viajeinteligencia.com'}/free-trial?canceled=true`,
       metadata: { 
         promoCode: promoCode.toUpperCase(),
         promoDescription: promo.description,

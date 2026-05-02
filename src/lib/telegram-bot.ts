@@ -415,7 +415,7 @@ export function getPremiumInfo(): string {
    TRAVEL ALERTS
  ========================= */
 
-const BASE_URL = process.env.APP_BASE_URL || 'https://viaje-con-inteligencia.vercel.app';
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.viajeinteligencia.com';
 
 export async function getTravelAlertsSummary(): Promise<any> {
   try {
@@ -498,7 +498,7 @@ export function formatTravelAlertsDetailed(data: any): string {
   }
   
   msg += `\n━━━━━━━━━━━━━━━━━━━━\n`;
-  msg += `🔗 https://viaje-con-inteligencia.vercel.app/alertas`;
+  msg += `🔗 ${process.env.NEXT_PUBLIC_SITE_URL || 'https://www.viajeinteligencia.com'}/alertas`;
   return msg;
 }
 
