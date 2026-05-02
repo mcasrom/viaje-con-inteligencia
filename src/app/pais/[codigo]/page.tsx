@@ -13,12 +13,17 @@ interface PageProps {
 
 export async function generateStaticParams() {
   const { getTodosLosPaises } = await import('@/data/paises');
-  const paises = getTodosLosPaises();
+  const paises = getTodosLosPaises().filter(p => p.codigo !== 'cu');
   return paises.map((pais) => ({ codigo: pais.codigo }));
 }
 
 export async function generateMetadata({ params }: PageProps) {
   const { codigo } = await params;
+  
+  if (codigo === 'cu') {
+    return { title: 'No disponible | Viaje con Inteligencia' };
+  }
+  
   const pais = getPaisPorCodigo(codigo);
   
   if (!pais) {
@@ -68,6 +73,11 @@ export async function generateMetadata({ params }: PageProps) {
 
 export default async function DetallePaisPage({ params }: PageProps) {
   const { codigo } = await params;
+  
+  if (codigo === 'cu') {
+    notFound();
+  }
+  
   const pais = getPaisPorCodigo(codigo);
 
   if (!pais) {
