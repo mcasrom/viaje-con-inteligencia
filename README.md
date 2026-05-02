@@ -8,11 +8,50 @@ Tu asistente de viajes seguros. Mapa interactivo de riesgos por país según MAE
 
 ## 🚀 Características
 
-- **🗺️ Mapa de Riesgos**: 28 países con niveles de riesgo según MAEC
+- **🗺️ Mapa de Riesgos**: 106+ países con niveles de riesgo según MAEC
+- **🤖 Clustering ML**: Algoritmo K-Means personalizado en TypeScript que agrupa destinos por riesgo, turismo, IPC y distancia a España
 - **📋 Checklist Imprimible**: +80 items organizados por categorías
 - **🤖 Bot Telegram**: @ViajeConInteligenciaBot para alertas en tiempo real
-- **⭐ Premium**: Plan freemium con funciones avanzadas
+- **⭐ Premium**: Plan freemium con funciones avanzadas (Stripe)
 - **📚 Metodología**: Explicación transparente de cómo se clasifican los riesgos
+- **🔔 Alertas automáticas**: Cron jobs que escanean MAEC diariamente
+- **📊 Dashboard personal**: Favoritos, alertas y estadísticas
+
+## 🤖 Machine Learning: Clustering K-Means
+
+La plataforma implementa un **algoritmo K-Means** desde cero en TypeScript (sin dependencias externas de ML) para agrupar destinos turísticos.
+
+### Cómo funciona
+
+1. **Extracción de features**: Para cada país se calculan 4 dimensiones:
+   - `riskScore` (1-5): Nivel de riesgo MAEC normalizado
+   - `ipc`: Índice de precios al consumo relativo a España
+   - `distanciaES`: Distancia en km desde España (haversine)
+   - `arrivals`: Llegadas turísticas anuales (datos UNWTO/INE)
+
+2. **Normalización**: Todas las features se escalan a [0,1] para evitar sesgos por magnitud.
+
+3. **K-Means**: Implementación iterativa con:
+   - Inicialización aleatoria de centroides
+   - Asignación por distancia euclidiana
+   - Actualización de centroides hasta convergencia
+   - 4 clusters por defecto (configurable 3-5)
+
+4. **Resultados**: Los clusters revelan patrones como "destinos seguros y caros", "aventura económica", etc.
+
+### Páginas públicas
+
+- **[/clustering](https://viaje-con-inteligencia.vercel.app/clustering)**: Visualización interactiva de clusters
+- **[/api/ai/clustering](https://viaje-con-inteligencia.vercel.app/api/ai/clustering)**: API que devuelve clusters y destinos
+- **[/api/ai/similar](https://viaje-con-inteligencia.vercel.app/api/ai/similar)**: Encuentra destinos similares a uno dado
+
+### Código fuente
+
+- `src/data/clustering.ts` - Algoritmo K-Means + datos de turismo
+- `src/app/api/ai/clustering/route.ts` - Endpoint API
+- `src/app/clustering/page.tsx` - UI interactiva
+
+> **Nota**: Las features de viaje (playa, cultural, naturaleza, familiar) están hardcodeadas para 61 países. Se planea integrar datos de OpenStreetMap y Wikidata para automatizar.
 
 ## 📁 Estructura del Proyecto
 
@@ -20,23 +59,38 @@ Tu asistente de viajes seguros. Mapa interactivo de riesgos por país según MAE
 viaje-con-inteligencia/
 ├── src/
 │   ├── app/
-│   │   ├── page.tsx                    # Mapa mundial
+│   │   ├── page.tsx                    # Mapa mundial (MapaMundial)
 │   │   ├── pais/[codigo]/page.tsx     # Detalle país
-│   │   ├── checklist/page.tsx          # Checklist imprimible
-│   │   ├── premium/page.tsx           # Pricing
-│   │   ├── legal/page.tsx             # Disclaimer
+│   │   ├── dashboard/page.tsx         # Panel usuario (favoritos, alertas)
+│   │   ├── clustering/page.tsx        # Visualización ML K-Means
+│   │   ├── stats/page.tsx             # Estadísticas globales
+│   │   ├── checklist/page.tsx         # Checklist imprimible
+│   │   ├── premium/page.tsx           # Pricing (Stripe)
+│   │   ├── blog/                      # Blog posts
+│   │   ├── rutas/                     # Rutas temáticas (vino, etc.)
+│   │   ├── legal/page.tsx             # Disclaimer y privacidad
 │   │   ├── metodologia/page.tsx        # Metodología MAEC
 │   │   ├── admin/alerts/page.tsx      # Panel control
 │   │   └── api/
+│   │       ├── ai/clustering/route.ts  # API clustering ML
+│   │       ├── ai/similar/route.ts     # Destinos similares
 │   │       ├── telegram/route.ts       # Webhook bot
-│   │       └── alerts/route.ts         # Envío alertas
+│   │       ├── alerts/route.ts         # Envío alertas
+│   │       ├── checkout/route.ts       # Stripe checkout
+│   │       ├── cron/                  # Cron jobs (MAEC scraping)
+│   │       └── subscription/route.ts   # Gestión suscripciones
 │   ├── components/
-│   │   └── MapaMundial.tsx
+│   │   ├── MapaMundial.tsx            # Mapa principal
+│   │   ├── MapaInteractivo.tsx        # Leaflet map
+│   │   └── NewsletterSignup.tsx       # Formulario newsletter
 │   ├── data/
-│   │   └── paises.ts                  # Datos países (28 países)
+│   │   ├── paises.ts                  # Datos países (106+ países)
+│   │   └── clustering.ts              # K-Means + features turismo
 │   └── lib/
-│       ├── telegram-bot.ts             # Lógica bot
-│       └── telegram-channel.ts         # Envío canal
+│       ├── supabase-browser.ts        # Supabase cliente (singleton)
+│       ├── supabase-server.ts         # Supabase server-side
+│       ├── telegram-bot.ts            # Lógica bot
+│       └── telegram-channel.ts        # Envío canal
 ├── .env.local                         # Variables entorno (crear)
 ├── package.json
 └── README.md
@@ -79,6 +133,12 @@ npm run lint         # Verificar código
 |----------|-------------|---------|
 | `TELEGRAM_BOT_TOKEN` | Token del bot de Telegram | `123456789:ABCdefGHI...` |
 | `TELEGRAM_CHANNEL_ID` | ID del canal | `-1001234567890` |
+| `NEXT_PUBLIC_SUPABASE_URL` | URL de Supabase | `https://xxx.supabase.co` |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Key anónima Supabase | `eyJ...` |
+| `STRIPE_SECRET_KEY` | Clave secreta Stripe | `sk_test_...` |
+| `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | Clave pública Stripe | `pk_test_...` |
+| `STRIPE_PRICE_ID` | ID del precio subscription | `price_...` |
+| `SUPABASE_SERVICE_ROLE_KEY` | Service role (solo server) | `eyJ...` |
 
 ## 🚢 Despliegue
 
@@ -140,32 +200,59 @@ curl -F "url=https://tu-dominio.com/api/telegram" \
 curl https://api.telegram.org/bot<TOKEN>/getWebhookInfo
 ```
 
-## 📊 Países Disponibles (28)
+## 🌍 Países Disponibles (106+)
 
-**Europa**: España, Francia, Alemania, Italia, Portugal, Reino Unido, Países Bajos, Suiza, Grecia, Turquía
+**Europa (44)**: España, Francia, Alemania, Italia, Portugal, Reino Unido, Países Bajos, Suiza, Grecia, Turquía, y más...
 
-**América**: Estados Unidos, Canadá, México, Cuba, Colombia, Perú, Brasil, Argentina, Chile
+**Asia (20+)**: Japón, Corea del Sur, Tailandia, Vietnam, India, China, Singapur, EAU, Filipinas, Indonesia, y más...
 
-**Asia**: Japón, Corea del Sur, Tailandia, Vietnam, India, China, Singapur, EAU
+**América (20+)**: Estados Unidos, Canadá, México, Colombia, Perú, Brasil, Argentina, Chile, Ecuador, Venezuela, y más...
 
-**África**: Sudáfrica, Egipto, Marruecos, Kenia
+**África (12+)**: Sudáfrica, Egipto, Marruecos, Kenia, Nigeria, Tanzania, Senegal, y más...
 
-**Oceanía**: Australia, Nueva Zelanda
+**Oceanía (4)**: Australia, Nueva Zelanda, Fiyi, Papúa Nueva Guinea
+
+**Alto riesgo (muy-alto)**: Sudán, Afganistán, Yemen, Siria, Libia, Haití (desaconsejado viajar)
+
+## 🛠️ Tech Stack
+
+- **Frontend**: Next.js 16, TypeScript, Tailwind CSS, Leaflet
+- **Backend**: Next.js API Routes, Vercel Cron Jobs
+- **Database**: Supabase (PostgreSQL + Auth)
+- **Payments**: Stripe Checkout
+- **ML**: K-Means custom (TypeScript, sin dependencias)
+- **Alertas**: Telegram Bot API + Webhooks
 
 ## 📄 Roadmap
 
-- [ ] Expandir a 50+ países
-- [ ] Integración IA (GPT) para recomendaciones
-- [ ] RSS feed del MAEC para alertas automáticas
+### Completado ✅
+- [x] Mapa de riesgos con 106+ países
+- [x] Clustering ML K-Means personalizado
+- [x] Integración IA (GPT) para recomendaciones
+- [x] RSS feed del MAEC para alertas automáticas
+- [x] Pasarela de pagos (Stripe)
+- [x] Panel de administración completo
+- [x] Supabase Auth + Database
+- [x] Blog con contenido SEO
+- [x] Dashboard personal con favoritos
+- [x] Bot Telegram con alertas
+
+### En progreso 🚧
+- [ ] Automatizar features de clustering con OpenStreetMap/Wikidata
+- [ ] España Premium itinerarios module
+- [ ] Testimonios / prueba social
+
+### Futuro 📋
 - [ ] App móvil (React Native)
-- [ ] Pasarela de pagos (Stripe)
-- [ ] Panel de administración completo
+- [ ] Clustering con más dimensiones (clima, gastronomía, etc.)
+- [ ] Integración datos AEMET en tiempo real
 
 ## 📝 Notas
 
-- Los datos de riesgos son orientativos y basados en MAEC
+- Los datos de riesgos son orientativos y basados en MAEC (Ministerio de Asuntos Exteriores español)
+- El clustering ML utiliza datos de UNWTO/INE para turismo y cálculo haversine para distancias
 - Verificar siempre información oficial antes de viajar
-- No substitutions for official government travel advisories
+- Cuba está excluida del sitio por riesgos legales relacionados con administración US
 
 ## 📧 Contacto
 
