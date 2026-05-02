@@ -52,6 +52,7 @@ export default function DashboardPage() {
   const [resetEmail, setResetEmail] = useState('');
   const [showChangePassword, setShowChangePassword] = useState(false);
   const [newPassword, setNewPassword] = useState('');
+  const [favError, setFavError] = useState(false);
 
   useEffect(() => {
     if (authUser) {
@@ -172,14 +173,18 @@ export default function DashboardPage() {
   };
 
   const loadFavorites = async () => {
+    setFavError(false);
     try {
       const headers = await getAuthHeaders();
       const response = await fetch('/api/auth/favorites', { headers });
       if (response.ok) {
         const data = await response.json();
         setFavorites(data.favorites || []);
+      } else {
+        setFavError(true);
       }
     } catch {
+      setFavError(true);
       console.log('Error loading favorites');
     }
   };
@@ -754,7 +759,21 @@ export default function DashboardPage() {
           </div>
         )}
 
-        {favorites.length === 0 ? (
+        {favError ? (
+          <div className="bg-red-900/20 rounded-xl p-12 border border-red-800 text-center">
+            <AlertTriangle className="w-16 h-16 text-red-500 mx-auto mb-4" />
+            <h3 className="text-xl font-semibold text-white mb-2">Error al cargar favoritos</h3>
+            <p className="text-slate-400 mb-6">
+              No se pudo conectar con la base de datos. Verifica tu sesión o intenta más tarde.
+            </p>
+            <button
+              onClick={loadFavorites}
+              className="inline-flex items-center gap-2 px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+            >
+              Reintentar
+            </button>
+          </div>
+        ) : favorites.length === 0 ? (
           <div className="bg-slate-800 rounded-xl p-12 border border-slate-700 text-center">
             <MapPin className="w-16 h-16 text-slate-600 mx-auto mb-4" />
             <h3 className="text-xl font-semibold text-white mb-2">Sin favoritos aún</h3>
