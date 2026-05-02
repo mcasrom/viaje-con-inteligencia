@@ -120,23 +120,28 @@ export async function DELETE(request: NextRequest) {
   try {
     const user = await verifyToken(request);
     if (!user) {
+      console.log('DELETE favorites: No autenticado');
       return NextResponse.json({ error: 'No autenticado' }, { status: 401 });
     }
+    console.log('DELETE favorites: user_id =', user.id);
 
     const { searchParams } = new URL(request.url);
     const countryCode = searchParams.get('countryCode');
+    console.log('DELETE favorites: countryCode =', countryCode);
 
     if (!countryCode) {
       return NextResponse.json({ error: 'Código requerido' }, { status: 400 });
     }
 
     const supabase = getServiceClient();
-    const { error } = await supabase
+    const { data, error } = await supabase
       .from('favorites')
       .delete()
       .eq('user_id', user.id)
-      .eq('country_code', countryCode);
+      .eq('country_code', countryCode)
+      .select();
 
+    console.log('DELETE favorites: data =', data, 'error =', error?.message || null);
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }

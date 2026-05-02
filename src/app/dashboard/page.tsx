@@ -325,11 +325,19 @@ export default function DashboardPage() {
         headers,
       });
 
+      const data = await response.json();
+
       if (response.ok) {
         await loadFavorites();
         setNotification({ type: 'success', message: 'País eliminado de favoritos' });
+      } else {
+        setNotification({ 
+          type: 'error', 
+          message: data.error || `Error (${response.status}) al eliminar favorito` 
+        });
       }
-    } catch {
+    } catch (err) {
+      console.error('Remove favorite error:', err);
       setNotification({ type: 'error', message: 'Error al eliminar favorito' });
     }
   };
