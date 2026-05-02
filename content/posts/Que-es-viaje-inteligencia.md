@@ -4,6 +4,8 @@ description: "Descubre cómo usar datos, inteligencia artificial y análisis est
 date: "2026-05-02"
 tags: ["viajes", "inteligencia", "IA", "planificación", "ahorro"]
 keywords: ["viaje inteligente", "planificar viajes con IA", "viajar barato estrategia", "optimizar viajes"]
+image: "/post1.png"
+excerpt: "Viajar ya no es solo elegir destino y comprar un vuelo. Quien viaja mejor toma mejores decisiones: datos, IA y estrategia al servicio de tus viajes."
 ---
 
 # Qué es Viaje Inteligencia: viajar mejor usando datos, IA y estrategia

@@ -56,3 +56,16 @@ This version has breaking changes — APIs, conventions, and file structure may 
 - Auth cookie: formato `base64-` requiere decode en API routes
 - Singleton Supabase client: `src/lib/supabase-browser.ts`
 - Branch `dev` existe para development, `main` es producción
+- Blog posts: frontmatter soporta `image`, `excerpt`, `description`, `tags`, `keywords`
+- Featured posts en /blog: primeros 2 posts se muestran como cards grandes con imagen
+
+## Way Ahead — Plan mañana (03/05/2026)
+### Pendiente
+- [ ] Enviar sitemap a Google Search Console (manual)
+- [ ] Ejecutar migration Supabase reviews table (`supabase/sprint-35-reviews.sql`)
+- [ ] Blog header images: post1.png → "Qué es Viaje Inteligencia", post2.png → "Cómo encontrar vuelos baratos" — verificar que se renderizan correctamente
+- [ ] Añadir hashtags visibles en cards de posts del blog
+- [ ] Enriquecer `queHacer` arrays: 13 países tienen 0 items, 16 tienen solo 4
+- [ ] España Premium itinerarios module (Sprint 33 Level 3 #4)
+- [ ] Schema.org markup en páginas de blog posts individuales
+- [ ] Optimizar imágenes del blog (webp, lazy loading, alt text)

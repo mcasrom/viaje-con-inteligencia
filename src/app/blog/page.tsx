@@ -44,6 +44,7 @@ export default async function BlogPage({
         initialSort={sort}
         initialTab={tab}
         initialSearch={search}
+        initialFeaturedPosts={posts.slice(0, 2)}
       />
     </Suspense>
   );

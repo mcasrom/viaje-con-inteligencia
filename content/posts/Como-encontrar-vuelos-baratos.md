@@ -4,6 +4,8 @@ description: "Aprende a encontrar vuelos baratos usando datos, timing, herramien
 date: "2026-05-02"
 tags: ["vuelos baratos", "ahorro", "viajes", "trucos vuelos"]
 keywords: ["vuelos baratos 2026", "como comprar vuelos baratos", "mejor día comprar vuelos", "ahorrar en vuelos"]
+image: "/post2.png"
+excerpt: "Encontrar vuelos baratos no es cuestión de suerte, es cuestión de método. Aprende las estrategias que realmente funcionan para pagar menos."
 ---
 
 # Cómo encontrar vuelos baratos en 2026: guía completa con estrategia real

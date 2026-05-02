@@ -14,6 +14,7 @@ export interface PostMeta {
   image: string;
   keywords: string | string[];
   excerpt: string;
+  description?: string;
   tags?: string[];
 }
 
@@ -86,6 +87,7 @@ export function getPostBySlug(slug: string): Post | null {
       image: data.image || data.coverImage || '',
       keywords: data.keywords || data.description || '',
       excerpt: data.excerpt || data.description || '',
+      description: data.description || '',
       tags: data.tags || [],
     };
   } catch {
@@ -105,7 +107,7 @@ export function getAllPosts(filter?: PostsFilter): PostMeta[] {
     .map((slug) => getPostBySlug(slug))
     .filter((post): post is Post => post !== null)
     .sort((a, b) => (a.date < b.date ? 1 : -1))
-    .map(({ slug, title, date, author, category, readTime, image, keywords, excerpt, tags }) => ({
+    .map(({ slug, title, date, author, category, readTime, image, keywords, excerpt, description, tags }) => ({
       slug,
       title,
       date,
@@ -115,6 +117,7 @@ export function getAllPosts(filter?: PostsFilter): PostMeta[] {
       image,
       keywords,
       excerpt,
+      description,
       tags,
     }));
 

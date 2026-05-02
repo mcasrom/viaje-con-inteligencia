@@ -16,6 +16,7 @@ interface Post {
   image: string;
   keywords: string | string[];
   excerpt: string;
+  description?: string;
   tags?: string[];
   views?: number;
 }
@@ -107,6 +108,7 @@ interface BlogClientProps {
   initialSort: string;
   initialTab: string;
   initialSearch: string;
+  initialFeaturedPosts?: Post[];
 }
 
 export default function BlogClient({
@@ -118,9 +120,12 @@ export default function BlogClient({
   initialSort,
   initialTab,
   initialSearch,
+  initialFeaturedPosts = [],
 }: BlogClientProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
+
+  const featuredPosts = initialFeaturedPosts.length > 0 ? initialFeaturedPosts.slice(0, 2) : initialPosts.slice(0, 2);
 
   const [posts, setPosts] = useState<Post[]>(initialPosts);
   const [totalPages, setTotalPages] = useState(initialTotalPages);
@@ -180,27 +185,61 @@ export default function BlogClient({
       </header>
 
       <main className="max-w-6xl mx-auto px-6 py-12">
-        <div className="relative mb-10 rounded-2xl overflow-hidden">
-          <img
-            src={getDailyPhoto()}
-            alt="Viajes"
-            className="w-full h-48 md:h-64 object-cover opacity-60 grayscale-[20%]"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/70 to-transparent" />
-          <div className="absolute bottom-0 right-0 p-4 text-xs text-slate-500">
-            Foto del día
-          </div>
-          <div className="absolute bottom-0 left-0 right-0 p-8">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-blue-500/30 text-blue-300 rounded-full text-sm font-medium mb-3 backdrop-blur-sm">
-              <BookOpen className="w-4 h-4" />
-              Blog de Viaje con Inteligencia
-            </div>
-            <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">
-              Artículos para viajar smarter
-            </h1>
-            <p className="text-slate-300 max-w-2xl">
-              Consejos prácticos, guías de destinos y análisis de riesgos para planificar tus viajes con seguridad.
-            </p>
+        {/* Featured posts header */}
+        <div className="mb-10">
+          <h1 className="text-3xl md:text-4xl font-bold text-white mb-6">
+            📰 Últimos artículos
+          </h1>
+          <div className="grid md:grid-cols-2 gap-6">
+            {featuredPosts.map((post, idx) => (
+              <Link
+                key={post.slug}
+                href={`/blog/${post.slug}`}
+                className="group relative rounded-2xl overflow-hidden border border-slate-700 hover:border-blue-500 transition-all"
+              >
+                <div className="relative h-56 overflow-hidden">
+                  {post.image && post.image.trim() !== '' ? (
+                    <img
+                      src={post.image}
+                      alt={post.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                  ) : (
+                    <img
+                      src="/blog-header.jpg"
+                      alt={post.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                  )}
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/60 to-transparent" />
+                  <div className="absolute top-3 left-3 px-3 py-1 bg-blue-500 text-white text-xs font-bold rounded-full">
+                    Nuevo
+                  </div>
+                  <div className="absolute bottom-0 left-0 right-0 p-5">
+                    <h2 className="text-xl font-bold text-white mb-2 line-clamp-2 group-hover:text-blue-300 transition-colors">
+                      {post.title}
+                    </h2>
+                    <p className="text-slate-300 text-sm line-clamp-2">
+                      {post.excerpt || ''}
+                    </p>
+                    <div className="flex items-center gap-3 mt-3 text-xs text-slate-400">
+                      <span className="flex items-center gap-1">
+                        <Clock3 className="w-3 h-3" />
+                        {post.readTime}
+                      </span>
+                      <span className="px-2 py-0.5 bg-slate-700/80 rounded text-slate-300">
+                        {post.category}
+                      </span>
+                      {post.tags && post.tags.length > 0 && (
+                        <span className="text-slate-400">
+                          #{post.tags[0].replace(/\s+/g, '')}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </Link>
+            ))}
           </div>
         </div>
 
