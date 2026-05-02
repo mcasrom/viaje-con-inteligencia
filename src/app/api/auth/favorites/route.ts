@@ -52,8 +52,10 @@ export async function GET(request: NextRequest) {
   try {
     const user = await verifyToken(request);
     if (!user) {
-      return NextResponse.json({ favorites: [] });
+      console.log('GET favorites: No autenticado');
+      return NextResponse.json({ error: 'No autenticado', favorites: [] }, { status: 401 });
     }
+    console.log('GET favorites: user_id =', user.id);
 
     const supabase = getServiceClient();
     const { data: favorites, error } = await supabase
@@ -62,14 +64,16 @@ export async function GET(request: NextRequest) {
       .eq('user_id', user.id)
       .order('created_at', { ascending: false });
 
+    console.log('GET favorites: found =', favorites?.length || 0, 'error =', error?.message || null);
     if (error) {
-      console.error('Error fetching favorites:', error);
-      return NextResponse.json({ favorites: [] });
+      console.error('Supabase GET Error:', error);
+      return NextResponse.json({ error: 'Error de base de datos', details: error.message }, { status: 500 });
     }
 
     return NextResponse.json({ favorites: favorites || [] });
-  } catch {
-    return NextResponse.json({ favorites: [] });
+  } catch (e) {
+    console.error('Unexpected GET Error:', e);
+    return NextResponse.json({ error: 'Error interno', details: String(e) }, { status: 500 });
   }
 }
 
@@ -77,8 +81,10 @@ export async function POST(request: NextRequest) {
   try {
     const user = await verifyToken(request);
     if (!user) {
+      console.log('POST favorites: No autenticado');
       return NextResponse.json({ error: 'No autenticado' }, { status: 401 });
     }
+    console.log('POST favorites: user_id =', user.id);
 
     const { countryCode } = await request.json();
 
@@ -90,6 +96,8 @@ export async function POST(request: NextRequest) {
     const { error } = await supabase
       .from('favorites')
       .insert({ user_id: user.id, country_code: countryCode });
+
+    console.log('POST favorites insert: error =', error?.message || 'success', 'code =', error?.code || null);
 
     if (error) {
       if (error.code === '23505') {
