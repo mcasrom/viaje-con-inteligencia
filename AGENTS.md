@@ -24,6 +24,14 @@ This version has breaking changes — APIs, conventions, and file structure may 
 - **Documentar clustering ML públicamente** - README.md: sección dedicada con algoritmo K-Means, features (riskScore, IPC, distancia, arrivals), endpoints API, y código fuente
 - Testimonios / prueba social
 - España Premium itinerarios module
+- **Fix itinerarios genéricos** - Reescrito `generateItinerary()` con 5 perfiles de preferencia (cultural, playa, naturaleza, familiar, gastronomia), 7-8 actividades/día con horarios, rutas multi-ciudad (35 países con ciudades específicas), activity pools de 15+ actividades por categoría, tips contextuales
+
+## Sprint 35 - Reviews & Social Proof
+### ✅ Completado
+- **Reviews table** - Supabase migration (`sprint-35-reviews.sql`), RLS policies, seed data
+- **API reviews** - Route actualizada para leer/escribir en Supabase
+- **Testimonios UI** - Stats bar + carousel en homepage, trust badges en premium page
+- **Premium page fix** - Corregido error JSX (extra `</div>` en línea 929)
 
 ## Technical Notes
 - Supabase URL: `https://nczkvsnuafkwtmgokiuo.supabase.co`
