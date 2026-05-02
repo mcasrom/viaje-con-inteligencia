@@ -796,7 +796,7 @@ export default function DashboardPage() {
           </div>
         ) : (
           <div className="space-y-4">
-            {favorites.map((fav) => {
+            {favorites.filter(f => f.country_code !== 'cu').map((fav) => {
               const pais = paisesData[fav.country_code];
               if (!pais) return null;
               
