@@ -13,11 +13,11 @@ This version has breaking changes — APIs, conventions, and file structure may 
 - **/rutas**: Suspense wrapper para useSearchParams
 - **/blog**: Error boundary + loading.tsx
 
-### 📋 PENDIENTE - NIVEL 2 (próximo sprint)
-1. **RSS URL unificado** - Buscar `vercel.app` en src/, reemplazar con `NEXT_PUBLIC_SITE_URL`
-2. **Coherencia países 88 vs 101** - Stats page consulta Supabase en tiempo real, no hardcodeado
-3. **GDPR notice newsletter** - Añadir política privacidad en formulario newsletter (footer)
-4. **Eliminar "Próximamente"** - Ocultar sección de homepage hasta implementar
+### ✅ NIVEL 2 (Completado)
+1. **RSS URL unificado** - Reemplazado `vercel.app` por `NEXT_PUBLIC_SITE_URL` en checkout, promo, subscription, premium, dossier, telegram-bot
+2. **Coherencia países** - Stats page consulta Supabase en tiempo real (`totalPaises` desde DB)
+3. **GDPR notice newsletter** - Añadido enlace política de privacidad en formulario newsletter
+4. **Eliminar "Próximamente"** - Ocultada sección de QuickAccess hasta implementar
 
 ### 📋 NIVEL 3 (medio plazo)
 - Añadir países MAEC alto riesgo faltantes (Sudan, Afganistán, Yemen, Siria, Libia, Haití)

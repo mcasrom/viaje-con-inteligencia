@@ -5251,6 +5251,290 @@ si: {
     urlsUtiles: [],
     bandera: '🇦🇿',
     mapaCoordenadas: [40.4093, 49.8671]
+  },
+  sd: {
+    codigo: 'sd',
+    nombre: 'Sudán',
+    capital: 'Jartum',
+    idioma: 'Árabe, Inglés',
+    moneda: 'Libra sudanesa (SDG)',
+    tipoCambio: '1 EUR ≈ 1200 SDG',
+    zonaHoraria: 'UTC+2',
+    conduccion: 'derecha',
+    poblacion: '48 millones',
+    pib: '30 mil millones USD',
+    indicadores: { ipc: '150%', indicePrecios: 'Muy alto' },
+    voltaje: '230V / 50Hz',
+    prefijoTelefono: '+249',
+    nivelRiesgo: 'muy-alto',
+    ultimoInforme: 'Mayo 2026',
+    continente: 'África',
+    contactos: [
+      {
+        tipo: 'Embajada',
+        nombre: 'Embajada de España en Jartum',
+        direccion: 'Calle 7, Villa 25, Manshiya, Jartum',
+        telefono: '+249 183 777 200',
+        email: 'emb.jartum@maec.es',
+        horario: 'Lunes a viernes 8:00-14:00'
+      }
+    ],
+    requerimientos: [
+      { categoria: 'Documentación', icon: '📄', items: ['Pasaporte válido 6 meses', 'Visa obligatoria', 'Permiso de viaje para zonas interiores'] },
+      { categoria: 'Sanitario', icon: '🏥', items: ['Sistema sanitario colapsado', 'Agua embotellada imprescindible', 'Vacunas: Hepatitis A/B, Fiebre tifoidea, Meningitis'] },
+      { categoria: 'Seguridad', icon: '⚠️', items: ['Conflicto armado activo', 'No viajar salvo extrema necesidad', 'Embajada con capacidad limitada'] }
+    ],
+    queHacer: [],
+    queNoHacer: [
+      'No viajar a Sudán bajo ninguna circunstancia',
+      'No acercarse a zonas de conflicto',
+      'No mostrar cámaras en público',
+      'No viajar de noche por carretera',
+      'No fotografiar instalaciones militares'
+    ],
+    diarios: [
+      { nombre: 'Sudan Tribune', url: 'https://www.sudantribune.com' }
+    ],
+    urlsUtiles: [
+      { nombre: 'Embajada España', url: 'https://www.exteriores.gob.es/embajadas/jartum' }
+    ],
+    bandera: '🇸🇩',
+    mapaCoordenadas: [15.5007, 32.5599]
+  },
+  af: {
+    codigo: 'af',
+    nombre: 'Afganistán',
+    capital: 'Kabul',
+    idioma: 'Pastún, Dari',
+    moneda: 'Afgani (AFN)',
+    tipoCambio: '1 EUR ≈ 75 AFN',
+    zonaHoraria: 'UTC+4:30',
+    conduccion: 'derecha',
+    poblacion: '42 millones',
+    pib: '14 mil millones USD',
+    indicadores: { ipc: '8%', indicePrecios: 'Muy alto' },
+    voltaje: '220V / 50Hz',
+    prefijoTelefono: '+93',
+    nivelRiesgo: 'muy-alto',
+    ultimoInforme: 'Mayo 2026',
+    continente: 'Asia',
+    contactos: [
+      {
+        tipo: 'Consulado',
+        nombre: 'Embajada de España en Islamabad (competente para Afganistán)',
+        direccion: 'Islamabad, Pakistán',
+        telefono: '+92 51 201 3400',
+        email: 'emb.islamabad@maec.es',
+        horario: 'Lunes a viernes 8:00-16:00'
+      }
+    ],
+    requerimientos: [
+      { categoria: 'Documentación', icon: '📄', items: ['Pasaporte válido 6 meses', 'Visa obligatoria', 'No hay embajada española en Kabul'] },
+      { categoria: 'Sanitario', icon: '🏥', items: ['Sistema sanitario muy deficiente', 'Repatriación recomendada en emergencias', 'Vacunas: Hepatitis A/B, Polio, Tétanos'] },
+      { categoria: 'Seguridad', icon: '⚠️', items: ['Riesgo elevado de secuestro y atentado', 'Turistas occidentales son objetivo', 'No hay asistencia consular en el país'] }
+    ],
+    queHacer: [],
+    queNoHacer: [
+      'No viajar a Afganistán bajo ninguna circunstancia',
+      'No identificarse como turista occidental',
+      'No usar cámaras ni teléfonos en público',
+      'No viajar solo ni en grupo visible',
+      'No alojarse en pensiones o hoteles conocidos'
+    ],
+    diarios: [],
+    urlsUtiles: [
+      { nombre: 'Embajada España (Islamabad)', url: 'https://www.exteriores.gob.es/embajadas/islamabad' }
+    ],
+    bandera: '🇦🇫',
+    mapaCoordenadas: [34.5553, 69.2075]
+  },
+  ye: {
+    codigo: 'ye',
+    nombre: 'Yemen',
+    capital: 'Sanaa',
+    idioma: 'Árabe',
+    moneda: 'Rial yemení (YER)',
+    tipoCambio: '1 EUR ≈ 600 YER',
+    zonaHoraria: 'UTC+3',
+    conduccion: 'derecha',
+    poblacion: '34 millones',
+    pib: '10 mil millones USD',
+    indicadores: { ipc: '40%', indicePrecios: 'Muy alto' },
+    voltaje: '230V / 50Hz',
+    prefijoTelefono: '+967',
+    nivelRiesgo: 'muy-alto',
+    ultimoInforme: 'Mayo 2026',
+    continente: 'Asia',
+    contactos: [
+      {
+        tipo: 'Embajada',
+        nombre: 'Embajada de España en El Cairo (competente para Yemen)',
+        direccion: 'El Cairo, Egipto',
+        telefono: '+20 1223183783',
+        email: 'emb.elcairo.sc@maec.es',
+        horario: 'Embajada en Sanaa cerrada'
+      }
+    ],
+    requerimientos: [
+      { categoria: 'Documentación', icon: '📄', items: ['Pasaporte válido 6 meses', 'Visa obligatoria', 'Embajada en Sanaa cerrada'] },
+      { categoria: 'Sanitario', icon: '🏥', items: ['Cólera extendido (332.000 casos 2024-2025)', 'Malaria alto riesgo en 85% del país', 'Vacunas: Hepatitis A/B, Tétanos, Fiebre tifoidea, Meningitis'] },
+      { categoria: 'Seguridad', icon: '⚠️', items: ['Conflicto armado desde 2014', 'Desaconsejado incluso Socotra', 'Abandonar el país lo antes posible'] }
+    ],
+    queHacer: [],
+    queNoHacer: [
+      'No viajar a Yemen bajo cualquier circunstancia',
+      'No visitar la isla de Socotra',
+      'No acercarse a zonas de conflicto',
+      'No consumir agua no embotellada',
+      'No viajar por carretera entre ciudades'
+    ],
+    diarios: [],
+    urlsUtiles: [
+      { nombre: 'Embajada España (El Cairo)', url: 'https://www.exteriores.gob.es/embajadas/elcairo' }
+    ],
+    bandera: '🇾🇪',
+    mapaCoordenadas: [15.3694, 44.1910]
+  },
+  sy: {
+    codigo: 'sy',
+    nombre: 'Siria',
+    capital: 'Damasco',
+    idioma: 'Árabe',
+    moneda: 'Libra siria (SYP)',
+    tipoCambio: '1 EUR ≈ 14.000 SYP',
+    zonaHoraria: 'UTC+2',
+    conduccion: 'derecha',
+    poblacion: '22 millones',
+    pib: '12 mil millones USD',
+    indicadores: { ipc: '100%', indicePrecios: 'Muy alto' },
+    voltaje: '220V / 50Hz',
+    prefijoTelefono: '+963',
+    nivelRiesgo: 'muy-alto',
+    ultimoInforme: 'Mayo 2026',
+    continente: 'Asia',
+    contactos: [
+      {
+        tipo: 'Embajada',
+        nombre: 'Embajada de España en Damasco',
+        direccion: 'Abu Rummaneh, Calle 45, Damasco',
+        telefono: '+963 11 333 4444',
+        email: 'emb.damasco@maec.es',
+        horario: 'Lunes a viernes 8:00-14:00'
+      }
+    ],
+    requerimientos: [
+      { categoria: 'Documentación', icon: '📄', items: ['Pasaporte válido 6 meses', 'Visa obligatoria (evisa.sy)', 'Entrar solo por paso Masnaa desde Líbano'] },
+      { categoria: 'Sanitario', icon: '🏥', items: ['Servicios médicos precarios', 'Seguro médico internacional imprescindible', 'Evacuación puede ser necesaria'] },
+      { categoria: 'Seguridad', icon: '⚠️', items: ['Conflicto regional activo', 'Terrorismo en zonas central y oriental', 'Solo Damasco y acceso desde Líbano relativamente seguros'] }
+    ],
+    queHacer: [],
+    queNoHacer: [
+      'No viajar a Siria salvo extrema necesidad',
+      'No usar pasos fronterizos con Irak',
+      'No viajar al norte (Alepo, Raqqa, Hasaka)',
+      'No circular de noche por carretera',
+      'No fotografiar instalaciones militares'
+    ],
+    diarios: [],
+    urlsUtiles: [
+      { nombre: 'Embajada España', url: 'https://www.exteriores.gob.es/embajadas/damasco' }
+    ],
+    bandera: '🇸🇾',
+    mapaCoordenadas: [33.5138, 36.2765]
+  },
+  ly: {
+    codigo: 'ly',
+    nombre: 'Libia',
+    capital: 'Trípoli',
+    idioma: 'Árabe',
+    moneda: 'Dinar libio (LYD)',
+    tipoCambio: '1 EUR ≈ 5.3 LYD',
+    zonaHoraria: 'UTC+2',
+    conduccion: 'derecha',
+    poblacion: '7 millones',
+    pib: '35 mil millones USD',
+    indicadores: { ipc: '20%', indicePrecios: 'Muy alto' },
+    voltaje: '230V / 50Hz',
+    prefijoTelefono: '+218',
+    nivelRiesgo: 'muy-alto',
+    ultimoInforme: 'Mayo 2026',
+    continente: 'África',
+    contactos: [
+      {
+        tipo: 'Embajada',
+        nombre: 'Embajada de España en Trípoli',
+        direccion: 'Trípoli, Libia',
+        telefono: '+218 21 488 1234',
+        email: 'emb.tripoli@maec.es',
+        horario: 'Servicio limitado'
+      }
+    ],
+    requerimientos: [
+      { categoria: 'Documentación', icon: '📄', items: ['Pasaporte válido 6 meses', 'Visa obligatoria', 'Autorización especial para cruces fronterizos'] },
+      { categoria: 'Sanitario', icon: '🏥', items: ['Sistema sanitario deteriorado', 'Seguro médico completo recomendado', 'Vacunas: Tétanos, Hepatitis'] },
+      { categoria: 'Seguridad', icon: '⚠️', items: ['Violencia armada generalizada', 'Milicias activas en todo el territorio', 'Compañías aéreas libias en lista negra UE'] }
+    ],
+    queHacer: [],
+    queNoHacer: [
+      'No viajar a Libia salvo necesidad',
+      'No viajar a Derna, Bengasi, Sirte, Ubari',
+      'No cruzar fronteras sin autorización',
+      'No usar compañías aéreas libias',
+      'No viajar al sur fronterizo con Chad, Níger, Sudán'
+    ],
+    diarios: [],
+    urlsUtiles: [
+      { nombre: 'Embajada España', url: 'https://www.exteriores.gob.es/embajadas/tripoli' }
+    ],
+    bandera: '🇱🇾',
+    mapaCoordenadas: [32.8872, 13.1913]
+  },
+  ht: {
+    codigo: 'ht',
+    nombre: 'Haití',
+    capital: 'Puerto Príncipe',
+    idioma: 'Francés, Criollo haitiano',
+    moneda: 'Gourde (HTG)',
+    tipoCambio: '1 EUR ≈ 140 HTG',
+    zonaHoraria: 'UTC-5',
+    conduccion: 'derecha',
+    poblacion: '12 millones',
+    pib: '20 mil millones USD',
+    indicadores: { ipc: '30%', indicePrecios: 'Muy alto' },
+    voltaje: '110V / 60Hz',
+    prefijoTelefono: '+509',
+    nivelRiesgo: 'muy-alto',
+    ultimoInforme: 'Mayo 2026',
+    continente: 'América',
+    contactos: [
+      {
+        tipo: 'Embajada',
+        nombre: 'Embajada de España en Puerto Príncipe',
+        direccion: 'Rue Toussaint Louverture, Puerto Príncipe',
+        telefono: '+509 2813 4567',
+        email: 'emb.puertoprincipe@maec.es',
+        horario: 'Lunes a viernes 8:00-14:00'
+      }
+    ],
+    requerimientos: [
+      { categoria: 'Documentación', icon: '📄', items: ['Pasaporte válido 6 meses', 'Sin visa para españoles (90 días)', 'Billete de salida'] },
+      { categoria: 'Sanitario', icon: '🏥', items: ['Sistema sanitario muy limitado', 'Cólera y enfermedades tropicales activas', 'Seguro médico con repatriación imprescindible'] },
+      { categoria: 'Seguridad', icon: '⚠️', items: ['Criminalidad extrema en Puerto Príncipe', 'Secuestros frecuentes', 'Abandonar si presencia no es esencial'] }
+    ],
+    queHacer: [],
+    queNoHacer: [
+      'No viajar a Haití salvo necesidad',
+      'No circular por tierra hacia República Dominicana',
+      'No visitar barrios de Cité Soleil, La Saline, Bel Air',
+      'No mostrar objetos de valor en público',
+      'No viajar de noche en ninguna zona'
+    ],
+    diarios: [],
+    urlsUtiles: [
+      { nombre: 'Embajada España', url: 'https://www.exteriores.gob.es/embajadas/puertoprincipe' }
+    ],
+    bandera: '🇭🇹',
+    mapaCoordenadas: [18.5944, -72.3074]
   }
 };
 
