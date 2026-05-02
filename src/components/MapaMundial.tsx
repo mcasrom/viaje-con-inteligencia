@@ -5,7 +5,7 @@ import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import { paisesData, getTodosLosPaises, getLabelRiesgo, NivelRiesgo } from '@/data/paises';
 import { getGlobalStats } from '@/lib/global-stats';
-import { AlertTriangle, ArrowRight, Globe, Search, ClipboardList, Star, BookOpen, RefreshCw, Clock, Gift, TrendingUp, Activity, BarChart3, Ticket } from 'lucide-react';
+import { AlertTriangle, ArrowRight, Globe, Search, ClipboardList, Star, BookOpen, RefreshCw, Clock, Gift, TrendingUp, Activity, BarChart3, Ticket, Brain } from 'lucide-react';
 import LanguageSelector from './LanguageSelector';
 import { useI18n } from '@/lib/i18n';
 
@@ -129,6 +129,13 @@ export default function MapaMundial() {
               >
                 <TrendingUp className="w-4 h-4" />
                 <span className="hidden md:inline">Stats</span>
+              </Link>
+              <Link 
+                href="/clustering" 
+                className="flex items-center gap-2 px-3 py-2 bg-purple-600/20 hover:bg-purple-600/40 text-purple-300 hover:text-purple-200 rounded-lg transition-colors"
+              >
+                <Brain className="w-4 h-4" />
+                <span className="hidden md:inline">ML Clustering</span>
               </Link>
               <Link 
                 href="/eventos" 

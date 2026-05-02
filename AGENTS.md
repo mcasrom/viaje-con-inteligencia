@@ -21,8 +21,8 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 ### ✅ NIVEL 3 (Completado)
 - **Añadir países MAEC alto riesgo faltantes** - Sudán, Afganistán, Yemen, Siria, Libia, Haití (106 países total, nivel `muy-alto`)
+- **Documentar clustering ML públicamente** - README.md: sección dedicada con algoritmo K-Means, features (riskScore, IPC, distancia, arrivals), endpoints API, y código fuente
 - Testimonios / prueba social
-- Documentar clustering ML públicamente
 - España Premium itinerarios module
 
 ## Technical Notes
