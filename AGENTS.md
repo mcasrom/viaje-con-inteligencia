@@ -34,6 +34,22 @@ This version has breaking changes — APIs, conventions, and file structure may 
 - **Premium page fix** - Corregido error JSX (extra `</div>` en línea 929)
 - **Fix /destinos para países no-España** - Eliminadas rutas españolas para Marruecos, Francia, etc. Ahora muestra itinerario país-específico con días detallados, presupuesto, transporte, imprescindibles y tips. Países con itinerario: MA, FR, IT, PT, JP
 
+## SEO Audit Fixes (02/05/2026)
+### ✅ Completado
+- **P1: Blog SSR** - Convertido blog/page.tsx de client-side a Server Component con datos iniciales SSR, BlogClient.tsx para interactividad
+- **P1: Sitemap** - Eliminado public/sitemap.xml estático que colisionaba con dynamic sitemap.ts
+- **P2: Idioma queNoHacer** - Traducidos ~80 strings en inglés a español en paises.ts
+
+### ℹ️ Ya estaba correcto
+- RSS footer ya usa dominio canónico (viajeinteligencia.com)
+- Meta descriptions únicas por país ya implementadas
+- Schema.org markup ya implementado (Article, FAQ, Breadcrumb, Place)
+- "Próximamente" ya eliminado de home
+- Contador países: 107 visibles (getTodosLosPaises), consistente en todas las páginas
+
+### ⚡ Pendiente manual
+- Enviar sitemap a Google Search Console (no es código)
+
 ## Technical Notes
 - Supabase URL: `https://nczkvsnuafkwtmgokiuo.supabase.co`
 - Service Worker: `public/sw.js` v4 (no cachea `/api/` ni auth headers)
