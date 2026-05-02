@@ -156,7 +156,11 @@ export function getPostsPagination(page: number = 1, perPage: number = 10, filte
   currentPage: number;
   featuredPosts: PostMeta[];
 } {
-  const allPosts = getAllPosts(filter);
+  const allPosts = getAllPosts(filter ? {
+    category: filter.category,
+    sort: filter.sort,
+    search: filter.search,
+  } : undefined);
   const skip = filter?.skip || 0;
   const remainingPosts = allPosts.slice(skip);
   const totalPages = Math.max(1, Math.ceil(remainingPosts.length / perPage));

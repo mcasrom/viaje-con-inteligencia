@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
   const search = searchParams.get('search') || undefined;
 
   if (sort === 'popular') {
-    const { posts, totalPages } = getPostsPagination(page, perPage, { category, sort: 'recent' });
+    const { posts, totalPages } = getPostsPagination(page, perPage, { category, sort: 'recent', skip: 0 });
     
     let postsWithViews: any[] = posts.map((post: any) => ({ ...post, views: 0 }));
     
@@ -35,9 +35,9 @@ export async function GET(request: NextRequest) {
     });
   }
 
-  const filter = category && category !== 'all' 
-    ? { category, sort: sort as 'recent' | 'oldest', search }
-    : { sort: sort as 'recent' | 'oldest', search };
+  const filter = category && category !== 'all'
+    ? { category, sort: sort as 'recent' | 'oldest', search, skip: 0 }
+    : { sort: sort as 'recent' | 'oldest', search, skip: 0 };
 
   const { posts, totalPages } = getPostsPagination(page, perPage, filter);
   
