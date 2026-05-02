@@ -54,7 +54,7 @@ function getSlugFromSlug(slug: string): string | null {
 
 export function getPostBySlug(slug: string): Post | null {
   try {
-    if (!slug || !/^[a-z0-9-]+$/.test(slug)) {
+    if (!slug || !/^[a-zA-Z0-9-]+$/.test(slug)) {
       return null;
     }
     let fullPath = path.join(postsDirectory, `${slug}.md`);
