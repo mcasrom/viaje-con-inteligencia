@@ -170,7 +170,10 @@ export default function DashboardPage() {
     setFavError(false);
     try {
       const headers = await getAuthHeaders();
-      const response = await fetch('/api/auth/favorites', { headers });
+      const response = await fetch(`/api/auth/favorites?t=${Date.now()}`, { 
+        headers,
+        cache: 'no-store',
+      });
       if (response.ok) {
         const data = await response.json();
         setFavorites(data.favorites || []);

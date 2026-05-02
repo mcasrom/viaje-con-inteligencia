@@ -1,4 +1,4 @@
-const CACHE_NAME = 'viaje-ia-v3';
+const CACHE_NAME = 'viaje-ia-v4';
 const STATIC_ASSETS = [
   '/',
   '/manifest.json',
@@ -11,14 +11,6 @@ const STATIC_ASSETS = [
   '/checklist',
   '/relojes',
   '/blog'
-];
-
-const API_CACHE_NAME = 'viaje-ia-api-v1';
-const API_CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
-
-const STATIC_ASSETS_FALLBACK = [
-  '/static/',
-  '/favicon'
 ];
 
 self.addEventListener('install', (event) => {
@@ -44,6 +36,14 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
+  const url = new URL(event.request.url);
+  
+  // Never cache API routes or authenticated requests
+  if (url.pathname.startsWith('/api/') || event.request.headers.get('authorization')) {
+    event.respondWith(fetch(event.request));
+    return;
+  }
+  
   if (event.request.mode === 'navigate') {
     event.respondWith(
       fetch(event.request).catch(() => {
@@ -71,7 +71,7 @@ self.addEventListener('fetch', (event) => {
     })
   );
 });
-// Web Push listener
+
 self.addEventListener('push', (event) => {
   if (!event.data) return;
 
@@ -90,7 +90,6 @@ self.addEventListener('push', (event) => {
   );
 });
 
-// Click en notificación → abrir URL
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
   const url = event.notification.data?.url || '/';
