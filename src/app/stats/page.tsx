@@ -2,13 +2,20 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import { ArrowLeft, Globe, AlertTriangle, Users, TrendingUp, MapPin, Calendar, Eye, Star, Heart, Bell } from 'lucide-react';
 import { getTodosLosPaises, getLabelRiesgo, NivelRiesgo } from '@/data/paises';
+import { createSupabaseServerClient } from '@/lib/supabase-server';
 
 export const metadata: Metadata = {
   title: 'Estadísticas Globales | Viaje con Inteligencia',
   description: 'Estadísticas de riesgos por países, continentes y más. Datos actualizados del MAEC español.',
 };
 
-export default function StatsPage() {
+export default async function StatsPage() {
+  const supabase = await createSupabaseServerClient();
+  const { count: supabaseCount } = await supabase
+    .from('paises')
+    .select('*', { count: 'exact', head: true });
+  const totalPaises = supabaseCount ?? getTodosLosPaises().length;
+
   const paises = getTodosLosPaises();
   
   const riesgoStats = paises.reduce((acc, p) => {
@@ -38,7 +45,6 @@ export default function StatsPage() {
   };
 
   const riskOrder: NivelRiesgo[] = ['sin-riesgo', 'bajo', 'medio', 'alto', 'muy-alto'];
-  const totalPaises = paises.length;
   const paisesSinRiesgo = riesgoStats['sin-riesgo'] || 0;
   const paisesRiesgoBajo = riesgoStats['bajo'] || 0;
   const paisesRiesgoMedio = riesgoStats['medio'] || 0;
