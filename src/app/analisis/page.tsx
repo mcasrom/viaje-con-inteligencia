@@ -4,8 +4,8 @@ import AnalisisContent from '@/components/AnalisisContent';
 export const dynamic = 'force-dynamic';
 
 export const metadata = {
-  title: 'Análisis de Viaje - Viaje con Inteligencia',
-  description: 'Obtén recomendaciones personalizadas basadas en datos MAEC y IA para planificar tu viaje seguro.',
+  title: 'Ficha de Viaje - Viaje con Inteligencia',
+  description: 'Ficha completa de viaje con itinerario día a día, presupuesto estimado, requisitos, seguridad y recomendaciones por país.',
 };
 
 export default function AnalisisPage() {
@@ -30,8 +30,8 @@ export default function AnalisisPage() {
 
       <main className="max-w-6xl mx-auto px-6 py-8">
         <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold text-white mb-2">🧠 Análisis de Viaje Inteligente</h2>
-          <p className="text-slate-400">Obtén recomendaciones personalizadas basadas en datos MAEC y IA</p>
+          <h2 className="text-3xl font-bold text-white mb-2">✈️ Ficha de Viaje Completa</h2>
+          <p className="text-slate-400">Itinerario, presupuesto, seguridad, requisitos y recomendaciones para tu destino</p>
         </div>
         <AnalisisContent />
       </main>
