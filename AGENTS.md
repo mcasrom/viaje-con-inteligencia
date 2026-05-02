@@ -32,6 +32,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 - **API reviews** - Route actualizada para leer/escribir en Supabase
 - **Testimonios UI** - Stats bar + carousel en homepage, trust badges en premium page
 - **Premium page fix** - Corregido error JSX (extra `</div>` en línea 929)
+- **Fix /destinos para países no-España** - Eliminadas rutas españolas para Marruecos, Francia, etc. Ahora muestra itinerario país-específico con días detallados, presupuesto, transporte, imprescindibles y tips. Países con itinerario: MA, FR, IT, PT, JP
 
 ## Technical Notes
 - Supabase URL: `https://nczkvsnuafkwtmgokiuo.supabase.co`
