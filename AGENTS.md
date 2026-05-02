@@ -58,14 +58,29 @@ This version has breaking changes — APIs, conventions, and file structure may 
 - Branch `dev` existe para development, `main` es producción
 - Blog posts: frontmatter soporta `image`, `excerpt`, `description`, `tags`, `keywords`
 - Featured posts en /blog: primeros 2 posts se muestran como cards grandes con imagen
+- Homepage order: Planificador → "Qué es Viaje Inteligencia" CTA → MapaMundial → Memoria → KPIs → Checklist → Newsletter → Testimonios
 
-## Way Ahead — Plan mañana (03/05/2026)
-### Pendiente
-- [ ] Enviar sitemap a Google Search Console (manual)
-- [ ] Ejecutar migration Supabase reviews table (`supabase/sprint-35-reviews.sql`)
-- [ ] Blog header images: post1.png → "Qué es Viaje Inteligencia", post2.png → "Cómo encontrar vuelos baratos" — verificar que se renderizan correctamente
-- [ ] Añadir hashtags visibles en cards de posts del blog
+## Way Ahead — Plan próximo día (04/05/2026)
+
+### 🔥 Urgente
+- [ ] **Mastodon token en Vercel**: Token configurado pero `scripts/publish-posts.mjs` tiene token hardcoded. Mover a env var y limpiar script.
+- [ ] **Blog categories en frontmatter**: `Que-es-viaje-inteligencia.md` y `Como-encontrar-vuelos-baratos.md` NO tienen campo `category` → categoría vacía en cards del blog.
+- [ ] **Submit sitemap a Google Search Console** (manual)
+
+### 📊 Supabase / Data
+- [ ] Ejecutar migration `supabase/sprint-35-reviews.sql` en Supabase Dashboard
 - [ ] Enriquecer `queHacer` arrays: 13 países tienen 0 items, 16 tienen solo 4
+
+### 🏗️ Features pendientes
 - [ ] España Premium itinerarios module (Sprint 33 Level 3 #4)
-- [ ] Schema.org markup en páginas de blog posts individuales
+- [ ] Schema.org markup en blog post pages (verificar server-side rendering para crawlers)
 - [ ] Optimizar imágenes del blog (webp, lazy loading, alt text)
+
+### 🧪 QA / Fixes
+- [ ] Verificar blog search en producción (fix null tags/keywords)
+- [ ] Verificar paginación blog: 2 páginas (50 + resto)
+- [ ] Verificar posts con categorías vacías no rompen filtro de categorías
+
+### 🔒 Seguridad
+- [ ] Rotar tokens Mastodon si fueron commiteados (check git history)
+- [ ] Mover tokens de `scripts/publish-posts.mjs` a `.env` local
