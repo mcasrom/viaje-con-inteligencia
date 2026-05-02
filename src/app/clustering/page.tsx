@@ -38,6 +38,7 @@ interface Destination {
 export default function ClusteringPage() {
   const [clusters, setClusters] = useState<Cluster[]>([]);
   const [destinations, setDestinations] = useState<Destination[]>([]);
+  const [totalDestinations, setTotalDestinations] = useState<number>(0);
   const [loading, setLoading] = useState(true);
   const [nClusters, setNClusters] = useState(4);
   const [selectedCluster, setSelectedCluster] = useState<number | null>(null);
@@ -71,6 +72,7 @@ export default function ClusteringPage() {
       const data = await res.json();
       if (data.clusters) setClusters(data.clusters);
       if (data.destinations) setDestinations(data.destinations);
+      if (data.numDestinations) setTotalDestinations(data.numDestinations);
     } catch (e) {
       console.error('Error fetching clustering:', e);
     } finally {
@@ -166,7 +168,7 @@ export default function ClusteringPage() {
             ¿Qué destinos son <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-cyan-400">realmente similares</span>?
           </h1>
           <p className="text-slate-400 max-w-3xl mx-auto text-lg">
-            Nuestro algoritmo analiza <strong className="text-white">{destinations.length || 95}+ países</strong> en 4 dimensiones diferentes y los agrupa automáticamente según su perfil real, no por continente ni intuición.
+            Nuestro algoritmo analiza <strong className="text-white">{totalDestinations} países</strong> en 4 dimensiones diferentes y los agrupa automáticamente según su perfil real, no por continente ni intuición.
           </p>
         </div>
 
@@ -377,7 +379,7 @@ export default function ClusteringPage() {
                 </li>
                 <li className="flex gap-2">
                   <span className="text-yellow-400">⚠</span>
-                  <span>Los <strong className="text-white">atributos de viaje</strong> (playa, cultural, naturaleza, familiar) están curados manualmente para 61 países. Se trabaja en automatizar con OpenStreetMap.</span>
+                  <span>Los <strong className="text-white">atributos de viaje</strong> (playa, cultural, naturaleza, familiar) están curados manualmente para un subconjunto de países. Se trabaja en automatizar con OpenStreetMap.</span>
                 </li>
               </ul>
             </div>
