@@ -143,20 +143,32 @@ export function getAllPosts(filter?: PostsFilter): PostMeta[] {
   return posts;
 }
 
-export function getPostsPagination(page: number = 1, perPage: number = 10, filter?: PostsFilter): {
+export interface PaginationOptions {
+  skip?: number;
+  category?: string;
+  sort?: 'recent' | 'oldest';
+  search?: string;
+}
+
+export function getPostsPagination(page: number = 1, perPage: number = 10, filter?: PaginationOptions): {
   posts: PostMeta[];
   totalPages: number;
   currentPage: number;
+  featuredPosts: PostMeta[];
 } {
   const allPosts = getAllPosts(filter);
-  const totalPages = Math.ceil(allPosts.length / perPage);
+  const skip = filter?.skip || 0;
+  const remainingPosts = allPosts.slice(skip);
+  const totalPages = Math.max(1, Math.ceil(remainingPosts.length / perPage));
   const startIndex = (page - 1) * perPage;
-  const posts = allPosts.slice(startIndex, startIndex + perPage);
+  const posts = remainingPosts.slice(startIndex, startIndex + perPage);
+  const featuredPosts = allPosts.slice(0, skip);
 
   return {
     posts,
     totalPages,
     currentPage: page,
+    featuredPosts,
   };
 }
 

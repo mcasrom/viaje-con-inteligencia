@@ -125,9 +125,10 @@ export default function BlogClient({
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const featuredPosts = initialFeaturedPosts.length > 0 ? initialFeaturedPosts.slice(0, 2) : initialPosts.slice(0, 2);
+  const featuredPosts = initialFeaturedPosts.length > 0 ? initialFeaturedPosts.slice(0, 2) : [];
+  const featuredSlugs = new Set(featuredPosts.map(p => p.slug));
 
-  const [posts, setPosts] = useState<Post[]>(initialPosts);
+  const [posts, setPosts] = useState<Post[]>(initialPosts.filter(p => !featuredSlugs.has(p.slug)));
   const [totalPages, setTotalPages] = useState(initialTotalPages);
   const [categories, setCategories] = useState(initialCategories);
   const [loading, setLoading] = useState(false);
@@ -150,7 +151,8 @@ export default function BlogClient({
       });
       const res = await fetch(`/api/posts?${params}`);
       const data = await res.json();
-      setPosts(data.posts || []);
+      const filteredPosts = (data.posts || []).filter((post: Post) => !featuredSlugs.has(post.slug));
+      setPosts(filteredPosts);
       setTotalPages(data.totalPages || 1);
     } catch (e) {
       console.error('Error fetching posts:', e);

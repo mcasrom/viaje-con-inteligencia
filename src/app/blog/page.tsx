@@ -21,7 +21,8 @@ export default async function BlogPage({
   const tab = params.tab || 'recientes';
   const search = params.search || '';
 
-  const { posts, totalPages, currentPage } = getPostsPagination(page, 50, {
+  const { posts, totalPages, currentPage, featuredPosts } = getPostsPagination(page, 50, {
+    skip: 2,
     category: category !== 'all' ? category : undefined,
     sort: tab === 'populares' ? 'recent' : sort as 'recent' | 'oldest',
     search: search.length >= 2 ? search : undefined,
@@ -44,7 +45,7 @@ export default async function BlogPage({
         initialSort={sort}
         initialTab={tab}
         initialSearch={search}
-        initialFeaturedPosts={posts.slice(0, 2)}
+        initialFeaturedPosts={featuredPosts}
       />
     </Suspense>
   );
