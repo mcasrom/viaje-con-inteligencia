@@ -1,4 +1,5 @@
 ---
+featured: true
 title: "Qué es Viaje Inteligencia: viajar mejor usando datos, IA y estrategia"
 description: "Descubre cómo usar datos, inteligencia artificial y análisis estratégico para viajar más barato, más seguro y con mejores decisiones."
 date: "2026-05-02"

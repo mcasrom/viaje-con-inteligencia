@@ -89,6 +89,7 @@ export function getPostBySlug(slug: string): Post | null {
       excerpt: data.excerpt || data.description || '',
       description: data.description || '',
       tags: data.tags || [],
+      featured: data.featured || false,
     };
   } catch {
     return null;
@@ -106,7 +107,13 @@ export function getAllPosts(filter?: PostsFilter): PostMeta[] {
   let posts = slugs
     .map((slug) => getPostBySlug(slug))
     .filter((post): post is Post => post !== null)
-    .sort((a, b) => (a.date < b.date ? 1 : -1))
+    .sort((a, b) => {
+      // featured:true siempre primero, luego por fecha descendente
+      const aFeatured = (a as any).featured ? 1 : 0;
+      const bFeatured = (b as any).featured ? 1 : 0;
+      if (bFeatured !== aFeatured) return bFeatured - aFeatured;
+      return a.date < b.date ? 1 : -1;
+    })
     .map(({ slug, title, date, author, category, readTime, image, keywords, excerpt, description, tags }) => ({
       slug,
       title,
