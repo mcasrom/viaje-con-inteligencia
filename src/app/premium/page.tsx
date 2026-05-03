@@ -30,7 +30,7 @@ const PLANS = [
     period: 'año',
     priceId: 'price_1TQ0Ng1yXjIoL1LjZTzKEfOF',
     popular: true,
-    savings: 'Ahorra 40€',
+    savings: 'Ahorra 39,89€/año (~83%)',
     features: [
       'Todo lo del plan Premium Mensual',
       'Acceso prioritario a nuevas funciones',
