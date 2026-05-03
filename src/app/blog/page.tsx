@@ -2,7 +2,7 @@ import { Suspense } from 'react';
 import { getPostsPagination, getCategories, PostMeta } from '@/lib/posts';
 import BlogClient from '@/components/BlogClient';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 3600; // ISR: regenera cada hora
 
 export const metadata = {
   title: 'Blog de Viajes - Consejos, Guías y Seguridad | Viaje con Inteligencia',
