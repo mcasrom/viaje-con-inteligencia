@@ -16,8 +16,15 @@ function requireAuth(request: NextRequest) {
   if (authHeader === `Bearer ${expectedToken}` || cookie === expectedToken) {
     return true;
   }
-  // Debug: log what we're comparing
-  console.log('[Admin Auth] header:', authHeader, 'cookie:', cookie, 'expected:', expectedToken, 'env raw:', process.env.ADMIN_PASSWORD?.length);
+
+  // Accept via query param as fallback
+  const url = new URL(request.url);
+  const queryToken = url.searchParams.get('token');
+  if (queryToken === expectedToken) {
+    return true;
+  }
+
+  // Debug response
   return false;
 }
 

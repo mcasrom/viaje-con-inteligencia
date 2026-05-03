@@ -14,7 +14,7 @@ export default function AdminDashboard() {
     setLoading(true);
     setError('');
     try {
-      const res = await fetch('/api/admin/stats', {
+      const res = await fetch(`/api/admin/stats?token=${encodeURIComponent(password)}`, {
         headers: { 'Authorization': `Bearer ${password}` },
       });
       if (res.status === 401) {
