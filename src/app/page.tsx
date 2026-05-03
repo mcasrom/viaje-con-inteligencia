@@ -53,7 +53,7 @@ export default function Home() {
       <PlanificadorSimple />
 
       <MapaMundial />
-      
+
       {/* Memoria de Viaje - PREMIUM */}
       <div className="max-w-6xl mx-auto px-6 py-8">
         <div className="bg-gradient-to-r from-orange-600 to-amber-600 rounded-2xl p-6 shadow-lg shadow-orange-500/20">
@@ -73,8 +73,8 @@ export default function Home() {
                 </p>
               </div>
             </div>
-            <Link 
-              href="/documentos" 
+            <Link
+              href="/documentos"
               className="px-6 py-3 bg-white text-orange-600 font-bold rounded-xl hover:bg-orange-50 transition-all whitespace-nowrap"
             >
               Abrir app →
@@ -95,8 +95,8 @@ export default function Home() {
                 <p className="text-slate-400">Gráficos interactivos: riesgo político, aéreo, restricciones y recomendaciones IA</p>
               </div>
             </div>
-            <Link 
-              href="/dashboard/kpis" 
+            <Link
+              href="/dashboard/kpis"
               className="px-6 py-3 bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-bold rounded-xl hover:from-blue-600 hover:to-cyan-600 transition-all shadow-lg shadow-blue-500/25 whitespace-nowrap"
             >
               Ver Dashboard →
@@ -105,7 +105,7 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Checklist Premium Gratis - Moved below KPIs */}
+      {/* Checklist Premium Gratis */}
       <div className="max-w-6xl mx-auto px-6 py-6">
         <div className="bg-gradient-to-r from-emerald-600 to-teal-600 rounded-2xl p-6 shadow-lg shadow-emerald-500/20 border border-emerald-400/30">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
@@ -122,8 +122,8 @@ export default function Home() {
                   30 items esenciales para viajar seguro. Descárgalo ahora →</p>
               </div>
             </div>
-            <Link 
-              href="/lead-magnet" 
+            <Link
+              href="/lead-magnet"
               className="px-6 py-3 bg-white text-emerald-600 font-bold rounded-xl hover:bg-emerald-50 transition-all whitespace-nowrap flex items-center gap-2"
             >
               <CheckCircle className="w-5 h-5" />
