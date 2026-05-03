@@ -8,23 +8,19 @@ import path from 'path';
 export const dynamic = 'force-dynamic';
 
 function requireAuth(request: NextRequest) {
+  const HARDCODED_PASSWORD = 'Admin2026!Viaje';
+  
   const authHeader = request.headers.get('authorization');
   const cookie = request.cookies.get('admin_token')?.value;
-  const envToken = (process.env.ADMIN_PASSWORD || '').trim();
-  const expectedToken = envToken || 'Gemaper2017@';
-
-  if (authHeader === `Bearer ${expectedToken}` || cookie === expectedToken) {
-    return true;
-  }
-
-  // Accept via query param as fallback
   const url = new URL(request.url);
   const queryToken = url.searchParams.get('token');
-  if (queryToken === expectedToken) {
+
+  const provided = authHeader?.replace('Bearer ', '') || cookie || queryToken || '';
+
+  if (provided === HARDCODED_PASSWORD) {
     return true;
   }
 
-  // Debug response
   return false;
 }
 
