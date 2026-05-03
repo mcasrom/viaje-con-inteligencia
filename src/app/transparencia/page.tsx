@@ -32,14 +32,12 @@ async function getMaecStatus() {
   }
 }
 
-function StatusBadge({ status }: { status: string }) {
+function StatusBadge({ status, neverRun }: { status: string; neverRun?: boolean }) {
   const config: Record<string, { icon: any; label: string; color: string }> = {
     healthy: { icon: CheckCircle, label: 'Operativo', color: 'text-green-400 bg-green-400/10' },
     warning: { icon: AlertTriangle, label: 'Retrasado', color: 'text-yellow-400 bg-yellow-400/10' },
     error: { icon: XCircle, label: 'Error', color: 'text-red-400 bg-red-400/10' },
-    pending: { icon: Clock, label: 'Pendiente', color: 'text-slate-400 bg-slate-400/10' },
-    online: { icon: CheckCircle, label: 'Online', color: 'text-green-400 bg-green-400/10' },
-    offline: { icon: XCircle, label: 'Offline', color: 'text-red-400 bg-red-400/10' },
+    pending: neverRun ? { icon: Clock, label: 'Programado', color: 'text-blue-400 bg-blue-400/10' } : { icon: Clock, label: 'Pendiente', color: 'text-slate-400 bg-slate-400/10' },
   };
   const c = config[status] || config.pending;
   const Icon = c.icon;
@@ -52,13 +50,19 @@ function StatusBadge({ status }: { status: string }) {
 }
 
 function timeAgo(date: string | null): string {
-  if (!date) return 'Nunca';
+  if (!date) return 'Sin ejecutar aún';
   const diff = Date.now() - new Date(date).getTime();
   const mins = Math.floor(diff / 60000);
   if (mins < 60) return `Hace ${mins} min`;
   const hours = Math.floor(mins / 60);
   if (hours < 24) return `Hace ${hours}h`;
   return `Hace ${Math.floor(hours / 24)} días`;
+}
+
+function nextSchedule(date: string | null): string {
+  if (!date) return '—';
+  const d = new Date(date);
+  return d.toLocaleString('es-ES', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' });
 }
 
 export default async function TransparenciaPage() {
@@ -75,9 +79,9 @@ export default async function TransparenciaPage() {
   ];
 
   const cronJobs = [
-    { name: 'Scraper MAEC', icon: Shield, status: cronStatus?.scrapeMaec?.status || 'pending', lastUpdate: cronStatus?.scrapeMaec?.lastRun, desc: 'Actualiza riesgos de 107 países desde maec.es' },
-    { name: 'Alertas de riesgo', icon: AlertTriangle, status: cronStatus?.checkAlerts?.status || 'pending', lastUpdate: cronStatus?.checkAlerts?.lastRun, desc: 'Genera alertas automáticas por cambios de riesgo' },
-    { name: 'Digest semanal', icon: Newspaper, status: cronStatus?.weeklyDigest?.status || 'pending', lastUpdate: cronStatus?.weeklyDigest?.lastRun, desc: 'Resumen semanal de eventos y tendencias' },
+    { name: 'Scraper MAEC', icon: Shield, status: cronStatus?.scrapeMaec?.status || 'pending', lastUpdate: cronStatus?.scrapeMaec?.lastRun, nextRun: cronStatus?.scrapeMaec?.nextRun, desc: 'Actualiza riesgos de 107 países desde maec.es', schedule: 'Diario a las 6:00' },
+    { name: 'Alertas de riesgo', icon: AlertTriangle, status: cronStatus?.checkAlerts?.status || 'pending', lastUpdate: cronStatus?.checkAlerts?.lastRun, nextRun: cronStatus?.checkAlerts?.nextRun, desc: 'Genera alertas automáticas por cambios de riesgo', schedule: 'Diario a las 8:00' },
+    { name: 'Digest semanal', icon: Newspaper, status: cronStatus?.weeklyDigest?.status || 'pending', lastUpdate: cronStatus?.weeklyDigest?.lastRun, nextRun: cronStatus?.weeklyDigest?.nextRun, desc: 'Resumen semanal de eventos y tendencias', schedule: 'Lunes a las 8:00' },
   ];
 
   return (
@@ -151,8 +155,12 @@ export default async function TransparenciaPage() {
                   </div>
                   <StatusBadge status={job.status} />
                 </div>
-                <p className="text-slate-500 text-sm mb-2">{job.desc}</p>
-                <p className="text-slate-600 text-xs">Última ejecución: {timeAgo(job.lastUpdate)}</p>
+                <p className="text-slate-500 text-sm mb-3">{job.desc}</p>
+                <div className="flex flex-wrap gap-4 text-xs text-slate-600">
+                  <span className="flex items-center gap-1"><Clock className="w-3 h-3" />Última ejecución: {timeAgo(job.lastUpdate)}</span>
+                  <span className="flex items-center gap-1"><Clock className="w-3 h-3" />Programado: {job.schedule}</span>
+                  {job.nextRun && <span className="flex items-center gap-1"><Clock className="w-3 h-3" />Próximo: {nextSchedule(job.nextRun)}</span>}
+                </div>
               </div>
             ))}
           </div>
