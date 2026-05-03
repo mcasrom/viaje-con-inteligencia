@@ -1,0 +1,369 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import { Shield, Clock, Mail, Globe, Users, AlertTriangle, CheckCircle, XCircle, FileText, Database, MessageSquare, ExternalLink, RefreshCw } from 'lucide-react';
+
+export default function AdminDashboard() {
+  const [password, setPassword] = useState('');
+  const [authenticated, setAuthenticated] = useState(false);
+  const [data, setData] = useState<any>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const fetchStats = async () => {
+    setLoading(true);
+    setError('');
+    try {
+      const res = await fetch('/api/admin/stats', {
+        headers: { 'Authorization': `Bearer ${password}` },
+      });
+      if (res.status === 401) {
+        setError('Password incorrecto');
+        return;
+      }
+      if (!res.ok) throw new Error('Failed to fetch stats');
+      const json = await res.json();
+      setData(json);
+      setAuthenticated(true);
+    } catch (e: any) {
+      setError(e.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    fetchStats();
+  };
+
+  if (!authenticated) {
+    return (
+      <div className="min-h-screen bg-slate-900 flex items-center justify-center p-6">
+        <div className="bg-slate-800 rounded-2xl p-8 border border-slate-700 w-full max-w-md">
+          <div className="flex items-center gap-3 mb-6">
+            <Shield className="w-8 h-8 text-purple-400" />
+            <h1 className="text-2xl font-bold text-white">Panel Admin</h1>
+          </div>
+          <form onSubmit={handleLogin}>
+            <label className="block text-slate-300 text-sm mb-2">Password</label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full bg-slate-700 text-white px-4 py-3 rounded-xl border border-slate-600 focus:border-purple-500 mb-4"
+              placeholder="Introduce el password..."
+              autoFocus
+            />
+            {error && <p className="text-red-400 text-sm mb-4">{error}</p>}
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-purple-600 text-white font-bold py-3 rounded-xl hover:bg-purple-700 transition-colors disabled:opacity-50"
+            >
+              {loading ? 'Verificando...' : 'Acceder'}
+            </button>
+          </form>
+        </div>
+      </div>
+    );
+  }
+
+  const formatTime = (ts: string | null) => {
+    if (!ts) return 'Nunca';
+    const d = new Date(ts);
+    return d.toLocaleString('es-ES', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' });
+  };
+
+  const timeAgo = (ts: string | null) => {
+    if (!ts) return 'Nunca';
+    const diff = Date.now() - new Date(ts).getTime();
+    const hours = Math.floor(diff / (1000 * 60 * 60));
+    if (hours < 1) return `${Math.floor(diff / (1000 * 60))} min`;
+    if (hours < 24) return `${hours}h`;
+    return `${Math.floor(hours / 24)}d`;
+  };
+
+  return (
+    <div className="min-h-screen bg-slate-900">
+      <header className="bg-slate-800 border-b border-slate-700 sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <Shield className="w-6 h-6 text-purple-400" />
+            <h1 className="text-xl font-bold text-white">Panel de Administración</h1>
+          </div>
+          <div className="flex items-center gap-4">
+            <span className="text-slate-400 text-sm">
+              Actualizado: {formatTime(data?.timestamp)}
+            </span>
+            <button
+              onClick={fetchStats}
+              className="p-2 bg-slate-700 rounded-lg hover:bg-slate-600 transition-colors"
+              title="Refrescar datos"
+            >
+              <RefreshCw className={`w-4 h-4 text-slate-300 ${loading ? 'animate-spin' : ''}`} />
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <main className="max-w-7xl mx-auto px-6 py-8 space-y-8">
+        {/* Country Counts */}
+        <section className="bg-slate-800 rounded-2xl border border-slate-700 p-6">
+          <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+            <Globe className="w-5 h-5 text-blue-400" />
+            Auditoría de Países
+          </h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+            <div className="bg-slate-700 rounded-xl p-4">
+              <p className="text-slate-400 text-xs">Total</p>
+              <p className="text-2xl font-bold text-white">{data?.countries.total}</p>
+            </div>
+            <div className="bg-slate-700 rounded-xl p-4">
+              <p className="text-slate-400 text-xs">Visibles</p>
+              <p className="text-2xl font-bold text-green-400">{data?.countries.visible}</p>
+            </div>
+            <div className="bg-slate-700 rounded-xl p-4">
+              <p className="text-slate-400 text-xs">Ocultos</p>
+              <p className="text-2xl font-bold text-red-400">{data?.countries.hidden?.length}</p>
+            </div>
+            <div className="bg-slate-700 rounded-xl p-4">
+              <p className="text-slate-400 text-xs">queHacer = 0</p>
+              <p className="text-2xl font-bold text-orange-400">{data?.countries.queHacerZero?.length}</p>
+            </div>
+          </div>
+          {data?.countries.queHacerZero?.length > 0 && (
+            <div className="bg-orange-900/30 border border-orange-700/50 rounded-xl p-4">
+              <p className="text-orange-300 text-sm font-medium mb-2">Países sin queHacer:</p>
+              <div className="flex flex-wrap gap-2">
+                {data.countries.queHacerZero.map((c: any) => (
+                  <span key={c.code} className="px-2 py-1 bg-orange-800/50 text-orange-200 text-xs rounded">{c.code} {c.name}</span>
+                ))}
+              </div>
+            </div>
+          )}
+          {data?.countries.hidden?.length > 0 && (
+            <div className="mt-4 bg-red-900/30 border border-red-700/50 rounded-xl p-4">
+              <p className="text-red-300 text-sm font-medium mb-2">Países ocultos:</p>
+              <div className="flex flex-wrap gap-2">
+                {data.countries.hidden.map((c: any) => (
+                  <span key={c.code} className="px-2 py-1 bg-red-800/50 text-red-200 text-xs rounded">{c.code} {c.name}</span>
+                ))}
+              </div>
+            </div>
+          )}
+          <div className="mt-4 flex flex-wrap gap-4">
+            {data?.countries.riskDistribution && Object.entries(data.countries.riskDistribution).map(([level, count]) => (
+              <div key={level} className="flex items-center gap-2">
+                <span className="text-slate-400 text-sm">{level}:</span>
+                <span className="text-white font-bold">{count as number}</span>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Users */}
+        <section className="bg-slate-800 rounded-2xl border border-slate-700 p-6">
+          <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+            <Users className="w-5 h-5 text-green-400" />
+            Usuarios
+          </h2>
+          <div className="grid grid-cols-3 gap-4">
+            <div className="bg-slate-700 rounded-xl p-4">
+              <p className="text-slate-400 text-xs">Perfiles</p>
+              <p className="text-2xl font-bold text-white">{data?.users.profiles}</p>
+            </div>
+            <div className="bg-slate-700 rounded-xl p-4">
+              <p className="text-slate-400 text-xs">Viajes</p>
+              <p className="text-2xl font-bold text-white">{data?.users.trips}</p>
+            </div>
+            <div className="bg-slate-700 rounded-xl p-4">
+              <p className="text-slate-400 text-xs">Favoritos</p>
+              <p className="text-2xl font-bold text-white">{data?.users.favorites}</p>
+            </div>
+          </div>
+        </section>
+
+        {/* Cron Jobs */}
+        <section className="bg-slate-800 rounded-2xl border border-slate-700 p-6">
+          <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+            <Clock className="w-5 h-5 text-yellow-400" />
+            Cron Jobs
+          </h2>
+          <div className="space-y-4">
+            <div className="bg-slate-700 rounded-xl p-4">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-white font-medium">MAEC Scraper</span>
+                <span className="text-slate-400 text-sm">{timeAgo(data?.cron.scrapeMaec?.[0]?.created_at)}</span>
+              </div>
+              {data?.cron.scrapeMaec?.[0] && (
+                <div className="flex gap-4 text-sm">
+                  <span className="text-slate-400">Status: {data.cron.scrapeMaec[0].status}</span>
+                  <span className="text-slate-400">Items: {data.cron.scrapeMaec[0].items_scraped}</span>
+                  <span className="text-slate-400">Duración: {Math.round(data.cron.scrapeMaec[0].duration_ms / 1000)}s</span>
+                </div>
+              )}
+            </div>
+            <div className="bg-slate-700 rounded-xl p-4">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-white font-medium">Risk Alerts</span>
+                <span className="text-slate-400 text-sm">{timeAgo(data?.cron.checkAlerts?.[0]?.created_at)}</span>
+              </div>
+              {data?.cron.checkAlerts?.[0] && (
+                <div className="flex gap-4 text-sm">
+                  <span className="text-slate-400">País: {data.cron.checkAlerts[0].country_code}</span>
+                  <span className="text-slate-400">{data.cron.checkAlerts[0].old_risk} → {data.cron.checkAlerts[0].new_risk}</span>
+                </div>
+              )}
+            </div>
+            <div className="bg-slate-700 rounded-xl p-4">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-white font-medium">INE Tourism Scrape</span>
+                <span className="text-slate-400 text-sm">{timeAgo(data?.cron.ineScrape)}</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Newsletter */}
+        <section className="bg-slate-800 rounded-2xl border border-slate-700 p-6">
+          <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+            <Mail className="w-5 h-5 text-blue-400" />
+            Newsletter
+          </h2>
+          <div className="grid grid-cols-2 gap-4 mb-6">
+            <div className="bg-slate-700 rounded-xl p-4">
+              <p className="text-slate-400 text-xs">Suscriptores</p>
+              <p className="text-2xl font-bold text-white">{data?.newsletter.subscribers}</p>
+            </div>
+          </div>
+          <h3 className="text-sm font-medium text-slate-300 mb-3">Últimos envíos</h3>
+          {data?.newsletter.history?.length > 0 ? (
+            <div className="space-y-2">
+              {data.newsletter.history.map((h: any, i: number) => (
+                <div key={i} className="bg-slate-700 rounded-xl p-3 flex items-center justify-between">
+                  <div>
+                    <p className="text-white text-sm">{h.subject || '(sin asunto)'}</p>
+                    <p className="text-slate-400 text-xs">{formatTime(h.created_at)}</p>
+                  </div>
+                  <CheckCircle className="w-4 h-4 text-green-400" />
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-slate-500 text-sm">No hay historial de envíos</p>
+          )}
+        </section>
+
+        {/* Social Media */}
+        <section className="bg-slate-800 rounded-2xl border border-slate-700 p-6">
+          <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+            <MessageSquare className="w-5 h-5 text-cyan-400" />
+            Redes Sociales
+          </h2>
+          <div className="grid grid-cols-2 gap-4 mb-6">
+            <div className="bg-slate-700 rounded-xl p-4">
+              <p className="text-slate-400 text-xs">Bot Users (Telegram)</p>
+              <p className="text-2xl font-bold text-white">{data?.social.botUsers}</p>
+            </div>
+          </div>
+          {data?.social.botStats?.length > 0 && (
+            <div className="space-y-2">
+              <h3 className="text-sm font-medium text-slate-300 mb-3">Última actividad del bot</h3>
+              {data.social.botStats.slice(0, 5).map((s: any, i: number) => (
+                <div key={i} className="bg-slate-700 rounded-xl p-3 flex items-center justify-between">
+                  <div>
+                    <p className="text-white text-sm">{s.action || s.command || 'N/A'}</p>
+                    <p className="text-slate-400 text-xs">{formatTime(s.created_at)}</p>
+                  </div>
+                  <span className="text-slate-400 text-xs">{s.count || 1}</span>
+                </div>
+              ))}
+            </div>
+          )}
+          <div className="mt-4 bg-slate-700 rounded-xl p-4">
+            <p className="text-slate-300 text-sm font-medium mb-2">Mastodon</p>
+            <p className="text-slate-400 text-xs">@viajeinteligencia@mastodon.social</p>
+            <a href="https://mastodon.social/@viajeinteligencia" target="_blank" rel="noopener noreferrer" className="text-blue-400 text-sm flex items-center gap-1 mt-1">
+              Ver perfil <ExternalLink className="w-3 h-3" />
+            </a>
+          </div>
+        </section>
+
+        {/* Blog Posts */}
+        <section className="bg-slate-800 rounded-2xl border border-slate-700 p-6">
+          <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+            <FileText className="w-5 h-5 text-purple-400" />
+            Blog Posts
+          </h2>
+          <div className="grid grid-cols-4 gap-4 mb-6">
+            <div className="bg-slate-700 rounded-xl p-4">
+              <p className="text-slate-400 text-xs">Total Posts</p>
+              <p className="text-2xl font-bold text-white">{data?.posts.total}</p>
+            </div>
+            <div className="bg-slate-700 rounded-xl p-4">
+              <p className="text-slate-400 text-xs">Sin Categoría</p>
+              <p className="text-2xl font-bold text-red-400">{data?.posts.issues.noCategory?.length || 0}</p>
+            </div>
+            <div className="bg-slate-700 rounded-xl p-4">
+              <p className="text-slate-400 text-xs">Sin Imagen</p>
+              <p className="text-2xl font-bold text-orange-400">{data?.posts.issues.noImage?.length || 0}</p>
+            </div>
+            <div className="bg-slate-700 rounded-xl p-4">
+              <p className="text-slate-400 text-xs">Sin Excerpt</p>
+              <p className="text-2xl font-bold text-orange-400">{data?.posts.issues.noExcerpt?.length || 0}</p>
+            </div>
+          </div>
+          <h3 className="text-sm font-medium text-slate-300 mb-3">Últimos posts</h3>
+          <div className="space-y-2">
+            {data?.posts.recent?.map((p: any, i: number) => (
+              <div key={i} className="bg-slate-700 rounded-xl p-3 flex items-center justify-between">
+                <div>
+                  <p className="text-white text-sm">{p.title}</p>
+                  <p className="text-slate-400 text-xs">{p.slug} · {p.category || '(sin categoría)'}</p>
+                </div>
+                <span className="text-slate-400 text-xs">{timeAgo(p.date)}</span>
+              </div>
+            ))}
+          </div>
+          {data?.posts.issues?.noCategory?.length > 0 && (
+            <div className="mt-4 bg-red-900/30 border border-red-700/50 rounded-xl p-4">
+              <p className="text-red-300 text-sm font-medium mb-2">Posts sin categoría:</p>
+              <div className="flex flex-wrap gap-2">
+                {data.posts.issues.noCategory.map((slug: string) => (
+                  <span key={slug} className="px-2 py-1 bg-red-800/50 text-red-200 text-xs rounded">{slug}</span>
+                ))}
+              </div>
+            </div>
+          )}
+        </section>
+
+        {/* Hardcoded Data Warnings */}
+        <section className="bg-slate-800 rounded-2xl border border-slate-700 p-6">
+          <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+            <AlertTriangle className="w-5 h-5 text-orange-400" />
+            Datos Hardcoded / Warnings
+          </h2>
+          <div className="space-y-3">
+            {data?.hardcoded?.map((w: any, i: number) => (
+              <div key={i} className={`rounded-xl p-4 border ${
+                w.severity === 'high' ? 'bg-red-900/20 border-red-700/50' :
+                w.severity === 'medium' ? 'bg-orange-900/20 border-orange-700/50' :
+                'bg-yellow-900/20 border-yellow-700/50'
+              }`}>
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-white text-sm font-medium">{w.issue}</span>
+                  {w.severity === 'high' ? <XCircle className="w-4 h-4 text-red-400" /> :
+                   w.severity === 'medium' ? <AlertTriangle className="w-4 h-4 text-orange-400" /> :
+                   <CheckCircle className="w-4 h-4 text-yellow-400" />}
+                </div>
+                <p className="text-slate-400 text-xs">{w.file}</p>
+                <p className="text-slate-300 text-xs mt-1">Valor: <code className="bg-slate-800 px-1 rounded">{w.value}</code></p>
+              </div>
+            ))}
+          </div>
+        </section>
+      </main>
+    </div>
+  );
+}

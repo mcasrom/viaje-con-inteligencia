@@ -60,6 +60,9 @@ This version has breaking changes — APIs, conventions, and file structure may 
 - Featured posts en /blog: primeros 2 posts se muestran como cards grandes con imagen
 - Homepage order: Planificador → "Qué es Viaje Inteligencia" CTA → MapaMundial → Memoria → KPIs → Checklist → Newsletter → Testimonios
 
+### ✅ Completado
+- **Reviews migration**: Tabla `reviews` creada en Supabase con RLS policies. Seed data eliminado (reseñas no reales borradas).
+
 ## Way Ahead — Plan próximo día (04/05/2026)
 
 ### 🔥 Urgente

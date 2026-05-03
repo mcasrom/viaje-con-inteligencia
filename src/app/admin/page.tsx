@@ -6,6 +6,14 @@ import { Activity, Bot, Bell, Shield, ArrowRight } from 'lucide-react';
 export default function AdminPage() {
   const sections = [
     {
+      href: '/admin/dashboard',
+      icon: Shield,
+      title: 'Dashboard General',
+      description: 'Vista completa: cron jobs, newsletter, OSINT, posts, países, usuarios, warnings',
+      color: 'text-purple-400',
+      bgColor: 'bg-purple-500/20',
+    },
+    {
       href: '/admin/scraper-logs',
       icon: Activity,
       title: 'Scraper Logs',
