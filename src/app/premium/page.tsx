@@ -1244,14 +1244,6 @@ export default function PremiumPage() {
           <p className="text-slate-500 text-sm mt-4">¿Ya tienes cuenta? <Link href="/dashboard" className="text-blue-400 hover:text-blue-300">Acceder a mi cuenta</Link></p>
         </div>
       </main>
-
-      <footer className="bg-slate-800 border-t border-slate-700 py-6 mt-12">
-        <div className="max-w-6xl mx-auto px-6 text-center">
-          <p className="text-slate-500 text-sm">
-            © {new Date().getFullYear()} M.Castillo - Viaje con Inteligencia
-          </p>
-        </div>
-      </footer>
     </div>
   );
 }
