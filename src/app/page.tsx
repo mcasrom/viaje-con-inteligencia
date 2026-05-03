@@ -4,13 +4,29 @@ import NewsletterSignup from '@/components/NewsletterSignup';
 import PlanificadorSimple from '@/components/PlanificadorSimple';
 import QuickStart from '@/components/QuickStart';
 import Link from 'next/link';
-import { Activity, Shield, Globe, FileText, Gift, CheckCircle } from 'lucide-react';
+import { Activity, Shield, Globe, FileText, Gift, CheckCircle, Radio, MapPinned, Sparkles } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
 
 export default function Home() {
   return (
     <>
+      {/* FLASH BUTTON - Radio Inteligente */}
+      <div className="max-w-6xl mx-auto px-6 py-4">
+        <Link
+          href="/radius"
+          className="group block max-w-2xl mx-auto bg-gradient-to-r from-purple-600/90 to-indigo-600/90 rounded-full px-6 py-3 shadow-lg shadow-purple-500/40 border border-purple-400/50 hover:shadow-purple-500/60 transition-all duration-300 hover:scale-[1.02] backdrop-blur-sm"
+        >
+          <div className="flex items-center justify-center gap-3">
+            <Sparkles className="w-5 h-5 text-yellow-300 animate-pulse" />
+            <span className="text-white font-bold text-sm md:text-base">
+              <span className="text-yellow-300">NUEVO</span> — Radio Inteligente: descubre destinos cerca de ti con scoring IA
+            </span>
+            <span className="text-white text-sm font-bold group-hover:translate-x-1 transition-transform">→</span>
+          </div>
+        </Link>
+      </div>
+
       {/* POST DESTACADO - Qué es Viaje Inteligencia */}
       <div className="max-w-6xl mx-auto px-6 py-6">
         <Link
@@ -100,6 +116,33 @@ export default function Home() {
               className="px-6 py-3 bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-bold rounded-xl hover:from-blue-600 hover:to-cyan-600 transition-all shadow-lg shadow-blue-500/25 whitespace-nowrap"
             >
               Ver Dashboard →
+            </Link>
+          </div>
+        </div>
+      </div>
+
+      {/* Radio Inteligente - NUEVO */}
+      <div className="max-w-6xl mx-auto px-6 py-8">
+        <div className="bg-gradient-to-r from-purple-900/50 to-indigo-900/50 rounded-2xl p-6 border border-purple-500/30">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-4">
+              <div className="w-14 h-14 bg-purple-500/20 rounded-xl flex items-center justify-center">
+                <Radio className="w-8 h-8 text-purple-400" />
+              </div>
+              <div>
+                <div className="flex items-center gap-2 mb-1">
+                  <h3 className="text-xl font-bold text-white">🎯 Radio Inteligente</h3>
+                  <span className="px-2 py-0.5 bg-purple-500/30 text-purple-200 text-xs font-bold rounded-full">NUEVO</span>
+                </div>
+                <p className="text-slate-400">Descubre destinos increíbles cerca de ti con scoring IA: seguridad, clima, POIs y proximidad</p>
+              </div>
+            </div>
+            <Link
+              href="/radius"
+              className="px-6 py-3 bg-gradient-to-r from-purple-500 to-indigo-500 text-white font-bold rounded-xl hover:from-purple-600 hover:to-indigo-600 transition-all shadow-lg shadow-purple-500/25 whitespace-nowrap flex items-center gap-2"
+            >
+              <MapPinned className="w-5 h-5" />
+              Explorar →
             </Link>
           </div>
         </div>

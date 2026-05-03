@@ -63,7 +63,7 @@ export default function DetallePaisClient({ pais, relatedPosts = [] }: DetallePa
   useEffect(() => {
     if (activeTab === 'pois' && poisData.length === 0 && !poisLoading) {
       setPoisLoading(true);
-      fetch(`/api/wikidata/pois?country=${codigo.toLowerCase()}&type=${poisType}&limit=10`)
+      fetch(`/api/wikidata/pois?country=${codigo.toLowerCase()}&type=${poisType}&limit=15&sparql=true`)
         .then(res => res.json())
         .then(data => {
           console.log('POIs fetched:', data);
@@ -522,11 +522,16 @@ export default function DetallePaisClient({ pais, relatedPosts = [] }: DetallePa
           <div className="bg-slate-800 rounded-xl p-6 border border-slate-700 mb-6">
             <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
               <MapPinned className="w-5 h-5 text-purple-400" />
-              Points of Interest
+              Puntos de Interés
             </h3>
             
             <div className="flex flex-wrap gap-2 mb-4">
-              {['museum', 'castle', 'beach', 'lighthouse'].map(type => (
+              {[
+                { type: 'museum', label: 'Museos', icon: '🏛️' },
+                { type: 'heritage', label: 'Patrimonio', icon: '🏰' },
+                { type: 'beach', label: 'Playas', icon: '🏖️' },
+                { type: 'lighthouse', label: 'Faros', icon: '🗼' },
+              ].map(({ type, label, icon }) => (
                 <button
                   key={type}
                   onClick={() => { setPoisType(type); setPoisData([]); }}
@@ -536,10 +541,7 @@ export default function DetallePaisClient({ pais, relatedPosts = [] }: DetallePa
                       : 'bg-slate-700 text-slate-400 hover:text-white'
                   }`}
                 >
-                  {type === 'museum' && '🏛️ Museos'}
-                  {type === 'castle' && '🏰 Castillos'}
-                  {type === 'beach' && '🏖️ Playas'}
-                  {type === 'lighthouse' && '🗼 Faros'}
+                  {icon} {label}
                 </button>
               ))}
             </div>
@@ -552,10 +554,22 @@ export default function DetallePaisClient({ pais, relatedPosts = [] }: DetallePa
             ) : poisData.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 {poisData.map((poi: any, idx: number) => (
-                  <div key={idx} className="p-3 bg-slate-700/50 rounded-lg">
+                  <a
+                    key={idx}
+                    href={poi.url || `https://www.wikidata.org/wiki/${poi.name?.replace(/ /g, '_')}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="p-3 bg-slate-700/50 rounded-lg hover:bg-slate-700 transition-colors group"
+                  >
                     <p className="text-white font-medium text-sm">{poi.name}</p>
-                    <p className="text-slate-400 text-xs mt-1">{poi.lat?.toFixed(2)}, {poi.lon?.toFixed(2)}</p>
-                  </div>
+                    {poi.description && (
+                      <p className="text-slate-400 text-xs mt-1 line-clamp-2">{poi.description}</p>
+                    )}
+                    <div className="flex items-center justify-between mt-2">
+                      <p className="text-slate-500 text-xs">{poi.lat?.toFixed(4)}, {poi.lon?.toFixed(4)}</p>
+                      <ExternalLink className="w-3 h-3 text-slate-500 group-hover:text-purple-400 transition-colors" />
+                    </div>
+                  </a>
                 ))}
               </div>
             ) : (

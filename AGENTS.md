@@ -62,28 +62,23 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 ### ✅ Completado
 - **Reviews migration**: Tabla `reviews` creada en Supabase con RLS policies. Seed data eliminado (reseñas no reales borradas).
+- **Social publish log**: Tabla `social_publish_log` creada para tracking de posts publicados.
+- **Admin dashboard**: Acciones para disparar crons y publicar posts en redes sociales.
+- **Tokens limpios**: Env vars en Vercel, .env.local en gitignore, script lee de env.
+- **Blog categories**: 3 posts sin categoría → añadidas (Estrategia, Ahorro, Seguridad).
+- **Homepage CTA**: Post destacado "Qué es Viaje Inteligencia" primero en home.
 
-## Way Ahead — Plan próximo día (04/05/2026)
+## Way Ahead — Plan próximo día
 
-### 🔥 Urgente
-- [ ] **Mastodon token en Vercel**: Token configurado pero `scripts/publish-posts.mjs` tiene token hardcoded. Mover a env var y limpiar script.
-- [ ] **Blog categories en frontmatter**: `Que-es-viaje-inteligencia.md` y `Como-encontrar-vuelos-baratos.md` NO tienen campo `category` → categoría vacía en cards del blog.
-- [ ] **Submit sitemap a Google Search Console** (manual)
+### 📊 Data (High Impact)
+- [ ] Enriquecer `queHacer` arrays: 13 países con 0 items, 16 con solo 4
 
-### 📊 Supabase / Data
-- [ ] Ejecutar migration `supabase/sprint-35-reviews.sql` en Supabase Dashboard
-- [ ] Enriquecer `queHacer` arrays: 13 países tienen 0 items, 16 tienen solo 4
-
-### 🏗️ Features pendientes
+### 🏗️ Features
 - [ ] España Premium itinerarios module (Sprint 33 Level 3 #4)
-- [ ] Schema.org markup en blog post pages (verificar server-side rendering para crawlers)
-- [ ] Optimizar imágenes del blog (webp, lazy loading, alt text)
+- [ ] Schema.org server-side en blog posts (mover de client useEffect a server component)
+- [ ] Imágenes blog → webp + lazy loading
 
-### 🧪 QA / Fixes
-- [ ] Verificar blog search en producción (fix null tags/keywords)
-- [ ] Verificar paginación blog: 2 páginas (50 + resto)
-- [ ] Verificar posts con categorías vacías no rompen filtro de categorías
-
-### 🔒 Seguridad
-- [ ] Rotar tokens Mastodon si fueron commiteados (check git history)
-- [ ] Mover tokens de `scripts/publish-posts.mjs` a `.env` local
+### 🧪 QA
+- [ ] Verificar crons ejecutados en admin dashboard (MAEC Scraper, Alerts)
+- [ ] Verificar posts publicados a social desde admin dashboard
+- [ ] Verificar blog search + paginación en producción

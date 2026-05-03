@@ -868,3 +868,60 @@ cd ~/viaje-con-inteligencia && npm install
 - Callback: =src/app/auth/callback/route.ts= (Redirección y verificación)
 - Dashboard: =src/app/dashboard/page.tsx= (UI completa de gestión)
 
+* POIs - PUNTOS DE INTERÉS
+
+** ✅ Completado (2026-05-03)
+- Tabs POI: 🏛️ Museos, 🏰 Patrimonio, 🏖️ Playas, 🗼 Faros (renombrado Castillos → Patrimonio)
+- API Wikidata SPARQL con 80+ países (COUNTRY_WIKIDATA mapping)
+- SPARQL activado por defecto (`sparql=true` en fetch)
+- Tipos de consulta: museums (Q33506), heritage (castillos, palacios, fortalezas, ruinas), faros, playas
+- Tarjetas POI mejoradas: nombre + descripción + coords + link a Wikidata
+- Título traducido a español: "Puntos de Interés"
+
+** Pendiente
+- [ ] Añadir categoría 🏔️ Naturaleza (parques nacionales, reservas)
+- [ ] Mostrar imágenes de POIs (wdt:P18 ya se consulta)
+- [ ] Cache de respuestas SPARQL (Redis o memoria)
+- [ ] Fallback a datos estáticos cuando SPARQL falle o no devuelva nada
+- [ ] Enriquecer queHacer arrays en paises.ts con datos de POIs
+
+** APIs Disponibles
+- Wikidata SPARQL: query.wikidata.org/sparql (gratis, sin API key)
+ - OpenStreetMap Nominatim: nominatim.openstreetmap.org (gratis, rate limited)
+- OpenTripMap API: opentripmap.com (free tier 1000 req/day)
+- Wikimedia REST API: api.wikimedia.org (gratis)
+
+* RADIO INTELIGENTE - RECOMENDADOR POR RADIO (2026-05-03)
+
+** ✅ Completado
+- Página /radius con mapa Leaflet (CartoDB dark theme)
+- API /api/radius-recommender con scoring algorítmico
+- Base de datos: ~300 ciudades de 80+ países en tabla places
+- Geocoding: Nominatim (gratis)
+- Clima: OpenWeather API (ya integrado)
+- POIs: Wikidata SPARQL (ya integrado)
+- Score: Seguridad 35% + Proximidad 25% + POIs 20% + Clima 20%
+
+** 🔧 Pendiente (requiere acción manual)
+- [ ] Ejecutar SQL en Supabase: CREATE EXTENSION postgis
+- [ ] Ejecutar migración: supabase/radius-recommender-setup.sql
+- [ ] Poblar datos: supabase/seed-places.sql (~300 ciudades)
+- [ ] Añadir enlace en homepage o navegación
+
+** Archivos clave
+- Página: src/app/radius/page.tsx (server wrapper)
+- Cliente: src/app/radius/RadiusExplorer.tsx (UI, búsqueda, resultados)
+- Mapa: src/app/radius/RadiusMap.tsx (Leaflet, markers, controles)
+- API: src/app/api/radius-recommender/route.ts (scoring, datos)
+- SQL: supabase/radius-recommender-setup.sql (PostGIS + tabla)
+- Seed: supabase/seed-places.sql (datos de 300+ ciudades)
+- Script: scripts/seed-places.mjs (generador de seed)
+
+** Coste: 100% gratuito
+- Nominatim: geocoding gratis
+- OpenWeather: clima gratis (ya configurado)
+- Wikidata SPARQL: POIs gratis (ya integrado)
+- CartoDB tiles: mapa gratis
+- Supabase PostGIS: queries geográficas gratis (free tier)
+
+
