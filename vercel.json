@@ -1,20 +1,20 @@
 {
   "redirects": [
     {
-      "source": "/(.*)",
+      "source": "/:path*",
       "has": [
         {
           "type": "host",
           "value": "viaje-con-inteligencia.vercel.app"
         }
       ],
-      "destination": "https://www.viajeinteligencia.com/$1",
+      "destination": "https://www.viajeinteligencia.com/:path*",
       "permanent": true
     }
   ],
   "headers": [
     {
-      "source": "/(.*)",
+      "source": "/:path*",
       "has": [
         {
           "type": "host",
