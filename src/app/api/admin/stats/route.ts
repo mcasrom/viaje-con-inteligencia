@@ -10,7 +10,7 @@ export const dynamic = 'force-dynamic';
 function requireAuth(request: NextRequest) {
   const authHeader = request.headers.get('authorization');
   const cookie = request.cookies.get('admin_token')?.value;
-  const expectedToken = process.env.ADMIN_PASSWORD || 'admin';
+  const expectedToken = (process.env.ADMIN_PASSWORD || 'admin').trim();
 
   if (authHeader === `Bearer ${expectedToken}` || cookie === expectedToken) {
     return true;
