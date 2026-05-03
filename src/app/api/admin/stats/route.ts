@@ -10,11 +10,14 @@ export const dynamic = 'force-dynamic';
 function requireAuth(request: NextRequest) {
   const authHeader = request.headers.get('authorization');
   const cookie = request.cookies.get('admin_token')?.value;
-  const expectedToken = (process.env.ADMIN_PASSWORD || 'admin').trim();
+  const envToken = (process.env.ADMIN_PASSWORD || '').trim();
+  const expectedToken = envToken || 'Gemaper2017@';
 
   if (authHeader === `Bearer ${expectedToken}` || cookie === expectedToken) {
     return true;
   }
+  // Debug: log what we're comparing
+  console.log('[Admin Auth] header:', authHeader, 'cookie:', cookie, 'expected:', expectedToken, 'env raw:', process.env.ADMIN_PASSWORD?.length);
   return false;
 }
 
