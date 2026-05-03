@@ -68,6 +68,7 @@ export default function Footer() {
               <li><Link href="/legal" className="text-slate-400 hover:text-white transition-colors">Aviso Legal</Link></li>
               <li><Link href="/kpi" className="text-slate-400 hover:text-white transition-colors">Índice de Paz</Link></li>
               <li><Link href="/stats" className="text-slate-400 hover:text-white transition-colors">Estadísticas</Link></li>
+              <li><Link href="/transparencia" className="text-slate-400 hover:text-white transition-colors">Transparencia</Link></li>
             </ul>
           </div>
           <div>
