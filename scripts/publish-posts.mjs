@@ -1,8 +1,31 @@
 // Publish latest blog posts to Telegram and Mastodon
-// Usage: node scripts/publish-posts.mjs
+// Usage: MASTODON_ACCESS_TOKEN=xxx node scripts/publish-posts.mjs
+// Tokens are loaded from .env.local or environment variables
+
+import { createRequire } from "module";
+import fs from "fs";
+import path from "path";
+
+// Load .env.local if exists
+const envPath = path.resolve(process.cwd(), ".env.local");
+if (fs.existsSync(envPath)) {
+  fs.readFileSync(envPath, "utf8")
+    .split("\n")
+    .filter((line) => line && !line.startsWith("#"))
+    .forEach((line) => {
+      const [key, ...rest] = line.split("=");
+      if (key && !process.env[key.trim()]) {
+        process.env[key.trim()] = rest.join("=").trim();
+      }
+    });
+}
 
 const BLOG_URL = "https://www.viajeinteligencia.com/blog";
 
+/* ========================
+   POSTS TO PUBLISH
+   Add new posts here, or run with --latest flag to auto-pick
+======================== */
 const posts = [
   {
     slug: "Que-es-viaje-inteligencia",
@@ -21,14 +44,19 @@ const posts = [
 /* ========================
    TELEGRAM
 ======================== */
-const TELEGRAM_BOT_TOKEN = "8759369996:AAGsrx0g5oZppfhKE4m40W5JVtI5aFfOe0c";
-const TELEGRAM_CHANNEL_ID = "-1003910098382";
+const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
+const TELEGRAM_CHANNEL_ID = process.env.TELEGRAM_CHANNEL_ID;
 
 function escapeMD(text) {
-  return text.replace(/([_*[\]()~`>#+\-=|{}.!\\])/g, '\\$1');
+  return text.replace(/([_*[\]()~`>#+\-=|{}.!\\])/g, "\\$1");
 }
 
 async function publishToTelegram(post) {
+  if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHANNEL_ID) {
+    console.error("❌ Telegram: missing TELEGRAM_BOT_TOKEN or TELEGRAM_CHANNEL_ID");
+    return false;
+  }
+
   const hashtags = post.tags.map((t) => escapeMD("#" + t.replace(/\s+/g, ""))).join(" ");
   const message =
     `📝 *${escapeMD(post.title)}*\n\n` +
@@ -63,7 +91,7 @@ async function publishToTelegram(post) {
 /* ========================
    MASTODON
 ======================== */
-const MASTODON_ACCESS_TOKEN = "v4GW2kcbkaXMggW7oV06ORk6QRQo7KIzljDKCUd0ABQ";
+const MASTODON_ACCESS_TOKEN = process.env.MASTODON_ACCESS_TOKEN;
 
 async function publishToMastodon(post) {
   if (!MASTODON_ACCESS_TOKEN) {

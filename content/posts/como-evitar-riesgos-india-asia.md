@@ -1,6 +1,7 @@
 ---
 title: "Cómo evitar riesgos al comer en Asia: guía completa para India, Tailandia y otros países asiáticos"
 date: 2026-04-23
+category: "Seguridad"
 description: "Consejos prácticos y avanzados para evitar intoxicaciones alimentarias al viajar a India, Tailandia y Asia. Aprende dónde comer, qué evitar y cómo reducir riesgos en tu viaje."
 tags: ["viaje seguro", "asia", "india", "tailandia", "salud", "consejos", "riesgos", "alimentacion"]
 keywords: ["comer seguro en asia", "evitar diarrea viajero", "comida india riesgos", "street food tailandia consejos", "viajar seguro asia"]
