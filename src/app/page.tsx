@@ -11,9 +11,6 @@ export const dynamic = 'force-dynamic';
 export default function Home() {
   return (
     <>
-      {/* LEAD MAGNET - Banner destacado */}
-      <PlanificadorSimple />
-      
       {/* POST DESTACADO - Qué es Viaje Inteligencia */}
       <div className="max-w-6xl mx-auto px-6 py-6">
         <Link
@@ -51,6 +48,9 @@ export default function Home() {
           </div>
         </Link>
       </div>
+
+      {/* LEAD MAGNET - Banner destacado */}
+      <PlanificadorSimple />
 
       <MapaMundial />
       
