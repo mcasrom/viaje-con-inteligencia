@@ -5,6 +5,10 @@ import { useI18n } from '@/lib/i18n';
 import ScraperStatus from './ScraperStatus';
 import NewsletterSignup from './NewsletterSignup';
 
+import { getGlobalStats } from '@/lib/global-stats';
+
+const stats = getGlobalStats();
+
 export default function Footer() {
   const { t } = useI18n();
 
@@ -31,7 +35,7 @@ export default function Footer() {
           <div>
             <h3 className="text-lg font-bold text-white mb-3">Viaje con Inteligencia</h3>
             <p className="text-slate-400 text-sm">
-              Tu guía de viajes inteligentes. 100 países con riesgo MAEC, Chat IA, comparador, KPIs y herramientas Premium.
+              Tu guía de viajes inteligentes. {stats.totalPaises} países con riesgo MAEC, Chat IA, comparador, KPIs y herramientas Premium.
             </p>
           </div>
           <div>
