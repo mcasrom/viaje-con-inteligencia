@@ -112,11 +112,11 @@ export default function DetallePaisClient({ pais, relatedPosts = [] }: DetallePa
   };
 
   const riesgoConfig = {
-    'sin-riesgo': { bg: 'bg-green-500', text: 'text-green-400', border: 'border-green-500', description: 'No existen riesgos específicos. Puede viajarse con normalidad.' },
-    'bajo': { bg: 'bg-yellow-500', text: 'text-yellow-400', border: 'border-yellow-500', description: 'Riesgo bajo. Se recomienda tomar precauciones normales.' },
-    'medio': { bg: 'bg-orange-500', text: 'text-orange-400', border: 'border-orange-500', description: 'Riesgo moderado. Se recomienda extremar precauciones.' },
-    'alto': { bg: 'bg-red-500', text: 'text-red-400', border: 'border-red-500', description: 'Riesgo alto. Se desaconsejan los viajes no esenciales.' },
-    'muy-alto': { bg: 'bg-red-900', text: 'text-red-400', border: 'border-red-900', description: 'Riesgo muy alto. Se desaconsejan todos los viajes.' }
+    'sin-riesgo': { bg: 'bg-green-500', text: 'text-green-400', border: 'border-green-500', label: 'Sin riesgo', description: 'No existen riesgos específicos. Puede viajarse con normalidad.' },
+    'bajo': { bg: 'bg-yellow-500', text: 'text-yellow-400', border: 'border-yellow-500', label: 'Riesgo bajo', description: 'Riesgo bajo. Se recomienda tomar precauciones normales.' },
+    'medio': { bg: 'bg-orange-500', text: 'text-orange-400', border: 'border-orange-500', label: 'Riesgo medio', description: 'Riesgo moderado. Se recomienda extremar precauciones.' },
+    'alto': { bg: 'bg-red-500', text: 'text-red-400', border: 'border-red-500', label: 'Riesgo alto', description: 'Riesgo alto. Se desaconsejan los viajes no esenciales.' },
+    'muy-alto': { bg: 'bg-red-900', text: 'text-red-400', border: 'border-red-900', label: 'Riesgo muy alto', description: 'Riesgo muy alto. Se desaconsejan todos los viajes.' }
   };
 
   const config = riesgoConfig[pais.nivelRiesgo];
@@ -174,7 +174,7 @@ export default function DetallePaisClient({ pais, relatedPosts = [] }: DetallePa
             <div className={`px-6 py-3 rounded-xl ${config.bg} text-white font-bold text-lg`}>
               <div className="flex items-center gap-2">
                 <AlertTriangle className="w-6 h-6" />
-                <span>{config.text.split('-')[0].replace('text-', '').charAt(0).toUpperCase() + config.text.split('-')[0].replace('text-', '').slice(1)}</span>
+                <span>{config.label}</span>
               </div>
             </div>
           </div>
