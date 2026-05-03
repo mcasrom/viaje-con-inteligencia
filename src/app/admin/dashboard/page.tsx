@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Shield, Clock, Mail, Globe, Users, AlertTriangle, CheckCircle, XCircle, FileText, Database, MessageSquare, ExternalLink, RefreshCw } from 'lucide-react';
+import { Shield, Clock, Mail, Globe, Users, AlertTriangle, CheckCircle, XCircle, FileText, Database, MessageSquare, ExternalLink, RefreshCw, Play, Send, Radio, Bot } from 'lucide-react';
 
 export default function AdminDashboard() {
   const [password, setPassword] = useState('');
@@ -9,6 +9,32 @@ export default function AdminDashboard() {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [actionResult, setActionResult] = useState<any>(null);
+  const [actionLoading, setActionLoading] = useState<string | null>(null);
+
+  const runAction = async (action: string, cronPath?: string) => {
+    setActionLoading(action);
+    setActionResult(null);
+    try {
+      const res = await fetch('/api/admin/actions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${password}`,
+        },
+        body: JSON.stringify({ action, cronPath }),
+      });
+      const json = await res.json();
+      setActionResult({ ...json, action });
+      if (json.success) {
+        fetchStats();
+      }
+    } catch (e: any) {
+      setActionResult({ action, error: e.message });
+    } finally {
+      setActionLoading(null);
+    }
+  };
 
   const fetchStats = async () => {
     setLoading(true);
@@ -363,6 +389,91 @@ export default function AdminDashboard() {
             ))}
           </div>
         </section>
+
+        {/* Acciones - Cron Triggers */}
+        <section className="bg-slate-800 rounded-2xl border border-slate-700 p-6">
+          <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+            <Play className="w-5 h-5 text-green-400" />
+            Disparar Cron Jobs
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            {[
+              { path: '/api/cron/scrape-maec', label: 'MAEC Scraper', icon: '🌍' },
+              { path: '/api/cron/check-alerts', label: 'Check Alerts', icon: '⚠️' },
+              { path: '/api/cron/daily-digest', label: 'Daily Digest', icon: '📧' },
+              { path: '/api/cron/weekly-digest', label: 'Weekly Digest', icon: '📰' },
+              { path: '/api/cron/ine-scrape', label: 'INE Scrape', icon: '📊' },
+            ].map((cron) => (
+              <button
+                key={cron.path}
+                onClick={() => runAction('trigger-cron', cron.path)}
+                disabled={actionLoading !== null}
+                className="flex items-center gap-3 bg-slate-700 hover:bg-slate-600 disabled:opacity-50 rounded-xl p-4 transition-colors"
+              >
+                <span className="text-2xl">{cron.icon}</span>
+                <div className="flex-1 text-left">
+                  <p className="text-white text-sm font-medium">{cron.label}</p>
+                  <p className="text-slate-400 text-xs">{cron.path}</p>
+                </div>
+                {actionLoading === 'trigger-cron' ? (
+                  <RefreshCw className="w-4 h-4 animate-spin text-slate-400" />
+                ) : (
+                  <Play className="w-4 h-4 text-green-400" />
+                )}
+              </button>
+            ))}
+          </div>
+        </section>
+
+        {/* Acciones - Social Media Publish */}
+        <section className="bg-slate-800 rounded-2xl border border-slate-700 p-6">
+          <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+            <Send className="w-5 h-5 text-blue-400" />
+            Publicar Posts en Redes
+          </h2>
+          <p className="text-slate-400 text-sm mb-4">Publica todos los posts del blog que aún no se han enviado a Telegram y Mastodon.</p>
+          <button
+            onClick={() => runAction('publish-posts')}
+            disabled={actionLoading !== null}
+            className="flex items-center gap-3 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 rounded-xl px-6 py-4 transition-colors w-full md:w-auto"
+          >
+            <Send className="w-5 h-5" />
+            {actionLoading === 'publish-posts' ? (
+              <>Publicando...</>
+            ) : (
+              <>Publicar todos los posts no publicados</>
+            )}
+          </button>
+          {actionResult && actionResult.action === 'publish-posts' && (
+            <div className="mt-4 space-y-2">
+              {actionResult.results?.map((r: any, i: number) => (
+                <div key={i} className="bg-slate-700 rounded-xl p-3">
+                  <p className="text-white text-sm">{r.title}</p>
+                  <div className="flex gap-3 mt-1">
+                    <span className={`text-xs ${r.telegram ? 'text-green-400' : 'text-red-400'}`}>
+                      {r.telegram ? '✅ Telegram' : '❌ Telegram'}
+                    </span>
+                    <span className={`text-xs ${r.mastodon ? 'text-green-400' : 'text-red-400'}`}>
+                      {r.mastodon ? `✅ Mastodon → ${r.mastodonUrl}` : '❌ Mastodon'}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </section>
+
+        {/* Action Result */}
+        {actionResult && actionResult.action !== 'publish-posts' && (
+          <section className={`rounded-2xl border p-6 ${actionResult.success ? 'bg-green-900/20 border-green-700/50' : 'bg-red-900/20 border-red-700/50'}`}>
+            <h3 className="text-white font-bold mb-2">
+              {actionResult.success ? '✅ Ejecutado' : '❌ Error'}
+            </h3>
+            <pre className="text-slate-300 text-xs overflow-auto max-h-48">
+              {JSON.stringify(actionResult.result || actionResult, null, 2)}
+            </pre>
+          </section>
+        )}
       </main>
     </div>
   );
