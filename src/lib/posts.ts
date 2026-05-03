@@ -16,10 +16,12 @@ export interface PostMeta {
   excerpt: string;
   description?: string;
   tags?: string[];
+  featured?: boolean;
 }
 
 export interface Post extends PostMeta {
   content: string;
+  featured?: boolean;
 }
 
 export function getPostSlugs(): string[] {
