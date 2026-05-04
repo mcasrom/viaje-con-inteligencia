@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { Quote, Star, MessageSquare, Users, Globe, TrendingUp, CheckCircle, Send, X, Loader2 } from 'lucide-react';
+import { getTodosLosPaises } from '@/data/paises';
 
 interface ReviewItem {
   id: string;
@@ -20,26 +21,9 @@ const socialProofStats = [
   { icon: <TrendingUp className="w-5 h-5" />, value: '365', label: 'Días de alertas', color: 'text-purple-400' },
 ];
 
-const POPULAR_COUNTRIES = [
-  { code: 'ES', name: 'España' },
-  { code: 'FR', name: 'Francia' },
-  { code: 'IT', name: 'Italia' },
-  { code: 'PT', name: 'Portugal' },
-  { code: 'JP', name: 'Japón' },
-  { code: 'MA', name: 'Marruecos' },
-  { code: 'MX', name: 'México' },
-  { code: 'CO', name: 'Colombia' },
-  { code: 'AR', name: 'Argentina' },
-  { code: 'AU', name: 'Australia' },
-  { code: 'US', name: 'Estados Unidos' },
-  { code: 'GB', name: 'Reino Unido' },
-  { code: 'DE', name: 'Alemania' },
-  { code: 'GR', name: 'Grecia' },
-  { code: 'TH', name: 'Tailandia' },
-  { code: 'BR', name: 'Brasil' },
-  { code: 'PE', name: 'Perú' },
-  { code: 'CR', name: 'Costa Rica' },
-];
+const ALL_COUNTRIES = getTodosLosPaises()
+  .map(p => ({ code: p.codigo, name: p.nombre }))
+  .sort((a, b) => a.name.localeCompare(b.name, 'es'));
 
 function StarSelector({ rating, onChange }: { rating: number; onChange: (r: number) => void }) {
   const [hover, setHover] = useState(0);
@@ -331,7 +315,7 @@ export default function Testimonios() {
                       className="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-xl text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors"
                     >
                       <option value="">Selecciona un país (opcional)</option>
-                      {POPULAR_COUNTRIES.map(c => (
+                      {ALL_COUNTRIES.map(c => (
                         <option key={c.code} value={c.code}>{c.name}</option>
                       ))}
                     </select>
