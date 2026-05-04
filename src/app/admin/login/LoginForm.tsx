@@ -1,6 +1,7 @@
 'use client';
 
-import { useActionState } from 'react';
+import { useActionState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { useFormStatus } from 'react-dom';
 import { Lock } from 'lucide-react';
 import { loginAction } from '@/lib/admin-auth';
@@ -19,7 +20,15 @@ function SubmitButton() {
 }
 
 export default function LoginForm({ from }: { from: string }) {
-  const [state, action] = useActionState(loginAction, null);
+  const router = useRouter();
+  const [state, action, pending] = useActionState(loginAction, null);
+
+  useEffect(() => {
+    if (state?.success && state.redirect) {
+      router.push(state.redirect);
+      router.refresh();
+    }
+  }, [state, router]);
 
   return (
     <form action={action}>

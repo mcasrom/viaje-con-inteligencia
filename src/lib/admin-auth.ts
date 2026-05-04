@@ -1,7 +1,6 @@
 'use server';
 
 import { cookies } from 'next/headers';
-import { redirect } from 'next/navigation';
 
 const ADMIN_PASSWORD = 'Admin2026!Viaje';
 const COOKIE_NAME = 'admin_session';
@@ -21,7 +20,7 @@ export async function loginAction(prevState: any, formData: FormData) {
     });
 
     const from = formData.get('from') as string || '/admin/dashboard';
-    redirect(from);
+    return { success: true, redirect: from };
   }
 
   return { error: 'Password incorrecto' };
@@ -36,7 +35,7 @@ export async function logoutAction() {
     maxAge: 0,
     path: '/',
   });
-  redirect('/admin/login');
+  return { redirect: '/admin/login' };
 }
 
 export async function checkAuth(): Promise<boolean> {
