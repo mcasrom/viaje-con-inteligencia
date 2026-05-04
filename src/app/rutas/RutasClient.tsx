@@ -117,6 +117,34 @@ const ROUTE_PREDICTIONS: Record<string, { month: string; price: number; crowd: n
     { month: 'Nov', price: 60, crowd: 35, weather: 50 },
     { month: 'Dic', price: 65, crowd: 45, weather: 35 },
   ],
+  segovia: [
+    { month: 'Ene', price: 40, crowd: 15, weather: 25 },
+    { month: 'Feb', price: 35, crowd: 10, weather: 30 },
+    { month: 'Mar', price: 45, crowd: 20, weather: 45 },
+    { month: 'Abr', price: 60, crowd: 40, weather: 65 },
+    { month: 'May', price: 65, crowd: 50, weather: 75 },
+    { month: 'Jun', price: 70, crowd: 55, weather: 85 },
+    { month: 'Jul', price: 75, crowd: 70, weather: 90 },
+    { month: 'Ago', price: 80, crowd: 75, weather: 85 },
+    { month: 'Sep', price: 65, crowd: 45, weather: 75 },
+    { month: 'Oct', price: 55, crowd: 35, weather: 60 },
+    { month: 'Nov', price: 45, crowd: 20, weather: 40 },
+    { month: 'Dic', price: 50, crowd: 30, weather: 30 },
+  ],
+  buceo: [
+    { month: 'Ene', price: 45, crowd: 10, weather: 25 },
+    { month: 'Feb', price: 40, crowd: 10, weather: 30 },
+    { month: 'Mar', price: 50, crowd: 15, weather: 40 },
+    { month: 'Abr', price: 60, crowd: 25, weather: 55 },
+    { month: 'May', price: 70, crowd: 35, weather: 70 },
+    { month: 'Jun', price: 80, crowd: 55, weather: 85 },
+    { month: 'Jul', price: 95, crowd: 85, weather: 95 },
+    { month: 'Ago', price: 100, crowd: 95, weather: 95 },
+    { month: 'Sep', price: 85, crowd: 50, weather: 90 },
+    { month: 'Oct', price: 65, crowd: 30, weather: 70 },
+    { month: 'Nov', price: 50, crowd: 15, weather: 45 },
+    { month: 'Dic', price: 45, crowd: 10, weather: 30 },
+  ],
 };
 
 const ROUTES_DATA = [
@@ -328,6 +356,60 @@ const ROUTES_DATA = [
     highlights: 'Patrimonio UNESCO, catedrales góticas, gastronomía castellana, historia milenaria',
     cost: '80-250€/día',
   },
+  {
+    id: 'segovia',
+    title: 'Segovia Medieval: Pedraza y Puebla de Pedraza',
+    region: 'Castilla y León',
+    days: '4',
+    km: '180',
+    difficulty: 'Fácil',
+    bestTime: 'Marzo, Abril, Mayo, Sept, Oct',
+    icon: '🏰',
+    color: 'from-amber-700 to-stone-600',
+    Icon: Landmark,
+    desc: 'Sumérgete en la Castilla medieval: el Alcázar de Segovia, la villa amurallada de Pedraza, el pueblo de piedra de Puebla y la gastronomía castiza. Una ruta de 4 días por la esencia de Castilla y León.',
+    details: [
+      'Segovia - Acueducto Romano (siglo I), Alcázar, Catedral gótica "La Dama", Judería medieval y Mirador de San Marcos al atardecer',
+      'Mesón de Cándido - Cochinillo segoviano asado en horno de leña, receta desde 1861, junto al Acueducto',
+      'Ermita de San Frutos del Duratón - Joya románica sobre las Hoces del Duratón, reserva natural con buitres leonados',
+      'Sepúlveda - Villa medieval declarada Conjunto Histórico-Artístico, sopa castellana y judiones de la zona',
+      'Palacio Real de La Granja de San Ildefonso - El "Versalles español", jardines con 14 fuentes monumentales de mitología clásica',
+      'Valsaín y Bosque de La Mata - Pinar de silvestre centenario, paseo serrano de nivel fácil',
+      'Pedraza - Villa medieval peatonal, Plaza Mayor, Cárcel medieval, Castillo, Museo del Carbón y caminata por el Arroyo de la Hoz',
+      'Noches de los Candiles (julio) - Pedraza se ilumina solo con velas, música medieval y teatro al aire libre',
+      'Puebla de Pedraza - Pueblo de piedra caliza con 30 habitantes, arquitectura popular del siglo XII sin alteraciones',
+      'Iglesia de San Andrés (Puebla) - Románica del siglo XII, ábside semicircular, canecillos decorados, bóvedas de cañón',
+      'Mirador de la Sierra (Puebla) - Vistas de Peñalara y Siete Picos, fotografía de paisaje y silencio absoluto',
+      'Castro de la Mesa de Miranda (opcional) - Asentamiento celtíbero del siglo V a.C. con tres líneas de muralla',
+    ],
+    highlights: 'Patrimonio UNESCO (Alcázar + Acueducto), 3 Conjuntos Histórico-Artísticos, cochinillo segoviano, Noches de los Candiles, románico rural',
+    cost: '150-200€/día',
+  },
+  {
+    id: 'buceo',
+    title: 'Buceo en el Mediterráneo: 5 Zonas en 5 Días',
+    region: 'Costa Mediterránea',
+    days: '5',
+    km: 'Multi-zona',
+    difficulty: 'Moderado',
+    bestTime: 'Mayo, Junio, Sept, Oct',
+    icon: '🤿',
+    color: 'from-cyan-700 to-teal-600',
+    Icon: Umbrella,
+    desc: 'Descubre los fondos marinos más espectaculares del Mediterráneo español: Cabo de Palos, Islas Medas, Cabo de Creus, Tabarca y Formentera. Praderas de posidonia, meros gigantes y visibilidad de hasta 40 metros.',
+    details: [
+      'Cabo de Palos-Islas Hormigas (Murcia) - Reserva marina con La Losa (monte submarino con gorgonias rojas y meros de 100 kg), El Cavernón (cuevas y túneles submarinos) y El Bajo de Fuera (pelágicos y dentones)',
+      'L\'Estartit - Islas Medas (Reserva Marina Integral desde 1990), El Toro (pared vertical de 38m con gorgonias y corales rojos), Las Cuevas (galerías con Pinna nobilis y ostras de roca)',
+      'Cabo de Creus (Girona) - La Catedral de Portlligat (arco submarino con coral rojo protegido), Los Ullastres (langosta roja en recuperación), Punta Falconera (pared de 45m con gorgonias centenarias)',
+      'Isla de Tabarca (Alicante) - Reserva marina más antigua de España (1986), La Llosa (monte de 32m con morenas y congrios), pecio artificial del Náufrago (2002, colonizado por lubinas y sardinas), praderas de posidonia milenarias',
+      'Formentera (Baleares) - Posidonia Patrimonio UNESCO, Bajo de Popop (la mejor inmersión de Baleares, barracudas y rayas águila), Illeta des Cap des Falcó (caballitos de mar frecuentes), pecios del siglo XIX',
+      'Cursos disponibles: Todos los centros ofrecen bautismo (sin certificación), Open Water y Advanced. 8 centros en Cabo de Palos, 6 en Medas, 5 en Cadaqués, 3 en Tabarca, 5 en Formentera',
+      'Mejor época: Septiembre ofrece agua cálida (22-26°C) y visibilidad máxima (hasta 40m en Formentera). Mayo-Junio ideal para evitar masificación',
+      'Conservación: No tocar fauna, no recoger corales, flotabilidad neutra para no dañar posidonia, protector solar sin oxibenzona',
+    ],
+    highlights: '5 reservas marinas, posidonia UNESCO, meros gigantes, visibilidad 40m, pecios históricos, langosta roja',
+    cost: '120-180€/día',
+  },
 ];
 
 const ICONS = {
@@ -339,6 +421,8 @@ const ICONS = {
   costa: Umbrella,
   norte: Trees,
   patrimonio: Landmark,
+  segovia: Landmark,
+  buceo: Umbrella,
 };
 
 export default function RutasClient() {
@@ -419,15 +503,15 @@ export default function RutasClient() {
         {/* Stats */}
         <div className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-4">
           <div className="bg-slate-800 rounded-xl p-4 text-center">
-            <div className="text-3xl font-bold text-emerald-400">8</div>
+            <div className="text-3xl font-bold text-emerald-400">10</div>
             <div className="text-slate-400 text-sm">Rutas temáticas</div>
           </div>
           <div className="bg-slate-800 rounded-xl p-4 text-center">
-            <div className="text-3xl font-bold text-amber-400">60+</div>
+            <div className="text-3xl font-bold text-amber-400">75+</div>
             <div className="text-slate-400 text-sm">Destinos</div>
           </div>
           <div className="bg-slate-800 rounded-xl p-4 text-center">
-            <div className="text-3xl font-bold text-cyan-400">4.500</div>
+            <div className="text-3xl font-bold text-cyan-400">5.000</div>
             <div className="text-slate-400 text-sm">Km totales</div>
           </div>
           <div className="bg-slate-800 rounded-xl p-4 text-center">
