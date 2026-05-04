@@ -6,6 +6,11 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 # Sprint Status
 
+## Sprint 40 - Rutas España Detalladas (Completado 04/05/2026)
+### ✅ Completado
+- **Ruta Segovia-Pedraza-Puebla de Pedraza** - 2.586 palabras, itinerario 4 días con día a día detallado
+- **Ruta Buceo Mediterráneo** - 2.808 palabras, 5 zonas (Cabo de Palos, Medas, Cabo de Creus, Tabarca, Formentera)
+
 ## Sprint 39 - Optimización Imágenes Blog (Completado 03/05/2026)
 ### ✅ Completado
 - **Imágenes blog → next/image** - Lazy loading, optimización automática WebP/AVIF, sizes responsive
