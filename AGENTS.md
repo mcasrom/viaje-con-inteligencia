@@ -6,6 +6,11 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 # Sprint Status
 
+## Sprint 38 - Schema.org Server-Side (Completado 03/05/2026)
+### ✅ Completado
+- **Schema.org server-side** - Article + BreadcrumbList en Server Component, eliminado useEffect client-side
+- **BreadcrumbList schema** - Añadido para mejor navegación en Google Search
+
 ## Sprint 37 - Enriquecimiento de Datos (Completado 03/05/2026)
 ### ✅ Completado
 - **queHacer países alto riesgo** - SD, AF, YE, SY, LY, HT: de 4 a 8-9 items cada uno
@@ -65,7 +70,6 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 ### 🏗️ Features
 - [ ] España Premium itinerarios module
-- [ ] Schema.org server-side en blog posts (mover de client useEffect a server component)
 - [ ] Imágenes blog → webp + lazy loading
 
 ### 🔧 Ops
