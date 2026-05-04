@@ -210,6 +210,18 @@ export default function AdminDashboard() {
           </div>
         </section>
 
+        {/* Airspace Management */}
+        <section className="bg-slate-800 rounded-2xl border border-slate-700 p-6">
+          <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+            <AlertTriangle className="w-5 h-5 text-rose-400" />
+            Gestión Espacio Aéreo
+          </h2>
+          <p className="text-slate-400 text-sm mb-4">Administra cierres de espacio aéreo y rutas afectadas. Los cambios se reflejan inmediatamente en el TCI.</p>
+          <a href="/admin/airspace" className="inline-flex items-center gap-2 px-4 py-2 bg-rose-600/20 border border-rose-500/30 text-rose-400 rounded-lg hover:bg-rose-600/30 transition-colors text-sm font-medium">
+            Abrir panel de gestión <ExternalLink className="w-4 h-4" />
+          </a>
+        </section>
+
         {/* Cron Jobs */}
         <section className="bg-slate-800 rounded-2xl border border-slate-700 p-6">
           <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">

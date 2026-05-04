@@ -235,7 +235,10 @@ export function getOilHistory(): { month: string; price: number }[] {
 // SPRINT 48: TCI Inteligente con ML
 // ─────────────────────────────────────────────
 
-// Espacios aéreos cerrados por conflictos activos (2024-2026)
+// Estos datos se almacenan en Supabase (tablas airspace_closures + affected_routes).
+// Los valores hardcodeados aquí son FALLBACK cuando no hay conexión a la DB.
+// Para actualizar conflictos reales, edita las tablas en Supabase → Table Editor.
+
 export interface AirspaceClosure {
   code: string;
   name: string;
@@ -246,7 +249,7 @@ export interface AirspaceClosure {
   notes: string;
 }
 
-export const AIRSPACE_CLOSURES: AirspaceClosure[] = [
+export const AIRSPACE_CLOSURES_FALLBACK: AirspaceClosure[] = [
   { code: 'RU', name: 'Rusia', closureDate: '2022-02-24', reason: 'Conflicto Ucrania-Rusia, sanciones', severity: 'critical', isActive: true, notes: 'Cerrado para aerolíneas occidentales' },
   { code: 'UA', name: 'Ucrania', closureDate: '2022-02-24', reason: 'Invasión rusa', severity: 'critical', isActive: true, notes: 'Completamente cerrado' },
   { code: 'SY', name: 'Siria', closureDate: '2012-03-01', reason: 'Guerra civil', severity: 'critical', isActive: true, notes: 'Zona de exclusión' },
@@ -259,7 +262,6 @@ export const AIRSPACE_CLOSURES: AirspaceClosure[] = [
   { code: 'IR', name: 'Irán', closureDate: '2020-01-01', reason: 'Tensiones geopolíticas', severity: 'medium', isActive: true, notes: 'Algunas aerolíneas evitan' },
 ];
 
-// Rutas desde MAD afectadas por espacio aéreo cerrado
 export interface AffectedRoute {
   destination: string;
   countryCode: string;
@@ -271,7 +273,7 @@ export interface AffectedRoute {
   isActive: boolean;
 }
 
-export const AFFECTED_ROUTES: AffectedRoute[] = [
+export const AFFECTED_ROUTES_FALLBACK: AffectedRoute[] = [
   { destination: 'Tokio', countryCode: 'JP', closedAirspace: 'RU', detourKm: 4200, fuelSurchargePct: 18.5, timeExtraHours: 3.5, alternativeRoute: 'MAD→ANC→NRT', isActive: true },
   { destination: 'Seúl', countryCode: 'KR', closedAirspace: 'RU', detourKm: 3800, fuelSurchargePct: 16.0, timeExtraHours: 3.0, alternativeRoute: 'MAD→DEL→ICN', isActive: true },
   { destination: 'Pekín', countryCode: 'CN', closedAirspace: 'RU', detourKm: 3500, fuelSurchargePct: 15.0, timeExtraHours: 2.5, alternativeRoute: 'MAD→DOH→PEK', isActive: true },
@@ -332,11 +334,11 @@ export function getConflictImpact(countryCode: string): {
   reason: string;
   alternativeRoute: string;
 } {
-  const routes = AFFECTED_ROUTES.filter(r => r.countryCode === countryCode.toLowerCase() && r.isActive);
+  const routes = AFFECTED_ROUTES_FALLBACK.filter(r => r.countryCode === countryCode.toLowerCase() && r.isActive);
   if (routes.length === 0) {
     const pais = paisesData[countryCode.toUpperCase()];
     if (pais) {
-      const closure = AIRSPACE_CLOSURES.find(c => c.code === countryCode.toUpperCase() && c.isActive);
+      const closure = AIRSPACE_CLOSURES_FALLBACK.find(c => c.code === countryCode.toUpperCase() && c.isActive);
       if (closure) {
         return {
           isAffected: true,
@@ -356,8 +358,8 @@ export function getConflictImpact(countryCode: string): {
     isAffected: true,
     surchargePct: worstRoute.fuelSurchargePct,
     timeExtraHours: worstRoute.timeExtraHours,
-    closedAirspace: AIRSPACE_CLOSURES.find(c => c.code === worstRoute.closedAirspace)?.name || worstRoute.closedAirspace,
-    reason: AIRSPACE_CLOSURES.find(c => c.code === worstRoute.closedAirspace)?.reason || 'Espacio aéreo cerrado',
+    closedAirspace: AIRSPACE_CLOSURES_FALLBACK.find(c => c.code === worstRoute.closedAirspace)?.name || worstRoute.closedAirspace,
+    reason: AIRSPACE_CLOSURES_FALLBACK.find(c => c.code === worstRoute.closedAirspace)?.reason || 'Espacio aéreo cerrado',
     alternativeRoute: worstRoute.alternativeRoute,
   };
 }

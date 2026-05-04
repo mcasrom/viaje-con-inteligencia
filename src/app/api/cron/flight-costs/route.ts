@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
-import { calculateTCI, getOilHistory, getConflictImpact } from '@/data/tci-engine';
+import { calculateTCI, getOilHistory } from '@/data/tci-engine';
 import { paisesData } from '@/data/paises';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
@@ -62,6 +62,15 @@ export async function GET(request: NextRequest) {
         }, { onConflict: 'date' });
     }
 
+    // Fetch conflict data from Supabase (not hardcoded)
+    const [closuresRes, routesRes] = await Promise.all([
+      supabase.from('airspace_closures').select('*').eq('is_active', true),
+      supabase.from('affected_routes').select('*').eq('is_active', true),
+    ]);
+
+    const closures = closuresRes.data || [];
+    const routes = routesRes.data || [];
+
     // Calculate TCI for all countries
     const countries = Object.values(paisesData).filter(p => p.visible !== false);
     const today = new Date().toISOString().split('T')[0];
@@ -70,7 +79,17 @@ export async function GET(request: NextRequest) {
 
     for (const pais of countries) {
       const tci = calculateTCI(pais.codigo);
-      const conflict = getConflictImpact(pais.codigo);
+
+      // Calculate conflict surcharge from DB data
+      const route = routes.find(r => r.destination_country === pais.codigo.toUpperCase());
+      const closure = closures.find(c => c.code === pais.codigo.toUpperCase());
+      let conflictSurcharge = 0;
+
+      if (route) {
+        conflictSurcharge = route.fuel_surcharge_pct;
+      } else if (closure) {
+        conflictSurcharge = closure.severity === 'critical' ? 25 : closure.severity === 'high' ? 15 : 8;
+      }
 
       // Update cache
       await supabase
@@ -102,7 +121,7 @@ export async function GET(request: NextRequest) {
           ipc_idx: tci.ipcIdx,
           risk_idx: tci.riskIdx,
           oil_price_usd: currentOilPrice,
-          conflict_surcharge: conflict.surchargePct,
+          conflict_surcharge: conflictSurcharge,
         })
         .select('id')
         .single();
