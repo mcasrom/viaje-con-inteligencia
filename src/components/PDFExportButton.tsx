@@ -6,7 +6,7 @@ import { FileDown, Loader2, Crown } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import type { Trip } from '@/lib/supabase';
 import { paisesData, DatoPais } from '@/data/paises';
-import logoImage from '@/../logo_ok.png';
+import logoImage from '@/assets/logo_ok.png';
 
 function getBase64Image(img: typeof logoImage): string {
   if (typeof img === 'string') return img;
