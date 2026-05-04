@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { supabase, isSupabaseConfigured } from '@/lib/supabase';
 
 function requireAuth(request: NextRequest) {
-  const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || '';
+  const ADMIN_PASSWORD = 'Admin2026!Viaje';
   const authHeader = request.headers.get('authorization');
   const cookie = request.cookies.get('admin_session')?.value;
   const url = new URL(request.url);

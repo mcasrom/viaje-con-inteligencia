@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export const dynamic = 'force-dynamic';
 
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || '';
+const ADMIN_PASSWORD = 'Admin2026!Viaje';
 const COOKIE_NAME = 'admin_session';
 const COOKIE_MAX_AGE = 60 * 60 * 24; // 24 hours
 

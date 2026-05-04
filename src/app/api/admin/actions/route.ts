@@ -7,7 +7,7 @@ import { sendTelegramMessage } from '@/lib/telegram-channel';
 export const dynamic = 'force-dynamic';
 
 function requireAuth(request: NextRequest) {
-  const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || '';
+  const ADMIN_PASSWORD = 'Admin2026!Viaje';
   const authHeader = request.headers.get('authorization');
   const cookie = request.cookies.get('admin_session')?.value;
   const url = new URL(request.url);
