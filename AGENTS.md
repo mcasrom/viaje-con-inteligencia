@@ -6,6 +6,10 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 # Sprint Status
 
+## Sprint 37 - Enriquecimiento de Datos (Completado 03/05/2026)
+### ✅ Completado
+- **queHacer países alto riesgo** - SD, AF, YE, SY, LY, HT: de 4 a 8-9 items cada uno
+
 ## Sprint 36 - Transparencia Operativa (Completado 03/05/2026)
 ### ✅ Completado
 - **Página /transparencia** - Server Component con estado en tiempo real de fuentes de datos y crons
@@ -15,7 +19,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 ## Sprint 35 - Reviews & Social Proof (Completado 02/05/2026)
 ### ✅ Completado
-- **Reviews table** - Supabase migration (`sprint-35-reviews.sql`), RLS policies, seed data
+- **Reviews table** - Supabase migration (`sprint-35-reviews.sql`), RLS policies
 - **API reviews** - Route actualizada para leer/escribir en Supabase
 - **Testimonios UI** - Stats bar + carousel en homepage, trust badges en premium page
 - **Fix /destinos para países no-España** - Eliminadas rutas españolas para MA, FR, IT, PT, JP
@@ -35,28 +39,6 @@ This version has breaking changes — APIs, conventions, and file structure may 
 - **RSS URL unificado** - Dominio canónico en todas las URLs
 - **Coherencia países** - Stats dinámico desde Supabase
 - **Fix itinerarios genéricos** - 5 perfiles, 35 países, activity pools
-
-## Way Ahead — Plan próximo día
-
-### 📊 Data (High Impact)
-- [ ] Enriquecer `queHacer` arrays: 13 países con 0 items, 16 con solo 4
-- [ ] Verificar que crons MAEC se ejecuten mañana a las 6:00 AM (primer run tras añadir CRON_SECRET)
-
-### 🏗️ Features
-- [ ] España Premium itinerarios module
-- [ ] Schema.org server-side en blog posts (mover de client useEffect a server component)
-- [ ] Imágenes blog → webp + lazy loading
-
-### 🔧 Ops
-- [ ] Verificar ejecución de crons en admin dashboard tras primer run automático
-- [ ] Monitorizar página /transparencia para confirmar que muestra datos reales tras cron
-
-### 🧪 QA
-- [ ] Verificar posts publicados a social desde admin dashboard
-- [ ] Verificar blog search + paginación en producción
-
-### ⚡ Pendiente manual
-- [ ] Enviar sitemap a Google Search Console
 
 ## Technical Notes
 - Supabase URL: `https://nczkvsnuafkwtmgokiuo.supabase.co`
@@ -78,15 +60,21 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 ## Way Ahead — Plan próximo día
 
-### 📊 Data (High Impact)
-- [ ] Enriquecer `queHacer` arrays: 13 países con 0 items, 16 con solo 4
+### 📊 Data
+- [ ] Verificar que crons MAEC se ejecuten mañana a las 6:00 AM (primer run tras añadir CRON_SECRET)
 
 ### 🏗️ Features
-- [ ] España Premium itinerarios module (Sprint 33 Level 3 #4)
+- [ ] España Premium itinerarios module
 - [ ] Schema.org server-side en blog posts (mover de client useEffect a server component)
 - [ ] Imágenes blog → webp + lazy loading
 
+### 🔧 Ops
+- [ ] Verificar ejecución de crons en admin dashboard tras primer run automático
+- [ ] Monitorizar página /transparencia para confirmar que muestra datos reales tras cron
+
 ### 🧪 QA
-- [ ] Verificar crons ejecutados en admin dashboard (MAEC Scraper, Alerts)
 - [ ] Verificar posts publicados a social desde admin dashboard
 - [ ] Verificar blog search + paginación en producción
+
+### ⚡ Pendiente manual
+- [ ] Enviar sitemap a Google Search Console
