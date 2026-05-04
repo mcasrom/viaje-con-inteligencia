@@ -6,6 +6,11 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 # Sprint Status
 
+## Sprint 42 - Imágenes Temáticas Rutas (Completado 04/05/2026)
+### ✅ Completado
+- **Imágenes Unsplash en /rutas** - 10 rutas con imagen de fondo en cards grid + hero detail
+- **Optimización**: `w=1200&q=80` para carga rápida, lazy loading en grid
+
 ## Sprint 41 - Rutas Temáticas /rutas (Completado 04/05/2026)
 ### ✅ Completado
 - **Ruta Segovia Medieval** - 4 días, 180km, 12 paradas (Alcázar, Pedraza, Puebla, La Granja, San Frutos). Gráficos IA con mes ideal (Abr), más tranquilo (Feb), evitar (Ago)
