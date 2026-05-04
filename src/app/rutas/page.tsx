@@ -1,10 +1,12 @@
 'use client';
-import dynamic from 'next/dynamic';
+import SkeletonPage from '@/components/SkeletonPage';
 
-const RutasClient = dynamic(() => import('./RutasClient'), {
-  ssr: false,
-});
-
-export default function RutasPage() {
-  return <RutasClient />;
+export default function Page() {
+  return (
+    <SkeletonPage 
+      title="Rutas Temáticas" 
+      badge=FREE 
+       
+    />
+  );
 }
