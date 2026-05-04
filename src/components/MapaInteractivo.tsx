@@ -41,7 +41,7 @@ const Popup = dynamic(
   { ssr: false }
 );
 
-export default function MapaInteractivo() {
+export default function MapaInteractivo({ fullScreen = false }: { fullScreen?: boolean }) {
   const { t } = useI18n();
   const [mounted, setMounted] = useState(false);
 
@@ -58,13 +58,13 @@ export default function MapaInteractivo() {
   }, []);
 
   if (!mounted) {
-    return <div className="h-[600px] bg-slate-800 animate-pulse rounded-xl" />;
+    return <div className={fullScreen ? "h-screen bg-slate-900" : "h-[600px] bg-slate-800 animate-pulse rounded-xl"} />;
   }
 
   const paises = getTodosLosPaises();
 
   return (
-    <div className="relative">
+    <div className={fullScreen ? "w-full h-full" : "relative"}>
       <link
         rel="stylesheet"
         href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
@@ -73,7 +73,7 @@ export default function MapaInteractivo() {
         center={[20, 0]}
         zoom={2}
         scrollWheelZoom={true}
-        style={{ height: '600px', width: '100%', borderRadius: '12px' }}
+        style={{ height: fullScreen ? '100vh' : '600px', width: '100%', borderRadius: fullScreen ? 0 : '12px' }}
         className="z-0"
       >
         <TileLayer
