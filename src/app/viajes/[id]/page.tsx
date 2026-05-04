@@ -24,7 +24,7 @@ const budgetLabels: Record<string, string> = {
 };
 
 export default function ViajeDetallePage() {
-  const { user, loading: authLoading, getSession } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const router = useRouter();
   const params = useParams();
   const tripId = params.id as string;
@@ -50,13 +50,11 @@ export default function ViajeDetallePage() {
 
     async function fetchTrip() {
       try {
-        const token = await getSession();
-        const headers: Record<string, string> = {};
-        if (token) headers['Authorization'] = `Bearer ${token}`;
+        
         
         const res = await fetch(`/api/trips/${tripId}`, { 
           cache: 'no-store',
-          headers,
+          
         });
         if (res.ok) {
           const data = await res.json();
@@ -94,13 +92,11 @@ export default function ViajeDetallePage() {
       const data = await res.json();
       if (data.itinerary) {
         setTrip(prev => prev ? { ...prev, itinerary_raw: data.itinerary } : null);
-        const token = await getSession();
-        const headers: Record<string, string> = { 'Content-Type': 'application/json' };
-        if (token) headers['Authorization'] = `Bearer ${token}`;
+        
         
         await fetch(`/api/trips/${tripId}`, {
           method: 'PATCH',
-          headers,
+          
           body: JSON.stringify({
             itinerary_raw: data.itinerary,
             updated_at: new Date().toISOString(),
@@ -121,13 +117,11 @@ export default function ViajeDetallePage() {
     setError('');
 
     try {
-      const token = await getSession();
-      const headers: Record<string, string> = { 'Content-Type': 'application/json' };
-      if (token) headers['Authorization'] = `Bearer ${token}`;
+      
 
       const res = await fetch(`/api/trips/${tripId}`, {
         method: 'PATCH',
-        headers,
+        
         body: JSON.stringify({
           name: editName,
           status: editStatus,

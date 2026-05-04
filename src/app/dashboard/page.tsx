@@ -31,7 +31,7 @@ interface Favorite {
 }
 
 export default function DashboardPage() {
-  const { user: authUser, loading: authLoading, getSession, signInWithPassword: authSignInPassword, signUpWithPassword, resetPassword, signOut: authSignOut, signInWithEmail } = useAuth();
+  const { user: authUser, loading: authLoading, signInWithPassword: authSignInPassword, signUpWithPassword, resetPassword, signOut: authSignOut, signInWithEmail } = useAuth();
   const [user, setUser] = useState<User | null>(null);
   const [favorites, setFavorites] = useState<Favorite[]>([]);
   const [loading, setLoading] = useState(true);
@@ -159,19 +159,13 @@ export default function DashboardPage() {
     handleMagicLink();
   }, []);
 
-  const getAuthHeaders = async (): Promise<Record<string, string>> => {
-    const token = await getSession();
-    const headers: Record<string, string> = {};
-    if (token) headers['Authorization'] = `Bearer ${token}`;
-    return headers;
-  };
 
   const loadFavorites = async () => {
     setFavError(false);
     try {
-      const headers = await getAuthHeaders();
+      
       const response = await fetch(`/api/auth/favorites?t=${Date.now()}`, { 
-        headers,
+        
         cache: 'no-store',
       });
       if (response.ok) {
@@ -291,12 +285,9 @@ export default function DashboardPage() {
 
   const addFavorite = async (countryCode: string) => {
     try {
-      const headers = await getAuthHeaders();
-      headers['Content-Type'] = 'application/json';
-      
       const response = await fetch('/api/auth/favorites', {
         method: 'POST',
-        headers,
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ countryCode }),
       });
 
@@ -322,10 +313,10 @@ export default function DashboardPage() {
 
   const removeFavorite = async (countryCode: string) => {
     try {
-      const headers = await getAuthHeaders();
+      
       const response = await fetch(`/api/auth/favorites?countryCode=${countryCode}`, {
         method: 'DELETE',
-        headers,
+        
       });
 
       const data = await response.json();

@@ -1,12 +1,5 @@
 'use client';
 import SkeletonPage from '@/components/SkeletonPage';
-
 export default function Page() {
-  return (
-    <SkeletonPage 
-      title="Detalle de País" 
-      badge=FREE 
-       
-    />
-  );
+  return <SkeletonPage title="Detalle de País" />;
 }

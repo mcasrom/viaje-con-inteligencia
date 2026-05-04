@@ -1,12 +1,5 @@
 'use client';
 import SkeletonPage from '@/components/SkeletonPage';
-
 export default function Page() {
-  return (
-    <SkeletonPage 
-      title="Lead Magnet" 
-      badge=FREE 
-       
-    />
-  );
+  return <SkeletonPage title="Lead Magnet" />;
 }
