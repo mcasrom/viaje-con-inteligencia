@@ -46,6 +46,7 @@ next-env.d.ts
 # Documentación personal
 /Notas/
 proyecto.org
+!logo_ok.png
 
 # data
 /data

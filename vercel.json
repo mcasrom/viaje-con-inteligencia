@@ -57,6 +57,10 @@
     {
       "path": "/api/cron/flight-costs",
       "schedule": "0 5 * * *"
+    },
+    {
+      "path": "/api/cron/airspace-osint",
+      "schedule": "0 */6 * * *"
     }
   ]
 }

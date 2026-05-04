@@ -2,21 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, AlertTriangle, Plane, Save, Trash2, Edit2, Plus, RefreshCw } from 'lucide-react';
+import { ArrowLeft, Plane, RefreshCw, AlertTriangle, TrendingUp, MapPin, Globe } from 'lucide-react';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line } from 'recharts';
 
-interface AirspaceClosure {
-  id?: string;
-  country_code: string;
-  country_name: string;
-  closure_date: string;
-  reason: string;
-  severity: 'low' | 'medium' | 'high' | 'critical';
-  is_active: boolean;
-  notes: string;
-}
-
-interface AffectedRoute {
-  id?: string;
+interface RouteData {
   origin_iata: string;
   destination_iata: string;
   destination_country: string;
@@ -28,59 +17,83 @@ interface AffectedRoute {
   is_active: boolean;
 }
 
-export default function AdminAirspace() {
+interface ClosureData {
+  country_code: string;
+  country_name: string;
+  closure_date: string;
+  reason: string;
+  severity: string;
+  is_active: boolean;
+}
+
+interface ImpactCountry {
+  country: string;
+  routes: number;
+  avgSurcharge: number;
+  totalTimeExtra: number;
+}
+
+export default function AdminAirspaceImpact() {
   const router = useRouter();
-  const [closures, setClosures] = useState<AirspaceClosure[]>([]);
-  const [routes, setRoutes] = useState<AffectedRoute[]>([]);
   const [loading, setLoading] = useState(true);
-  const [editingClosure, setEditingClosure] = useState<AirspaceClosure | null>(null);
-  const [editingRoute, setEditingRoute] = useState<AffectedRoute | null>(null);
-  const [showNewClosure, setShowNewClosure] = useState(false);
-  const [showNewRoute, setShowNewRoute] = useState(false);
-  const [saving, setSaving] = useState(false);
+  const [closures, setClosures] = useState<ClosureData[]>([]);
+  const [routes, setRoutes] = useState<RouteData[]>([]);
+  const [impactByCountry, setImpactByCountry] = useState<ImpactCountry[]>([]);
+  const [conflictTCITrend, setConflictTCITrend] = useState<any[]>([]);
+  const [activeClosures, setActiveClosures] = useState(0);
+  const [maxSurcharge, setMaxSurcharge] = useState(0);
+  const [avgSurcharge, setAvgSurcharge] = useState(0);
 
   useEffect(() => {
-    fetch('/api/airspace')
+    fetch('/api/admin/airspace-impact')
       .then(res => res.json())
       .then(data => {
-        setClosures(data.closures || []);
-        setRoutes(data.routes || []);
-        setLoading(false);
+        if (!data.error) {
+          setClosures(data.closures || []);
+          setRoutes(data.routes || []);
+          setImpactByCountry(data.impactByCountry || []);
+          setConflictTCITrend(data.conflictTCITrend || []);
+          setActiveClosures(data.activeClosures || 0);
+          setMaxSurcharge(data.maxSurcharge || 0);
+          setAvgSurcharge(data.avgSurcharge || 0);
+        }
       })
-      .catch(console.error);
+      .catch(console.error)
+      .finally(() => setLoading(false));
   }, []);
-
-  const saveClosure = async (c: AirspaceClosure) => {
-    setSaving(true);
-    const endpoint = c.id ? '/api/airspace/closures' : '/api/airspace/closures';
-    const method = c.id ? 'PUT' : 'POST';
-
-    const res = await fetch(endpoint, {
-      method,
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(c),
-    });
-
-    if (res.ok) {
-      setEditingClosure(null);
-      setShowNewClosure(false);
-      window.location.reload();
-    }
-    setSaving(false);
-  };
-
-  const toggleClosure = async (id: string, is_active: boolean) => {
-    await fetch(`/api/airspace/closures`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id, is_active }),
-    });
-    window.location.reload();
-  };
 
   if (loading) {
     return <div className="min-h-screen bg-slate-900 flex items-center justify-center"><RefreshCw className="w-8 h-8 text-cyan-400 animate-spin" /></div>;
   }
+
+  const routeImpactData = routes
+    .filter((r: RouteData) => r.is_active)
+    .map((r: RouteData) => ({
+      route: `${r.origin_iata}→${r.destination_iata}`,
+      sobrecoste: r.fuel_surcharge_pct,
+      horasExtra: r.time_extra_hours,
+      desvio: r.detour_km,
+      country: r.destination_country,
+      espacio: r.closed_airspace,
+    }));
+
+  const closureSeverityData = closures
+    .filter((c: ClosureData) => c.is_active)
+    .reduce((acc: Record<string, number>, c: ClosureData) => {
+      acc[c.severity] = (acc[c.severity] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
+
+  const severityPieData = Object.entries(closureSeverityData).map(([name, value]) => ({ name, value }));
+  const severityColors: Record<string, string> = { critical: '#ef4444', high: '#f97316', medium: '#eab308', low: '#22c55e' };
+
+  const tciTrendData = conflictTCITrend
+    .slice(-12)
+    .map((t: any) => ({
+      date: new Date(t.date).toLocaleDateString('es-ES', { day: '2-digit', month: 'short' }),
+      TCI: t.tci_value,
+      Conflicto: t.conflict_surcharge,
+    }));
 
   return (
     <div className="min-h-screen bg-slate-900">
@@ -93,189 +106,190 @@ export default function AdminAirspace() {
           <span>Volver al dashboard</span>
         </button>
 
-        <h1 className="text-3xl font-bold text-white mb-2">Gestión de Espacio Aéreo</h1>
-        <p className="text-slate-400 mb-8">Administra cierres de espacio aéreo y rutas afectadas. Los cambios se aplican inmediatamente.</p>
+        <div className="flex items-center gap-3 mb-2">
+          <Plane className="w-8 h-8 text-cyan-400" />
+          <h1 className="text-3xl font-bold text-white">Impacto Espacio Aéreo</h1>
+        </div>
+        <p className="text-slate-400 mb-8">Datos OSINT automáticos - cierres y desviaciones detectados por scraping</p>
 
-        <div className="grid md:grid-cols-2 gap-8">
-          <section>
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-bold text-white flex items-center gap-2">
-                <AlertTriangle className="w-5 h-5 text-rose-400" />
-                Cierres de espacio aéreo
-              </h2>
-              <button
-                onClick={() => setShowNewClosure(true)}
-                className="flex items-center gap-1 px-3 py-1.5 bg-cyan-600 text-white rounded-lg text-sm hover:bg-cyan-500"
-              >
-                <Plus className="w-4 h-4" />
-                Nuevo
-              </button>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          <div className="bg-slate-800 rounded-lg p-4 border border-slate-700">
+            <div className="flex items-center gap-2 text-slate-400 text-sm mb-1">
+              <AlertTriangle className="w-4 h-4 text-rose-400" />
+              Cierres activos
             </div>
+            <div className="text-3xl font-bold text-rose-400">{activeClosures}</div>
+          </div>
+          <div className="bg-slate-800 rounded-lg p-4 border border-slate-700">
+            <div className="flex items-center gap-2 text-slate-400 text-sm mb-1">
+              <MapPin className="w-4 h-4 text-amber-400" />
+              Rutas afectadas
+            </div>
+            <div className="text-3xl font-bold text-amber-400">{routes.filter(r => r.is_active).length}</div>
+          </div>
+          <div className="bg-slate-800 rounded-lg p-4 border border-slate-700">
+            <div className="flex items-center gap-2 text-slate-400 text-sm mb-1">
+              <TrendingUp className="w-4 h-4 text-cyan-400" />
+              Sobrecoste máx
+            </div>
+            <div className="text-3xl font-bold text-cyan-400">+{maxSurcharge}%</div>
+          </div>
+          <div className="bg-slate-800 rounded-lg p-4 border border-slate-700">
+            <div className="flex items-center gap-2 text-slate-400 text-sm mb-1">
+              <Globe className="w-4 h-4 text-emerald-400" />
+              Sobrecoste medio
+            </div>
+            <div className="text-3xl font-bold text-emerald-400">+{avgSurcharge}%</div>
+          </div>
+        </div>
 
-            {showNewClosure && (
-              <ClosureForm
-                onSave={saveClosure}
-                onCancel={() => setShowNewClosure(false)}
-                saving={saving}
-              />
-            )}
+        <div className="grid md:grid-cols-2 gap-6 mb-8">
+          <div className="bg-slate-800 rounded-lg p-6 border border-slate-700">
+            <h2 className="text-lg font-bold text-white mb-4">Sobrecoste por ruta (desde MAD)</h2>
+            <ResponsiveContainer width="100%" height={250}>
+              <BarChart data={routeImpactData}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
+                <XAxis dataKey="route" stroke="#94a3b8" tick={{ fontSize: 11 }} />
+                <YAxis stroke="#94a3b8" label={{ value: '% sobrecoste', angle: -90, position: 'insideLeft', fill: '#94a3b8' }} />
+                <Tooltip contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #334155', borderRadius: '8px' }} />
+                <Bar dataKey="sobrecoste" fill="#06b6d4" radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
 
+          <div className="bg-slate-800 rounded-lg p-6 border border-slate-700">
+            <h2 className="text-lg font-bold text-white mb-4">Horas extra por ruta</h2>
+            <ResponsiveContainer width="100%" height={250}>
+              <BarChart data={routeImpactData}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
+                <XAxis dataKey="route" stroke="#94a3b8" tick={{ fontSize: 11 }} />
+                <YAxis stroke="#94a3b8" label={{ value: 'horas', angle: -90, position: 'insideLeft', fill: '#94a3b8' }} />
+                <Tooltip contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #334155', borderRadius: '8px' }} />
+                <Bar dataKey="horasExtra" fill="#f97316" radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
+        <div className="grid md:grid-cols-2 gap-6 mb-8">
+          <div className="bg-slate-800 rounded-lg p-6 border border-slate-700">
+            <h2 className="text-lg font-bold text-white mb-4">Severidad de cierres</h2>
+            <ResponsiveContainer width="100%" height={250}>
+              <PieChart>
+                <Pie
+                  data={severityPieData}
+                  cx="50%"
+                  cy="50%"
+                  labelLine={false}
+                  label={({ name, value }: any) => `${name}: ${value}`}
+                  outerRadius={80}
+                  fill="#8884d8"
+                  dataKey="value"
+                >
+                  {severityPieData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={severityColors[entry.name] || '#64748b'} />
+                  ))}
+                </Pie>
+                <Tooltip contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #334155', borderRadius: '8px' }} />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+
+          <div className="bg-slate-800 rounded-lg p-6 border border-slate-700">
+            <h2 className="text-lg font-bold text-white mb-4">Impacto en países</h2>
+            <ResponsiveContainer width="100%" height={250}>
+              <BarChart data={impactByCountry}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
+                <XAxis dataKey="country" stroke="#94a3b8" tick={{ fontSize: 11 }} />
+                <YAxis stroke="#94a3b8" />
+                <Tooltip contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #334155', borderRadius: '8px' }} />
+                <Legend />
+                <Bar dataKey="avgSurcharge" name="Sobrecoste %" fill="#06b6d4" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="routes" name="Rutas" fill="#8b5cf6" radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
+        <div className="bg-slate-800 rounded-lg p-6 border border-slate-700 mb-8">
+          <h2 className="text-lg font-bold text-white mb-4">Evolución TCI vs sobrecoste conflicto</h2>
+          <ResponsiveContainer width="100%" height={250}>
+            <LineChart data={tciTrendData}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
+              <XAxis dataKey="date" stroke="#94a3b8" tick={{ fontSize: 11 }} />
+              <YAxis stroke="#94a3b8" />
+              <Tooltip contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #334155', borderRadius: '8px' }} />
+              <Legend />
+              <Line type="monotone" dataKey="TCI" stroke="#06b6d4" strokeWidth={2} dot={{ r: 4 }} />
+              <Line type="monotone" dataKey="Conflicto" stroke="#ef4444" strokeWidth={2} dot={{ r: 4 }} />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+
+        <div className="grid md:grid-cols-2 gap-6">
+          <div className="bg-slate-800 rounded-lg p-6 border border-slate-700">
+            <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+              <AlertTriangle className="w-5 h-5 text-rose-400" />
+              Cierres activos
+            </h2>
             <div className="space-y-2">
-              {closures.map((c) => (
-                <div key={c.id} className={`bg-slate-800 rounded-lg p-4 border ${c.is_active ? 'border-slate-700' : 'border-slate-700/50 opacity-60'}`}>
-                  <div className="flex items-center justify-between">
+              {closures
+                .filter(c => c.is_active)
+                .sort((a, b) => {
+                  const order: Record<string, number> = { critical: 0, high: 1, medium: 2, low: 3 };
+                  return (order[a.severity] || 99) - (order[b.severity] || 99);
+                })
+                .map((c) => (
+                  <div key={c.country_code} className="flex items-center justify-between p-3 bg-slate-700/50 rounded-lg">
                     <div className="flex items-center gap-3">
-                      <span className={`w-2 h-2 rounded-full ${c.is_active ? 'bg-rose-400' : 'bg-slate-500'}`} />
+                      <span className={`w-2 h-2 rounded-full ${
+                        c.severity === 'critical' ? 'bg-rose-400' :
+                        c.severity === 'high' ? 'bg-orange-400' :
+                        c.severity === 'medium' ? 'bg-amber-400' : 'bg-green-400'
+                      }`} />
                       <div>
                         <span className="text-white font-medium">{c.country_name}</span>
                         <span className="text-slate-500 text-sm ml-2">({c.country_code})</span>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <span className={`text-xs px-2 py-0.5 rounded-full ${
-                        c.severity === 'critical' ? 'bg-rose-500/20 text-rose-400' :
-                        c.severity === 'high' ? 'bg-orange-500/20 text-orange-400' :
-                        c.severity === 'medium' ? 'bg-amber-500/20 text-amber-400' :
-                        'bg-green-500/20 text-green-400'
-                      }`}>
-                        {c.severity}
-                      </span>
-                      <button
-                        onClick={() => toggleClosure(c.id!, !c.is_active)}
-                        className={`text-xs px-2 py-1 rounded ${c.is_active ? 'bg-rose-500/20 text-rose-400' : 'bg-green-500/20 text-green-400'}`}
-                      >
-                        {c.is_active ? 'Activo' : 'Inactivo'}
-                      </button>
-                    </div>
+                    <span className={`text-xs px-2 py-0.5 rounded-full ${
+                      c.severity === 'critical' ? 'bg-rose-500/20 text-rose-400' :
+                      c.severity === 'high' ? 'bg-orange-500/20 text-orange-400' :
+                      c.severity === 'medium' ? 'bg-amber-500/20 text-amber-400' :
+                      'bg-green-500/20 text-green-400'
+                    }`}>
+                      {c.severity}
+                    </span>
                   </div>
-                  <p className="text-slate-400 text-sm mt-1">{c.reason}</p>
-                </div>
-              ))}
+                ))}
             </div>
-          </section>
+          </div>
 
-          <section>
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-bold text-white flex items-center gap-2">
-                <Plane className="w-5 h-5 text-cyan-400" />
-                Rutas afectadas desde MAD
-              </h2>
-              <button
-                onClick={() => setShowNewRoute(true)}
-                className="flex items-center gap-1 px-3 py-1.5 bg-cyan-600 text-white rounded-lg text-sm hover:bg-cyan-500"
-              >
-                <Plus className="w-4 h-4" />
-                Nueva
-              </button>
-            </div>
-
-            {showNewRoute && (
-              <RouteForm
-                onSave={(r) => {
-                  setSaving(true);
-                  fetch('/api/airspace/routes', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(r),
-                  }).then(() => window.location.reload());
-                }}
-                onCancel={() => setShowNewRoute(false)}
-                saving={saving}
-              />
-            )}
-
+          <div className="bg-slate-800 rounded-lg p-6 border border-slate-700">
+            <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+              <Plane className="w-5 h-5 text-cyan-400" />
+              Rutas alternativas
+            </h2>
             <div className="space-y-2">
-              {routes.map((r) => (
-                <div key={r.id} className={`bg-slate-800 rounded-lg p-4 border ${r.is_active ? 'border-slate-700' : 'border-slate-700/50 opacity-60'}`}>
-                  <div className="flex items-center justify-between">
-                    <div>
+              {routes
+                .filter(r => r.is_active)
+                .map((r) => (
+                  <div key={`${r.origin_iata}-${r.destination_iata}`} className="p-3 bg-slate-700/50 rounded-lg">
+                    <div className="flex items-center justify-between">
                       <span className="text-white font-medium">MAD → {r.destination_iata}</span>
-                      <span className="text-slate-500 text-sm ml-2">({r.destination_country})</span>
+                      <div className="flex items-center gap-3">
+                        <span className="text-rose-400 text-sm font-medium">+{r.fuel_surcharge_pct}%</span>
+                        <span className="text-slate-400 text-sm">+{r.time_extra_hours}h</span>
+                      </div>
                     </div>
-                    <div className="flex items-center gap-3">
-                      <span className="text-rose-400 text-sm font-medium">+{r.fuel_surcharge_pct}%</span>
-                      <span className="text-slate-400 text-sm">+{r.time_extra_hours}h</span>
-                      <span className="text-xs text-slate-500">vía {r.closed_airspace}</span>
-                    </div>
+                    <p className="text-slate-500 text-xs mt-1">
+                      Cierre: {r.closed_airspace} → {r.alternative_route}
+                    </p>
                   </div>
-                  <p className="text-slate-500 text-xs mt-1">{r.alternative_route}</p>
-                </div>
-              ))}
+                ))}
             </div>
-          </section>
+          </div>
         </div>
-      </div>
-    </div>
-  );
-}
-
-function ClosureForm({ onSave, onCancel, saving }: { onSave: (c: AirspaceClosure) => void; onCancel: () => void; saving: boolean }) {
-  const [form, setForm] = useState<AirspaceClosure>({
-    country_code: '',
-    country_name: '',
-    closure_date: new Date().toISOString().split('T')[0],
-    reason: '',
-    severity: 'medium',
-    is_active: true,
-    notes: '',
-  });
-
-  return (
-    <div className="bg-slate-800 rounded-lg p-4 border border-cyan-500/30 mb-4">
-      <h3 className="text-white font-medium mb-3">Nuevo cierre</h3>
-      <div className="grid grid-cols-2 gap-3">
-        <input className="bg-slate-700 text-white rounded px-3 py-2 text-sm" placeholder="Código país (RU)" value={form.country_code} onChange={e => setForm({...form, country_code: e.target.value.toUpperCase()})} />
-        <input className="bg-slate-700 text-white rounded px-3 py-2 text-sm" placeholder="Nombre país" value={form.country_name} onChange={e => setForm({...form, country_name: e.target.value})} />
-        <input className="bg-slate-700 text-white rounded px-3 py-2 text-sm" type="date" value={form.closure_date} onChange={e => setForm({...form, closure_date: e.target.value})} />
-        <select className="bg-slate-700 text-white rounded px-3 py-2 text-sm" value={form.severity} onChange={e => setForm({...form, severity: e.target.value as any})}>
-          <option value="low">Bajo</option>
-          <option value="medium">Medio</option>
-          <option value="high">Alto</option>
-          <option value="critical">Crítico</option>
-        </select>
-        <input className="bg-slate-700 text-white rounded px-3 py-2 text-sm col-span-2" placeholder="Razón" value={form.reason} onChange={e => setForm({...form, reason: e.target.value})} />
-        <input className="bg-slate-700 text-white rounded px-3 py-2 text-sm col-span-2" placeholder="Notas" value={form.notes} onChange={e => setForm({...form, notes: e.target.value})} />
-      </div>
-      <div className="flex gap-2 mt-3">
-        <button onClick={() => onSave(form)} disabled={saving} className="px-4 py-2 bg-cyan-600 text-white rounded text-sm hover:bg-cyan-500 flex items-center gap-1">
-          <Save className="w-4 h-4" /> {saving ? 'Guardando...' : 'Guardar'}
-        </button>
-        <button onClick={onCancel} className="px-4 py-2 bg-slate-700 text-white rounded text-sm hover:bg-slate-600">Cancelar</button>
-      </div>
-    </div>
-  );
-}
-
-function RouteForm({ onSave, onCancel, saving }: { onSave: (r: AffectedRoute) => void; onCancel: () => void; saving: boolean }) {
-  const [form, setForm] = useState<AffectedRoute>({
-    origin_iata: 'MAD',
-    destination_iata: '',
-    destination_country: '',
-    closed_airspace: '',
-    detour_km: 0,
-    fuel_surcharge_pct: 0,
-    time_extra_hours: 0,
-    alternative_route: '',
-    is_active: true,
-  });
-
-  return (
-    <div className="bg-slate-800 rounded-lg p-4 border border-cyan-500/30 mb-4">
-      <h3 className="text-white font-medium mb-3">Nueva ruta afectada</h3>
-      <div className="grid grid-cols-3 gap-3">
-        <input className="bg-slate-700 text-white rounded px-3 py-2 text-sm" placeholder="Destino IATA (NRT)" value={form.destination_iata} onChange={e => setForm({...form, destination_iata: e.target.value.toUpperCase()})} />
-        <input className="bg-slate-700 text-white rounded px-3 py-2 text-sm" placeholder="Código país destino" value={form.destination_country} onChange={e => setForm({...form, destination_country: e.target.value.toUpperCase()})} />
-        <input className="bg-slate-700 text-white rounded px-3 py-2 text-sm" placeholder="Espacio cerrado (RU)" value={form.closed_airspace} onChange={e => setForm({...form, closed_airspace: e.target.value.toUpperCase()})} />
-        <input className="bg-slate-700 text-white rounded px-3 py-2 text-sm" type="number" placeholder="Km desvío" value={form.detour_km || ''} onChange={e => setForm({...form, detour_km: Number(e.target.value)})} />
-        <input className="bg-slate-700 text-white rounded px-3 py-2 text-sm" type="number" placeholder="% sobrecoste" value={form.fuel_surcharge_pct || ''} onChange={e => setForm({...form, fuel_surcharge_pct: Number(e.target.value)})} />
-        <input className="bg-slate-700 text-white rounded px-3 py-2 text-sm" type="number" placeholder="Horas extra" value={form.time_extra_hours || ''} onChange={e => setForm({...form, time_extra_hours: Number(e.target.value)})} />
-        <input className="bg-slate-700 text-white rounded px-3 py-2 text-sm col-span-3" placeholder="Ruta alternativa" value={form.alternative_route} onChange={e => setForm({...form, alternative_route: e.target.value})} />
-      </div>
-      <div className="flex gap-2 mt-3">
-        <button onClick={() => onSave(form)} disabled={saving} className="px-4 py-2 bg-cyan-600 text-white rounded text-sm hover:bg-cyan-500 flex items-center gap-1">
-          <Save className="w-4 h-4" /> {saving ? 'Guardando...' : 'Guardar'}
-        </button>
-        <button onClick={onCancel} className="px-4 py-2 bg-slate-700 text-white rounded text-sm hover:bg-slate-600">Cancelar</button>
       </div>
     </div>
   );

@@ -210,16 +210,25 @@ export default function AdminDashboard() {
           </div>
         </section>
 
-        {/* Airspace Management */}
+        {/* Airspace OSINT */}
         <section className="bg-slate-800 rounded-2xl border border-slate-700 p-6">
           <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
             <AlertTriangle className="w-5 h-5 text-rose-400" />
-            Gestión Espacio Aéreo
+            Espacio Aéreo (OSINT automático)
           </h2>
-          <p className="text-slate-400 text-sm mb-4">Administra cierres de espacio aéreo y rutas afectadas. Los cambios se reflejan inmediatamente en el TCI.</p>
-          <a href="/admin/airspace" className="inline-flex items-center gap-2 px-4 py-2 bg-rose-600/20 border border-rose-500/30 text-rose-400 rounded-lg hover:bg-rose-600/30 transition-colors text-sm font-medium">
-            Abrir panel de gestión <ExternalLink className="w-4 h-4" />
-          </a>
+          <p className="text-slate-400 text-sm mb-4">Bot OSINT scrapea fuentes abiertas cada 6h. Detecta cierres, calcula desviaciones y actualiza TCI automáticamente.</p>
+          <div className="flex gap-3">
+            <a href="/admin/airspace" className="inline-flex items-center gap-2 px-4 py-2 bg-rose-600/20 border border-rose-500/30 text-rose-400 rounded-lg hover:bg-rose-600/30 transition-colors text-sm font-medium">
+              Ver impacto <ExternalLink className="w-4 h-4" />
+            </a>
+            <button
+              onClick={() => runAction('trigger-cron', '/api/cron/airspace-osint')}
+              disabled={actionLoading === 'trigger-cron'}
+              className="inline-flex items-center gap-2 px-4 py-2 bg-cyan-600/20 border border-cyan-500/30 text-cyan-400 rounded-lg hover:bg-cyan-600/30 transition-colors text-sm font-medium disabled:opacity-50"
+            >
+              {actionLoading === 'trigger-cron' ? 'Ejecutando...' : 'Ejecutar OSINT'}
+            </button>
+          </div>
         </section>
 
         {/* Cron Jobs */}
@@ -283,6 +292,19 @@ export default function AdminDashboard() {
                   <span className="text-slate-400">Status: {data.cron.flightCosts.status}</span>
                   <span className="text-slate-400">Países: {data.cron.flightCosts.items_scraped}</span>
                   <span className="text-slate-400">Duración: {Math.round(data.cron.flightCosts.duration_ms / 1000)}s</span>
+                </div>
+              )}
+            </div>
+            <div className="bg-slate-700 rounded-xl p-4">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-white font-medium">OSINT Espacio Aéreo</span>
+                <span className="text-slate-400 text-sm">{timeAgo(data?.cron.osintAirspace?.created_at)}</span>
+              </div>
+              {data?.cron.osintAirspace && (
+                <div className="flex gap-4 text-sm">
+                  <span className="text-slate-400">Status: {data.cron.osintAirspace.status}</span>
+                  <span className="text-slate-400">Fuentes: {data.cron.osintAirspace.items_scraped}</span>
+                  <span className="text-slate-400">Duración: {Math.round(data.cron.osintAirspace.duration_ms / 1000)}s</span>
                 </div>
               )}
             </div>
