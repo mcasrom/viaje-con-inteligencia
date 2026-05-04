@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import Reviews from '@/components/Reviews';
 import WeatherWidget from '@/components/WeatherWidget';
+import TravelCostIndex from '@/components/TravelCostIndex';
 import LoginButton from '@/components/LoginButton';
 import { useAuth } from '@/contexts/AuthContext';
 
@@ -786,6 +787,8 @@ export default function DetallePaisClient({ pais, relatedPosts = [] }: DetallePa
             cobertura médica completa y revisar las recomendaciones de viaje del Ministerio de Asuntos Exteriores.
           </p>
         </div>
+
+        <TravelCostIndex countryCode={codigo} />
 
         <Reviews countryCode={codigo} countryName={pais.nombre} />
 

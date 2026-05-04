@@ -6,6 +6,71 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 # Sprint Status
 
+## Sprint 48 - TCI Inteligente con ML + Histórico + Conflicto Aéreo (Completado 04/05/2026)
+### ✅ Completado
+- **Histórico TCI semanal** — Cron diario almacena snapshots en `tci_history` (Supabase)
+- **Gráfico de evolución 12 semanas** — Componente Recharts en `/viaje-coste/[codigo]`
+- **Predicción ML** — Regresión lineal + media móvil → predicción próxima semana y mes con % confianza
+- **Índice de conflicto aéreo** — 10 espacios aéreos cerrados (RU, UA, SY, LY, YE, AF, IQ, SO, SD, IR) + 10 rutas afectadas desde MAD con desvíos
+- **Badge de impacto** — Sobrecoste %, horas extra, ruta alternativa en destinos afectados (JP +18.5%, KR +16%, CN +15%)
+- **Volatilidad** — Clasificación baja/media/alta basada en desviación estándar
+- **Mejor semana para reservar** — Análisis de patrones estacionales con % ahorro estimado
+- **Tendencias 4 y 12 semanas** — Direcciones (up/down/stable) con cambio numérico
+- **⚠️ Pendiente manual**: Ejecutar `supabase/sprint-48-ml-tci.sql` en Supabase SQL Editor
+
+### 📁 Archivos nuevos/modificados
+- `src/data/tci-engine.ts` — Añadido: AIRSPACE_CLOSURES, AFFECTED_ROUTES, analyzeTCITrend(), getConflictImpact()
+- `src/app/api/cron/flight-costs/route.ts` — Añadido: insert en tci_history + conflict_surcharge
+- `src/app/viaje-coste/[codigo]/page.tsx` — Añadido: mlAnalysis y conflict props
+- `src/app/viaje-coste/[codigo]/ViajeCosteClient.tsx` — Reescrito: gráfico Recharts, predicción ML, badge conflicto
+- `supabase/sprint-48-ml-tci.sql` — Nuevo: tci_history, airspace_closures, affected_routes + seed data
+
+### 🧠 Algoritmo ML
+```
+Predicción = (TCI_actual × 0.6) + (regresión_lineal × 0.2) + (media_móvil_4sem × 0.2)
+Confianza = R²_12sem × 60 + R²_4sem × 30 + 15 (rango 45-95%)
+Volatilidad = std_dev < 3 → baja, < 7 → media, ≥ 7 → alta
+```
+
+## Sprint 47 - Páginas SEO /viaje-coste (Completado 04/05/2026)
+### ✅ Completado
+- **Listado `/viaje-coste`** — Todos los países por región, top baratos/caros, leyenda colores
+- **Detalle `/viaje-coste/[codigo]`** — 106 páginas SEO con metadata, Schema.org, presupuesto, FAQ
+- **Presupuesto estimado** — 3 niveles (mochilero, medio, lujo) ajustado por región y TCI
+- **FAQ automático** — 5 preguntas por país con FAQPage Schema.org
+- **Alternativas** — Destinos más baratos/caros en la misma región
+- **Sitemap** — Añadidas 106 rutas /viaje-coste/[codigo] + /viaje-coste
+- **Footer** — Enlace "Coste de Viaje" en sección Explorar
+- **Cuba bloqueado** — 404 en generateStaticParams y page
+
+### 📁 Archivos nuevos/modificados
+- `src/app/viaje-coste/page.tsx` — Nuevo listado
+- `src/app/viaje-coste/[codigo]/page.tsx` — Nuevo detalle server component
+- `src/app/viaje-coste/[codigo]/ViajeCosteClient.tsx` — Componente cliente
+- `src/app/sitemap.ts` — Añadidas entradas viaje-coste
+- `src/components/Footer.tsx` — Añadido enlace
+- `src/data/tci-engine.ts` — Funciones getCheapestDestinations, getMostExpensiveDestinations
+
+## Sprint 46 - TCI Frontend + Cron Flight Costs (Completado 04/05/2026)
+### ✅ Completado
+- **API `/api/flight-costs`** — GET con query params: `country`, `sort=cheapest|expensive|oil`, `limit`
+- **Cron `/api/cron/flight-costs`** — Autenticado con CRON_SECRET, calcula TCI todos los países, fetch petróleo EIA
+- **Componente `TravelCostIndex`** — Badge de tendencia, valor TCI con color, recomendación, desglose de 5 factores
+- **Integración DetallePaisClient** — Widget TCI en páginas de país (antes de Reviews)
+- **Admin dashboard** — Nuevo trigger "Flight Costs TCI", stats incluyen último run
+- **Vercel cron** — Schedule diario 05:00 UTC
+- **⚠️ Pendiente manual**: Ejecutar `supabase/sprint-45-flight-costs.sql` en Supabase SQL Editor
+
+### 📁 Archivos nuevos/modificados
+- `src/app/api/flight-costs/route.ts` — Nuevo endpoint público
+- `src/app/api/cron/flight-costs/route.ts` — Nuevo cron job
+- `src/components/TravelCostIndex.tsx` — Componente TCI
+- `src/app/pais/[codigo]/DetallePaisClient.tsx` — Integración widget
+- `src/app/admin/dashboard/page.tsx` — Añadido trigger y stats
+- `src/app/api/admin/stats/route.ts` — Añadido flightCosts status
+- `vercel.json` — Añadido schedule cron flight-costs
+- `supabase/sprint-45-flight-costs.sql` — Migration SQL (pendiente ejecución)
+
 ## Sprint 44 - Imágenes en Reseñas (Completado 04/05/2026)
 ### ✅ Completado
 - **API `/api/reviews/upload`** — Recibe imagen, optimiza con sharp (resize 800px + WebP 80%), sube a Supabase Storage bucket `review-images`
@@ -112,27 +177,145 @@ This version has breaking changes — APIs, conventions, and file structure may 
 ## Way Ahead — Plan próximo día
 
 ### ⚡ Pendiente manual (URGENTE)
-- [ ] Ejecutar `supabase/sprint-44-review-images.sql` en Supabase SQL Editor
-- [ ] Verificar que bucket `review-images` se creó correctamente y es público
-- [ ] Probar subir una reseña con imagen desde homepage
+- [ ] Ejecutar `supabase/sprint-48-ml-tci.sql` en Supabase SQL Editor (tablas tci_history, airspace_closures, affected_routes)
+- [ ] Ejecutar `supabase/sprint-44-review-images.sql` (aún pendiente desde sprint 44)
+- [ ] Disparar cron flight-costs manualmente para poblar tci_history
+- [ ] Verificar gráfico TCI + predicción ML en producción
 
 ### 📊 Data
-- [ ] Verificar que crons MAEC se ejecuten mañana a las 6:00 AM (primer run tras añadir CRON_SECRET)
+- [ ] Seed inicial oil_price_history con datos históricos Brent
+- [ ] Calibrar TCI contra precios reales (flytrippers, blogs) para ajustar pesos
+- [ ] Tras 2 semanas de cron: verificar que predicciones ML se ajustan a datos reales
 
 ### 🏗️ Features
 - [ ] España Premium itinerarios module
 
-### 🔧 Ops
-- [ ] Verificar ejecución de crons en admin dashboard tras primer run automático
-- [ ] Monitorizar página /transparencia para confirmar que muestra datos reales tras cron
-
 ### 🧪 QA
-- [ ] Verificar posts publicados a social desde admin dashboard
-- [ ] Verificar blog search + paginación en producción
-- [ ] Probar upload de imagen en reseñas (Testimonios + país)
+- [ ] Verificar FAQ Schema en Google Rich Results Test
+- [ ] Verificar badge de conflicto aéreo en Japón/China/Corea
+- [ ] Verificar que gráfico 12 semanas se actualiza tras primer cron
 
-### ⚡ Pendiente manual
-- [ ] Enviar sitemap a Google Search Console
+### 🔧 Ops
+- [ ] Enviar sitemap a Google Search Console tras deploy
+- [ ] Monitorizar crons en admin dashboard
+
+---
+
+## Acciones Supabase — Sprint 48
+
+### Paso 1: Ir al SQL Editor
+1. Abrir https://app.supabase.com/project/nczkvsnuafkwtmgokiuo/sql
+2. Click en "New Query"
+
+### Paso 2: Ejecutar el SQL
+Copiar y pegar el contenido de `supabase/sprint-48-ml-tci.sql`:
+
+```sql
+-- 1. Histórico diario TCI
+CREATE TABLE IF NOT EXISTS tci_history (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  date DATE NOT NULL DEFAULT CURRENT_DATE,
+  country_code TEXT NOT NULL,
+  tci_value NUMERIC(6,2),
+  tci_trend TEXT,
+  demand_idx NUMERIC(6,2),
+  oil_idx NUMERIC(6,2),
+  seasonality_idx NUMERIC(6,2),
+  ipc_idx NUMERIC(6,2),
+  risk_idx NUMERIC(6,2),
+  oil_price_usd NUMERIC(8,2),
+  conflict_surcharge NUMERIC(4,2) DEFAULT 0,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  UNIQUE(date, country_code)
+);
+
+-- 2. Espacio aéreo cerrado por conflictos
+CREATE TABLE IF NOT EXISTS airspace_closures (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  country_code TEXT NOT NULL UNIQUE,
+  country_name TEXT NOT NULL,
+  closure_date DATE NOT NULL,
+  reason TEXT,
+  severity TEXT DEFAULT 'high',
+  is_active BOOLEAN DEFAULT true,
+  notes TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- 3. Rutas afectadas
+CREATE TABLE IF NOT EXISTS affected_routes (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  origin_iata TEXT NOT NULL,
+  destination_iata TEXT NOT NULL,
+  destination_country TEXT NOT NULL,
+  closed_airspace TEXT NOT NULL,
+  detour_km NUMERIC(8,1),
+  fuel_surcharge_pct NUMERIC(5,2),
+  time_extra_hours NUMERIC(4,1),
+  alternative_route TEXT,
+  is_active BOOLEAN DEFAULT true,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- 4. RLS
+ALTER TABLE tci_history ENABLE ROW LEVEL SECURITY;
+ALTER TABLE airspace_closures ENABLE ROW LEVEL SECURITY;
+ALTER TABLE affected_routes ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "TCI history public read" ON tci_history FOR SELECT USING (true);
+CREATE POLICY "Airspace closures public read" ON airspace_closures FOR SELECT USING (true);
+CREATE POLICY "Affected routes public read" ON affected_routes FOR SELECT USING (true);
+```
+
+### Paso 3: Verificar
+1. Ir a **Table Editor** → Deberían aparecer `tci_history`, `airspace_closures`, `affected_routes`
+2. Disparar cron `/api/cron/flight-costs` desde admin dashboard
+3. Verificar que `tci_history` se llena con datos
+
+---
+
+## Acciones Supabase — Sprint 45
+
+### Paso 1: Ir al SQL Editor
+1. Abrir https://app.supabase.com/project/nczkvsnuafkwtmgokiuo/sql
+2. Click en "New Query"
+
+### Paso 2: Ejecutar el SQL
+Copiar y pegar el contenido de `supabase/sprint-45-flight-costs.sql`:
+
+```sql
+-- 1. Tabla cache TCI
+CREATE TABLE IF NOT EXISTS flight_tci_cache (
+  country_code TEXT PRIMARY KEY,
+  tci_value NUMERIC NOT NULL,
+  tci_trend TEXT,
+  demand_idx NUMERIC,
+  oil_idx NUMERIC,
+  seasonality_idx NUMERIC,
+  ipc_idx NUMERIC,
+  risk_idx NUMERIC,
+  recommendation TEXT,
+  last_calculated TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- 2. Tabla historial precio petróleo
+CREATE TABLE IF NOT EXISTS oil_price_history (
+  date TEXT PRIMARY KEY,
+  price_usd NUMERIC NOT NULL,
+  source TEXT DEFAULT 'EIA',
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- 3. RLS
+ALTER TABLE flight_tci_cache ENABLE ROW LEVEL SECURITY;
+ALTER TABLE oil_price_history ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "TCI cache public read"
+ON flight_tci_cache FOR SELECT USING (true);
+
+CREATE POLICY "Oil history public read"
+ON oil_price_history FOR SELECT USING (true);
+```
 
 ---
 

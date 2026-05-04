@@ -1,0 +1,152 @@
+import { NextRequest, NextResponse } from 'next/server';
+import { createClient } from '@supabase/supabase-js';
+import { calculateTCI, getOilHistory, getConflictImpact } from '@/data/tci-engine';
+import { paisesData } from '@/data/paises';
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
+
+const supabase = supabaseUrl && supabaseServiceKey
+  ? createClient(supabaseUrl, supabaseServiceKey, { auth: { persistSession: false } })
+  : null;
+
+export const dynamic = 'force-dynamic';
+export const maxDuration = 60;
+
+export async function GET(request: NextRequest) {
+  const authHeader = request.headers.get('authorization');
+  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  if (!supabase) {
+    return NextResponse.json({ error: 'Supabase not configured' }, { status: 500 });
+  }
+
+  let logId: string | null = null;
+
+  try {
+    console.log('[Cron] Iniciando cálculo TCI...');
+
+    const { data: logData } = await supabase
+      .from('scraper_logs')
+      .insert({ source: 'flight_costs', status: 'running', items_scraped: 0 })
+      .select('id')
+      .single();
+    logId = logData?.id || null;
+
+    // Fetch current oil price from EIA API
+    let currentOilPrice: number | null = null;
+    try {
+      const eiaRes = await fetch('https://api.eia.gov/v2/petroleum/PRICEDWELLHEADS1_A/', {
+        headers: { 'X-API-KEY': 'dc92cbbe0c995dc46e3eb6b728f4db48' },
+      });
+      if (eiaRes.ok) {
+        const eiaData = await eiaRes.json();
+        if (eiaData.response?.data?.[0]) {
+          currentOilPrice = eiaData.response.data[0].value;
+        }
+      }
+    } catch {
+      console.log('[Cron] No se pudo obtener precio petróleo EIA, usando datos locales');
+    }
+
+    // Save oil price to history
+    if (currentOilPrice !== null) {
+      await supabase
+        .from('oil_price_history')
+        .upsert({
+          date: new Date().toISOString().split('T')[0],
+          price_usd: currentOilPrice,
+          source: 'EIA',
+        }, { onConflict: 'date' });
+    }
+
+    // Calculate TCI for all countries
+    const countries = Object.values(paisesData).filter(p => p.visible !== false);
+    const today = new Date().toISOString().split('T')[0];
+    let calculated = 0;
+    let historyInserted = 0;
+
+    for (const pais of countries) {
+      const tci = calculateTCI(pais.codigo);
+      const conflict = getConflictImpact(pais.codigo);
+
+      // Update cache
+      await supabase
+        .from('flight_tci_cache')
+        .upsert({
+          country_code: pais.codigo,
+          tci_value: tci.tci,
+          tci_trend: tci.trend,
+          demand_idx: tci.demandIdx,
+          oil_idx: tci.oilIdx,
+          seasonality_idx: tci.seasonalityIdx,
+          ipc_idx: tci.ipcIdx,
+          risk_idx: tci.riskIdx,
+          recommendation: tci.recommendation,
+          last_calculated: new Date().toISOString(),
+        }, { onConflict: 'country_code' });
+
+      // Insert daily history snapshot
+      await supabase
+        .from('tci_history')
+        .insert({
+          date: today,
+          country_code: pais.codigo,
+          tci_value: tci.tci,
+          tci_trend: tci.trend,
+          demand_idx: tci.demandIdx,
+          oil_idx: tci.oilIdx,
+          seasonality_idx: tci.seasonalityIdx,
+          ipc_idx: tci.ipcIdx,
+          risk_idx: tci.riskIdx,
+          oil_price_usd: currentOilPrice,
+          conflict_surcharge: conflict.surchargePct,
+        })
+        .select('id')
+        .single();
+
+      calculated++;
+      historyInserted++;
+    }
+
+    const duration = Date.now();
+
+    await supabase
+      .from('scraper_logs')
+      .update({
+        status: 'success',
+        items_scraped: calculated,
+        duration_ms: duration,
+      })
+      .eq('id', logId);
+
+    console.log(`[Cron] TCI calculado para ${calculated} países, ${historyInserted} snapshots guardados`);
+
+    return NextResponse.json({
+      success: true,
+      countries_calculated: calculated,
+      history_snapshots: historyInserted,
+      oil_price: currentOilPrice,
+    });
+  } catch (error) {
+    console.error('[Cron] Flight costs TCI error:', error);
+
+    if (logId) {
+      await supabase
+        .from('scraper_logs')
+        .update({
+          status: 'error',
+          error_message: error instanceof Error ? error.message : 'Unknown error',
+          duration_ms: Date.now(),
+        })
+        .eq('id', logId);
+    }
+
+    return NextResponse.json(
+      { error: 'Error en flight costs cron' },
+      { status: 500 }
+    );
+  }
+}

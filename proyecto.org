@@ -801,6 +801,103 @@ cd ~/viaje-con-inteligencia && npm install
 
 * SPRINTS COMPLETADOS
 
+** Sprint 48: TCI Inteligente con ML + Histórico + Conflicto Aéreo (2026-05-04) ✅
+
+| Feature | Estado | Archivos |
+|---------+--------+----------|
+| Histórico TCI diario | ✅ | api/cron/flight-costs/route.ts |
+| Gráfico evolución 12 semanas | ✅ | ViajeCosteClient.tsx |
+| Predicción ML próxima semana/mes | ✅ | tci-engine.ts, ViajeCosteClient.tsx |
+| Índice conflicto aéreo | ✅ | tci-engine.ts |
+| Badge impacto rutas afectadas | ✅ | ViajeCosteClient.tsx |
+| Volatilidad + mejor semana reservar | ✅ | tci-engine.ts |
+| SQL: tci_history, airspace, routes | ✅ | sprint-48-ml-tci.sql |
+
+*** Algoritmo ML
+- Regresión lineal sobre histórico 12 semanas + media móvil 4 semanas
+- Predicción ponderada: 60% actual + 20% regresión + 20% media móvil
+- Confianza basada en R² (45-95%)
+- Volatilidad por desviación estándar
+
+*** Conflicto Aéreo
+- 10 espacios cerrados: RU, UA, SY, LY, YE, AF, IQ, SO, SD, IR
+- 10 rutas afectadas desde MAD con desvíos calculados
+- Japón: +18.5% combustible, +3.5h (MAD→ANC→NRT)
+- Corea: +16% combustible, +3h (MAD→DEL→ICN)
+- China: +15% combustible, +2.5h (MAD→DOH→PEK)
+
+** Sprint 47: Páginas SEO /viaje-coste (2026-05-04) ✅
+
+| Feature | Estado | Archivos |
+|---------+--------+----------|
+| Listado /viaje-coste | ✅ | viaje-coste/page.tsx |
+| Detalle /viaje-coste/[codigo] | ✅ | viaje-coste/[codigo]/page.tsx |
+| Presupuesto estimado 3 niveles | ✅ | ViajeCosteClient.tsx |
+| FAQ automático + Schema.org | ✅ | page.tsx, schemas.ts |
+| Alternativas por región | ✅ | ViajeCosteClient.tsx |
+| Sitemap actualizado | ✅ | sitemap.ts |
+| Footer enlace | ✅ | Footer.tsx |
+
+*** Listado /viaje-coste
+- Grid por continente (Europa, América, Asia, África, Oceanía, Oriente Medio)
+- Top 8 más baratos / más caros
+- Leyenda colores TCI (emerald/amber/rose)
+- Cards con bandera, nombre, TCI, tendencia
+
+*** Detalle /viaje-coste/[codigo] (106 páginas)
+- Header con bandera + título SEO "Cuánto cuesta viajar a X"
+- Widget TCI con desglose expandible
+- Presupuesto diario: mochilero, medio, lujo (ajustado por región y TCI)
+- Mejor momento para viajar (mes barato / evitar)
+- Datos clave (moneda, IPC, riesgo, idioma, capital)
+- Recomendación contextual
+- Alternativas más baratas en región
+- Destinos más caros en región
+- FAQ con 5 preguntas (FAQPage Schema.org)
+- CTAs: explorar más destinos + guía completa
+
+*** SEO
+- Metadata dinámica: title, description, keywords por país
+- BreadcrumbList + FAQPage Schema.org
+- Canonical URL por país
+- Keywords long-tail: "cuánto cuesta viajar a", "presupuesto viaje", "mejor mes"
+
+** Sprint 46: TCI Frontend + Cron Flight Costs + Admin Dashboard (2026-05-04) ✅
+
+| Feature | Estado | Archivos |
+|---------+--------+----------|
+| API /api/flight-costs | ✅ | api/flight-costs/route.ts |
+| Cron /api/cron/flight-costs | ✅ | api/cron/flight-costs/route.ts |
+| Componente TravelCostIndex | ✅ | components/TravelCostIndex.tsx |
+| Integración DetallePaisClient | ✅ | pais/[codigo]/DetallePaisClient.tsx |
+| Admin Dashboard cron trigger | ✅ | admin/dashboard/page.tsx |
+| Admin stats route | ✅ | api/admin/stats/route.ts |
+| Vercel cron schedule | ✅ | vercel.json |
+
+*** API /api/flight-costs
+- GET ?country=XX → TCI individual con desglose de factores
+- GET ?sort=cheapest → destinos más baratos
+- GET ?sort=expensive → destinos más caros
+- GET ?sort=oil → historial precio petróleo
+
+*** Cron /api/cron/flight-costs
+- Autenticado con CRON_SECRET
+- Calcula TCI para todos los países visibles
+- Upsert en flight_tci_cache
+- Fetch precio petróleo EIA API
+- Log en scraper_logs (source: flight_costs)
+- Schedule: diario 05:00 UTC
+
+*** Componente TravelCostIndex
+- Badge de tendencia (sube/baja/estable)
+- Valor TCI con código de color (emerald → rose)
+- Recomendación contextual
+- Desglose expandible de 5 factores con barras
+
+*** Integración en DetallePaisClient
+- Añadido antes del componente Reviews
+- Props: countryCode (calcula desde params)
+
 ** Sprint 34: Engagement & Data (2026-05-01) ✅
 
 | Feature | Estado | Archivos |

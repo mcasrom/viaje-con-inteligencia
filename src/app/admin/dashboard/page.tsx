@@ -261,6 +261,19 @@ export default function AdminDashboard() {
                 </div>
               )}
             </div>
+            <div className="bg-slate-700 rounded-xl p-4">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-white font-medium">Flight Costs TCI</span>
+                <span className="text-slate-400 text-sm">{timeAgo(data?.cron.flightCosts?.created_at)}</span>
+              </div>
+              {data?.cron.flightCosts && (
+                <div className="flex gap-4 text-sm">
+                  <span className="text-slate-400">Status: {data.cron.flightCosts.status}</span>
+                  <span className="text-slate-400">Países: {data.cron.flightCosts.items_scraped}</span>
+                  <span className="text-slate-400">Duración: {Math.round(data.cron.flightCosts.duration_ms / 1000)}s</span>
+                </div>
+              )}
+            </div>
           </div>
         </section>
 
@@ -417,6 +430,7 @@ export default function AdminDashboard() {
               { path: '/api/cron/weekly-digest', label: 'Weekly Digest', icon: '📰' },
               { path: '/api/cron/ine-scrape', label: 'INE Scrape', icon: '📊' },
               { path: '/api/cron/ml-clustering', label: 'ML Clustering', icon: '🤖' },
+              { path: '/api/cron/flight-costs', label: 'Flight Costs TCI', icon: '✈️' },
             ].map((cron) => (
               <button
                 key={cron.path}

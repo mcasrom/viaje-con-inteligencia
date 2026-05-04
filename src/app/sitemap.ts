@@ -32,10 +32,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.7,
   }));
 
+  const costeEntries = paises.filter(p => p.codigo !== 'cu').map((pais) => ({
+    url: `${BASE_URL}/viaje-coste/${pais.codigo}`,
+    lastModified: new Date(),
+    changeFrequency: 'weekly' as const,
+    priority: 0.85,
+  }));
+
   const staticPages = [
     { url: BASE_URL, priority: 1.0, alternates: buildAlternates(BASE_URL) },
     { url: `${BASE_URL}/en`, priority: 0.9 },
     { url: `${BASE_URL}/pt`, priority: 0.9 },
+    { url: `${BASE_URL}/viaje-coste`, priority: 0.85 },
     { url: `${BASE_URL}/premium`, priority: 0.8 },
     { url: `${BASE_URL}/checklist`, priority: 0.8 },
     { url: `${BASE_URL}/alertas`, priority: 0.8 },
@@ -51,5 +59,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     changeFrequency: 'monthly' as const,
   }));
 
-  return [...staticPages, ...paisEntries, ...blogEntries];
+  return [...staticPages, ...paisEntries, ...costeEntries, ...blogEntries];
 }

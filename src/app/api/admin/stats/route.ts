@@ -25,13 +25,14 @@ function requireAuth(request: NextRequest) {
 }
 
 async function getCronStatus() {
-  if (!supabase) return { scrapeMaec: null, checkAlerts: null, ineScrape: null, mlClustering: null };
+  if (!supabase) return { scrapeMaec: null, checkAlerts: null, ineScrape: null, mlClustering: null, flightCosts: null };
 
-  const [scrapeRes, alertsRes, ineRes, mlRes] = await Promise.all([
+  const [scrapeRes, alertsRes, ineRes, mlRes, fcRes] = await Promise.all([
     supabase.from('scraper_logs').select('source, status, items_scraped, errors, duration_ms, created_at').order('created_at', { ascending: false }).limit(5),
     supabase.from('risk_alerts').select('country_code, old_risk, new_risk, created_at').order('created_at', { ascending: false }).limit(5),
     supabase.from('ine_tourism_history').select('created_at').order('created_at', { ascending: false }).limit(1),
     supabase.from('scraper_logs').select('source, status, items_scraped, errors, duration_ms, created_at').eq('source', 'ml_clustering').order('created_at', { ascending: false }).limit(1),
+    supabase.from('scraper_logs').select('source, status, items_scraped, errors, duration_ms, created_at').eq('source', 'flight_costs').order('created_at', { ascending: false }).limit(1),
   ]);
 
   return {
@@ -39,6 +40,7 @@ async function getCronStatus() {
     checkAlerts: alertsRes.data || [],
     ineScrape: ineRes.data?.[0]?.created_at || null,
     mlClustering: mlRes.data?.[0] || null,
+    flightCosts: fcRes.data?.[0] || null,
   };
 }
 
