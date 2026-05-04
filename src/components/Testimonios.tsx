@@ -30,9 +30,15 @@ const POPULAR_COUNTRIES = [
   { code: 'MX', name: 'México' },
   { code: 'CO', name: 'Colombia' },
   { code: 'AR', name: 'Argentina' },
+  { code: 'AU', name: 'Australia' },
   { code: 'US', name: 'Estados Unidos' },
   { code: 'GB', name: 'Reino Unido' },
   { code: 'DE', name: 'Alemania' },
+  { code: 'GR', name: 'Grecia' },
+  { code: 'TH', name: 'Tailandia' },
+  { code: 'BR', name: 'Brasil' },
+  { code: 'PE', name: 'Perú' },
+  { code: 'CR', name: 'Costa Rica' },
 ];
 
 function StarSelector({ rating, onChange }: { rating: number; onChange: (r: number) => void }) {
