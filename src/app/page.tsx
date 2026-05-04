@@ -1,186 +1,197 @@
 import MapaMundial from '@/components/MapaMundial';
-import Testimonios from '@/components/Testimonios';
 import NewsletterSignup from '@/components/NewsletterSignup';
-import PlanificadorSimple from '@/components/PlanificadorSimple';
-import QuickStart from '@/components/QuickStart';
 import Link from 'next/link';
-import { Activity, Shield, Globe, FileText, Gift, CheckCircle, Radio, MapPinned, Sparkles } from 'lucide-react';
+import { Shield, Route, Search, ArrowRight, Map, Globe, Clock, TrendingUp, Star, CheckCircle2, Sparkles, Radio, MapPinned } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
+
+const quickActions = [
+  {
+    icon: <Shield className="w-8 h-8" />,
+    emoji: '🛡️',
+    title: '¿Es seguro mi destino?',
+    subtitle: 'Consulta riesgos oficiales MAEC',
+    description: 'Nivel de riesgo, alertas en tiempo real y recomendaciones para 100+ países.',
+    href: '/',
+    label: 'Ver Mapa de Riesgos',
+    color: 'from-blue-600 to-cyan-600',
+    bg: 'bg-blue-500/10',
+    border: 'border-blue-500/30',
+    hover: 'hover:border-blue-400/50',
+  },
+  {
+    icon: <Route className="w-8 h-8" />,
+    emoji: '🛣️',
+    title: '¿Qué ruta me recomiendas?',
+    subtitle: 'Rutas temáticas con IA',
+    description: 'Molinos, Faros, Vino, Pirineos, Costa... Rutas curadas con scoring de seguridad.',
+    href: '/rutas',
+    label: 'Explorar Rutas',
+    color: 'from-emerald-600 to-teal-600',
+    bg: 'bg-emerald-500/10',
+    border: 'border-emerald-500/30',
+    hover: 'hover:border-emerald-400/50',
+  },
+  {
+    icon: <Search className="w-8 h-8" />,
+    emoji: '🤖',
+    title: 'Planifica mi viaje con IA',
+    subtitle: 'Itinerario en 30 segundos',
+    description: 'Dinos destino, días y presupuesto. La IA genera tu viaje perfecto al instante.',
+    href: '/clustering',
+    label: 'Usar Planificador IA',
+    color: 'from-purple-600 to-violet-600',
+    bg: 'bg-purple-500/10',
+    border: 'border-purple-500/30',
+    hover: 'hover:border-purple-400/50',
+  },
+];
+
+const features = [
+  { icon: <Globe className="w-5 h-5" />, text: '100+ países con datos actualizados' },
+  { icon: <Clock className="w-5 h-5" />, text: 'Alertas en tiempo real MAEC' },
+  { icon: <TrendingUp className="w-5 h-5" />, text: 'ML Coste & Clustering IA' },
+  { icon: <Star className="w-5 h-5" />, text: 'Rutas premium España' },
+];
 
 export default function Home() {
   return (
     <>
-      {/* FLASH BUTTON - Radio Inteligente */}
-      <div className="max-w-6xl mx-auto px-6 py-4">
-        <Link
-          href="/radius"
-          className="group block max-w-2xl mx-auto bg-gradient-to-r from-purple-600/90 to-indigo-600/90 rounded-full px-6 py-3 shadow-lg shadow-purple-500/40 border border-purple-400/50 hover:shadow-purple-500/60 transition-all duration-300 hover:scale-[1.02] backdrop-blur-sm"
-        >
-          <div className="flex items-center justify-center gap-3">
-            <Sparkles className="w-5 h-5 text-yellow-300 animate-pulse" />
-            <span className="text-white font-bold text-sm md:text-base">
-              <span className="text-yellow-300">NUEVO</span> — Radio Inteligente: descubre destinos cerca de ti con scoring IA
-            </span>
-            <span className="text-white text-sm font-bold group-hover:translate-x-1 transition-transform">→</span>
-          </div>
-        </Link>
-      </div>
-
-      {/* POST DESTACADO - Qué es Viaje Inteligencia */}
-      <div className="max-w-6xl mx-auto px-6 py-6">
-        <Link
-          href="/blog/Que-es-viaje-inteligencia"
-          className="group block bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 rounded-2xl overflow-hidden shadow-lg shadow-blue-500/30 border border-blue-400/30 hover:shadow-blue-500/50 transition-all duration-300 hover:scale-[1.01]"
-        >
-          <div className="flex flex-col md:flex-row items-stretch">
-            <div className="md:w-64 h-48 md:h-auto relative overflow-hidden flex-shrink-0">
-              <img
-                src="/post1.png"
-                alt="Qué es Viaje Inteligencia"
-                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-              />
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent to-blue-900/60 md:bg-gradient-to-l" />
+      {/* HERO SECTION */}
+      <section className="relative overflow-hidden bg-gradient-to-b from-slate-900 via-slate-900 to-slate-800 py-16 md:py-24">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-900/20 via-transparent to-transparent" />
+        
+        <div className="relative max-w-6xl mx-auto px-6">
+          <div className="text-center mb-12">
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-500/10 border border-blue-500/30 rounded-full mb-6">
+              <Sparkles className="w-4 h-4 text-blue-400" />
+              <span className="text-blue-300 text-sm font-medium">IA + Datos Oficiales MAEC</span>
             </div>
-            <div className="p-6 flex flex-col justify-center flex-1">
-              <div className="flex items-center gap-2 mb-3">
-                <span className="inline-flex items-center gap-1 px-3 py-1 bg-white/20 text-white text-xs font-bold rounded-full animate-pulse">
-                  <Globe className="w-3 h-3" />
-                  DESCUBRE EL PROYECTO
-                </span>
-                <Shield className="w-5 h-5 text-blue-200 group-hover:text-white transition-colors" />
-              </div>
-              <h3 className="text-xl md:text-2xl font-bold text-white mb-2 group-hover:text-blue-100 transition-colors">
-                ¿Qué es Viaje Inteligencia?
-              </h3>
-              <p className="text-blue-100 text-sm md:text-base mb-4">
-                Viajar ya no es solo elegir destino y comprar un vuelo. Quien viaja mejor toma mejores decisiones: datos, IA y estrategia al servicio de tus viajes.
-              </p>
-              <div className="flex items-center gap-2 text-white font-semibold text-sm group-hover:gap-3 transition-all">
-                Leer artículo
-                <span className="group-hover:translate-x-1 transition-transform">→</span>
-              </div>
-            </div>
-          </div>
-        </Link>
-      </div>
-
-      {/* LEAD MAGNET - Banner destacado */}
-      <PlanificadorSimple />
-
-      <MapaMundial />
-
-      {/* Memoria de Viaje - PREMIUM */}
-      <div className="max-w-6xl mx-auto px-6 py-8">
-        <div className="bg-gradient-to-r from-orange-600 to-amber-600 rounded-2xl p-6 shadow-lg shadow-orange-500/20">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-4">
-              <div className="w-14 h-14 bg-white/20 rounded-xl flex items-center justify-center">
-                <FileText className="w-8 h-8 text-white" />
-              </div>
-              <div>
-                <div className="flex items-center gap-2 mb-1">
-                  <h3 className="text-xl font-bold text-white">📁 Memoria de Viaje</h3>
-                  <span className="px-2 py-0.5 bg-white/20 text-white text-xs font-bold rounded-full">PREMIUM</span>
+            
+            <h1 className="text-4xl md:text-6xl font-bold text-white mb-4 leading-tight">
+              Viaja con{' '}
+              <span className="bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
+                Inteligencia
+              </span>
+            </h1>
+            
+            <p className="text-lg md:text-xl text-slate-400 max-w-2xl mx-auto mb-8">
+              Riesgos oficiales, rutas con IA y planificación inteligente. 
+              Todo lo que necesitas para viajar seguro y con confianza.
+            </p>
+            
+            <div className="flex flex-wrap justify-center gap-4 text-sm text-slate-400">
+              {features.map((f, i) => (
+                <div key={i} className="flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                  <span>{f.text}</span>
                 </div>
-                <p className="text-orange-100 text-sm">
-                  Guarda documentos de viaje 100% local en tu móvil. 
-                  No se suben a la red. Si pierdes el teléfono, los pierdes. Exporta backups.
+              ))}
+            </div>
+          </div>
+
+          {/* 3 DECISIONES CLAVE */}
+          <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+            {quickActions.map((action, i) => (
+              <Link
+                key={i}
+                href={action.href}
+                className={`group bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 border ${action.border} ${action.hover} transition-all duration-300 hover:scale-[1.02] hover:shadow-lg`}
+              >
+                <div className={`w-14 h-14 ${action.bg} rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
+                  <span className="text-2xl">{action.emoji}</span>
+                </div>
+                <h3 className="text-lg font-bold text-white mb-1">{action.title}</h3>
+                <p className={`text-sm bg-gradient-to-r ${action.color} bg-clip-text text-transparent font-medium mb-3`}>
+                  {action.subtitle}
                 </p>
-              </div>
-            </div>
-            <Link
-              href="/documentos"
-              className="px-6 py-3 bg-white text-orange-600 font-bold rounded-xl hover:bg-orange-50 transition-all whitespace-nowrap"
-            >
-              Abrir app →
-            </Link>
+                <p className="text-slate-400 text-sm mb-4 leading-relaxed">{action.description}</p>
+                <div className={`inline-flex items-center gap-2 text-sm font-semibold bg-gradient-to-r ${action.color} bg-clip-text text-transparent group-hover:gap-3 transition-all`}>
+                  {action.label}
+                  <ArrowRight className="w-4 h-4" />
+                </div>
+              </Link>
+            ))}
           </div>
         </div>
-      </div>
+      </section>
 
-      <div className="max-w-6xl mx-auto px-6 py-8">
-        <div className="bg-gradient-to-r from-blue-900/50 to-cyan-900/50 rounded-2xl p-6 border border-blue-500/30">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-4">
-              <div className="w-14 h-14 bg-blue-500/20 rounded-xl flex items-center justify-center">
-                <Activity className="w-8 h-8 text-blue-400" />
-              </div>
-              <div>
-                <h3 className="text-xl font-bold text-white">📊 KPIs de Seguridad en Tiempo Real</h3>
-                <p className="text-slate-400">Gráficos interactivos: riesgo político, aéreo, restricciones y recomendaciones IA</p>
-              </div>
-            </div>
-            <Link
-              href="/dashboard/kpis"
-              className="px-6 py-3 bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-bold rounded-xl hover:from-blue-600 hover:to-cyan-600 transition-all shadow-lg shadow-blue-500/25 whitespace-nowrap"
-            >
-              Ver Dashboard →
-            </Link>
-          </div>
+      {/* MAPA DE RIESGOS */}
+      <section className="max-w-6xl mx-auto px-6 py-12">
+        <div className="text-center mb-8">
+          <h2 className="text-2xl md:text-3xl font-bold text-white mb-2">Mapa de Riesgos Global</h2>
+          <p className="text-slate-400">Datos oficiales del Ministerio de Asuntos Exteriores (MAEC)</p>
         </div>
-      </div>
+        <MapaMundial />
+      </section>
 
-      {/* Radio Inteligente - NUEVO */}
-      <div className="max-w-6xl mx-auto px-6 py-8">
-        <div className="bg-gradient-to-r from-purple-900/50 to-indigo-900/50 rounded-2xl p-6 border border-purple-500/30">
+      {/* NOVEDADES / FEATURES */}
+      <section className="max-w-6xl mx-auto px-6 py-12 space-y-6">
+        {/* Radio Inteligente */}
+        <Link href="/radius" className="group block bg-gradient-to-r from-purple-900/40 to-indigo-900/40 rounded-2xl p-6 border border-purple-500/30 hover:border-purple-400/50 transition-all">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-4">
               <div className="w-14 h-14 bg-purple-500/20 rounded-xl flex items-center justify-center">
-                <Radio className="w-8 h-8 text-purple-400" />
+                <MapPinned className="w-7 h-7 text-purple-400" />
               </div>
               <div>
                 <div className="flex items-center gap-2 mb-1">
-                  <h3 className="text-xl font-bold text-white">🎯 Radio Inteligente</h3>
+                  <h3 className="text-xl font-bold text-white">Radio Inteligente</h3>
                   <span className="px-2 py-0.5 bg-purple-500/30 text-purple-200 text-xs font-bold rounded-full">NUEVO</span>
                 </div>
-                <p className="text-slate-400">Descubre destinos increíbles cerca de ti con scoring IA: seguridad, clima, POIs y proximidad</p>
+                <p className="text-slate-400 text-sm">Descubre destinos cerca de ti con scoring IA: seguridad, clima y proximidad</p>
               </div>
             </div>
-            <Link
-              href="/radius"
-              className="px-6 py-3 bg-gradient-to-r from-purple-500 to-indigo-500 text-white font-bold rounded-xl hover:from-purple-600 hover:to-indigo-600 transition-all shadow-lg shadow-purple-500/25 whitespace-nowrap flex items-center gap-2"
-            >
-              <MapPinned className="w-5 h-5" />
-              Explorar →
-            </Link>
+            <span className="text-purple-400 font-semibold text-sm group-hover:translate-x-1 transition-transform flex items-center gap-1">
+              Explorar <ArrowRight className="w-4 h-4" />
+            </span>
           </div>
-        </div>
-      </div>
+        </Link>
 
-      {/* Checklist Premium Gratis */}
-      <div className="max-w-6xl mx-auto px-6 py-6">
-        <div className="bg-gradient-to-r from-emerald-600 to-teal-600 rounded-2xl p-6 shadow-lg shadow-emerald-500/20 border border-emerald-400/30">
+        {/* KPIs Dashboard */}
+        <Link href="/dashboard/kpis" className="group block bg-gradient-to-r from-blue-900/40 to-cyan-900/40 rounded-2xl p-6 border border-blue-500/30 hover:border-blue-400/50 transition-all">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-4">
-              <div className="w-14 h-14 bg-white/20 rounded-xl flex items-center justify-center">
-                <Gift className="w-8 h-8 text-white" />
+              <div className="w-14 h-14 bg-blue-500/20 rounded-xl flex items-center justify-center">
+                <TrendingUp className="w-7 h-7 text-blue-400" />
+              </div>
+              <div>
+                <h3 className="text-xl font-bold text-white mb-1">KPIs de Seguridad</h3>
+                <p className="text-slate-400 text-sm">Riesgo político, aéreo, restricciones y recomendaciones IA en gráficos interactivos</p>
+              </div>
+            </div>
+            <span className="text-blue-400 font-semibold text-sm group-hover:translate-x-1 transition-transform flex items-center gap-1">
+              Ver Dashboard <ArrowRight className="w-4 h-4" />
+            </span>
+          </div>
+        </Link>
+
+        {/* Estimador de Coste ML */}
+        <Link href="/coste" className="group block bg-gradient-to-r from-amber-900/40 to-orange-900/40 rounded-2xl p-6 border border-amber-500/30 hover:border-amber-400/50 transition-all">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-4">
+              <div className="w-14 h-14 bg-amber-500/20 rounded-xl flex items-center justify-center">
+                <Sparkles className="w-7 h-7 text-amber-400" />
               </div>
               <div>
                 <div className="flex items-center gap-2 mb-1">
-                  <h3 className="text-xl font-bold text-white">🎁 Checklist Premium Gratis</h3>
-                  <span className="px-2 py-0.5 bg-white/20 text-white text-xs font-bold rounded-full">FREE</span>
+                  <h3 className="text-xl font-bold text-white">Estimador de Coste ML</h3>
+                  <span className="px-2 py-0.5 bg-amber-500/30 text-amber-200 text-xs font-bold rounded-full">ML</span>
                 </div>
-                <p className="text-emerald-100 text-sm">
-                  30 items esenciales para viajar seguro. Descárgalo ahora →</p>
+                <p className="text-slate-400 text-sm">Machine Learning analiza precios reales para estimar tu presupuesto por destino</p>
               </div>
             </div>
-            <Link
-              href="/lead-magnet"
-              className="px-6 py-3 bg-white text-emerald-600 font-bold rounded-xl hover:bg-emerald-50 transition-all whitespace-nowrap flex items-center gap-2"
-            >
-              <CheckCircle className="w-5 h-5" />
-              Obtener Gratis
-            </Link>
+            <span className="text-amber-400 font-semibold text-sm group-hover:translate-x-1 transition-transform flex items-center gap-1">
+              Calcular coste <ArrowRight className="w-4 h-4" />
+            </span>
           </div>
-        </div>
-      </div>
+        </Link>
+      </section>
 
-      <div className="max-w-4xl mx-auto px-6 py-12">
+      {/* NEWSLETTER */}
+      <section className="max-w-4xl mx-auto px-6 py-12">
         <NewsletterSignup variant="blog" />
-      </div>
-      <Testimonios />
-      <QuickStart />
+      </section>
     </>
   );
 }
