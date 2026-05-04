@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { ArrowLeft, Calendar, Clock, BookOpen, TrendingUp, Clock3, Tag, Flame, ChevronLeft, ChevronRight, Filter, ArrowUpDown, Search } from 'lucide-react';
 import NewsletterSignup from '@/components/NewsletterSignup';
@@ -28,29 +29,35 @@ function PostCard({ post }: { post: Post }) {
       href={`/blog/${post.slug}`}
       className="bg-slate-800 rounded-xl border border-slate-700 overflow-hidden hover:border-blue-500 transition-colors group"
     >
-      <div className="h-32 bg-gradient-to-br from-blue-900/80 via-slate-900/90 to-purple-900/80 overflow-hidden relative">
-        {post.image && post.image.trim() !== '' && (post.image.startsWith('http') || post.image.startsWith('/') || post.image.endsWith('.jpg') || post.image.endsWith('.png') || post.image.endsWith('.webp')) ? (
+      <div className="h-32 relative overflow-hidden">
+        {post.image && post.image.trim() !== '' && (post.image.startsWith('http') || post.image.startsWith('/')) ? (
           <>
-            <img
+            <Image
               src={post.image}
               alt={post.title}
-              className="w-full h-full object-cover opacity-60 grayscale-[20%] scale-105"
+              fill
+              className="object-cover opacity-60 grayscale-[20%] scale-105"
+              loading="lazy"
+              sizes="(max-width: 768px) 50vw, 33vw"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/50 to-transparent" />
             <div className="absolute inset-0 flex items-center justify-center">
-              <img src="/favicon.jpg" alt="" className="w-16 h-16 rounded-xl shadow-2xl border-2 border-white/20 object-contain" />
+              <Image src="/favicon.jpg" alt="" width={64} height={64} className="rounded-xl shadow-2xl border-2 border-white/20 object-contain" />
             </div>
           </>
         ) : (
           <>
-            <img
+            <Image
               src="/blog-header.jpg"
               alt={post.title}
-              className="w-full h-full object-cover opacity-60 grayscale-[20%]"
+              fill
+              className="object-cover opacity-60 grayscale-[20%]"
+              loading="lazy"
+              sizes="(max-width: 768px) 50vw, 33vw"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/50 to-transparent" />
             <div className="absolute inset-0 flex items-center justify-center">
-              <img src="/favicon.jpg" alt="" className="w-16 h-16 rounded-xl shadow-2xl border-2 border-white/20 object-contain" />
+              <Image src="/favicon.jpg" alt="" width={64} height={64} className="rounded-xl shadow-2xl border-2 border-white/20 object-contain" />
             </div>
           </>
         )}
@@ -201,16 +208,20 @@ export default function BlogClient({
               >
                 <div className="relative h-56 overflow-hidden">
                   {post.image && post.image.trim() !== '' ? (
-                    <img
+                    <Image
                       src={post.image}
                       alt={post.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      fill
+                      className="object-cover group-hover:scale-105 transition-transform duration-500"
+                      sizes="(max-width: 768px) 100vw, 50vw"
                     />
                   ) : (
-                    <img
+                    <Image
                       src="/blog-header.jpg"
                       alt={post.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      fill
+                      className="object-cover group-hover:scale-105 transition-transform duration-500"
+                      sizes="(max-width: 768px) 100vw, 50vw"
                     />
                   )}
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/60 to-transparent" />

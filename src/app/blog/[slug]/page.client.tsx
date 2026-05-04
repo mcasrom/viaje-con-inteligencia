@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { ArrowLeft, Calendar, Clock, Tag, Eye } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -145,12 +146,12 @@ export default function BlogPostPage({ post }: { post: Post }) {
 
           <div className="mt-8">
             {post.image && post.image.trim() !== '' ? (
-              <div className="rounded-2xl overflow-hidden">
-                <img src={post.image} alt={post.title} className="w-full h-48 md:h-64 object-cover opacity-70 grayscale-[20%]" />
+              <div className="rounded-2xl overflow-hidden relative w-full h-48 md:h-64">
+                <Image src={post.image} alt={post.title} fill className="object-cover opacity-80 grayscale-[20%]" loading="lazy" sizes="(max-width: 768px) 100vw, 50vw" />
               </div>
             ) : (
-              <div className="rounded-2xl overflow-hidden">
-                <img src="/blog-header.jpg" alt={post.title} className="w-full h-48 md:h-64 object-cover opacity-70 grayscale-[20%]" />
+              <div className="rounded-2xl overflow-hidden relative w-full h-48 md:h-64">
+                <Image src="/blog-header.jpg" alt={post.title} fill className="object-cover opacity-80 grayscale-[20%]" loading="lazy" sizes="(max-width: 768px) 100vw, 50vw" />
               </div>
             )}
           </div>
