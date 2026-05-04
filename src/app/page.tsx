@@ -1,195 +1,244 @@
 import MapaMundial from '@/components/MapaMundial';
 import NewsletterSignup from '@/components/NewsletterSignup';
 import Link from 'next/link';
-import { Shield, Route, Search, ArrowRight, Map, Globe, Clock, TrendingUp, Star, CheckCircle2, Sparkles, Radio, MapPinned } from 'lucide-react';
+import { Shield, Sparkles, Bell, Crown, ArrowRight, Globe, CheckCircle2 } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
 
-const quickActions = [
-  {
-    icon: <Shield className="w-8 h-8" />,
-    emoji: '🛡️',
-    title: '¿Es seguro mi destino?',
-    subtitle: 'Consulta riesgos oficiales MAEC',
-    description: 'Nivel de riesgo, alertas en tiempo real y recomendaciones para 100+ países.',
-    href: '/',
-    label: 'Ver Mapa de Riesgos',
-    color: 'from-blue-600 to-cyan-600',
-    bg: 'bg-blue-500/10',
-    border: 'border-blue-500/30',
-    hover: 'hover:border-blue-400/50',
-  },
-  {
-    icon: <Route className="w-8 h-8" />,
-    emoji: '🛣️',
-    title: '¿Qué ruta me recomiendas?',
-    subtitle: 'Rutas temáticas con IA',
-    description: 'Molinos, Faros, Vino, Pirineos, Costa... Rutas curadas con scoring de seguridad.',
-    href: '/rutas',
-    label: 'Explorar Rutas',
-    color: 'from-emerald-600 to-teal-600',
-    bg: 'bg-emerald-500/10',
-    border: 'border-emerald-500/30',
-    hover: 'hover:border-emerald-400/50',
-  },
-  {
-    icon: <Search className="w-8 h-8" />,
-    emoji: '🤖',
-    title: 'Planifica mi viaje con IA',
-    subtitle: 'Itinerario en 30 segundos',
-    description: 'Dinos destino, días y presupuesto. La IA genera tu viaje perfecto al instante.',
-    href: '/clustering',
-    label: 'Usar Planificador IA',
-    color: 'from-purple-600 to-violet-600',
-    bg: 'bg-purple-500/10',
-    border: 'border-purple-500/30',
-    hover: 'hover:border-purple-400/50',
-  },
-];
+// ============================================================
+// BLOQUE 1: HERO + MAPA (Dominante)
+// ============================================================
+function HeroMapa() {
+  return (
+    <section className="relative">
+      <div className="absolute inset-0 bg-gradient-to-b from-slate-900 via-slate-900/90 to-transparent pointer-events-none z-10" />
+      
+      <div className="relative z-20 max-w-6xl mx-auto px-6 pt-12 pb-6 text-center">
+        <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-500/10 border border-blue-500/30 rounded-full mb-6">
+          <Globe className="w-4 h-4 text-blue-400" />
+          <span className="text-blue-300 text-sm font-medium">107 países · Datos oficiales MAEC</span>
+        </div>
+        
+        <h1 className="text-4xl md:text-5xl font-bold text-white mb-3">
+          ¿Es seguro tu{' '}
+          <span className="bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
+            destino
+          </span>
+          ?
+        </h1>
+        <p className="text-slate-400 text-lg max-w-xl mx-auto">
+          Haz clic en cualquier país del mapa. Riesgos, alertas y recomendaciones al instante.
+        </p>
+      </div>
 
-const features = [
-  { icon: <Globe className="w-5 h-5" />, text: '100+ países con datos actualizados' },
-  { icon: <Clock className="w-5 h-5" />, text: 'Alertas en tiempo real MAEC' },
-  { icon: <TrendingUp className="w-5 h-5" />, text: 'ML Coste & Clustering IA' },
-  { icon: <Star className="w-5 h-5" />, text: 'Rutas premium España' },
-];
+      <div className="relative max-w-6xl mx-auto px-4">
+        <MapaMundial />
+      </div>
+    </section>
+  );
+}
 
+// ============================================================
+// BLOQUE 2: STATS RÁPIDOS (Una sola fila)
+// ============================================================
+function StatsRapidos() {
+  const stats = [
+    { label: 'Países analizados', value: '107', icon: '🌍' },
+    { label: 'Destinos seguros', value: '92', icon: '✅' },
+    { label: 'KPIs en tiempo real', value: '16', icon: '📊' },
+    { label: 'Idiomas disponibles', value: '3', icon: '🌐' },
+  ];
+
+  return (
+    <section className="border-y border-slate-800 bg-slate-900/50">
+      <div className="max-w-6xl mx-auto px-6 py-6">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          {stats.map((s, i) => (
+            <div key={i} className="text-center">
+              <div className="text-3xl mb-1">{s.icon}</div>
+              <div className="text-2xl md:text-3xl font-bold text-white">{s.value}</div>
+              <div className="text-slate-500 text-xs mt-1">{s.label}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ============================================================
+// BLOQUE 3: PLANIFICADOR IA 30s
+// ============================================================
+function PlanificadorIA() {
+  return (
+    <section className="max-w-6xl mx-auto px-6 py-16">
+      <div className="bg-gradient-to-r from-purple-900/40 to-violet-900/40 rounded-2xl p-8 border border-purple-500/30">
+        <div className="text-center mb-8">
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-purple-500/20 rounded-full mb-4">
+            <Sparkles className="w-4 h-4 text-purple-400" />
+            <span className="text-purple-300 text-xs font-bold">INTELIGENCIA ARTIFICIAL</span>
+          </div>
+          <h2 className="text-2xl md:text-3xl font-bold text-white mb-2">
+            Planifica tu viaje en 30 segundos
+          </h2>
+          <p className="text-slate-400 max-w-lg mx-auto">
+            Sin registro. Dinos destino y presupuesto. La IA genera tu viaje ideal.
+          </p>
+        </div>
+
+        <div className="flex flex-col sm:flex-row gap-4 max-w-xl mx-auto">
+          <input
+            type="text"
+            placeholder="¿A dónde quieres ir?"
+            className="flex-1 bg-slate-800 border border-slate-700 rounded-xl px-5 py-3 text-white placeholder-slate-500 focus:border-purple-500 focus:outline-none"
+          />
+          <Link
+            href="/clustering"
+            className="inline-flex items-center justify-center gap-2 px-8 py-3 bg-gradient-to-r from-purple-600 to-violet-600 text-white font-semibold rounded-xl hover:opacity-90 transition-opacity whitespace-nowrap"
+          >
+            <Sparkles className="w-5 h-5" />
+            Planificar
+          </Link>
+        </div>
+
+        <div className="flex flex-wrap justify-center gap-6 mt-6 text-sm text-slate-500">
+          <span className="flex items-center gap-1.5">
+            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" /> Sin registro
+          </span>
+          <span className="flex items-center gap-1.5">
+            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" /> ML Clustering K-means
+          </span>
+          <span className="flex items-center gap-1.5">
+            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" /> 107 países
+          </span>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ============================================================
+// BLOQUE 4: ALERTAS MAEC (Feed en vivo)
+// ============================================================
+function AlertasFeed() {
+  const alerts = [
+    { country: '🇲🇽 México', type: 'Recomendación', text: 'Precaución por situación de seguridad en varios estados', level: 'warning' },
+    { country: '🇹🇭 Tailandia', type: 'Alerta', text: 'Temporada de monzones activa — previsión de lluvias intensas', level: 'info' },
+    { country: '🇫🇷 Francia', type: 'Aviso', text: 'Huelgas de transporte en París — alternativas disponibles', level: 'info' },
+  ];
+
+  return (
+    <section className="max-w-6xl mx-auto px-6 py-12">
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center gap-3">
+          <div className="relative">
+            <Bell className="w-6 h-6 text-amber-400" />
+            <div className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-red-500 rounded-full animate-pulse" />
+          </div>
+          <div>
+            <h2 className="text-xl font-bold text-white">Alertas MAEC en Tiempo Real</h2>
+            <p className="text-slate-500 text-sm">Fuente oficial Ministerio de Asuntos Exteriores</p>
+          </div>
+        </div>
+        <Link href="/alertas" className="text-blue-400 text-sm font-medium hover:text-blue-300 flex items-center gap-1">
+          Ver todas <ArrowRight className="w-4 h-4" />
+        </Link>
+      </div>
+
+      <div className="space-y-3">
+        {alerts.map((a, i) => (
+          <div key={i} className="bg-slate-800/50 rounded-xl p-4 border border-slate-700/50 flex items-start gap-4">
+            <div className="text-2xl flex-shrink-0">{a.country.split(' ')[0]}</div>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2 mb-1">
+                <span className={`px-2 py-0.5 rounded text-xs font-bold ${
+                  a.level === 'warning' ? 'bg-amber-500/20 text-amber-400' : 'bg-blue-500/20 text-blue-400'
+                }`}>
+                  {a.type}
+                </span>
+                <span className="text-white font-medium">{a.country.slice(2)}</span>
+              </div>
+              <p className="text-slate-400 text-sm">{a.text}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+// ============================================================
+// BLOQUE 5: CTA PREMIUM
+// ============================================================
+function PremiumCTA() {
+  const features = [
+    { icon: '💬', text: 'Chat IA de viajes con contexto de país' },
+    { icon: '📁', text: 'Memoria de viaje 100% local' },
+    { icon: '📝', text: 'Reclamaciones IA (AESA, aerolíneas)' },
+    { icon: '📊', text: 'Viajes guardados + alertas personalizadas' },
+  ];
+
+  return (
+    <section className="max-w-6xl mx-auto px-6 py-16">
+      <div className="bg-gradient-to-r from-orange-600/20 to-amber-600/20 rounded-2xl p-8 border border-orange-500/30">
+        <div className="flex flex-col md:flex-row items-center gap-8">
+          <div className="flex-1">
+            <div className="flex items-center gap-2 mb-4">
+              <Crown className="w-6 h-6 text-amber-400" />
+              <h2 className="text-2xl font-bold text-white">Premium</h2>
+            </div>
+            <p className="text-slate-400 mb-6">
+              Todo lo que necesitas para viajar con inteligencia. 
+              Prueba gratuita de 7 días.
+            </p>
+            <ul className="space-y-3">
+              {features.map((f, i) => (
+                <li key={i} className="flex items-center gap-3 text-slate-300">
+                  <span className="text-lg">{f.icon}</span>
+                  <span className="text-sm">{f.text}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="flex flex-col gap-3 w-full md:w-auto">
+            <Link
+              href="/premium"
+              className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-gradient-to-r from-orange-600 to-amber-600 text-white font-bold rounded-xl hover:opacity-90 transition-opacity text-center"
+            >
+              Empezar prueba gratis
+              <ArrowRight className="w-5 h-5" />
+            </Link>
+            <p className="text-center text-slate-500 text-xs">7 días gratis · Cancela cuando quieras</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ============================================================
+// HOME PRINCIPAL (Solo 5 bloques)
+// ============================================================
 export default function Home() {
   return (
     <>
-      {/* HERO SECTION */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-slate-900 via-slate-900 to-slate-800 py-16 md:py-24">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-900/20 via-transparent to-transparent" />
-        
-        <div className="relative max-w-6xl mx-auto px-6">
-          <div className="text-center mb-12">
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-500/10 border border-blue-500/30 rounded-full mb-6">
-              <Sparkles className="w-4 h-4 text-blue-400" />
-              <span className="text-blue-300 text-sm font-medium">IA + Datos Oficiales MAEC</span>
-            </div>
-            
-            <h1 className="text-4xl md:text-6xl font-bold text-white mb-4 leading-tight">
-              Viaja con{' '}
-              <span className="bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
-                Inteligencia
-              </span>
-            </h1>
-            
-            <p className="text-lg md:text-xl text-slate-400 max-w-2xl mx-auto mb-8">
-              Riesgos oficiales, rutas con IA y planificación inteligente. 
-              Todo lo que necesitas para viajar seguro y con confianza.
-            </p>
-            
-            <div className="flex flex-wrap justify-center gap-4 text-sm text-slate-400">
-              {features.map((f, i) => (
-                <div key={i} className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                  <span>{f.text}</span>
-                </div>
-              ))}
-            </div>
-          </div>
+      {/* 1. Hero + Mapa */}
+      <HeroMapa />
 
-          {/* 3 DECISIONES CLAVE */}
-          <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-            {quickActions.map((action, i) => (
-              <Link
-                key={i}
-                href={action.href}
-                className={`group bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 border ${action.border} ${action.hover} transition-all duration-300 hover:scale-[1.02] hover:shadow-lg`}
-              >
-                <div className={`w-14 h-14 ${action.bg} rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
-                  <span className="text-2xl">{action.emoji}</span>
-                </div>
-                <h3 className="text-lg font-bold text-white mb-1">{action.title}</h3>
-                <p className={`text-sm bg-gradient-to-r ${action.color} bg-clip-text text-transparent font-medium mb-3`}>
-                  {action.subtitle}
-                </p>
-                <p className="text-slate-400 text-sm mb-4 leading-relaxed">{action.description}</p>
-                <div className={`inline-flex items-center gap-2 text-sm font-semibold bg-gradient-to-r ${action.color} bg-clip-text text-transparent group-hover:gap-3 transition-all`}>
-                  {action.label}
-                  <ArrowRight className="w-4 h-4" />
-                </div>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
+      {/* 2. Stats */}
+      <StatsRapidos />
 
-      {/* MAPA DE RIESGOS */}
-      <section className="max-w-6xl mx-auto px-6 py-12">
-        <div className="text-center mb-8">
-          <h2 className="text-2xl md:text-3xl font-bold text-white mb-2">Mapa de Riesgos Global</h2>
-          <p className="text-slate-400">Datos oficiales del Ministerio de Asuntos Exteriores (MAEC)</p>
-        </div>
-        <MapaMundial />
-      </section>
+      {/* 3. Planificador IA */}
+      <PlanificadorIA />
 
-      {/* NOVEDADES / FEATURES */}
-      <section className="max-w-6xl mx-auto px-6 py-12 space-y-6">
-        {/* Radio Inteligente */}
-        <Link href="/radius" className="group block bg-gradient-to-r from-purple-900/40 to-indigo-900/40 rounded-2xl p-6 border border-purple-500/30 hover:border-purple-400/50 transition-all">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-4">
-              <div className="w-14 h-14 bg-purple-500/20 rounded-xl flex items-center justify-center">
-                <MapPinned className="w-7 h-7 text-purple-400" />
-              </div>
-              <div>
-                <div className="flex items-center gap-2 mb-1">
-                  <h3 className="text-xl font-bold text-white">Radio Inteligente</h3>
-                  <span className="px-2 py-0.5 bg-purple-500/30 text-purple-200 text-xs font-bold rounded-full">NUEVO</span>
-                </div>
-                <p className="text-slate-400 text-sm">Descubre destinos cerca de ti con scoring IA: seguridad, clima y proximidad</p>
-              </div>
-            </div>
-            <span className="text-purple-400 font-semibold text-sm group-hover:translate-x-1 transition-transform flex items-center gap-1">
-              Explorar <ArrowRight className="w-4 h-4" />
-            </span>
-          </div>
-        </Link>
+      {/* 4. Alertas */}
+      <AlertasFeed />
 
-        {/* KPIs Dashboard */}
-        <Link href="/dashboard/kpis" className="group block bg-gradient-to-r from-blue-900/40 to-cyan-900/40 rounded-2xl p-6 border border-blue-500/30 hover:border-blue-400/50 transition-all">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-4">
-              <div className="w-14 h-14 bg-blue-500/20 rounded-xl flex items-center justify-center">
-                <TrendingUp className="w-7 h-7 text-blue-400" />
-              </div>
-              <div>
-                <h3 className="text-xl font-bold text-white mb-1">KPIs de Seguridad</h3>
-                <p className="text-slate-400 text-sm">Riesgo político, aéreo, restricciones y recomendaciones IA en gráficos interactivos</p>
-              </div>
-            </div>
-            <span className="text-blue-400 font-semibold text-sm group-hover:translate-x-1 transition-transform flex items-center gap-1">
-              Ver Dashboard <ArrowRight className="w-4 h-4" />
-            </span>
-          </div>
-        </Link>
+      {/* 5. CTA Premium */}
+      <PremiumCTA />
 
-        {/* Estimador de Coste ML */}
-        <Link href="/coste" className="group block bg-gradient-to-r from-amber-900/40 to-orange-900/40 rounded-2xl p-6 border border-amber-500/30 hover:border-amber-400/50 transition-all">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-4">
-              <div className="w-14 h-14 bg-amber-500/20 rounded-xl flex items-center justify-center">
-                <Sparkles className="w-7 h-7 text-amber-400" />
-              </div>
-              <div>
-                <div className="flex items-center gap-2 mb-1">
-                  <h3 className="text-xl font-bold text-white">Estimador de Coste ML</h3>
-                  <span className="px-2 py-0.5 bg-amber-500/30 text-amber-200 text-xs font-bold rounded-full">ML</span>
-                </div>
-                <p className="text-slate-400 text-sm">Machine Learning analiza precios reales para estimar tu presupuesto por destino</p>
-              </div>
-            </div>
-            <span className="text-amber-400 font-semibold text-sm group-hover:translate-x-1 transition-transform flex items-center gap-1">
-              Calcular coste <ArrowRight className="w-4 h-4" />
-            </span>
-          </div>
-        </Link>
-      </section>
-
-      {/* NEWSLETTER */}
-      <section className="max-w-4xl mx-auto px-6 py-12">
+      {/* Newsletter minimal */}
+      <section className="max-w-xl mx-auto px-6 py-8">
         <NewsletterSignup variant="blog" />
       </section>
     </>
