@@ -66,6 +66,7 @@
 | check-alerts | 0 8 * * * | /api/cron/check-alerts | Verificar alertas 08:00 UTC | ✅ Configurado |
 | weekly-digest | 0 8 * * 1 | /api/cron/weekly-digest | Newsletter semanal lun 08:00 | ✅ Configurado |
 | ine-scrape | 0 6 5 * * | /api/cron/ine-scrape | INE tourism mensual día 5 06:00 | ✅ Configurado |
+| ml-clustering | 0 7 * * 1 | /api/cron/ml-clustering | ML clustering semanal lun 07:00 | ✅ Configurado |
 
 ** Páginas
 | Ruta | Descripción | Estado |
@@ -756,6 +757,7 @@ cd ~/viaje-con-inteligencia && npm install
 | scrape-maec | 0 6 * * * (diario 6:00) | /api/cron/scrape-maec | Scraping completo MAEC 93 países |
 | check-alerts | 0 8 * * * (diario 8:00) | /api/cron/check-alerts | Verificar alertas riesgo |
 | weekly-digest | 0 8 * * 1 (lunes 8:00) | /api/cron/weekly-digest | Newsletter semanal |
+| ml-clustering | 0 7 * * 1 (lunes 07:00) | /api/cron/ml-clustering | ML clustering con datos INE históricos |
 
 ** GitHub Actions
 
@@ -788,6 +790,14 @@ cd ~/viaje-con-inteligencia && npm install
 - Newsletter semanal a suscriptores
 - Envía via Telegram + Email (Resend)
 - Incluye: posts blog + países riesgo
+
+*** /api/cron/ml-clustering
+- K-Means clustering con datos INE históricos (ine_tourism_history)
+- Calcula tendencias de turistas, gasto y estancia media
+- Predicción del mes siguiente con regresión lineal
+- Segmenta por tipo: playa, cultural, familiar, rural, negocio
+- Guarda resultados en tabla =ml_clustering_cache=
+- Logs en =scraper_logs= (source: ml_clustering)
 
 * SPRINTS COMPLETADOS
 
