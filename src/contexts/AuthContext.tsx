@@ -1,8 +1,13 @@
 'use client';
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
-import { getBrowserClient } from '@/lib/supabase-browser';
+import { createBrowserClient } from '@supabase/ssr';
 
-const supabase = getBrowserClient();
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
+
+export const supabase = supabaseUrl && supabaseAnonKey
+  ? createBrowserClient(supabaseUrl, supabaseAnonKey)
+  : null;
 
 interface User {
   id: string;
@@ -17,7 +22,6 @@ interface User {
 interface AuthContextType {
   user: User | null;
   loading: boolean;
-  getSession: () => Promise<string | null>;
   signInWithEmail: (email: string) => Promise<{ error?: string }>;
   signInWithPassword: (email: string, password: string) => Promise<{ error?: string }>;
   signUpWithPassword: (email: string, password: string) => Promise<{ error?: string }>;
@@ -46,12 +50,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
     return () => subscription.unsubscribe();
   }, []);
-
-  const getSession = async (): Promise<string | null> => {
-    if (!supabase) return null;
-    const { data: { session } } = await supabase.auth.getSession();
-    return session?.access_token || null;
-  };
 
   const signInWithEmail = async (email: string) => {
     if (!supabase) return { error: 'Supabase no configurado' };
@@ -107,7 +105,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, getSession, signInWithEmail, signInWithPassword, signUpWithPassword, resetPassword, updatePassword, signInWithTelegram, signOut }}>
+    <AuthContext.Provider value={{ user, loading, signInWithEmail, signInWithPassword, signUpWithPassword, resetPassword, updatePassword, signInWithTelegram, signOut }}>
       {children}
     </AuthContext.Provider>
   );

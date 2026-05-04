@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, MapPin, Calendar, DollarSign, Sparkles, Loader2, Send, Plane } from 'lucide-react';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth, supabase } from '@/contexts/AuthContext';
 import { getTodosLosPaises } from '@/data/paises';
 
 const paises = getTodosLosPaises();
@@ -21,7 +21,7 @@ const budgetOptions = [
 ];
 
 export default function NuevoViajePage() {
-  const { user, loading: authLoading, getSession } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const router = useRouter();
 
   const [step, setStep] = useState(1);
@@ -89,7 +89,7 @@ export default function NuevoViajePage() {
   };
 
   const handleSave = async () => {
-    if (!user) return;
+    if (!user || !supabase) return;
     if (!name || !destination) {
       setError('Completa los campos requeridos');
       return;
@@ -99,29 +99,21 @@ export default function NuevoViajePage() {
     setError('');
 
     try {
-      const token = await getSession();
-      const headers: Record<string, string> = { 'Content-Type': 'application/json' };
-      if (token) headers['Authorization'] = `Bearer ${token}`;
+      const { error: err } = await supabase.from('trips').insert([{
+        user_id: user.id,
+        name,
+        destination,
+        country_code: countryCode,
+        start_date: startDate || null,
+        end_date: endDate || null,
+        days,
+        budget,
+        interests: selectedInterests,
+        itinerary_raw: itinerary || null,
+        status: 'draft',
+      }]);
 
-      const res = await fetch('/api/trips', {
-        method: 'POST',
-        headers,
-        body: JSON.stringify({
-          name,
-          destination,
-          country_code: countryCode,
-          start_date: startDate || null,
-          end_date: endDate || null,
-          days,
-          budget,
-          interests: selectedInterests,
-          itinerary_raw: itinerary || null,
-          status: 'draft',
-        }),
-      });
-
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Error al guardar');
+      if (err) throw err;
       router.push('/viajes');
     } catch (err: any) {
       setError(err.message || 'Error al guardar');
