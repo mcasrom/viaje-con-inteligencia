@@ -6,10 +6,15 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 # Sprint Status
 
+## Sprint 41 - Rutas Temáticas /rutas (Completado 04/05/2026)
+### ✅ Completado
+- **Ruta Segovia Medieval** - 4 días, 180km, 12 paradas (Alcázar, Pedraza, Puebla, La Granja, San Frutos). Gráficos IA con mes ideal (Abr), más tranquilo (Feb), evitar (Ago)
+- **Ruta Buceo Mediterráneo** - 5 días, 5 zonas (Cabo de Palos, Medas, Cabo de Creus, Tabarca, Formentera). Gráficos IA con mes ideal (May/Jun), evitar (Ago)
+- **10 rutas totales** en /rutas con predicción IA de precio/afluencia/clima
+
 ## Sprint 40 - Rutas España Detalladas (Completado 04/05/2026)
 ### ✅ Completado
-- **Ruta Segovia-Pedraza-Puebla de Pedraza** - 2.586 palabras, itinerario 4 días con día a día detallado
-- **Ruta Buceo Mediterráneo** - 2.808 palabras, 5 zonas (Cabo de Palos, Medas, Cabo de Creus, Tabarca, Formentera)
+- ~~Rutas en blog~~ (movidas a /rutas en Sprint 41)
 
 ## Sprint 39 - Optimización Imágenes Blog (Completado 03/05/2026)
 ### ✅ Completado
