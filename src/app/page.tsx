@@ -6,7 +6,8 @@ import { useState } from 'react';
 import { 
   Search, Sparkles, Crown, Bell, Globe, Filter, 
   ChevronRight, Menu, X, Calculator, Route, ClipboardList, BarChart3, 
-  MessageCircle, Mail, Send, ShieldCheck, FileText, Scale 
+  MessageCircle, Mail, Send, ShieldCheck, FileText, Scale, BookOpen,
+  Newspaper, ChevronRight as Chevron
 } from 'lucide-react';
 
 const MapaInteractivo = dynamic(
@@ -39,6 +40,10 @@ function TopBar() {
               <Sparkles className="w-4 h-4 text-purple-400" />
               Planificar IA
             </Link>
+            <Link href="/blog" className="flex items-center gap-2 px-3 py-2 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition-colors text-sm">
+              <Newspaper className="w-4 h-4 text-cyan-400" />
+              Blog OSINT
+            </Link>
             <Link href="/alertas" className="flex items-center gap-2 px-3 py-2 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition-colors text-sm relative">
               <Bell className="w-4 h-4 text-amber-400" />
               Alertas
@@ -67,6 +72,10 @@ function TopBar() {
             <Link href="/clustering" className="flex items-center gap-3 px-4 py-3 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition-colors">
               <Sparkles className="w-5 h-5 text-purple-400" />
               Planificar con IA
+            </Link>
+            <Link href="/blog" className="flex items-center gap-3 px-4 py-3 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition-colors">
+              <Newspaper className="w-5 h-5 text-cyan-400" />
+              Blog OSINT
             </Link>
             <Link href="/alertas" className="flex items-center gap-3 px-4 py-3 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition-colors">
               <Bell className="w-5 h-5 text-amber-400" />
@@ -110,6 +119,30 @@ function SidePanel() {
     { icon: <Route className="w-4 h-4 text-green-400" />, label: 'Rutas Seguras', href: '/rutas' },
     { icon: <ClipboardList className="w-4 h-4 text-orange-400" />, label: 'Checklist', href: '/checklist' },
     { icon: <BarChart3 className="w-4 h-4 text-purple-400" />, label: 'Dashboard KPIs', href: '/dashboard/kpis' },
+  ];
+
+  const posts = [
+    { 
+      tag: 'OSINT', 
+      tagColor: 'bg-amber-500/20 text-amber-400', 
+      title: 'Viajar a Turquía en 2026: riesgo real vs percepción', 
+      href: '/blog/turquia-2026',
+      date: '28 May' 
+    },
+    { 
+      tag: 'ML', 
+      tagColor: 'bg-purple-500/20 text-purple-400', 
+      title: 'Cuánto cuesta viajar a Japón: modelo ML desglosado', 
+      href: '/blog/coste-japon-ml',
+      date: '22 May' 
+    },
+    { 
+      tag: 'PAÍS', 
+      tagColor: 'bg-blue-500/20 text-blue-400', 
+      title: 'Tailandia 2026: visado, riesgo y coste real', 
+      href: '/blog/tailandia-2026',
+      date: '15 May' 
+    },
   ];
 
   return (
@@ -195,6 +228,34 @@ function SidePanel() {
                   >
                     {t.icon}
                     <span className="text-sm text-slate-300">{t.label}</span>
+                  </Link>
+                ))}
+              </div>
+            </div>
+
+            {/* Blog Section */}
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <div className="text-xs text-slate-500 font-bold uppercase tracking-wider flex items-center gap-1.5">
+                  <BookOpen className="w-3 h-3 text-cyan-400" />
+                  Últimos análisis
+                </div>
+                <Link href="/blog" className="text-[10px] text-cyan-400 hover:text-cyan-300 font-medium flex items-center gap-0.5">
+                  Todos <Chevron className="w-3 h-3" />
+                </Link>
+              </div>
+              <div className="space-y-1.5">
+                {posts.map((p, i) => (
+                  <Link 
+                    key={i}
+                    href={p.href}
+                    className="block bg-slate-800/30 hover:bg-slate-800/60 rounded-lg px-3 py-2.5 transition-colors border border-transparent hover:border-slate-700/50"
+                  >
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className={`px-1.5 py-0.5 rounded text-[9px] font-bold ${p.tagColor}`}>{p.tag}</span>
+                      <span className="text-slate-600 text-[9px]">{p.date}</span>
+                    </div>
+                    <p className="text-xs text-slate-300 leading-snug line-clamp-2">{p.title}</p>
                   </Link>
                 ))}
               </div>
