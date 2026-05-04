@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { getPoiFallback } from '@/data/pois-fallback';
 
 export const dynamic = 'force-dynamic';
 
@@ -27,7 +28,7 @@ const COUNTRY_WIKIDATA: Record<string, string> = {
 };
 
 function buildQuery(country: string, type: string, limit: number): string | null {
-  const countryItem = COUNTRY_WIKIDATA[country.toLowerCase()];
+  const countryItem = COUNTRY_WIKIDATA[country];
   if (!countryItem) return null;
 
   let typeFilter = '';
@@ -37,28 +38,22 @@ function buildQuery(country: string, type: string, limit: number): string | null
       break;
     case 'heritage':
       typeFilter = `
-        { ?item wdt:P31/wdt:P279* wd:Q23424. } UNION
-        { ?item wdt:P31/wdt:P279* wd:Q16560. } UNION
-        { ?item wdt:P31/wdt:P279* wd:Q133056. } UNION
-        { ?item wdt:P31/wdt:P279* wd:Q585219. } UNION
-        { ?item wdt:P31/wdt:P279* wd:Q1789245. } UNION
-        { ?item wdt:P31/wdt:P279* wd:Q839955. }
+        { ?item wdt:P31 wd:Q23413. } UNION
+        { ?item wdt:P31 wd:Q16970. } UNION
+        { ?item wdt:P31 wd:Q2977. } UNION
+        { ?item wdt:P31 wd:Q12003713. }
       `;
       break;
     case 'lighthouse':
-      typeFilter = '?item wdt:P31/wdt:P279* wd:Q39730.';
+      typeFilter = `?item wdt:P31 wd:Q39715.`;
       break;
     case 'beach':
-      typeFilter = `
-        { ?item wdt:P31/wdt:P279* wd:Q39130. } UNION
-        { ?item wdt:P31/wdt:P279* wd:Q219028. }
-      `;
+      typeFilter = `?item wdt:P31 wd:Q40080.`;
       break;
     case 'nature':
       typeFilter = `
-        { ?item wdt:P31/wdt:P279* wd:Q1120719. } UNION
-        { ?item wdt:P31/wdt:P279* wd:Q16611. } UNION
-        { ?item wdt:P31/wdt:P279* wd:Q3347286. }
+        { ?item wdt:P31/wdt:P279* wd:Q46169. } UNION
+        { ?item wdt:P31/wdt:P279* wd:Q204848. }
       `;
       break;
     default:
@@ -129,6 +124,20 @@ export async function GET(request: NextRequest) {
   const limit = Math.min(parseInt(searchParams.get('limit') || '15', 10), 30);
 
   const pois = await fetchFromWikidataSPARQL(country, type, limit);
+
+  if (pois.length === 0) {
+    const fallback = getPoiFallback(country, type, limit);
+    if (fallback.length > 0) {
+      return NextResponse.json({
+        source: 'fallback-local',
+        sourceUrl: 'https://viajeinteligencia.com',
+        license: 'CC BY-SA',
+        query: { country, type, limit },
+        count: fallback.length,
+        pois: fallback,
+      });
+    }
+  }
 
   return NextResponse.json({
     source: pois.length > 0 ? 'wikidata-sparql' : 'none',
