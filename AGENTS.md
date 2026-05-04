@@ -6,49 +6,57 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 # Sprint Status
 
-## SPRINT 33 - CRÍTICO (Completado 02/05/2026)
+## Sprint 36 - Transparencia Operativa (Completado 03/05/2026)
 ### ✅ Completado
-- **Favoritos**: Fix eliminar, añadir, contador (Service Worker caching API, cache-busting)
-- **Cuba**: Bloqueo total (page.tsx → 404, picker filtrado, favs filtrado, static params)
-- **/rutas**: Suspense wrapper para useSearchParams
-- **/blog**: Error boundary + loading.tsx
+- **Página /transparencia** - Server Component con estado en tiempo real de fuentes de datos y crons
+- **API cron/status** - Verificada, tabla `scraper_logs` responde correctamente
+- **Footer enlace** - Añadido "Transparencia" en sección Legal + Info
+- **UI mejorada** - Textos "Programado" y "Sin ejecutar aún" para estado inicial, horarios visibles
 
-### ✅ NIVEL 2 (Completado)
-1. **RSS URL unificado** - Reemplazado `vercel.app` por `NEXT_PUBLIC_SITE_URL` en checkout, promo, subscription, premium, dossier, telegram-bot
-2. **Coherencia países** - Stats page consulta Supabase en tiempo real (`totalPaises` desde DB)
-3. **GDPR notice newsletter** - Añadido enlace política de privacidad en formulario newsletter
-4. **Eliminar "Próximamente"** - Ocultada sección de QuickAccess hasta implementar
-
-### ✅ NIVEL 3 (Completado)
-- **Añadir países MAEC alto riesgo faltantes** - Sudán, Afganistán, Yemen, Siria, Libia, Haití (106 países total, nivel `muy-alto`)
-- **Documentar clustering ML públicamente** - README.md: sección dedicada con algoritmo K-Means, features (riskScore, IPC, distancia, arrivals), endpoints API, y código fuente
-- Testimonios / prueba social
-- España Premium itinerarios module
-- **Fix itinerarios genéricos** - Reescrito `generateItinerary()` con 5 perfiles de preferencia (cultural, playa, naturaleza, familiar, gastronomia), 7-8 actividades/día con horarios, rutas multi-ciudad (35 países con ciudades específicas), activity pools de 15+ actividades por categoría, tips contextuales
-
-## Sprint 35 - Reviews & Social Proof
+## Sprint 35 - Reviews & Social Proof (Completado 02/05/2026)
 ### ✅ Completado
 - **Reviews table** - Supabase migration (`sprint-35-reviews.sql`), RLS policies, seed data
 - **API reviews** - Route actualizada para leer/escribir en Supabase
 - **Testimonios UI** - Stats bar + carousel en homepage, trust badges en premium page
-- **Premium page fix** - Corregido error JSX (extra `</div>` en línea 929)
-- **Fix /destinos para países no-España** - Eliminadas rutas españolas para Marruecos, Francia, etc. Ahora muestra itinerario país-específico con días detallados, presupuesto, transporte, imprescindibles y tips. Países con itinerario: MA, FR, IT, PT, JP
+- **Fix /destinos para países no-España** - Eliminadas rutas españolas para MA, FR, IT, PT, JP
 
 ## SEO Audit Fixes (02/05/2026)
 ### ✅ Completado
-- **P1: Blog SSR** - Convertido blog/page.tsx de client-side a Server Component con datos iniciales SSR, BlogClient.tsx para interactividad
-- **P1: Sitemap** - Eliminado public/sitemap.xml estático que colisionaba con dynamic sitemap.ts
-- **P2: Idioma queNoHacer** - Traducidos ~80 strings en inglés a español en paises.ts
+- **P1: Blog SSR** - Convertido blog/page.tsx a Server Component con BlogClient.tsx
+- **P1: Sitemap** - Eliminado public/sitemap.xml estático
+- **P2: Idioma queNoHacer** - Traducidos ~80 strings en inglés a español
 
-### ℹ️ Ya estaba correcto
-- RSS footer ya usa dominio canónico (viajeinteligencia.com)
-- Meta descriptions únicas por país ya implementadas
-- Schema.org markup ya implementado (Article, FAQ, Breadcrumb, Place)
-- "Próximamente" ya eliminado de home
-- Contador países: 107 visibles (getTodosLosPaises), consistente en todas las páginas
+## Sprint 33 - Críticos (Completado)
+### ✅ Completado
+- **Favoritos**: Fix eliminar, añadir, contador
+- **Cuba**: Bloqueo total (404, picker, favs, static params)
+- **/rutas**: Suspense wrapper para useSearchParams
+- **/blog**: Error boundary + loading.tsx
+- **RSS URL unificado** - Dominio canónico en todas las URLs
+- **Coherencia países** - Stats dinámico desde Supabase
+- **Fix itinerarios genéricos** - 5 perfiles, 35 países, activity pools
+
+## Way Ahead — Plan próximo día
+
+### 📊 Data (High Impact)
+- [ ] Enriquecer `queHacer` arrays: 13 países con 0 items, 16 con solo 4
+- [ ] Verificar que crons MAEC se ejecuten mañana a las 6:00 AM (primer run tras añadir CRON_SECRET)
+
+### 🏗️ Features
+- [ ] España Premium itinerarios module
+- [ ] Schema.org server-side en blog posts (mover de client useEffect a server component)
+- [ ] Imágenes blog → webp + lazy loading
+
+### 🔧 Ops
+- [ ] Verificar ejecución de crons en admin dashboard tras primer run automático
+- [ ] Monitorizar página /transparencia para confirmar que muestra datos reales tras cron
+
+### 🧪 QA
+- [ ] Verificar posts publicados a social desde admin dashboard
+- [ ] Verificar blog search + paginación en producción
 
 ### ⚡ Pendiente manual
-- Enviar sitemap a Google Search Console (no es código)
+- [ ] Enviar sitemap a Google Search Console
 
 ## Technical Notes
 - Supabase URL: `https://nczkvsnuafkwtmgokiuo.supabase.co`
