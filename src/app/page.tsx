@@ -5,7 +5,8 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { 
   Search, Sparkles, Crown, Bell, Globe, Filter, 
-  ChevronRight, AlertTriangle, Menu, X 
+  ChevronRight, Menu, X, Calculator, Route, ClipboardList, BarChart3, 
+  MessageCircle, Mail, Send, ShieldCheck, FileText, Scale 
 } from 'lucide-react';
 
 const MapaInteractivo = dynamic(
@@ -62,7 +63,7 @@ function TopBar() {
       {/* Mobile Dropdown */}
       {menuOpen && (
         <div className="md:hidden max-w-7xl mx-auto px-4 mt-2 pointer-events-auto">
-          <div className="bg-slate-900/95 backdrop-blur-md rounded-xl border border-slate-700/50 p-2 shadow-xl">
+          <div className="bg-slate-900/95 backdrop-blur-md rounded-xl border border-slate-700/50 p-2 shadow-xl space-y-1">
             <Link href="/clustering" className="flex items-center gap-3 px-4 py-3 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition-colors">
               <Sparkles className="w-5 h-5 text-purple-400" />
               Planificar con IA
@@ -71,10 +72,15 @@ function TopBar() {
               <Bell className="w-5 h-5 text-amber-400" />
               Alertas MAEC
             </Link>
+            <Link href="/coste" className="flex items-center gap-3 px-4 py-3 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition-colors">
+              <Calculator className="w-5 h-5 text-blue-400" />
+              Coste del Viaje
+            </Link>
             <Link href="/premium" className="flex items-center gap-3 px-4 py-3 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition-colors">
               <Crown className="w-5 h-5 text-amber-400" />
               Premium
             </Link>
+            <div className="border-t border-slate-700 my-1" />
             <Link href="/paises" className="flex items-center gap-3 px-4 py-3 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition-colors">
               <Globe className="w-5 h-5 text-blue-400" />
               Todos los países
@@ -87,7 +93,7 @@ function TopBar() {
 }
 
 // ============================================================
-// PANEL LATERAL (Flotante) - Búsqueda + Filtros + Alertas
+// PANEL LATERAL (Flotante)
 // ============================================================
 function SidePanel() {
   const [search, setSearch] = useState('');
@@ -97,6 +103,13 @@ function SidePanel() {
     { country: 'México', text: 'Precaución por seguridad en varios estados', level: 'warning' },
     { country: 'Tailandia', text: 'Temporada de monzones activa', level: 'info' },
     { country: 'Francia', text: 'Huelgas de transporte en París', level: 'info' },
+  ];
+
+  const tools = [
+    { icon: <Calculator className="w-4 h-4 text-blue-400" />, label: 'ML Coste Viajes', href: '/coste' },
+    { icon: <Route className="w-4 h-4 text-green-400" />, label: 'Rutas Seguras', href: '/rutas' },
+    { icon: <ClipboardList className="w-4 h-4 text-orange-400" />, label: 'Checklist', href: '/checklist' },
+    { icon: <BarChart3 className="w-4 h-4 text-purple-400" />, label: 'Dashboard KPIs', href: '/dashboard/kpis' },
   ];
 
   return (
@@ -115,7 +128,7 @@ function SidePanel() {
         </button>
 
         {open && (
-          <div className="p-3 space-y-4">
+          <div className="p-3 space-y-4 max-h-[calc(100vh-12rem)] overflow-y-auto">
             {/* Search */}
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
@@ -169,6 +182,23 @@ function SidePanel() {
                 Ver todas las alertas →
               </Link>
             </div>
+
+            {/* Tools Section */}
+            <div className="space-y-2">
+              <div className="text-xs text-slate-500 font-bold uppercase tracking-wider">Herramientas</div>
+              <div className="space-y-1">
+                {tools.map((t, i) => (
+                  <Link 
+                    key={i}
+                    href={t.href}
+                    className="flex items-center gap-3 bg-slate-800/50 hover:bg-slate-800 rounded-lg px-3 py-2.5 transition-colors border border-transparent hover:border-slate-700"
+                  >
+                    {t.icon}
+                    <span className="text-sm text-slate-300">{t.label}</span>
+                  </Link>
+                ))}
+              </div>
+            </div>
           </div>
         )}
       </div>
@@ -177,11 +207,11 @@ function SidePanel() {
 }
 
 // ============================================================
-// BOTTOM BAR (Flotante) - CTA Secundario
+// BOTTOM BAR (Flotante)
 // ============================================================
 function BottomBar() {
   return (
-    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40">
+    <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-40">
       <div className="bg-slate-900/90 backdrop-blur-md rounded-2xl border border-slate-700/50 px-6 py-3 shadow-xl flex items-center gap-6">
         <Link 
           href="/paises" 
@@ -200,13 +230,74 @@ function BottomBar() {
         </Link>
         <div className="w-px h-4 bg-slate-700" />
         <Link 
-          href="/dashboard/kpis" 
+          href="/coste" 
           className="flex items-center gap-2 text-slate-300 hover:text-white transition-colors text-sm font-medium"
         >
-          Estadísticas
+          <Calculator className="w-4 h-4 text-blue-400" />
+          Coste viaje
         </Link>
       </div>
     </div>
+  );
+}
+
+// ============================================================
+// FOOTER OVERLAY (Flotante)
+// ============================================================
+function FooterOverlay() {
+  return (
+    <footer className="fixed bottom-0 left-0 right-0 z-30 pointer-events-none">
+      <div className="bg-gradient-to-t from-slate-950 via-slate-950/80 to-transparent pt-6 pb-2 pointer-events-auto">
+        <div className="max-w-7xl mx-auto px-4">
+          {/* Legal & Contact Row */}
+          <div className="flex flex-col md:flex-row items-center justify-between gap-2 text-[10px] text-slate-500">
+            {/* Legal */}
+            <div className="flex items-center gap-4">
+              <Link href="/privacidad" className="hover:text-slate-300 transition-colors flex items-center gap-1">
+                <ShieldCheck className="w-3 h-3" /> Privacidad
+              </Link>
+              <Link href="/cookies" className="hover:text-slate-300 transition-colors flex items-center gap-1">
+                <FileText className="w-3 h-3" /> Cookies
+              </Link>
+              <Link href="/aviso-legal" className="hover:text-slate-300 transition-colors flex items-center gap-1">
+                <Scale className="w-3 h-3" /> Aviso Legal
+              </Link>
+            </div>
+
+            {/* Contact */}
+            <div className="flex items-center gap-4">
+              <a 
+                href="https://wa.me/34600000000" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="hover:text-green-400 transition-colors flex items-center gap-1"
+              >
+                <MessageCircle className="w-3 h-3" /> WhatsApp
+              </a>
+              <a 
+                href="mailto:contacte@viajeconinteligencia.es" 
+                className="hover:text-blue-400 transition-colors flex items-center gap-1"
+              >
+                <Mail className="w-3 h-3" /> Contacto
+              </a>
+              <a 
+                href="https://t.me/ViajeConInteligenciaBot" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="hover:text-blue-400 transition-colors flex items-center gap-1"
+              >
+                <Send className="w-3 h-3" /> Telegram
+              </a>
+            </div>
+          </div>
+          
+          {/* Copyright */}
+          <div className="text-center text-[9px] text-slate-600 mt-1">
+            © {new Date().getFullYear()} Viaje con Inteligencia. Todos los derechos reservados.
+          </div>
+        </div>
+      </div>
+    </footer>
   );
 }
 
@@ -224,6 +315,9 @@ export default function Home() {
 
       {/* Bottom Bar */}
       <BottomBar />
+
+      {/* Footer */}
+      <FooterOverlay />
 
       {/* Map Background */}
       <div className="w-full h-full">
