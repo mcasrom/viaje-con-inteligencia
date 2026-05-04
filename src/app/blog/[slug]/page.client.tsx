@@ -1,9 +1,8 @@
 'use client';
 
-import { useParams } from 'next/navigation';
-import { useState, useEffect, Suspense } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Calendar, Clock, Tag, Eye, Loader2 } from 'lucide-react';
+import { ArrowLeft, Calendar, Clock, Tag, Eye } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import StarRating from '@/components/StarRating';
@@ -95,31 +94,6 @@ function BlogPostViews({ slug }: { slug: string }) {
 }
 
 export default function BlogPostPage({ post }: { post: Post }) {
-  const params = useParams();
-  const slug = params.slug as string;
-
-  useEffect(() => {
-    const schema = {
-      '@context': 'https://schema.org',
-      '@type': 'Article',
-      headline: post.title,
-      description: post.excerpt,
-      image: post.image,
-      datePublished: post.date,
-      author: { '@type': 'Person', name: post.author },
-      publisher: {
-        '@type': 'Organization',
-        name: 'Viaje con Inteligencia',
-        logo: 'https://www.viajeinteligencia.com/og-image.png',
-      },
-    };
-    const script = document.createElement('script');
-    script.type = 'application/ld+json';
-    script.textContent = JSON.stringify(schema);
-    document.head.appendChild(script);
-    return () => { document.head.removeChild(script); };
-  }, [post]);
-
   if (!post) {
     return (
       <div className="min-h-screen bg-slate-900 flex items-center justify-center">
@@ -162,10 +136,10 @@ export default function BlogPostPage({ post }: { post: Post }) {
                 <Clock className="w-4 h-4" />
                 {post.readTime}
               </span>
-              <BlogPostViews slug={slug} />
+              <BlogPostViews slug={post.slug} />
             </div>
             <div className="mt-2">
-              <BlogPostRating slug={slug} />
+              <BlogPostRating slug={post.slug} />
             </div>
           </div>
 

@@ -43,6 +43,51 @@ export async function generateMetadata({ params }: PageProps) {
   };
 }
 
+function generateSchema(post: any) {
+  const articleSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: post.title,
+    description: post.excerpt,
+    image: post.image || 'https://www.viajeinteligencia.com/blog-header.jpg',
+    datePublished: post.date,
+    dateModified: post.date,
+    author: { '@type': 'Person', name: post.author },
+    publisher: {
+      '@type': 'Organization',
+      name: 'Viaje con Inteligencia',
+      logo: { '@type': 'ImageObject', url: 'https://www.viajeinteligencia.com/logo.png' },
+    },
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': `https://www.viajeinteligencia.com/blog/${post.slug}`,
+    },
+  };
+
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Inicio', item: 'https://www.viajeinteligencia.com' },
+      { '@type': 'ListItem', position: 2, name: 'Blog', item: 'https://www.viajeinteligencia.com/blog' },
+      { '@type': 'ListItem', position: 3, name: post.title, item: `https://www.viajeinteligencia.com/blog/${post.slug}` },
+    ],
+  };
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+    </>
+  );
+}
+
 export default async function ArticuloPage({ params }: PageProps) {
   const { slug } = await params;
   const post = getPostBySlug(slug);
@@ -60,5 +105,10 @@ export default async function ArticuloPage({ params }: PageProps) {
     );
   }
 
-  return <BlogPostPage post={post as any} />;
+  return (
+    <>
+      {generateSchema(post)}
+      <BlogPostPage post={post as any} />
+    </>
+  );
 }
