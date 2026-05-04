@@ -1,5 +1,5 @@
 'use client';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, MapPin, Clock, ChevronRight, Star, Mountain, Wine, Landmark, Umbrella, Trees, Share2, TrendingUp, TrendingDown, Users } from 'lucide-react';
 import {
@@ -437,11 +437,12 @@ const ICONS = {
 
 export default function RutasClient() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const route = searchParams.get('route');
   const selectedRoute = route ? ROUTES_DATA.find(r => r.id === route) : null;
 
   if (selectedRoute) {
-    return <RouteDetail route={selectedRoute} />;
+    return <RouteDetail route={selectedRoute} onBack={() => router.push('/rutas')} />;
   }
 
   return (
@@ -543,13 +544,13 @@ export default function RutasClient() {
   );
 }
 
-function RouteDetail({ route }: { route: any }) {
+function RouteDetail({ route, onBack }: { route: any; onBack: () => void }) {
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800">
       <div className="max-w-4xl mx-auto px-4 py-8">
-        <Link href="/rutas" className="inline-flex items-center gap-2 text-slate-300 hover:text-white mb-6">
+        <button onClick={onBack} className="inline-flex items-center gap-2 text-slate-300 hover:text-white mb-6">
           <ArrowLeft className="w-4 h-4" />Volver a rutas
-        </Link>
+        </button>
 
         {/* Hero */}
         <div className="relative overflow-hidden rounded-2xl h-64 mb-8">
