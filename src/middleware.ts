@@ -3,10 +3,12 @@ import type { NextRequest } from 'next/server';
 import { createServerClient } from '@supabase/ssr';
 
 const BLOCKED_COUNTRIES = ['cu'];
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || '';
 
 export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
 
+  // Block Cuba country pages
   if (pathname.startsWith('/pais/')) {
     const codigo = pathname.split('/')[2]?.toLowerCase();
     if (codigo && BLOCKED_COUNTRIES.includes(codigo)) {
@@ -14,7 +16,17 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  // Refrescar sesión Supabase en cada request
+  // Protect admin routes
+  if (pathname.startsWith('/admin') && pathname !== '/admin/login') {
+    const cookie = request.cookies.get('admin_session')?.value;
+    if (cookie !== ADMIN_PASSWORD) {
+      const loginUrl = new URL('/admin/login', request.url);
+      loginUrl.searchParams.set('from', pathname);
+      return NextResponse.redirect(loginUrl);
+    }
+  }
+
+  // Refresh Supabase session on each request
   let response = NextResponse.next({ request });
 
   const supabase = createServerClient(
@@ -43,5 +55,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/pais/:path*', '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)'],
+  matcher: ['/admin/:path*', '/pais/:path*', '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)'],
 };

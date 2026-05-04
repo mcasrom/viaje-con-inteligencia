@@ -8,16 +8,16 @@ import path from 'path';
 export const dynamic = 'force-dynamic';
 
 function requireAuth(request: NextRequest) {
-  const HARDCODED_PASSWORD = 'Admin2026!Viaje';
+  const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || '';
   
   const authHeader = request.headers.get('authorization');
-  const cookie = request.cookies.get('admin_token')?.value;
+  const cookie = request.cookies.get('admin_session')?.value;
   const url = new URL(request.url);
   const queryToken = url.searchParams.get('token');
 
   const provided = authHeader?.replace('Bearer ', '') || cookie || queryToken || '';
 
-  if (provided === HARDCODED_PASSWORD) {
+  if (ADMIN_PASSWORD && provided === ADMIN_PASSWORD) {
     return true;
   }
 

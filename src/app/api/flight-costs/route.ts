@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { calculateTCI, getTCIForAllCountries, getCheapestDestinations, getMostExpensiveDestinations, getOilHistory } from '@/data/tci-engine';
+import { calculateTCI, getTCIForAllCountries, getCheapestDestinations, getMostExpensiveDestinations, getOilHistory, monthlyTCIPattern } from '@/data/tci-engine';
 import { paisesData } from '@/data/paises';
 
 export const dynamic = 'force-dynamic';
@@ -31,6 +31,7 @@ export async function GET(request: NextRequest) {
         trend: tci.trend,
         recommendation: tci.recommendation,
         factors: tci.factors,
+        monthlyPattern: monthlyTCIPattern(upperCode),
         indices: {
           demand: tci.demandIdx,
           oil: tci.oilIdx,

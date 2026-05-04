@@ -463,7 +463,7 @@ export function analyzeTCITrend(countryCode: string, history?: number[]): {
 }
 
 // Patrón mensual TCI (para encontrar mejor mes)
-function monthlyTCIPattern(countryCode: string): number[] {
+export function monthlyTCIPattern(countryCode: string): number[] {
   const weights = { demand: 0.30, oil: 0.25, seasonality: 0.25, ipc: 0.10, risk: 0.10 };
   const oilIdx = getOilIndex();
   const ipcIdx = getIPCIndex(countryCode);

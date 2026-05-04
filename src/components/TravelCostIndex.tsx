@@ -22,6 +22,8 @@ interface TCIData {
     ipc: number;
     risk: number;
   };
+  monthlyPattern?: number[];
+  monthlyAvg?: number;
 }
 
 export default function TravelCostIndex({ countryCode }: { countryCode?: string }) {
@@ -51,9 +53,12 @@ export default function TravelCostIndex({ countryCode }: { countryCode?: string 
 
   if (!data) return null;
 
-  const { tci, trend, recommendation, factors, country } = data;
+  const { tci, trend, recommendation, factors, country, monthlyPattern } = data;
 
-  const tciDiff = Math.round((tci - 100) * 10) / 10;
+  const monthlyAvg = monthlyPattern && monthlyPattern.length > 0
+    ? monthlyPattern.reduce((a: number, b: number) => a + b, 0) / monthlyPattern.length
+    : 100;
+  const tciDiff = Math.round((tci - monthlyAvg) * 10) / 10;
   const isPositive = tciDiff > 0;
   const isNeutral = Math.abs(tciDiff) < 5;
 

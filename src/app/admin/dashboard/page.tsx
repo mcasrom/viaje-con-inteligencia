@@ -1,16 +1,20 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Shield, Clock, Mail, Globe, Users, AlertTriangle, CheckCircle, XCircle, FileText, Database, MessageSquare, ExternalLink, RefreshCw, Play, Send, Radio, Bot } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { Shield, Clock, Mail, Globe, Users, AlertTriangle, CheckCircle, XCircle, FileText, Database, MessageSquare, ExternalLink, RefreshCw, Play, Send, Radio, Bot, LogOut } from 'lucide-react';
 
 export default function AdminDashboard() {
-  const [password, setPassword] = useState('');
-  const [authenticated, setAuthenticated] = useState(false);
+  const router = useRouter();
   const [data, setData] = useState<any>(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [actionResult, setActionResult] = useState<any>(null);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetchStats();
+  }, []);
 
   const runAction = async (action: string, cronPath?: string) => {
     setActionLoading(action);
@@ -18,10 +22,8 @@ export default function AdminDashboard() {
     try {
       const res = await fetch('/api/admin/actions', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${password}`,
-        },
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ action, cronPath }),
       });
       const json = await res.json();
@@ -40,17 +42,14 @@ export default function AdminDashboard() {
     setLoading(true);
     setError('');
     try {
-      const res = await fetch(`/api/admin/stats?token=${encodeURIComponent(password)}`, {
-        headers: { 'Authorization': `Bearer ${password}` },
-      });
+      const res = await fetch('/api/admin/stats', { credentials: 'include' });
       if (res.status === 401) {
-        setError('Password incorrecto');
+        router.push('/admin/login');
         return;
       }
       if (!res.ok) throw new Error('Failed to fetch stats');
       const json = await res.json();
       setData(json);
-      setAuthenticated(true);
     } catch (e: any) {
       setError(e.message);
     } finally {
@@ -58,42 +57,10 @@ export default function AdminDashboard() {
     }
   };
 
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault();
-    fetchStats();
+  const handleLogout = async () => {
+    await fetch('/api/admin/login', { method: 'DELETE' });
+    router.push('/admin/login');
   };
-
-  if (!authenticated) {
-    return (
-      <div className="min-h-screen bg-slate-900 flex items-center justify-center p-6">
-        <div className="bg-slate-800 rounded-2xl p-8 border border-slate-700 w-full max-w-md">
-          <div className="flex items-center gap-3 mb-6">
-            <Shield className="w-8 h-8 text-purple-400" />
-            <h1 className="text-2xl font-bold text-white">Panel Admin</h1>
-          </div>
-          <form onSubmit={handleLogin}>
-            <label className="block text-slate-300 text-sm mb-2">Password</label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full bg-slate-700 text-white px-4 py-3 rounded-xl border border-slate-600 focus:border-purple-500 mb-4"
-              placeholder="Introduce el password..."
-              autoFocus
-            />
-            {error && <p className="text-red-400 text-sm mb-4">{error}</p>}
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-purple-600 text-white font-bold py-3 rounded-xl hover:bg-purple-700 transition-colors disabled:opacity-50"
-            >
-              {loading ? 'Verificando...' : 'Acceder'}
-            </button>
-          </form>
-        </div>
-      </div>
-    );
-  }
 
   const formatTime = (ts: string | null) => {
     if (!ts) return 'Nunca';
@@ -128,6 +95,13 @@ export default function AdminDashboard() {
               title="Refrescar datos"
             >
               <RefreshCw className={`w-4 h-4 text-slate-300 ${loading ? 'animate-spin' : ''}`} />
+            </button>
+            <button
+              onClick={handleLogout}
+              className="p-2 bg-red-600/20 rounded-lg hover:bg-red-600/30 transition-colors"
+              title="Cerrar sesión"
+            >
+              <LogOut className="w-4 h-4 text-red-400" />
             </button>
           </div>
         </div>
