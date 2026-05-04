@@ -13,7 +13,7 @@ export async function GET(request: Request) {
   try {
     let query = supabase
       .from('reviews')
-      .select('id, author, rating, comment, country, trip_date, verified, created_at')
+      .select('id, author, rating, comment, country, trip_date, verified, image_url, created_at')
       .order('created_at', { ascending: false });
 
     if (country) {
@@ -68,7 +68,7 @@ export async function GET(request: Request) {
 
 export async function POST(request: NextRequest) {
   try {
-    const { country, author, rating, comment } = await request.json();
+    const { country, author, rating, comment, image_url } = await request.json();
 
     if (!author || !rating || !comment) {
       return NextResponse.json(
@@ -92,6 +92,7 @@ export async function POST(request: NextRequest) {
         comment: comment.trim(),
         country: country || null,
         verified: false,
+        image_url: image_url || null,
       })
       .select()
       .single();

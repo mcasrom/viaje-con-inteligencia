@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
-import { Quote, Star, MessageSquare, Users, Globe, TrendingUp, CheckCircle, Send, X, Loader2 } from 'lucide-react';
+import { useState, useEffect, useRef, useCallback } from 'react';
+import { Quote, Star, MessageSquare, Users, Globe, TrendingUp, CheckCircle, Send, X, Loader2, ImagePlus, Trash2 } from 'lucide-react';
 import { getTodosLosPaises } from '@/data/paises';
 
 interface ReviewItem {
@@ -12,6 +12,7 @@ interface ReviewItem {
   date: string;
   country?: string;
   verified?: boolean;
+  image_url?: string;
 }
 
 const socialProofStats = [
@@ -59,9 +60,13 @@ export default function Testimonios() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState({ author: '', rating: 0, comment: '', country: '' });
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [uploading, setUploading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     fetchReviews();
@@ -103,12 +108,60 @@ export default function Testimonios() {
     }
   };
 
+  const handleImageSelect = useCallback((file: File) => {
+    if (!file.type.startsWith('image/')) return;
+    if (file.size > 5 * 1024 * 1024) {
+      alert('La imagen no puede superar los 5MB');
+      return;
+    }
+    setSelectedImage(file);
+    const reader = new FileReader();
+    reader.onload = (e) => setImagePreview(e.target?.result as string);
+    reader.readAsDataURL(file);
+  }, []);
+
+  const handleDrop = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    const file = e.dataTransfer.files[0];
+    if (file) handleImageSelect(file);
+  }, [handleImageSelect]);
+
+  const handleFileInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) handleImageSelect(file);
+  }, [handleImageSelect]);
+
+  const removeImage = useCallback(() => {
+    setSelectedImage(null);
+    setImagePreview(null);
+    if (fileInputRef.current) fileInputRef.current.value = '';
+  }, []);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.author || !formData.rating || !formData.comment) return;
 
     setSubmitting(true);
+    let imageUrl: string | null = null;
+
     try {
+      if (selectedImage) {
+        setUploading(true);
+        const uploadForm = new FormData();
+        uploadForm.append('image', selectedImage);
+
+        const uploadRes = await fetch('/api/reviews/upload', {
+          method: 'POST',
+          body: uploadForm,
+        });
+
+        if (uploadRes.ok) {
+          const uploadData = await uploadRes.json();
+          imageUrl = uploadData.imageUrl;
+        }
+        setUploading(false);
+      }
+
       const res = await fetch('/api/reviews', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -117,6 +170,7 @@ export default function Testimonios() {
           author: formData.author.trim(),
           rating: formData.rating,
           comment: formData.comment.trim(),
+          image_url: imageUrl || null,
         }),
       });
 
@@ -130,6 +184,8 @@ export default function Testimonios() {
         setReviews(prev => [newReview, ...prev]);
         setSubmitted(true);
         setFormData({ author: '', rating: 0, comment: '', country: '' });
+        setSelectedImage(null);
+        setImagePreview(null);
         setTimeout(() => {
           setSubmitted(false);
           setShowForm(false);
@@ -203,9 +259,20 @@ export default function Testimonios() {
         ) : (
           <>
             <div className="grid md:grid-cols-3 gap-6">
-              {displayReviews.map((review) => (
-                <div key={review.id} className="bg-slate-800 rounded-2xl p-6 border border-slate-700 hover:border-slate-600 transition-all hover:shadow-lg hover:shadow-purple-500/5">
-                  <div className="flex items-start justify-between mb-4">
+               {displayReviews.map((review) => (
+                <div key={review.id} className="bg-slate-800 rounded-2xl overflow-hidden border border-slate-700 hover:border-slate-600 transition-all hover:shadow-lg hover:shadow-purple-500/5">
+                  {review.image_url && (
+                    <div className="relative h-40 overflow-hidden">
+                      <img
+                        src={review.image_url}
+                        alt={`Foto de ${review.author}`}
+                        className="w-full h-full object-cover"
+                        loading="lazy"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-slate-800/60 to-transparent" />
+                    </div>
+                  )}
+                  <div className={`flex items-start justify-between ${review.image_url ? 'p-4 pt-2' : 'p-6'}`}>
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-blue-600 rounded-full flex items-center justify-center text-white text-sm font-bold shrink-0">
                         {review.author.charAt(0).toUpperCase()}
@@ -231,7 +298,7 @@ export default function Testimonios() {
                     </div>
                   </div>
 
-                  <div className="relative">
+                  <div className={`relative ${review.image_url ? 'px-4 pb-4' : ''}`}>
                     <Quote className="w-5 h-5 text-purple-500/30 absolute -top-1 -left-1" />
                     <p className="text-slate-300 text-sm leading-relaxed pl-4 line-clamp-4">
                       {review.comment}
@@ -344,12 +411,55 @@ export default function Testimonios() {
                     />
                   </div>
 
+                  <div>
+                    <label className="block text-slate-300 text-sm font-medium mb-2">Foto (opcional)</label>
+                    {imagePreview ? (
+                      <div className="relative rounded-xl overflow-hidden border border-slate-600">
+                        <img
+                          src={imagePreview}
+                          alt="Preview"
+                          className="w-full h-48 object-cover"
+                        />
+                        <button
+                          type="button"
+                          onClick={removeImage}
+                          className="absolute top-2 right-2 p-1.5 bg-red-600/90 hover:bg-red-500 rounded-lg transition-colors"
+                        >
+                          <Trash2 className="w-4 h-4 text-white" />
+                        </button>
+                      </div>
+                    ) : (
+                      <div
+                        onDrop={handleDrop}
+                        onDragOver={(e) => e.preventDefault()}
+                        onClick={() => fileInputRef.current?.click()}
+                        className="border-2 border-dashed border-slate-600 hover:border-blue-500 rounded-xl p-6 text-center cursor-pointer transition-colors"
+                      >
+                        <ImagePlus className="w-8 h-8 text-slate-500 mx-auto mb-2" />
+                        <p className="text-slate-400 text-sm">Arrastra una imagen o haz clic para seleccionar</p>
+                        <p className="text-slate-500 text-xs mt-1">JPG, PNG o WebP · Máx 5MB</p>
+                      </div>
+                    )}
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept="image/jpeg,image/png,image/webp"
+                      onChange={handleFileInputChange}
+                      className="hidden"
+                    />
+                  </div>
+
                   <button
                     type="submit"
-                    disabled={submitting || !formData.author || !formData.rating || !formData.comment}
+                    disabled={submitting || uploading || !formData.author || !formData.rating || !formData.comment}
                     className="w-full py-3 bg-blue-600 hover:bg-blue-500 disabled:bg-slate-600 disabled:cursor-not-allowed text-white rounded-xl font-medium transition-all flex items-center justify-center gap-2"
                   >
-                    {submitting ? (
+                    {uploading ? (
+                      <>
+                        <Loader2 className="w-5 h-5 animate-spin" />
+                        Subiendo imagen...
+                      </>
+                    ) : submitting ? (
                       <>
                         <Loader2 className="w-5 h-5 animate-spin" />
                         Enviando...

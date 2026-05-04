@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { Star, MessageSquare, Send, User } from 'lucide-react';
+import { useState, useEffect, useRef, useCallback } from 'react';
+import { Star, MessageSquare, Send, User, ImagePlus, Trash2, Loader2 } from 'lucide-react';
 
 interface Review {
   id: string;
@@ -9,6 +9,7 @@ interface Review {
   rating: number;
   comment: string;
   date: string;
+  image_url?: string;
 }
 
 interface ReviewsProps {
@@ -51,8 +52,12 @@ export default function Reviews({ countryCode, countryName }: ReviewsProps) {
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState({ author: '', rating: 0, comment: '' });
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [uploading, setUploading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     fetchReviews();
@@ -71,18 +76,67 @@ export default function Reviews({ countryCode, countryName }: ReviewsProps) {
     }
   };
 
+  const handleImageSelect = useCallback((file: File) => {
+    if (!file.type.startsWith('image/')) return;
+    if (file.size > 5 * 1024 * 1024) {
+      alert('La imagen no puede superar los 5MB');
+      return;
+    }
+    setSelectedImage(file);
+    const reader = new FileReader();
+    reader.onload = (e) => setImagePreview(e.target?.result as string);
+    reader.readAsDataURL(file);
+  }, []);
+
+  const handleDrop = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    const file = e.dataTransfer.files[0];
+    if (file) handleImageSelect(file);
+  }, [handleImageSelect]);
+
+  const handleFileInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) handleImageSelect(file);
+  }, [handleImageSelect]);
+
+  const removeImage = useCallback(() => {
+    setSelectedImage(null);
+    setImagePreview(null);
+    if (fileInputRef.current) fileInputRef.current.value = '';
+  }, []);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.author || !formData.rating || !formData.comment) return;
 
     setSubmitting(true);
+    let imageUrl: string | null = null;
+
     try {
+      if (selectedImage) {
+        setUploading(true);
+        const uploadForm = new FormData();
+        uploadForm.append('image', selectedImage);
+
+        const uploadRes = await fetch('/api/reviews/upload', {
+          method: 'POST',
+          body: uploadForm,
+        });
+
+        if (uploadRes.ok) {
+          const uploadData = await uploadRes.json();
+          imageUrl = uploadData.imageUrl;
+        }
+        setUploading(false);
+      }
+
       const res = await fetch('/api/reviews', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           country: countryCode,
           ...formData,
+          image_url: imageUrl || null,
         }),
       });
 
@@ -91,6 +145,8 @@ export default function Reviews({ countryCode, countryName }: ReviewsProps) {
         setReviews(prev => [data.review, ...prev]);
         setSubmitted(true);
         setFormData({ author: '', rating: 0, comment: '' });
+        setSelectedImage(null);
+        setImagePreview(null);
         setTimeout(() => {
           setSubmitted(false);
           setShowForm(false);
@@ -164,14 +220,53 @@ export default function Reviews({ countryCode, countryName }: ReviewsProps) {
                   required
                 />
               </div>
+
+              <div>
+                <label className="block text-slate-300 text-sm mb-1">Foto (opcional)</label>
+                {imagePreview ? (
+                  <div className="relative rounded-lg overflow-hidden border border-slate-500">
+                    <img src={imagePreview} alt="Preview" className="w-full h-32 object-cover" />
+                    <button
+                      type="button"
+                      onClick={removeImage}
+                      className="absolute top-1 right-1 p-1 bg-red-600/90 hover:bg-red-500 rounded-lg transition-colors"
+                    >
+                      <Trash2 className="w-3 h-3 text-white" />
+                    </button>
+                  </div>
+                ) : (
+                  <div
+                    onDrop={handleDrop}
+                    onDragOver={(e) => e.preventDefault()}
+                    onClick={() => fileInputRef.current?.click()}
+                    className="border-2 border-dashed border-slate-500 hover:border-blue-500 rounded-lg p-4 text-center cursor-pointer transition-colors"
+                  >
+                    <ImagePlus className="w-6 h-6 text-slate-500 mx-auto mb-1" />
+                    <p className="text-slate-400 text-xs">Arrastra una imagen o haz clic</p>
+                  </div>
+                )}
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp"
+                  onChange={handleFileInputChange}
+                  className="hidden"
+                />
+              </div>
+
               <button
                 type="submit"
-                disabled={submitting || !formData.author || !formData.rating || !formData.comment}
+                disabled={submitting || uploading || !formData.author || !formData.rating || !formData.comment}
                 className="w-full py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
-                {submitting ? (
+                {uploading ? (
                   <>
-                    <span className="animate-spin w-5 h-5 border-2 border-white border-t-transparent rounded-full"></span>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    Subiendo imagen...
+                  </>
+                ) : submitting ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
                     Enviando...
                   </>
                 ) : (
@@ -196,20 +291,30 @@ export default function Reviews({ countryCode, countryName }: ReviewsProps) {
       ) : (
         <div className="space-y-4 max-h-96 overflow-y-auto">
           {reviews.map((review) => (
-            <div key={review.id} className="bg-slate-700/50 rounded-lg p-4">
-              <div className="flex items-start justify-between mb-2">
-                <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
-                    <User className="w-4 h-4 text-white" />
+            <div key={review.id} className="bg-slate-700/50 rounded-lg overflow-hidden">
+              {review.image_url && (
+                <img
+                  src={review.image_url}
+                  alt={`Foto de ${review.author}`}
+                  className="w-full h-32 object-cover"
+                  loading="lazy"
+                />
+              )}
+              <div className="p-4">
+                <div className="flex items-start justify-between mb-2">
+                  <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
+                      <User className="w-4 h-4 text-white" />
+                    </div>
+                    <div>
+                      <p className="text-white font-medium">{review.author}</p>
+                      <p className="text-slate-400 text-xs">{review.date}</p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-white font-medium">{review.author}</p>
-                    <p className="text-slate-400 text-xs">{review.date}</p>
-                  </div>
+                  <StarRating rating={review.rating} />
                 </div>
-                <StarRating rating={review.rating} />
+                <p className="text-slate-300">{review.comment}</p>
               </div>
-              <p className="text-slate-300">{review.comment}</p>
             </div>
           ))}
         </div>
