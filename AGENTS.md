@@ -6,7 +6,33 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 # Sprint Status
 
-## Sprint 42 - Imágenes Temáticas Rutas (Completado 04/05/2026)
+## Sprint 44 - Imágenes en Reseñas (Completado 04/05/2026)
+### ✅ Completado
+- **API `/api/reviews/upload`** — Recibe imagen, optimiza con sharp (resize 800px + WebP 80%), sube a Supabase Storage bucket `review-images`
+- **Testimonios.tsx** — Drag & drop + file picker, preview, upload + review en un paso. Cards muestran imagen cuando existe `image_url`
+- **Reviews.tsx** — Mismo soporte de imágenes en formulario por país
+- **API reviews** — GET y POST incluyen campo `image_url`
+- **DB** — Columna `image_url TEXT` añadida a tabla `reviews`
+- **⚠️ Pendiente manual**: Ejecutar SQL en Supabase (ver sección "Acciones Supabase" abajo)
+
+### 📁 Archivos nuevos/modificados
+- `src/app/api/reviews/upload/route.ts` — Nuevo endpoint upload
+- `supabase/sprint-44-review-images.sql` — Migration SQL
+- `src/app/api/reviews/route.ts` — Añadido `image_url` a select e insert
+- `src/components/Testimonios.tsx` — Selector de imagen + visualización
+- `src/components/Reviews.tsx` — Selector de imagen + visualización
+
+## Sprint 43 - Formulario de Reseñas en Testimonios (Completado 04/05/2026)
+### ✅ Completado
+- **Formulario modal** — Nombre, país (selector dinámico ~106 países desde `paises.ts`), rating ⭐, comentario
+- **Selector países dinámico** — Usa `getTodosLosPaises()`, orden alfabético es, Cuba excluida
+- **Testimonios.tsx** — Botón "Escribir Reseña", backdrop click + Escape para cerrar, animación éxito
+
+## Sprint 42 - Fix Navegación /rutas (Completado 04/05/2026)
+### ✅ Completado
+- **"Volver a rutas"** — Usa `router.push('/rutas')` en lugar de `<Link>` para evitar problemas con useSearchParams
+
+## Sprint 41 - Imágenes Temáticas Rutas (Completado 04/05/2026)
 ### ✅ Completado
 - **Imágenes Unsplash en /rutas** - 10 rutas con imagen de fondo en cards grid + hero detail
 - **Optimización**: `w=1200&q=80` para carga rápida, lazy loading en grid
@@ -85,6 +111,11 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 ## Way Ahead — Plan próximo día
 
+### ⚡ Pendiente manual (URGENTE)
+- [ ] Ejecutar `supabase/sprint-44-review-images.sql` en Supabase SQL Editor
+- [ ] Verificar que bucket `review-images` se creó correctamente y es público
+- [ ] Probar subir una reseña con imagen desde homepage
+
 ### 📊 Data
 - [ ] Verificar que crons MAEC se ejecuten mañana a las 6:00 AM (primer run tras añadir CRON_SECRET)
 
@@ -98,6 +129,53 @@ This version has breaking changes — APIs, conventions, and file structure may 
 ### 🧪 QA
 - [ ] Verificar posts publicados a social desde admin dashboard
 - [ ] Verificar blog search + paginación en producción
+- [ ] Probar upload de imagen en reseñas (Testimonios + país)
 
 ### ⚡ Pendiente manual
 - [ ] Enviar sitemap a Google Search Console
+
+---
+
+## Acciones Supabase — Sprint 44
+
+### Paso 1: Ir al SQL Editor
+1. Abrir https://app.supabase.com/project/nczkvsnuafkwtmgokiuo/sql
+2. Click en "New Query"
+
+### Paso 2: Ejecutar el SQL
+Copiar y pegar el contenido de `supabase/sprint-44-review-images.sql` (o ejecutar estas queries):
+
+```sql
+-- 1. Añadir columna image_url
+ALTER TABLE reviews ADD COLUMN IF NOT EXISTS image_url TEXT;
+
+-- 2. Crear bucket review-images (público, máx 5MB, JPG/PNG/WebP)
+INSERT INTO storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+VALUES (
+  'review-images',
+  'review-images',
+  true,
+  5242880,
+  ARRAY['image/jpeg', 'image/png', 'image/webp']
+)
+ON CONFLICT (id) DO NOTHING;
+
+-- 3. RLS policies
+CREATE POLICY "Review images are public"
+ON storage.objects FOR SELECT
+USING (bucket_id = 'review-images');
+
+CREATE POLICY "Service role can upload review images"
+ON storage.objects FOR INSERT
+WITH CHECK (bucket_id = 'review-images');
+
+CREATE POLICY "Users can delete review images"
+ON storage.objects FOR DELETE
+USING (bucket_id = 'review-images');
+```
+
+### Paso 3: Verificar
+1. Ir a **Storage** → Debería aparecer bucket `review-images`
+2. Verificar que el toggle **Public** está activado
+3. Ir a **Table Editor** → `reviews` → Debería aparecer columna `image_url`
+4. Probar subir una reseña con imagen desde la web
