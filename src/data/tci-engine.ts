@@ -65,9 +65,10 @@ function getOilIndex(): number {
 }
 
 function getDemandIndex(countryCode: string): number {
-  const ineData = ineTourismData[countryCode.toLowerCase()];
+  const code = countryCode.toLowerCase();
+  const ineData = ineTourismData[code];
   if (!ineData) {
-    const pais = paisesData[countryCode.toUpperCase()];
+    const pais = paisesData[code];
     if (pais && pais.continente === 'Europa') return 80;
     if (pais) return 50;
     return 60;
@@ -79,7 +80,7 @@ function getDemandIndex(countryCode: string): number {
 function getSeasonalityIndex(countryCode: string, month: number): number {
   const data = SEASONALITY_MAP[countryCode.toLowerCase()];
   if (!data) {
-    const pais = paisesData[countryCode.toUpperCase()];
+    const pais = paisesData[countryCode.toLowerCase()];
     if (pais && pais.continente === 'Europa') {
       return SEASONALITY_MAP['es']?.[String(month)] || 100;
     }
@@ -102,7 +103,7 @@ function getIPCIndex(countryCode: string): number {
 }
 
 function getRiskIndex(countryCode: string): number {
-  const pais = paisesData[countryCode.toUpperCase()];
+  const pais = paisesData[countryCode.toLowerCase()];
   if (!pais) return 100;
   switch (pais.nivelRiesgo) {
     case 'sin-riesgo': return 95;
@@ -171,7 +172,7 @@ export function calculateTCI(countryCode: string): {
     recommendation = 'Precios elevados — considera alternativas o fechas flexibles';
   }
 
-  const pais = paisesData[countryCode.toUpperCase()];
+  const pais = paisesData[countryCode.toLowerCase()];
   const countryName = pais?.nombre || countryCode;
 
   if (seasonalityIdx > 130) {
@@ -336,7 +337,7 @@ export function getConflictImpact(countryCode: string): {
 } {
   const routes = AFFECTED_ROUTES_FALLBACK.filter(r => r.countryCode === countryCode.toLowerCase() && r.isActive);
   if (routes.length === 0) {
-    const pais = paisesData[countryCode.toUpperCase()];
+  const pais = paisesData[countryCode.toLowerCase()];
     if (pais) {
       const closure = AIRSPACE_CLOSURES_FALLBACK.find(c => c.code === countryCode.toUpperCase() && c.isActive);
       if (closure) {
@@ -378,7 +379,7 @@ export function analyzeTCITrend(countryCode: string, history?: number[]): {
   const month = new Date().getMonth();
 
   // Generar datos históricos simulados basados en estacionalidad + tendencia
-  const pais = paisesData[countryCode.toUpperCase()];
+  const pais = paisesData[countryCode.toLowerCase()];
   const seasonalData = pais ? SEASONALITY_MAP[pais.codigo.toLowerCase()] : null;
 
   const weeklyData: { week: string; value: number }[] = [];

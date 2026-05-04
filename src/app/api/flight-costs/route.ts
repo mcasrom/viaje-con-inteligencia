@@ -12,13 +12,13 @@ export async function GET(request: NextRequest) {
 
   try {
     if (country) {
-      const upperCode = country.toUpperCase();
-      const pais = paisesData[upperCode];
+      const lowerCode = country.toLowerCase();
+      const pais = paisesData[lowerCode];
       if (!pais) {
         return NextResponse.json({ error: 'País no encontrado' }, { status: 404 });
       }
 
-      const tci = calculateTCI(upperCode);
+      const tci = calculateTCI(lowerCode);
       return NextResponse.json({
         country: {
           code: pais.codigo,
@@ -31,7 +31,7 @@ export async function GET(request: NextRequest) {
         trend: tci.trend,
         recommendation: tci.recommendation,
         factors: tci.factors,
-        monthlyPattern: monthlyTCIPattern(upperCode),
+        monthlyPattern: monthlyTCIPattern(lowerCode),
         indices: {
           demand: tci.demandIdx,
           oil: tci.oilIdx,
