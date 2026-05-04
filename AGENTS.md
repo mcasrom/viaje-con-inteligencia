@@ -6,6 +6,11 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 # Sprint Status
 
+## Sprint 39 - Optimización Imágenes Blog (Completado 03/05/2026)
+### ✅ Completado
+- **Imágenes blog → next/image** - Lazy loading, optimización automática WebP/AVIF, sizes responsive
+- **Post cards y featured posts** - Todas las imágenes optimizadas con next/image
+
 ## Sprint 38 - Schema.org Server-Side (Completado 03/05/2026)
 ### ✅ Completado
 - **Schema.org server-side** - Article + BreadcrumbList en Server Component, eliminado useEffect client-side
@@ -70,7 +75,6 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 ### 🏗️ Features
 - [ ] España Premium itinerarios module
-- [ ] Imágenes blog → webp + lazy loading
 
 ### 🔧 Ops
 - [ ] Verificar ejecución de crons en admin dashboard tras primer run automático
