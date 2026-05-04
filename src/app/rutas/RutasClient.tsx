@@ -159,7 +159,8 @@ const ROUTES_DATA = [
     icon: '🌬️',
     color: 'from-amber-600 to-orange-600',
     Icon: Star,
-    desc: 'Itinerario por los molinos de viento más emblemáticos de La Mancha, siguiendo los pasos de Don Quijote a través de pueblos con encanto, gastronomía manchega y paisajes infinitos.',
+    image: 'https://images.unsplash.com/photo-1570042754636-079e88583c10?w=1200&q=80',
+    desc: 'Itinerario por los molinos de viento más emblemáticos de La Mancha',
     details: [
       'Alcalá de Henares - Ciudad cervantina con importante patrimonio histórico',
       'Alcalá de Chivert - Molinos históricos y parajes naturales',
@@ -184,7 +185,8 @@ const ROUTES_DATA = [
     icon: '🌅',
     color: 'from-cyan-600 to-blue-600',
     Icon: Mountain,
-    desc: 'Recorre la costa española de sur a norte visitando los faros más emblemáticos, desde Huelva hasta Gerona, con playas vírgenes, gastronomía costera y atardeceres espectaculares.',
+    image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1200&q=80',
+    desc: 'Recorre la costa española de sur a norte visitando los faros más emblemáticos',
     details: [
       'Faro de Punta Umbría (Huelva) - Faro en el límite de Castilla',
       'Faro de Trafalgar (Cádiz) - Playa de Zahora y torre histórica',
@@ -214,7 +216,8 @@ const ROUTES_DATA = [
     icon: '🏔️',
     color: 'from-emerald-600 to-teal-600',
     Icon: Trees,
-    desc: 'Ruta por el interior de la Región de Murcia, descubriendo pueblos monumentales, gastronomía murciana y naturaleza salvaje entre montañas y ríos.',
+    image: 'https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=1200&q=80',
+    desc: 'Ruta por el interior de la Región de Murcia, descubriendo pueblos monumentales',
     details: [
       'Murcia - Catedral, Real Casino y museos',
       'Cartagena - Teatro Romano y Castillo',
@@ -239,7 +242,8 @@ const ROUTES_DATA = [
     icon: '🍷',
     color: 'from-red-600 to-rose-600',
     Icon: Wine,
-    desc: 'Recorre las principales regiones vinícolas de España: Rioja, Ribera del Duero, Rías Baixas, Penedés, Jumilla, Montilla-Moriles, Ronda y Txakoli. Enoturismo premium con catas, bodegas históricas y paisajes de viñedos.',
+    image: 'https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?w=1200&q=80',
+    desc: 'Recorre las principales regiones vinícolas de España',
     details: [
       'La Rioja (Haro, Logroño, Briones) - DOCa Rioja, 60+ bodegas, Museo del Vino',
       'Ribera del Duero (Aranda, Roa, Penafiel) - DO Ribera, Vega Sicilia, Protos',
@@ -264,7 +268,8 @@ const ROUTES_DATA = [
     icon: '🏔️',
     color: 'from-blue-600 to-indigo-600',
     Icon: Mountain,
-    desc: 'Estaciones de esquí en los Pirineos, pueblos de montaña con encanto, termas y gastronomía pirenaica. Desde Baqueira Beret hasta Formigal, la mejor nieve de España.',
+    image: 'https://images.unsplash.com/photo-1551524559-8af4e66a2f60?w=1200&q=80',
+    desc: 'Estaciones de esquí en los Pirineos, pueblos de montaña con encanto',
     details: [
       'Baqueira Beret (Lleida) - Estación premium con nieve garantizada',
       'Boí Taüll (Lleida) - Esquí + patrimonio románico UNESCO',
@@ -290,7 +295,8 @@ const ROUTES_DATA = [
     icon: '🏖️',
     color: 'from-yellow-500 to-orange-600',
     Icon: Umbrella,
-    desc: 'Las mejores playas de la Costa del Sol y Costa de la Luz, desde Marbella hasta Tarifa, con calas escondidas, pueblos blancos y gastronomía andaluza.',
+    image: 'https://images.unsplash.com/photo-1519046904884-53103b34b206?w=1200&q=80',
+    desc: 'Las mejores playas de la Costa del Sol y Costa de la Luz',
     details: [
       'Marbella - Playas de lujo y Puerto Banús',
       'Nerja - Balcón de Europa y Cueva de Nerja',
@@ -315,7 +321,8 @@ const ROUTES_DATA = [
     icon: '🌲',
     color: 'from-green-600 to-emerald-600',
     Icon: Trees,
-    desc: 'Recorre la costa cantábrica desde Galicia hasta el País Vasco, pasando por Asturias y Cantabria. Naturaleza exuberante, sidrerías, quesos artesanales y pueblos pesqueros.',
+    image: 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=1200&q=80',
+    desc: 'Recorre la costa cantábrica desde Galicia hasta el País Vasco',
     details: [
       'Rías Baixas (Galicia) - Albariño, playas y marisqueo',
       'Santiago de Compostela - Catedral y Camino',
@@ -342,7 +349,8 @@ const ROUTES_DATA = [
     icon: '🏛️',
     color: 'from-purple-600 to-violet-600',
     Icon: Landmark,
-    desc: 'Ruta por las ciudades declaradas Patrimonio de la Humanidad por la UNESCO: Toledo, Ávila, Salamanca, Segovia, Cuenca y más. Historia, arquitectura y gastronomía castellana.',
+    image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200&q=80',
+    desc: 'Ruta por las ciudades Patrimonio de la Humanidad por la UNESCO',
     details: [
       'Toledo - Ciudad de las Tres Culturas, catedral y Alcázar',
       'Ávila - Murallas medievales completas y catedral',
@@ -367,7 +375,8 @@ const ROUTES_DATA = [
     icon: '🏰',
     color: 'from-amber-700 to-stone-600',
     Icon: Landmark,
-    desc: 'Sumérgete en la Castilla medieval: el Alcázar de Segovia, la villa amurallada de Pedraza, el pueblo de piedra de Puebla y la gastronomía castiza. Una ruta de 4 días por la esencia de Castilla y León.',
+    image: 'https://images.unsplash.com/photo-1589820296156-2454bb8a6d54?w=1200&q=80',
+    desc: 'Sumérgete en la Castilla medieval: el Alcázar de Segovia, la villa amurallada de Pedraza',
     details: [
       'Segovia - Acueducto Romano (siglo I), Alcázar, Catedral gótica "La Dama", Judería medieval y Mirador de San Marcos al atardecer',
       'Mesón de Cándido - Cochinillo segoviano asado en horno de leña, receta desde 1861, junto al Acueducto',
@@ -396,7 +405,8 @@ const ROUTES_DATA = [
     icon: '🤿',
     color: 'from-cyan-700 to-teal-600',
     Icon: Umbrella,
-    desc: 'Descubre los fondos marinos más espectaculares del Mediterráneo español: Cabo de Palos, Islas Medas, Cabo de Creus, Tabarca y Formentera. Praderas de posidonia, meros gigantes y visibilidad de hasta 40 metros.',
+    image: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=1200&q=80',
+    desc: 'Descubre los fondos marinos más espectaculares del Mediterráneo español',
     details: [
       'Cabo de Palos-Islas Hormigas (Murcia) - Reserva marina con La Losa (monte submarino con gorgonias rojas y meros de 100 kg), El Cavernón (cuevas y túneles submarinos) y El Bajo de Fuera (pelágicos y dentones)',
       'L\'Estartit - Islas Medas (Reserva Marina Integral desde 1990), El Toro (pared vertical de 38m con gorgonias y corales rojos), Las Cuevas (galerías con Pinna nobilis y ostras de roca)',
@@ -452,8 +462,17 @@ export default function RutasClient() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {ROUTES_DATA.map((r, idx) => (
             <Link key={r.id} href={`/rutas?route=${r.id}`}>
-              <div className={`relative overflow-hidden rounded-2xl bg-gradient-to-br ${r.color} h-72 cursor-pointer hover:scale-[1.02] transition-all duration-300 group`}>
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/10" />
+              <div className="relative overflow-hidden rounded-2xl h-72 cursor-pointer hover:scale-[1.02] transition-all duration-300 group">
+                  {r.image && (
+                    <img
+                      src={r.image}
+                      alt={r.title}
+                      className="absolute inset-0 w-full h-full object-cover"
+                      loading="lazy"
+                    />
+                  )}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/20" />
+                  <div className={`absolute inset-0 bg-gradient-to-br ${r.color} opacity-30 mix-blend-multiply`} />
                   
                   <div className="absolute top-4 left-4 flex items-center gap-2">
                     <div className="p-2 rounded-lg bg-white/20 backdrop-blur">
@@ -533,8 +552,16 @@ function RouteDetail({ route }: { route: any }) {
         </Link>
 
         {/* Hero */}
-        <div className={`relative overflow-hidden rounded-2xl bg-gradient-to-br ${route.color} h-64 mb-8`}>
-          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
+        <div className="relative overflow-hidden rounded-2xl h-64 mb-8">
+          {route.image && (
+            <img
+              src={route.image}
+              alt={route.title}
+              className="absolute inset-0 w-full h-full object-cover"
+            />
+          )}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/20" />
+          <div className={`absolute inset-0 bg-gradient-to-br ${route.color} opacity-30 mix-blend-multiply`} />
           <div className="absolute bottom-0 left-0 right-0 p-6">
             <div className="flex items-center gap-3 mb-2">
               <span className="text-4xl">{route.icon}</span>
