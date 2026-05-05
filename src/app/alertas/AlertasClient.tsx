@@ -76,9 +76,26 @@ function getFlag(code: string): string {
   return ALL_COUNTRIES.find(c => c.code.toLowerCase() === code.toLowerCase())?.flag || '🌍';
 }
 
-export default function AlertasClient() {
-  const [globalAlerts, setGlobalAlerts] = useState<MAECAlert[]>([]);
-  const [globalLoading, setGlobalLoading] = useState(true);
+interface AlertCounts {
+  muyAlto: number;
+  alto: number;
+  medio: number;
+}
+
+interface AlertasClientProps {
+  initialAlerts: {
+    pais: string;
+    codigo: string;
+    nivelRiesgo: string;
+    url: string;
+    bandera: string;
+  }[];
+  initialCounts: AlertCounts;
+}
+
+export default function AlertasClient({ initialAlerts, initialCounts }: AlertasClientProps) {
+  const [globalAlerts, setGlobalAlerts] = useState<MAECAlert[]>(initialAlerts);
+  const [globalLoading, setGlobalLoading] = useState(false);
   const [showPersonal, setShowPersonal] = useState(false);
   const [alerts, setAlerts] = useState<AlertPreference[]>([]);
   const [loading, setLoading] = useState(false);
@@ -87,12 +104,13 @@ export default function AlertasClient() {
   const [notification, setNotification] = useState<{type: 'success' | 'error'; message: string} | null>(null);
   const [filter, setFilter] = useState<'todas' | 'medio' | 'alto'>('alto');
 
+  const [alertCount, setAlertCount] = useState(initialCounts);
+
   useEffect(() => {
     fetchGlobalAlerts();
   }, []);
 
   const fetchGlobalAlerts = async () => {
-    setGlobalLoading(true);
     try {
       const res = await fetch('/api/maec?alerts=true');
       const data = await res.json();
@@ -106,6 +124,11 @@ export default function AlertasClient() {
           bandera: getFlag(a.codigo || a.pais.substring(0, 2).toLowerCase()),
         }));
         setGlobalAlerts(alerts);
+        setAlertCount({
+          muyAlto: alerts.filter(a => a.nivelRiesgo === 'muy-alto').length,
+          alto: alerts.filter(a => a.nivelRiesgo === 'alto').length,
+          medio: alerts.filter(a => a.nivelRiesgo === 'medio').length,
+        });
       } else {
         setGlobalAlerts(buildFallbackAlerts());
       }
@@ -183,12 +206,6 @@ export default function AlertasClient() {
   const filteredAlerts = filter === 'todas'
     ? globalAlerts
     : globalAlerts.filter(a => a.nivelRiesgo === filter);
-
-  const alertCount = {
-    muyAlto: globalAlerts.filter(a => a.nivelRiesgo === 'muy-alto').length,
-    alto: globalAlerts.filter(a => a.nivelRiesgo === 'alto').length,
-    medio: globalAlerts.filter(a => a.nivelRiesgo === 'medio').length,
-  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800">

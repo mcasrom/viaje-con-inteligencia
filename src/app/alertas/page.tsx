@@ -1,6 +1,57 @@
 import type { Metadata } from 'next';
 import AlertasClient from './AlertasClient';
 
+const MAEC_URL = 'https://www.exteriores.gob.es/es/Paginas/index.aspx';
+
+interface MAECAlert {
+  pais: string;
+  codigo: string;
+  nivelRiesgo: string;
+  url: string;
+  bandera: string;
+}
+
+async function fetchMAECAlerts(): Promise<MAECAlert[]> {
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_URL || 'https://www.viajeinteligencia.com'}/api/maec?alerts=true`, {
+      next: { revalidate: 600 },
+    });
+    if (!res.ok) return [];
+    const data = await res.json();
+    if (data.error || !data.alerts?.length) return [];
+
+    const flagMap: Record<string, string> = {
+      ua: '🇺🇦', ru: '🇷🇺', il: '🇮🇱', af: '🇦🇫', sy: '🇸🇾', ye: '🇾🇪',
+      iq: '🇮🇶', so: '🇸🇴', ly: '🇱🇾', ve: '🇻🇪', ht: '🇭🇹', mm: '🇲🇲',
+    };
+
+    return data.alerts.map((a: any) => ({
+      pais: a.pais,
+      codigo: a.codigo || '',
+      nivelRiesgo: a.nivelRiesgo,
+      url: a.url || MAEC_URL,
+      bandera: flagMap[a.codigo] || flagMap[a.codigo?.toLowerCase()] || '🌍',
+    }));
+  } catch {
+    return [];
+  }
+}
+
+const FALLBACK_ALERTS: MAECAlert[] = [
+  { pais: 'Ucrania', codigo: 'ua', nivelRiesgo: 'muy-alto', url: MAEC_URL, bandera: '🇺🇦' },
+  { pais: 'Rusia', codigo: 'ru', nivelRiesgo: 'alto', url: MAEC_URL, bandera: '🇷🇺' },
+  { pais: 'Israel', codigo: 'il', nivelRiesgo: 'alto', url: MAEC_URL, bandera: '🇮🇱' },
+  { pais: 'Afganistán', codigo: 'af', nivelRiesgo: 'muy-alto', url: MAEC_URL, bandera: '🇦🇫' },
+  { pais: 'Siria', codigo: 'sy', nivelRiesgo: 'muy-alto', url: MAEC_URL, bandera: '🇸🇾' },
+  { pais: 'Yemen', codigo: 'ye', nivelRiesgo: 'muy-alto', url: MAEC_URL, bandera: '🇾🇪' },
+  { pais: 'Irak', codigo: 'iq', nivelRiesgo: 'alto', url: MAEC_URL, bandera: '🇮🇶' },
+  { pais: 'Somalia', codigo: 'so', nivelRiesgo: 'muy-alto', url: MAEC_URL, bandera: '🇸🇴' },
+  { pais: 'Libia', codigo: 'ly', nivelRiesgo: 'alto', url: MAEC_URL, bandera: '🇱🇾' },
+  { pais: 'Venezuela', codigo: 've', nivelRiesgo: 'alto', url: MAEC_URL, bandera: '🇻🇪' },
+  { pais: 'Myanmar', codigo: 'mm', nivelRiesgo: 'alto', url: MAEC_URL, bandera: '🇲🇲' },
+  { pais: 'Haití', codigo: 'ht', nivelRiesgo: 'alto', url: MAEC_URL, bandera: '🇭🇹' },
+];
+
 export const metadata: Metadata = {
   title: 'Alertas MAEC en Vivo | Riesgos de Viaje - Viaje con Inteligencia',
   description: 'Alertas de riesgo en tiempo real del Ministerio de Asuntos Exteriores. Conflictos, desastres naturales y recomendaciones de viaje.',
@@ -11,6 +62,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Alertas MAEC en Vivo | Riesgos de Viaje - Viaje con Inteligencia',
     description: 'Alertas de riesgo en tiempo real del Ministerio de Asuntos Exteriores. Conflictos, desastres naturales y recomendaciones de viaje.',
+    url: 'https://www.viajeinteligencia.com/alertas',
     type: 'website',
   },
   twitter: {
@@ -20,6 +72,15 @@ export const metadata: Metadata = {
   },
 };
 
-export default function AlertasPage() {
-  return <AlertasClient />;
+export default async function AlertasPage() {
+  const alerts = await fetchMAECAlerts();
+  const initialAlerts = alerts.length > 0 ? alerts : FALLBACK_ALERTS;
+
+  const alertCount = {
+    muyAlto: initialAlerts.filter(a => a.nivelRiesgo === 'muy-alto').length,
+    alto: initialAlerts.filter(a => a.nivelRiesgo === 'alto').length,
+    medio: initialAlerts.filter(a => a.nivelRiesgo === 'medio').length,
+  };
+
+  return <AlertasClient initialAlerts={initialAlerts} initialCounts={alertCount} />;
 }

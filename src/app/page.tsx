@@ -417,7 +417,7 @@ function SidePanel() {
 // ============================================================
 function PrimaryCTA() {
   return (
-    <div className="fixed bottom-[5.5rem] left-1/2 -translate-x-1/2 z-[1005]">
+    <div className="fixed bottom-[8rem] left-1/2 -translate-x-1/2 z-[1005]">
       <Link 
         href="/decidir" 
         className="flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-purple-600 to-violet-600 text-white rounded-2xl hover:opacity-90 transition-all shadow-2xl shadow-purple-500/25 text-base font-semibold group"
@@ -446,12 +446,12 @@ export default function Home() {
       <PrimaryCTA />
 
       {/* Map — dominant 70% of viewport */}
-      <div className="relative w-full h-[70vh]">
+      <div className="relative w-full h-[70vh] pt-20 pb-24">
         <MapaInteractivo fullScreen />
       </div>
 
       {/* Content below map */}
-      <section className="max-w-7xl mx-auto px-4 py-12 pt-20">
+      <section className="max-w-7xl mx-auto px-4 pt-32 pb-12">
         <div className="text-center mb-8">
           <h2 className="text-2xl md:text-3xl font-bold text-white mb-3">
             Viaja informado, viaja seguro
