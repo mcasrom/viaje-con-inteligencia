@@ -54,7 +54,7 @@ export default function DetallePaisClient({ pais, relatedPosts = [] }: DetallePa
       fetch(`/api/maec?country=${codigo}`)
         .then(res => res.json())
         .then(data => {
-          if (!data.error) setMaecData(data);
+          if (!data.error && data.nivelRiesgo && data.nivelRiesgo !== 'desconocido') setMaecData(data);
         })
         .catch(console.error)
         .finally(() => setMaecLoading(false));

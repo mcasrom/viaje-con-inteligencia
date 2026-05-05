@@ -69,11 +69,15 @@ export default function KPIDashboard({
   const [healthLoading, setHealthLoading] = useState(false);
 
   useEffect(() => {
-    if (activeTab === 'salud' && !healthData) {
+    if (activeTab === 'salud' && !healthData && !healthLoading) {
       setHealthLoading(true);
       fetch('/api/kpis/health')
-        .then(r => r.json())
+        .then(r => {
+          if (!r.ok) throw new Error('API error');
+          return r.json();
+        })
         .then(data => {
+          if (data.error) throw new Error(data.error);
           setHealthData(data);
           setHealthLoading(false);
         })

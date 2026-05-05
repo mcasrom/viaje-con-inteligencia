@@ -18,7 +18,7 @@ interface ChecklistCategory {
 interface ChecklistItem {
   id: string;
   text: string;
-  checked: boolean;
+  checked?: boolean;
   priority?: 'essential' | 'important' | 'optional';
   tip?: string;
 }
