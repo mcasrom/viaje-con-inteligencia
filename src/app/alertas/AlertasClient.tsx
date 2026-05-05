@@ -76,7 +76,7 @@ function getFlag(code: string): string {
   return ALL_COUNTRIES.find(c => c.code.toLowerCase() === code.toLowerCase())?.flag || '🌍';
 }
 
-export default function AlertsPage() {
+export default function AlertasClient() {
   const [globalAlerts, setGlobalAlerts] = useState<MAECAlert[]>([]);
   const [globalLoading, setGlobalLoading] = useState(true);
   const [showPersonal, setShowPersonal] = useState(false);
@@ -206,6 +206,7 @@ export default function AlertsPage() {
           </p>
         </div>
 
+        {/* KPI Bar */}
         <div className="grid grid-cols-3 gap-3 mb-6">
           <div className="bg-red-900/30 border border-red-800/50 rounded-xl p-4 text-center">
             <div className="text-3xl font-bold text-red-400">{alertCount.muyAlto}</div>
@@ -221,6 +222,7 @@ export default function AlertsPage() {
           </div>
         </div>
 
+        {/* Filter Tabs */}
         <div className="flex gap-2 mb-6 bg-slate-800/60 rounded-lg p-1.5 border border-slate-700/50">
           <button
             onClick={() => setFilter('alto')}
@@ -242,6 +244,7 @@ export default function AlertsPage() {
           </button>
         </div>
 
+        {/* Alert Feed */}
         {globalLoading ? (
           <div className="text-center py-16">
             <Loader2 className="w-10 h-10 text-blue-500 animate-spin mx-auto mb-4" />
@@ -289,6 +292,7 @@ export default function AlertsPage() {
           </div>
         )}
 
+        {/* Personal Alerts Section */}
         <div className="bg-slate-800/40 border border-slate-700/50 rounded-xl overflow-hidden">
           <button
             onClick={() => {
@@ -313,6 +317,7 @@ export default function AlertsPage() {
                 Configura alertas para tus países favoritos. Te notificaremos cuando cambie el nivel de riesgo MAEC.
               </p>
 
+              {/* Quick Links */}
               <div className="grid grid-cols-2 gap-3">
                 <a
                   href="https://t.me/ViajeConInteligenciaBot"
@@ -340,6 +345,7 @@ export default function AlertsPage() {
                 </a>
               </div>
 
+              {/* Add Alert Form */}
               <div className="bg-slate-700/30 rounded-lg p-4 border border-slate-600/30">
                 <h3 className="text-white font-medium mb-3 flex items-center gap-2">
                   <Plus className="w-4 h-4" />Añadir Alerta
@@ -366,6 +372,7 @@ export default function AlertsPage() {
                 </div>
               </div>
 
+              {/* Saved Alerts */}
               {alerts.length > 0 && (
                 <div className="space-y-2">
                   {alerts.map(alert => (

@@ -57,7 +57,7 @@ export default function TurismoClient() {
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-2">
             <BarChart3 className="w-8 h-8 text-blue-400" />
-            <h1 className="text-3xl font-bold">Estadísticas Turísticas</h1>
+            <h1 className="text-3xl font-bold">Estadísticas Tourismas</h1>
           </div>
           <p className="text-slate-400">UNWTO / OMT 2024</p>
         </div>
@@ -189,7 +189,7 @@ export default function TurismoClient() {
             Acerca de las Estadísticas
           </h3>
           <p className="text-slate-400 text-sm mb-4">
-            Datos del Barómetro Mundial del Turismo de la Organización Mundial del Turismo (UNWTO/OMT).
+            Datos del Barómetro Mundial del Turismo de la Organización Mundial del Turismo (UNWTO/OMT). 
             Cifras de 2024 basadas en arrivadas internacionales, ingresos por turismo y gasto medio diario.
           </p>
           <div className="flex gap-4 text-sm text-slate-500">

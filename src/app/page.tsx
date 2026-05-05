@@ -410,7 +410,7 @@ function SidePanel() {
 // ============================================================
 function PrimaryCTA() {
   return (
-    <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-40">
+    <div className="fixed bottom-[5.5rem] left-1/2 -translate-x-1/2 z-40">
       <Link 
         href="/decidir" 
         className="flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-purple-600 to-violet-600 text-white rounded-2xl hover:opacity-90 transition-all shadow-2xl shadow-purple-500/25 text-base font-semibold group"
@@ -444,7 +444,7 @@ export default function Home() {
       </div>
 
       {/* Content below map */}
-      <section className="max-w-7xl mx-auto px-4 py-12">
+      <section className="max-w-7xl mx-auto px-4 py-12 pt-20">
         <div className="text-center mb-8">
           <h2 className="text-2xl md:text-3xl font-bold text-white mb-3">
             Viaja informado, viaja seguro
@@ -455,22 +455,22 @@ export default function Home() {
         </div>
 
         {/* Quick links */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl mx-auto">
-          <Link href="/paises" className="bg-slate-800/50 rounded-xl p-4 text-center hover:bg-slate-800 transition-colors border border-slate-700/50">
-            <Globe className="w-6 h-6 text-blue-400 mx-auto mb-2" />
-            <span className="text-white text-sm font-medium">107 Países</span>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 max-w-3xl mx-auto">
+          <Link href="/paises" className="bg-slate-800/50 rounded-xl p-3 text-center hover:bg-slate-800 transition-colors border border-slate-700/50">
+            <Globe className="w-5 h-5 text-blue-400 mx-auto mb-1.5" />
+            <span className="text-white text-xs font-medium">107 Países</span>
           </Link>
-          <Link href="/coste" className="bg-slate-800/50 rounded-xl p-4 text-center hover:bg-slate-800 transition-colors border border-slate-700/50">
-            <Calculator className="w-6 h-6 text-blue-400 mx-auto mb-2" />
-            <span className="text-white text-sm font-medium">ML Coste</span>
+          <Link href="/coste" className="bg-slate-800/50 rounded-xl p-3 text-center hover:bg-slate-800 transition-colors border border-slate-700/50">
+            <Calculator className="w-5 h-5 text-blue-400 mx-auto mb-1.5" />
+            <span className="text-white text-xs font-medium">ML Coste</span>
           </Link>
-          <Link href="/analisis" className="bg-slate-800/50 rounded-xl p-4 text-center hover:bg-slate-800 transition-colors border border-slate-700/50">
-            <TrendingUp className="w-6 h-6 text-amber-400 mx-auto mb-2" />
-            <span className="text-white text-sm font-medium">Análisis</span>
+          <Link href="/analisis" className="bg-slate-800/50 rounded-xl p-3 text-center hover:bg-slate-800 transition-colors border border-slate-700/50">
+            <TrendingUp className="w-5 h-5 text-amber-400 mx-auto mb-1.5" />
+            <span className="text-white text-xs font-medium">Análisis</span>
           </Link>
-          <Link href="/rutas" className="bg-slate-800/50 rounded-xl p-4 text-center hover:bg-slate-800 transition-colors border border-slate-700/50">
-            <Route className="w-6 h-6 text-green-400 mx-auto mb-2" />
-            <span className="text-white text-sm font-medium">Rutas</span>
+          <Link href="/rutas" className="bg-slate-800/50 rounded-xl p-3 text-center hover:bg-slate-800 transition-colors border border-slate-700/50">
+            <Route className="w-5 h-5 text-green-400 mx-auto mb-1.5" />
+            <span className="text-white text-xs font-medium">Rutas</span>
           </Link>
         </div>
       </section>
