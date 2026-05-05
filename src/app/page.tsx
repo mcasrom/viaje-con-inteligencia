@@ -9,6 +9,7 @@ import {
   BookOpen, Newspaper, ChevronRight as Chevron, Navigation, TrendingUp
 } from 'lucide-react';
 import { paisesData } from '@/data/paises';
+import LanguageSelector from '@/components/LanguageSelector';
 
 const MapaInteractivo = dynamic(
   () => import('@/components/MapaInteractivo'),
@@ -47,6 +48,7 @@ function TopBar() {
 
         {/* Desktop Nav — Dock pill */}
         <div className="hidden md:flex items-center gap-2">
+          <LanguageSelector />
           <div className="bg-slate-900/90 backdrop-blur-md rounded-2xl border border-slate-700/50 px-2 py-1.5 flex items-center gap-1 shadow-2xl shadow-black/30">
             <Link href="/decidir" className="group flex flex-col items-center gap-0.5 px-4 py-1.5 text-slate-400 hover:text-white rounded-xl hover:bg-slate-800/80 transition-all">
               <Sparkles className="w-4 h-4 text-purple-400 group-hover:scale-110 transition-transform" />
@@ -144,6 +146,10 @@ function TopBar() {
               <ClipboardList className="w-5 h-5 text-orange-400" />
               Checklist Viaje
             </Link>
+            <div className="border-t border-slate-700 my-1" />
+            <div className="px-4 py-2">
+              <LanguageSelector />
+            </div>
           </div>
         </div>
       )}
