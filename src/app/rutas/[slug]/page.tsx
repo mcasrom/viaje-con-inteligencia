@@ -3,7 +3,7 @@
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { thematicRoutes, ThemeRoute, ThematicRoute } from '@/data/rutas-espanas';
-import { ArrowLeft, Car, Clock, Shield, Star, MapPin, TrendingUp, AlertTriangle } from 'lucide-react';
+import { ArrowLeft, Car, Clock, Shield, Star, MapPin, TrendingUp, AlertTriangle, Globe, BarChart3, Sparkles, DollarSign, Navigation } from 'lucide-react';
 
 export default function RouteDetailPage() {
   const params = useParams();
@@ -29,13 +29,49 @@ export default function RouteDetailPage() {
 
   return (
     <div className="min-h-screen bg-slate-900">
-      {/* HEADER */}
+      {/* STICKY NAV */}
+      <header className="bg-slate-800 border-b border-slate-700 sticky top-0 z-[1000]">
+        <div className="max-w-4xl mx-auto px-6">
+          <div className="flex items-center justify-between py-3">
+            <Link href="/rutas" className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors text-sm font-medium">
+              <ArrowLeft className="w-4 h-4" />
+              <span className="hidden sm:inline">Volver a Rutas</span>
+            </Link>
+            <div className="flex items-center gap-2 px-3 py-1.5 bg-emerald-500/15 rounded-full border border-emerald-500/30">
+              <MapPin className="w-4 h-4 text-emerald-400" />
+              <span className="text-emerald-300 text-sm font-semibold">Detalle de Ruta</span>
+            </div>
+          </div>
+          <div className="flex items-center gap-1 pb-2 overflow-x-auto">
+            {[
+              { href: '/', label: 'Mapa', icon: <Globe className="w-3 h-3" /> },
+              { href: '/decidir', label: 'Decidir', icon: <Sparkles className="w-3 h-3" /> },
+              { href: '/coste', label: 'Coste', icon: <DollarSign className="w-3 h-3" /> },
+              { href: '/analisis', label: 'Análisis', icon: <BarChart3 className="w-3 h-3" /> },
+              { href: '/rutas', label: 'Rutas', icon: <Car className="w-3 h-3" />, active: true },
+              { href: '/radius', label: 'Radius', icon: <Navigation className="w-3 h-3" /> },
+              { href: '/indices', label: 'KPIs', icon: <BarChart3 className="w-3 h-3" /> },
+            ].map(link => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all whitespace-nowrap ${
+                  link.active
+                    ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
+                    : 'text-slate-500 hover:text-white hover:bg-slate-700/50'
+                }`}
+              >
+                {link.icon}
+                {link.label}
+              </Link>
+            ))}
+          </div>
+        </div>
+      </header>
+
+      {/* PAGE CONTENT */}
       <div className="bg-gradient-to-b from-slate-900 to-slate-800 py-8">
         <div className="max-w-4xl mx-auto px-6">
-          <Link href="/rutas" className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors mb-6">
-            <ArrowLeft className="w-5 h-5" />
-            <span>Volver a Rutas</span>
-          </Link>
 
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
             <div>
