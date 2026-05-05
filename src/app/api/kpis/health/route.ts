@@ -186,7 +186,11 @@ export async function GET() {
       fetchWHOData('GHED_BEDS_pc'),
     ]);
 
-    const allCodes = new Set([...Object.keys(countryCodes), ...Object.keys(tuberculosis), ...Object.keys(hiv)]);
+    const allCodes = new Set([
+      ...Object.keys(countryCodes),
+      ...Object.keys(tuberculosis).filter(c => countryCodes[c] || WHO_TO_ISO2[c]),
+      ...Object.keys(hiv).filter(c => countryCodes[c] || WHO_TO_ISO2[c]),
+    ]);
 
     const countries: CountryHealthData[] = Array.from(allCodes).map(code => {
       const whoCode = countryCodes[code] || code;
