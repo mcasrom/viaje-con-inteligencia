@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { CheckCircle, Shield, CreditCard } from 'lucide-react';
+import { CheckCircle, Shield, Gift } from 'lucide-react';
 import FreeTrialForm from './FreeTrialForm';
 
 const BENEFITS = [
@@ -101,8 +101,8 @@ export default function FreeTrialPage() {
               <span>Datos seguros</span>
             </div>
             <div className="flex items-center gap-2">
-              <CreditCard className="w-4 h-4 text-green-400" />
-              <span>Se requiere tarjeta · 0€ durante 7 días · Cancela antes del día 8 y no pagas nada</span>
+              <Gift className="w-4 h-4 text-green-400" />
+              <span>Sin tarjeta · Acceso completo · 7 días gratis</span>
             </div>
           </div>
         </div>

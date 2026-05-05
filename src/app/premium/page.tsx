@@ -56,7 +56,7 @@ export default function PremiumPage() {
         <div className="text-center mb-12">
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-amber-500/10 border border-amber-500/30 rounded-full mb-6">
             <Zap className="w-4 h-4 text-amber-400" />
-            <span className="text-amber-300 text-sm font-medium">7 días gratis · Cancela cuando quieras</span>
+            <span className="text-amber-300 text-sm font-medium">7 días gratis · Sin tarjeta</span>
           </div>
           <h1 className="text-3xl md:text-5xl font-bold text-white mb-4">
             Viaja con{' '}
@@ -179,7 +179,7 @@ export default function PremiumPage() {
               {/* FREE7 trial badge */}
               <div className="bg-gradient-to-r from-green-500/10 to-emerald-500/10 border border-green-500/30 rounded-xl p-3 mb-6 text-center">
                 <span className="text-green-400 text-sm font-semibold">🎉 Prueba 7 días gratis</span>
-                <p className="text-green-400/70 text-xs mt-0.5">Se requiere tarjeta · Sin cargo hasta que termine la prueba</p>
+                <p className="text-green-400/70 text-xs mt-0.5">Sin tarjeta · Acceso completo · Cancela cuando quieras</p>
               </div>
 
               <ul className="space-y-3 mb-6">
@@ -232,8 +232,8 @@ export default function PremiumPage() {
           <h3 className="text-xl font-bold text-white text-center mb-6">Preguntas frecuentes</h3>
           <div className="space-y-4">
             {[
-              { q: '¿Necesito tarjeta para la prueba?', a: 'Sí, Stripe requiere un método de pago para activar la prueba de 7 días. No se te cobra nada hasta que termine el periodo de prueba. Puedes cancelar antes y no se realizará ningún cargo.' },
-              { q: '¿Puedo cancelar en cualquier momento?', a: 'Sí. Contacta por email y cancelamos tu suscripción de inmediato. El acceso Premium se mantiene hasta el final del periodo pagado. No hay permanencia.' },
+              { q: '¿Necesito tarjeta para la prueba?', a: 'No. Regístrate gratis y tendrás 7 días de acceso Premium completo. Sin tarjeta, sin compromiso. Cuando termine el trial, puedes suscribirte o seguir con el plan gratuito.' },
+              { q: '¿Puedo cancelar en cualquier momento?', a: 'El trial no requiere cancelación — simplemente deja de usarse cuando pasan los 7 días. Si decides suscribirte después, puedes cancelar desde tu perfil en cualquier momento. No hay permanencia.' },
               { q: '¿Qué pasa cuando termina la prueba?', a: 'Se te notificará por email. Si no te suscribes, tu cuenta vuelve al plan gratuito con acceso al mapa y filtros de riesgo.' },
               { q: '¿Hay factura?', a: 'Sí. Recibirás una factura por email con cada pago. Las empresas pueden deducirlo como gasto.' },
             ].map((faq, i) => (
