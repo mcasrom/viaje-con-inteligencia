@@ -26,33 +26,55 @@ function TopBar() {
     <header className="fixed top-0 left-0 right-0 z-50 pointer-events-none">
       <div className="max-w-7xl mx-auto px-4 pt-4 flex items-start justify-between gap-4 pointer-events-auto">
         {/* Logo + Brand */}
-        <div className="bg-slate-900/90 backdrop-blur-md rounded-xl border border-slate-700/50 px-4 py-3 flex items-center gap-3 shadow-xl">
-          <Globe className="w-6 h-6 text-blue-400" />
-          <div>
-            <h1 className="text-white font-bold text-sm leading-tight">Viaje con Inteligencia</h1>
-            <p className="text-slate-400 text-[10px]">107 países · Datos MAEC</p>
+        <div className="bg-slate-900/90 backdrop-blur-md rounded-xl border border-slate-700/50 px-4 py-2 flex items-center gap-3 shadow-xl">
+          <img src="/logo.png" alt="Viaje con Inteligencia" className="w-8 h-8 object-contain" />
+          <div className="flex items-center gap-2">
+            <div>
+              <h1 className="text-white font-bold text-sm leading-tight">Viaje con Inteligencia</h1>
+              <div className="flex items-center gap-2">
+                <span className="text-slate-400 text-[10px]">107 países</span>
+                <span className="w-1 h-1 rounded-full bg-slate-600" />
+                <span className="flex items-center gap-1 text-[10px]">
+                  <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+                  <span className="text-green-400 font-medium">Datos actualizados</span>
+                </span>
+              </div>
+            </div>
+            <span className="px-2 py-0.5 bg-blue-500/15 text-blue-400 text-[9px] font-bold rounded-full border border-blue-500/20">
+              MAEC May 2026
+            </span>
           </div>
         </div>
 
-        {/* Desktop Nav */}
+        {/* Desktop Nav — Dock pill */}
         <div className="hidden md:flex items-center gap-2">
-          <div className="bg-slate-900/90 backdrop-blur-md rounded-xl border border-slate-700/50 px-2 py-2 flex items-center gap-1 shadow-xl">
-            <Link href="/clustering" className="flex items-center gap-2 px-3 py-2 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition-colors text-sm">
-              <Sparkles className="w-4 h-4 text-purple-400" />
-              Planificar IA
+          <div className="bg-slate-900/90 backdrop-blur-md rounded-2xl border border-slate-700/50 px-2 py-1.5 flex items-center gap-1 shadow-2xl shadow-black/30">
+            <Link href="/clustering" className="group flex flex-col items-center gap-0.5 px-4 py-1.5 text-slate-400 hover:text-white rounded-xl hover:bg-slate-800/80 transition-all">
+              <Sparkles className="w-4 h-4 text-purple-400 group-hover:scale-110 transition-transform" />
+              <span className="text-[10px] font-medium">Planificar</span>
             </Link>
-            <Link href="/blog" className="flex items-center gap-2 px-3 py-2 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition-colors text-sm">
-              <Newspaper className="w-4 h-4 text-cyan-400" />
-              Blog OSINT
+            <div className="w-px h-5 bg-slate-700" />
+            <Link href="/blog" className="group flex flex-col items-center gap-0.5 px-4 py-1.5 text-slate-400 hover:text-white rounded-xl hover:bg-slate-800/80 transition-all">
+              <Newspaper className="w-4 h-4 text-cyan-400 group-hover:scale-110 transition-transform" />
+              <span className="text-[10px] font-medium">Blog</span>
             </Link>
-            <Link href="/alertas" className="flex items-center gap-2 px-3 py-2 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition-colors text-sm relative">
-              <Bell className="w-4 h-4 text-amber-400" />
-              Alertas
-              <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full" />
+            <Link href="/coste" className="group flex flex-col items-center gap-0.5 px-4 py-1.5 text-slate-400 hover:text-white rounded-xl hover:bg-slate-800/80 transition-all">
+              <Calculator className="w-4 h-4 text-blue-400 group-hover:scale-110 transition-transform" />
+              <span className="text-[10px] font-medium">Coste</span>
             </Link>
-            <Link href="/premium" className="flex items-center gap-2 px-3 py-2 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition-colors text-sm">
-              <Crown className="w-4 h-4 text-amber-400" />
-              Premium
+            <Link href="/rutas" className="group flex flex-col items-center gap-0.5 px-4 py-1.5 text-slate-400 hover:text-white rounded-xl hover:bg-slate-800/80 transition-all">
+              <Route className="w-4 h-4 text-green-400 group-hover:scale-110 transition-transform" />
+              <span className="text-[10px] font-medium">Rutas</span>
+            </Link>
+            <div className="w-px h-5 bg-slate-700" />
+            <Link href="/alertas" className="group flex flex-col items-center gap-0.5 px-4 py-1.5 text-slate-400 hover:text-white rounded-xl hover:bg-slate-800/80 transition-all relative">
+              <Bell className="w-4 h-4 text-amber-400 group-hover:scale-110 transition-transform" />
+              <span className="text-[10px] font-medium">Alertas</span>
+              <span className="absolute top-1 right-2.5 w-1.5 h-1.5 bg-red-500 rounded-full" />
+            </Link>
+            <Link href="/premium" className="group flex flex-col items-center gap-0.5 px-4 py-1.5 text-slate-400 hover:text-white rounded-xl hover:bg-slate-800/80 transition-all">
+              <Crown className="w-4 h-4 text-amber-400 group-hover:scale-110 transition-transform" />
+              <span className="text-[10px] font-medium">Premium</span>
             </Link>
           </div>
         </div>
@@ -78,13 +100,21 @@ function TopBar() {
               <Newspaper className="w-5 h-5 text-cyan-400" />
               Blog OSINT
             </Link>
+            <Link href="/coste" className="flex items-center gap-3 px-4 py-3 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition-colors">
+              <Calculator className="w-5 h-5 text-blue-400" />
+              Coste del Viaje
+            </Link>
+            <Link href="/rutas" className="flex items-center gap-3 px-4 py-3 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition-colors">
+              <Route className="w-5 h-5 text-green-400" />
+              Rutas Seguras
+            </Link>
             <Link href="/alertas" className="flex items-center gap-3 px-4 py-3 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition-colors">
               <Bell className="w-5 h-5 text-amber-400" />
               Alertas MAEC
             </Link>
-            <Link href="/coste" className="flex items-center gap-3 px-4 py-3 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition-colors">
-              <Calculator className="w-5 h-5 text-blue-400" />
-              Coste del Viaje
+            <Link href="/dashboard/kpis" className="flex items-center gap-3 px-4 py-3 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition-colors">
+              <BarChart3 className="w-5 h-5 text-purple-400" />
+              Dashboard KPIs
             </Link>
             <Link href="/premium" className="flex items-center gap-3 px-4 py-3 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition-colors">
               <Crown className="w-5 h-5 text-amber-400" />
@@ -94,6 +124,14 @@ function TopBar() {
             <Link href="/paises" className="flex items-center gap-3 px-4 py-3 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition-colors">
               <Globe className="w-5 h-5 text-blue-400" />
               Todos los países
+            </Link>
+            <Link href="/clustering" className="flex items-center gap-3 px-4 py-3 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition-colors">
+              <Sparkles className="w-5 h-5 text-purple-400" />
+              ML Clustering
+            </Link>
+            <Link href="/checklist" className="flex items-center gap-3 px-4 py-3 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition-colors">
+              <ClipboardList className="w-5 h-5 text-orange-400" />
+              Checklist Viaje
             </Link>
           </div>
         </div>
