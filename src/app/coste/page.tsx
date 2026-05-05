@@ -2,7 +2,9 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Search, TrendingUp, TrendingDown, Minus, BarChart3, Loader2, ChevronDown, ChevronUp, Filter, ExternalLink, Droplet } from 'lucide-react';
+import { ArrowLeft, Search, TrendingUp, TrendingDown, Minus, BarChart3, Loader2, ChevronDown, ChevronUp, Filter, ExternalLink, Droplet, Plane, Calendar, User, Calculator } from 'lucide-react';
+import { getTodosLosPaises, DatoPais } from '@/data/paises';
+import { calculateTCI, getTCIForAllCountries } from '@/data/tci-engine';
 
 interface TCIResult {
   code: string;
@@ -11,6 +13,18 @@ interface TCIResult {
   tci: number;
   trend: string;
   region: string;
+}
+
+type TravelProfile = 'mochilero' | 'medio' | 'lujo';
+
+interface BudgetEstimate {
+  perDay: number;
+  total: number;
+  flight: number;
+  accommodation: number;
+  food: number;
+  transport: number;
+  activities: number;
 }
 
 function getTCIColor(tci: number): string {
@@ -36,6 +50,45 @@ function getTrendIcon(trend: string) {
   return <Minus className="w-4 h-4 text-slate-400" />;
 }
 
+function estimateBudget(countryCode: string, days: number, profile: TravelProfile): BudgetEstimate | null {
+  const pais = getTodosLosPaises().find(p => p.codigo === countryCode);
+  if (!pais) return null;
+
+  const tci = calculateTCI(countryCode);
+  const factor = tci.tci / 100;
+  const region = pais.continente;
+
+  let base: Record<TravelProfile, number>;
+  switch (region) {
+    case 'Europa': base = { mochilero: 35, medio: 70, lujo: 180 }; break;
+    case 'América del Norte': base = { mochilero: 40, medio: 80, lujo: 200 }; break;
+    case 'América del Sur': base = { mochilero: 20, medio: 45, lujo: 120 }; break;
+    case 'América Central': case 'Caribe': base = { mochilero: 25, medio: 50, lujo: 130 }; break;
+    case 'Asia': base = { mochilero: 15, medio: 35, lujo: 90 }; break;
+    case 'África': base = { mochilero: 20, medio: 40, lujo: 100 }; break;
+    case 'Oceanía': base = { mochilero: 35, medio: 70, lujo: 160 }; break;
+    case 'Oriente Medio': base = { mochilero: 25, medio: 50, lujo: 130 }; break;
+    default: base = { mochilero: 25, medio: 50, lujo: 120 };
+  }
+
+  const perDay = Math.round(base[profile] * factor);
+  const accommodation = profile === 'mochilero' ? perDay * 0.3 : profile === 'medio' ? perDay * 0.4 : perDay * 0.5;
+  const food = profile === 'mochilero' ? perDay * 0.25 : profile === 'medio' ? perDay * 0.25 : perDay * 0.2;
+  const transport = profile === 'mochilero' ? perDay * 0.15 : profile === 'medio' ? perDay * 0.15 : perDay * 0.1;
+  const activities = profile === 'mochilero' ? perDay * 0.1 : profile === 'medio' ? perDay * 0.1 : perDay * 0.15;
+  const flight = profile === 'mochilero' ? 300 : profile === 'medio' ? 500 : 1200;
+
+  return {
+    perDay,
+    total: Math.round(perDay * days + flight),
+    flight,
+    accommodation: Math.round(accommodation * days),
+    food: Math.round(food * days),
+    transport: Math.round(transport * days),
+    activities: Math.round(activities * days),
+  };
+}
+
 export default function CosteMLPage() {
   const [countries, setCountries] = useState<TCIResult[]>([]);
   const [loading, setLoading] = useState(true);
@@ -43,6 +96,13 @@ export default function CosteMLPage() {
   const [regionFilter, setRegionFilter] = useState('all');
   const [sortAsc, setSortAsc] = useState(true);
   const [oilData, setOilData] = useState<{ price: number; avg: number; changePct: number } | null>(null);
+
+  // Trip estimator form
+  const [selectedCountry, setSelectedCountry] = useState('');
+  const [days, setDays] = useState(7);
+  const [profile, setProfile] = useState<TravelProfile>('medio');
+  const [showEstimator, setShowEstimator] = useState(false);
+  const [budget, setBudget] = useState<BudgetEstimate | null>(null);
 
   useEffect(() => {
     Promise.all([
@@ -54,6 +114,12 @@ export default function CosteMLPage() {
       setLoading(false);
     }).finally(() => setLoading(false));
   }, []);
+
+  const handleEstimate = () => {
+    if (selectedCountry && days > 0) {
+      setBudget(estimateBudget(selectedCountry, days, profile));
+    }
+  };
 
   const filtered = useMemo(() => {
     let result = [...countries];
@@ -72,6 +138,9 @@ export default function CosteMLPage() {
     const set = new Set(countries.map(c => c.region));
     return ['all', ...Array.from(set)];
   }, [countries]);
+
+  const paises = getTodosLosPaises();
+  const allTCI = getTCIForAllCountries();
 
   return (
     <div className="min-h-screen bg-slate-900">
@@ -94,8 +163,126 @@ export default function CosteMLPage() {
             Estimador de Coste con ML
           </h1>
           <p className="text-slate-400">
-            Índice TCI calculado con demanda, petróleo Brent, estacionalidad, IPC y riesgo MAEC. Haz clic en un país para ver evolución cronológica, predicción ML y presupuesto detallado.
+            Calcula tu presupuesto estimado y consulta el índice TCI de cada país. Datos actualizados con demanda turística, petróleo Brent, estacionalidad, IPC y riesgo MAEC.
           </p>
+        </div>
+
+        {/* Trip Estimator Form */}
+        <div className="mb-8 bg-gradient-to-r from-blue-500/5 to-cyan-500/5 rounded-xl border border-blue-500/20 p-6">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-lg font-bold text-white flex items-center gap-2">
+              <Calculator className="w-5 h-5 text-blue-400" />
+              Estimador de Presupuesto
+            </h2>
+            <button
+              onClick={() => setShowEstimator(!showEstimator)}
+              className="text-xs text-blue-400 hover:text-blue-300 font-medium"
+            >
+              {showEstimator ? 'Ocultar' : 'Abrir'}
+            </button>
+          </div>
+
+          {showEstimator && (
+            <div className="grid md:grid-cols-4 gap-4">
+              {/* Destination */}
+              <div>
+                <label className="text-xs text-slate-400 font-medium mb-1.5 block">Destino</label>
+                <div className="relative">
+                  <Plane className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+                  <select
+                    value={selectedCountry}
+                    onChange={e => setSelectedCountry(e.target.value)}
+                    className="w-full bg-slate-800 border border-slate-700 rounded-xl pl-10 pr-3 py-2.5 text-white text-sm appearance-none focus:outline-none focus:border-blue-500/50"
+                  >
+                    <option value="">Selecciona país</option>
+                    {paises.filter(p => p.visible !== false && p.codigo !== 'cu')
+                      .sort((a, b) => a.nombre.localeCompare(b.nombre))
+                      .map(p => (
+                        <option key={p.codigo} value={p.codigo}>{p.bandera} {p.nombre}</option>
+                      ))}
+                  </select>
+                  <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 pointer-events-none" />
+                </div>
+              </div>
+
+              {/* Days */}
+              <div>
+                <label className="text-xs text-slate-400 font-medium mb-1.5 block">Días</label>
+                <div className="relative">
+                  <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+                  <input
+                    type="number"
+                    min={1}
+                    max={90}
+                    value={days}
+                    onChange={e => setDays(Math.max(1, parseInt(e.target.value) || 1))}
+                    className="w-full bg-slate-800 border border-slate-700 rounded-xl pl-10 pr-3 py-2.5 text-white text-sm focus:outline-none focus:border-blue-500/50"
+                  />
+                </div>
+              </div>
+
+              {/* Profile */}
+              <div>
+                <label className="text-xs text-slate-400 font-medium mb-1.5 block">Perfil</label>
+                <div className="relative">
+                  <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+                  <select
+                    value={profile}
+                    onChange={e => setProfile(e.target.value as TravelProfile)}
+                    className="w-full bg-slate-800 border border-slate-700 rounded-xl pl-10 pr-3 py-2.5 text-white text-sm appearance-none focus:outline-none focus:border-blue-500/50"
+                  >
+                    <option value="mochilero">🎒 Mochilero</option>
+                    <option value="medio">🧳 Viajero medio</option>
+                    <option value="lujo">✨ Lujo</option>
+                  </select>
+                  <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 pointer-events-none" />
+                </div>
+              </div>
+
+              {/* Calculate button */}
+              <div className="flex items-end">
+                <button
+                  onClick={handleEstimate}
+                  disabled={!selectedCountry}
+                  className="w-full py-2.5 bg-blue-600 text-white rounded-xl font-medium text-sm hover:bg-blue-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                >
+                  Calcular presupuesto
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Budget result */}
+          {budget && selectedCountry && (
+            <div className="mt-4 bg-slate-800/60 rounded-xl p-4 border border-slate-700/50">
+              <div className="flex flex-wrap items-center gap-6">
+                <div>
+                  <div className="text-slate-400 text-xs">Presupuesto total estimado</div>
+                  <div className="text-3xl font-bold text-white">{budget.total}€</div>
+                  <div className="text-slate-500 text-xs">{budget.perDay}€/día · {days} días</div>
+                </div>
+                <div className="h-8 w-px bg-slate-700 hidden sm:block" />
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 flex-1">
+                  <div>
+                    <div className="text-slate-500 text-xs">✈️ Vuelo</div>
+                    <div className="text-white font-medium text-sm">{budget.flight}€</div>
+                  </div>
+                  <div>
+                    <div className="text-slate-500 text-xs">🏨 Alojamiento</div>
+                    <div className="text-white font-medium text-sm">{budget.accommodation}€</div>
+                  </div>
+                  <div>
+                    <div className="text-slate-500 text-xs">🍽️ Comida</div>
+                    <div className="text-white font-medium text-sm">{budget.food}€</div>
+                  </div>
+                  <div>
+                    <div className="text-slate-500 text-xs">🚕 Transporte</div>
+                    <div className="text-white font-medium text-sm">{budget.transport}€</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* TCI Methodology */}
@@ -144,10 +331,6 @@ export default function CosteMLPage() {
               <span className="text-emerald-400 text-xs">↓ -4.7% vs media — impacto bajista en TCI</span>
             )}
           </div>
-          <div className="mt-3 bg-slate-700/30 rounded-lg p-3 text-xs text-slate-400">
-            <strong className="text-slate-300">Fórmula:</strong> TCI = demanda×0.30 + petróleo×0.25 + estacionalidad×0.25 + IPC×0.10 + riesgo×0.10
-            · Las predicciones usan regresión lineal + media móvil sobre 12 semanas de histórico.
-          </div>
         </div>
 
         <div className="flex flex-wrap gap-3 mb-6">
@@ -187,7 +370,7 @@ export default function CosteMLPage() {
           {loading ? (
             <div className="p-8 flex items-center justify-center gap-3 text-slate-400">
               <Loader2 className="w-5 h-5 animate-spin" />
-              <span>Calculando TCI para todos los países...</span>
+              <span>Cargando índice TCI...</span>
             </div>
           ) : (
             <div className="overflow-x-auto">

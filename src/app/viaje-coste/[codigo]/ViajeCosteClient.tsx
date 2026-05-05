@@ -467,7 +467,7 @@ export default function ViajeCosteClient({
               {alternativas.map((alt) => (
                 <Link
                   key={alt.code}
-                  href={`/viaje-coste/${alt.code}`}
+                  href={`/coste/${alt.code}`}
                   className="bg-slate-800 rounded-xl p-4 border border-slate-700 hover:border-emerald-500/50 transition-colors group"
                 >
                   <div className="flex items-center gap-2 mb-2">
@@ -496,7 +496,7 @@ export default function ViajeCosteClient({
               {masCaros.map((alt) => (
                 <Link
                   key={alt.code}
-                  href={`/viaje-coste/${alt.code}`}
+                  href={`/coste/${alt.code}`}
                   className="bg-slate-800 rounded-xl p-4 border border-slate-700 hover:border-rose-500/50 transition-colors group"
                 >
                   <div className="flex items-center gap-2 mb-2">
