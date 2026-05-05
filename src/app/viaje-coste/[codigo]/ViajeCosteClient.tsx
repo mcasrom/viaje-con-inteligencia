@@ -8,7 +8,7 @@ import {
   Wallet, Calendar, MapPin, ChevronDown, ChevronUp,
   DollarSign, Shield, Thermometer, Info, Globe,
   ArrowUpRight, ArrowDownRight, ExternalLink, AlertTriangle,
-  Target, Activity, Clock
+  Target, Activity, Clock, Droplet
 } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
 
@@ -170,6 +170,26 @@ export default function ViajeCosteClient({
                 Se calcula con 5 factores: demanda turística (30%), petróleo Brent (25%), estacionalidad (25%), IPC (10%) y riesgo MAEC (10%).
                 Las predicciones usan regresión lineal + media móvil sobre 12 semanas.
               </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Oil Price Indicator */}
+        <div className="mb-6 bg-slate-800/60 rounded-xl border border-amber-500/20 p-4">
+          <div className="flex flex-wrap items-center gap-4">
+            <div className="flex items-center gap-2">
+              <Droplet className="w-5 h-5 text-amber-400" />
+              <span className="text-white font-semibold text-sm">Petróleo Brent</span>
+              <span className="text-amber-400 font-bold text-lg" id="oilPriceDetail">$73.5</span>
+              <span className="text-slate-500 text-xs">/barril</span>
+            </div>
+            <div className="h-4 w-px bg-slate-700" />
+            <div className="text-xs text-slate-400">
+              Impacto en TCI: <span className="text-emerald-400 font-medium">-4.7% vs media</span> · factor bajista
+            </div>
+            <div className="h-4 w-px bg-slate-700" />
+            <div className="text-xs text-slate-400">
+              Tendencia: <span className="text-amber-400 font-medium">Estable</span> · sin cambios significativos
             </div>
           </div>
         </div>

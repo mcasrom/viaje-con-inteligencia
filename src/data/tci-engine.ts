@@ -59,6 +59,14 @@ const OIL_BRENT_HISTORY = [
 
 const OIL_AVG = OIL_BRENT_HISTORY.reduce((s, o) => s + o.price, 0) / OIL_BRENT_HISTORY.length;
 
+export function getCurrentOilPrice(): { price: number; trend: 'up' | 'down' | 'stable'; vsAvg: number } {
+  const latest = OIL_BRENT_HISTORY[OIL_BRENT_HISTORY.length - 1];
+  const prev = OIL_BRENT_HISTORY[OIL_BRENT_HISTORY.length - 2];
+  const trend: 'up' | 'down' | 'stable' = latest.price > prev.price ? 'up' : latest.price < prev.price ? 'down' : 'stable';
+  const vsAvg = Math.round((latest.price - OIL_AVG) * 10) / 10;
+  return { price: latest.price, trend, vsAvg };
+}
+
 function getOilIndex(): number {
   const latest = OIL_BRENT_HISTORY[OIL_BRENT_HISTORY.length - 1];
   return (latest.price / OIL_AVG) * 100;
@@ -124,6 +132,7 @@ export function calculateTCI(countryCode: string): {
   seasonalityIdx: number;
   ipcIdx: number;
   riskIdx: number;
+  oilPrice: number;
   factors: { label: string; value: number; weight: number; contribution: number }[];
 } {
   const month = new Date().getMonth() + 1;
@@ -199,6 +208,7 @@ export function calculateTCI(countryCode: string): {
     seasonalityIdx: Math.round(seasonalityIdx * 10) / 10,
     ipcIdx: Math.round(ipcIdx * 10) / 10,
     riskIdx: Math.round(riskIdx * 10) / 10,
+    oilPrice: OIL_BRENT_HISTORY[OIL_BRENT_HISTORY.length - 1].price,
     factors,
   };
 }
@@ -485,4 +495,111 @@ export function monthlyTCIPattern(countryCode: string): number[] {
   }
   return months;
 }
+
+// ─────────────────────────────────────────────
+// IMPACTO GLOBAL: Petróleo, Conflictos, Redistribución
+// ─────────────────────────────────────────────
+
+export function getOilImpactAnalysis(): {
+  currentPrice: number;
+  avgPrice: number;
+  changePct: number;
+  trend: 'up' | 'down' | 'stable';
+  months: { month: string; price: number; tciImpact: number }[];
+} {
+  const months = OIL_BRENT_HISTORY.map(o => {
+    const tciImpact = Math.round(((o.price / OIL_AVG) * 100 - 100) * 10) / 10;
+    const [, m] = o.month.split('-');
+    const meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+    return { month: meses[parseInt(m) - 1] + '/' + o.month.split('-')[0].slice(2), price: o.price, tciImpact };
+  });
+
+  const latest = OIL_BRENT_HISTORY[OIL_BRENT_HISTORY.length - 1];
+  const prev = OIL_BRENT_HISTORY[OIL_BRENT_HISTORY.length - 2];
+  const changePct = Math.round(((latest.price - prev.price) / prev.price) * 1000) / 10;
+  const trend: 'up' | 'down' | 'stable' = changePct > 0.5 ? 'up' : changePct < -0.5 ? 'down' : 'stable';
+
+  return { currentPrice: latest.price, avgPrice: Math.round(OIL_AVG * 10) / 10, changePct, trend, months };
+}
+
+export function getGlobalConflictImpact(): {
+  totalClosures: number;
+  totalRoutesAffected: number;
+  worstAffected: { country: string; flag: string; surcharge: number; reason: string }[];
+  avgSurcharge: number;
+} {
+  const activeClosures = AIRSPACE_CLOSURES_FALLBACK.filter(c => c.isActive);
+  const activeRoutes = AFFECTED_ROUTES_FALLBACK.filter(r => r.isActive);
+
+  const worst = activeRoutes
+    .sort((a, b) => b.fuelSurchargePct - a.fuelSurchargePct)
+    .slice(0, 6)
+    .map(r => {
+      const pais = paisesData[r.countryCode.toLowerCase()];
+      const closure = AIRSPACE_CLOSURES_FALLBACK.find(c => c.code === r.closedAirspace);
+      return {
+        country: r.destination,
+        flag: pais?.bandera || '🌍',
+        surcharge: r.fuelSurchargePct,
+        reason: closure?.reason || 'Espacio aéreo cerrado',
+      };
+    });
+
+  const avgSurcharge = Math.round((activeRoutes.reduce((s, r) => s + r.fuelSurchargePct, 0) / activeRoutes.length) * 10) / 10;
+
+  return { totalClosures: activeClosures.length, totalRoutesAffected: activeRoutes.length, worstAffected: worst, avgSurcharge };
+}
+
+export function getDemandShiftAnalysis(): {
+  conflictBeneficiaries: { country: string; flag: string; name: string; extraDemandPct: number; reason: string }[];
+  oilSensitive: { country: string; flag: string; name: string; oilImpact: number }[];
+  safeHavens: { country: string; flag: string; name: string; riskScore: number; tci: number }[];
+} {
+  const allPaises = Object.values(paisesData).filter(p => p.visible !== false && p.codigo !== 'cu');
+
+  // Conflict beneficiaries: safe countries in same region as closed airspace
+  const conflictBeneficiaries = allPaises
+    .filter(p => p.nivelRiesgo === 'sin-riesgo' || p.nivelRiesgo === 'bajo')
+    .map(p => {
+      const affected = AFFECTED_ROUTES_FALLBACK.find(r => r.destination.toLowerCase().includes(p.nombre.toLowerCase()));
+      const tci = calculateTCI(p.codigo);
+      let extraDemand = 0;
+      let reason = '';
+
+      if (p.codigo === 'tr') { extraDemand = 12; reason = 'Desvío de rutas a Oriente Medio por conflicto sirio'; }
+      else if (p.codigo === 'es' || p.codigo === 'pt' || p.codigo === 'gr' || p.codigo === 'hr') { extraDemand = 8; reason = 'Turismo redirigido desde destinos de riesgo medio'; }
+      else if (p.codigo === 'mx' || p.codigo === 'cr') { extraDemand = 6; reason = 'Alternativa segura a Caribe inestable'; }
+      else if (p.codigo === 'jp' || p.codigo === 'kr' || p.codigo === 'sg') { extraDemand = 5; reason = 'Destino asiático seguro sin conflicto aéreo'; }
+
+      return { country: p.codigo, flag: p.bandera, name: p.nombre, extraDemandPct: extraDemand, reason };
+    })
+    .filter(b => b.extraDemandPct > 0)
+    .sort((a, b) => b.extraDemandPct - a.extraDemandPct)
+    .slice(0, 8);
+
+  // Oil-sensitive: long-haul destinations most affected by oil prices
+  const oilSensitive = allPaises
+    .filter(p => p.continente === 'Asia' || p.continente === 'Oceanía' || p.continente === 'América del Sur')
+    .map(p => {
+      const tci = calculateTCI(p.codigo);
+      const oilImpact = tci.oilIdx - 100;
+      return { country: p.codigo, flag: p.bandera, name: p.nombre, oilImpact: Math.round(oilImpact * 10) / 10 };
+    })
+    .sort((a, b) => b.oilImpact - a.oilImpact)
+    .slice(0, 6);
+
+  // Safe havens: low risk + affordable TCI
+  const safeHavens = allPaises
+    .filter(p => (p.nivelRiesgo === 'sin-riesgo' || p.nivelRiesgo === 'bajo'))
+    .map(p => {
+      const tci = calculateTCI(p.codigo);
+      const riskScore = p.nivelRiesgo === 'sin-riesgo' ? 95 : 85;
+      return { country: p.codigo, flag: p.bandera, name: p.nombre, riskScore, tci: tci.tci };
+    })
+    .sort((a, b) => b.riskScore - a.riskScore)
+    .slice(0, 8);
+
+  return { conflictBeneficiaries, oilSensitive, safeHavens };
+}
+
 

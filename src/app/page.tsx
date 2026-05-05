@@ -7,7 +7,7 @@ import {
   Search, Sparkles, Crown, Bell, Globe, Filter, 
   ChevronRight, Menu, X, Calculator, Route, ClipboardList, BarChart3, 
   MessageCircle, Mail, Send, ShieldCheck, FileText, Scale, BookOpen,
-  Newspaper, ChevronRight as Chevron, Navigation
+  Newspaper, ChevronRight as Chevron, Navigation, TrendingUp
 } from 'lucide-react';
 import { paisesData } from '@/data/paises';
 
@@ -62,6 +62,10 @@ function TopBar() {
               <Calculator className="w-4 h-4 text-blue-400 group-hover:scale-110 transition-transform" />
               <span className="text-[10px] font-medium">Coste</span>
             </Link>
+            <Link href="/analisis" className="group flex flex-col items-center gap-0.5 px-4 py-1.5 text-slate-400 hover:text-white rounded-xl hover:bg-slate-800/80 transition-all">
+              <TrendingUp className="w-4 h-4 text-amber-400 group-hover:scale-110 transition-transform" />
+              <span className="text-[10px] font-medium">Análisis</span>
+            </Link>
             <Link href="/rutas" className="group flex flex-col items-center gap-0.5 px-4 py-1.5 text-slate-400 hover:text-white rounded-xl hover:bg-slate-800/80 transition-all">
               <Route className="w-4 h-4 text-green-400 group-hover:scale-110 transition-transform" />
               <span className="text-[10px] font-medium">Rutas</span>
@@ -107,6 +111,10 @@ function TopBar() {
             <Link href="/coste" className="flex items-center gap-3 px-4 py-3 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition-colors">
               <Calculator className="w-5 h-5 text-blue-400" />
               Coste del Viaje
+            </Link>
+            <Link href="/analisis" className="flex items-center gap-3 px-4 py-3 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition-colors">
+              <TrendingUp className="w-5 h-5 text-amber-400" />
+              Análisis Global ML
             </Link>
             <Link href="/rutas" className="flex items-center gap-3 px-4 py-3 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition-colors">
               <Route className="w-5 h-5 text-green-400" />

@@ -3,7 +3,7 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
-import { Search, Navigation, MapPin, Loader2, AlertTriangle, Sun, Cloud, CloudRain, Star, ArrowLeft } from 'lucide-react';
+import { Search, Navigation, MapPin, Loader2, AlertTriangle, Sun, Cloud, CloudRain, Star, ArrowLeft, Globe, BarChart3, Route, DollarSign, Sparkles } from 'lucide-react';
 
 // Dynamic import for the map - only loads on client side
 const RadiusMap = dynamic(() => import('./RadiusMap'), { ssr: false });
@@ -234,15 +234,41 @@ export default function RadiusExplorer() {
 
   return (
     <div className="min-h-screen bg-slate-900">
-      <header className="bg-slate-800/50 border-b border-slate-700/50 backdrop-blur-sm sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors text-sm">
-            <ArrowLeft className="w-4 h-4" />
-            <span>Volver al mapa</span>
-          </Link>
-          <div className="flex items-center gap-2 px-3 py-1.5 bg-purple-500/10 rounded-full border border-purple-500/20">
-            <Navigation className="w-4 h-4 text-purple-400" />
-            <span className="text-purple-400 text-sm font-medium">Radio Inteligente</span>
+      <header className="bg-slate-800 border-b border-slate-700 sticky top-0 z-[1000]">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="flex items-center justify-between py-3">
+            <Link href="/" className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors text-sm font-medium">
+              <ArrowLeft className="w-4 h-4" />
+              <span className="hidden sm:inline">Volver al mapa</span>
+            </Link>
+            <div className="flex items-center gap-2 px-3 py-1.5 bg-purple-500/15 rounded-full border border-purple-500/30">
+              <Navigation className="w-4 h-4 text-purple-400" />
+              <span className="text-purple-300 text-sm font-semibold">Radio Inteligente</span>
+            </div>
+          </div>
+          <div className="flex items-center gap-1 pb-2 overflow-x-auto">
+            {[
+              { href: '/', label: 'Mapa', icon: <Globe className="w-3 h-3" /> },
+              { href: '/decidir', label: 'Decidir', icon: <Sparkles className="w-3 h-3" /> },
+              { href: '/coste', label: 'Coste', icon: <DollarSign className="w-3 h-3" /> },
+              { href: '/analisis', label: 'Análisis', icon: <BarChart3 className="w-3 h-3" /> },
+              { href: '/rutas', label: 'Rutas', icon: <Route className="w-3 h-3" /> },
+              { href: '/radius', label: 'Radius', icon: <Navigation className="w-3 h-3" />, active: true },
+              { href: '/indices', label: 'KPIs', icon: <BarChart3 className="w-3 h-3" /> },
+            ].map(link => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all whitespace-nowrap ${
+                  link.active
+                    ? 'bg-purple-500/20 text-purple-300 border border-purple-500/30'
+                    : 'text-slate-500 hover:text-white hover:bg-slate-700/50'
+                }`}
+              >
+                {link.icon}
+                {link.label}
+              </Link>
+            ))}
           </div>
         </div>
       </header>

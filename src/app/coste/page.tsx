@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Search, TrendingUp, TrendingDown, Minus, BarChart3, Loader2, ChevronDown, ChevronUp, Filter, ExternalLink } from 'lucide-react';
+import { ArrowLeft, Search, TrendingUp, TrendingDown, Minus, BarChart3, Loader2, ChevronDown, ChevronUp, Filter, ExternalLink, Droplet } from 'lucide-react';
 
 interface TCIResult {
   code: string;
@@ -42,13 +42,17 @@ export default function CosteMLPage() {
   const [search, setSearch] = useState('');
   const [regionFilter, setRegionFilter] = useState('all');
   const [sortAsc, setSortAsc] = useState(true);
+  const [oilData, setOilData] = useState<{ price: number; avg: number; changePct: number } | null>(null);
 
   useEffect(() => {
-    fetch('/api/flight-costs?action=all')
-      .then(r => r.json())
-      .then(d => setCountries(d.countries || []))
-      .catch(() => setCountries([]))
-      .finally(() => setLoading(false));
+    Promise.all([
+      fetch('/api/flight-costs?action=all').then(r => r.json()).catch(() => ({ countries: [] })),
+      fetch('/api/oil-price').then(r => r.json()).catch(() => null),
+    ]).then(([data, oil]) => {
+      setCountries(data.countries || []);
+      if (oil) setOilData({ price: oil.price, avg: oil.avg, changePct: oil.changePct });
+      setLoading(false);
+    }).finally(() => setLoading(false));
   }, []);
 
   const filtered = useMemo(() => {
@@ -120,7 +124,27 @@ export default function CosteMLPage() {
               </div>
             ))}
           </div>
-          <div className="bg-slate-700/30 rounded-lg p-3 text-xs text-slate-400">
+          <div className="flex flex-wrap items-center gap-4 bg-slate-700/30 rounded-lg p-3 text-xs">
+            <div className="flex items-center gap-2">
+              <Droplet className="w-4 h-4 text-amber-400" />
+              <span className="text-slate-300 font-medium">Petróleo Brent:</span>
+              <span className="text-white font-bold">
+                {oilData ? `$${oilData.price}` : '$73.5'}
+              </span>
+              <span className="text-amber-400">/barril</span>
+            </div>
+            <div className="h-3 w-px bg-slate-600" />
+            <span className="text-slate-500">vs media histórica (2024-2026): <strong className="text-slate-300">{oilData ? `$${oilData.avg}` : '$77.1'}</strong></span>
+            <div className="h-3 w-px bg-slate-600" />
+            {oilData ? (
+              <span className={oilData.changePct < 0 ? 'text-emerald-400' : 'text-rose-400'}>
+                {oilData.changePct < 0 ? '↓' : '↑'} {oilData.changePct > 0 ? '+' : ''}{oilData.changePct}% vs media — impacto {oilData.changePct < 0 ? 'bajista' : 'alcista'} en TCI
+              </span>
+            ) : (
+              <span className="text-emerald-400 text-xs">↓ -4.7% vs media — impacto bajista en TCI</span>
+            )}
+          </div>
+          <div className="mt-3 bg-slate-700/30 rounded-lg p-3 text-xs text-slate-400">
             <strong className="text-slate-300">Fórmula:</strong> TCI = demanda×0.30 + petróleo×0.25 + estacionalidad×0.25 + IPC×0.10 + riesgo×0.10
             · Las predicciones usan regresión lineal + media móvil sobre 12 semanas de histórico.
           </div>
