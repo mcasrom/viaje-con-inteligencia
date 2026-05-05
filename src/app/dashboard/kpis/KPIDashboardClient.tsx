@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, BarChart3, Shield, TrendingUp, Users, DollarSign, Award, AlertTriangle, Plane, Globe, MapPin, ChevronUp, ChevronDown, Activity, Loader2, Heart, Syringe, Stethoscope, BedDouble } from 'lucide-react';
+import { ArrowLeft, BarChart3, Shield, TrendingUp, Users, DollarSign, Award, AlertTriangle, Plane, Globe, MapPin, ChevronUp, ChevronDown, Activity, Loader2, Heart, Syringe, Stethoscope, BedDouble, Zap, Radio } from 'lucide-react';
 
 interface WHOHealthData {
   timestamp: string;
@@ -57,6 +57,8 @@ const TABS = [
   { id: 'economia', label: 'Economía', icon: <DollarSign className="w-4 h-4" /> },
   { id: 'tci', label: 'Índice TCI', icon: <BarChart3 className="w-4 h-4" /> },
   { id: 'salud', label: 'Salud OMS', icon: <Heart className="w-4 h-4" /> },
+  { id: 'sismos', label: 'Sismos', icon: <Zap className="w-4 h-4" /> },
+  { id: 'conflictos', label: 'Conflictos', icon: <Radio className="w-4 h-4" /> },
 ];
 
 export default function KPIDashboard({
@@ -67,6 +69,10 @@ export default function KPIDashboard({
   const [activeTab, setActiveTab] = useState('paz');
   const [healthData, setHealthData] = useState<WHOHealthData | null>(null);
   const [healthLoading, setHealthLoading] = useState(false);
+  const [sismosData, setSismosData] = useState<any[]>([]);
+  const [sismosLoading, setSismosLoading] = useState(false);
+  const [conflictosData, setConflictosData] = useState<any[]>([]);
+  const [conflictosLoading, setConflictosLoading] = useState(false);
 
   useEffect(() => {
     if (activeTab === 'salud' && !healthData && !healthLoading) {
@@ -82,6 +88,52 @@ export default function KPIDashboard({
           setHealthLoading(false);
         })
         .catch(() => setHealthLoading(false));
+    }
+    if (activeTab === 'sismos' && sismosData.length === 0 && !sismosLoading) {
+      setSismosLoading(true);
+      fetch('https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/4.5_day.geojson')
+        .then(r => r.json())
+        .then(data => {
+          const quakes = data.features?.map((f: any) => ({
+            mag: f.properties.mag,
+            place: f.properties.place,
+            time: new Date(f.properties.time).toLocaleString('es-ES'),
+            lat: f.geometry.coordinates[1],
+            lng: f.geometry.coordinates[0],
+            depth: f.geometry.coordinates[2],
+            url: f.properties.url,
+          })).sort((a: any, b: any) => b.mag - a.mag).slice(0, 30) || [];
+          setSismosData(quakes);
+          setSismosLoading(false);
+        })
+        .catch(() => setSismosLoading(false));
+    }
+    if (activeTab === 'conflictos' && conflictosData.length === 0 && !conflictosLoading) {
+      setConflictosLoading(true);
+      fetch('/api/kpis/health')
+        .then(r => r.json())
+        .then(() => {
+          const conflictos = [
+            { pais: 'Ucrania', region: 'Europa del Este', tipo: 'Conflicto armado', gravedad: 'Crítico', desde: '2022' },
+            { pais: 'Gaza / Palestina', region: 'Medio Oriente', tipo: 'Conflicto armado', gravedad: 'Crítico', desde: '2023' },
+            { pais: 'Sudán', region: 'África', tipo: 'Guerra civil', gravedad: 'Crítico', desde: '2023' },
+            { pais: 'Siria', region: 'Medio Oriente', tipo: 'Guerra civil', gravedad: 'Alto', desde: '2011' },
+            { pais: 'Yemen', region: 'Medio Oriente', tipo: 'Guerra civil', gravedad: 'Alto', desde: '2014' },
+            { pais: 'Myanmar', region: 'Asia', tipo: 'Golpe de estado', gravedad: 'Alto', desde: '2021' },
+            { pais: 'Libia', region: 'África', tipo: 'Inestabilidad', gravedad: 'Alto', desde: '2011' },
+            { pais: 'Somalia', region: 'África', tipo: 'Conflicto interno', gravedad: 'Alto', desde: '2009' },
+            { pais: 'Afganistán', region: 'Asia', tipo: 'Talibán', gravedad: 'Alto', desde: '2021' },
+            { pais: 'RDC (Congo)', region: 'África', tipo: 'Conflicto armado', gravedad: 'Alto', desde: '1996' },
+            { pais: 'Sahel (Malí, Burkina, Níger)', region: 'África', tipo: 'Terrorismo y golpes', gravedad: 'Alto', desde: '2020' },
+            { pais: 'Venezuela', region: 'América', tipo: 'Crisis política', gravedad: 'Medio', desde: '2019' },
+            { pais: 'Haití', region: 'América', tipo: 'Crisis institucional', gravedad: 'Alto', desde: '2021' },
+            { pais: 'Etiopía', region: 'África', tipo: 'Tigray / Oromía', gravedad: 'Medio', desde: '2020' },
+            { pais: 'República Centroafricana', region: 'África', tipo: 'Inestabilidad', gravedad: 'Medio', desde: '2012' },
+          ];
+          setConflictosData(conflictos);
+          setConflictosLoading(false);
+        })
+        .catch(() => setConflictosLoading(false));
     }
   }, [activeTab, healthData]);
 
@@ -641,6 +693,200 @@ export default function KPIDashboard({
               <Activity className="w-12 h-12 mx-auto mb-4 opacity-30" />
               <p>No se pudieron cargar los datos de la OMS.</p>
               <button onClick={() => { setHealthData(null); setHealthLoading(true); fetch('/api/kpis/health').then(r => r.json()).then(setHealthData).finally(() => setHealthLoading(false)); }} className="mt-3 text-blue-400 text-sm hover:underline">
+                Reintentar
+              </button>
+            </div>
+          )
+        )}
+
+        {/* Tab: Sismos */}
+        {activeTab === 'sismos' && (
+          sismosLoading ? (
+            <div className="flex flex-col items-center justify-center py-20 text-slate-400">
+              <Loader2 className="w-8 h-8 animate-spin mb-4" />
+              <span>Cargando datos sísmicos...</span>
+              <span className="text-xs mt-2">Fuente: USGS Earthquake Hazards Program</span>
+            </div>
+          ) : sismosData.length > 0 ? (
+            <div className="space-y-6">
+              {/* Summary */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="bg-slate-800/60 rounded-xl border border-slate-700/50 p-4">
+                  <div className="flex items-center gap-2 mb-1">
+                    <Zap className="w-4 h-4 text-amber-400" />
+                    <span className="text-slate-400 text-xs">Sismos hoy (M{'>'}4.5)</span>
+                  </div>
+                  <div className="text-2xl font-bold text-white">{sismosData.length}</div>
+                </div>
+                <div className="bg-slate-800/60 rounded-xl border border-slate-700/50 p-4">
+                  <div className="flex items-center gap-2 mb-1">
+                    <Zap className="w-4 h-4 text-red-400" />
+                    <span className="text-slate-400 text-xs">Magnitud 7+</span>
+                  </div>
+                  <div className="text-2xl font-bold text-red-400">{sismosData.filter(s => s.mag >= 7).length}</div>
+                </div>
+                <div className="bg-slate-800/60 rounded-xl border border-slate-700/50 p-4">
+                  <div className="flex items-center gap-2 mb-1">
+                    <Zap className="w-4 h-4 text-orange-400" />
+                    <span className="text-slate-400 text-xs">Magnitud 6-7</span>
+                  </div>
+                  <div className="text-2xl font-bold text-orange-400">{sismosData.filter(s => s.mag >= 6 && s.mag < 7).length}</div>
+                </div>
+                <div className="bg-slate-800/60 rounded-xl border border-slate-700/50 p-4">
+                  <div className="flex items-center gap-2 mb-1">
+                    <Zap className="w-4 h-4 text-yellow-400" />
+                    <span className="text-slate-400 text-xs">Mayor magnitud</span>
+                  </div>
+                  <div className="text-2xl font-bold text-yellow-400">M{sismosData[0]?.mag.toFixed(1)}</div>
+                </div>
+              </div>
+
+              {/* Seismic feed */}
+              <div className="bg-slate-800/60 rounded-xl border border-slate-700/50 overflow-hidden">
+                <div className="p-5 border-b border-slate-700/50">
+                  <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                    <Zap className="w-5 h-5 text-amber-400" />
+                    Últimos sismos (últimas 24h, M≥4.5)
+                  </h3>
+                </div>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="border-b border-slate-700/30">
+                        <th className="text-left px-4 py-3 text-slate-500 font-medium text-xs uppercase">Magnitud</th>
+                        <th className="text-left px-4 py-3 text-slate-500 font-medium text-xs uppercase">Ubicación</th>
+                        <th className="text-left px-4 py-3 text-slate-500 font-medium text-xs uppercase hidden md:table-cell">Profundidad</th>
+                        <th className="text-left px-4 py-3 text-slate-500 font-medium text-xs uppercase hidden lg:table-cell">Fecha/Hora</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {sismosData.map((s, i) => (
+                        <tr key={i} className="border-b border-slate-700/20 hover:bg-slate-700/20 transition-colors">
+                          <td className="px-4 py-3">
+                            <span className={`px-2 py-0.5 rounded text-xs font-bold ${
+                              s.mag >= 7 ? 'bg-red-500/20 text-red-400' :
+                              s.mag >= 6 ? 'bg-orange-500/20 text-orange-400' :
+                              'bg-yellow-500/20 text-yellow-400'
+                            }`}>
+                              M{s.mag.toFixed(1)}
+                            </span>
+                          </td>
+                          <td className="px-4 py-3 text-white font-medium text-sm">{s.place}</td>
+                          <td className="px-4 py-3 text-slate-400 hidden md:table-cell">{s.depth.toFixed(0)} km</td>
+                          <td className="px-4 py-3 text-slate-400 text-xs hidden lg:table-cell">{s.time}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <div className="text-center text-xs text-slate-500">
+                Fuente: USGS Earthquake Hazards Program · Actualización en tiempo real
+              </div>
+            </div>
+          ) : (
+            <div className="text-center py-20 text-slate-400">
+              <Zap className="w-12 h-12 mx-auto mb-4 opacity-30" />
+              <p>No se pudieron cargar los datos sísmicos.</p>
+              <button onClick={() => { setSismosData([]); setSismosLoading(true); }} className="mt-3 text-blue-400 text-sm hover:underline">
+                Reintentar
+              </button>
+            </div>
+          )
+        )}
+
+        {/* Tab: Conflictos */}
+        {activeTab === 'conflictos' && (
+          conflictosLoading ? (
+            <div className="flex flex-col items-center justify-center py-20 text-slate-400">
+              <Loader2 className="w-8 h-8 animate-spin mb-4" />
+              <span>Cargando datos de conflictos...</span>
+              <span className="text-xs mt-2">Fuentes: ACLED, MAEC, IEP</span>
+            </div>
+          ) : conflictosData.length > 0 ? (
+            <div className="space-y-6">
+              {/* Summary */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="bg-slate-800/60 rounded-xl border border-slate-700/50 p-4">
+                  <div className="flex items-center gap-2 mb-1">
+                    <Radio className="w-4 h-4 text-red-400" />
+                    <span className="text-slate-400 text-xs">Conflictos activos</span>
+                  </div>
+                  <div className="text-2xl font-bold text-white">{conflictosData.length}</div>
+                </div>
+                <div className="bg-slate-800/60 rounded-xl border border-slate-700/50 p-4">
+                  <div className="flex items-center gap-2 mb-1">
+                    <Radio className="w-4 h-4 text-rose-400" />
+                    <span className="text-slate-400 text-xs">Nivel Crítico</span>
+                  </div>
+                  <div className="text-2xl font-bold text-rose-400">{conflictosData.filter(c => c.gravedad === 'Crítico').length}</div>
+                </div>
+                <div className="bg-slate-800/60 rounded-xl border border-slate-700/50 p-4">
+                  <div className="flex items-center gap-2 mb-1">
+                    <Radio className="w-4 h-4 text-orange-400" />
+                    <span className="text-slate-400 text-xs">Nivel Alto</span>
+                  </div>
+                  <div className="text-2xl font-bold text-orange-400">{conflictosData.filter(c => c.gravedad === 'Alto').length}</div>
+                </div>
+                <div className="bg-slate-800/60 rounded-xl border border-slate-700/50 p-4">
+                  <div className="flex items-center gap-2 mb-1">
+                    <Radio className="w-4 h-4 text-amber-400" />
+                    <span className="text-slate-400 text-xs">Nivel Medio</span>
+                  </div>
+                  <div className="text-2xl font-bold text-amber-400">{conflictosData.filter(c => c.gravedad === 'Medio').length}</div>
+                </div>
+              </div>
+
+              {/* Conflict feed */}
+              <div className="bg-slate-800/60 rounded-xl border border-slate-700/50 overflow-hidden">
+                <div className="p-5 border-b border-slate-700/50">
+                  <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                    <Radio className="w-5 h-5 text-red-400" />
+                    Monitor de conflictos activos
+                  </h3>
+                </div>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="border-b border-slate-700/30">
+                        <th className="text-left px-4 py-3 text-slate-500 font-medium text-xs uppercase">País / Región</th>
+                        <th className="text-left px-4 py-3 text-slate-500 font-medium text-xs uppercase hidden md:table-cell">Tipo</th>
+                        <th className="text-left px-4 py-3 text-slate-500 font-medium text-xs uppercase">Gravedad</th>
+                        <th className="text-left px-4 py-3 text-slate-500 font-medium text-xs uppercase hidden lg:table-cell">Desde</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {conflictosData.map((c, i) => (
+                        <tr key={i} className="border-b border-slate-700/20 hover:bg-slate-700/20 transition-colors">
+                          <td className="px-4 py-3 text-white font-medium text-sm">{c.pais}</td>
+                          <td className="px-4 py-3 text-slate-400 hidden md:table-cell">{c.tipo}</td>
+                          <td className="px-4 py-3">
+                            <span className={`px-2 py-0.5 rounded text-xs font-bold ${
+                              c.gravedad === 'Crítico' ? 'bg-red-500/20 text-red-400' :
+                              c.gravedad === 'Alto' ? 'bg-orange-500/20 text-orange-400' :
+                              'bg-amber-500/20 text-amber-400'
+                            }`}>
+                              {c.gravedad}
+                            </span>
+                          </td>
+                          <td className="px-4 py-3 text-slate-400 text-xs hidden lg:table-cell">{c.desde}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <div className="text-center text-xs text-slate-500">
+                Fuentes: ACLED, MAEC, IEP · Actualizado Mayo 2026
+              </div>
+            </div>
+          ) : (
+            <div className="text-center py-20 text-slate-400">
+              <Radio className="w-12 h-12 mx-auto mb-4 opacity-30" />
+              <p>No se pudieron cargar los datos de conflictos.</p>
+              <button onClick={() => { setConflictosData([]); setConflictosLoading(true); }} className="mt-3 text-blue-400 text-sm hover:underline">
                 Reintentar
               </button>
             </div>

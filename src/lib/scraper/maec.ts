@@ -186,18 +186,47 @@ export async function getMAECData(countryCode: string): Promise<MAECCountryData 
   }
 }
 
-export async function getAllMAECAlerts(): Promise<{ pais: string; nivelRiesgo: string; url: string }[]> {
-  const alerts: { pais: string; nivelRiesgo: string; url: string }[] = [];
+export async function getAllMAECAlerts(): Promise<{ pais: string; nivelRiesgo: string; url: string; codigo: string }[]> {
+  const alerts: { pais: string; nivelRiesgo: string; url: string; codigo: string }[] = [];
   
-  const priorityCountries = ['ua', 'ru', 'il', 'ps', 'af', 'iq', 'sy', 'ye', 'ly', 'so', 'ss', 'mm', 've'];
+  const priorityCountries = [
+    { code: 'ua', name: 'Ucrania' },
+    { code: 'ru', name: 'Rusia' },
+    { code: 'il', name: 'Israel' },
+    { code: 'af', name: 'Afganistán' },
+    { code: 'sy', name: 'Siria' },
+    { code: 'ye', name: 'Yemen' },
+    { code: 'iq', name: 'Irak' },
+    { code: 'so', name: 'Somalia' },
+    { code: 'ly', name: 'Libia' },
+    { code: 've', name: 'Venezuela' },
+    { code: 'mm', name: 'Myanmar' },
+    { code: 'ht', name: 'Haití' },
+    { code: 'kp', name: 'Corea del Norte' },
+    { code: 'ir', name: 'Irán' },
+    { code: 'sd', name: 'Sudán' },
+    { code: 'ss', name: 'Sudán del Sur' },
+    { code: 'cf', name: 'República Centroafricana' },
+    { code: 'ml', name: 'Malí' },
+    { code: 'bf', name: 'Burkina Faso' },
+    { code: 'ne', name: 'Níger' },
+    { code: 'ng', name: 'Nigeria' },
+    { code: 'pk', name: 'Pakistán' },
+    { code: 'bd', name: 'Bangladesh' },
+    { code: 'kh', name: 'Camboya' },
+    { code: 'la', name: 'Laos' },
+    { code: 'sa', name: 'Arabia Saudita' },
+    { code: 'lb', name: 'Líbano' },
+  ];
   
-  for (const code of priorityCountries) {
-    const data = await getMAECData(code);
-    if (data && (data.nivelRiesgo === 'alto' || data.nivelRiesgo === 'medio')) {
+  for (const country of priorityCountries) {
+    const data = await getMAECData(country.code);
+    if (data && (data.nivelRiesgo === 'alto' || data.nivelRiesgo === 'medio' || data.nivelRiesgo === 'muy-alto')) {
       alerts.push({
         pais: data.pais,
         nivelRiesgo: data.nivelRiesgo,
-        url: data.enlaces.recomendaciones,
+        url: data.enlaces?.recomendaciones || 'https://www.exteriores.gob.es',
+        codigo: country.code,
       });
     }
   }
