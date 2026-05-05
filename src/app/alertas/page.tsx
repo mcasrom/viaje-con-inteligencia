@@ -98,14 +98,19 @@ export default function AlertsPage() {
       const res = await fetch('/api/maec?alerts=true');
       if (res.ok) {
         const data = await res.json();
-        const alerts: MAECAlert[] = (data.alerts || []).map((a: any) => ({
-          pais: a.pais,
-          codigo: a.codigo || '',
-          nivelRiesgo: a.nivelRiesgo,
-          url: a.url,
-          bandera: getFlag(a.pais.substring(0, 2).toLowerCase()),
-        }));
-        setGlobalAlerts(alerts);
+        const rawAlerts = data.alerts || [];
+        if (rawAlerts.length === 0 || data.error) {
+          setGlobalAlerts(buildFallbackAlerts());
+        } else {
+          const alerts: MAECAlert[] = rawAlerts.map((a: any) => ({
+            pais: a.pais,
+            codigo: a.codigo || '',
+            nivelRiesgo: a.nivelRiesgo,
+            url: a.url,
+            bandera: getFlag(a.pais.substring(0, 2).toLowerCase()),
+          }));
+          setGlobalAlerts(alerts);
+        }
       } else {
         const fallback = buildFallbackAlerts();
         setGlobalAlerts(fallback);
