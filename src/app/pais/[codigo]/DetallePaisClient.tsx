@@ -408,15 +408,18 @@ export default function DetallePaisClient({ pais, relatedPosts = [] }: DetallePa
                 <div className="flex items-center justify-between p-3 bg-slate-700/50 rounded-lg">
                   <span className="text-slate-300">Nivel de riesgo</span>
                   <span className={`px-3 py-1 rounded-full text-sm font-medium ${
+                    maecData.nivelRiesgo === 'muy-alto' ? 'bg-red-900/40 text-red-400 border border-red-800' :
                     maecData.nivelRiesgo === 'alto' ? 'bg-red-500/20 text-red-400' :
                     maecData.nivelRiesgo === 'medio' ? 'bg-orange-500/20 text-orange-400' :
+                    maecData.nivelRiesgo === 'bajo' ? 'bg-yellow-500/20 text-yellow-400' :
                     'bg-green-500/20 text-green-400'
                   }`}>
-                    {maecData.nivelRiesgo === 'alto' ? '🔴 Alto' :
+                    {maecData.nivelRiesgo === 'muy-alto' ? '🔴 Muy alto' :
+                     maecData.nivelRiesgo === 'alto' ? '🔴 Alto' :
                      maecData.nivelRiesgo === 'medio' ? '🟠 Medio' :
                      maecData.nivelRiesgo === 'bajo' ? '🟡 Bajo' :
                      maecData.nivelRiesgo === 'sin-riesgo' ? '🟢 Sin riesgo' :
-                     maecData.nivelRiesgo === 'desconocido' ? '🟢 Sin riesgo' : '⚠️ Sin datos MAEC'}
+                     '⚠️ Sin datos MAEC'}
                   </span>
                 </div>
                 

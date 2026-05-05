@@ -2,7 +2,8 @@
 
 import { useState, useCallback, useEffect, useRef } from 'react';
 import dynamic from 'next/dynamic';
-import { Search, Navigation, MapPin, Loader2, AlertTriangle, Sun, Cloud, CloudRain, Star } from 'lucide-react';
+import Link from 'next/link';
+import { Search, Navigation, MapPin, Loader2, AlertTriangle, Sun, Cloud, CloudRain, Star, ArrowLeft } from 'lucide-react';
 
 // Dynamic import for the map - only loads on client side
 const RadiusMap = dynamic(() => import('./RadiusMap'), { ssr: false });
@@ -232,7 +233,21 @@ export default function RadiusExplorer() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div className="min-h-screen bg-slate-900">
+      <header className="bg-slate-800/50 border-b border-slate-700/50 backdrop-blur-sm sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors text-sm">
+            <ArrowLeft className="w-4 h-4" />
+            <span>Volver al mapa</span>
+          </Link>
+          <div className="flex items-center gap-2 px-3 py-1.5 bg-purple-500/10 rounded-full border border-purple-500/20">
+            <Navigation className="w-4 h-4 text-purple-400" />
+            <span className="text-purple-400 text-sm font-medium">Radio Inteligente</span>
+          </div>
+        </div>
+      </header>
+
+      <div className="max-w-7xl mx-auto px-4 py-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
       {/* Map */}
       <div className="lg:col-span-2 space-y-4">
         {/* Search bar */}
@@ -400,6 +415,7 @@ export default function RadiusExplorer() {
           </ul>
         </div>
       </div>
+    </div>
     </div>
   );
 }

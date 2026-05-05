@@ -49,9 +49,9 @@ function TopBar() {
         {/* Desktop Nav — Dock pill */}
         <div className="hidden md:flex items-center gap-2">
           <div className="bg-slate-900/90 backdrop-blur-md rounded-2xl border border-slate-700/50 px-2 py-1.5 flex items-center gap-1 shadow-2xl shadow-black/30">
-            <Link href="/clustering" className="group flex flex-col items-center gap-0.5 px-4 py-1.5 text-slate-400 hover:text-white rounded-xl hover:bg-slate-800/80 transition-all">
+            <Link href="/decidir" className="group flex flex-col items-center gap-0.5 px-4 py-1.5 text-slate-400 hover:text-white rounded-xl hover:bg-slate-800/80 transition-all">
               <Sparkles className="w-4 h-4 text-purple-400 group-hover:scale-110 transition-transform" />
-              <span className="text-[10px] font-medium">Planificar</span>
+              <span className="text-[10px] font-medium">Decidir</span>
             </Link>
             <div className="w-px h-5 bg-slate-700" />
             <Link href="/blog" className="group flex flex-col items-center gap-0.5 px-4 py-1.5 text-slate-400 hover:text-white rounded-xl hover:bg-slate-800/80 transition-all">
@@ -96,9 +96,9 @@ function TopBar() {
       {menuOpen && (
         <div className="md:hidden max-w-7xl mx-auto px-4 mt-2 pointer-events-auto">
           <div className="bg-slate-900/95 backdrop-blur-md rounded-xl border border-slate-700/50 p-2 shadow-xl space-y-1">
-            <Link href="/clustering" className="flex items-center gap-3 px-4 py-3 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition-colors">
+            <Link href="/decidir" className="flex items-center gap-3 px-4 py-3 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition-colors">
               <Sparkles className="w-5 h-5 text-purple-400" />
-              Planificar con IA
+              Decide en 30 seg
             </Link>
             <Link href="/blog" className="flex items-center gap-3 px-4 py-3 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition-colors">
               <Newspaper className="w-5 h-5 text-cyan-400" />
@@ -132,10 +132,6 @@ function TopBar() {
             <Link href="/paises" className="flex items-center gap-3 px-4 py-3 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition-colors">
               <Globe className="w-5 h-5 text-blue-400" />
               Todos los países
-            </Link>
-            <Link href="/clustering" className="flex items-center gap-3 px-4 py-3 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition-colors">
-              <Sparkles className="w-5 h-5 text-purple-400" />
-              ML Clustering
             </Link>
             <Link href="/checklist" className="flex items-center gap-3 px-4 py-3 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition-colors">
               <ClipboardList className="w-5 h-5 text-orange-400" />
@@ -418,11 +414,11 @@ function BottomBar() {
         </Link>
         <div className="w-px h-4 bg-slate-700" />
         <Link 
-          href="/clustering" 
+          href="/decidir" 
           className="flex items-center gap-2 px-5 py-2 bg-gradient-to-r from-purple-600 to-violet-600 text-white rounded-xl hover:opacity-90 transition-opacity text-sm font-semibold"
         >
           <Sparkles className="w-4 h-4" />
-          Planificar viaje
+          Decide en 30 seg
         </Link>
         <div className="w-px h-4 bg-slate-700" />
         <Link 
