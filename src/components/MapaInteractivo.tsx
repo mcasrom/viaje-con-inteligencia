@@ -312,12 +312,12 @@ export default function MapaInteractivo({ fullScreen = false }: { fullScreen?: b
       </MapContainer>
 
       {/* Layer Switcher */}
-      <div className="absolute top-4 left-4 z-[1000] bg-slate-900/90 backdrop-blur-sm rounded-lg p-2 flex gap-1 shadow-xl">
+      <div className="absolute bottom-20 left-4 z-[1000] bg-slate-900/90 backdrop-blur-sm rounded-lg p-2 flex flex-col gap-1 shadow-xl">
         {(['riesgo', 'sismos', 'conflictos', 'salud'] as const).map(l => (
           <button
             key={l}
             onClick={() => setLayer(l)}
-            className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
+            className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all whitespace-nowrap ${
               layer === l
                 ? 'bg-blue-600 text-white'
                 : 'text-slate-400 hover:text-white hover:bg-slate-700/50'

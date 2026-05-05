@@ -55,6 +55,11 @@ const OIL_BRENT_HISTORY = [
   { month: '2025-10', price: 70.2 },
   { month: '2025-11', price: 71.8 },
   { month: '2025-12', price: 73.5 },
+  { month: '2026-01', price: 78.2 },
+  { month: '2026-02', price: 84.6 },
+  { month: '2026-03', price: 92.1 },
+  { month: '2026-04', price: 98.5 },
+  { month: '2026-05', price: 103.4 },
 ];
 
 const OIL_AVG = OIL_BRENT_HISTORY.reduce((s, o) => s + o.price, 0) / OIL_BRENT_HISTORY.length;
@@ -267,10 +272,13 @@ export const AIRSPACE_CLOSURES_FALLBACK: AirspaceClosure[] = [
   { code: 'LY', name: 'Libia', closureDate: '2014-07-01', reason: 'Guerra civil', severity: 'high', isActive: true, notes: 'Restricciones severas' },
   { code: 'YE', name: 'Yemen', closureDate: '2015-03-01', reason: 'Guerra civil', severity: 'critical', isActive: true, notes: 'Cerrado' },
   { code: 'AF', name: 'Afganistán', closureDate: '2021-08-15', reason: 'Talibán', severity: 'high', isActive: true, notes: 'Vuelos muy limitados' },
-  { code: 'IQ', name: 'Irak', closureDate: '2003-03-01', reason: 'Inestabilidad', severity: 'medium', isActive: true, notes: 'Corredores limitados' },
+  { code: 'IQ', name: 'Irak', closureDate: '2024-04-01', reason: 'Escalada de tensiones Irán-Israel y milicias', severity: 'high', isActive: true, notes: 'Sobrevuelo muy restringido — corredores limitados' },
   { code: 'SO', name: 'Somalia', closureDate: '2007-01-01', reason: 'Terrorismo', severity: 'medium', isActive: true, notes: 'FAA prohíbe sobrevuelo' },
   { code: 'SD', name: 'Sudán', closureDate: '2023-04-15', reason: 'Conflicto SAF-RSF', severity: 'critical', isActive: true, notes: 'Cerrado desde abril 2023' },
-  { code: 'IR', name: 'Irán', closureDate: '2020-01-01', reason: 'Tensiones geopolíticas', severity: 'medium', isActive: true, notes: 'Algunas aerolíneas evitan' },
+  { code: 'IR', name: 'Irán', closureDate: '2025-06-01', reason: 'Conflicto Israel-Irán, cierre de espacio aéreo', severity: 'critical', isActive: true, notes: 'Cierre parcial — la mayoría de aerolíneas evitan' },
+  { code: 'IL', name: 'Israel', closureDate: '2023-10-07', reason: 'Conflicto Gaza-Israel, ataques con misiles', severity: 'critical', isActive: true, notes: 'Apertura intermitente — cierres frecuentes' },
+  { code: 'LB', name: 'Líbano', closureDate: '2024-09-01', reason: 'Escalada Hezbollah-Israel', severity: 'critical', isActive: true, notes: 'Aeropuerto Beirut operatividad muy reducida' },
+  { code: 'PS', name: 'Palestina / Gaza', closureDate: '2023-10-07', reason: 'Conflicto Israel-Gaza', severity: 'critical', isActive: true, notes: 'Cerrado totalmente' },
 ];
 
 export interface AffectedRoute {
@@ -285,16 +293,25 @@ export interface AffectedRoute {
 }
 
 export const AFFECTED_ROUTES_FALLBACK: AffectedRoute[] = [
+  // Rutas afectadas por cierre de espacio aéreo ruso
   { destination: 'Tokio', countryCode: 'JP', closedAirspace: 'RU', detourKm: 4200, fuelSurchargePct: 18.5, timeExtraHours: 3.5, alternativeRoute: 'MAD→ANC→NRT', isActive: true },
   { destination: 'Seúl', countryCode: 'KR', closedAirspace: 'RU', detourKm: 3800, fuelSurchargePct: 16.0, timeExtraHours: 3.0, alternativeRoute: 'MAD→DEL→ICN', isActive: true },
   { destination: 'Pekín', countryCode: 'CN', closedAirspace: 'RU', detourKm: 3500, fuelSurchargePct: 15.0, timeExtraHours: 2.5, alternativeRoute: 'MAD→DOH→PEK', isActive: true },
   { destination: 'Shanghái', countryCode: 'CN', closedAirspace: 'RU', detourKm: 3600, fuelSurchargePct: 15.5, timeExtraHours: 2.5, alternativeRoute: 'MAD→IST→PVG', isActive: true },
   { destination: 'Delhi', countryCode: 'IN', closedAirspace: 'RU', detourKm: 800, fuelSurchargePct: 3.5, timeExtraHours: 0.5, alternativeRoute: 'Desvío sur de Rusia', isActive: true },
   { destination: 'Mumbai', countryCode: 'IN', closedAirspace: 'RU', detourKm: 600, fuelSurchargePct: 2.5, timeExtraHours: 0.5, alternativeRoute: 'Desvío sur de Rusia', isActive: true },
-  { destination: 'Dubái', countryCode: 'AE', closedAirspace: 'IR', detourKm: 400, fuelSurchargePct: 2.0, timeExtraHours: 0.3, alternativeRoute: 'Desvío sur de Irán', isActive: true },
-  { destination: 'Doha', countryCode: 'QA', closedAirspace: 'IR', detourKm: 300, fuelSurchargePct: 1.5, timeExtraHours: 0.3, alternativeRoute: 'Desvío sur de Irán', isActive: true },
+  // Rutas afectadas por conflicto Irán-Israel 2025-2026
+  { destination: 'Tel Aviv', countryCode: 'IL', closedAirspace: 'IL', detourKm: 2200, fuelSurchargePct: 35.0, timeExtraHours: 4.0, alternativeRoute: 'Vuelos a Chipre + transporte terrestre', isActive: true },
+  { destination: 'Teherán', countryCode: 'IR', closedAirspace: 'IR', detourKm: 1800, fuelSurchargePct: 28.0, timeExtraHours: 3.0, alternativeRoute: 'Sin vuelos directos desde Europa', isActive: true },
+  { destination: 'Beirut', countryCode: 'LB', closedAirspace: 'LB', detourKm: 1500, fuelSurchargePct: 30.0, timeExtraHours: 3.5, alternativeRoute: 'Vía Amán (Jordania) + transporte terrestre', isActive: true },
+  { destination: 'Bagdad', countryCode: 'IQ', closedAirspace: 'IQ', detourKm: 1200, fuelSurchargePct: 22.0, timeExtraHours: 2.0, alternativeRoute: 'Corredor norte limitado', isActive: true },
+  { destination: 'Doha', countryCode: 'QA', closedAirspace: 'IR', detourKm: 600, fuelSurchargePct: 5.0, timeExtraHours: 0.5, alternativeRoute: 'Desvío sur de Irán por Golfo Pérsico', isActive: true },
+  // Rutas afectadas por otros conflictos
+  { destination: 'Dubái', countryCode: 'AE', closedAirspace: 'IR', detourKm: 400, fuelSurchargePct: 3.0, timeExtraHours: 0.3, alternativeRoute: 'Desvío sur de Irán', isActive: true },
   { destination: 'El Cairo', countryCode: 'EG', closedAirspace: 'LY', detourKm: 500, fuelSurchargePct: 2.5, timeExtraHours: 0.5, alternativeRoute: 'Ruta este de Libia', isActive: true },
   { destination: 'Adís Abeba', countryCode: 'ET', closedAirspace: 'SD', detourKm: 800, fuelSurchargePct: 4.0, timeExtraHours: 0.5, alternativeRoute: 'Ruta este de Sudán', isActive: true },
+  { destination: 'Sana', countryCode: 'YE', closedAirspace: 'YE', detourKm: 1000, fuelSurchargePct: 25.0, timeExtraHours: 2.0, alternativeRoute: 'Sin vuelos — Djibouti + ferry', isActive: true },
+  { destination: 'Kabul', countryCode: 'AF', closedAirspace: 'AF', detourKm: 800, fuelSurchargePct: 20.0, timeExtraHours: 1.5, alternativeRoute: 'Vía Islamabad (limitado)', isActive: true },
 ];
 
 // Regresión lineal simple
@@ -566,7 +583,11 @@ export function getDemandShiftAnalysis(): {
       let extraDemand = 0;
       let reason = '';
 
-      if (p.codigo === 'tr') { extraDemand = 12; reason = 'Desvío de rutas a Oriente Medio por conflicto sirio'; }
+      if (p.codigo === 'tr') { extraDemand = 15; reason = 'Desvío masivo de rutas a Oriente Medio por conflictos Siria, Irán e Israel'; }
+      else if (p.codigo === 'jo') { extraDemand = 12; reason = 'Hub alternativo para viajeros a Líbano, Iraq y Palestina'; }
+      else if (p.codigo === 'eg') { extraDemand = 10; reason = 'Refugio turístico de Oriente Medio, Red替代 a Líbano'; }
+      else if (p.codigo === 'ae') { extraDemand = 8; reason = 'Hub aéreo alternativo al espacio aéreo iraní cerrado'; }
+      else if (p.codigo === 'om') { extraDemand = 6; reason = 'Ruta alternativa al Golfo Pérsico desviada de Irán'; }
       else if (p.codigo === 'es' || p.codigo === 'pt' || p.codigo === 'gr' || p.codigo === 'hr') { extraDemand = 8; reason = 'Turismo redirigido desde destinos de riesgo medio'; }
       else if (p.codigo === 'mx' || p.codigo === 'cr') { extraDemand = 6; reason = 'Alternativa segura a Caribe inestable'; }
       else if (p.codigo === 'jp' || p.codigo === 'kr' || p.codigo === 'sg') { extraDemand = 5; reason = 'Destino asiático seguro sin conflicto aéreo'; }
