@@ -401,7 +401,7 @@ export default function DetallePaisClient({ pais, relatedPosts = [] }: DetallePa
             {maecLoading ? (
               <div className="flex items-center gap-2 text-slate-400">
                 <Loader2 className="w-5 h-5 animate-spin" />
-                <span>Cargando datos del MAEC...</span>
+                <span>Verificando última actualización MAEC...</span>
               </div>
             ) : maecData ? (
               <div className="space-y-4">
@@ -468,17 +468,44 @@ export default function DetallePaisClient({ pais, relatedPosts = [] }: DetallePa
                 </div>
               </div>
             ) : (
-              <div className="space-y-3">
-                <p className="text-slate-300">📋 Información oficial del Ministerio de Asuntos Exteriores.</p>
+              <div className="space-y-4">
+                <div className="flex items-center justify-between p-3 bg-slate-700/50 rounded-lg">
+                  <span className="text-slate-300">Nivel de riesgo</span>
+                  <span className={`px-3 py-1 rounded-full text-sm font-medium ${
+                    pais.nivelRiesgo === 'muy-alto' ? 'bg-red-900/40 text-red-400 border border-red-800' :
+                    pais.nivelRiesgo === 'alto' ? 'bg-red-500/20 text-red-400' :
+                    pais.nivelRiesgo === 'medio' ? 'bg-orange-500/20 text-orange-400' :
+                    pais.nivelRiesgo === 'bajo' ? 'bg-yellow-500/20 text-yellow-400' :
+                    'bg-green-500/20 text-green-400'
+                  }`}>
+                    {pais.nivelRiesgo === 'muy-alto' ? '🔴 Muy alto' :
+                     pais.nivelRiesgo === 'alto' ? '🔴 Alto' :
+                     pais.nivelRiesgo === 'medio' ? '🟠 Medio' :
+                     pais.nivelRiesgo === 'bajo' ? '🟡 Bajo' :
+                     '🟢 Sin riesgo'}
+                    <span className="ml-1 text-xs opacity-70">(fuente MAEC)</span>
+                  </span>
+                </div>
+
+                <div className="flex items-center gap-2 text-slate-400 text-sm">
+                  <Clock className="w-4 h-4" />
+                  <span>Último informe: {pais.ultimoInforme}</span>
+                </div>
+
+                <p className="text-slate-400 text-sm">
+                  📋 Información oficial del Ministerio de Asuntos Exteriores y Cooperación. 
+                  Datos actualizados según la última ficha publicada por el MAEC.
+                </p>
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   <a
-                    href={`https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=${pais.nombre}`}
+                    href={`https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=${encodeURIComponent(pais.nombre)}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center gap-2 p-3 bg-blue-500/20 hover:bg-blue-500/30 rounded-lg text-blue-400 transition-colors"
                   >
                     <ExternalLink className="w-4 h-4" />
-                    <span className="text-sm">Ver recomendaciones</span>
+                    <span className="text-sm">Ver recomendaciones MAEC</span>
                   </a>
                   <a
                     href={`https://www.exteriores.gob.es/Documents/FichasPais/${pais.nombre.toUpperCase()}_FICHA%20PAIS.pdf`}
@@ -487,7 +514,7 @@ export default function DetallePaisClient({ pais, relatedPosts = [] }: DetallePa
                     className="flex items-center gap-2 p-3 bg-purple-500/20 hover:bg-purple-500/30 rounded-lg text-purple-400 transition-colors"
                   >
                     <Download className="w-4 h-4" />
-                    <span className="text-sm">Descargar Ficha</span>
+                    <span className="text-sm">Ficha País PDF</span>
                   </a>
                 </div>
               </div>

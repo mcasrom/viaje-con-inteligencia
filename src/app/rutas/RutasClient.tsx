@@ -435,7 +435,27 @@ const ICONS = {
   buceo: Umbrella,
 };
 
-export default function RutasClient() {
+interface RutasClientProps {
+  routes?: {
+    id: string;
+    name: string;
+    shortName: string;
+    description: string;
+    image: string;
+    category: string;
+    totalDistance: number;
+    totalDrivingTime: number;
+    bestSeason: string | string[];
+    difficulty: string;
+    difficultyLabel: string;
+    difficultyColor: string;
+    safetyScore: number;
+    popularityScore: number;
+    emoji: string;
+  }[];
+}
+
+export default function RutasClient({ routes: _routes }: RutasClientProps) {
   const searchParams = useSearchParams();
   const router = useRouter();
   const route = searchParams.get('route');
