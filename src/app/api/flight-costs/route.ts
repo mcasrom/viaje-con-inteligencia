@@ -1,75 +1,31 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { calculateTCI, getTCIForAllCountries, getCheapestDestinations, getMostExpensiveDestinations, getOilHistory, monthlyTCIPattern } from '@/data/tci-engine';
-import { paisesData } from '@/data/paises';
-
-export const dynamic = 'force-dynamic';
+import { calculateTCI, analyzeTCITrend, monthlyTCIPattern, getTCIForAllCountries, getConflictImpact, getOilHistory } from '@/data/tci-engine';
 
 export async function GET(request: NextRequest) {
-  const searchParams = request.nextUrl.searchParams;
-  const country = searchParams.get('country');
-  const sort = searchParams.get('sort');
-  const limit = parseInt(searchParams.get('limit') || '20');
+  const { searchParams } = new URL(request.url);
+  const action = searchParams.get('action');
 
-  try {
-    if (country) {
-      const lowerCode = country.toLowerCase();
-      const pais = paisesData[lowerCode];
-      if (!pais) {
-        return NextResponse.json({ error: 'País no encontrado' }, { status: 404 });
-      }
-
-      const tci = calculateTCI(lowerCode);
-      return NextResponse.json({
-        country: {
-          code: pais.codigo,
-          name: pais.nombre,
-          bandera: pais.bandera,
-          region: pais.continente,
-          nivelRiesgo: pais.nivelRiesgo,
-        },
-        tci: tci.tci,
-        trend: tci.trend,
-        recommendation: tci.recommendation,
-        factors: tci.factors,
-        monthlyPattern: monthlyTCIPattern(lowerCode),
-        indices: {
-          demand: tci.demandIdx,
-          oil: tci.oilIdx,
-          seasonality: tci.seasonalityIdx,
-          ipc: tci.ipcIdx,
-          risk: tci.riskIdx,
-        },
-      });
-    }
-
-    if (sort === 'cheapest') {
-      return NextResponse.json({
-        destinations: getCheapestDestinations(limit),
-      });
-    }
-
-    if (sort === 'expensive') {
-      return NextResponse.json({
-        destinations: getMostExpensiveDestinations(limit),
-      });
-    }
-
-    if (sort === 'oil') {
-      return NextResponse.json({
-        oilHistory: getOilHistory(),
-      });
-    }
-
-    const allCountries = getTCIForAllCountries();
-    return NextResponse.json({
-      destinations: allCountries.slice(0, limit),
-      total: allCountries.length,
-    });
-  } catch (error) {
-    console.error('Flight costs API error:', error);
-    return NextResponse.json(
-      { error: 'Error al calcular el índice de coste' },
-      { status: 500 }
-    );
+  if (action === 'all') {
+    const all = getTCIForAllCountries();
+    return NextResponse.json({ countries: all });
   }
+
+  if (action === 'detail') {
+    const country = searchParams.get('country');
+    if (!country) return NextResponse.json({ error: 'country required' }, { status: 400 });
+    const tci = calculateTCI(country);
+    const trend = analyzeTCITrend(country);
+    const monthly = monthlyTCIPattern(country);
+    const conflict = getConflictImpact(country);
+    return NextResponse.json({ tci, trend, monthly, conflict });
+  }
+
+  if (action === 'oil') {
+    const oil = getOilHistory();
+    return NextResponse.json({ oil });
+  }
+
+  // Default: return all countries ranking
+  const all = getTCIForAllCountries();
+  return NextResponse.json({ countries: all });
 }
