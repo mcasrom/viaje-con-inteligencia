@@ -94,6 +94,38 @@ export default function CosteMLPage() {
           </p>
         </div>
 
+        {/* TCI Methodology */}
+        <div className="mb-8 bg-gradient-to-r from-slate-800/80 to-slate-900/80 rounded-xl border border-slate-700/50 p-6">
+          <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+            <span className="text-2xl">📊</span>
+            ¿Qué es el Índice TCI?
+          </h2>
+          <p className="text-slate-300 text-sm leading-relaxed mb-4">
+            El <strong className="text-cyan-400">Travel Cost Index (TCI)</strong> es un índice propio desarrollado por Viaje Inteligencia que mide el coste relativo de viajar a cada país. 
+            Base <strong>100 = media global</strong>. Si un país tiene TCI 85, cuesta un 15% menos que la media. Si tiene TCI 120, un 20% más.
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-3 mb-4">
+            {[
+              { label: 'Demanda turística', weight: '30%', icon: '✈️', desc: 'Llegadas internacionales vs media global' },
+              { label: 'Petróleo Brent', weight: '25%', icon: '🛢️', desc: 'Precio del barril vs histórico 2024-2026' },
+              { label: 'Estacionalidad', weight: '25%', icon: '📅', desc: 'Patrones estacionales por país' },
+              { label: 'IPC país', weight: '10%', icon: '📈', desc: 'Inflación local impacta precios' },
+              { label: 'Riesgo MAEC', weight: '10%', icon: '🛡️', desc: 'Nivel riesgo del Ministerio de Exteriores' },
+            ].map(f => (
+              <div key={f.label} className="bg-slate-700/40 rounded-lg p-3">
+                <div className="text-2xl mb-1">{f.icon}</div>
+                <div className="text-white text-sm font-medium">{f.label}</div>
+                <div className="text-cyan-400 text-xs font-bold">{f.weight}</div>
+                <div className="text-slate-500 text-xs mt-1">{f.desc}</div>
+              </div>
+            ))}
+          </div>
+          <div className="bg-slate-700/30 rounded-lg p-3 text-xs text-slate-400">
+            <strong className="text-slate-300">Fórmula:</strong> TCI = demanda×0.30 + petróleo×0.25 + estacionalidad×0.25 + IPC×0.10 + riesgo×0.10
+            · Las predicciones usan regresión lineal + media móvil sobre 12 semanas de histórico.
+          </div>
+        </div>
+
         <div className="flex flex-wrap gap-3 mb-6">
           <div className="relative flex-1 min-w-[200px]">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />

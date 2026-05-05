@@ -119,15 +119,16 @@ export default function ViajeCosteClient({
     <div className="min-h-screen bg-slate-900">
       <div className="max-w-5xl mx-auto px-4 py-8">
         <Link
-          href="/viaje-coste"
-          className="inline-flex items-center gap-2 text-slate-400 hover:text-white mb-8 transition-colors"
+          href="/coste"
+          className="inline-flex items-center gap-2 text-slate-400 hover:text-white mb-6 transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
-          <span>Volver a comparador</span>
+          <span>Volver a coste de viaje</span>
         </Link>
 
-        <header className="mb-8">
-          <div className="flex items-center gap-3 mb-2">
+        {/* Hero: TCI Value + Chart + ML — ABOVE THE FOLD */}
+        <header className="mb-6">
+          <div className="flex items-center gap-3 mb-4">
             <span className="text-4xl">{pais.bandera}</span>
             <div>
               <h1 className="text-3xl font-bold text-white">
@@ -157,6 +158,23 @@ export default function ViajeCosteClient({
             </div>
           </div>
         )}
+
+        {/* TCI Methodology Callout */}
+        <div className="mb-6 bg-gradient-to-r from-cyan-500/5 to-blue-500/5 rounded-xl border border-cyan-500/20 p-4">
+          <div className="flex items-start gap-3">
+            <span className="text-2xl mt-0.5">📊</span>
+            <div>
+              <h3 className="text-white font-semibold text-sm mb-1">¿Qué es el TCI?</h3>
+              <p className="text-slate-400 text-xs leading-relaxed">
+                El <strong className="text-cyan-400">Travel Cost Index</strong> mide el coste relativo de viajar a cada país. Base 100 = media global. 
+                Se calcula con 5 factores: demanda turística (30%), petróleo Brent (25%), estacionalidad (25%), IPC (10%) y riesgo MAEC (10%).
+                Las predicciones usan regresión lineal + media móvil sobre 12 semanas.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Charts + ML Prediction — FIRST VISIBLE CONTENT */}
 
         <div className="grid md:grid-cols-3 gap-6 mb-8">
           <div className="md:col-span-2 bg-gradient-to-r from-slate-800 to-slate-900 rounded-xl p-6 border border-slate-700">
@@ -509,11 +527,12 @@ export default function ViajeCosteClient({
 
         <div className="flex justify-center gap-4 mb-12">
           <Link
-            href="/viaje-coste"
-            className="px-6 py-3 bg-slate-800 text-white rounded-lg hover:bg-slate-700 transition-colors font-medium"
-          >
-            Comparar más destinos
-          </Link>
+          href="/coste"
+          className="inline-flex items-center gap-2 text-slate-400 hover:text-white mb-8 transition-colors"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          <span>Volver a coste de viaje</span>
+        </Link>
           <Link
             href={`/pais/${pais.codigo}`}
             className="px-6 py-3 bg-cyan-600 text-white rounded-lg hover:bg-cyan-500 transition-colors font-medium flex items-center gap-2"
