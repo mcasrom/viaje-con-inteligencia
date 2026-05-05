@@ -1,5 +1,14 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ArrowLeft, Activity, Database, Globe, Clock, CheckCircle, AlertTriangle, XCircle, Server, MapPin, Cloud, Zap, Shield, Newspaper } from 'lucide-react';
+
+export const metadata: Metadata = {
+  title: 'Transparencia | Estado del Sistema - Viaje con Inteligencia',
+  description: 'Estado actual del sistema, fuentes de datos, uptime y transparencia operativa de Viaje con Inteligencia.',
+  alternates: {
+    canonical: 'https://www.viajeinteligencia.com/transparencia',
+  },
+};
 
 interface StatusItem {
   name: string;

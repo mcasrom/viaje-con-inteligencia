@@ -1,8 +1,16 @@
 'use client';
-
+import type { Metadata } from 'next';
 import { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, Upload, FileText, Image, Plane, Hotel, CreditCard, Shield, MapPin, Trash2, Search, FolderOpen, Eye, Download, Plus, X, FileImage, File, Camera } from 'lucide-react';
+
+export const metadata: Metadata = {
+  title: 'Mis Documentos de Viaje | Gestión Local Segura - Viaje con Inteligencia',
+  description: 'Guarda y organiza tus documentos de viaje localmente. Pasaportes, billetes, seguros. Todo privado y offline.',
+  alternates: {
+    canonical: 'https://www.viajeinteligencia.com/documentos',
+  },
+};
 
 interface TravelDoc {
   id: string;

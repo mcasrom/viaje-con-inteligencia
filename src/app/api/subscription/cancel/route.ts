@@ -30,7 +30,7 @@ export async function POST() {
 
     const subscription = await stripe.subscriptions.cancel(profile.stripe_subscription_id, {
       invoice_now: false,
-    });
+    }) as any;
 
     await supabaseAdmin
       .from('profiles')

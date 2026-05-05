@@ -1,16 +1,7 @@
 'use client';
-import type { Metadata } from 'next';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, Search, BarChart3, Globe, TrendingUp, DollarSign, Users, Calendar } from 'lucide-react';
-
-export const metadata: Metadata = {
-  title: 'Datos de Turismo por País | Estadísticas INE - Viaje con Inteligencia',
-  description: 'Estadísticas de turismo por país. Datos del INE, llegadas internacionales, ingresos turísticos y tendencias.',
-  alternates: {
-    canonical: 'https://www.viajeinteligencia.com/turismo',
-  },
-};
 
 const TOURISM_DATA = [
   { rank: 1, country: 'Francia', code: 'fr', arrivals: 102000000, receipts: 77000000000, spendPerDay: 75, stayAvg: 7, region: 'Europa' },
@@ -34,7 +25,7 @@ const FLAGS: Record<string, string> = {
   fr: '🇫🇷', es: '🇪🇸', us: '🇺🇸', cn: '🇨🇳', it: '🇮🇹', tr: '🇹🇷', mx: '🇲🇽', gb: '🇬🇧', de: '🇩🇪', gr: '🇬🇷', jp: '🇯🇵', th: '🇹🇭', at: '🇦🇹', pt: '🇵🇹', nl: '🇳🇱',
 };
 
-export default function TurismoPage() {
+export default function TurismoClient() {
   const [search, setSearch] = useState('');
   const [sortBy, setSortBy] = useState<'arrivals' | 'receipts' | 'spendPerDay'>('arrivals');
   const [filteredData, setFilteredData] = useState(TOURISM_DATA);
@@ -66,7 +57,7 @@ export default function TurismoPage() {
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-2">
             <BarChart3 className="w-8 h-8 text-blue-400" />
-            <h1 className="text-3xl font-bold">Estadísticas Tourismas</h1>
+            <h1 className="text-3xl font-bold">Estadísticas Turísticas</h1>
           </div>
           <p className="text-slate-400">UNWTO / OMT 2024</p>
         </div>
@@ -198,7 +189,7 @@ export default function TurismoPage() {
             Acerca de las Estadísticas
           </h3>
           <p className="text-slate-400 text-sm mb-4">
-            Datos del Barómetro Mundial del Turismo de la Organización Mundial del Turismo (UNWTO/OMT). 
+            Datos del Barómetro Mundial del Turismo de la Organización Mundial del Turismo (UNWTO/OMT).
             Cifras de 2024 basadas en arrivadas internacionales, ingresos por turismo y gasto medio diario.
           </p>
           <div className="flex gap-4 text-sm text-slate-500">

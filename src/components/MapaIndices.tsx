@@ -6,9 +6,9 @@ import Link from 'next/link';
 import { getTodosLosPaises } from '@/data/paises';
 import { calculateTCI } from '@/data/tci-engine';
 import { GPI_DATA } from '@/data/gpi';
-import { Shield, DollarSign, Globe, Waves, AlertTriangle, Loader2 } from 'lucide-react';
+import { Shield, DollarSign, Globe, Loader2 } from 'lucide-react';
 
-type MapLayer = 'maec' | 'gpi' | 'tci' | 'earthquakes' | 'conflicts';
+type MapLayer = 'maec' | 'gpi' | 'tci';
 
 const MapContainer = dynamic(
   () => import('react-leaflet').then((mod) => mod.MapContainer),
@@ -35,8 +35,6 @@ const LAYERS: { id: MapLayer; label: string; icon: React.ReactNode; color: strin
   { id: 'maec', label: 'Riesgo MAEC', icon: <Shield className="w-4 h-4" />, color: 'text-orange-400' },
   { id: 'gpi', label: 'Índice Paz', icon: <Globe className="w-4 h-4" />, color: 'text-green-400' },
   { id: 'tci', label: 'Coste Viaje', icon: <DollarSign className="w-4 h-4" />, color: 'text-blue-400' },
-  { id: 'earthquakes', label: 'Sismos USGS', icon: <Waves className="w-4 h-4" />, color: 'text-red-400' },
-  { id: 'conflicts', label: 'Conflictos', icon: <AlertTriangle className="w-4 h-4" />, color: 'text-amber-400' },
 ];
 
 const MAEC_COLORS: Record<string, string> = {
@@ -71,25 +69,9 @@ function getTCIColor(tci: number): string {
   return '#dc2626';
 }
 
-function getMagColor(mag: number): string {
-  if (mag >= 7) return '#991b1b';
-  if (mag >= 6) return '#dc2626';
-  if (mag >= 5) return '#f97316';
-  return '#eab308';
-}
-
-function getSeverityColor(severity: string): string {
-  if (severity === 'critical') return '#991b1b';
-  if (severity === 'high') return '#dc2626';
-  if (severity === 'medium') return '#f97316';
-  return '#eab308';
-}
-
 export default function MapaIndices() {
   const [layer, setLayer] = useState<MapLayer>('maec');
   const [countries, setCountries] = useState<any[]>([]);
-  const [earthquakes, setEarthquakes] = useState<any[]>([]);
-  const [conflicts, setConflicts] = useState<any[]>([]);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -154,28 +136,6 @@ export default function MapaIndices() {
     if (!mounted) return;
     buildCountries();
   }, [mounted, buildCountries]);
-
-  useEffect(() => {
-    if (layer === 'earthquakes') {
-      fetch('/api/earthquakes?timeframe=week&minMagnitude=4&limit=50')
-        .then(r => r.json())
-        .then(data => setEarthquakes(data.earthquakes || []))
-        .catch(() => setEarthquakes([]));
-    } else {
-      setEarthquakes([]);
-    }
-  }, [layer]);
-
-  useEffect(() => {
-    if (layer === 'conflicts') {
-      fetch('/api/conflicts?maxrecords=20')
-        .then(r => r.json())
-        .then(data => setConflicts(data.conflicts || []))
-        .catch(() => setConflicts([]));
-    } else {
-      setConflicts([]);
-    }
-  }, [layer]);
 
   if (!mounted) {
     return <div className="h-[70vh] bg-slate-800 rounded-xl" />;
@@ -251,36 +211,6 @@ export default function MapaIndices() {
             ))}
           </div>
         )}
-        {layer === 'earthquakes' && (
-          <div className="space-y-1">
-            {[
-              ['#991b1b', '7.0+ Devastador'],
-              ['#dc2626', '6.0-6.9 Fuerte'],
-              ['#f97316', '5.0-5.9 Moderado'],
-              ['#eab308', '4.0-4.9 Leve'],
-            ].map(([color, label]) => (
-              <div key={color} className="flex items-center gap-2 text-xs">
-                <span className="w-3 h-3 rounded-full" style={{ backgroundColor: color }} />
-                <span className="text-slate-300">{label}</span>
-              </div>
-            ))}
-          </div>
-        )}
-        {layer === 'conflicts' && (
-          <div className="space-y-1">
-            {[
-              ['#991b1b', 'Crítico'],
-              ['#dc2626', 'Alto'],
-              ['#f97316', 'Medio'],
-              ['#eab308', 'Bajo'],
-            ].map(([color, label]) => (
-              <div key={color} className="flex items-center gap-2 text-xs">
-                <span className="w-3 h-3 rounded-full" style={{ backgroundColor: color }} />
-                <span className="text-slate-300">{label}</span>
-              </div>
-            ))}
-          </div>
-        )}
       </div>
 
       <MapContainer
@@ -295,7 +225,6 @@ export default function MapaIndices() {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
 
-        {/* Country markers: MAEC, GPI, TCI */}
         {(layer === 'maec' || layer === 'gpi' || layer === 'tci') && countries.map(c => (
           <CircleMarker
             key={c.code}
@@ -329,99 +258,6 @@ export default function MapaIndices() {
             </Popup>
           </CircleMarker>
         ))}
-
-        {/* Earthquake markers */}
-        {layer === 'earthquakes' && earthquakes.map((eq: any) => {
-          const lat = eq.latitude ?? eq.lat;
-          const lon = eq.longitude ?? eq.lon;
-          if (!lat || !lon) return null;
-          return (
-            <CircleMarker
-              key={eq.id}
-              center={[lat, lon]}
-              pathOptions={{
-                fillColor: getMagColor(eq.magnitude),
-                fillOpacity: 0.8,
-                color: getMagColor(eq.magnitude),
-                weight: 2,
-              }}
-              radius={Math.max(4, eq.magnitude * 2)}
-            >
-              <Tooltip direction="top" offset={[0, -8]}>
-                <div className="text-slate-900 font-medium text-sm">M{eq.magnitude} — {eq.place}</div>
-              </Tooltip>
-              <Popup>
-                <div className="text-slate-900 min-w-[200px]">
-                  <div className="flex items-center gap-2 mb-2">
-                    <span
-                      className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-white text-sm"
-                      style={{ backgroundColor: getMagColor(eq.magnitude) }}
-                    >
-                      {eq.magnitude}
-                    </span>
-                    <div>
-                      <p className="font-medium text-sm">{eq.place}</p>
-                      <p className="text-xs text-slate-500">
-                        {new Date(eq.time).toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' })}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-2 gap-2 text-xs text-slate-600">
-                    <span>Profundidad: {eq.depth?.toFixed(0)} km</span>
-                    {eq.tsunami === 1 && <span className="text-red-600 font-bold">⚠️ Tsunami</span>}
-                  </div>
-                </div>
-              </Popup>
-            </CircleMarker>
-          );
-        })}
-
-        {/* Conflict markers */}
-        {layer === 'conflicts' && conflicts.map((c: any, i: number) => {
-          const coords = c.coordinates;
-          if (!coords || !coords[0] || !coords[1]) return null;
-          return (
-            <CircleMarker
-              key={i}
-              center={[coords[1], coords[0]]}
-              pathOptions={{
-                fillColor: getSeverityColor(c.severity || 'medium'),
-                fillOpacity: 0.8,
-                color: getSeverityColor(c.severity || 'medium'),
-                weight: 2,
-              }}
-              radius={6}
-            >
-              <Tooltip direction="top" offset={[0, -8]}>
-                <div className="text-slate-900 font-medium text-xs max-w-[150px] truncate">{c.title}</div>
-              </Tooltip>
-              <Popup>
-                <div className="text-slate-900 min-w-[200px]">
-                  <h3 className="font-bold text-sm mb-1">{c.title}</h3>
-                  <p className="text-xs text-slate-600 mb-2">
-                    {new Date(c.date).toLocaleDateString('es-ES')}
-                  </p>
-                  <span
-                    className="inline-block px-2 py-0.5 rounded text-white text-xs font-medium"
-                    style={{ backgroundColor: getSeverityColor(c.severity || 'medium') }}
-                  >
-                    {c.severity || 'Desconocido'}
-                  </span>
-                  {c.url && (
-                    <a
-                      href={c.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="block mt-2 text-blue-600 hover:underline text-sm"
-                    >
-                      Ver fuente →
-                    </a>
-                  )}
-                </div>
-              </Popup>
-            </CircleMarker>
-          );
-        })}
       </MapContainer>
     </div>
   );

@@ -1,5 +1,5 @@
 'use client';
-
+import type { Metadata } from 'next';
 import { useMemo, useState } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, MapPin, TrendingUp, Shield, DollarSign, Plane, Users, Sparkles } from 'lucide-react';
@@ -9,6 +9,14 @@ import {
   travelAttributes,
 } from '@/data/clustering';
 import { paisesData as paises } from '@/data/paises';
+
+export const metadata: Metadata = {
+  title: 'ML Clustering de Destinos | IA para Viajes - Viaje con Inteligencia',
+  description: 'Destinos agrupados por inteligencia artificial según seguridad, coste y preferencias. Descubre tu destino ideal con ML.',
+  alternates: {
+    canonical: 'https://www.viajeinteligencia.com/clustering',
+  },
+};
 
 const riskColor: Record<string, string> = {
   'sin-riesgo': 'bg-green-500',

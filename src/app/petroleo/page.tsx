@@ -1,9 +1,17 @@
 'use client';
-
+import type { Metadata } from 'next';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, Droplet, TrendingUp, TrendingDown, BarChart3, Shield, AlertTriangle, Loader2, ChevronUp, ChevronDown } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, AreaChart } from 'recharts';
+
+export const metadata: Metadata = {
+  title: 'Análisis Petróleo ML | Predicciones de Crudo - Viaje con Inteligencia',
+  description: 'Predicciones del precio del petróleo con machine learning. Impacto en vuelos y costes de viaje. Análisis de conflictos.',
+  alternates: {
+    canonical: 'https://www.viajeinteligencia.com/petroleo',
+  },
+};
 
 interface OilMLData {
   timestamp: string;

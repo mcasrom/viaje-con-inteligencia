@@ -1,6 +1,15 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { CheckCircle, Shield, Gift } from 'lucide-react';
 import FreeTrialForm from './FreeTrialForm';
+
+export const metadata: Metadata = {
+  title: 'Prueba Premium Gratis 7 Días | Sin Tarjeta - Viaje con Inteligencia',
+  description: 'Prueba todas las funciones Premium gratis durante 7 días. Sin tarjeta de crédito. Chat IA, alertas, itinerarios y más.',
+  alternates: {
+    canonical: 'https://www.viajeinteligencia.com/free-trial',
+  },
+};
 
 const BENEFITS = [
   { icon: '🤖', title: 'Chat IA Groq', desc: 'Planifica tu viaje con inteligencia artificial' },

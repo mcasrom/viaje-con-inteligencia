@@ -1,9 +1,17 @@
 'use client';
-
+import type { Metadata } from 'next';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, Droplet, AlertTriangle, Shield, TrendingUp, TrendingDown, Minus, Loader2, BarChart3, Globe, Plane, MapPin } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine, BarChart, Bar, Cell } from 'recharts';
+
+export const metadata: Metadata = {
+  title: 'Análisis de Petróleo y Vuelos | Impacto en Viajes - Viaje con Inteligencia',
+  description: 'Análisis del precio del petróleo y su impacto en vuelos. Predicciones y tendencias para planificar viajes inteligentes.',
+  alternates: {
+    canonical: 'https://www.viajeinteligencia.com/analisis',
+  },
+};
 
 interface OilImpact {
   currentPrice: number;

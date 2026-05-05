@@ -1,9 +1,17 @@
 'use client';
-
+import type { Metadata } from 'next';
 import { useState } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, MapPin, Calendar, DollarSign, Sparkles, Loader2, Send } from 'lucide-react';
 import { getTodosLosPaises } from '@/data/paises';
+
+export const metadata: Metadata = {
+  title: 'Generador de Itinerarios IA | Planifica tu Viaje - Viaje con Inteligencia',
+  description: 'Crea itinerarios personalizados con inteligencia artificial. Destino, días, presupuesto e intereses. Tu viaje perfecto en minutos.',
+  alternates: {
+    canonical: 'https://www.viajeinteligencia.com/itinerario',
+  },
+};
 
 const paises = getTodosLosPaises();
 

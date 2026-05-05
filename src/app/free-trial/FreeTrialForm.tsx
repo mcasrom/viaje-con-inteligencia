@@ -134,7 +134,7 @@ export default function FreeTrialForm() {
 
           <button 
             onClick={handleActivate}
-            disabled={!email || !password || step === 'loading'}
+            disabled={!email || !password}
             className="w-full px-6 py-4 bg-gradient-to-r from-yellow-500 to-orange-500 text-white font-bold rounded-xl hover:from-yellow-600 hover:to-orange-600 transition-all shadow-lg shadow-yellow-500/25 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <Gift className="w-5 h-5" />

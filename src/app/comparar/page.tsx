@@ -1,10 +1,19 @@
 'use client';
+import type { Metadata } from 'next';
 import { useState } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, X, Search, TrendingUp, TrendingDown, Minus, Shield, Globe, DollarSign, Activity, Award, AlertTriangle } from 'lucide-react';
 import { paisesData, getLabelRiesgo, NivelRiesgo } from '@/data/paises';
 import { GPI_DATA, GTI_DATA, HDI_DATA, IPC_DATA } from '@/data/indices';
 import { calculateTCI } from '@/data/tci-engine';
+
+export const metadata: Metadata = {
+  title: 'Comparador de Países | Riesgos, Costes y Seguridad - Viaje con Inteligencia',
+  description: 'Compara países lado a lado: nivel de riesgo, coste de vida, seguridad, clima y más. Decide tu destino con datos.',
+  alternates: {
+    canonical: 'https://www.viajeinteligencia.com/comparar',
+  },
+};
 
 interface CountryData {
   code: string;

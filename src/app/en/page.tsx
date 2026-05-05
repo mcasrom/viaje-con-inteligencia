@@ -6,7 +6,11 @@ export const metadata: Metadata = {
   title: 'Travel Smart | MAEC Travel Risk Map - Risk Zero',
   description: 'Your complete guide to safe travel. Interactive travel risk map by country according to Spanish MAEC. Embassies, requirements, tips.',
   alternates: {
-    canonical: 'https://www.viajeinteligencia.com/en',
+    canonical: 'https://www.viajeinteligencia.com',
+  },
+  robots: {
+    index: false,
+    follow: false,
   },
 };
 
