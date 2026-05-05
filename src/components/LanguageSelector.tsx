@@ -19,7 +19,7 @@ export default function LanguageSelector() {
         <span className="text-xs font-medium hidden sm:inline">{current.name}</span>
         <ChevronDown className="w-3 h-3 text-slate-500" />
       </button>
-      <div className="absolute right-0 top-full mt-1 bg-slate-800 border border-slate-700 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 min-w-[160px] overflow-hidden">
+      <div className="absolute right-0 top-full mt-1 bg-slate-800 border border-slate-700 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-[1020] min-w-[160px] overflow-hidden">
         {PRIMARY_LOCALES.map((loc) => (
           <button
             key={loc.code}

@@ -23,7 +23,7 @@ function TopBar() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 pointer-events-none">
+    <header className="fixed top-0 left-0 right-0 z-[1010] pointer-events-none">
       <div className="max-w-7xl mx-auto px-4 pt-4 flex items-start justify-between gap-4 pointer-events-auto">
         {/* Logo + Brand */}
         <div className="bg-slate-900/90 backdrop-blur-md rounded-xl border border-slate-700/50 px-4 py-2 flex items-center gap-3 shadow-xl">
@@ -48,7 +48,6 @@ function TopBar() {
 
         {/* Desktop Nav — Dock pill */}
         <div className="hidden md:flex items-center gap-2">
-          <LanguageSelector />
           <div className="bg-slate-900/90 backdrop-blur-md rounded-2xl border border-slate-700/50 px-2 py-1.5 flex items-center gap-1 shadow-2xl shadow-black/30">
             <Link href="/decidir" className="group flex flex-col items-center gap-0.5 px-4 py-1.5 text-slate-400 hover:text-white rounded-xl hover:bg-slate-800/80 transition-all">
               <Sparkles className="w-4 h-4 text-purple-400 group-hover:scale-110 transition-transform" />
@@ -85,6 +84,8 @@ function TopBar() {
               <Crown className="w-4 h-4 text-amber-400 group-hover:scale-110 transition-transform" />
               <span className="text-[10px] font-medium">Premium</span>
             </Link>
+            <div className="w-px h-5 bg-slate-700" />
+            <LanguageSelector />
           </div>
         </div>
 
@@ -256,7 +257,7 @@ function SidePanel() {
   ];
 
   return (
-    <div className={`fixed left-4 top-20 z-40 transition-all duration-300 ${open ? 'w-72' : 'w-12'}`}>
+    <div className={`fixed left-4 top-24 z-[1005] transition-all duration-300 ${open ? 'w-72' : 'w-12'}`}>
       <div className="bg-slate-900/90 backdrop-blur-md rounded-xl border border-slate-700/50 shadow-xl overflow-hidden">
         {/* Toggle */}
         <button 
@@ -416,7 +417,7 @@ function SidePanel() {
 // ============================================================
 function PrimaryCTA() {
   return (
-    <div className="fixed bottom-[5.5rem] left-1/2 -translate-x-1/2 z-40">
+    <div className="fixed bottom-[5.5rem] left-1/2 -translate-x-1/2 z-[1005]">
       <Link 
         href="/decidir" 
         className="flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-purple-600 to-violet-600 text-white rounded-2xl hover:opacity-90 transition-all shadow-2xl shadow-purple-500/25 text-base font-semibold group"
