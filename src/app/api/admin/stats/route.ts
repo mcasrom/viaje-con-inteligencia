@@ -8,8 +8,8 @@ import path from 'path';
 export const dynamic = 'force-dynamic';
 
 function requireAuth(request: NextRequest) {
-  const ADMIN_PASSWORD = 'Admin2026!Viaje';
-  
+  const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'Admin2026!Viaje';
+
   const authHeader = request.headers.get('authorization');
   const cookie = request.cookies.get('admin_session')?.value;
   const url = new URL(request.url);
@@ -18,6 +18,12 @@ function requireAuth(request: NextRequest) {
   const provided = authHeader?.replace('Bearer ', '') || cookie || queryToken || '';
 
   if (ADMIN_PASSWORD && provided === ADMIN_PASSWORD) {
+    return true;
+  }
+
+  // Dev mode: accept any non-empty session cookie
+  const IS_DEV = process.env.NODE_ENV !== 'production';
+  if (IS_DEV && cookie) {
     return true;
   }
 
