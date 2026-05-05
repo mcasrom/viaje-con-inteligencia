@@ -7,7 +7,7 @@ import {
   Search, Sparkles, Crown, Bell, Globe, Filter, 
   ChevronRight, Menu, X, Calculator, Route, ClipboardList, BarChart3, 
   MessageCircle, Mail, Send, ShieldCheck, FileText, Scale, BookOpen,
-  Newspaper, ChevronRight as Chevron
+  Newspaper, ChevronRight as Chevron, Navigation
 } from 'lucide-react';
 import { paisesData } from '@/data/paises';
 
@@ -66,6 +66,10 @@ function TopBar() {
               <Route className="w-4 h-4 text-green-400 group-hover:scale-110 transition-transform" />
               <span className="text-[10px] font-medium">Rutas</span>
             </Link>
+            <Link href="/radius" className="group flex flex-col items-center gap-0.5 px-4 py-1.5 text-slate-400 hover:text-white rounded-xl hover:bg-slate-800/80 transition-all">
+              <Navigation className="w-4 h-4 text-cyan-400 group-hover:scale-110 transition-transform" />
+              <span className="text-[10px] font-medium">Radius</span>
+            </Link>
             <div className="w-px h-5 bg-slate-700" />
             <Link href="/alertas" className="group flex flex-col items-center gap-0.5 px-4 py-1.5 text-slate-400 hover:text-white rounded-xl hover:bg-slate-800/80 transition-all relative">
               <Bell className="w-4 h-4 text-amber-400 group-hover:scale-110 transition-transform" />
@@ -107,6 +111,10 @@ function TopBar() {
             <Link href="/rutas" className="flex items-center gap-3 px-4 py-3 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition-colors">
               <Route className="w-5 h-5 text-green-400" />
               Rutas Seguras
+            </Link>
+            <Link href="/radius" className="flex items-center gap-3 px-4 py-3 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition-colors">
+              <Navigation className="w-5 h-5 text-cyan-400" />
+              Radio Inteligente
             </Link>
             <Link href="/alertas" className="flex items-center gap-3 px-4 py-3 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition-colors">
               <Bell className="w-5 h-5 text-amber-400" />
