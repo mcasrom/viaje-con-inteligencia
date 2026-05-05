@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Check, Sparkles, Shield, Bell, MessageSquare, FileCheck, TrendingUp, Map, Plane, Star, Zap } from 'lucide-react';
+import { ArrowLeft, Check, Sparkles, Shield, Bell, MessageSquare, FileCheck, TrendingUp, Map, Plane, Star, Zap, Globe } from 'lucide-react';
 
 const FEATURES = [
   { icon: <MessageSquare className="w-5 h-5" />, title: 'Chat IA de Viajes', desc: 'Pregunta sobre cualquier destino, visado, seguridad o ruta. Respuestas al instante.' },
@@ -157,10 +157,13 @@ export default function PremiumPage() {
 
         {/* Quick links to tools */}
         <div className="bg-slate-800/60 rounded-2xl p-6 border border-slate-700/50">
-          <h3 className="text-white font-bold text-center mb-4">
+          <h3 className="text-white font-bold text-center mb-2">
             ¿Ya tienes cuenta? Accede directamente:
           </h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <p className="text-slate-500 text-sm text-center mb-4">
+            Dashboard, documentos, mis viajes y mapas interactivos
+          </p>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
             <Link href="/dashboard" className="bg-slate-700/50 rounded-xl p-3 text-center hover:bg-slate-700 transition-colors">
               <span className="text-sm text-slate-300">📊 Dashboard</span>
             </Link>
@@ -170,8 +173,40 @@ export default function PremiumPage() {
             <Link href="/viajes" className="bg-slate-700/50 rounded-xl p-3 text-center hover:bg-slate-700 transition-colors">
               <span className="text-sm text-slate-300">✈️ Mis Viajes</span>
             </Link>
-            <Link href="/indices" className="bg-slate-700/50 rounded-xl p-3 text-center hover:bg-slate-700 transition-colors">
-              <span className="text-sm text-slate-300">📈 KPIs</span>
+            <Link href="/alertas" className="bg-slate-700/50 rounded-xl p-3 text-center hover:bg-slate-700 transition-colors">
+              <span className="text-sm text-slate-300">🔔 Alertas</span>
+            </Link>
+          </div>
+
+          {/* Mapas de datos */}
+          <h4 className="text-white font-semibold text-sm mb-3 flex items-center justify-center gap-2">
+            <Globe className="w-4 h-4 text-blue-400" />
+            Mapas de datos interactivos
+          </h4>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            <Link href="/kpi" className="bg-green-900/20 border border-green-700/30 rounded-xl p-3 text-center hover:bg-green-900/30 transition-colors">
+              <span className="text-sm text-green-300">🕊️ Índice Paz</span>
+            </Link>
+            <Link href="/viaje-coste" className="bg-blue-900/20 border border-blue-700/30 rounded-xl p-3 text-center hover:bg-blue-900/30 transition-colors">
+              <span className="text-sm text-blue-300">💰 Coste Viaje</span>
+            </Link>
+            <Link href="/clustering" className="bg-purple-900/20 border border-purple-700/30 rounded-xl p-3 text-center hover:bg-purple-900/30 transition-colors">
+              <span className="text-sm text-purple-300">🤖 ML Clustering</span>
+            </Link>
+            <Link href="/indices" className="bg-amber-900/20 border border-amber-700/30 rounded-xl p-3 text-center hover:bg-amber-900/30 transition-colors">
+              <span className="text-sm text-amber-300">📈 KPIs Global</span>
+            </Link>
+            <Link href="/stats" className="bg-cyan-900/20 border border-cyan-700/30 rounded-xl p-3 text-center hover:bg-cyan-900/30 transition-colors">
+              <span className="text-sm text-cyan-300">📊 Estadísticas</span>
+            </Link>
+            <Link href="/dashboard/kpis" className="bg-rose-900/20 border border-rose-700/30 rounded-xl p-3 text-center hover:bg-rose-900/30 transition-colors">
+              <span className="text-sm text-rose-300">🛡️ Riesgo MAEC</span>
+            </Link>
+            <Link href="/alertas" className="bg-orange-900/20 border border-orange-700/30 rounded-xl p-3 text-center hover:bg-orange-900/30 transition-colors">
+              <span className="text-sm text-orange-300">⚠️ Conflictos</span>
+            </Link>
+            <Link href="/eventos" className="bg-teal-900/20 border border-teal-700/30 rounded-xl p-3 text-center hover:bg-teal-900/30 transition-colors">
+              <span className="text-sm text-teal-300">🌍 Eventos Globales</span>
             </Link>
           </div>
         </div>
