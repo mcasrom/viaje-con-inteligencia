@@ -195,6 +195,7 @@ export interface ClusterResult {
   label: string;
   description: string;
   destinations: string[];
+  _centroid?: number[];
 }
 
 function kMeansSimple(
