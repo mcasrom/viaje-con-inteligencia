@@ -1,22 +1,14 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
-import { Crown, Clock, AlertTriangle, Sparkles, ChevronRight, Loader2 } from 'lucide-react';
+import { Crown, Clock, AlertTriangle, Sparkles, ChevronRight, Loader2, XCircle } from 'lucide-react';
 import { useSubscription } from '@/hooks/useSubscription';
 
-/**
- * TrialStatusBanner
- * Muestra el estado de suscripción del usuario autenticado:
- *  - Premium activo → badge verde discreto
- *  - En trial → barra con días restantes + CTA
- *  - Trial expirado → alerta naranja + CTA urgente
- *  - Sin suscripción → banner azul suave invitando a premium
- *  - No autenticado → null (no renderiza nada)
- */
 export default function TrialStatusBanner() {
   const { premium, status, daysLeft, trialEnd, trialExpired, loading } = useSubscription();
+  const [canceling, setCanceling] = useState(false);
 
-  // No mostrar nada si no hay sesión o Supabase no está configurado
   if (status === 'no_session' || status === 'no_configured') return null;
 
   if (loading) {
@@ -28,7 +20,25 @@ export default function TrialStatusBanner() {
     );
   }
 
-  // ── PREMIUM ACTIVO ──────────────────────────────────────────────
+  const handleCancel = async () => {
+    if (!confirm('¿Seguro que quieres cancelar tu suscripción? Perderás acceso Premium al final del periodo pagado.')) return;
+    setCanceling(true);
+    try {
+      const res = await fetch('/api/subscription/cancel', { method: 'POST' });
+      const data = await res.json();
+      if (res.ok) {
+        alert('Suscripción cancelada. Mantienes acceso Premium hasta el final del periodo pagado.');
+        window.location.reload();
+      } else {
+        alert(data.error || 'Error al cancelar');
+      }
+    } catch {
+      alert('Error de conexión');
+    } finally {
+      setCanceling(false);
+    }
+  };
+
   if (premium && status === 'active') {
     return (
       <div className="flex items-center gap-3 px-4 py-3 bg-gradient-to-r from-yellow-500/10 to-amber-500/10 border border-yellow-500/30 rounded-xl mb-6">
@@ -37,6 +47,14 @@ export default function TrialStatusBanner() {
           <p className="text-yellow-300 font-semibold text-sm">Acceso Premium activo</p>
           <p className="text-yellow-400/70 text-xs">Tienes acceso completo a todas las funciones</p>
         </div>
+        <button
+          onClick={handleCancel}
+          disabled={canceling}
+          className="flex items-center gap-1 px-2 py-1 text-yellow-400 hover:text-red-400 text-xs font-medium transition-colors disabled:opacity-50"
+        >
+          {canceling ? <Loader2 className="w-3 h-3 animate-spin" /> : <XCircle className="w-3 h-3" />}
+          Cancelar
+        </button>
         <span className="px-2 py-0.5 bg-yellow-500/20 text-yellow-300 rounded-full text-xs font-bold">PRO</span>
       </div>
     );
