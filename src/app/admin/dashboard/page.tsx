@@ -424,6 +424,60 @@ export default function AdminDashboard() {
           </div>
         </section>
 
+        {/* VERIFICACIÓN DE PÁGINAS PREMIUM */}
+        <section className="bg-slate-800 rounded-2xl border border-slate-700 p-6">
+          <h2 className="text-lg font-bold text-white mb-2 flex items-center gap-2">
+            <Shield className="w-5 h-5 text-amber-400" />
+            Verificación Premium
+          </h2>
+          <p className="text-slate-400 text-sm mb-5">Acceso directo a cada feature marcada como Premium. Verifica que todas las páginas funcionan correctamente.</p>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            {[
+              { label: 'Chat IA', desc: 'Asistente IA sin límite', href: '/chat', icon: '💬', status: 'no-existe' },
+              { label: 'Planificador Itinerarios IA', desc: 'Generar viajes con IA', href: '/itinerario', icon: '✈️', status: 'existe' },
+              { label: 'Alertas en Tiempo Real', desc: 'Monitor MAEC en vivo', href: '/alertas', icon: '🔔', status: 'existe' },
+              { label: 'Mapa de Sismos USGS', desc: 'Terremotos en vivo', href: '/dashboard/kpis', icon: '🌍', status: 'existe' },
+              { label: 'Monitor de Conflictos', desc: 'Zonas de conflicto activas', href: '/dashboard/kpis', icon: '⚔️', status: 'existe' },
+              { label: 'ML Clustering', desc: 'Destinos agrupados por IA', href: '/clustering', icon: '🤖', status: 'existe' },
+              { label: 'KPIs Globales', desc: '6 índices comparativos', href: '/indices', icon: '📊', status: 'existe' },
+              { label: 'Reclamaciones PDF', desc: 'Generar formularios', href: '/checklist', icon: '📋', status: 'existe' },
+              { label: 'Dashboard Personalizado', desc: 'Panel del usuario', href: '/dashboard', icon: '📱', status: 'existe' },
+              { label: 'Mis Viajes + Documentos', desc: 'Gestión de viajes', href: '/viajes', icon: '🗂️', status: 'existe' },
+              { label: 'Decidir Destino (IA)', desc: 'Recomendador inteligente', href: '/decidir', icon: '🎯', status: 'existe' },
+              { label: 'Análisis Petróleo ML', desc: 'Predicciones de crudo', href: '/petroleo', icon: '🛢️', status: 'existe' },
+              { label: 'Eventos Globales', desc: 'Calendario mundial', href: '/eventos', icon: '📅', status: 'existe' },
+              { label: 'Relojes Mundiales', desc: '18 ciudades en vivo', href: '/relojes', icon: '🕐', status: 'existe' },
+              { label: 'Radio Inteligente', desc: 'Destinos con scoring', href: '/radius', icon: '📡', status: 'existe' },
+            ].map((feature) => (
+              <a
+                key={feature.href}
+                href={feature.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`flex items-start gap-3 rounded-xl p-4 border transition-colors ${
+                  feature.status === 'no-existe'
+                    ? 'bg-red-900/10 border-red-700/30 hover:bg-red-900/20'
+                    : 'bg-slate-700 hover:bg-slate-600'
+                }`}
+              >
+                <span className="text-xl">{feature.icon}</span>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2">
+                    <p className="text-white text-sm font-medium">{feature.label}</p>
+                    {feature.status === 'no-existe' && (
+                      <span className="px-1.5 py-0.5 bg-red-600 text-white text-[10px] font-bold rounded">FALTA</span>
+                    )}
+                  </div>
+                  <p className="text-slate-400 text-xs truncate">{feature.desc}</p>
+                  <p className="text-slate-500 text-[11px] font-mono mt-0.5">{feature.href}</p>
+                </div>
+                <ExternalLink className="w-4 h-4 text-slate-500 flex-shrink-0 mt-1" />
+              </a>
+            ))}
+          </div>
+        </section>
+
         {/* Acciones - Cron Triggers */}
         <section className="bg-slate-800 rounded-2xl border border-slate-700 p-6">
           <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
