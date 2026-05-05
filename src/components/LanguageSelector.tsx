@@ -10,7 +10,7 @@ const PRIMARY_LOCALES = [
 
 export default function LanguageSelector() {
   const { locale, setLocale } = useI18n();
-  const current = [...PRIMARY_LOCALES, ...SECONDARY_LOCALES].find(l => l.code === locale) || PRIMARY_LOCALES[0];
+  const current = PRIMARY_LOCALES.find(l => l.code === locale) || PRIMARY_LOCALES[0];
 
   return (
     <div className="relative group">
