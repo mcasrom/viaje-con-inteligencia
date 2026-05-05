@@ -16,13 +16,30 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  // Protect admin routes
-  if (pathname.startsWith('/admin') && pathname !== '/admin/login') {
+  // Protect admin routes (skip in dev)
+  const IS_DEV = process.env.NODE_ENV !== 'production';
+  if (!IS_DEV && pathname.startsWith('/admin') && pathname !== '/admin/login') {
     const cookie = request.cookies.get('admin_session')?.value;
     if (cookie !== ADMIN_PASSWORD) {
       const loginUrl = new URL('/admin/login', request.url);
       loginUrl.searchParams.set('from', pathname);
       return NextResponse.redirect(loginUrl);
+    }
+  }
+
+  // Dev: auto-set session cookie if visiting admin
+  if (IS_DEV && pathname.startsWith('/admin')) {
+    const cookie = request.cookies.get('admin_session')?.value;
+    if (!cookie || cookie === 'undefined') {
+      const response = NextResponse.next({ request });
+      response.cookies.set('admin_session', 'dev', {
+        httpOnly: true,
+        secure: false,
+        sameSite: 'lax',
+        maxAge: 60 * 60 * 24,
+        path: '/',
+      });
+      return response;
     }
   }
 
