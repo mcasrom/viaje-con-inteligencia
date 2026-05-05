@@ -6,14 +6,13 @@ import { useState, useEffect } from 'react';
 import { 
   Search, Sparkles, Crown, Bell, Globe, Filter, 
   ChevronRight, Menu, X, Calculator, Route, ClipboardList, BarChart3, 
-  MessageCircle, Mail, Send, ShieldCheck, FileText, Scale, BookOpen,
-  Newspaper, ChevronRight as Chevron, Navigation, TrendingUp
+  BookOpen, Newspaper, ChevronRight as Chevron, Navigation, TrendingUp
 } from 'lucide-react';
 import { paisesData } from '@/data/paises';
 
 const MapaInteractivo = dynamic(
   () => import('@/components/MapaInteractivo'),
-  { ssr: false, loading: () => <div className="w-full h-screen bg-slate-900" /> }
+  { ssr: false, loading: () => <div className="w-full h-[70vh] bg-slate-900" /> }
 );
 
 // ============================================================
@@ -232,7 +231,7 @@ function formatDate(dateStr: string) {
 
 function SidePanel() {
   const [search, setSearch] = useState('');
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
   const alerts = useAlerts();
   const posts = useBlogPosts();
 
@@ -251,7 +250,7 @@ function SidePanel() {
   ];
 
   return (
-    <div className={`fixed left-4 top-24 z-40 transition-all duration-300 ${open ? 'w-72' : 'w-12'}`}>
+    <div className={`fixed left-4 top-20 z-40 transition-all duration-300 ${open ? 'w-72' : 'w-12'}`}>
       <div className="bg-slate-900/90 backdrop-blur-md rounded-xl border border-slate-700/50 shadow-xl overflow-hidden">
         {/* Toggle */}
         <button 
@@ -266,7 +265,7 @@ function SidePanel() {
         </button>
 
         {open && (
-          <div className="p-3 space-y-4 max-h-[calc(100vh-12rem)] overflow-y-auto">
+          <div className="p-3 space-y-4 max-h-[calc(100vh-10rem)] overflow-y-auto">
             {/* Search */}
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
@@ -407,122 +406,76 @@ function SidePanel() {
 }
 
 // ============================================================
-// BOTTOM BAR (Flotante)
+// SINGLE CTA BUTTON
 // ============================================================
-function BottomBar() {
+function PrimaryCTA() {
   return (
     <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-40">
-      <div className="bg-slate-900/90 backdrop-blur-md rounded-2xl border border-slate-700/50 px-6 py-3 shadow-xl flex items-center gap-6">
-        <Link 
-          href="/paises" 
-          className="flex items-center gap-2 text-slate-300 hover:text-white transition-colors text-sm font-medium"
-        >
-          <Globe className="w-4 h-4 text-blue-400" />
-          Ver países
-        </Link>
-        <div className="w-px h-4 bg-slate-700" />
-        <Link 
-          href="/decidir" 
-          className="flex items-center gap-2 px-5 py-2 bg-gradient-to-r from-purple-600 to-violet-600 text-white rounded-xl hover:opacity-90 transition-opacity text-sm font-semibold"
-        >
-          <Sparkles className="w-4 h-4" />
-          Decide en 30 seg
-        </Link>
-        <div className="w-px h-4 bg-slate-700" />
-        <Link 
-          href="/coste" 
-          className="flex items-center gap-2 text-slate-300 hover:text-white transition-colors text-sm font-medium"
-        >
-          <Calculator className="w-4 h-4 text-blue-400" />
-          Coste viaje
-        </Link>
-      </div>
+      <Link 
+        href="/decidir" 
+        className="flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-purple-600 to-violet-600 text-white rounded-2xl hover:opacity-90 transition-all shadow-2xl shadow-purple-500/25 text-base font-semibold group"
+      >
+        <Sparkles className="w-5 h-5 group-hover:scale-110 transition-transform" />
+        Decide tu viaje en 30 segundos
+        <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+      </Link>
     </div>
   );
 }
 
 // ============================================================
-// FOOTER OVERLAY (Flotante)
-// ============================================================
-function FooterOverlay() {
-  return (
-    <footer className="fixed bottom-0 left-0 right-0 z-30 pointer-events-none">
-      <div className="bg-gradient-to-t from-slate-950 via-slate-950/80 to-transparent pt-6 pb-2 pointer-events-auto">
-        <div className="max-w-7xl mx-auto px-4">
-          {/* Legal & Contact Row */}
-          <div className="flex flex-col md:flex-row items-center justify-between gap-2 text-[10px] text-slate-500">
-            {/* Legal */}
-            <div className="flex items-center gap-4">
-              <Link href="/privacidad" className="hover:text-slate-300 transition-colors flex items-center gap-1">
-                <ShieldCheck className="w-3 h-3" /> Privacidad
-              </Link>
-              <Link href="/cookies" className="hover:text-slate-300 transition-colors flex items-center gap-1">
-                <FileText className="w-3 h-3" /> Cookies
-              </Link>
-              <Link href="/aviso-legal" className="hover:text-slate-300 transition-colors flex items-center gap-1">
-                <Scale className="w-3 h-3" /> Aviso Legal
-              </Link>
-            </div>
-
-            {/* Contact */}
-            <div className="flex items-center gap-4">
-              <a 
-                href="https://wa.me/34600000000" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="hover:text-green-400 transition-colors flex items-center gap-1"
-              >
-                <MessageCircle className="w-3 h-3" /> WhatsApp
-              </a>
-              <a 
-                href="mailto:contacte@viajeconinteligencia.es" 
-                className="hover:text-blue-400 transition-colors flex items-center gap-1"
-              >
-                <Mail className="w-3 h-3" /> Contacto
-              </a>
-              <a 
-                href="https://t.me/ViajeConInteligenciaBot" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="hover:text-blue-400 transition-colors flex items-center gap-1"
-              >
-                <Send className="w-3 h-3" /> Telegram
-              </a>
-            </div>
-          </div>
-          
-          {/* Copyright */}
-          <div className="text-center text-[9px] text-slate-600 mt-1">
-            © {new Date().getFullYear()} Viaje con Inteligencia. Todos los derechos reservados.
-          </div>
-        </div>
-      </div>
-    </footer>
-  );
-}
-
-// ============================================================
-// HOME (Mapa fullscreen)
+// HOME (Mapa 70vh dominante + contenido debajo)
 // ============================================================
 export default function Home() {
   return (
-    <div className="fixed inset-0 bg-slate-950">
+    <div className="min-h-screen bg-slate-950">
       {/* Top Bar */}
       <TopBar />
 
       {/* Side Panel */}
       <SidePanel />
 
-      {/* Bottom Bar */}
-      <BottomBar />
+      {/* Primary CTA — single action */}
+      <PrimaryCTA />
 
-      {/* Footer */}
-      <FooterOverlay />
-
-      {/* Map Background */}
-      <div className="w-full h-full">
+      {/* Map — dominant 70% of viewport */}
+      <div className="relative w-full h-[70vh]">
         <MapaInteractivo fullScreen />
       </div>
+
+      {/* Content below map */}
+      <section className="max-w-7xl mx-auto px-4 py-12">
+        <div className="text-center mb-8">
+          <h2 className="text-2xl md:text-3xl font-bold text-white mb-3">
+            Viaja informado, viaja seguro
+          </h2>
+          <p className="text-slate-400 text-lg max-w-2xl mx-auto">
+            Mapa interactivo con datos oficiales MAEC, análisis ML y herramientas inteligentes para planificar tu viaje.
+          </p>
+        </div>
+
+        {/* Quick links */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl mx-auto">
+          <Link href="/paises" className="bg-slate-800/50 rounded-xl p-4 text-center hover:bg-slate-800 transition-colors border border-slate-700/50">
+            <Globe className="w-6 h-6 text-blue-400 mx-auto mb-2" />
+            <span className="text-white text-sm font-medium">107 Países</span>
+          </Link>
+          <Link href="/coste" className="bg-slate-800/50 rounded-xl p-4 text-center hover:bg-slate-800 transition-colors border border-slate-700/50">
+            <Calculator className="w-6 h-6 text-blue-400 mx-auto mb-2" />
+            <span className="text-white text-sm font-medium">ML Coste</span>
+          </Link>
+          <Link href="/analisis" className="bg-slate-800/50 rounded-xl p-4 text-center hover:bg-slate-800 transition-colors border border-slate-700/50">
+            <TrendingUp className="w-6 h-6 text-amber-400 mx-auto mb-2" />
+            <span className="text-white text-sm font-medium">Análisis</span>
+          </Link>
+          <Link href="/rutas" className="bg-slate-800/50 rounded-xl p-4 text-center hover:bg-slate-800 transition-colors border border-slate-700/50">
+            <Route className="w-6 h-6 text-green-400 mx-auto mb-2" />
+            <span className="text-white text-sm font-medium">Rutas</span>
+          </Link>
+        </div>
+      </section>
+
+      {/* Footer — shared component from layout */}
     </div>
   );
 }
