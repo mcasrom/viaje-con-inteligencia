@@ -94,6 +94,123 @@ export interface DatoPais {
   visible?: boolean;
 }
 
+export interface EmergenciasPais {
+  general: string;
+  policia: string;
+  bomberos: string;
+  ambulancia: string;
+}
+
+export const emergenciasData: Record<string, EmergenciasPais> = {
+  es: { general: '112', policia: '091', bomberos: '080', ambulancia: '061' },
+  fr: { general: '112', policia: '17', bomberos: '18', ambulancia: '15' },
+  de: { general: '112', policia: '110', bomberos: '112', ambulancia: '112' },
+  it: { general: '112', policia: '113', bomberos: '115', ambulancia: '118' },
+  pt: { general: '112', policia: '112', bomberos: '112', ambulancia: '112' },
+  gb: { general: '999', policia: '999', bomberos: '999', ambulancia: '999' },
+  ie: { general: '999', policia: '999', bomberos: '999', ambulancia: '999' },
+  us: { general: '911', policia: '911', bomberos: '911', ambulancia: '911' },
+  ca: { general: '911', policia: '911', bomberos: '911', ambulancia: '911' },
+  mx: { general: '911', policia: '911', bomberos: '911', ambulancia: '911' },
+  ar: { general: '911', policia: '911', bomberos: '100', ambulancia: '107' },
+  br: { general: '190', policia: '190', bomberos: '193', ambulancia: '192' },
+  cl: { general: '133', policia: '133', bomberos: '132', ambulancia: '131' },
+  co: { general: '123', policia: '112', bomberos: '119', ambulancia: '125' },
+  pe: { general: '105', policia: '105', bomberos: '116', ambulancia: '117' },
+  jp: { general: '110', policia: '110', bomberos: '119', ambulancia: '119' },
+  cn: { general: '110', policia: '110', bomberos: '119', ambulancia: '120' },
+  kr: { general: '112', policia: '112', bomberos: '119', ambulancia: '119' },
+  th: { general: '191', policia: '191', bomberos: '199', ambulancia: '1669' },
+  in: { general: '112', policia: '100', bomberos: '101', ambulancia: '102' },
+  au: { general: '000', policia: '000', bomberos: '000', ambulancia: '000' },
+  nz: { general: '111', policia: '111', bomberos: '111', ambulancia: '111' },
+  ru: { general: '112', policia: '102', bomberos: '101', ambulancia: '103' },
+  ua: { general: '112', policia: '102', bomberos: '101', ambulancia: '103' },
+  pl: { general: '112', policia: '997', bomberos: '998', ambulancia: '999' },
+  nl: { general: '112', policia: '112', bomberos: '112', ambulancia: '112' },
+  be: { general: '112', policia: '101', bomberos: '100', ambulancia: '100' },
+  ch: { general: '112', policia: '117', bomberos: '118', ambulancia: '144' },
+  at: { general: '112', policia: '133', bomberos: '122', ambulancia: '144' },
+  se: { general: '112', policia: '112', bomberos: '112', ambulancia: '112' },
+  no: { general: '112', policia: '112', bomberos: '110', ambulancia: '113' },
+  dk: { general: '112', policia: '114', bomberos: '112', ambulancia: '112' },
+  fi: { general: '112', policia: '112', bomberos: '112', ambulancia: '112' },
+  gr: { general: '112', policia: '100', bomberos: '199', ambulancia: '166' },
+  tr: { general: '112', policia: '155', bomberos: '110', ambulancia: '112' },
+  eg: { general: '122', policia: '122', bomberos: '180', ambulancia: '123' },
+  ma: { general: '112', policia: '19', bomberos: '15', ambulancia: '141' },
+  za: { general: '112', policia: '10111', bomberos: '1017', ambulancia: '10177' },
+  ke: { general: '999', policia: '999', bomberos: '999', ambulancia: '112' },
+  ng: { general: '112', policia: '112', bomberos: '112', ambulancia: '112' },
+  il: { general: '112', policia: '100', bomberos: '102', ambulancia: '101' },
+  ae: { general: '999', policia: '999', bomberos: '997', ambulancia: '998' },
+  sa: { general: '999', policia: '911', bomberos: '998', ambulancia: '997' },
+  id: { general: '112', policia: '110', bomberos: '113', ambulancia: '118' },
+  my: { general: '999', policia: '999', bomberos: '999', ambulancia: '999' },
+  sg: { general: '995', policia: '999', bomberos: '995', ambulancia: '995' },
+  ph: { general: '911', policia: '911', bomberos: '911', ambulancia: '911' },
+  vn: { general: '113', policia: '113', bomberos: '114', ambulancia: '115' },
+  cr: { general: '911', policia: '911', bomberos: '911', ambulancia: '911' },
+  pa: { general: '911', policia: '911', bomberos: '103', ambulancia: '104' },
+  cu: { general: '106', policia: '106', bomberos: '105', ambulancia: '104' },
+  do: { general: '911', policia: '911', bomberos: '911', ambulancia: '911' },
+  ec: { general: '911', policia: '911', bomberos: '911', ambulancia: '911' },
+  uy: { general: '911', policia: '911', bomberos: '104', ambulancia: '105' },
+  ve: { general: '911', policia: '911', bomberos: '171', ambulancia: '171' },
+  bo: { general: '110', policia: '110', bomberos: '119', ambulancia: '118' },
+  py: { general: '911', policia: '911', bomberos: '132', ambulancia: '141' },
+  gt: { general: '123', policia: '110', bomberos: '123', ambulancia: '123' },
+  hn: { general: '911', policia: '911', bomberos: '911', ambulancia: '911' },
+  sv: { general: '911', policia: '911', bomberos: '911', ambulancia: '911' },
+  ni: { general: '118', policia: '118', bomberos: '115', ambulancia: '128' },
+  is: { general: '112', policia: '112', bomberos: '112', ambulancia: '112' },
+  lu: { general: '112', policia: '113', bomberos: '112', ambulancia: '112' },
+  cz: { general: '112', policia: '158', bomberos: '150', ambulancia: '155' },
+  ro: { general: '112', policia: '112', bomberos: '112', ambulancia: '112' },
+  hu: { general: '112', policia: '107', bomberos: '105', ambulancia: '104' },
+  bg: { general: '112', policia: '166', bomberos: '160', ambulancia: '150' },
+  hr: { general: '112', policia: '192', bomberos: '193', ambulancia: '194' },
+  sk: { general: '112', policia: '158', bomberos: '150', ambulancia: '155' },
+  si: { general: '112', policia: '113', bomberos: '112', ambulancia: '112' },
+  rs: { general: '112', policia: '192', bomberos: '193', ambulancia: '194' },
+  ba: { general: '122', policia: '122', bomberos: '123', ambulancia: '124' },
+  al: { general: '112', policia: '129', bomberos: '128', ambulancia: '127' },
+  mk: { general: '112', policia: '192', bomberos: '193', ambulancia: '194' },
+  me: { general: '112', policia: '192', bomberos: '193', ambulancia: '194' },
+  ge: { general: '112', policia: '112', bomberos: '112', ambulancia: '112' },
+  am: { general: '112', policia: '102', bomberos: '101', ambulancia: '103' },
+  az: { general: '112', policia: '102', bomberos: '101', ambulancia: '103' },
+  kz: { general: '112', policia: '102', bomberos: '101', ambulancia: '103' },
+  uz: { general: '112', policia: '102', bomberos: '101', ambulancia: '103' },
+  pk: { general: '15', policia: '15', bomberos: '16', ambulancia: '115' },
+  bd: { general: '999', policia: '999', bomberos: '999', ambulancia: '999' },
+  lk: { general: '119', policia: '119', bomberos: '110', ambulancia: '1990' },
+  mm: { general: '199', policia: '199', bomberos: '191', ambulancia: '192' },
+  kh: { general: '117', policia: '117', bomberos: '118', ambulancia: '119' },
+  la: { general: '1191', policia: '1191', bomberos: '1190', ambulancia: '1195' },
+  np: { general: '100', policia: '100', bomberos: '101', ambulancia: '102' },
+  jo: { general: '911', policia: '911', bomberos: '911', ambulancia: '911' },
+  lb: { general: '112', policia: '112', bomberos: '175', ambulancia: '140' },
+  ir: { general: '112', policia: '110', bomberos: '125', ambulancia: '115' },
+  iq: { general: '104', policia: '104', bomberos: '115', ambulancia: '122' },
+  tn: { general: '197', policia: '197', bomberos: '198', ambulancia: '190' },
+  dz: { general: '17', policia: '17', bomberos: '14', ambulancia: '14' },
+  gh: { general: '191', policia: '191', bomberos: '192', ambulancia: '193' },
+  sn: { general: '17', policia: '17', bomberos: '18', ambulancia: '15' },
+  tz: { general: '112', policia: '111', bomberos: '114', ambulancia: '112' },
+  ug: { general: '999', policia: '999', bomberos: '999', ambulancia: '112' },
+  et: { general: '911', policia: '911', bomberos: '939', ambulancia: '907' },
+  mz: { general: '112', policia: '112', bomberos: '112', ambulancia: '112' },
+};
+
+const EMERGENCIA_FALLBACK: Record<string, EmergenciasPais> = {
+  'Europa': { general: '112', policia: '112', bomberos: '112', ambulancia: '112' },
+  'América': { general: '911', policia: '911', bomberos: '911', ambulancia: '911' },
+  'Asia': { general: '112', policia: '110', bomberos: '119', ambulancia: '120' },
+  'África': { general: '112', policia: '112', bomberos: '112', ambulancia: '112' },
+  'Oceanía': { general: '112', policia: '112', bomberos: '112', ambulancia: '112' },
+};
+
 export const paisesData: Record<string, DatoPais> = {
   es: {
     codigo: 'es',
@@ -5990,4 +6107,20 @@ export function getLabelRiesgo(nivel: NivelRiesgo): string {
     case 'alto': return 'Riesgo alto';
     case 'muy-alto': return 'Riesgo muy alto';
   }
+}
+
+export function getEmergenciasPorPais(codigo: string): EmergenciasPais | null {
+  const directa = emergenciasData[codigo.toLowerCase()];
+  if (directa) return directa;
+
+  const pais = paisesData[codigo.toLowerCase()];
+  if (pais) {
+    const continente = pais.continente;
+    if (continente.startsWith('América')) return EMERGENCIA_FALLBACK['América'];
+    if (continente === 'Asia') return EMERGENCIA_FALLBACK['Asia'];
+    if (continente === 'África') return EMERGENCIA_FALLBACK['África'];
+    if (continente === 'Oceanía') return EMERGENCIA_FALLBACK['Oceanía'];
+    return EMERGENCIA_FALLBACK['Europa'];
+  }
+  return null;
 }

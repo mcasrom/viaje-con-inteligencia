@@ -3,7 +3,7 @@
 import { useParams, useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { DatoPais } from '@/data/paises';
+import { DatoPais, getEmergenciasPorPais, type EmergenciasPais } from '@/data/paises';
 import { PostMeta } from '@/lib/posts';
 import { 
   ArrowLeft, MapPin, Phone, Mail, Clock, FileText, 
@@ -611,29 +611,39 @@ export default function DetallePaisClient({ pais, relatedPosts = [] }: DetallePa
           </div>
         )}
 
-        {activeTab === 'emergencia' && (
+        {activeTab === 'emergencia' && (() => {
+          const emergencias = getEmergenciasPorPais(pais.codigo);
+          return (
           <div className="bg-slate-800 rounded-xl p-6 border border-slate-700 mb-6">
             <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
               <Siren className="w-5 h-5 text-red-400" />
               Teléfonos de Emergencia
             </h3>
             <div className="space-y-3">
+              {emergencias ? (
+                <>
               <div className="flex items-center justify-between p-3 bg-red-500/10 rounded-lg border border-red-500/30">
-                <span className="text-white font-medium">Emergencias générales</span>
-                <span className="text-red-400 font-bold">112</span>
+                <span className="text-white font-medium">Emergencias</span>
+                <span className="text-red-400 font-bold">{emergencias.general}</span>
               </div>
               <div className="flex items-center justify-between p-3 bg-slate-700/50 rounded-lg">
                 <span className="text-slate-300">Policía</span>
-                <span className="text-white">091 / local</span>
+                <span className="text-white">{emergencias.policia}</span>
               </div>
               <div className="flex items-center justify-between p-3 bg-slate-700/50 rounded-lg">
                 <span className="text-slate-300">Bomberos</span>
-                <span className="text-white">080 / local</span>
+                <span className="text-white">{emergencias.bomberos}</span>
               </div>
               <div className="flex items-center justify-between p-3 bg-slate-700/50 rounded-lg">
                 <span className="text-slate-300">Ambulancia</span>
-                <span className="text-white">061 / local</span>
+                <span className="text-white">{emergencias.ambulancia}</span>
               </div>
+                </>
+              ) : (
+                <div className="text-center py-4">
+                  <p className="text-slate-400 text-sm">Consulta los números locales de emergencia en el consulado.</p>
+                </div>
+              )}
             </div>
             <div className="mt-4 pt-4 border-t border-slate-700">
               <h4 className="text-white font-medium mb-2">Consulado de España</h4>
@@ -653,7 +663,8 @@ export default function DetallePaisClient({ pais, relatedPosts = [] }: DetallePa
               )}
             </div>
           </div>
-        )}
+          );
+        })()}
 
         <WeatherWidget 
           lat={pais.mapaCoordenadas[0]} 
