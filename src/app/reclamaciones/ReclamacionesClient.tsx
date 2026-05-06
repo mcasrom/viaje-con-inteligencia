@@ -1,8 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, FileText, Crown, Download, Share2, Plane, Building, Hotel, Car, Bus, AlertTriangle, Clock, Check, Sparkles, Copy, ExternalLink } from 'lucide-react';
+import { ArrowLeft, FileText, Crown, Download, Share2, Plane, Building, Hotel, Car, Bus, AlertTriangle, Clock, Check, Sparkles, Copy, ExternalLink, Lock } from 'lucide-react';
+import { useSubscription } from '@/hooks/useSubscription';
 
 const CLAIM_TYPES = [
   { value: 'retraso', label: 'Retraso de vuelo', icon: <Clock className="w-4 h-4" />, desc: '+3h, +5h, cancelación' },
@@ -67,9 +68,11 @@ const LEGAL_REFERENCES = {
 };
 
 export default function ReclamacionesClient() {
+  const sub = useSubscription();
   const [step, setStep] = useState<'type' | 'form' | 'preview'>('type');
   const [claimType, setClaimType] = useState('');
-  const [isPremium, setIsPremium] = useState(false);
+
+  const isPremium = sub.premium;
 
   const [formData, setFormData] = useState({
     nombre: '',
@@ -326,22 +329,17 @@ abogado especializado en derecho aeronáutico.
         </header>
 
         <main className="max-w-3xl mx-auto px-6 py-8">
-          {/* Plan toggle */}
+          {/* Subscription status */}
           <div className="flex items-center justify-center gap-3 mb-8">
-            <span className={`text-sm font-medium ${!isPremium ? 'text-white' : 'text-slate-500'}`}>
-              <FileText className="w-4 h-4 inline mr-1" />
-              Gratis
-            </span>
-            <button
-              onClick={() => setIsPremium(!isPremium)}
-              className={`relative w-14 h-7 rounded-full transition-colors ${isPremium ? 'bg-amber-500' : 'bg-slate-600'}`}
-            >
-              <span className={`absolute top-0.5 left-0.5 w-6 h-6 bg-white rounded-full transition-transform ${isPremium ? 'translate-x-7' : ''}`} />
-            </button>
-            <span className={`text-sm font-medium ${isPremium ? 'text-white' : 'text-slate-500'}`}>
-              <Crown className="w-4 h-4 inline mr-1" />
-              Premium
-            </span>
+            <div className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium ${isPremium ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30' : 'bg-slate-800 text-slate-400 border border-slate-700'}`}>
+              {isPremium ? <Crown className="w-4 h-4" /> : <FileText className="w-4 h-4" />}
+              {isPremium ? 'Premium activo' : 'Plan gratuito'}
+            </div>
+            {!isPremium && (
+              <Link href="/free-trial" className="text-amber-400 hover:text-amber-300 text-sm font-medium">
+                Probar gratis →
+              </Link>
+            )}
           </div>
 
           <div className="space-y-6">

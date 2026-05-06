@@ -2,9 +2,10 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Send, Loader2, Bot, Sparkles, Crown, Zap, AlertTriangle } from 'lucide-react';
+import { ArrowLeft, Send, Loader2, Bot, Sparkles, Crown, Zap, AlertTriangle, Lock } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { useSubscription } from '@/hooks/useSubscription';
 
 const SUGGESTIONS = [
   { icon: '🌍', text: '¿Es seguro viajar a Japón?' },
@@ -56,17 +57,24 @@ function resetDailyIfNeeded() {
 }
 
 export default function ChatClient() {
+  const sub = useSubscription();
   const [messages, setMessages] = useState<{ role: string; content: string }[]>([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [dailyCount, setDailyCount] = useState(0);
   const [model, setModel] = useState<'free' | 'premium'>('free');
+  const [premiumBlocked, setPremiumBlocked] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const canUsePremium = sub.premium;
 
   useEffect(() => {
     resetDailyIfNeeded();
     setDailyCount(getDailyCount());
-  }, []);
+    if (sub.premium) {
+      setModel('premium');
+    }
+  }, [sub.premium]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -83,6 +91,7 @@ export default function ChatClient() {
     setInput('');
     setMessages(prev => [...prev, { role: 'user', content: messageText }]);
     setLoading(true);
+    setPremiumBlocked(false);
 
     try {
       const response = await fetch('/api/ai/chat', {
@@ -90,13 +99,16 @@ export default function ChatClient() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           message: messageText,
-          model: model === 'premium' ? PREMIUM_MODEL : FREE_MODEL,
+          model: model === 'premium' && canUsePremium ? PREMIUM_MODEL : FREE_MODEL,
           history: messages.map(m => m.content).slice(-6),
         }),
       });
 
       const data = await response.json();
-      if (response.status === 429) {
+      if (response.status === 403 && data.requires === 'premium') {
+        setPremiumBlocked(true);
+        setMessages(prev => [...prev, { role: 'assistant', content: `🔒 **${data.message}**` }]);
+      } else if (response.status === 429) {
         setMessages(prev => [...prev, { role: 'assistant', content: '⚠️ Has alcanzado el límite de 5 mensajes hoy. **Actualiza a Premium** para chat ilimitado con modelo superior.' }]);
       } else {
         setMessages(prev => [...prev, { role: 'assistant', content: data.response || 'Lo siento, no pude procesar tu solicitud. Intenta de nuevo.' }]);
@@ -110,7 +122,7 @@ export default function ChatClient() {
     } finally {
       setLoading(false);
     }
-  }, [input, loading, messages, dailyCount, model]);
+  }, [input, loading, messages, dailyCount, model, canUsePremium]);
 
   const remaining = Math.max(0, FREE_DAILY_LIMIT - dailyCount);
 
@@ -136,12 +148,17 @@ export default function ChatClient() {
                 Free
               </button>
               <button
-                onClick={() => setModel('premium')}
+                onClick={() => canUsePremium && setModel('premium')}
+                disabled={!canUsePremium}
                 className={`px-3 py-1 rounded-md text-xs font-medium transition-colors flex items-center gap-1 ${
-                  model === 'premium' ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-slate-900' : 'text-slate-400 hover:text-white'
+                  canUsePremium
+                    ? model === 'premium'
+                      ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-slate-900'
+                      : 'text-slate-400 hover:text-white'
+                    : 'text-slate-600 cursor-not-allowed'
                 }`}
               >
-                <Crown className="w-3 h-3" />
+                {canUsePremium ? <Crown className="w-3 h-3" /> : <Lock className="w-3 h-3" />}
                 Premium
               </button>
             </div>
@@ -172,11 +189,22 @@ export default function ChatClient() {
                 <p className="text-slate-400 text-xs mt-1">5 mensajes/día</p>
                 <p className="text-slate-500 text-xs">llama-3.1-8b</p>
               </div>
-              <div className="bg-slate-800 rounded-xl p-4 border border-amber-500/30">
+              <div className={`rounded-xl p-4 border ${canUsePremium ? 'bg-amber-500/10 border-amber-500/30' : 'bg-slate-800 border-slate-700/50'}`}>
                 <Crown className="w-5 h-5 text-amber-400 mb-2" />
                 <h3 className="text-white font-semibold text-sm">Premium</h3>
-                <p className="text-slate-400 text-xs mt-1">Ilimitado</p>
-                <p className="text-slate-500 text-xs">llama-3.1-70b</p>
+                {canUsePremium ? (
+                  <>
+                    <p className="text-green-400 text-xs mt-1">✅ Activo</p>
+                    <p className="text-slate-500 text-xs">llama-3.1-70b</p>
+                  </>
+                ) : (
+                  <>
+                    <p className="text-slate-400 text-xs mt-1">Ilimitado</p>
+                    <Link href="/free-trial" className="text-amber-400 text-xs hover:text-amber-300 font-medium">
+                      Probar gratis →
+                    </Link>
+                  </>
+                )}
               </div>
             </div>
 
@@ -230,6 +258,19 @@ export default function ChatClient() {
               </div>
             )}
             <div ref={messagesEndRef} />
+          </div>
+        )}
+
+        {/* Premium blocked warning */}
+        {premiumBlocked && (
+          <div className="px-4 py-2 bg-red-500/10 border-t border-red-500/20">
+            <div className="flex items-center justify-center gap-2 text-red-400 text-xs">
+              <Lock className="w-3 h-3" />
+              <span>Modelo 70b bloqueado. Necesitas suscripción Premium activa.</span>
+              <Link href="/free-trial" className="underline hover:text-red-300 font-medium">
+                Activar trial gratis →
+              </Link>
+            </div>
           </div>
         )}
 
@@ -293,9 +334,13 @@ export default function ChatClient() {
           )}
           {model === 'premium' && (
             <div className="mt-2 text-xs text-slate-500 text-center">
-              <Link href="/premium" className="text-amber-400 hover:text-amber-300">
-                ¿Necesitas Premium? Activa tu prueba gratuita →
-              </Link>
+              {canUsePremium ? (
+                <span className="text-green-400">✅ Modelo 70b activo — Chat ilimitado</span>
+              ) : (
+                <Link href="/free-trial" className="text-amber-400 hover:text-amber-300">
+                  ¿Necesitas Premium? Activa tu prueba gratuita →
+                </Link>
+              )}
             </div>
           )}
         </div>
