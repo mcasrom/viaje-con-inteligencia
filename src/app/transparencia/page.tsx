@@ -61,6 +61,7 @@ function StatusBadge({ status, neverRun }: { status: string; neverRun?: boolean 
 function timeAgo(date: string | null): string {
   if (!date) return 'Sin ejecutar aún';
   const diff = Date.now() - new Date(date).getTime();
+  if (diff < 0) return 'Fecha no válida';
   const mins = Math.floor(diff / 60000);
   if (mins < 60) return `Hace ${mins} min`;
   const hours = Math.floor(mins / 60);

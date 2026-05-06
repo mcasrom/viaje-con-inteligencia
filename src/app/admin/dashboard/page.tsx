@@ -71,6 +71,7 @@ export default function AdminDashboard() {
   const timeAgo = (ts: string | null) => {
     if (!ts) return 'Nunca';
     const diff = Date.now() - new Date(ts).getTime();
+    if (diff < 0) return 'Fecha no válida';
     const hours = Math.floor(diff / (1000 * 60 * 60));
     if (hours < 1) return `${Math.floor(diff / (1000 * 60))} min`;
     if (hours < 24) return `${hours}h`;
