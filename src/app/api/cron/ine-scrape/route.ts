@@ -69,7 +69,7 @@ interface INEDataPoint {
   valor: string;
 }
 
-async function fetchINEAPI(endpoint: string, params: Record<string, string>): Promise<any[]> {
+async function fetchINEAPI(endpoint: string, params: Record<string, string>): Promise<any> {
   const queryString = new URLSearchParams(params).toString();
   const url = `https://servicios.ine.es/wstempus/es/DATOS/${endpoint}?${queryString}`;
 
