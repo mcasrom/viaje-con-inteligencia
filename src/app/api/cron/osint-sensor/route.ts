@@ -20,9 +20,18 @@ export async function GET(request: Request) {
     // 1. Fetch posts from Reddit
     const posts = await fetchRedditPosts(50);
     console.log(`[OSINT] Fetched ${posts.length} posts from Reddit`);
+    
+    // Debug: Check if we can reach Reddit at all
+    let redditStatus = 'unknown';
+    try {
+      const testRes = await fetch('https://www.reddit.com/.json', { headers: { 'User-Agent': 'ViajeConInteligencia/1.0' }, cache: 'no-store' });
+      redditStatus = `${testRes.status} ${testRes.statusText}`;
+    } catch (e: any) {
+      redditStatus = e.message || 'failed';
+    }
 
     if (!supabaseAdmin) {
-      return NextResponse.json({ error: 'Supabase not configured', postsFound: posts.length });
+      return NextResponse.json({ error: 'Supabase not configured', postsFound: posts.length, redditStatus });
     }
 
     // 2. Get already processed URLs
@@ -94,6 +103,7 @@ export async function GET(request: Request) {
       newPosts: newPosts.length,
       signalsInserted: inserted,
       urgentCount: urgentSignals?.length || 0,
+      redditStatus,
       timestamp: new Date().toISOString(),
     });
   } catch (error) {
