@@ -51,13 +51,13 @@ const KEYWORDS = [
 
 export async function fetchRedditPosts(limit = 50): Promise<RawPost[]> {
   const posts: RawPost[] = [];
-  const query = KEYWORDS.slice(0, 10).join(' OR ');
 
   for (const sub of SUBREDDITS) {
     try {
-      const url = `https://www.reddit.com/r/${sub}/search.json?q=${encodeURIComponent(query)}&sort=new&t=day&limit=25&restrict_sr=on`;
+      const url = `https://www.reddit.com/r/${sub}/new.json?limit=25`;
       const res = await fetch(url, {
-        headers: { 'User-Agent': 'ViajeConInteligencia/1.0 OSINT Sensor' },
+        headers: { 'User-Agent': 'ViajeConInteligencia/1.0 OSINT Sensor (by mcasrom)' },
+        cache: 'no-store',
       });
 
       if (!res.ok) continue;
@@ -65,15 +65,14 @@ export async function fetchRedditPosts(limit = 50): Promise<RawPost[]> {
       const data = await res.json();
       const children = data?.data?.children || [];
 
-      for (const child of children.slice(0, 5)) {
+      for (const child of children) {
         const d = child.data;
-        if (!d || d.over_18 || d.stickied) continue;
+        if (!d || d.over_18 || d.stickied || !d.selftext) continue;
 
-        const score = d.score || 0;
         const text = `${d.title || ''} ${d.selftext || ''}`.toLowerCase();
         const hasKeyword = KEYWORDS.some(kw => text.includes(kw.toLowerCase()));
 
-        if (!hasKeyword || score < 0) continue;
+        if (!hasKeyword) continue;
 
         posts.push({
           source: 'reddit',
