@@ -5,10 +5,9 @@ export const maxDuration = 30;
 
 export async function GET() {
   const urls = [
-    'https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/tour_arr_m?format=JSON&geo=ES&freq=M&unit=NR&startPeriod=2024-01',
-    'https://ec.europa.eu/eurostat/api/dissementation/statistics/1.0/data/tour_occ_nim?format=JSON&geo=ES&freq=M',
-    'https://restcountries.com/v3.1/name/spain',
-    'https://api.worldbank.org/v2/country/ES/indicator/ST.INT.ARVL?format=json&per_page=5',
+    'https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/tour_arr_m?format=JSON&geo=ES&freq=M',
+    'https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/tour_occ_nim?format=JSON&geo=ES&freq=M',
+    'https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/tour_occ_ninat?format=JSON&geo=ES&freq=M&cit_res=NONEU',
   ];
 
   const results = [];
@@ -25,17 +24,20 @@ export async function GET() {
       const text = await res.text();
       const contentType = res.headers.get('content-type') || '';
 
+      let preview = text.substring(0, 500);
+      if (text.length > 500) preview += '...';
+
       results.push({
-        url: url.substring(0, 80) + '...',
+        url: url.split('?')[0].split('/').pop(),
         status: res.status,
         content_type: contentType,
         elapsed_ms: elapsed,
         content_length: text.length,
         isJson: contentType.includes('json') || text.trimStart().startsWith('{') || text.trimStart().startsWith('['),
-        preview: text.substring(0, 300),
+        preview,
       });
     } catch (e: any) {
-      results.push({ url: url.substring(0, 80), error: e.message });
+      results.push({ url: url.split('?')[0].split('/').pop(), error: e.message });
     }
   }
 
