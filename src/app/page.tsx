@@ -24,7 +24,7 @@ function TopBar() {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-[1010] pointer-events-none">
-      <div className="max-w-7xl mx-auto px-4 pt-4 flex items-start justify-between gap-4 pointer-events-auto">
+      <div className="max-w-7xl mx-auto px-4 pt-6 flex items-start justify-between gap-4 pointer-events-auto">
         {/* Logo + Brand */}
         <div className="bg-slate-900/90 backdrop-blur-md rounded-xl border border-slate-700/50 px-4 py-2 flex items-center gap-3 shadow-xl">
           <img src="/logo.png" alt="Viaje con Inteligencia" className="w-8 h-8 object-contain" />
@@ -257,7 +257,7 @@ function SidePanel() {
   ];
 
   return (
-    <div className={`fixed left-4 top-24 z-[1005] transition-all duration-300 ${open ? 'w-72' : 'w-12'}`}>
+    <div className={`fixed left-4 top-28 z-[1005] transition-all duration-300 ${open ? 'w-72' : 'w-12'}`}>
       <div className="bg-slate-900/90 backdrop-blur-md rounded-xl border border-slate-700/50 shadow-xl overflow-hidden">
         {/* Toggle */}
         <button 
@@ -446,7 +446,7 @@ export default function Home() {
       <PrimaryCTA />
 
       {/* Map — dominant 70% of viewport */}
-      <div className="relative w-full h-[70vh] pt-20 pb-24">
+      <div className="relative w-full h-[70vh] pt-24 pb-24">
         <MapaInteractivo fullScreen />
       </div>
 
