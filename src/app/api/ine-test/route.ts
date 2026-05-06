@@ -4,48 +4,44 @@ export const dynamic = 'force-dynamic';
 export const maxDuration = 30;
 
 export async function GET() {
-  try {
-    const urls = [
-      'https://servicios.ine.es/wstempus/es/DATOS/OBTENER_TABLA?id_operacion=30940&id_periodo=M&nult=2',
-      'https://servicios.ine.es/wstempus/es/DATOS/OBTENER_TABLA?id_operacion=30940&id_periodo=M',
-    ];
+  const urls = [
+    'https://servicios.ine.es/wstempus/es/DATOS/OBTENER_TABLA?id_operacion=30940&id_periodo=M&nult=2',
+    'https://www.ine.es/jaxiT3/files/t/csv/30940.csv?cabecera=/tmp/n3&nult=2',
+    'https://www.ine.es/dynt3/inebase/es/index.htm?cap=086710&cap_anterior=086629',
+    'https://www.ine.es/prensa/tt_2_2026_d.pdf',
+    'https://www.ine.es/jaxiT3/Datos.htm?t=30940',
+  ];
 
-    const results = [];
+  const results = [];
 
-    for (const url of urls) {
-      try {
-        console.log('[INE-TEST] Fetching:', url);
-        const start = Date.now();
-        const res = await fetch(url, {
-          headers: {
-            'Accept': 'application/json',
-          },
-          signal: AbortSignal.timeout(10000),
-        });
+  for (const url of urls) {
+    try {
+      const start = Date.now();
+      const res = await fetch(url, {
+        headers: {
+          'Accept': 'text/html,application/json,*/*',
+          'User-Agent': 'Mozilla/5.0 (compatible; ViajeInteligencia/1.0)',
+        },
+        signal: AbortSignal.timeout(10000),
+        redirect: 'follow',
+      });
 
-        const elapsed = Date.now() - start;
-        const text = await res.text();
+      const elapsed = Date.now() - start;
+      const text = await res.text();
+      const contentType = res.headers.get('content-type') || '';
 
-        results.push({
-          url,
-          status: res.status,
-          elapsed_ms: elapsed,
-          content_length: text.length,
-          preview: text.substring(0, 500),
-        });
-
-        console.log(`[INE-TEST] ${res.status} in ${elapsed}ms, ${text.length} bytes`);
-      } catch (e: any) {
-        results.push({
-          url,
-          error: e.message,
-        });
-        console.warn(`[INE-TEST] Failed:`, e.message);
-      }
+      results.push({
+        url,
+        status: res.status,
+        content_type: contentType,
+        elapsed_ms: elapsed,
+        content_length: text.length,
+        preview: text.substring(0, 300),
+      });
+    } catch (e: any) {
+      results.push({ url, error: e.message });
     }
-
-    return NextResponse.json({ results });
-  } catch (e: any) {
-    return NextResponse.json({ error: e.message }, { status: 500 });
   }
+
+  return NextResponse.json({ results });
 }
