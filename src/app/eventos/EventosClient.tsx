@@ -2,81 +2,8 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Calendar, MapPin, Music, Flag, Star, Search, Sparkles, AlertTriangle, TrendingUp, ShieldAlert } from 'lucide-react';
-
-interface GlobalEvent {
-  name: string;
-  country: string;
-  flag: string;
-  code: string;
-  month: number;
-  type: 'festival' | 'national' | 'cultural' | 'sports' | 'religious' | 'conference' | 'mega-event';
-  description: string;
-  impact: 'high' | 'medium' | 'low';
-  priceImpact?: 'extreme' | 'high' | 'medium' | 'none';
-  safetyNote?: string;
-}
-
-const EVENTS: GlobalEvent[] = [
-  // --- ENERO ---
-  { name: 'Davos (Foro Económico Mundial)', country: 'Suiza', flag: '🇨🇭', code: 'ch', month: 1, type: 'conference', description: 'Cumbre global de líderes. Seguridad extrema en la ciudad.', impact: 'high', priceImpact: 'extreme', safetyNote: 'Cierres de calles y zonas restringidas.' },
-  { name: 'Año Nuevo Chino (Lunar)', country: 'China / Varios', flag: '🇨🇳', code: 'cn', month: 1, type: 'cultural', description: 'La mayor migración humana del mundo (Chunyun).', impact: 'high', priceImpact: 'high', safetyNote: 'Transporte colapsado. Reserva con meses de antelación.' },
-
-  // --- FEBRERO ---
-  { name: 'Carnaval de Río', country: 'Brasil', flag: '🇧🇷', code: 'br', month: 2, type: 'festival', description: 'El mayor carnaval del mundo.', impact: 'high', priceImpact: 'high', safetyNote: 'Extrema precaución con robos y carteristas.' },
-  { name: 'Carnaval de Venecia', country: 'Italia', flag: '🇮🇹', code: 'it', month: 2, type: 'cultural', description: 'Máscaras y trajes históricos.', impact: 'high', priceImpact: 'high' },
-  { name: 'MWC Barcelona (Mobile World Congress)', country: 'España', flag: '🇪🇸', code: 'es', month: 2, type: 'conference', description: 'El mayor evento tecnológico del mundo.', impact: 'high', priceImpact: 'extreme', safetyNote: 'Hoteles al 200% de precio y llenos.' },
-  { name: 'Mardi Gras', country: 'EE.UU.', flag: '🇺🇸', code: 'us', month: 2, type: 'festival', description: 'Desfiles masivos en Nueva Orleans.', impact: 'high', priceImpact: 'high' },
-  { name: 'Olimpiadas de Invierno 2026', country: 'Italia', flag: '🇮🇹', code: 'it', month: 2, type: 'mega-event', description: 'Milán-Cortina. Evento global.', impact: 'high', priceImpact: 'extreme', safetyNote: 'Seguridad reforzada. Precios de vuelos y hoteles disparados.' },
-
-  // --- MARZO ---
-  { name: 'Holi (Festival de los Colores)', country: 'India', flag: '🇮🇳', code: 'in', month: 3, type: 'cultural', description: 'Festival vibrante en todo el país.', impact: 'high', priceImpact: 'medium' },
-  { name: 'Ramadán (Inicio aprox.)', country: 'Mundo Árabe', flag: '🌍', code: 'sa', month: 3, type: 'religious', description: 'Mes sagrado. Horarios comerciales cambian radicalmente.', impact: 'high', priceImpact: 'high', safetyNote: 'No comer/beber en público durante el día en muchos países.' },
-  { name: 'Fallas de Valencia', country: 'España', flag: '🇪🇸', code: 'es', month: 3, type: 'festival', description: 'Fuego, música y monumentos.', impact: 'high', priceImpact: 'high' },
-  { name: 'St. Patrick\'s Day', country: 'Irlanda', flag: '🇮🇪', code: 'ie', month: 3, type: 'national', description: 'Celebración masiva en Dublín y global.', impact: 'high', priceImpact: 'high' },
-
-  // --- ABRIL ---
-  { name: 'Songkran (Año Nuevo Tailandés)', country: 'Tailandia', flag: '🇹🇭', code: 'th', month: 4, type: 'cultural', description: 'Festival del agua masivo.', impact: 'high', priceImpact: 'high', safetyNote: 'Alto índice de accidentes de tráfico estos días.' },
-  { name: 'Semana Santa', country: 'España / Latam', flag: '🇪🇸', code: 'es', month: 4, type: 'religious', description: 'Procesiones y vacaciones masivas.', impact: 'high', priceImpact: 'high' },
-  { name: 'Cherry Blossom (Sakura)', country: 'Japón', flag: '🇯🇵', code: 'jp', month: 4, type: 'cultural', description: 'Floración del cerezo.', impact: 'high', priceImpact: 'high' },
-
-  // --- MAYO ---
-  { name: 'Gran Premio de Mónaco (F1)', country: 'Mónaco', flag: '🇲🇨', code: 'mc', month: 5, type: 'sports', description: 'El evento más exclusivo del calendario F1.', impact: 'high', priceImpact: 'extreme', safetyNote: 'Precios de hotel x10. Reserva con 6-9 meses.' },
-  { name: 'Festival de Cannes', country: 'Francia', flag: '🇫🇷', code: 'fr', month: 5, type: 'cultural', description: 'Festival Internacional de Cine.', impact: 'medium', priceImpact: 'high' },
-
-  // --- JUNIO ---
-  { name: 'Mundial de Fútbol 2026', country: 'USA / México / Canadá', flag: '🌎', code: 'us', month: 6, type: 'mega-event', description: 'El mayor evento deportivo del mundo.', impact: 'high', priceImpact: 'extreme', safetyNote: 'Ciudades anfitrionas saturadas. Riesgo de estafas con entradas.' },
-  { name: 'Glastonbury Festival', country: 'Reino Unido', flag: '🇬🇧', code: 'gb', month: 6, type: 'festival', description: 'El festival de música más famoso.', impact: 'high', priceImpact: 'high' },
-  { name: 'Inti Raymi', country: 'Perú', flag: '🇵🇪', code: 'pe', month: 6, type: 'cultural', description: 'Festival del Sol en Cusco.', impact: 'medium', priceImpact: 'high' },
-
-  // --- JULIO ---
-  { name: 'San Fermín', country: 'España', flag: '🇪🇸', code: 'es', month: 7, type: 'festival', description: 'Encierros de Pamplona.', impact: 'high', priceImpact: 'high', safetyNote: 'Riesgo físico en los encierros y consumo excesivo de alcohol.' },
-  { name: 'Gran Premio de Gran Bretaña (F1)', country: 'Reino Unido', flag: '🇬🇧', code: 'gb', month: 7, type: 'sports', description: 'Silverstone. Cientos de miles de fans.', impact: 'high', priceImpact: 'high' },
-  { name: 'Tour de France', country: 'Francia', flag: '🇫🇷', code: 'fr', month: 7, type: 'sports', description: 'Cierre de carreteras en etapas de montaña.', impact: 'medium', priceImpact: 'medium', safetyNote: 'Carreteras cortadas. Planifica rutas alternativas.' },
-
-  // --- AGOSTO ---
-  { name: 'La Tomatina', country: 'España', flag: '🇪🇸', code: 'es', month: 8, type: 'festival', description: 'Batalla de tomates (Entradas limitadas).', impact: 'high', priceImpact: 'medium' },
-  { name: 'Obon', country: 'Japón', flag: '🇯🇵', code: 'jp', month: 8, type: 'cultural', description: 'Festival de los ancestros.', impact: 'medium', priceImpact: 'high' },
-  { name: 'Edinburgh Fringe', country: 'Reino Unido', flag: '🇬🇧', code: 'gb', month: 8, type: 'cultural', description: 'Mayor festival de artes del mundo.', impact: 'medium', priceImpact: 'high' },
-
-  // --- SEPTIEMBRE ---
-  { name: 'Oktoberfest', country: 'Alemania', flag: '🇩🇪', code: 'de', month: 9, type: 'festival', description: 'Festival de la cerveza en Múnich.', impact: 'high', priceImpact: 'extreme', safetyNote: 'Reserva alojamiento con 6 meses de antelación.' },
-  { name: 'Gran Premio de Italia (F1)', country: 'Italia', flag: '🇮🇹', code: 'it', month: 9, type: 'sports', description: 'Monza. La "Tifosi" invade el circuito.', impact: 'high', priceImpact: 'high' },
-  { name: 'Burning Man', country: 'EE.UU.', flag: '🇺🇸', code: 'us', month: 9, type: 'festival', description: 'Festival en el desierto de Nevada.', impact: 'medium', priceImpact: 'high', safetyNote: 'Condiciones extremas (calor, polvo). Auto-suficiencia obligatoria.' },
-
-  // --- OCTUBRE ---
-  { name: 'Web Summit', country: 'Portugal', flag: '🇵🇹', code: 'pt', month: 10, type: 'conference', description: 'Gran evento tecnológico en Lisboa.', impact: 'high', priceImpact: 'high' },
-  { name: 'Gran Premio de México (F1)', country: 'México', flag: '🇲🇽', code: 'mx', month: 10, type: 'sports', description: 'Autódromo Hermanos Rodríguez.', impact: 'high', priceImpact: 'high' },
-  { name: 'Día de Muertos', country: 'México', flag: '🇲🇽', code: 'mx', month: 10, type: 'cultural', description: 'Ofrendas y celebración de difuntos.', impact: 'high', priceImpact: 'medium' },
-
-  // --- NOVIEMBRE ---
-  { name: 'Diwali', country: 'India', flag: '🇮🇳', code: 'in', month: 11, type: 'religious', description: 'Festival de las luces.', impact: 'high', priceImpact: 'medium' },
-  { name: 'Loi Krathong', country: 'Tailandia', flag: '🇹🇭', code: 'th', month: 11, type: 'cultural', description: 'Festival de las linternas.', impact: 'medium', priceImpact: 'medium' },
-  { name: 'Gran Premio de Abu Dabi (F1)', country: 'Emiratos Árabes', flag: '🇦🇪', code: 'ae', month: 11, type: 'sports', description: 'Cierre de temporada bajo las luces.', impact: 'high', priceImpact: 'extreme' },
-
-  // --- DICIEMBRE ---
-  { name: 'Mercados Navideños', country: 'Alemania', flag: '🇩🇪', code: 'de', month: 12, type: 'cultural', description: 'Christkindlmarkt en Núremberg, Berlín.', impact: 'high', priceImpact: 'high' },
-];
+import { ArrowLeft, Calendar, MapPin, Music, Flag, Star, Search, Sparkles, TrendingUp, ShieldAlert } from 'lucide-react';
+import { GLOBAL_EVENTS, GlobalEvent } from '@/data/eventos-globales';
 
 const MONTHS = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
 
@@ -95,7 +22,7 @@ export default function EventosClient() {
   const [filterType, setFilterType] = useState<string>('all');
   const [search, setSearch] = useState('');
 
-  const filtered = EVENTS.filter(e => {
+  const filtered = GLOBAL_EVENTS.filter(e => {
     const matchMonth = filterMonth === -1 || e.month === filterMonth;
     const matchType = filterType === 'all' || e.type === filterType;
     const matchSearch = !search || e.name.toLowerCase().includes(search.toLowerCase()) || e.country.toLowerCase().includes(search.toLowerCase());
