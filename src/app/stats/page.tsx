@@ -2,7 +2,6 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import { ArrowLeft, Globe, AlertTriangle, Users, TrendingUp, MapPin, Calendar, Eye, Star, Heart, Bell } from 'lucide-react';
 import { getTodosLosPaises, getLabelRiesgo, NivelRiesgo } from '@/data/paises';
-import { createSupabaseServerClient } from '@/lib/supabase-server';
 
 export const metadata: Metadata = {
   title: 'Estadísticas Globales | Viaje con Inteligencia',
@@ -10,13 +9,8 @@ export const metadata: Metadata = {
 };
 
 export default async function StatsPage() {
-  const supabase = await createSupabaseServerClient();
-  const { count: supabaseCount } = await supabase
-    .from('paises')
-    .select('*', { count: 'exact', head: true });
-  const totalPaises = supabaseCount ?? getTodosLosPaises().length;
-
   const paises = getTodosLosPaises();
+  const totalPaises = paises.length;
   
   const riesgoStats = paises.reduce((acc, p) => {
     acc[p.nivelRiesgo] = (acc[p.nivelRiesgo] || 0) + 1;
