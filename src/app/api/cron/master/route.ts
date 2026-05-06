@@ -5,7 +5,7 @@ import { supabaseAdmin } from '@/lib/supabase-admin';
 import { paisesData } from '@/data/paises';
 import { calculateTCI } from '@/data/tci-engine';
 import { generateRiskChangeAlert } from '@/lib/alerts-system';
-import { fetchAllPosts, classifySignal, detectFirstPerson } from '@/lib/osint-sensor';
+import { fetchAllPosts, classifySignal, detectFirstPerson, type ClassifiedSignal, type SignalCategory } from '@/lib/osint-sensor';
 import { Resend } from 'resend';
 
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
@@ -175,11 +175,53 @@ async function runAirspaceOsint(): Promise<any> {
   }
 }
 
-// ===== NEWS SENTIMENT (GDELT + RSS + Groq) =====
+// ===== NEWS SENTIMENT (GDELT + RSS: keyword-only, Reddit: Groq) =====
+const CATEGORY_KEYWORDS: Record<string, string[]> = {
+  salud: ['outbreak', 'disease', 'epidemic', 'sick', 'hospital', 'virus', 'brotes', 'enfermedad', 'fallecido', 'herido', 'intoxicacion'],
+  clima: ['earthquake', 'flood', 'hurricane', 'cyclone', 'tsunami', 'volcano', 'storm', 'wildfire', 'terremoto', 'inundacion', 'incendio', 'tormenta'],
+  seguridad: ['bomb', 'shooting', 'attack', 'terrorist', 'robbed', 'attacked', 'atentado', 'tiroteo', 'robo', 'violencia'],
+  logistico: ['strike', 'cancel', 'airport', 'flight', 'closure', 'blocked', 'shutdown', 'huelga', 'vuelo cancelado', 'cierre', 'bloqueado'],
+  geopolitico: ['protest', 'riot', 'crisis', 'conflict', 'war', 'border', 'manifestacion', 'disturbio', 'conflicto', 'frontera', 'guerra'],
+};
+
+const URGENCY_KEYWORDS: Record<string, string[]> = {
+  critical: ['dead', 'killed', 'evacuat', 'tsunami', 'bomb', 'terrorist', 'war', 'fallecido', 'muerto', 'evacuacion'],
+  high: ['emergency', 'attack', 'shooting', 'earthquake', 'hurricane', 'outbreak', 'emergencia', 'atentado', 'terremoto'],
+  medium: ['protest', 'strike', 'closure', 'cancel', 'warning', 'huelga', 'cierre', 'cancelado', 'advertencia'],
+};
+
+function classifyByKeywords(text: string): ClassifiedSignal {
+  const lower = text.toLowerCase();
+  let category = 'otro' as SignalCategory;
+  let maxCatScore = 0;
+  for (const [cat, kws] of Object.entries(CATEGORY_KEYWORDS)) {
+    const score = kws.filter(kw => lower.includes(kw)).length;
+    if (score > maxCatScore) { maxCatScore = score; category = cat as SignalCategory; }
+  }
+
+  let urgency = 'low' as ClassifiedSignal['urgency'];
+  const urgOrder: ClassifiedSignal['urgency'][] = ['low', 'medium', 'high', 'critical'];
+  for (const [urg, kws] of Object.entries(URGENCY_KEYWORDS)) {
+    if (kws.some(kw => lower.includes(kw))) {
+      const idx = urgOrder.indexOf(urg as any);
+      if (idx > urgOrder.indexOf(urgency)) urgency = urg as any;
+    }
+  }
+
+  return {
+    category, confidence: maxCatScore > 1 ? 0.85 : 0.6,
+    isFirstResponder: false, urgency, summary: text.substring(0, 200),
+  };
+}
+
 async function runNewsSentiment(): Promise<any> {
   try {
     const posts = await fetchAllPosts();
     if (!supabaseAdmin) return { status: 'skipped', reason: 'No supabase' };
+
+    // Only process last 72h to avoid stale posts
+    const cutoff = new Date(Date.now() - 72 * 60 * 60 * 1000);
+    const recentPosts = posts.filter(p => p.timestamp >= cutoff);
 
     const { data: processedData } = await supabaseAdmin
       .from('osint_signals')
@@ -187,12 +229,15 @@ async function runNewsSentiment(): Promise<any> {
       .not('source_url', 'is', null);
 
     const processedUrls = new Set(processedData?.map(d => d.source_url) || []);
-    const newPosts = posts.filter(p => !processedUrls.has(p.sourceUrl));
+    const newPosts = recentPosts.filter(p => !processedUrls.has(p.sourceUrl));
+
+    // Cap at 20 to prevent timeout
+    const toProcess = newPosts.slice(0, 20);
 
     const signals: any[] = [];
-    for (const post of newPosts) {
+    for (const post of toProcess) {
       const isAuthoritative = post.source === 'gdacs' || post.source === 'usgs';
-      let classification: any;
+      let classification: ClassifiedSignal;
       let isFirstPerson = false;
 
       if (isAuthoritative) {
@@ -202,9 +247,17 @@ async function runNewsSentiment(): Promise<any> {
           urgency: sev === 'red' ? 'critical' : sev === 'orange' ? 'high' : sev === 'green' ? 'medium' : 'low',
           summary: post.title,
         };
+      } else if (post.source === 'gdelt' || post.source === 'rss') {
+        // News sources: keyword classification (fast, no Groq)
+        classification = classifyByKeywords(`${post.title} ${post.content}`);
       } else {
-        classification = await classifySignal(post);
-        isFirstPerson = classification?.isFirstResponder || detectFirstPerson(`${post.title} ${post.content}`);
+        // Reddit: use Groq (first-person experience matters)
+        try {
+          classification = await classifySignal(post);
+          isFirstPerson = classification?.isFirstResponder || detectFirstPerson(`${post.title} ${post.content}`);
+        } catch {
+          classification = classifyByKeywords(`${post.title} ${post.content}`);
+        }
       }
 
       signals.push({
@@ -216,8 +269,6 @@ async function runNewsSentiment(): Promise<any> {
         lat: post.lat, lng: post.lng, severity: post.severity, mag: post.mag,
         event_type: post.eventType, post_timestamp: post.timestamp.toISOString(),
       });
-
-      if (!isAuthoritative) await new Promise(r => setTimeout(r, 200));
     }
 
     let inserted = 0;
@@ -226,7 +277,7 @@ async function runNewsSentiment(): Promise<any> {
       if (!error) inserted = signals.length;
     }
 
-    return { status: 'ok', posts_fetched: posts.length, new_posts: newPosts.length, signals_inserted: inserted };
+    return { status: 'ok', posts_fetched: posts.length, recent: recentPosts.length, new: newPosts.length, processed: toProcess.length, signals_inserted: inserted };
   } catch (e: any) {
     return { status: 'error', error: e.message };
   }
@@ -353,6 +404,18 @@ Síguenos: https://t.me/ViajeConInteligencia`;
 }
 
 // ===== MASTER CRON =====
+async function withTimeout<T>(fn: () => Promise<T>, ms: number, label: string): Promise<T | { status: 'error'; error: string }> {
+  try {
+    return await Promise.race([
+      fn(),
+      new Promise<never>((_, reject) => setTimeout(() => reject(new Error(`Timeout after ${ms}ms`)), ms)),
+    ]);
+  } catch (e: any) {
+    console.error(`[Master] ${label} failed:`, e.message);
+    return { status: 'error', error: e.message };
+  }
+}
+
 export async function GET(request: Request) {
   const authHeader = request.headers.get('authorization');
   if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
@@ -364,37 +427,36 @@ export async function GET(request: Request) {
 
   console.log('[Master Cron] Starting...');
 
-  // 1. MAEC Scrape
-  console.log('[Master] 1/8 MAEC scrape...');
-  results.maec = await runMaecScrape();
+  // Phase 1: Independent tasks (run in parallel)
+  // MAEC scrape (120s timeout), Airspace OSINT (30s), Oil Price (15s)
+  const [maecRes, airspaceRes, oilRes] = await Promise.all([
+    withTimeout(() => runMaecScrape(), 120000, '1/8 MAEC scrape'),
+    withTimeout(() => runAirspaceOsint(), 30000, '4/8 Airspace OSINT'),
+    withTimeout(() => runOilPrice(), 15000, '6/8 Oil price'),
+  ]);
+  results.maec = maecRes;
+  results.airspace = airspaceRes;
+  results.oil = oilRes;
 
-  // 2. Risk Alerts Check
-  console.log('[Master] 2/8 Risk alerts...');
-  results.risk_check = await runRiskCheck();
+  // Phase 2: Depends on Phase 1 results
+  // Risk check (needs MAEC data), Flight costs (needs oil price)
+  const [riskRes, flightRes] = await Promise.all([
+    withTimeout(() => runRiskCheck(), 30000, '2/8 Risk alerts'),
+    withTimeout(() => runFlightCosts(), 60000, '3/8 Flight costs'),
+  ]);
+  results.risk_check = riskRes;
+  results.flight_costs = flightRes;
 
-  // 3. Flight Costs / TCI
-  console.log('[Master] 3/8 Flight costs...');
-  results.flight_costs = await runFlightCosts();
-
-  // 4. Airspace OSINT
-  console.log('[Master] 4/8 Airspace OSINT...');
-  results.airspace = await runAirspaceOsint();
-
-  // 5. News Sentiment (GDELT + RSS + Groq)
+  // Phase 3: News sentiment (most variable, isolated timeout)
   console.log('[Master] 5/8 News sentiment...');
-  results.news_sentiment = await runNewsSentiment();
+  results.news_sentiment = await withTimeout(() => runNewsSentiment(), 90000, '5/8 News sentiment');
 
-  // 6. Oil Price
-  console.log('[Master] 6/8 Oil price...');
-  results.oil = await runOilPrice();
-
-  // 7. Daily Digest
+  // Phase 4: Digests (always run last)
   console.log('[Master] 7/8 Daily digest...');
-  results.digest = await runDailyDigest(results);
+  results.digest = await withTimeout(() => runDailyDigest(results), 30000, '7/8 Daily digest');
 
-  // 8. Weekly Digest (Mondays only)
   console.log('[Master] 8/8 Weekly digest...');
-  results.weekly = await runWeeklyDigest();
+  results.weekly = await withTimeout(() => runWeeklyDigest(), 30000, '8/8 Weekly digest');
 
   const elapsed = Date.now() - startTime;
 

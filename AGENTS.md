@@ -1,5 +1,11 @@
 # AGENTS.md — Viaje con Inteligencia
 
+## PAUSED STATE (07 May 2026)
+- **Master cron**: Fixed import error, deployed, but **times out on production** (>300s). Groq classification for many OSINT posts is too slow. Next: reduce Groq calls, add per-step timeouts, skip AI for low-priority sources.
+- **OSINT /admin/osint/**: Still shows only 13 stale entries from yesterday. News RSS feeds added to code but not yet populating data.
+- **All API keys** saved in `.env.local`: Supabase, Stripe, Telegram, Resend, Groq, CRON_SECRET, Mastodon, Admin. No need to search again.
+- **Newsletter**: Architecture designed, not implemented. Pending discussion on what's viable.
+
 ## Project
 - **Framework**: Next.js 16 + App Router, TypeScript
 - **Deploy**: Vercel (auto-deploy on `main` push)
