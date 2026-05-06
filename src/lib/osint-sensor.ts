@@ -51,42 +51,59 @@ const KEYWORDS = [
 
 export async function fetchRedditPosts(limit = 50): Promise<RawPost[]> {
   const posts: RawPost[] = [];
+  const RSS_FEEDS = [
+    'https://www.reddit.com/r/travel/new/.rss',
+    'https://www.reddit.com/r/solotravel/new/.rss',
+    'https://www.reddit.com/r/digitalnomad/new/.rss',
+  ];
 
-  for (const sub of SUBREDDITS) {
+  for (const feedUrl of RSS_FEEDS) {
     try {
-      const url = `https://www.reddit.com/r/${sub}/new.json?limit=25`;
-      const res = await fetch(url, {
-        headers: { 'User-Agent': 'ViajeConInteligencia/1.0 OSINT Sensor (by mcasrom)' },
+      const res = await fetch(feedUrl, {
+        headers: { 
+          'User-Agent': 'ViajeConInteligencia/1.0 (Linux; RSS Reader)',
+          'Accept': 'application/xml, text/xml'
+        },
         cache: 'no-store',
       });
 
       if (!res.ok) continue;
 
-      const data = await res.json();
-      const children = data?.data?.children || [];
+      const xmlText = await res.text();
+      const entries = xmlText.split('<entry>');
 
-      for (const child of children) {
-        const d = child.data;
-        if (!d || d.over_18 || d.stickied || !d.selftext) continue;
+      for (let i = 1; i < entries.length; i++) {
+        const entry = entries[i];
+        const titleMatch = entry.match(/<title>(.*?)<\/title>/s);
+        const contentMatch = entry.match(/<content type="html">(.*?)<\/content>/s);
+        const authorMatch = entry.match(/<name>(.*?)<\/name>/s);
+        const updatedMatch = entry.match(/<updated>(.*?)<\/updated>/s);
+        const linkMatch = entry.match(/<link href="(.*?)"/);
+        const subredditMatch = entry.match(/reddit\.com\/r\/(.*?)\//);
 
-        const text = `${d.title || ''} ${d.selftext || ''}`.toLowerCase();
+        if (!titleMatch) continue;
+
+        const title = titleMatch[1].replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>');
+        const content = contentMatch ? contentMatch[1].replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/<[^>]+>/g, '') : '';
+        
+        const text = `${title} ${content}`.toLowerCase();
         const hasKeyword = KEYWORDS.some(kw => text.includes(kw.toLowerCase()));
 
         if (!hasKeyword) continue;
 
         posts.push({
           source: 'reddit',
-          sourceUrl: `https://reddit.com${d.permalink}`,
-          title: d.title || '',
-          content: d.selftext || '',
-          author: d.author || '[deleted]',
-          subreddit: sub,
-          timestamp: new Date(d.created_utc * 1000),
-          locationName: d.link_flair_text || undefined,
+          sourceUrl: linkMatch ? linkMatch[1] : feedUrl,
+          title,
+          content,
+          author: authorMatch ? authorMatch[1] : 'unknown',
+          subreddit: subredditMatch ? subredditMatch[1] : 'unknown',
+          timestamp: updatedMatch ? new Date(updatedMatch[1]) : new Date(),
+          locationName: undefined,
         });
       }
     } catch (e) {
-      console.error(`[OSINT] Reddit r/${sub} error:`, e);
+      console.error(`[OSINT] RSS Feed error:`, e);
     }
   }
 
