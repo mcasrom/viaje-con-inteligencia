@@ -36,6 +36,15 @@ export const ineTourismData: Record<string, { arrivals: number; pernoctaciones: 
   cz: { arrivals: 12000000, pernoctaciones: 38000000, estanciaMedia: 6.8, source: 'INE/UNWTO' },
 };
 
+// Update tourism data dynamically (called from API routes with Supabase data)
+export function updateTourismData(data: Record<string, { arrivals: number; pernoctaciones: number; estanciaMedia: number; source: string }>) {
+  Object.assign(ineTourismData, data);
+}
+
+export function isTourismDataDynamic(): boolean {
+  return Object.values(ineTourismData).some(d => d.source === 'INE-live');
+}
+
 export interface DestinationFeatures {
   code: string;
   nombre: string;

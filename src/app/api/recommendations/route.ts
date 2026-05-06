@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getRecommendations, findSimilarDestinations, TravelPreference } from '@/data/clustering';
+import { getRecommendations, findSimilarDestinations, TravelPreference, updateTourismData } from '@/data/clustering';
+import { getINEData } from '@/data/ine-data';
 import { getPaisPorCodigo, getTodosLosPaises } from '@/data/paises';
 
 export async function GET(request: NextRequest) {
@@ -9,6 +10,10 @@ export async function GET(request: NextRequest) {
   const presupuesto = (searchParams.get('budget') || 'medio') as 'bajo' | 'medio' | 'alto';
   const duracion = parseInt(searchParams.get('duracion') || '7');
   const similar = searchParams.get('similar'); // código de país para similares
+
+  // Load dynamic INE data if available
+  const ineData = await getINEData();
+  updateTourismData(ineData);
 
   // Modo similar: buscar destinos parecidos a uno dado
   if (similar) {

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { findSimilarDestinations } from '@/data/clustering';
+import { findSimilarDestinations, updateTourismData } from '@/data/clustering';
+import { getINEData } from '@/data/ine-data';
 
 export const dynamic = 'force-dynamic';
 
@@ -8,6 +9,10 @@ export async function GET(request: NextRequest) {
   const limit = parseInt(request.nextUrl.searchParams.get('limit') || '5');
 
   try {
+    // Load dynamic INE data if available
+    const ineData = await getINEData();
+    updateTourismData(ineData);
+
     const similar = findSimilarDestinations(code, limit);
 
     return NextResponse.json({
@@ -15,6 +20,7 @@ export async function GET(request: NextRequest) {
       timestamp: new Date().toISOString(),
       code,
       similar,
+      dataSource: Object.values(ineData).some(d => d.source === 'INE-live') ? 'supabase' : 'hardcoded',
     });
   } catch (error) {
     console.error('Similar error:', error);

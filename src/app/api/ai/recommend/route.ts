@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getRecommendations, getDestinationsWithFeatures } from '@/data/clustering';
+import { getRecommendations, getDestinationsWithFeatures, updateTourismData } from '@/data/clustering';
+import { getINEData } from '@/data/ine-data';
 import { paisesData } from '@/data/paises';
 
 export async function GET(request: NextRequest) {
@@ -10,6 +11,10 @@ export async function GET(request: NextRequest) {
   const limit = parseInt(searchParams.get('limit') || '3');
 
   try {
+    // Load dynamic INE data if available
+    const ineData = await getINEData();
+    updateTourismData(ineData);
+
     const recommendations = getRecommendations({ preferencia, presupuesto, duracion, desdeES: true }, limit);
     const features = getDestinationsWithFeatures();
 
@@ -26,7 +31,13 @@ export async function GET(request: NextRequest) {
       };
     });
 
-    return NextResponse.json({ preferencia, presupuesto, duracion, recommendations: enriched });
+    return NextResponse.json({
+      preferencia,
+      presupuesto,
+      duracion,
+      recommendations: enriched,
+      dataSource: Object.values(ineData).some(d => d.source === 'INE-live') ? 'supabase' : 'hardcoded',
+    });
   } catch (error) {
     return NextResponse.json({ error: 'Error al calcular recomendaciones' }, { status: 500 });
   }
