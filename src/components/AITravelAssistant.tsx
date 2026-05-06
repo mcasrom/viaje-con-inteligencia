@@ -113,7 +113,7 @@ export default function AITravelAssistant() {
                 </button>
               </div>
               <p className="text-slate-500 text-xs mt-2 text-center">
-                <Link href="/premium" className="hover:text-purple-400">Ver versión completa en Premium</Link>
+                <Link href="/chat" className="hover:text-purple-400">Abrir Chat IA completo →</Link>
               </p>
             </div>
           </div>

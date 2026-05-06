@@ -192,7 +192,7 @@ Usa un formato limpio y práctico. Responde en español.`;
 
 export async function chatWithAI(
   message: string,
-  context: { country?: string; previousMessages?: string[] }
+  context: { country?: string; previousMessages?: string[]; model?: string }
 ): Promise<string> {
   const countryCode = context.country?.toLowerCase();
   const countryData = countryCode ? getCountryRiskInfo(countryCode) : '';
@@ -206,6 +206,8 @@ export async function chatWithAI(
     ?.slice(-6)
     ?.map((msg, i) => (i % 2 === 0 ? `Usuario: ${msg}` : `Asistente: ${msg}`))
     .join('\n');
+
+  const selectedModel = context.model || 'llama-3.1-8b-instant';
 
   try {
     const chatCompletion = await groqClient.chat.completions.create({
@@ -238,7 +240,7 @@ Responde en español, de forma clara y útil. Sugiere consultar la web del MAEC.
         ...(history ? [{ role: 'user' as const, content: history }] : []),
         { role: 'user', content: message },
       ],
-      model: 'llama-3.1-8b-instant',
+      model: selectedModel,
       temperature: 0.7,
       max_tokens: 2048,
     });

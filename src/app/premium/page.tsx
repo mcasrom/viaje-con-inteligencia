@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { ArrowLeft, Check, X, Sparkles, Shield, Bell, MessageSquare, FileCheck, TrendingUp, Map, Plane, Star, Zap, Crown } from 'lucide-react';
 
 const FEATURES = [
-  { icon: <MessageSquare className="w-5 h-5" />, title: 'Chat IA de Viajes', desc: 'Pregunta sobre cualquier destino, visado, seguridad o ruta. Respuestas al instante.' },
+  { icon: <MessageSquare className="w-5 h-5" />, title: 'Chat IA de Viajes', desc: '5 mensajes/día gratis con llama-3.1-8b. Premium: ilimitado con llama-3.1-70b (9x más inteligente).' },
   { icon: <Plane className="w-5 h-5" />, title: 'Planificador IA', desc: 'Genera itinerarios personalizados por destino, días e intereses.' },
   { icon: <Bell className="w-5 h-5" />, title: 'Alertas en Tiempo Real', desc: 'Cambios de riesgo, conflictos naturales y recomendaciones MAEC.' },
   { icon: <Map className="w-5 h-5" />, title: 'Mapa de Sismos (USGS)', desc: 'Terremotos en vivo con magnitud, ubicación y alertas de tsunami.' },
@@ -20,7 +20,8 @@ const COMPARISON = [
   { feature: '107 países con datos', free: true, premium: true },
   { feature: 'Filtros por nivel de riesgo', free: true, premium: true },
   { feature: 'Blog OSINT', free: true, premium: true },
-  { feature: 'Chat IA sin límite', free: false, premium: true },
+  { feature: 'Chat IA (5 mensajes/día)', free: true, premium: true },
+  { feature: 'Chat IA ilimitado + modelo 70b', free: false, premium: true },
   { feature: 'Planificador de itinerarios IA', free: false, premium: true },
   { feature: 'Alertas en tiempo real', free: false, premium: true },
   { feature: 'Mapa de sismos USGS', free: false, premium: true },
@@ -130,6 +131,75 @@ export default function PremiumPage() {
           </div>
         </div>
 
+        {/* Chat IA: Free vs Premium explainer */}
+        <div className="mb-16">
+          <h2 className="text-2xl font-bold text-white text-center mb-2">
+            Chat IA: Gratis vs Premium
+          </h2>
+          <p className="text-slate-400 text-center text-sm mb-8">
+            Prueba el asistente gratis y actualiza cuando necesites más potencia.
+          </p>
+
+          <div className="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto">
+            {/* Free */}
+            <div className="bg-slate-800/60 rounded-2xl border border-slate-700/50 p-6">
+              <div className="flex items-center gap-2 mb-4">
+                <Zap className="w-5 h-5 text-blue-400" />
+                <h3 className="text-white font-bold">Plan Gratuito</h3>
+              </div>
+              <ul className="space-y-3 text-sm">
+                {[
+                  '5 mensajes por día',
+                  'Modelo llama-3.1-8b-instant',
+                  'Respuestas rápidas (~1s)',
+                  'Contexto de país y riesgo MAEC',
+                  'Ideal para consultas puntuales',
+                ].map((item, i) => (
+                  <li key={i} className="flex items-start gap-2 text-slate-300">
+                    <Check className="w-4 h-4 text-blue-400 flex-shrink-0 mt-0.5" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+              <div className="mt-5 pt-4 border-t border-slate-700/50">
+                <Link href="/chat" className="text-blue-400 hover:text-blue-300 text-sm font-medium">
+                  Probar Chat IA →
+                </Link>
+              </div>
+            </div>
+
+            {/* Premium */}
+            <div className="bg-gradient-to-br from-amber-500/10 to-orange-500/10 rounded-2xl border border-amber-500/30 p-6 relative">
+              <div className="absolute -top-3 right-4 px-3 py-1 bg-amber-500 text-slate-900 text-xs font-bold rounded-full">
+                Recomendado
+              </div>
+              <div className="flex items-center gap-2 mb-4">
+                <Crown className="w-5 h-5 text-amber-400" />
+                <h3 className="text-white font-bold">Plan Premium</h3>
+              </div>
+              <ul className="space-y-3 text-sm">
+                {[
+                  'Mensajes ilimitados',
+                  'Modelo llama-3.1-70b-versatile (9x más potente)',
+                  'Respuestas más detalladas y precisas',
+                  'Contexto extendido de conversación',
+                  'Itinerarios, comparativas y análisis',
+                ].map((item, i) => (
+                  <li key={i} className="flex items-start gap-2 text-slate-300">
+                    <Check className="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+              <div className="mt-5 pt-4 border-t border-amber-500/20">
+                <a href="/free-trial" className="text-amber-400 hover:text-amber-300 text-sm font-medium">
+                  7 días gratis →
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Pricing */}
         <div className="mb-16">
           {/* Toggle */}
@@ -182,9 +252,9 @@ export default function PremiumPage() {
                 <p className="text-green-400/70 text-xs mt-0.5">Sin tarjeta · Acceso completo · Cancela cuando quieras</p>
               </div>
 
-              <ul className="space-y-3 mb-6">
+               <ul className="space-y-3 mb-6">
                 {[
-                  'Chat IA de viajes sin límite',
+                  'Chat IA ilimitado con modelo 70b',
                   'Planificador de itinerarios',
                   'Alertas de riesgo en tiempo real',
                   'Mapa de sismos USGS en vivo',
@@ -232,9 +302,11 @@ export default function PremiumPage() {
           <h3 className="text-xl font-bold text-white text-center mb-6">Preguntas frecuentes</h3>
           <div className="space-y-4">
             {[
+              { q: '¿Cuántos mensajes de Chat IA tengo gratis?', a: '5 mensajes por día con el modelo llama-3.1-8b-instant. Es suficiente para consultas rápidas. Para uso ilimitado y el modelo superior llama-3.1-70b (9x más inteligente), actualiza a Premium.' },
+              { q: '¿Qué diferencia hay entre los modelos 8b y 70b?', a: 'El modelo 70b es 9 veces más grande, con mejor comprensión contextual, respuestas más detalladas y mayor precisión en recomendaciones complejas como itinerarios multiciudad o análisis de riesgo.' },
               { q: '¿Necesito tarjeta para la prueba?', a: 'No. Regístrate gratis y tendrás 7 días de acceso Premium completo. Sin tarjeta, sin compromiso. Cuando termine el trial, puedes suscribirte o seguir con el plan gratuito.' },
               { q: '¿Puedo cancelar en cualquier momento?', a: 'El trial no requiere cancelación — simplemente deja de usarse cuando pasan los 7 días. Si decides suscribirte después, puedes cancelar desde tu perfil en cualquier momento. No hay permanencia.' },
-              { q: '¿Qué pasa cuando termina la prueba?', a: 'Se te notificará por email. Si no te suscribes, tu cuenta vuelve al plan gratuito con acceso al mapa y filtros de riesgo.' },
+              { q: '¿Qué pasa cuando termina la prueba?', a: 'Se te notificará por email. Si no te suscribes, tu cuenta vuelve al plan gratuito con acceso al mapa, filtros de riesgo y 5 mensajes/día en el Chat IA.' },
               { q: '¿Hay factura?', a: 'Sí. Recibirás una factura por email con cada pago. Las empresas pueden deducirlo como gasto.' },
             ].map((faq, i) => (
               <div key={i} className="bg-slate-800/60 rounded-xl p-5 border border-slate-700/50">
