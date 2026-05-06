@@ -180,7 +180,7 @@ export default function PremiumPage() {
               <ul className="space-y-3 text-sm">
                 {[
                   'Mensajes ilimitados',
-                  'Modelo llama-3.1-70b-versatile (9x más potente)',
+                  'Modelo llama-3.3-70b-versatile (9x más potente)',
                   'Respuestas más detalladas y precisas',
                   'Contexto extendido de conversación',
                   'Itinerarios, comparativas y análisis',

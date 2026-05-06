@@ -56,7 +56,7 @@
 ### Completado
 - **Chat IA página `/chat`** — UI completa tipo ChatGPT con sugerencias, markdown, y selector de modelo
 - **Rate limiting** — 5 mensajes/día gratis vía localStorage, contador visual
-- **Modelo dual** — Free: `llama-3.1-8b-instant` / Premium: `llama-3.1-70b-versatile`
+- **Modelo dual** — Free: `llama-3.1-8b-instant` / Premium: `llama-3.3-70b-versatile`
 - **API `/api/ai/chat`** — Soporte para parámetro `model` dinámico
 - **groq-ai.ts** — `chatWithAI()` acepta `model` en context
 - **Premium page** — Nueva sección "Chat IA: Gratis vs Premium", FAQ actualizado con 2 preguntas nuevas

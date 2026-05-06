@@ -4,7 +4,7 @@
 - **Framework**: Next.js 16 + App Router, TypeScript
 - **Deploy**: Vercel (auto-deploy on `main` push)
 - **UI**: Tailwind CSS, lucide-react, react-markdown
-- **AI**: Groq API (`llama-3.1-8b-instant` free, `llama-3.1-70b-versatile` premium)
+- **AI**: Groq API (`llama-3.1-8b-instant` free, `llama-3.3-70b-versatile` premium)
 - **Auth/DB**: Supabase (users, trips, favorites)
 - **Payments**: Stripe (not fully integrated yet)
 - **Email**: Resend

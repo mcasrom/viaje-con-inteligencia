@@ -15,7 +15,7 @@ const SUGGESTIONS = [
 ];
 
 const FREE_MODEL = 'llama-3.1-8b-instant';
-const PREMIUM_MODEL = 'llama-3.1-70b-versatile';
+const PREMIUM_MODEL = 'llama-3.3-70b-versatile';
 const FREE_DAILY_LIMIT = 5;
 
 function getTodayKey() {
