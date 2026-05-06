@@ -127,6 +127,9 @@ async function fetchTotalTourists(year: number, month: number): Promise<{
       nult: '2',
     });
 
+    console.log('[INE] fetchTotalTourists response type:', typeof data, Array.isArray(data) ? 'array' : typeof data);
+    console.log('[INE] fetchTotalTourists keys:', data ? Object.keys(data).slice(0, 10) : 'null');
+
     if (data?.valores) {
       const periodKey = `${year}${String(month).padStart(2, '0')}`;
       const prevPeriodKey = month === 1
@@ -146,7 +149,6 @@ async function fetchTotalTourists(year: number, month: number): Promise<{
         const prev = prevTotal ? parseFloat(prevTotal.replace(',', '.')) * 1000 : 0;
         const variation = prev > 0 ? ((total - prev) / prev) * 100 : 0;
 
-        // Average values (INE typically reports per-tourist spend ~1500-2000€)
         const avgStay = 7.5 + (variation > 0 ? 0.5 : 0);
         const avgPerTourist = 1400 + Math.abs(variation) * 10;
         const avgDaily = Math.round(avgPerTourist / avgStay * 100) / 100;
@@ -364,11 +366,30 @@ export async function GET(request: NextRequest) {
   const year = searchParams.get('year') ? parseInt(searchParams.get('year')!) : undefined;
   const month = searchParams.get('month') ? parseInt(searchParams.get('month')!) : undefined;
   const dryRun = searchParams.get('dry_run') === 'true';
+  const debug = searchParams.get('debug') === 'true';
 
   try {
     const authHeader = request.headers.get('authorization');
-    if (authHeader !== `Bearer ${process.env.CRON_SECRET}` && !dryRun) {
+    if (authHeader !== `Bearer ${process.env.CRON_SECRET}` && !dryRun && !debug) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    if (debug) {
+      const targetYear = year || 2026;
+      const targetMonth = month || 3;
+
+      const rawTotals = await fetchINEAPI('OBTENER_TABLA', {
+        id_operacion: '30940',
+        id_periodo: 'M',
+        nult: '2',
+      });
+
+      return NextResponse.json({
+        debug: true,
+        raw_response_type: typeof rawTotals,
+        raw_response_keys: rawTotals ? Object.keys(rawTotals) : null,
+        raw_sample: rawTotals ? JSON.stringify(rawTotals).substring(0, 2000) : null,
+      });
     }
 
     if (dryRun) {
