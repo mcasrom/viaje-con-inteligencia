@@ -74,10 +74,10 @@ export async function fetchRedditPosts(limit = 50): Promise<RawPost[]> {
 
       for (let i = 1; i < entries.length; i++) {
         const entry = entries[i];
-        const titleMatch = entry.match(/<title>(.*?)<\/title>/s);
-        const contentMatch = entry.match(/<content type="html">(.*?)<\/content>/s);
-        const authorMatch = entry.match(/<name>(.*?)<\/name>/s);
-        const updatedMatch = entry.match(/<updated>(.*?)<\/updated>/s);
+        const titleMatch = entry.match(/<title>([\s\S]*?)<\/title>/);
+        const contentMatch = entry.match(/<content type="html">([\s\S]*?)<\/content>/);
+        const authorMatch = entry.match(/<name>([\s\S]*?)<\/name>/);
+        const updatedMatch = entry.match(/<updated>([\s\S]*?)<\/updated>/);
         const linkMatch = entry.match(/<link href="(.*?)"/);
         const subredditMatch = entry.match(/reddit\.com\/r\/(.*?)\//);
 
