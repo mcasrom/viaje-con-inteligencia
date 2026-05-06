@@ -4,18 +4,17 @@ export const dynamic = 'force-dynamic';
 export const maxDuration = 30;
 
 export async function GET() {
-  const datasets = [
-    'tour_arr_m',
-    'tour_occ_nim',
-    'tour_occ_ninat',
-    'tour_arr_ninat',
+  const urls = [
+    'https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/tour_arr_m?format=JSON&geo=ES&freq=M&unit=NR&startPeriod=2024-01',
+    'https://ec.europa.eu/eurostat/api/dissementation/statistics/1.0/data/tour_occ_nim?format=JSON&geo=ES&freq=M',
+    'https://restcountries.com/v3.1/name/spain',
+    'https://api.worldbank.org/v2/country/ES/indicator/ST.INT.ARVL?format=json&per_page=5',
   ];
 
   const results = [];
 
-  for (const ds of datasets) {
+  for (const url of urls) {
     try {
-      const url = `https://ec.europa.eu/eurostat/wdds/rest/data/v2.1/json/${ds}?language=en&geo=ES&freq=M&unit=NR`;
       const start = Date.now();
       const res = await fetch(url, {
         headers: { 'Accept': 'application/json' },
@@ -23,19 +22,20 @@ export async function GET() {
       });
 
       const elapsed = Date.now() - start;
-      const data = await res.json();
+      const text = await res.text();
+      const contentType = res.headers.get('content-type') || '';
 
       results.push({
-        dataset: ds,
+        url: url.substring(0, 80) + '...',
         status: res.status,
+        content_type: contentType,
         elapsed_ms: elapsed,
-        hasData: !!data?.value,
-        valueCount: data?.value ? Object.keys(data.value).length : 0,
-        label: data?.label || '',
-        sampleKeys: data?.dimension ? Object.keys(data.dimension).slice(0, 5) : [],
+        content_length: text.length,
+        isJson: contentType.includes('json') || text.trimStart().startsWith('{') || text.trimStart().startsWith('['),
+        preview: text.substring(0, 300),
       });
     } catch (e: any) {
-      results.push({ dataset: ds, error: e.message });
+      results.push({ url: url.substring(0, 80), error: e.message });
     }
   }
 
