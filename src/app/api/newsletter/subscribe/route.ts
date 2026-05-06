@@ -5,20 +5,22 @@ import { Resend } from 'resend';
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : new Resend('re_123456789');
 
 const BASE_URL = process.env.APP_BASE_URL || 'https://www.viajeinteligencia.com';
-const UNSUCRIBE_URL = `${BASE_URL}/api/newsletter/subscribe`;
+const VERIFY_URL = `${BASE_URL}/api/newsletter/subscribe`;
 
-async function sendWelcomeEmail(email: string, name: string, verifyToken: string) {
+const SUBSCRIBE_COOLDOWN = 3600 * 1000; // 1 hora
+
+async function sendConfirmationEmail(email: string, name: string, verifyToken: string) {
   if (!resend) {
-    console.log('RESEND_API_KEY not configured - email skipped');
+    console.log('RESEND_API_KEY not configured - confirmation email skipped');
     return;
   }
 
-  const unsubscribeLink = `${UNSUCRIBE_URL}?action=unsubscribe&token=${verifyToken}`;
+  const verifyLink = `${VERIFY_URL}?action=verify&token=${verifyToken}`;
 
   await resend.emails.send({
     from: 'Viaje con Inteligencia <newsletter@viajeinteligencia.com>',
     to: email,
-    subject: 'Bienvenido a Viaje con Inteligencia 📮',
+    subject: 'Confirma tu suscripción al Newsletter 📮',
     html: `
 <!DOCTYPE html>
 <html>
@@ -28,11 +30,19 @@ async function sendWelcomeEmail(email: string, name: string, verifyToken: string
 </head>
 <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background: #0f172a; color: #f8fafc;">
   <div style="background: #1e293b; border-radius: 12px; padding: 24px; border: 1px solid #334155;">
-    <h1 style="color: #60a5fa; margin: 0 0 16px;">🛫 Viaje con Inteligencia</h1>
+    <h1 style="color: #60a5fa; margin: 0 0 16px;">🛫 Confirma tu suscripción</h1>
     
     <p style="color: #cbd5e1; font-size: 16px;">¡Hola${name ? ` ${name}` : ''}! 👋</p>
     
-    <p style="color: #94a3b8; line-height: 1.6;">Gracias por suscribirte. Cada semana recibirás:</p>
+    <p style="color: #94a3b8; line-height: 1.6;">Alguien (esperamos que tú) ha solicitado suscribirse a nuestro newsletter semanal.</p>
+
+    <div style="text-align: center; margin: 24px 0;">
+      <a href="${verifyLink}" style="display: inline-block; background: #3b82f6; color: #fff; padding: 12px 32px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 16px;">
+        ✅ Sí, quiero suscribirme
+      </a>
+    </div>
+
+    <p style="color: #94a3b8; line-height: 1.6; font-size: 14px;">Una vez confirmado recibirás cada semana:</p>
     
     <ul style="color: #94a3b8; line-height: 1.8;">
       <li>📰 Últimas alertas de viaje del MAEC</li>
@@ -43,27 +53,84 @@ async function sendWelcomeEmail(email: string, name: string, verifyToken: string
     <div style="background: #1e3a5f; border-radius: 8px; padding: 16px; margin: 20px 0; border: 1px solid #3b82f6;">
       <p style="color: #60a5fa; margin: 0 0 8px; font-weight: 600;">📱 Síguenos en Telegram</p>
       <p style="color: #cbd5e1; margin: 0; font-size: 14px;">
-       Únete a nuestro canal para alertas instantáneas: 
+        Únete a nuestro canal para alertas instantáneas: 
         <a href="https://t.me/ViajeConInteligencia" style="color: #60a5fa;">@ViajeConInteligencia</a>
       </p>
     </div>
 
     <p style="color: #64748b; font-size: 12px; margin-top: 24px;">
-      ¿No quieres recibir estos emails? 
-      <a href="${unsubscribeLink}" style="color: #94a3b8; text-decoration: underline;">Cancela la suscripción</a>
+      Si no solicitaste esta suscripción, simplemente ignora este email. No se te enviará nada más.
     </p>
     
     <hr style="border: none; border-top: 1px solid #334155; margin: 24px 0;">
     
     <p style="color: #475569; font-size: 11px;">
-      <strong>Derecho a darte de baja:</strong> Según el RGPD y la LSSI, puedes cancelar tu suscripción en cualquier momento 
-      haciendo clic en el enlace anterior. Tus datos serán eliminados en un plazo máximo de 30 días.
+      <strong>RGPD / LSSI:</strong> Tus datos solo se usarán para enviarte el newsletter. Puedes cancelar en cualquier momento.
     </p>
   </div>
 </body>
 </html>
     `,
   });
+}
+
+async function sendWelcomeEmail(email: string, name: string) {
+  if (!resend) return;
+
+  const unsubscribeLink = `${VERIFY_URL}?action=unsubscribe&token=${crypto.randomUUID()}`;
+
+  await resend.emails.send({
+    from: 'Viaje con Inteligencia <newsletter@viajeinteligencia.com>',
+    to: email,
+    subject: '¡Bienvenido a Viaje con Inteligencia! 🎉',
+    html: `
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"></head>
+<body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background: #0f172a; color: #f8fafc;">
+  <div style="background: #1e293b; border-radius: 12px; padding: 24px; border: 1px solid #334155;">
+    <h1 style="color: #60a5fa; margin: 0 0 16px;">🛫 ¡Suscripción confirmada!</h1>
+    <p style="color: #cbd5e1; font-size: 16px;">¡Hola${name ? ` ${name}` : ''}! 👋</p>
+    <p style="color: #94a3b8; line-height: 1.6;">Tu suscripción está activa. Cada semana recibirás alertas MAEC, consejos de seguridad y viajes baratos.</p>
+    <div style="background: #1e3a5f; border-radius: 8px; padding: 16px; margin: 20px 0; border: 1px solid #3b82f6;">
+      <p style="color: #60a5fa; margin: 0 0 8px; font-weight: 600;">📱 Síguenos en Telegram</p>
+      <p style="color: #cbd5e1; margin: 0; font-size: 14px;">Alertas instantáneas: <a href="https://t.me/ViajeConInteligencia" style="color: #60a5fa;">@ViajeConInteligencia</a></p>
+    </div>
+    <p style="color: #64748b; font-size: 12px; margin-top: 24px;">
+      ¿No quieres recibir estos emails? <a href="/?newsletter=unsubscribed" style="color: #94a3b8; text-decoration: underline;">Cancelar suscripción</a>
+    </p>
+  </div>
+</body>
+</html>
+    `,
+  });
+}
+
+function getCooldownKey(email: string): string {
+  const now = new Date();
+  return `newsletter_subscribe_${email.toLowerCase()}_${now.getFullYear()}-${now.getMonth()}-${now.getDate()}-${now.getHours()}`;
+}
+
+function isRateLimited(email: string): boolean {
+  if (typeof window === 'undefined') return false;
+  try {
+    const key = getCooldownKey(email);
+    const stored = localStorage.getItem(key);
+    if (stored) {
+      const elapsed = Date.now() - parseInt(stored, 10);
+      if (elapsed < SUBSCRIBE_COOLDOWN) return true;
+    }
+    return false;
+  } catch {
+    return false;
+  }
+}
+
+function setRateLimit(email: string) {
+  if (typeof window === 'undefined') return;
+  try {
+    localStorage.setItem(getCooldownKey(email), String(Date.now()));
+  } catch {}
 }
 
 export async function POST(request: NextRequest) {
@@ -81,7 +148,7 @@ export async function POST(request: NextRequest) {
         await supabase
           .from('newsletter_subscribers')
           .upsert(
-            { email, name, verify_token: verifyToken, verified: true, source: source || 'web' },
+            { email, name, verify_token: verifyToken, verified: false, source: source || 'web' },
             { onConflict: 'email' }
           );
       } catch (e) {
@@ -89,11 +156,11 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    await sendWelcomeEmail(email, name || '', verifyToken);
+    await sendConfirmationEmail(email, name || '', verifyToken);
 
     return NextResponse.json({ 
       success: true, 
-      message: 'Te has suscrito correctamente. Revisa tu email.' 
+      message: 'Revisa tu email para confirmar la suscripción.' 
     });
   } catch (error) {
     console.error('Newsletter error:', error);
@@ -107,19 +174,50 @@ export async function GET(request: NextRequest) {
   const action = searchParams.get('action');
 
   if (action === 'verify' && token && supabase) {
-    await supabase
+    const { data } = await supabase
       .from('newsletter_subscribers')
-      .update({ verified: true, verify_token: null })
-      .eq('verify_token', token);
+      .select('email, name')
+      .eq('verify_token', token)
+      .single();
+
+    if (data) {
+      await supabase
+        .from('newsletter_subscribers')
+        .update({ verified: true, verify_token: null })
+        .eq('verify_token', token);
+
+      await sendWelcomeEmail(data.email, data.name || '');
+    }
+
     return NextResponse.redirect(new URL('/?newsletter=verified', request.url));
   }
 
   if (action === 'unsubscribe' && token) {
     if (supabase) {
-      await supabase
+      // Try token-based unsubscribe first
+      const { data } = await supabase
         .from('newsletter_subscribers')
-        .update({ verified: false, unsubscribed_at: new Date().toISOString() })
-        .eq('verify_token', token);
+        .select('email')
+        .eq('verify_token', token)
+        .single();
+
+      if (data) {
+        await supabase
+          .from('newsletter_subscribers')
+          .update({ verified: false, unsubscribed_at: new Date().toISOString() })
+          .eq('verify_token', token);
+      } else {
+        // Fallback: email-based unsubscribe (base64 encoded)
+        try {
+          const email = Buffer.from(decodeURIComponent(token), 'base64').toString('utf-8');
+          await supabase
+            .from('newsletter_subscribers')
+            .update({ verified: false, unsubscribed_at: new Date().toISOString() })
+            .eq('email', email);
+        } catch {
+          // Invalid token
+        }
+      }
     }
     return NextResponse.redirect(new URL('/?newsletter=unsubscribed', request.url));
   }

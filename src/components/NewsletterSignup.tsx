@@ -27,7 +27,7 @@ export default function NewsletterSignup({ variant = 'blog' }: NewsletterSignupP
 
       if (res.ok) {
         setStatus('success');
-        setMessage('¡Te has suscrito! Recibirás nuestro resumen semanal.');
+        setMessage('Revisa tu email para confirmar la suscripción. ¡Confirma y recibirás nuestro resumen semanal!');
         setEmail('');
         setName('');
       } else {

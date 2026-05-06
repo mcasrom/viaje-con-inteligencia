@@ -2,6 +2,43 @@
 
 ## Última sesión: 06 May 2026
 
+### Sistema de Autenticación (Supabase Auth)
+
+**Proveedor**: Supabase Auth (`@supabase/ssr`)
+
+#### Métodos de registro/login
+
+| Método | Función | Flujo | Estado |
+|---|---|---|---|
+| **Magic Link** | `signInWithOtp()` | Email → enlace mágico → redirect `/auth/callback?next=/dashboard` | ✅ Activo |
+| **Email + Contraseña** | `signInWithPassword()` | Login directo con email + password | ✅ Activo |
+| **Registro con contraseña** | `signUpWithPassword()` | Crea cuenta + redirect al callback | ✅ Activo |
+| **Telegram** | `signInWithOtp()` (email fake `telegram_${id}@viaje-inteligencia.app`) | Bot envía OTP, login vía email falso | ✅ Activo |
+| **Reset password** | `resetPasswordForEmail()` | Email con link → `/auth/callback?reset=true` | ✅ Activo |
+| **Update password** | `updateUser({ password })` | Desde dashboard tras reset | ✅ Activo |
+
+#### Componentes clave
+
+| Archivo | Rol |
+|---|---|
+| `src/contexts/AuthContext.tsx` | Provider con `useAuth()` hook, expone todos los métodos |
+| `src/components/LoginButton.tsx` | Modal flotante con toggle "Contraseña" / "Magic link" |
+| `src/app/auth/callback/route.ts` | Server route handler para OAuth/magic link callback |
+
+#### UI del LoginButton
+- Modal con toggle 2 modos: **Con contraseña** (default) vs **Magic link**
+- Campo email siempre visible, password solo en modo contraseña
+- Link a `/free-trial` para nuevos usuarios
+- Usuario logueado → botón de logout (icono o texto según variant)
+- Variantes: `button` (default), `icon` (solo ícono User/LogOut)
+- Sizes: `sm`, `md`, `lg`
+
+#### Notas
+- No hay Google OAuth, Apple, ni social login implementado
+- Telegram usa truco de email fake + OTP de Supabase
+- Redirect tras login siempre va a `/dashboard`
+- Sesiones manejadas por Supabase (JWT + cookie SSR)
+
 ### Completado
 - **Chat IA página `/chat`** — UI completa tipo ChatGPT con sugerencias, markdown, y selector de modelo
 - **Rate limiting** — 5 mensajes/día gratis vía localStorage, contador visual

@@ -42,7 +42,7 @@ async function sendWeeklyDigestEmails(digest: string) {
 
   const { data: subscribers } = await supabase
     .from('newsletter_subscribers')
-    .select('email, name, verify_token')
+    .select('email, name')
     .eq('verified', true)
     .is('unsubscribed_at', null);
 
@@ -51,8 +51,10 @@ async function sendWeeklyDigestEmails(digest: string) {
     return;
   }
 
-  const unsubscribeUrl = (token: string) => 
-    `${BASE_URL}/api/newsletter/subscribe?action=unsubscribe&token=${token}`;
+  const buildUnsubscribeUrl = (email: string) => {
+    const token = Buffer.from(email).toString('base64');
+    return `${BASE_URL}/api/newsletter/subscribe?action=unsubscribe&token=${encodeURIComponent(token)}`;
+  };
 
   for (const sub of subscribers) {
     try {
@@ -74,7 +76,7 @@ async function sendWeeklyDigestEmails(digest: string) {
     </div>
     <p style="color: #64748b; font-size: 12px; margin-top: 24px;">
       ¿No quieres recibir estos emails? 
-      <a href="${unsubscribeUrl(sub.verify_token)}" style="color: #94a3b8; text-decoration: underline;">Cancela la suscripción</a>
+      <a href="${buildUnsubscribeUrl(sub.email)}" style="color: #94a3b8; text-decoration: underline;">Cancela la suscripción</a>
     </p>
   </div>
 </body>

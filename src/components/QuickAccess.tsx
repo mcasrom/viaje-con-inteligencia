@@ -77,7 +77,7 @@ function QuickAccessInner() {
           <Link href="/kpi" className="block p-2 bg-green-600/20 text-green-400 rounded-lg hover:bg-green-600/30">🛡️ Índice de Paz</Link>
           <Link href="/rutas?route=vino" className="block p-2 bg-red-600/20 text-red-400 rounded-lg hover:bg-red-600/30">🍷 Rutas del Vino</Link>
           <Link href="/dashboard" className="block p-2 bg-red-600/20 text-red-400 rounded-lg hover:bg-red-600/30">📊 Mi Dashboard</Link>
-          <Link href="/premium?tab=reclamaciones" className="block p-2 bg-red-600/20 text-red-400 rounded-lg hover:bg-red-600/30">📝 Reclamaciones</Link>
+          <Link href="/reclamaciones" className="block p-2 bg-red-600/20 text-red-400 rounded-lg hover:bg-red-600/30">📝 Reclamaciones</Link>
         </div>
       </div>
       <div className="flex flex-col gap-2">
