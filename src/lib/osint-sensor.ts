@@ -3,7 +3,7 @@ import { groqClient } from './groq-ai';
 export type SignalCategory = 'salud' | 'seguridad' | 'clima' | 'logistico' | 'geopolitico' | 'otro';
 
 export interface RawPost {
-  source: 'reddit' | 'telegram' | 'rss';
+  source: 'reddit' | 'gdacs' | 'usgs' | 'gdelt' | 'rss';
   sourceUrl: string;
   title: string;
   content: string;
@@ -13,6 +13,9 @@ export interface RawPost {
   lat?: number;
   lng?: number;
   locationName?: string;
+  severity?: 'green' | 'orange' | 'red';
+  mag?: number;
+  eventType?: string;
 }
 
 export interface ClassifiedSignal {
@@ -48,6 +51,171 @@ const KEYWORDS = [
   'terremoto', 'enfermo', 'intoxicacion', 'estafa', 'peligro',
   'evacuacion', 'corte de calle', 'bloqueado', 'cancelado',
 ];
+
+export async function fetchAllPosts(): Promise<RawPost[]> {
+  const results = await Promise.allSettled([
+    fetchRedditPosts(),
+    fetchGdacsAlerts(),
+    fetchUsgsEarthquakes(),
+    fetchGdeltEvents(),
+  ]);
+
+  const posts: RawPost[] = [];
+  for (const result of results) {
+    if (result.status === 'fulfilled') {
+      posts.push(...result.value);
+    } else {
+      console.error('[OSINT] Source failed:', result.reason);
+    }
+  }
+  return posts;
+}
+
+export async function fetchGdacsAlerts(limit = 20): Promise<RawPost[]> {
+  const posts: RawPost[] = [];
+  try {
+    const res = await fetch('https://www.gdacs.org/contentdata/xml/rss_24h.xml', {
+      headers: { 'User-Agent': 'ViajeConInteligencia/1.0 (OSINT Sensor)' },
+      cache: 'no-store',
+    });
+
+    if (!res.ok) return posts;
+
+    const xmlText = await res.text();
+    const items = xmlText.split('<item>');
+
+    for (let i = 1; i < items.length; i++) {
+      const item = items[i];
+      const titleMatch = item.match(/<title>([\s\S]*?)<\/title>/);
+      const linkMatch = item.match(/<link>([\s\S]*?)<\/link>/);
+      const descMatch = item.match(/<description>([\s\S]*?)<\/description>/);
+      const dateMatch = item.match(/<pubDate>([\s\S]*?)<\/pubDate>/);
+      const alertMatch = item.match(/<gdacs:alertlevel>([\s\S]*?)<\/gdacs:alertlevel>/);
+      const typeMatch = item.match(/<gdacs:eventtype>([\s\S]*?)<\/gdacs:eventtype>/);
+      
+      if (!titleMatch) continue;
+
+      const title = titleMatch[1].replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>');
+      const desc = descMatch ? descMatch[1].replace(/&amp;/g, '&').replace(/<[^>]+>/g, '') : '';
+      const alertLevel = alertMatch ? alertMatch[1].toLowerCase() as 'green' | 'orange' | 'red' : 'green';
+      const eventType = typeMatch ? typeMatch[1] : undefined;
+
+      posts.push({
+        source: 'gdacs',
+        sourceUrl: linkMatch ? linkMatch[1] : 'https://www.gdacs.org',
+        title: `⚠️ GDACS: ${title}`,
+        content: `${desc} (Alert Level: ${alertLevel.toUpperCase()})`,
+        author: 'GDACS',
+        timestamp: dateMatch ? new Date(dateMatch[1]) : new Date(),
+        severity: alertLevel,
+        eventType,
+        locationName: undefined,
+      });
+
+      if (posts.length >= limit) break;
+    }
+  } catch (e) {
+    console.error('[OSINT] GDACS Feed error:', e);
+  }
+
+  return posts;
+}
+
+export async function fetchUsgsEarthquakes(limit = 15): Promise<RawPost[]> {
+  const posts: RawPost[] = [];
+  try {
+    const res = await fetch(
+      'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/significant_day.geojson',
+      { cache: 'no-store' }
+    );
+
+    if (!res.ok) return posts;
+
+    const data = await res.json();
+    if (!data.features) return posts;
+
+    for (const feature of data.features.slice(0, limit)) {
+      const { properties, geometry } = feature;
+      if (!properties) continue;
+
+      const alert = properties.alert?.toLowerCase();
+      const severity: 'green' | 'orange' | 'red' | undefined = 
+        alert === 'red' ? 'red' : alert === 'orange' ? 'orange' : 'green';
+
+      const urgency = severity === 'red' ? 'critical' : severity === 'orange' ? 'high' : 'medium';
+
+      posts.push({
+        source: 'usgs',
+        sourceUrl: properties.url || `https://earthquake.usgs.gov/earthquakes/eventpage/${properties.id}`,
+        title: `🌍 Terremoto M${properties.mag} - ${properties.place}`,
+        content: `Magnitude ${properties.mag} at depth ${geometry?.coordinates?.[2] ?? 'unknown'}km. Felt by ${properties.felt ?? 'N/A'} people. ${properties.tsunami ? 'TSUNAMI WARNING issued.' : ''}`,
+        author: 'USGS',
+        timestamp: new Date(properties.time),
+        lat: geometry?.coordinates?.[1],
+        lng: geometry?.coordinates?.[0],
+        locationName: properties.place,
+        severity,
+        mag: properties.mag,
+        eventType: 'earthquake',
+      });
+    }
+  } catch (e) {
+    console.error('[OSINT] USGS Feed error:', e);
+  }
+
+  return posts;
+}
+
+export async function fetchGdeltEvents(limit = 30): Promise<RawPost[]> {
+  const posts: RawPost[] = [];
+  
+  const TRAVEL_KEYWORDS = [
+    'protest', 'riot', 'strike', 'earthquake', 'flood', 'hurricane',
+    'cyclone', 'tsunami', 'volcano', 'outbreak', 'epidemic', 'bomb',
+    'terrorist', 'attack', 'shooting', 'assassination', 'kidnap',
+    'evacuation', 'border closure', 'airport closure', 'travel ban',
+  ];
+
+  const query = TRAVEL_KEYWORDS.join(' OR ');
+  const url = `https://api.gdeltproject.org/api/v2/doc/doc?query=${encodeURIComponent(query)}&mode=artlist&format=json&maxrecords=${limit}&sort=datedesc`;
+
+  try {
+    const res = await fetch(url, { cache: 'no-store' });
+
+    if (!res.ok) return posts;
+
+    const data = await res.json();
+    if (!data.articles) return posts;
+
+    for (const article of data.articles) {
+      const title = article.title || '';
+      const url = article.url || '';
+      const date = article.seendate || '';
+      const source = article.source?.[0]?.name || 'GDELT';
+      const tone = article.tone || 0;
+
+      if (!title || !url) continue;
+
+      const lowerTitle = title.toLowerCase();
+      const matchedCategory = TRAVEL_KEYWORDS.find(kw => lowerTitle.includes(kw));
+
+      posts.push({
+        source: 'gdelt',
+        sourceUrl: url,
+        title: `📡 GDELT: ${title}`,
+        content: `Source: ${source}. Sentiment score: ${tone}. Keyword: ${matchedCategory || 'general'}.`,
+        author: source,
+        timestamp: date ? new Date(date.slice(0, 14)) : new Date(),
+        eventType: matchedCategory,
+        locationName: undefined,
+      });
+    }
+  } catch (e) {
+    console.error('[OSINT] GDELT Feed error:', e);
+  }
+
+  return posts;
+}
 
 export async function fetchRedditPosts(limit = 50): Promise<RawPost[]> {
   const posts: RawPost[] = [];

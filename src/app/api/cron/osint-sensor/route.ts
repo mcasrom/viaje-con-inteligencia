@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase-admin';
-import { fetchRedditPosts, classifySignal, detectFirstPerson, type SignalCategory } from '@/lib/osint-sensor';
+import { fetchAllPosts, classifySignal, detectFirstPerson, type SignalCategory } from '@/lib/osint-sensor';
 
 const LAST_RUN_KEY = 'last_osint_run';
 const PROCESSED_URLS_KEY = 'osint_processed_urls';
@@ -17,21 +17,12 @@ export async function GET(request: Request) {
     console.log('[OSINT] Starting sensor scan...');
     const startTime = Date.now();
 
-    // 1. Fetch posts from Reddit
-    const posts = await fetchRedditPosts(50);
-    console.log(`[OSINT] Fetched ${posts.length} posts from Reddit`);
+    // 1. Fetch posts from all sources (Reddit + GDACS + USGS + GDELT)
+    const posts = await fetchAllPosts();
+    console.log(`[OSINT] Fetched ${posts.length} posts from 4 sources`);
     
-    // Debug: Check if we can reach Reddit at all
-    let redditStatus = 'unknown';
-    try {
-      const testRes = await fetch('https://www.reddit.com/.json', { headers: { 'User-Agent': 'ViajeConInteligencia/1.0' }, cache: 'no-store' });
-      redditStatus = `${testRes.status} ${testRes.statusText}`;
-    } catch (e: any) {
-      redditStatus = e.message || 'failed';
-    }
-
     if (!supabaseAdmin) {
-      return NextResponse.json({ error: 'Supabase not configured', postsFound: posts.length, redditStatus });
+      return NextResponse.json({ error: 'Supabase not configured', postsFound: posts.length });
     }
 
     // 2. Get already processed URLs
@@ -42,14 +33,39 @@ export async function GET(request: Request) {
 
     const processedUrls = new Set(processedData?.map(d => d.source_url) || []);
 
-    // 3. Filter new posts and classify
+    // 3. Filter new posts
     const newPosts = posts.filter(p => !processedUrls.has(p.sourceUrl));
-    console.log(`[OSINT] ${newPosts.length} new posts to classify`);
+    console.log(`[OSINT] ${newPosts.length} new posts to process`);
 
     const signals = [];
     for (const post of newPosts) {
-      const classification = await classifySignal(post);
-      const isFirstPerson = classification.isFirstResponder || detectFirstPerson(`${post.title} ${post.content}`);
+      // GDACS/USGS are authoritative - skip AI classification
+      const isAuthoritative = post.source === 'gdacs' || post.source === 'usgs';
+      
+      let classification;
+      let isFirstPerson = false;
+
+      if (isAuthoritative) {
+        // Map official sources directly to categories/urgency
+        const severity = post.severity;
+        const urgency = severity === 'red' ? 'critical' : severity === 'orange' ? 'high' : severity === 'green' ? 'medium' : 'low';
+        
+        let category: string = 'clima';
+        if (post.eventType === 'earthquake') category = 'clima';
+        else if (post.source === 'gdacs') category = 'clima';
+        
+        classification = {
+          category,
+          confidence: 0.9,
+          isFirstResponder: true,
+          urgency,
+          summary: post.title,
+        };
+      } else {
+        // GDELT and Reddit need AI classification
+        classification = await classifySignal(post);
+        isFirstPerson = classification.isFirstResponder || detectFirstPerson(`${post.title} ${post.content}`);
+      }
 
       signals.push({
         source: post.source,
@@ -64,11 +80,18 @@ export async function GET(request: Request) {
         urgency: classification.urgency,
         summary: classification.summary,
         location_name: post.locationName,
+        lat: post.lat,
+        lng: post.lng,
+        severity: post.severity,
+        mag: post.mag,
+        event_type: post.eventType,
         post_timestamp: post.timestamp.toISOString(),
       });
 
-      // Rate limit to avoid Groq exhaustion
-      await new Promise(r => setTimeout(r, 200));
+      // Rate limit to avoid Groq exhaustion (skip for authoritative sources)
+      if (!isAuthoritative) {
+        await new Promise(r => setTimeout(r, 200));
+      }
     }
 
     // 4. Insert signals into Supabase
@@ -103,7 +126,12 @@ export async function GET(request: Request) {
       newPosts: newPosts.length,
       signalsInserted: inserted,
       urgentCount: urgentSignals?.length || 0,
-      redditStatus,
+      sources: {
+        reddit: posts.filter(p => p.source === 'reddit').length,
+        gdacs: posts.filter(p => p.source === 'gdacs').length,
+        usgs: posts.filter(p => p.source === 'usgs').length,
+        gdelt: posts.filter(p => p.source === 'gdelt').length,
+      },
       timestamp: new Date().toISOString(),
     });
   } catch (error) {
