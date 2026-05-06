@@ -9,7 +9,6 @@ function buildAlternates(baseUrl: string) {
     languages: {
       es: baseUrl,
       en: `${baseUrl}/en`,
-      pt: `${baseUrl}/pt`,
       'x-default': baseUrl,
     },
   };
@@ -42,7 +41,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const staticPages = [
     { url: BASE_URL, priority: 1.0, alternates: buildAlternates(BASE_URL) },
     { url: `${BASE_URL}/en`, priority: 0.9 },
-    { url: `${BASE_URL}/pt`, priority: 0.9 },
     { url: `${BASE_URL}/coste`, priority: 0.85 },
     { url: `${BASE_URL}/premium`, priority: 0.8 },
     { url: `${BASE_URL}/checklist`, priority: 0.8 },

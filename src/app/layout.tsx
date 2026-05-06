@@ -93,7 +93,6 @@ export default function RootLayout({
         <meta name="msapplication-TileColor" content="#0f172a" />
         <link rel="alternate" hrefLang="es" href="https://www.viajeinteligencia.com" />
         <link rel="alternate" hrefLang="en" href="https://www.viajeinteligencia.com/en" />
-        <link rel="alternate" hrefLang="pt" href="https://www.viajeinteligencia.com/pt" />
         <link rel="alternate" hrefLang="x-default" href="https://www.viajeinteligencia.com" />
         <link rel="sitemap" type="application/xml" href="https://www.viajeinteligencia.com/sitemap.xml" />
         <meta name="thumbnail" content="/preview_favicon.jpg" />

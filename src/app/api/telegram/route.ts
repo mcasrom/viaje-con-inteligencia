@@ -87,14 +87,14 @@ const translations = {
 /cambio - Tipos de cambio
 /checklist - Preview checklist
 /premium - Info premium
-/lang - Cambiar idioma (EN/ES/PT)
+/lang - Cambiar idioma (EN/ES)
 /help - Esta ayuda
 
 💡 *Usa /alertasviaje para alertas de viaje!*`,
     aiNotAvailable: () => '🤖 IA no disponible. Configure GROQ_API_KEY en Vercel para activar el chat IA.',
     aiError: () => '🤖 Error de IA. Intenta de nuevo.',
     aiConnectionError: () => '🤖 Error de conexión con IA. Intenta de nuevo.',
-    langChanged: (lang: string) => `✅ Idioma cambiado a ${lang === 'es' ? 'Español' : lang === 'en' ? 'English' : 'Português'}`,
+    langChanged: (lang: string) => `✅ Idioma cambiado a ${lang === 'es' ? 'Español' : 'English'}`,
     chooseLang: () => '🌍 Selecciona tu idioma:',
   },
   en: {
@@ -114,51 +114,24 @@ const translations = {
     aiThinking: () => '🤖 Thinking...',
     aiExit: () => 'Returning to main menu.',
     notUnderstood: () => '🤖 I didn\'t understand. Use the buttons or try:\n• Type a country (e.g. "Japan")\n• /help for help',
-    help: () => `*📚 Available commands:*\n\n/start - Start bot\n/country [name] - Country info\n/chat or /ai - AI chat\n/alerts - View risks\n/cambio - Exchange rates\n/checklist - Preview checklist\n/premium - Premium info\n/lang - Change language (EN/ES/PT)\n/help - This help`,
+    help: () => `*📚 Available commands:*\n\n/start - Start bot\n/country [name] - Country info\n/chat or /ai - AI chat\n/alerts - View risks\n/cambio - Exchange rates\n/checklist - Preview checklist\n/premium - Premium info\n/lang - Change language (EN/ES)\n/help - This help`,
     aiNotAvailable: () => '🤖 AI not available. Configure GROQ_API_KEY in Vercel to activate AI chat.',
     aiError: () => '🤖 AI error. Try again.',
     aiConnectionError: () => '🤖 AI connection error. Try again.',
-    langChanged: (lang: string) => `✅ Language changed to ${lang === 'es' ? 'Español' : lang === 'en' ? 'English' : 'Português'}`,
+    langChanged: (lang: string) => `✅ Language changed to ${lang === 'es' ? 'Español' : 'English'}`,
     chooseLang: () => '🌍 Select your language:',
-  },
-  pt: {
-    welcome: (name: string) => `Olá ${name}! 👋\n\n🌍 *Viaje com Inteligência - Risco Zero*\n\nSeu assistente de viagem inteligente. Consulte riscos, requisitos e dicas para viajar seguro.\n\nSelecione uma opção:`,
-    menu: () => ({
-      keyboard: [
-        [{ text: '🌍 Pesquisar país' }],
-        [{ text: '🤖 Chat IA' }],
-        [{ text: '⚠️ Alertas de risco' }, { text: '🏦 Câmbio' }],
-        [{ text: '📋 Checklist viagem' }],
-        [{ text: '⭐ Premium' }],
-      ],
-    }),
-    selectCountry: () => '🔍 *Selecione um país*\n\nEscolha um destino para ver informações detalhadas:',
-    back: () => 'Voltando ao menu principal.',
-    aiIntro: () => `🤖 *Chat com IA*\n\nPergunte-me qualquer coisa sobre viagens, países, segurança, recomendações...\n\nExemplos:\n• "É seguro viajar para o Japão?"\n• "Planeje uma viagem para Tailândia"\n• "Que vacinas preciso para Bali?"\n\nDigite /salir para voltar ao menu.`,
-    aiThinking: () => '🤖 Pensando...',
-    aiExit: () => 'Voltando ao menu principal.',
-    notUnderstood: () => '🤖 Não entendi. Use os botões ou tente:\n• Digite um país (ex: "Japão")\n• /help para ajuda',
-    help: () => `*📚 Comandos disponíveis:*\n\n/start - Iniciar bot\n/pais [nome] - Info do país\n/chat ou /ia - Chat com IA\n/alertas - Ver riscos\n/cambio - Câmbios\n/checklist - Preview checklist\n/premium - Info premium\n/lang - Mudar idioma (EN/ES/PT)\n/help - Esta ajuda`,
-    aiNotAvailable: () => '🤖 IA não disponível. Configure GROQ_API_KEY no Vercel para ativar o chat IA.',
-    aiError: () => '🤖 Erro de IA. Tente novamente.',
-    aiConnectionError: () => '🤖 Erro de conexão com IA. Tente novamente.',
-    langChanged: (lang: string) => `✅ Idioma alterado para ${lang === 'es' ? 'Español' : lang === 'en' ? 'English' : 'Português'}`,
-    chooseLang: () => '🌍 Selecione seu idioma:',
   },
 };
 
-type Lang = 'es' | 'en' | 'pt';
+type Lang = 'es' | 'en';
 
 function detectLanguage(text: string): Lang {
   const lower = text.toLowerCase();
   const enWords = ['the', 'is', 'it', 'you', 'to', 'and', 'what', 'how', 'where', 'when', 'travel', 'trip', 'country', 'safe', 'help', 'hello', 'hi'];
-  const ptWords = ['o', 'a', 'é', 'para', 'que', 'como', 'onde', 'quando', 'viajem', 'viagem', 'país', 'seguro', 'ajuda', 'olá', 'oi'];
   
   const enCount = enWords.filter(w => lower.includes(` ${w} `) || lower.startsWith(`${w} `)).length;
-  const ptCount = ptWords.filter(w => lower.includes(` ${w} `) || lower.startsWith(`${w} `)).length;
   
-  if (enCount > ptCount) return 'en';
-  if (ptCount > enCount) return 'pt';
+  if (enCount > 0) return 'en';
   return 'es';
 }
 
@@ -189,18 +162,7 @@ async function chatWithAI(message: string, chatHistory: { role: string; content:
     return translations[lang].aiNotAvailable();
   }
 
-  const systemPrompt = lang === 'es' 
-    ? `Eres un asistente de viajes experto y amigable. Ayudas con:
-- Recomendaciones de destinos
-- Consejos de seguridad
-- Planificación de viajes
-- Información sobre países
-- Requisitos de visado
-- Vacunas y salud
-- Moneda y presupuesto
-
-Responde en español, de forma clara y útil. Máximo 500 caracteres.`
-    : lang === 'en'
+  const systemPrompt = lang === 'en'
     ? `You are an expert and friendly travel assistant. You help with:
 - Destination recommendations
 - Safety tips
@@ -211,16 +173,16 @@ Responde en español, de forma clara y útil. Máximo 500 caracteres.`
 - Currency and budget
 
 Respond in English, clearly and helpfully. Max 500 characters.`
-    : `Você é um assistente de viagem especialista e amigável. Ajuda com:
-- Recomendações de destinos
-- Dicas de segurança
-- Planejamento de viagens
-- Informações sobre países
-- Requisitos de visto
-- Vacinas e saúde
-- Moeda e orçamento
+    : `Eres un asistente de viajes experto y amigable. Ayudas con:
+- Recomendaciones de destinos
+- Consejos de seguridad
+- Planificación de viajes
+- Información sobre países
+- Requisitos de visado
+- Vacunas y salud
+- Moneda y presupuesto
 
-Responda em português, de forma clara e útil. Máximo 500 caracteres.`;
+Responde en español, de forma clara y útil. Máximo 500 caracteres.`;
 
   try {
     const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
@@ -300,8 +262,7 @@ export async function POST(request: NextRequest) {
     const text = message?.text || '';
     const firstName = message?.chat?.first_name || 'traveler';
     const username = message?.chat?.username;
-    const lang: Lang = (message?.chat?.language_code?.startsWith('en') ? 'en' : 
-                         message?.chat?.language_code?.startsWith('pt') ? 'pt' : 'es') as Lang;
+    const lang: Lang = (message?.chat?.language_code?.startsWith('en') ? 'en' : 'es') as Lang;
     const t = translations[lang];
     
     if (!chatId) {
@@ -409,7 +370,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ ok: true });
     }
     
-    if (text === '« Volver' || text === '« Back' || text === '« Voltar') {
+    if (text === '« Volver' || text === '« Back') {
       resetUserState(chatId);
       await sendMessage(chatId, t.back(), {
         reply_markup: t.menu()
@@ -523,7 +484,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ ok: true });
     }
     
-    if (text === '/salir' || text === '/exit' || text === '/sair') {
+    if (text === '/salir' || text === '/exit') {
       resetUserState(chatId);
       await sendMessage(chatId, t.aiExit(), {
         reply_markup: t.menu()
@@ -552,8 +513,8 @@ export async function POST(request: NextRequest) {
       await sendMessage(chatId, response, {
         reply_markup: {
           keyboard: [
-            [{ text: lang === 'en' ? '🤖 Continue chat' : lang === 'pt' ? '🤖 Continuar chat' : '🤖 Continuar chat' }],
-            [{ text: lang === 'en' ? '« Back' : lang === 'pt' ? '« Voltar' : '« Volver' }],
+            [{ text: lang === 'en' ? '🤖 Continue chat' : '🤖 Continuar chat' }],
+            [{ text: lang === 'en' ? '« Back' : '« Volver' }],
           ],
           resize_keyboard: true,
         },
@@ -778,7 +739,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ ok: true });
     }
     
-    if (text === '/help' || text === '/ayuda' || text === '/ajuda') {
+    if (text === '/help' || text === '/ayuda') {
       await sendMessage(chatId, t.help(), {
         reply_markup: t.menu()
       });
