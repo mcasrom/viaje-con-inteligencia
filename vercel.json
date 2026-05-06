@@ -64,7 +64,7 @@
     },
     {
       "path": "/api/cron/osint-sensor",
-      "schedule": "0 * * * *"
+      "schedule": "0 8 * * *"
     }
   ]
 }
