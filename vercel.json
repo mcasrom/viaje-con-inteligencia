@@ -31,40 +31,8 @@
   ],
   "crons": [
     {
-      "path": "/api/cron/scrape-maec",
+      "path": "/api/cron/master",
       "schedule": "0 6 * * *"
-    },
-    {
-      "path": "/api/cron/check-alerts",
-      "schedule": "0 8 * * *"
-    },
-    {
-      "path": "/api/cron/weekly-digest",
-      "schedule": "0 8 * * 1"
-    },
-    {
-      "path": "/api/cron/daily-digest",
-      "schedule": "0 0 * * *"
-    },
-    {
-      "path": "/api/cron/ine-scrape",
-      "schedule": "0 6 5 * *"
-    },
-    {
-      "path": "/api/cron/ml-clustering",
-      "schedule": "0 7 * * 1"
-    },
-    {
-      "path": "/api/cron/flight-costs",
-      "schedule": "0 5 * * *"
-    },
-    {
-      "path": "/api/cron/airspace-osint",
-      "schedule": "0 4 * * *"
-    },
-    {
-      "path": "/api/cron/osint-sensor",
-      "schedule": "0 8 * * *"
     }
   ]
 }

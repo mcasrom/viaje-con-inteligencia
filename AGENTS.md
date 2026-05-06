@@ -24,10 +24,29 @@ npm run start        # production server
 - **Data**: `src/data/paises.ts` — 107 países con riesgo MAEC
 - **Z-index**: TopBar `z-[1010]`, SidePanel `z-[1005]`, Leaflet `z-[400-1000]`
 
-## Recent Work (06 May 2026)
-- Created `/chat` page with free (5 msg/day) and premium (unlimited 70b model)
-- Updated premium page with Chat IA comparison section
-- See `WAY_AHEAD.md` for pending items
+## CRON Incident (07 May 2026)
+- Vercel Hobby allows ONLY 1 cron job. Had 7 crons configured — only 1 was running, rest were silently ignored.
+- `/admin/osint/` showed no new data because `osint-sensor` cron never ran.
+- **Fix**: Consolidated ALL crons into single `/api/cron/master` route (runs at 06:00 UTC):
+  1. MAEC scrape
+  2. Risk alerts check
+  3. Flight costs / TCI calculation
+  4. Airspace OSINT sync
+  5. News sentiment (GDELT + RSS + Groq classification)
+  6. Oil price fetch (Yahoo Finance)
+  7. Daily digest (Telegram + email)
+  8. Weekly digest (Mondays only, newsletter subscribers)
+- **Rule**: NEVER create new cron endpoints. Add tasks to `master/route.ts` instead.
+
+## Recent Work (07 May 2026)
+- Created master cron consolidating 7 jobs into 1 (`src/app/api/cron/master/route.ts`)
+- Newsletter: double opt-in flow restored, RESEND_API_KEY saved in `.env.local` + Vercel
+- Added `src/app/api/cron/master/route.ts` — single entry point for all daily automation
+- Eurostat integration attempted and abandoned (SDMX v2 too complex, timeout issues)
+- OSINT sensor already implemented: `/admin/osint/` + `src/lib/osint-sensor.ts` + `src/app/api/cron/osint-sensor/route.ts`
+  - Scrapes Reddit RSS (r/travel, r/solotravel, r/digitalnomad), GDACS, USGS, GDELT
+  - Classifies signals with Groq (category, urgency, first-person detection)
+  - Saves to `osint_signals` table in Supabase
 
 ## False Positives (Audit Tools)
 - `@mybloggingnotes` links — old cached content, removed from live site

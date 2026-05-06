@@ -52,12 +52,88 @@ const KEYWORDS = [
   'evacuacion', 'corte de calle', 'bloqueado', 'cancelado',
 ];
 
+const NEWS_RSS_FEEDS = [
+  { name: 'BBC World', url: 'https://feeds.bbci.co.uk/news/world/rss.xml' },
+  { name: 'Reuters World', url: 'https://www.rssdss.com/feeds/worldNews' },
+  { name: 'EFE Noticias', url: 'https://www.efe.com/feeds/rss/noticias/ultimas.xml' },
+  { name: 'Al Jazeera', url: 'https://www.aljazeera.com/xml/rss/all.xml' },
+  { name: 'France24 EN', url: 'https://www.france24.com/en/rss' },
+  { name: 'The Guardian World', url: 'https://www.theguardian.com/world/rss' },
+  { name: 'CNN World', url: 'http://rss.cnn.com/rss/edition_world.rss' },
+];
+
+const NEWS_KEYWORDS = [
+  'cruise', 'ship', 'outbreak', 'evacuat', 'disaster', 'emergency',
+  'travel', 'tourist', 'airport', 'flight', 'strike', 'protest',
+  'earthquake', 'flood', 'fire', 'hurricane', 'cyclone', 'tsunami',
+  'crisis', 'dead', 'killed', 'injured', 'hospital', 'disease',
+  'crucero', 'barco', 'turista', 'evacuación', 'emergencia',
+  'brotes', 'enfermedad', 'fallecido', 'herido', 'incendio',
+  'inundación', 'terremoto', 'huelga', 'protesta', 'cierre',
+  'aeropuerto', 'vuelo cancelado', 'frontera',
+];
+
+export async function fetchNewsRSS(limit = 50): Promise<RawPost[]> {
+  const posts: RawPost[] = [];
+
+  for (const feed of NEWS_RSS_FEEDS) {
+    try {
+      const res = await fetch(feed.url, {
+        headers: { 'User-Agent': 'ViajeConInteligencia/1.0 (RSS Reader)' },
+        cache: 'no-store',
+        signal: AbortSignal.timeout(10000),
+      });
+
+      if (!res.ok) continue;
+
+      const xmlText = await res.text();
+      const entries = xmlText.split('<item>');
+
+      for (let i = 1; i < entries.length; i++) {
+        const entry = entries[i];
+        const titleMatch = entry.match(/<title>([\s\S]*?)<\/title>/);
+        const descMatch = entry.match(/<description>([\s\S]*?)<\/description>/);
+        const linkMatch = entry.match(/<link>([\s\S]*?)<\/link>/);
+        const dateMatch = entry.match(/<pubDate>([\s\S]*?)<\/pubDate>/);
+        const sourceMatch = entry.match(/<source>([\s\S]*?)<\/source>/);
+
+        if (!titleMatch) continue;
+
+        const title = titleMatch[1].replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/<!\[CDATA\[/g, '').replace(/\]\]>/g, '');
+        const desc = descMatch ? descMatch[1].replace(/<[^>]+>/g, '').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/<!\[CDATA\[/g, '').replace(/\]\]>/g, '') : '';
+
+        const text = `${title} ${desc}`.toLowerCase();
+        const hasKeyword = NEWS_KEYWORDS.some(kw => text.includes(kw.toLowerCase()));
+
+        if (!hasKeyword) continue;
+
+        posts.push({
+          source: 'rss',
+          sourceUrl: linkMatch ? linkMatch[1] : feed.url,
+          title: `📰 ${title}`,
+          content: `${desc} [Source: ${sourceMatch ? sourceMatch[1] : feed.name}]`,
+          author: feed.name,
+          timestamp: dateMatch ? new Date(dateMatch[1]) : new Date(),
+          locationName: undefined,
+        });
+
+        if (posts.length >= limit) break;
+      }
+    } catch (e) {
+      console.error(`[OSINT] News RSS error (${feed.name}):`, e);
+    }
+  }
+
+  return posts;
+}
+
 export async function fetchAllPosts(): Promise<RawPost[]> {
   const results = await Promise.allSettled([
     fetchRedditPosts(),
     fetchGdacsAlerts(),
     fetchUsgsEarthquakes(),
     fetchGdeltEvents(),
+    fetchNewsRSS(),
   ]);
 
   const posts: RawPost[] = [];

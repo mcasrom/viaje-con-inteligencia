@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
+import https from 'https';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_KEY || '';
@@ -11,281 +12,228 @@ const supabase = supabaseUrl && supabaseServiceKey
 export const dynamic = 'force-dynamic';
 export const maxDuration = 60;
 
-const INE_COUNTRY_MAP: Record<string, string> = {
-  '15': 'Reino Unido',
-  '22': 'Francia',
-  '25': 'Alemania',
-  '30': 'Italia',
-  '34': 'Países Bajos',
-  '44': 'Suecia',
-  '16': 'Bélgica',
-  '31': 'Irlanda',
-  '41': 'Suiza',
-  '35': 'Noruega',
-  '43': 'Dinamarca',
-  '38': 'EE.UU.',
-  '26': 'China',
-  '37': 'Japón',
-  '10': 'Brasil',
-  '11': 'Argentina',
-  '12': 'México',
-  '17': 'Canadá',
-  '42': 'Australia',
-  '32': 'Rusia',
-  '28': 'Corea del Sur',
-  '36': 'Polonia',
-  '24': 'Austria',
-  '29': 'Grecia',
-  '23': 'Turquía',
-  '27': 'Tailandia',
-  '45': 'Portugal',
-  '46': 'Marruecos',
-};
+const EUROSTAT_API = 'https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data';
 
-const INE_REGION_MAP: Record<string, string> = {
-  '01': 'Andalucía',
-  '02': 'Aragón',
-  '03': 'Principado de Asturias',
-  '04': 'Islas Baleares',
-  '05': 'Canarias',
-  '06': 'Cantabria',
-  '07': 'Castilla-La Mancha',
-  '08': 'Castilla y León',
-  '09': 'Cataluña',
-  '10': 'Extremadura',
-  '11': 'Galicia',
-  '12': 'Comunidad de Madrid',
-  '13': 'Región de Murcia',
-  '14': 'Navarra',
-  '15': 'País Vasco',
-  '16': 'La Rioja',
-  '17': 'C. Valenciana',
-  '18': 'Ceuta',
-  '19': 'Melilla',
-};
+const httpsAgent = new https.Agent({ family: 4 });
 
-interface INEDataPoint {
-  periodo: string;
-  valor: string;
-}
+async function fetchEurostatJson(url: string): Promise<any> {
+  return new Promise((resolve, reject) => {
+    const parsedUrl = new URL(url);
+    const options = {
+      hostname: parsedUrl.hostname,
+      path: parsedUrl.pathname + parsedUrl.search,
+      method: 'GET',
+      agent: httpsAgent,
+      headers: {
+        'Accept': 'application/json',
+        'User-Agent': 'ViajeInteligencia/1.0',
+      },
+    };
 
-async function fetchINEAPI(endpoint: string, params: Record<string, string>): Promise<any> {
-  const queryString = new URLSearchParams(params).toString();
-  const url = `https://servicios.ine.es/wstempus/es/DATOS/${endpoint}?${queryString}`;
+    const req = https.request(options, (res) => {
+      if (res.statusCode && res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {
+        fetchEurostatJson(res.headers.location).then(resolve).catch(reject);
+        return;
+      }
 
-  const res = await fetch(url, {
-    headers: {
-      'Accept': 'application/json',
-      'User-Agent': 'ViajeInteligencia/1.0',
-    },
-    signal: AbortSignal.timeout(15000),
-  });
+      if (res.statusCode && res.statusCode !== 200) {
+        reject(new Error(`Eurostat API returned ${res.statusCode}`));
+        return;
+      }
 
-  if (!res.ok) {
-    throw new Error(`INE API returned ${res.status}: ${url}`);
-  }
-
-  return res.json();
-}
-
-async function fetchLatestMonth(): Promise<{ year: number; month: number } | null> {
-  try {
-    const data = await fetchINEAPI('OBTENER_TABLA', {
-      id_operacion: '30940',
-      id_periodo: 'M',
+      let data = '';
+      res.on('data', chunk => data += chunk);
+      res.on('end', () => {
+        try {
+          resolve(JSON.parse(data));
+        } catch (e) {
+          reject(new Error('Failed to parse Eurostat response'));
+        }
+      });
     });
 
-    if (data?.valores && data.valores.length > 0) {
-      const lastEntry = data.valores[data.valores.length - 1];
-      const dateStr = lastEntry.date || lastEntry.periodo || '';
-      const match = dateStr.match(/(\d{4})(\d{2})/);
-      if (match) {
-        return { year: parseInt(match[1]), month: parseInt(match[2]) };
+    req.on('error', reject);
+    req.setTimeout(30000, () => {
+      req.destroy();
+      reject(new Error('Eurostat API timeout'));
+    });
+    req.end();
+  });
+}
+
+async function fetchEurostat(dataset: string, params: Record<string, string>): Promise<any> {
+  const queryString = new URLSearchParams(params).toString();
+  const url = `${EUROSTAT_API}/${dataset}?${queryString}`;
+  return fetchEurostatJson(url);
+}
+
+function buildDimensionLookup(dimension: any, dimName: string): Map<number, string> {
+  const lookup = new Map<number, string>();
+  const dim = dimension[dimName];
+  if (dim?.category?.index && dim?.category?.label) {
+    for (const [key, idx] of Object.entries(dim.category.index)) {
+      const label = dim.category.label[key];
+      if (label) {
+        lookup.set(idx as number, label);
       }
     }
-  } catch (e) {
-    console.warn('[INE] Failed to fetch latest month from API:', e);
+  }
+  return lookup;
+}
+
+function buildDimensionCodeLookup(dimension: any, dimName: string): Map<number, string> {
+  const lookup = new Map<number, string>();
+  const dim = dimension[dimName];
+  if (dim?.category?.index) {
+    for (const [key, idx] of Object.entries(dim.category.index)) {
+      lookup.set(idx as number, key);
+    }
+  }
+  return lookup;
+}
+
+interface DataValue {
+  geo: string;
+  residence: string;
+  nace: string;
+  time_period: string;
+  value: number;
+}
+
+function parseEurostatValues(data: any, filterGeo?: string): DataValue[] {
+  if (!data?.value || !data?.dimension) return [];
+
+  const values = data.value;
+  const dimension = data.dimension;
+  const dimOrder = data.id || [];
+  const size = data.size || [];
+
+  const geoCodeLookup = buildDimensionCodeLookup(dimension, 'geo');
+  const geoLabelLookup = buildDimensionLookup(dimension, 'geo');
+  const residenceLookup = buildDimensionLookup(dimension, 'c_resid');
+  const naceLookup = buildDimensionLookup(dimension, 'nace_r2');
+  const timeLookup = buildDimensionLookup(dimension, 'time');
+
+  const geoIdx = dimOrder.indexOf('geo');
+  const residenceIdx = dimOrder.indexOf('c_resid');
+  const naceIdx = dimOrder.indexOf('nace_r2');
+  const timeIdx = dimOrder.indexOf('time');
+
+  const results: DataValue[] = [];
+
+  for (const [keyStr, rawValue] of Object.entries(values)) {
+    const flatIdx = parseInt(keyStr, 10);
+    const value = typeof rawValue === 'number' ? rawValue : parseFloat(String(rawValue));
+    if (isNaN(value) || isNaN(flatIdx)) continue;
+
+    const indices: number[] = new Array(dimOrder.length).fill(0);
+    let remaining = flatIdx;
+    for (let i = dimOrder.length - 1; i >= 0; i--) {
+      const dimSize = size[i];
+      indices[i] = remaining % dimSize;
+      remaining = Math.floor(remaining / dimSize);
+    }
+
+    const geoCode = geoCodeLookup.get(indices[geoIdx]) || '';
+    const geo = geoLabelLookup.get(indices[geoIdx]) || '';
+    const residence = residenceLookup.get(indices[residenceIdx]) || '';
+    const nace = naceLookup.get(indices[naceIdx]) || '';
+    const time_period = timeLookup.get(indices[timeIdx]) || '';
+
+    if (!time_period) continue;
+    if (filterGeo && !geoCode.startsWith(filterGeo)) continue;
+
+    results.push({ geo, residence, nace, time_period, value });
   }
 
+  return results;
+}
+
+async function fetchSpainTotals(year: number, month: number) {
+  try {
+    const currentPeriod = `${year}-${String(month).padStart(2, '0')}`;
+    const prevMonth = month === 1 ? 12 : month - 1;
+    const prevYear = month === 1 ? year - 1 : year;
+    const prevPeriod = `${prevYear}-${String(prevMonth).padStart(2, '0')}`;
+
+    const rawData = await fetchEurostat('tour_occ_nim', {
+      startPeriod: `${prevYear}`,
+      endPeriod: `${year}`,
+      geo: 'ES',
+      unit: 'NR',
+    });
+
+    const dataPoints = parseEurostatValues(rawData, 'ES');
+
+    const foreignTotals = dataPoints.filter(
+      (d) => d.residence === 'Foreign country' &&
+        d.nace === 'Hotels; holiday and other short-stay accommodation; camping grounds, recreational vehicle parks and trailer parks'
+    );
+
+    const currentData = foreignTotals.find((d) => d.time_period === currentPeriod);
+    const prevData = foreignTotals.find((d) => d.time_period === prevPeriod);
+
+    if (!currentData) return null;
+
+    const total = Math.round(currentData.value);
+    const prev = prevData ? Math.round(prevData.value) : 0;
+    const variation = prev > 0 ? ((total - prev) / prev) * 100 : 0;
+
+    const avgStay = 7.5 + (variation > 0 ? 0.5 : 0);
+    const avgPerTourist = 1400 + Math.abs(variation) * 10;
+    const avgDaily = Math.round(avgPerTourist / avgStay * 100) / 100;
+    const totalSpend = Math.round(total * avgPerTourist);
+
+    return {
+      total_tourists: total,
+      variation: Math.round(variation * 100) / 100,
+      total_spend: totalSpend,
+      avg_per_tourist: Math.round(avgPerTourist * 100) / 100,
+      avg_daily: Math.round(avgDaily * 100) / 100,
+      avg_stay: Math.round(avgStay * 100) / 100,
+    };
+  } catch (e) {
+    console.warn('[Eurostat] Failed to fetch Spain totals:', e);
+    return null;
+  }
+}
+
+function getLatestYearMonth(): { year: number; month: number } {
   const now = new Date();
   const lastMonth = new Date(now.getFullYear(), now.getMonth() - 2, 1);
   return { year: lastMonth.getFullYear(), month: lastMonth.getMonth() + 1 };
 }
 
-async function fetchTotalTourists(year: number, month: number): Promise<{
-  total_tourists: number;
-  variation: number;
-  total_spend: number;
-  avg_per_tourist: number;
-  avg_daily: number;
-  avg_stay: number;
-} | null> {
-  try {
-    const data = await fetchINEAPI('OBTENER_TABLA', {
-      id_operacion: '30940',
-      id_periodo: 'M',
-      nult: '2',
-    });
-
-    console.log('[INE] fetchTotalTourists response type:', typeof data, Array.isArray(data) ? 'array' : typeof data);
-    console.log('[INE] fetchTotalTourists keys:', data ? Object.keys(data).slice(0, 10) : 'null');
-
-    if (data?.valores) {
-      const periodKey = `${year}${String(month).padStart(2, '0')}`;
-      const prevPeriodKey = month === 1
-        ? `${year - 1}12`
-        : `${year}${String(month - 1).padStart(2, '0')}`;
-
-      const currentTotal = data.valores.find((v: any) =>
-        v.date === periodKey || v.periodo === periodKey
-      )?.valor;
-
-      const prevTotal = data.valores.find((v: any) =>
-        v.date === prevPeriodKey || v.periodo === prevPeriodKey
-      )?.valor;
-
-      if (currentTotal) {
-        const total = parseFloat(currentTotal.replace(',', '.')) * 1000;
-        const prev = prevTotal ? parseFloat(prevTotal.replace(',', '.')) * 1000 : 0;
-        const variation = prev > 0 ? ((total - prev) / prev) * 100 : 0;
-
-        const avgStay = 7.5 + (variation > 0 ? 0.5 : 0);
-        const avgPerTourist = 1400 + Math.abs(variation) * 10;
-        const avgDaily = Math.round(avgPerTourist / avgStay * 100) / 100;
-        const totalSpend = Math.round(total * avgPerTourist);
-
-        return {
-          total_tourists: Math.round(total),
-          variation: Math.round(variation * 100) / 100,
-          total_spend: totalSpend,
-          avg_per_tourist: Math.round(avgPerTourist * 100) / 100,
-          avg_daily: Math.round(avgDaily * 100) / 100,
-          avg_stay: Math.round(avgStay * 100) / 100,
-        };
-      }
-    }
-  } catch (e) {
-    console.warn('[INE] Failed to fetch total tourists:', e);
-  }
-
-  return null;
-}
-
-async function fetchTouristsByCountry(year: number, month: number): Promise<Record<string, number>> {
-  try {
-    const data = await fetchINEAPI('OBTENER_TABLA', {
-      id_operacion: '30940',
-      id_periodo: 'M',
-      nult: '12',
-    });
-
-    if (data?.valores) {
-      const result: Record<string, number> = {};
-      const periodKey = `${year}${String(month).padStart(2, '0')}`;
-
-      for (const [codigo, nombre] of Object.entries(INE_COUNTRY_MAP)) {
-        const valor = data.valores.find((v: any) =>
-          (v.date === periodKey || v.periodo === periodKey) &&
-          v.cod_pais === codigo
-        )?.valor;
-
-        if (valor) {
-          result[nombre] = Math.round(parseFloat(valor.replace(',', '.')) * 1000);
-        }
-      }
-
-      return result;
-    }
-  } catch (e) {
-    console.warn('[INE] Failed to fetch tourists by country:', e);
-  }
-
-  return {};
-}
-
-async function fetchTouristsByRegion(year: number, month: number): Promise<Record<string, number>> {
-  try {
-    const data = await fetchINEAPI('OBTENER_TABLA', {
-      id_operacion: '30940',
-      id_periodo: 'M',
-      nult: '1',
-    });
-
-    if (data?.valores) {
-      const result: Record<string, number> = {};
-      const periodKey = `${year}${String(month).padStart(2, '0')}`;
-
-      for (const [codigo, nombre] of Object.entries(INE_REGION_MAP)) {
-        const valor = data.valores.find((v: any) =>
-          (v.date === periodKey || v.periodo === periodKey) &&
-          v.cod_comunidad === codigo
-        )?.valor;
-
-        if (valor) {
-          result[nombre] = Math.round(parseFloat(valor.replace(',', '.')) * 1000);
-        }
-      }
-
-      return result;
-    }
-  } catch (e) {
-    console.warn('[INE] Failed to fetch tourists by region:', e);
-  }
-
-  return {};
-}
-
-async function fetchAndSaveINE(year?: number, month?: number) {
+async function fetchAndSaveEurostat(year?: number, month?: number) {
   if (!supabase) {
     return { success: false, error: 'Supabase no configurado' };
   }
 
-  let targetYear = year;
-  let targetMonth = month;
-
-  if (!targetYear || !targetMonth) {
-    const latest = await fetchLatestMonth();
-    if (latest) {
-      targetYear = latest.year;
-      targetMonth = latest.month;
-    } else {
-      const now = new Date();
-      targetYear = now.getFullYear();
-      targetMonth = now.getMonth();
-      if (targetMonth === 0) {
-        targetMonth = 12;
-        targetYear--;
-      }
-    }
-  }
+  const { year: targetYear, month: targetMonth } = year && month
+    ? { year, month }
+    : getLatestYearMonth();
 
   const date = `${targetYear}-${String(targetMonth).padStart(2, '0')}-01`;
   const now = new Date();
 
-  console.log(`[INE] Fetching data for ${targetYear}-${targetMonth}...`);
+  console.log(`[Eurostat] Fetching data for ${targetYear}-${targetMonth}...`);
 
-  const [totals, byCountry, byRegion] = await Promise.all([
-    fetchTotalTourists(targetYear, targetMonth),
-    fetchTouristsByCountry(targetYear, targetMonth),
-    fetchTouristsByRegion(targetYear, targetMonth),
-  ]);
+  const totals = await fetchSpainTotals(targetYear, targetMonth);
 
   if (!totals) {
     return {
       success: false,
-      error: 'No se pudo obtener datos totales del INE',
+      error: 'No se pudo obtener datos totales de Eurostat',
       date,
     };
   }
 
   const records = {
     tourism: false,
-    regions: 0,
-    countries: 0,
   };
 
   try {
-    const { error: tourismError } = await supabase.from('ine_tourism_history').upsert({
+    const { error } = await supabase.from('ine_tourism_history').upsert({
       date,
       year: targetYear,
       month: targetMonth,
@@ -295,56 +243,14 @@ async function fetchAndSaveINE(year?: number, month?: number) {
       avg_per_tourist: totals.avg_per_tourist,
       avg_daily: totals.avg_daily,
       avg_stay: totals.avg_stay,
-      source: 'INE-FRONTUR-EGATUR',
+      source: 'Eurostat-tour_occ_nim',
       updated_at: now.toISOString(),
     }, { onConflict: 'date' });
 
-    records.tourism = !tourismError;
-    if (tourismError) console.error('[INE] Tourism error:', tourismError);
+    records.tourism = !error;
+    if (error) console.error('[Eurostat] Tourism error:', error);
   } catch (e) {
-    console.error('[INE] Tourism save error:', e);
-  }
-
-  try {
-    const regionEntries = Object.entries(byRegion).map(([region, tourists]) => ({
-      date,
-      year: targetYear,
-      month: targetMonth,
-      region,
-      tourists,
-      spend: 0,
-      segment: 'mixto',
-      source: 'INE-FRONTUR-EGATUR',
-    }));
-
-    if (regionEntries.length > 0) {
-      const { error } = await supabase.from('ine_region_history').upsert(regionEntries, { onConflict: 'date,region' });
-      if (!error) records.regions = regionEntries.length;
-      else console.error('[INE] Region error:', error);
-    }
-  } catch (e) {
-    console.error('[INE] Region save error:', e);
-  }
-
-  try {
-    const countryEntries = Object.entries(byCountry).map(([country, tourists]) => ({
-      date,
-      year: targetYear,
-      month: targetMonth,
-      country,
-      tourists,
-      spend: 0,
-      avg_stay: totals.avg_stay,
-      source: 'INE-FRONTUR-EGATUR',
-    }));
-
-    if (countryEntries.length > 0) {
-      const { error } = await supabase.from('ine_country_history').upsert(countryEntries, { onConflict: 'date,country' });
-      if (!error) records.countries = countryEntries.length;
-      else console.error('[INE] Country error:', error);
-    }
-  } catch (e) {
-    console.error('[INE] Country save error:', e);
+    console.error('[Eurostat] Tourism save error:', e);
   }
 
   return {
@@ -354,8 +260,6 @@ async function fetchAndSaveINE(year?: number, month?: number) {
     totals: {
       total_tourists: totals.total_tourists,
       variation: totals.variation,
-      countries_fetched: Object.keys(byCountry).length,
-      regions_fetched: Object.keys(byRegion).length,
     },
     timestamp: now.toISOString(),
   };
@@ -375,25 +279,44 @@ export async function GET(request: NextRequest) {
     }
 
     if (debug) {
-      const targetYear = year || 2026;
-      const targetMonth = month || 3;
+      const targetYear = year || 2025;
+      const targetMonth = month || 12;
+      const currentPeriod = `${targetYear}-${String(targetMonth).padStart(2, '0')}`;
 
-      const rawTotals = await fetchINEAPI('OBTENER_TABLA', {
-        id_operacion: '30940',
-        id_periodo: 'M',
-        nult: '2',
-      });
+      try {
+        const rawData = await fetchEurostat('tour_occ_nim', {
+          startPeriod: `${targetYear}`,
+          endPeriod: `${targetYear}`,
+          geo: 'ES',
+          unit: 'NR',
+        });
 
-      return NextResponse.json({
-        debug: true,
-        raw_response_type: typeof rawTotals,
-        raw_response_keys: rawTotals ? Object.keys(rawTotals) : null,
-        raw_sample: rawTotals ? JSON.stringify(rawTotals).substring(0, 2000) : null,
-      });
+        const dataPoints = parseEurostatValues(rawData, 'ES');
+
+        const foreignTotals = dataPoints.filter(
+          (d) => d.residence === 'Foreign country'
+        );
+
+        const currentData = foreignTotals.find((d) => d.time_period === currentPeriod);
+
+        return NextResponse.json({
+          debug: true,
+          period: currentPeriod,
+          total_data_points: dataPoints.length,
+          foreign_data_points: foreignTotals.length,
+          current_period_value: currentData ? Math.round(currentData.value) : null,
+          sample_points: dataPoints.filter(d => d.time_period.startsWith('2025')).slice(0, 5),
+        });
+      } catch (e: any) {
+        return NextResponse.json({
+          debug: true,
+          error: e.message,
+        }, { status: 500 });
+      }
     }
 
     if (dryRun) {
-      const result = await fetchAndSaveINE(year, month);
+      const result = await fetchAndSaveEurostat(year, month);
       return NextResponse.json({
         message: 'Dry run - datos obtenidos pero no guardados',
         result,
@@ -401,7 +324,7 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    const result = await fetchAndSaveINE(year, month);
+    const result = await fetchAndSaveEurostat(year, month);
 
     return NextResponse.json({
       success: result.success,
@@ -411,9 +334,9 @@ export async function GET(request: NextRequest) {
       timestamp: new Date().toISOString(),
     });
   } catch (error) {
-    console.error('[INE] Cron error:', error);
+    console.error('[Eurostat] Cron error:', error);
     return NextResponse.json(
-      { error: 'Error en cron INE' },
+      { error: 'Error en cron Eurostat' },
       { status: 500 }
     );
   }
