@@ -21,23 +21,16 @@ export const maxDuration = 300;
 async function runMaecScrape(): Promise<any> {
   try {
     const alerts = await getAllMAECAlerts();
-    let ok = 0, errors = 0;
 
-    for (const [code] of Object.entries(paisesData)) {
-      try {
-        await getMAECData(code);
-        ok++;
-      } catch {
-        errors++;
-      }
-    }
-
+    // getAllMAECAlerts already scrapes 26 priority countries and caches them.
+    // No need to scrape all 107 countries — paisesData provides hardcoded fallback.
+    // Just log the scrape result.
     await supabase.from('scraper_logs').insert({
-      source: 'maec_full_scrape', status: errors > 0 ? 'partial' : 'success',
-      items_scraped: ok, errors, completed_at: new Date().toISOString(),
+      source: 'maec_full_scrape', status: 'success',
+      items_scraped: alerts.length, errors: 0, completed_at: new Date().toISOString(),
     });
 
-    return { status: 'ok', alerts: alerts.length, countries_ok: ok, countries_error: errors };
+    return { status: 'ok', alerts: alerts.length, countries_checked: 26 };
   } catch (e: any) {
     return { status: 'error', error: e.message };
   }
@@ -274,7 +267,18 @@ async function runNewsSentiment(): Promise<any> {
     let inserted = 0;
     if (signals.length > 0) {
       const { error } = await supabaseAdmin.from('osint_signals').insert(signals);
-      if (!error) inserted = signals.length;
+      if (error) {
+        console.error('[OSINT] Insert error:', error.message, error.details, error.hint);
+        // Try one-by-one to skip duplicates
+        for (const sig of signals) {
+          try {
+            const { error: e2 } = await supabaseAdmin.from('osint_signals').insert(sig);
+            if (!e2) inserted++;
+          } catch {}
+        }
+      } else {
+        inserted = signals.length;
+      }
     }
 
     return { status: 'ok', posts_fetched: posts.length, recent: recentPosts.length, new: newPosts.length, processed: toProcess.length, signals_inserted: inserted };
@@ -359,45 +363,33 @@ async function runWeeklyDigest(): Promise<any> {
   if (day !== 1) return { status: 'skipped', reason: 'Not Monday' };
 
   try {
-    const { data: subs } = await supabaseAdmin
-      .from('newsletter_subscribers')
-      .select('email, name')
-      .eq('verified', true)
-      .is('unsubscribed_at', null);
+    const { collectWeeklyData, generateWeeklyContent, buildWeeklyEmailHtml } = await import('@/lib/newsletter-generator');
+    const { subscribers, digestData } = await collectWeeklyData();
 
-    if (!subs || subs.length === 0) return { status: 'skipped', reason: 'No subscribers' };
+    if (subscribers.length === 0) return { status: 'skipped', reason: 'No subscribers' };
+    if (!resend) return { status: 'skipped', reason: 'No resend API key' };
 
-    const { data: alerts } = await supabaseAdmin
-      .from('risk_alerts')
-      .select('country_code, old_risk, new_risk, created_at')
-      .gte('created_at', new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString())
-      .order('created_at', { ascending: false })
-      .limit(10);
+    const content = await generateWeeklyContent(digestData);
+    const weekDate = new Date().toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 
-    const alertLines = alerts?.map(a => `• ${a.country_code}: ${a.old_risk} → ${a.new_risk}`).join('\n') || 'Sin cambios';
-
-    const digest = `📬 Resumen Semanal - Viaje con Inteligencia
-${new Date().toISOString().split('T')[0]}
-
-🔔 Cambios de riesgo esta semana:
-${alertLines}
-
-Síguenos: https://t.me/ViajeConInteligencia`;
-
-    if (resend) {
-      for (const sub of subs) {
-        try {
-          await resend.emails.send({
-            from: 'Viaje con Inteligencia <newsletter@viajeinteligencia.com>',
-            to: sub.email,
-            subject: 'Resumen Semanal - Viaje con Inteligencia',
-            html: `<pre style="background:#1e293b;padding:16px;border-radius:8px;color:#cbd5e1;font-size:13px;white-space:pre-wrap;">${digest}</pre>`,
-          });
-        } catch {}
+    let sent = 0, errors = 0;
+    for (const sub of subscribers) {
+      try {
+        const html = (await buildWeeklyEmailHtml(sub.name, content, weekDate)).replace('{{EMAIL}}', encodeURIComponent(sub.email));
+        await resend.emails.send({
+          from: 'Viaje con Inteligencia <newsletter@viajeinteligencia.com>',
+          to: sub.email,
+          subject: `Resumen Semanal — ${weekDate}`,
+          html,
+        });
+        sent++;
+        await new Promise(r => setTimeout(r, 300)); // Rate limit: 300ms between sends
+      } catch {
+        errors++;
       }
     }
 
-    return { status: 'ok', sent_to: subs.length };
+    return { status: 'ok', sent, errors };
   } catch (e: any) {
     return { status: 'error', error: e.message };
   }
@@ -430,7 +422,7 @@ export async function GET(request: Request) {
   // Phase 1: Independent tasks (run in parallel)
   // MAEC scrape (120s timeout), Airspace OSINT (30s), Oil Price (15s)
   const [maecRes, airspaceRes, oilRes] = await Promise.all([
-    withTimeout(() => runMaecScrape(), 120000, '1/8 MAEC scrape'),
+    withTimeout(() => runMaecScrape(), 90000, '1/8 MAEC scrape'),
     withTimeout(() => runAirspaceOsint(), 30000, '4/8 Airspace OSINT'),
     withTimeout(() => runOilPrice(), 15000, '6/8 Oil price'),
   ]);

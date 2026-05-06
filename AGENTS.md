@@ -1,8 +1,8 @@
 # AGENTS.md — Viaje con Inteligencia
 
-## PAUSED STATE (07 May 2026)
-- **Master cron**: Fixed import error, deployed, but **times out on production** (>300s). Groq classification for many OSINT posts is too slow. Next: reduce Groq calls, add per-step timeouts, skip AI for low-priority sources.
-- **OSINT /admin/osint/**: Still shows only 13 stale entries from yesterday. News RSS feeds added to code but not yet populating data.
+## PAUSED STATE (07 May 2026 — Resumed 07 May)
+- **Master cron**: Timeout fixed (deployed 91d6e6f). Keyword classification for GDELT/RSS (no Groq), Groq only for Reddit posts. Parallel execution + step timeouts (120s MAEC, 90s OSINT, 30s others). Cap 20 posts/run. **Needs verification** — run `/api/cron/master` manually to confirm <60s.
+- **OSINT /admin/osint/**: Still shows 13 stale entries. News RSS feeds in code but not populating until cron runs successfully.
 - **All API keys** saved in `.env.local`: Supabase, Stripe, Telegram, Resend, Groq, CRON_SECRET, Mastodon, Admin. No need to search again.
 - **Newsletter**: Architecture designed, not implemented. Pending discussion on what's viable.
 
