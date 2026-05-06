@@ -1,11 +1,81 @@
 import { NextResponse } from 'next/server';
-import { supabaseAdmin } from '@/lib/supabase-admin';
+import { supabaseAdmin, isSupabaseAdminConfigured } from '@/lib/supabase-admin';
 import { fetchAllPosts, classifySignal, detectFirstPerson, type SignalCategory } from '@/lib/osint-sensor';
 
 const LAST_RUN_KEY = 'last_osint_run';
 const PROCESSED_URLS_KEY = 'osint_processed_urls';
 
 export const maxDuration = 60;
+
+const OIL_SOURCES = [
+  {
+    name: 'Yahoo Finance',
+    url: 'https://query1.finance.yahoo.com/v8/finance/chart/BZ=F?range=1d&interval=1d',
+    parse: (jsonStr: string) => {
+      try {
+        const data = JSON.parse(jsonStr);
+        return data?.chart?.result?.[0]?.meta?.regularMarketPrice || null;
+      } catch {
+        return null;
+      }
+    },
+  },
+  {
+    name: 'Investing.com',
+    url: 'https://api.investing.com/api/financialdata/brentoilfutures/streaming',
+    parse: (html: string) => {
+      const match = html.match(/last_price["\s]*[:\s]*([\d.]+)/);
+      return match ? parseFloat(match[1]) : null;
+    },
+  },
+];
+
+async function fetchAndSaveOilPrice(): Promise<{ success: boolean; price?: number; source?: string }> {
+  if (!isSupabaseAdminConfigured()) {
+    return { success: false };
+  }
+
+  for (const src of OIL_SOURCES) {
+    try {
+      const res = await fetch(src.url, {
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+          'Accept': 'application/json',
+        },
+        signal: AbortSignal.timeout(8000),
+      });
+
+      if (!res.ok) continue;
+
+      const text = await res.text();
+      const price = src.parse(text);
+
+      if (price && price > 30 && price < 200) {
+        const rounded = Math.round(price * 100) / 100;
+        const today = new Date().toISOString().split('T')[0];
+
+        const { error } = await supabaseAdmin
+          .from('oil_prices_history')
+          .upsert(
+            { date: today, price_usd: rounded, source: src.name },
+            { onConflict: 'date' }
+          );
+
+        if (error) {
+          console.error('[Oil] Save error:', error);
+          return { success: false };
+        }
+
+        console.log(`[Oil] Saved $${rounded} from ${src.name}`);
+        return { success: true, price: rounded, source: src.name };
+      }
+    } catch (e) {
+      console.warn(`[Oil] Fetch failed (${src.name}):`, e);
+    }
+  }
+
+  return { success: false };
+}
 
 export async function GET(request: Request) {
   const authHeader = request.headers.get('authorization');
@@ -117,6 +187,9 @@ export async function GET(request: Request) {
       .order('created_at', { ascending: false })
       .limit(20);
 
+    // 6. Fetch and save daily oil price (integrated in same cron)
+    const oilResult = await fetchAndSaveOilPrice();
+
     const elapsed = Date.now() - startTime;
 
     return NextResponse.json({
@@ -126,6 +199,8 @@ export async function GET(request: Request) {
       newPosts: newPosts.length,
       signalsInserted: inserted,
       urgentCount: urgentSignals?.length || 0,
+      oilPrice: oilResult.success ? oilResult.price : null,
+      oilSource: oilResult.source || null,
       sources: {
         reddit: posts.filter(p => p.source === 'reddit').length,
         gdacs: posts.filter(p => p.source === 'gdacs').length,

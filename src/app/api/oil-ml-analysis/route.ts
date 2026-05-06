@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
+import { supabaseAdmin, isSupabaseAdminConfigured } from '@/lib/supabase-admin';
 
-const OIL_HISTORY = [
+const FALLBACK_HISTORY = [
   { date: '2026-01-15', price: 78.2 },
   { date: '2026-01-22', price: 79.5 },
   { date: '2026-01-29', price: 80.1 },
@@ -27,6 +28,25 @@ const CONFLICT_EVENTS = [
   { date: '2026-05-01', event: 'OPEC+ anuncia recortes de producción', impact: 7 },
   { date: '2026-05-05', event: 'Tensiones Líbano-Israel: cierre espacio aéreo Beirut', impact: 4 },
 ];
+
+async function getOilHistory(): Promise<{ date: string; price: number }[]> {
+  if (!isSupabaseAdminConfigured()) return FALLBACK_HISTORY;
+
+  try {
+    const { data } = await supabaseAdmin
+      .from('oil_prices_history')
+      .select('date, price_usd')
+      .order('date', { ascending: true })
+      .limit(52);
+
+    if (data && data.length > 0) {
+      return data.map(d => ({ date: d.date, price: d.price_usd }));
+    }
+  } catch {
+  }
+
+  return FALLBACK_HISTORY;
+}
 
 function linearRegression(data: number[]): { slope: number; intercept: number; r2: number } {
   const n = data.length;
@@ -61,7 +81,8 @@ function exponentialSmoothing(data: number[], alpha: number): number {
 }
 
 export async function GET() {
-  const prices = OIL_HISTORY.map(h => h.price);
+  const history = await getOilHistory();
+  const prices = history.map(h => h.price);
   const currentPrice = prices[prices.length - 1];
   const prices7d = prices.slice(-3);
   const prices30d = prices.slice(-8);
@@ -131,8 +152,8 @@ export async function GET() {
 
   return NextResponse.json({
     timestamp: new Date().toISOString(),
-    source: 'OSINT + ML Analysis',
-    dataPoints: OIL_HISTORY.length,
+    source: history.length === FALLBACK_HISTORY.length ? 'hardcoded' : 'supabase',
+    dataPoints: history.length,
     past: pastAnalysis,
     present: presentAnalysis,
     future: futureAnalysis,
