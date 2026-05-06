@@ -24,6 +24,30 @@ npm run start        # production server
 - **Data**: `src/data/paises.ts` — 107 países con riesgo MAEC
 - **Z-index**: TopBar `z-[1010]`, SidePanel `z-[1005]`, Leaflet `z-[400-1000]`
 
+## Newsletter Architecture Design (Pending Discussion)
+### Concept: Newsletter Autónomo
+**Arquitectura:**
+Trigger (GitHub Actions / Anomaly) → Data (MAEC+USGS+GDACS) → LLM Groq (content generation) → Personalization (Supabase profiles) → Send (Resend + Telegram) → Analytics (newsletter_logs)
+
+**Newsletter Types:**
+| Type | Frequency | Content | Audience |
+|---|---|---|---|
+| Digest Semanal | Monday 08:00 | Top 3 MAEC changes + 1 destination | All free users |
+| Risk Alert | Event-driven | Country changed level → impact | Users with favorites |
+| Premium Monthly | 1st of month | Deep analysis + ML predictions | Premium only |
+| Destination Month | 15th of month | Full profile: cost+risk+weather | All |
+
+**Provider:** Resend (3,000 emails/mo free, native Next.js SDK, React Email support)
+
+**Components to build:**
+1. React Email template (`@react-email/components`) — personalized with `{{nombre}}`, `{{pais}}`, `{{riesgo_favorito}}`
+2. `/api/newsletter/send` route — batch send via Resend (100 per call)
+3. `newsletter-generator.ts` — Groq LLM generates destination descriptions (40-50 words, no fluff)
+4. GitHub Actions scheduler (free alternative to Vercel cron limits)
+5. `newsletter_logs` table in Supabase (opens, clicks tracking)
+
+**Status:** Architecture defined, not yet implemented. Need to decide what's viable vs not.
+
 ## CRON Incident (07 May 2026)
 - Vercel Hobby allows ONLY 1 cron job. Had 7 crons configured — only 1 was running, rest were silently ignored.
 - `/admin/osint/` showed no new data because `osint-sensor` cron never ran.

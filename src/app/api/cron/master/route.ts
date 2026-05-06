@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getAllMAECAlerts, getMAECData } from '@/lib/scraper/maec';
-import { supabase, supabaseAdmin } from '@/lib/supabase';
+import { supabase } from '@/lib/supabase';
+import { supabaseAdmin } from '@/lib/supabase-admin';
 import { paisesData } from '@/data/paises';
 import { calculateTCI } from '@/data/tci-engine';
 import { generateRiskChangeAlert } from '@/lib/alerts-system';
