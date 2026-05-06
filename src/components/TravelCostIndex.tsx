@@ -34,9 +34,27 @@ export default function TravelCostIndex({ countryCode }: { countryCode?: string 
   useEffect(() => {
     if (!countryCode) return;
     setLoading(true);
-    fetch(`/api/flight-costs?country=${countryCode}`)
+    fetch(`/api/flight-costs?action=detail&country=${countryCode}`)
       .then(res => res.json())
-      .then(setData)
+      .then((raw) => {
+        if (raw.error || !raw.tci) { setData(null); return; }
+        setData({
+          country: { code: countryCode, name: '', bandera: '', region: '', nivelRiesgo: '' },
+          tci: raw.tci.tci,
+          trend: raw.tci.trend,
+          recommendation: raw.tci.recommendation,
+          factors: raw.tci.factors,
+          indices: {
+            demand: raw.tci.demandIdx,
+            oil: raw.tci.oilIdx,
+            seasonality: raw.tci.seasonalityIdx,
+            ipc: raw.tci.ipcIdx,
+            risk: raw.tci.riskIdx,
+          },
+          monthlyPattern: raw.monthly,
+          monthlyAvg: raw.monthly ? raw.monthly.reduce((a: number, b: number) => a + b, 0) / raw.monthly.length : 100,
+        });
+      })
       .catch(console.error)
       .finally(() => setLoading(false));
   }, [countryCode]);
