@@ -2,6 +2,20 @@
 
 ## Última sesión: 06 May 2026
 
+### Newsletter — Double Opt-in implementado
+- **Antes**: `verified: true` inmediato, sin confirmación email
+- **Ahora**: `verified: false` al suscribirse → email de confirmación con link → `verified: true` al hacer click
+- **Rate limit**: 1 sub/email/hora vía localStorage
+- **Unsubscribe**: Soporte doble — token-based (pendientes) y email-based (verificados con token borrado)
+- **Weekly digest**: Ya filtra por `verified: true` — corregido unsubscribe link para verificados
+
+### Reclamaciones — Página `/reclamaciones` creada
+- **Gratis**: Plantilla genérica con campos básicos, copiar al portapapeles
+- **Premium**: Documento formal con datos personales, fundamentos de derecho, referencias legales específicas por tipo (8 tipos de reclamación), sección de documentación adjunta
+- Toggle Free/Premium en el formulario
+- CTA para trial gratuito si no es Premium
+- QuickAccess actualizado a `/reclamaciones`
+
 ### Sistema de Autenticación (Supabase Auth)
 
 **Proveedor**: Supabase Auth (`@supabase/ssr`)
