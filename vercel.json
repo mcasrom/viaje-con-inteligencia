@@ -61,6 +61,10 @@
     {
       "path": "/api/cron/airspace-osint",
       "schedule": "0 4 * * *"
+    },
+    {
+      "path": "/api/cron/osint-sensor",
+      "schedule": "0 * * * *"
     }
   ]
 }
