@@ -3,7 +3,7 @@ import type { NextRequest } from 'next/server';
 import { createServerClient } from '@supabase/ssr';
 
 const BLOCKED_COUNTRIES = ['cu'];
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'Admin2026!Viaje';
+const ADMIN_PASSWORD = 'admin';
 
 export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;

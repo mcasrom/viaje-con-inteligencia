@@ -2,7 +2,7 @@
 
 import { cookies } from 'next/headers';
 
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'Admin2026!Viaje';
+const ADMIN_PASSWORD = 'admin';
 const COOKIE_NAME = 'admin_session';
 const COOKIE_MAX_AGE = 60 * 60 * 24;
 const IS_PROD = process.env.NODE_ENV === 'production';
