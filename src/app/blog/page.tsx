@@ -145,14 +145,16 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
     skip: 0,
   });
 
-  const paginationLinks = (p: number) => {
+  const paginationLinks = (p: number, opts?: { resetCategory?: boolean; resetSearch?: boolean }) => {
     const qs = new URLSearchParams();
-    if (category) qs.set('category', category);
-    if (search) qs.set('search', search);
+    if (category && !opts?.resetCategory) qs.set('category', category);
+    if (search && !opts?.resetSearch) qs.set('search', search);
     if (view === 'grid') qs.set('view', 'grid');
     if (p > 1) qs.set('page', String(p));
     return `/blog${qs.toString() ? '?' + qs.toString() : ''}`;
   };
+
+  const allLink = paginationLinks(1, { resetCategory: true, resetSearch: true });
 
   return (
     <div className="min-h-screen bg-slate-900">
@@ -188,9 +190,9 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
             </form>
             <div className="flex flex-wrap items-center gap-2">
               <Link
-                href={paginationLinks(1)}
+                href={allLink}
                 className={`px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-                  !category
+                  !category && !search
                     ? 'bg-blue-500 text-white'
                     : 'bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700'
                 }`}
@@ -200,7 +202,7 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
               {categories.map((cat) => (
                 <Link
                   key={cat}
-                  href={`/blog?category=${encodeURIComponent(cat)}${view === 'grid' ? '&view=grid' : ''}`}
+                  href={`/blog?category=${encodeURIComponent(cat)}${search ? `&search=${encodeURIComponent(search)}` : ''}${view === 'grid' ? '&view=grid' : ''}`}
                   className={`px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                     category === cat
                       ? 'bg-blue-500 text-white'
