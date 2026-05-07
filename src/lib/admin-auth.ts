@@ -1,19 +1,20 @@
 'use server';
 
 import { cookies } from 'next/headers';
+import { createHash } from 'crypto';
 
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || '';
+const PASSWORD_HASH = 'df7d515aba10266b67bcd9a5fa5fbe03dc433886c2aa2b8bf67e2dba0898ddb2';
 const COOKIE_NAME = 'admin_session';
 const IS_PROD = process.env.NODE_ENV === 'production';
 
-export async function loginAction(prevState: any, formData: FormData) {
-  if (!ADMIN_PASSWORD) {
-    return { error: 'Servidor no configurado' };
-  }
+function hashPassword(pw: string): string {
+  return createHash('sha256').update(pw).digest('hex');
+}
 
+export async function loginAction(prevState: any, formData: FormData) {
   const password = formData.get('password') as string;
 
-  if (password === ADMIN_PASSWORD) {
+  if (hashPassword(password) === PASSWORD_HASH) {
     const cookieStore = await cookies();
     cookieStore.set(COOKIE_NAME, '1', {
       httpOnly: true,
