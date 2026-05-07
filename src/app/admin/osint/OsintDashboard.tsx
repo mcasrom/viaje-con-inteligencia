@@ -43,6 +43,7 @@ interface OsintSignal {
   summary: string;
   location_name: string;
   created_at: string;
+  tone_score: number;
 }
 
 export default function OsintDashboard() {
@@ -238,6 +239,16 @@ export default function OsintDashboard() {
                           {signal.source && SOURCE_CONFIG[signal.source] && (
                             <span className={`px-1.5 py-0.5 rounded text-[10px] font-bold border ${SOURCE_CONFIG[signal.source].color}`}>
                               {SOURCE_CONFIG[signal.source].label}
+                            </span>
+                          )}
+                          {signal.tone_score !== null && signal.tone_score !== undefined && (
+                            <span className={`px-1.5 py-0.5 rounded text-[10px] font-bold ${
+                              signal.tone_score < -5 ? 'bg-red-500/20 text-red-400' :
+                              signal.tone_score < 0 ? 'bg-orange-500/20 text-orange-400' :
+                              signal.tone_score > 5 ? 'bg-green-500/20 text-green-400' :
+                              'bg-slate-500/20 text-slate-400'
+                            }`}>
+                              Sent: {signal.tone_score > 0 ? '+' : ''}{Math.round(signal.tone_score)}
                             </span>
                           )}
                           {signal.subreddit && (

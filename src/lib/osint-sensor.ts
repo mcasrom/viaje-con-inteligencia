@@ -16,6 +16,7 @@ export interface RawPost {
   severity?: 'green' | 'orange' | 'red';
   mag?: number;
   eventType?: string;
+  toneScore?: number; // GDELT sentiment: -10 (neg) to +10 (pos)
 }
 
 export interface ClassifiedSignal {
@@ -54,7 +55,10 @@ const KEYWORDS = [
 
 const NEWS_RSS_FEEDS = [
   { name: 'BBC World', url: 'https://feeds.bbci.co.uk/news/world/rss.xml' },
+  { name: 'BBC Breaking', url: 'https://feeds.bbci.co.uk/news/world/rss.xml' },
   { name: 'Reuters World', url: 'https://www.rssdss.com/feeds/worldNews' },
+  { name: 'AP News', url: 'https://rsshub.app/apnews/topics/world-news' },
+  { name: 'Sky News World', url: 'https://feeds.skynews.com/feeds/rss/world.xml' },
   { name: 'EFE Noticias', url: 'https://www.efe.com/feeds/rss/noticias/ultimas.xml' },
   { name: 'Al Jazeera', url: 'https://www.aljazeera.com/xml/rss/all.xml' },
   { name: 'France24 EN', url: 'https://www.france24.com/en/rss' },
@@ -279,11 +283,12 @@ export async function fetchGdeltEvents(limit = 30): Promise<RawPost[]> {
         source: 'gdelt',
         sourceUrl: url,
         title: `📡 GDELT: ${title}`,
-        content: `Source: ${source}. Sentiment score: ${tone}. Keyword: ${matchedCategory || 'general'}.`,
+        content: `Source: ${source}. Sentiment: ${tone > 0 ? '+' : ''}${tone}. Keyword: ${matchedCategory || 'general'}.`,
         author: source,
         timestamp: date ? new Date(date.slice(0, 14)) : new Date(),
         eventType: matchedCategory,
         locationName: undefined,
+        toneScore: tone,
       });
     }
   } catch (e) {

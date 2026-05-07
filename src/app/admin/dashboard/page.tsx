@@ -483,36 +483,42 @@ export default function AdminDashboard() {
         <section className="bg-slate-800 rounded-2xl border border-slate-700 p-6">
           <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
             <Play className="w-5 h-5 text-green-400" />
-            Disparar Cron Jobs
+            Disparar Cron Master
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            {[
-              { path: '/api/cron/scrape-maec', label: 'MAEC Scraper', icon: '🌍' },
-              { path: '/api/cron/check-alerts', label: 'Check Alerts', icon: '⚠️' },
-              { path: '/api/cron/daily-digest', label: 'Daily Digest', icon: '📧' },
-              { path: '/api/cron/weekly-digest', label: 'Weekly Digest', icon: '📰' },
-              { path: '/api/cron/ine-scrape', label: 'INE Scrape', icon: '📊' },
-              { path: '/api/cron/ml-clustering', label: 'ML Clustering', icon: '🤖' },
-              { path: '/api/cron/flight-costs', label: 'Flight Costs TCI', icon: '✈️' },
-            ].map((cron) => (
-              <button
-                key={cron.path}
-                onClick={() => runAction('trigger-cron', cron.path)}
-                disabled={actionLoading !== null}
-                className="flex items-center gap-3 bg-slate-700 hover:bg-slate-600 disabled:opacity-50 rounded-xl p-4 transition-colors"
-              >
-                <span className="text-2xl">{cron.icon}</span>
-                <div className="flex-1 text-left">
-                  <p className="text-white text-sm font-medium">{cron.label}</p>
-                  <p className="text-slate-400 text-xs">{cron.path}</p>
-                </div>
-                {actionLoading === 'trigger-cron' ? (
-                  <RefreshCw className="w-4 h-4 animate-spin text-slate-400" />
-                ) : (
-                  <Play className="w-4 h-4 text-green-400" />
-                )}
-              </button>
-            ))}
+          <p className="text-slate-400 text-sm mb-4">Todos los jobs consolidados en un solo endpoint. Ejecuta MAEC + Risk + Flight + OSINT + Digest.</p>
+          <div className="grid grid-cols-1 gap-3">
+            <button
+              onClick={() => runAction('trigger-cron', '/api/cron/master')}
+              disabled={actionLoading !== null}
+              className="flex items-center gap-3 bg-green-700 hover:bg-green-600 disabled:opacity-50 rounded-xl p-4 transition-colors"
+            >
+              <span className="text-2xl">⚡</span>
+              <div className="flex-1 text-left">
+                <p className="text-white text-sm font-medium">Ejecutar Master Cron</p>
+                <p className="text-slate-300 text-xs">MAEC · Risk · Flight · OSINT · Digest</p>
+              </div>
+              {actionLoading === 'trigger-cron' ? (
+                <RefreshCw className="w-4 h-4 animate-spin text-white" />
+              ) : (
+                <Play className="w-4 h-4 text-white" />
+              )}
+            </button>
+            <button
+              onClick={() => runAction('trigger-cron', '/api/cron/osint-sensor')}
+              disabled={actionLoading !== null}
+              className="flex items-center gap-3 bg-slate-700 hover:bg-slate-600 disabled:opacity-50 rounded-xl p-4 transition-colors"
+            >
+              <span className="text-2xl">📡</span>
+              <div className="flex-1 text-left">
+                <p className="text-white text-sm font-medium">Ejecutar OSINT Sensor</p>
+                <p className="text-slate-400 text-xs">Solo escaneo de señales (GDELT + RSS + Reddit)</p>
+              </div>
+              {actionLoading === 'trigger-cron' ? (
+                <RefreshCw className="w-4 h-4 animate-spin text-slate-400" />
+              ) : (
+                <Play className="w-4 h-4 text-slate-400" />
+              )}
+            </button>
           </div>
         </section>
 

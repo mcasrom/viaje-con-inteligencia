@@ -183,7 +183,7 @@ const URGENCY_KEYWORDS: Record<string, string[]> = {
   medium: ['protest', 'strike', 'closure', 'cancel', 'warning', 'huelga', 'cierre', 'cancelado', 'advertencia'],
 };
 
-function classifyByKeywords(text: string): ClassifiedSignal {
+function classifyByKeywords(text: string, toneScore?: number): ClassifiedSignal {
   const lower = text.toLowerCase();
   let category = 'otro' as SignalCategory;
   let maxCatScore = 0;
@@ -201,8 +201,20 @@ function classifyByKeywords(text: string): ClassifiedSignal {
     }
   }
 
+  // GDELT tone adjustment: very negative = higher urgency
+  if (toneScore !== undefined && toneScore < -5) {
+    const idx = urgOrder.indexOf(urgency);
+    urgency = urgOrder[Math.min(idx + 1, urgOrder.length - 1)];
+  }
+  if (toneScore !== undefined && toneScore < -10) {
+    const idx = urgOrder.indexOf(urgency);
+    urgency = urgOrder[Math.min(idx + 1, urgOrder.length - 1)];
+  }
+
+  const toneConfidence = toneScore !== undefined ? Math.min(0.9, 0.5 + Math.abs(toneScore) / 100) : undefined;
+
   return {
-    category, confidence: maxCatScore > 1 ? 0.85 : 0.6,
+    category, confidence: toneConfidence || (maxCatScore > 1 ? 0.85 : 0.6),
     isFirstResponder: false, urgency, summary: text.substring(0, 200),
   };
 }
@@ -241,15 +253,15 @@ async function runNewsSentiment(): Promise<any> {
           summary: post.title,
         };
       } else if (post.source === 'gdelt' || post.source === 'rss') {
-        // News sources: keyword classification (fast, no Groq)
-        classification = classifyByKeywords(`${post.title} ${post.content}`);
+        // News sources: keyword classification + tone adjustment
+        classification = classifyByKeywords(`${post.title} ${post.content}`, post.toneScore);
       } else {
         // Reddit: use Groq (first-person experience matters)
         try {
           classification = await classifySignal(post);
           isFirstPerson = classification?.isFirstResponder || detectFirstPerson(`${post.title} ${post.content}`);
         } catch {
-          classification = classifyByKeywords(`${post.title} ${post.content}`);
+          classification = classifyByKeywords(`${post.title} ${post.content}`, post.toneScore);
         }
       }
 
@@ -261,6 +273,7 @@ async function runNewsSentiment(): Promise<any> {
         summary: classification?.summary || post.title, location_name: post.locationName,
         lat: post.lat, lng: post.lng, severity: post.severity, mag: post.mag,
         event_type: post.eventType, post_timestamp: post.timestamp.toISOString(),
+        tone_score: post.toneScore,
       });
     }
 
