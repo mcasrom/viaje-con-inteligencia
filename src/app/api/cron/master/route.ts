@@ -8,6 +8,7 @@ import { generateRiskChangeAlert } from '@/lib/alerts-system';
 import { fetchAllPosts, classifySignal, detectFirstPerson, type ClassifiedSignal, type SignalCategory } from '@/lib/osint-sensor';
 import { Resend } from 'resend';
 import { detectAndCreateIncidents } from '@/lib/incident-detector';
+import { saveAllPredictions } from '@/lib/ml-risk-predictor';
 
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const TELEGRAM_CHANNEL_ID = process.env.TELEGRAM_CHANNEL_ID;
@@ -531,6 +532,14 @@ export async function GET(request: Request) {
     async () => detectAndCreateIncidents(),
     15000,
     '5b/8 Incident detection'
+  );
+
+  // Phase 3c: ML Risk Predictions
+  console.log('[Master] 6/8 ML Risk predictions...');
+  results.risk_predictions = await withTimeout(
+    async () => saveAllPredictions(),
+    30000,
+    '6/8 ML Risk predictions'
   );
 
   // Phase 4: Digests and notifications (always run last)
