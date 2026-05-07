@@ -1,4 +1,4 @@
-#+TITLE: Viaje con Inteligencia — Guía del Usuario
+#+TITLE: Viaje con Inteligencia — Guia del Usuario
 #+SUBTITLE: Todo lo que puedes hacer como viajero inteligente
 #+AUTHOR: Viaje con Inteligencia
 #+DATE: 2026-05-07
@@ -9,7 +9,7 @@
 #+LATEX_HEADER: \definecolor{brandblue}{HTML}{3B82F6}
 #+PDF_TITLE: Viaje con Inteligencia - Guia del Usuario
 
-* ¿Qué es Viaje con Inteligencia?
+* ¿Que es Viaje con Inteligencia?
 
 Una plataforma que combina datos de riesgo oficial (MAEC), inteligencia OSINT
 (reddit, GDELT, USGS, RSS), analisis de costes y algoritmos propios para que
@@ -17,111 +17,340 @@ tomes decisiones de viaje informadas.
 
 No es un blog. No es una agencia. Es un *sistema de decision*.
 
+#+BEGIN_SRC plantuml :file assets/user-flow.png :exports results
+@startuml
+skinparam backgroundColor #0F172A
+skinparam componentStyle rectangle
+skinparam defaultFontSize 14
+
+title ¿Como funciona Viaje con Inteligencia?
+
+actor Usuario as U
+
+rectangle "Datos en tiempo real" as Data {
+  [MAEC\nRiesgo oficial] as MAEC
+  [USGS\nTerremotos] as USGS
+  [GDELT\nNoticias] as GDELT
+  [Reddit\nExperiencias] as Reddit
+  [Yahoo\nPetroleo] as Oil
+}
+
+rectangle "Procesamiento" as Process {
+  [Clasificacion\nOSINT] as Classify
+  [Deteccion\nIncidentes] as Detect
+  [Calculo\nTCI/IRV] as Calc
+}
+
+rectangle "Resultados para ti" as Output {
+  [Mapa de\nRiesgo] as Map
+  [Calculadora\nCostes] as CalcUI
+  [Feed de\nIncidentes] as Feed
+  [Chat IA\nViajes] as Chat
+}
+
+MAEC --> Detect
+USGS --> Detect
+GDELT --> Classify
+Reddit --> Classify
+Oil --> Calc
+
+Classify --> Detect
+Detect --> Feed
+Calc --> CalcUI
+
+U --> Map
+U --> CalcUI
+U --> Feed
+U --> Chat
+
+@enduml
+#+END_SRC
+
 * Funcionalidades Principales
 
 ** 🌍 Mapa de Riesgo Interactivo
-- Mapa mundial con niveles de riesgo MAEC actualizados automaticamente
-- 5 niveles: Sin riesgo → Riesgo muy alto
-- Capas adicionales: terremotos (USGS 24h), conflictos activos, alertas sanitarias
-- Click en cualquier pais para ver analisis detallado
+
+Mapa mundial con 5 niveles de riesgo, actualizado automaticamente:
+
+| Nivel | Color | Significado | Accion recomendada |
+|-------+-------+-------------+-------------------|
+| Sin riesgo | 🟢 Verde | Pais estable | Viaje normal |
+| Riesgo bajo | 🟡 Amarillo | Precaucion basica | Seguro de viaje |
+| Riesgo medio | 🟠 Naranja | Situacion variable | Monitorizar noticias |
+| Riesgo alto | 🔴 Rojo | Zona conflictiva | Reconsiderar viaje |
+| Riesgo muy alto | 🟣 Rojo oscuro | Peligro activo | NO viajar |
+
+Capas adicionales: terremotos (USGS 24h), conflictos activos, alertas sanitarias.
 
 ** 💰 Calculadora de Coste de Viaje
+
+#+BEGIN_SRC plantuml :file assets/cost-breakdown.png :exports results
+@startuml
+skinparam backgroundColor #0F172A
+skinparam defaultFontSize 13
+
+title Composicion del coste estimado
+
+rectangle "Entrada" as Input {
+  [Pais destino] as Country
+  [Presupuesto] as Budget
+  [Duracion] as Days
+  [Viajeros] as Travelers
+}
+
+rectangle "Algoritmo TCI" as TCI {
+  [Precio\npetroleo] as Oil
+  [Cierres\naereos] as Closure
+  [IPC pais] as IPC
+  [Estacion] as Season
+}
+
+rectangle "Resultado" as Output {
+  [Alojamiento\n€50-150/dia] as Hotel
+  [Comida\n€15-45/dia] as Food
+  [Transporte\n€8-30/dia] as Transport
+  [Actividades\n€10-50/dia] as Activities
+  [Vuelos\n€100-800] as Flight
+}
+
+Country --> TCI
+Budget --> Output
+Days --> Output
+Travelers --> Output
+
+Oil --> TCI
+Closure --> TCI
+IPC --> TCI
+Season --> TCI
+
+TCI --> Hotel
+TCI --> Food
+TCI --> Transport
+TCI --> Activities
+TCI --> Flight
+
+@enduml
+#+END_SRC
+
 - Coste diario estimado para 107 paises
-- Incluye alojamiento, comida, transporte, actividades
-- Ajustado por presupuesto (bajo, medio, alto)
-- Algoritmo TCI (Travel Cost Index) que incorpora precio del petroleo y conflictos
+- Incluye: alojamiento, comida, transporte, actividades
+- Ajustado por presupuesto: bajo, medio, alto, luxury
+- Algoritmo TCI incorpora petroleo + conflictos
 
 ** 🤖 Chat IA de Viajes
-- Asistente entrenado con datos de seguridad, costes y recomendaciones
+
+- Asistente con datos de seguridad, costes y recomendaciones
 - Planifica itinerarios personalizados
-- Responde preguntas sobre visados, seguros, clima
+- Responde: visados, seguros, clima, documentación
 - Disponible en /ai/chat
 
-** 🎯 /decidir — ¿A dónde voy?
-- Modo Internacional: 107 paises con datos de riesgo, coste, clima
-- Modo España: 20 regiones con turismo, costes locales, mejor epoca
-- Filtros por presupuesto, tipo de viaje, duracion
-- Recomendaciones basadas en clustering K-Means
+** 🎯 /decidir — ¿A donde voy?
+
+| Modo | Destinos | Categorias | Filtros |
+|------+----------+------------+---------|
+| Internacional | 107 paises | Riesgo, coste, clima | Presupuesto, duracion, tipo |
+| Turismo Espana | 20 regiones | 12 categorias | Local, estacional, coste |
+
+Recomendaciones basadas en clustering K-Means (4 clusters: Europa cercana,
+destinos premium, turismo masivo, larga distancia).
 
 ** 📊 Inteligencia en Vivo (/osint)
-- Incidentes activos detectados automaticamente
-- Terrorismo, conflictos, cierres aereos, desastres, huelgas, alertas sanitarias
-- 3 niveles de informacion por incidente:
-  1. Recomendacion automatica del sistema
-  2. Nota del analista (criterio experto humano)
-  3. Valoracion de la comunidad (estrellas 1-5)
-- Actualizado cada 6 horas automaticamente
+
+#+BEGIN_SRC plantuml :file assets/incident-layers.png :exports results
+@startuml
+skinparam backgroundColor #0F172A
+skinparam defaultFontSize 13
+
+title Estructura de un incidente
+
+rectangle "Incidente: Huelga aeropuertos Francia" {
+  
+  rectangle "1. Deteccion automatica" as Auto {
+    [Fuente: GDELT + RSS + Reddit]
+    [Tipo: flight_disruption]
+    [Severidad: MEDIA]
+    note right: El sistema detecta 5+ menciones\nen 24h y crea el incidente
+  }
+  
+  rectangle "2. Recomendacion del sistema" as System {
+    [Posibles retrasos. Verifica tu vuelo.\nLlega 3h antes. Seguro cubre.]
+    note right: Generada automaticamente\nsegun tipo + severidad
+  }
+  
+  rectangle "3. Nota del analista" as Human {
+    [Solo afecta vuelos domesticos.\nVuelos internacionales operan normal.\nAlternativa: tren SNCF.]
+    note right: Criterio experto humano\nsobre la situacion real
+  }
+  
+  rectangle "4. Valoracion comunidad" as Community {
+    [⭐⭐⭐⭐ 4.2 (23 valoraciones)]
+    note right: Los usuarios califican\nla utilidad de la alerta
+  }
+  
+}
+
+Auto --> System
+System --> Human
+Human --> Community
+
+@enduml
+#+END_SRC
+
+Cada incidente muestra 3 capas de informacion:
+
+1. **Recomendacion automatica** — generada por el sistema segun tipo y severidad
+2. **Nota del analista** — criterio experto humano (cuando existe)
+3. **Valoracion comunidad** — estrellas 1-5 de usuarios
+
+Tipos de incidentes detectados:
+
+| Tipo | Ejemplo | Expiracion |
+|------+---------+------------|
+| terrorism | Atentado Paris | 72h |
+| conflict | Escalada Ucrania | 48h |
+| flight_disruption | Huelga Ryanair | 24h |
+| natural_disaster | Terremoto Japon | 36h |
+| health_outbreak | Brote colera Egipto | 168h |
+| protest | Manifestaciones Paris | 12h |
+| airspace_closure | Cierre espacio aereo Rusia | 24h |
+| travel_advisory | Aviso MAEC | 168h |
 
 ** 📝 Blog OSINT (60+ articulos)
-- Guías por pais (¿Es seguro viajar a Japon?)
-- Analisis de costes y presupuestos
-- Derechos del viajero en la UE
-- Seguros de viaje comparados
-- Visados y documentacion
+
+| Categoria | Ejemplos | Articulos |
+|-----------+----------+-----------|
+| Seguridad por pais | ¿Es seguro viajar a Japon? | 25+ |
+| Costes y presupuestos | Viaje economico a Tailandia | 10+ |
+| Derechos del viajero | Reclamacion vuelo cancelado UE | 5+ |
+| Seguros | Comparativa seguros de viaje | 5+ |
+| Visados y documentacion | Guia visados por pais | 5+ |
+| Tecnologia | Apps esenciales para viajar | 5+ |
+| OSINT y analisis | Que es el indice TCI | 5+ |
+
+Cada articulo incluye:
 - Busqueda y filtros por categoria
+- Vista lista o grid
+- Paginacion (10 articulos por pagina)
 - Valoraciones con estrellas
+- Imagenes optimizadas
 
 ** 🔄 Comparador de Paises
-- Compara 2 paises lado a lado
-- Riesgo, coste, clima, idioma, distancia
-- Indicadores visuales con barras de progreso
+
+Compara 2 paises lado a lado:
+
+| Metrica | Japon | Mexico |
+|---------+-------+--------|
+| Riesgo MAEC | Muy bajo | Medio |
+| IRV | 12 | 45 |
+| Coste diario (medio) | €85 | €42 |
+| Clima | Templado/Monzonico | Tropical |
+| Idioma | Japones | Español |
+| Distancia desde España | 10.800 km | 9.200 km |
 
 ** ⚠️ Sistema de Alertas
-- Alertas de cambio de riesgo (via Telegram)
-- Newsletter semanal con briefing
+
+- Alertas de cambio de riesgo via Telegram
+- Newsletter semanal los lunes (briefing)
 - Deteccion automatica de incidentes relevantes
 
 ** 🗺️ Rutas Tematicas
-- Rutas por Espana generadas con IA
-- Recomendaciones de destinos similares
-- Basado en preferencias (playa, cultural, naturaleza)
+
+- Rutas por España generadas con IA
+- Recomendaciones de destinos similares (K-Means)
+- Basado en preferencias: playa, cultural, naturaleza, familiar
 
 * Indicadores Propios
 
-** IRV — Índice de Riesgo de Viaje
+** IRV — Indice de Riesgo de Viaje
+
+#+BEGIN_SRC plantuml :file assets/irv-formula.png :exports results
+@startuml
+skinparam backgroundColor #0F172A
+skinparam defaultFontSize 13
+
+title Composicion del IRV (0-100)
+
+package "Indicadores externos" as External {
+  [GPI: Global Peace Index] as GPI
+  [GTI: Global Terrorism Index] as GTI
+  [HDI: Human Development Index] as HDI
+}
+
+package "Factores propios" as Internal {
+  [Nivel MAEC] as MAEC
+  [Estabilidad geopolitica] as Geo
+  [Sanidad] as Health
+  [Transporte] as Transport
+  [Barrera idioma] as Lang
+  [Saturacion turistica] as Tourist
+}
+
+MAEC -[hidden]-> Geo
+Geo -[hidden]-> Health
+Health -[hidden]-> Transport
+Transport -[hidden]-> Lang
+Lang -[hidden]-> Tourist
+
+rectangle "IRV = Suma ponderada" as IRV {
+  [Resultado: 0-100] as Score
+}
+
+MAEC --> Score : 40%
+Geo --> Score : 20%
+Health --> Score : 15%
+Transport --> Score : 10%
+Lang --> Score : 10%
+Tourist --> Score : 5%
+
+GPI --> Geo
+GTI --> Geo
+HDI --> Health
+
+@enduml
+#+END_SRC
+
 Calculado a partir de:
-- Nivel MAEC (peso 40%)
-- Estabilidad geopolitica (20%)
-- Infraestructura sanitaria (15%)
-- Calidad de transporte (10%)
-- Idioma/barreras culturales (10%)
-- Saturacion turistica (5%)
+
+| Factor | Peso | Fuente |
+|--------+------+--------|
+| Nivel MAEC | 40% | Ministerio Asuntos Exteriores |
+| Estabilidad geopolitica | 20% | GPI + GTI indices |
+| Infraestructura sanitaria | 15% | HDI + datos OMS |
+| Calidad transporte | 10% | INE + infraestructura |
+| Barrera idioma | 10% | Analisis linguistico |
+| Saturacion turistica | 5% | IST propio |
 
 Escala: 0-100 (100 = maximo riesgo)
 
 ** TCI — Travel Cost Index
+
 Coste total del viaje ajustado por:
-- Precio del petroleo (impacta vuelos)
-- Cierres de espacio aereo (desvios)
-- IPC del pais destino
-- Estacion del ano
 
-** IST — Índice de Saturacion Turistica
-Mide la presion turistica de un destino:
-- Llegadas internacionales
-- Pernoctaciones
-- Estancia media
-- Ratio turistas/poblacion local
+| Componente | Impacto | Fuente |
+|------------+---------+--------|
+| Precio petroleo | Alto (afecta vuelos) | Yahoo Finance |
+| Cierres espacio aereo | Medio (desvios) | OSINT sensor |
+| IPC pais destino | Medio (coste vida) | INE/Eurostat |
+| Estacion del ano | Bajo (temporada) | Datos turismo |
 
-* Fuentes de Datos
+** IST — Indice de Saturacion Turistica
 
-| Fuente | Tipo | Frecuencia |
-|--------+------+------------|
-| MAEC | Riesgo oficial | Diario |
-| USGS | Terremotos | Tiempo real |
-| GDACS | Desastres naturales | 24h |
-| GDELT | Noticias globales | Continuo |
-| Reddit | Experiencias viajeros | 6h |
-| RSS (BBC, AP, Reuters, etc) | Noticias internacionales | 6h |
-| Yahoo Finance | Precio petroleo | Diario |
-| INE/UNWTO | Estadisticas turismo | Mensual |
+| Metrica | Peso | Descripcion |
+|---------+------+-------------|
+| Llegadas internacionales | 35% | Turistas anuales |
+| Pernoctaciones | 25% | Noches de estancia |
+| Estancia media | 20% | Dias promedio |
+| Ratio turistas/poblacion | 20% | Presion sobre locales |
 
 * Valoraciones y Comunidad
 
-Cada incidente y articulo puede valorarse con 1-5 estrellas:
-- ⭐ = No me fue util
-- ⭐⭐⭐ = Informacion basica
-- ⭐⭐⭐⭐⭐ = Me ayudo a tomar una decision
+| Estrellas | Significado | Impacto |
+|-----------+-------------+---------|
+| ⭐ | No me fue util | Alerta revisada por analista |
+| ⭐⭐ | Poca relevancia | Se monitoriza |
+| ⭐⭐⭐ | Informacion basica | Se mantiene |
+| ⭐⭐⭐⭐ | Util para planificar | Se destaca |
+| ⭐⭐⭐⭐⭐ | Me ayudo a decidir | Se recomienda |
 
 Las valoraciones mejoran las recomendaciones para todos los usuarios.
 
@@ -129,8 +358,16 @@ Las valoraciones mejoran las recomendaciones para todos los usuarios.
 
 URL: https://www.viajeinteligencia.com
 
-No requiere registro para usar las herramientas publicas.
-Registro gratuito para: guardar favoritos, recibir alertas, newsletter.
+| Funcionalidad | Registro |
+|---------------+----------|
+| Mapa de riesgo | No necesario |
+| Calculadora costes | No necesario |
+| Blog | No necesario |
+| OSINT /osint | No necesario |
+| Chat IA | No necesario |
+| Guardar favoritos | Gratuito |
+| Recibir alertas Telegram | Gratuito |
+| Newsletter | Gratuito |
 
 * Contacto
 

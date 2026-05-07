@@ -28,141 +28,312 @@ informados via newsletter y Telegram.
 
 ** Los viajeros actuales enfrentan:
 
-1. *Informacion fragmentada*: Riesgo MAEC en una web, precios de vuelos en otra,
-   noticias de conflictos en otra, experiencias en Reddit.
-2. *Datos sin contexto*: Un nivel de riesgo "medio" no dice si afecta a turistas.
-3. *Decisiones reactivas*: Cancelan vuelos cuando ya hay noticias de crisis.
-4. *Sobrecarga informativa*: Demasiados datos, poca accionabilidad.
+| # | Problema | Consecuencia |
+|---+----------+--------------|
+| 1 | Informacion fragmentada | Riesgo MAEC en una web, precios en otra, Reddit en otra |
+| 2 | Datos sin contexto | Nivel "medio" no dice si afecta a turistas |
+| 3 | Decisiones reactivas | Cancelan vuelos cuando ya hay noticias de crisis |
+| 4 | Sobrecarga informativa | Demasiados datos, poca accionabilidad |
 
 ** La industria no responde:
 
-- Las agencias venden paquetes, no informan de riesgos.
-- Los seguros cubren emergencias, no las previenen.
-- Los gobiernos publican avisos genéricos sin contexto practico.
+| Actor | Lo que hace | Lo que falta |
+|-------+-------------+--------------|
+| Agencias de viaje | Venden paquetes | No informan de riesgos |
+| Seguros | Cubren emergencias | No las previenen |
+| Gobiernos | Avisos genericos | Sin contexto practico |
 
 * La Solucion
 
 ** Arquitectura en 3 capas:
 
-#+BEGIN_SRC text
-┌─────────────────────────────────────────────────────┐
-│           CAPA 3: DECISION (Usuario)                │
-│  ¿Debo ir? → Sí/No con razones claras              │
-│  ¿Cuanto cuesta? → Estimacion ajustada a realidad   │
-│  ¿Que hago si pasa algo? → Recomendacion concreta   │
-├─────────────────────────────────────────────────────┤
-│           CAPA 2: ANALISIS (Algoritmos)             │
-│  IRV: Índice de Riesgo de Viaje (0-100)            │
-│  TCI: Travel Cost Index (coste real)               │
-│  IST: Índice de Saturacion Turistica               │
-│  Detector de incidentes (10 tipos)                 │
-├─────────────────────────────────────────────────────┤
-│           CAPA 1: DATOS (Fuentes)                   │
-│  MAEC (riesgo oficial) · USGS (terremotos)         │
-│  GDACS (desastres) · GDELT (noticias globales)     │
-│  Reddit (experiencias) · RSS (10 fuentes)          │
-│  Yahoo Finance (petroleo) · INE/UNWTO (turismo)    │
-└─────────────────────────────────────────────────────┘
+#+BEGIN_SRC plantuml :file assets/3-layers.png :exports results
+@startuml
+skinparam backgroundColor #0F172A
+skinparam defaultFontSize 13
+
+title Arquitectura en 3 Capas
+
+package "CAPA 3: DECISION (Usuario)" as Decision {
+  [¿Debo ir?\nSí/No con razones] as GoNoGo
+  [¿Cuanto cuesta?\nEstimacion real] as Cost
+  [¿Que hago?\nRecomendacion concreta] as Action
+}
+
+package "CAPA 2: ANALISIS (Algoritmos)" as Analysis {
+  [IRV\nIndice Riesgo 0-100] as IRV
+  [TCI\nTravel Cost Index] as TCI
+  [IST\nSaturacion Turistica] as IST
+  [Detector\n10 tipos incidentes] as Detector
+}
+
+package "CAPA 1: DATOS (Fuentes)" as Data {
+  [MAEC\nRiesgo oficial] as MAEC
+  [USGS\nTerremotos] as USGS
+  [GDACS\nDesastres] as GDACS
+  [GDELT\nNoticias] as GDELT
+  [Reddit\nExperiencias] as Reddit
+  [RSS\n10 fuentes] as RSS
+  [Yahoo Finance\nPetroleo] as Oil
+  [INE/UNWTO\nTurismo] as INE
+}
+
+Data --> Analysis
+Analysis --> Decision
+
+@enduml
 #+END_SRC
 
 ** Caracteristicas diferenciadoras:
 
 | Caracteristica | Competencia | Viaje con Inteligencia |
 |----------------+-------------+------------------------|
-| Datos de riesgo | Staticos | Actualizados diariamente |
+| Datos de riesgo | Estaticos | Actualizados diariamente |
 | Analisis de coste | Promedios | Ajustado por petroleo + conflictos |
 | Alertas | Manuales | Automaticas via OSINT |
 | Recomendaciones | Genericas | Especificas por incidente |
 | Criterio humano | Inexistente | Notas de analista en cada alerta |
 | Valoracion social | No existe | Comunidad califica utilidad |
 
+** Diagrama de valor para el usuario:
+
+#+BEGIN_SRC plantuml :file assets/user-value.png :exports results
+@startuml
+skinparam backgroundColor #0F172A
+skinparam defaultFontSize 12
+
+title Valor entregado al usuario
+
+start
+
+:Viajero planea viaje;\nnote right: "¿A donde voy?\n¿Es seguro?\n¿Cuanto cuesta?"
+
+partition "Antes: Fragmentado" {
+  :Buscar MAEC;\nnote right: Web gubernamental\ndificil de interpretar
+  :Buscar precios;\nnote right: 5-10 webs diferentes\npromedios desactualizados
+  :Buscar noticias;\nnote right: Google News\nsin filtro de viaje
+  :Buscar experiencias;\nnote right: Reddit, TripAdvisor\nanecdotico, subjetivo
+}
+
+note right of partition: Tiempo: 2-4 horas\nFrustracion: Alta\nDecision: Incierta
+
+partition "Ahora: Viaje con Inteligencia" {
+  :Mapa de riesgo;\nnote right: Un vistazo\n5 niveles de color
+  :Calculadora TCI;\nnote right: Coste real\najustado a petroleo
+  :OSINT /osint;\nnote right: Incidentes activos\nrecomendaciones claras
+  :Chat IA;\nnote right: Preguntas especificas\nrespuestas con datos
+}
+
+note right of partition: Tiempo: 5 minutos\nFrustracion: Baja\nDecision: Informada
+
+stop
+
+@enduml
+#+END_SRC
+
 * Metricas del Sistema
 
 ** Datos procesados (diario):
-- 26 paises MAEC escaneados
-- 73+ fuentes OSINT analizadas
-- 5-20 señales clasificadas
-- 107 paises con TCI calculado
-- 16 incidentes detectados (promedio)
-- Petroleo monitorizado (actual: $101.91/barril)
+
+| Metrica | Valor | Frecuencia | Fuente |
+|---------+-------+------------+--------|
+| Paises MAEC escaneados | 26 | Diario | Web scraping |
+| Fuentes OSINT analizadas | 73+ | Cada 6h | GDELT, USGS, Reddit, RSS |
+| Señales clasificadas | 5-20 | Cada 6h | Keywords + Groq |
+| Paises con TCI calculado | 107 | Diario | Motor TCI |
+| Incidentes detectados | ~16 | Automatico | Detector |
+| Precio petroleo | ~$101.91/barril | Diario | Yahoo Finance |
 
 ** Cobertura:
-- 107 paises con analisis de riesgo
-- 60+ articulos en blog
-- 10 categorias de incidentes
-- 5 niveles de severidad
+
+#+BEGIN_SRC plantuml :file assets/coverage.png :exports results
+@startuml
+skinparam backgroundColor #0F172A
+skinparam defaultFontSize 12
+
+title Cobertura del Sistema
+
+rectangle "Paises" as Countries {
+  [107 paises\ncon analisis de riesgo] as Risk
+  [10 categorias\nde incidentes] as Incidents
+  [5 niveles\nde severidad] as Severity
+}
+
+rectangle "Contenido" as Content {
+  [60+ articulos\nen blog] as Blog
+  [4 clusters\ndecidir (K-Means)] as Clusters
+  [20 regiones\nEspaña turismo] as Spain
+}
+
+rectangle "Infraestructura" as Infra {
+  [Cron unico\n~95s] as Cron
+  [Coste operativo\n~€0/mes] as Cost
+  [Deploy automatico\ncada push] as Deploy
+}
+
+@enduml
+#+END_SRC
 
 ** Infraestructura:
-- Cron unico optimizado a ~95s (antes 150s)
-- Coste operativo: ~€0/mes (plan Hobby Vercel + tier gratuito Groq)
-- Deploy automatico en cada push a main
+
+| Metrica | Valor | Comparativa |
+|---------+-------+-------------|
+| Cron optimizado | ~95s | Antes 150s (-37%) |
+| Coste operativo | ~€0/mes | Hobby Vercel + Groq free |
+| Deploy | Automatico | Cada push a main |
+| Disponibilidad | 99.9% | Vercel global edge |
 
 * Modelos de Monetizacion
 
 ** 1. Freemium (actual)
-- Gratuito: Mapa de riesgo, calculadora, blog, OSINT, chat IA basico
-- Premium: Alertas personalizadas, newsletter detallada, analisis profundo
+
+| Nivel | Funcionalidades | Precio |
+|-------+-----------------+--------|
+| Gratuito | Mapa, calculadora, blog, OSINT, chat IA basico | €0 |
+| Premium | Alertas personalizadas, newsletter detallada, analisis profundo | €4.99/mes |
 
 ** 2. B2B — API de datos
-- Empresas de viajes, aseguradoras, consultorias
-- Acceso a IRV, TCI, incidentes en tiempo real
-- Precio: por consulta o suscripcion mensual
+
+| Cliente | Uso | Precio |
+|---------+-----+--------|
+| Empresas de viajes | Consulta IRV/TCI antes de recomendar | €0.01/consulta |
+| Aseguradoras | Evaluacion de riesgo para polizas | €99/mes suscripcion |
+| Consultorias | Informes de riesgo para clientes | €199/mes suscripcion |
 
 ** 3. Afiliados
-- Seguros de viaje (comision por venta)
-- Booking.com, Skyscanner (comision por reserva)
-- Integracion natural en recomendaciones
+
+| Partner | Comision | Integracion |
+|---------+----------+-------------|
+| Seguros de viaje | 10-15% por venta | Recomendacion en OSINT |
+| Booking.com | 4-8% por reserva | Link en calculadora |
+| Skyscanner | 1-3% por click | Link en /decidir |
 
 ** 4. Consultoria
-- Informes personalizados para empresas
-- Analisis de riesgo para eventos corporativos
-- Briefings para medios de comunicacion
+
+| Servicio | Cliente potencial | Precio estimado |
+|----------+-------------------+-----------------|
+| Informes personalizados | Empresas | €500-2000 |
+| Analisis riesgo eventos | Organizadores | €300-1000 |
+| Briefings para medios | Periodistas | €200-500 |
+
+** Proyeccion de ingresos (estimacion conservadora):
+
+#+BEGIN_SRC plantuml :file assets/revenue.png :exports results
+@startuml
+skinparam backgroundColor #0F172A
+skinparam defaultFontSize 12
+
+title Proyeccion de Ingresos (Anual)
+
+start
+
+partition "Año 1: Consolidacion" {
+  :Usuarios gratuitos:\n10.000;\nnote right: Crecimiento organico\nSEO + redes
+  :Usuarios premium:\n500;\nnote right: 5% conversion\n€4.99/mes = €2.500/mes
+  :Afiliados:\n€300/mes;\nnote right: Seguros + booking\ncomisiones pasivas
+}
+
+partition "Año 2: Escala" {
+  :Usuarios gratuitos:\n50.000;\nnote right: App movil\nmercado internacional
+  :Usuarios premium:\n3.000;\nnote right: 6% conversion\n€4.99/mes = €15.000/mes
+  :B2B API:\n€2.000/mes;\nnote right: 20 empresas\nsuscripcion media
+  :Afiliados:\n€1.500/mes;\nnote right: Trafico 5x\ncomisiones proporcionales
+}
+
+partition "Año 3: Liderazgo" {
+  :Referencia en\ninteligencia de viaje;\nnote right: Mercado hispanohablante\nexpansion a ingles
+  :Ingresos totales:\n€300.000+/año;\nnote right: Premium + B2B + Afiliados\n+ Consultoria
+}
+
+stop
+
+@enduml
+#+END_SRC
 
 * Roadmap
 
 ** Fase 1 (Completada) ✓
-- [X] Mapa de riesgo interactivo
-- [X] Calculadora de costes con TCI
-- [X] Blog con 60+ articulos
-- [X] Chat IA de viajes
-- [X] Sistema OSINT automatico
-- [X] Detector de incidentes
-- [X] Newsletter semanal
-- [X] Pagina publica de inteligencia (/osint)
-- [X] Sistema de valoraciones
-- [X] Notas de analista
+
+| # | Funcionalidad | Estado | Fecha |
+|---+---------------+--------+-------|
+| 1 | Mapa de riesgo interactivo | ✓ Completado | Abr 2026 |
+| 2 | Calculadora de costes con TCI | ✓ Completado | Abr 2026 |
+| 3 | Blog con 60+ articulos | ✓ Completado | Abr 2026 |
+| 4 | Chat IA de viajes | ✓ Completado | Abr 2026 |
+| 5 | Sistema OSINT automatico | ✓ Completado | May 2026 |
+| 6 | Detector de incidentes | ✓ Completado | May 2026 |
+| 7 | Newsletter semanal | ✓ Completado | May 2026 |
+| 8 | Pagina publica de inteligencia (/osint) | ✓ Completado | May 2026 |
+| 9 | Sistema de valoraciones | ✓ Completado | May 2026 |
+| 10 | Notas de analista | ✓ Completado | May 2026 |
 
 ** Fase 2 (En desarrollo)
-- [ ] App movil (PWA optimizada)
-- [ ] Panel premium con dashboard personalizado
-- [ ] Integracion con aerolineas (datos reales de vuelos)
-- [ ] API publica para terceros
-- [ ] Comunidad de viajeros (perfiles, favoritos compartidos)
+
+| # | Funcionalidad | Estado | Prioridad |
+|---+---------------+--------+-----------|
+| 1 | App movil (PWA optimizada) | En diseño | Alta |
+| 2 | Panel premium con dashboard | Planificado | Alta |
+| 3 | Integracion aerolineas (datos reales) | Investigacion | Media |
+| 4 | API publica para terceros | Pendiente | Media |
+| 5 | Comunidad de viajeros | Pendiente | Baja |
 
 ** Fase 3 (Futuro)
-- [ ] ML predictivo (predecir cambios de riesgo)
-- [ ] Integracion con calendarios (alertas antes del viaje)
-- [ ] Version en ingles para mercado internacional
-- [ ] Partnerships con aseguradoras
+
+| # | Funcionalidad | Objetivo | Timeline |
+|---+---------------+----------+----------|
+| 1 | ML predictivo (predecir cambios riesgo) | Anticipar crisis | 2026 Q4 |
+| 2 | Integracion calendarios (alertas pre-viaje) | Proactividad | 2026 Q4 |
+| 3 | Version en ingles (mercado internacional) | Escala global | 2027 Q1 |
+| 4 | Partnerships con aseguradoras | Monetizacion B2B | 2027 Q2 |
 
 * Diferenciadores Clave
 
-1. *Automatizacion total*: El sistema funciona solo. Sin intervencion manual
-   para recolectar datos, detectar incidentes o enviar alertas.
+| # | Diferenciador | Descripcion | Impacto |
+|---+---------------+-------------+---------|
+| 1 | Automatizacion total | Funciona solo: datos, deteccion, alertas | Coste minimo, escala infinita |
+| 2 | Triple validacion | Auto + analista + comunidad en cada incidente | Confianza del usuario |
+| 3 | Datos, no opiniones | 8 fuentes diferentes, no anecdotas | Decisiones objetivas |
+| 4 | Coste operativo minimo | Serverless, APIs free, cron optimizado | Margen alto desde dia 1 |
+| 5 | Transparencia total | Algoritmos publicos, fuentes citadas | Credibilidad |
 
-2. *Triple validacion*: Cada incidente tiene recomendacion automatica + nota
-   del analista + valoracion de la comunidad.
+** Comparativa con competidores:
 
-3. *Datos, no opiniones*: Las recomendaciones se basan en datos de 8 fuentes
-   diferentes, no en experiencias anecdoticas.
+#+BEGIN_SRC plantuml :file assets/competitors.png :exports results
+@startuml
+skinparam backgroundColor #0F172A
+skinparam defaultFontSize 12
 
-4. *Coste operativo minimo*: Arquitectura serverless, APIs gratuitas tier,
-   cron optimizado. Escalable sin aumentar costes proporcionalmente.
+title Mapa Competitivo
 
-5. *Transparencia total*: Algoritmos documentados publicamente en /indices y
-   /transparencia. Fuentes de datos citadas en cada analisis.
+rectangle "Analisis de Riesgo" as Risk {
+  [Viaje con Inteligencia\nDatos + OSINT + IA] as VCI
+  [MAEC Gobierno\nSolo avisos oficiales] as MAEC
+}
 
-* Conclusión
+rectangle "Planificacion de Viaje" as Plan {
+  [TripAdvisor\nOpiniones usuarios] as TA
+  [Booking/Skyscanner\nPrecios y reservas] as Booking
+}
+
+rectangle "Inteligencia OSINT" as OSINT {
+  [GDELT raw\nDatos sin procesar] as GDELT
+  [Live Universal Awareness\nProfesional, caro] as LiveUA
+}
+
+VCI -[hidden]right-> Plan
+Risk -[hidden]down-> OSINT
+
+note top of VCI: Unico que combina\nriesgo + coste + OSINT\n+ recomendaciones
+note top of MAEC: Oficial pero\ngenerico
+note top of TA: Experiencias pero\nsin datos objetivos
+note top of Booking: Precios pero\nsin contexto riesgo
+note top of GDELT: Datos brutos pero\nsin analisis
+note top of LiveUA: Profesional pero\n€€€ y no enfocado turismo
+
+@enduml
+#+END_SRC
+
+* Conclusion
 
 Viaje con Inteligencia llena un vacio real en el mercado: la brecha entre
 datos disponibles y decisiones accionables. Mientras la competencia ofrece
@@ -176,6 +347,15 @@ que realmente importa:
 Con una arquitectura automatizada, coste operativo minimo y una propuesta de
 valor clara, la plataforma esta posicionada para escalar como referencia en
 inteligencia de viaje para el mercado hispanohablante.
+
+** Proximos pasos inmediatos:
+
+| Paso | Accion | Responsable | Plazo |
+|------+--------+-------------+-------|
+| 1 | Ejecutar SQL de incidentes en Supabase | Admin | Hoy |
+| 2 | Verificar cron genera incidentes | Admin | 24h |
+| 3 | Exportar org-mode a PDF | Admin | Hoy |
+| 4 | Push a produccion | Admin | Hoy |
 
 * Contacto
 

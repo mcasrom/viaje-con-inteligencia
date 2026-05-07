@@ -1,0 +1,185 @@
+#+TITLE: Viaje con Inteligencia — Analisis Ejecutivo
+#+SUBTITLE: Sistema de Inteligencia para la Toma de Decisiones en Viajes
+#+AUTHOR: M. Castillo
+#+DATE: 2026-05-07
+#+LANGUAGE: es
+#+OPTIONS: toc:nil num:nil
+#+LATEX_HEADER: \usepackage[margin=2.5cm]{geometry}
+#+PDF_TITLE: Viaje con Inteligencia - Analisis Ejecutivo
+
+* Resumen Ejecutivo
+
+Viaje con Inteligencia es una plataforma de *inteligencia de viaje* que combina
+datos oficiales de riesgo, fuentes OSINT en tiempo real, algoritmos propietarios
+y analisis de costes para ayudar a viajeros a tomar decisiones informadas.
+
+No es un buscador de vuelos. No es una agencia de viajes. Es un *sistema de
+decision* que responde a una pregunta simple:
+
+#+BEGIN_QUOTE
+¿Deberia viajar a este destino ahora? ¿Que riesgos existen? ¿Cuanto costara?
+#+END_QUOTE
+
+La plataforma procesa automaticamente 5 fuentes de datos, detecta 10 tipos de
+incidentes, genera recomendaciones accionables y mantiene a los usuarios
+informados via newsletter y Telegram.
+
+* El Problema
+
+** Los viajeros actuales enfrentan:
+
+1. *Informacion fragmentada*: Riesgo MAEC en una web, precios de vuelos en otra,
+   noticias de conflictos en otra, experiencias en Reddit.
+2. *Datos sin contexto*: Un nivel de riesgo "medio" no dice si afecta a turistas.
+3. *Decisiones reactivas*: Cancelan vuelos cuando ya hay noticias de crisis.
+4. *Sobrecarga informativa*: Demasiados datos, poca accionabilidad.
+
+** La industria no responde:
+
+- Las agencias venden paquetes, no informan de riesgos.
+- Los seguros cubren emergencias, no las previenen.
+- Los gobiernos publican avisos genéricos sin contexto practico.
+
+* La Solucion
+
+** Arquitectura en 3 capas:
+
+#+BEGIN_SRC text
+┌─────────────────────────────────────────────────────┐
+│           CAPA 3: DECISION (Usuario)                │
+│  ¿Debo ir? → Sí/No con razones claras              │
+│  ¿Cuanto cuesta? → Estimacion ajustada a realidad   │
+│  ¿Que hago si pasa algo? → Recomendacion concreta   │
+├─────────────────────────────────────────────────────┤
+│           CAPA 2: ANALISIS (Algoritmos)             │
+│  IRV: Índice de Riesgo de Viaje (0-100)            │
+│  TCI: Travel Cost Index (coste real)               │
+│  IST: Índice de Saturacion Turistica               │
+│  Detector de incidentes (10 tipos)                 │
+├─────────────────────────────────────────────────────┤
+│           CAPA 1: DATOS (Fuentes)                   │
+│  MAEC (riesgo oficial) · USGS (terremotos)         │
+│  GDACS (desastres) · GDELT (noticias globales)     │
+│  Reddit (experiencias) · RSS (10 fuentes)          │
+│  Yahoo Finance (petroleo) · INE/UNWTO (turismo)    │
+└─────────────────────────────────────────────────────┘
+#+END_SRC
+
+** Caracteristicas diferenciadoras:
+
+| Caracteristica | Competencia | Viaje con Inteligencia |
+|----------------+-------------+------------------------|
+| Datos de riesgo | Staticos | Actualizados diariamente |
+| Analisis de coste | Promedios | Ajustado por petroleo + conflictos |
+| Alertas | Manuales | Automaticas via OSINT |
+| Recomendaciones | Genericas | Especificas por incidente |
+| Criterio humano | Inexistente | Notas de analista en cada alerta |
+| Valoracion social | No existe | Comunidad califica utilidad |
+
+* Metricas del Sistema
+
+** Datos procesados (diario):
+- 26 paises MAEC escaneados
+- 73+ fuentes OSINT analizadas
+- 5-20 señales clasificadas
+- 107 paises con TCI calculado
+- 16 incidentes detectados (promedio)
+- Petroleo monitorizado (actual: $101.91/barril)
+
+** Cobertura:
+- 107 paises con analisis de riesgo
+- 60+ articulos en blog
+- 10 categorias de incidentes
+- 5 niveles de severidad
+
+** Infraestructura:
+- Cron unico optimizado a ~95s (antes 150s)
+- Coste operativo: ~€0/mes (plan Hobby Vercel + tier gratuito Groq)
+- Deploy automatico en cada push a main
+
+* Modelos de Monetizacion
+
+** 1. Freemium (actual)
+- Gratuito: Mapa de riesgo, calculadora, blog, OSINT, chat IA basico
+- Premium: Alertas personalizadas, newsletter detallada, analisis profundo
+
+** 2. B2B — API de datos
+- Empresas de viajes, aseguradoras, consultorias
+- Acceso a IRV, TCI, incidentes en tiempo real
+- Precio: por consulta o suscripcion mensual
+
+** 3. Afiliados
+- Seguros de viaje (comision por venta)
+- Booking.com, Skyscanner (comision por reserva)
+- Integracion natural en recomendaciones
+
+** 4. Consultoria
+- Informes personalizados para empresas
+- Analisis de riesgo para eventos corporativos
+- Briefings para medios de comunicacion
+
+* Roadmap
+
+** Fase 1 (Completada) ✓
+- [X] Mapa de riesgo interactivo
+- [X] Calculadora de costes con TCI
+- [X] Blog con 60+ articulos
+- [X] Chat IA de viajes
+- [X] Sistema OSINT automatico
+- [X] Detector de incidentes
+- [X] Newsletter semanal
+- [X] Pagina publica de inteligencia (/osint)
+- [X] Sistema de valoraciones
+- [X] Notas de analista
+
+** Fase 2 (En desarrollo)
+- [ ] App movil (PWA optimizada)
+- [ ] Panel premium con dashboard personalizado
+- [ ] Integracion con aerolineas (datos reales de vuelos)
+- [ ] API publica para terceros
+- [ ] Comunidad de viajeros (perfiles, favoritos compartidos)
+
+** Fase 3 (Futuro)
+- [ ] ML predictivo (predecir cambios de riesgo)
+- [ ] Integracion con calendarios (alertas antes del viaje)
+- [ ] Version en ingles para mercado internacional
+- [ ] Partnerships con aseguradoras
+
+* Diferenciadores Clave
+
+1. *Automatizacion total*: El sistema funciona solo. Sin intervencion manual
+   para recolectar datos, detectar incidentes o enviar alertas.
+
+2. *Triple validacion*: Cada incidente tiene recomendacion automatica + nota
+   del analista + valoracion de la comunidad.
+
+3. *Datos, no opiniones*: Las recomendaciones se basan en datos de 8 fuentes
+   diferentes, no en experiencias anecdoticas.
+
+4. *Coste operativo minimo*: Arquitectura serverless, APIs gratuitas tier,
+   cron optimizado. Escalable sin aumentar costes proporcionalmente.
+
+5. *Transparencia total*: Algoritmos documentados publicamente en /indices y
+   /transparencia. Fuentes de datos citadas en cada analisis.
+
+* Conclusión
+
+Viaje con Inteligencia llena un vacio real en el mercado: la brecha entre
+datos disponibles y decisiones accionables. Mientras la competencia ofrece
+listas de destinos o precios de vuelos, esta plataforma responde la pregunta
+que realmente importa:
+
+#+BEGIN_QUOTE
+¿Es seguro y viable viajar a este destino ahora?
+#+END_QUOTE
+
+Con una arquitectura automatizada, coste operativo minimo y una propuesta de
+valor clara, la plataforma esta posicionada para escalar como referencia en
+inteligencia de viaje para el mercado hispanohablante.
+
+* Contacto
+
+- Web: https://www.viajeinteligencia.com
+- Email: info@viajeinteligencia.com
+- Telegram: Canal de alertas publico
+- GitHub: https://github.com/mcasrom/viaje-con-inteligencia
