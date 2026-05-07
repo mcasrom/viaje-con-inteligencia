@@ -1,10 +1,14 @@
 # AGENTS.md — Viaje con Inteligencia
 
 ## PAUSED STATE (07 May 2026 — Resumed 07 May)
-- **Master cron v2** (58bf127): Deployed. MAEC timeout fix (26 countries only), OSINT insert retry one-by-one on conflict. Newsletter weekly digest with Groq-generated content + HTML template. **Tested**: 150s (MAEC was 120s timeout, now ~26 countries). Expected: <60s after deploy.
-- **OSINT /admin/osint/**: 13 stale entries. Will populate after cron runs successfully (insert retry added).
-- **Newsletter**: Weekly digest implemented (Groq content generation + HTML template). Runs Mondays only via master cron. Not yet tested live (no Monday run yet).
-- **All API keys** saved in `.env.local`: Supabase, Stripe, Telegram, Resend, Groq, CRON_SECRET, Mastodon, Admin. No need to search again.
+- **Master cron v2** (58bf127): Deployed, runs in ~89s. MAEC 26 countries, OSINT 7 signals inserted, newsletter weekly digest ready for Monday test.
+- **Sentiment analysis** (5c5500a): GDELT tone adjusts urgency (<-5 → up 1 level, <-10 → up 2). 3 new RSS feeds (AP, BBC Breaking, Sky News). Sentiment badges in OSINT dashboard.
+- **Landing page 70vh black screen fix** (2ea1ca1): SVG world map fallback with 40 risk dots shows instantly during map loading. CTA moved inside map container (z-[1020]) — visible during loading AND after map renders.
+- **OSINT dashboard** (67c1453): Source badges (GDACS, USGS, GDELT, RSS, Reddit) + sentiment score display.
+- **Admin dashboard cron triggers** (5c5500a): Fixed from 7 dead routes to 2 functional buttons (Master Cron + OSINT Sensor).
+- **Chat IA FALTA fix** (82f3f39): Updated admin dashboard to show Chat IA as "existe".
+- **Newsletter**: Weekly digest implemented (Groq + HTML template). Runs Mondays via master cron.
+- **All API keys** saved in `.env.local`.
 
 ## Project
 - **Framework**: Next.js 16 + App Router, TypeScript
