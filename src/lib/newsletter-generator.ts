@@ -148,38 +148,50 @@ export async function buildWeeklyEmailHtml(
   return `
 <!DOCTYPE html>
 <html>
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
-<body style="margin:0;padding:0;background:#f1f5f9;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#1e293b;">
-  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f1f5f9;padding:24px 0;">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="supported-color-schemes" content="light">
+  <style>
+    :root { color-scheme: light; supported-color-schemes: light; }
+  </style>
+</head>
+<body style="margin:0;padding:0;background:#f8fafc !important;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#0f172a !important;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f8fafc;padding:24px 0;">
     <tr><td align="center">
       <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;">
         <!-- Header -->
-        <tr><td style="background:#1e293b;border-radius:12px 12px 0 0;padding:24px;">
+        <tr><td style="background:#0f172a;border-radius:12px 12px 0 0;padding:24px;">
           <h1 style="color:#60a5fa;font-size:22px;margin:0 0 4px;">📬 Resumen Semanal</h1>
           <p style="color:#94a3b8;font-size:13px;margin:0;">${weekDate} · Viaje con Inteligencia</p>
         </td></tr>
 
         <!-- Risk Section -->
-        <tr><td style="background:#ffffff;border-radius:0;padding:20px;border-left:4px solid #fbbf24;border-right:4px solid #fbbf24;">
+        <tr><td style="background:#ffffff !important;padding:24px;border-left:4px solid #fbbf24;border-right:4px solid #fbbf24;">
           <h2 style="color:#d97706;font-size:16px;margin:0 0 12px;">🔔 Cambios de Riesgo</h2>
-          ${riskHtml}
+          <div style="color:#0f172a !important;font-size:14px;line-height:1.6;">
+            ${riskHtml}
+          </div>
         </td></tr>
 
         <!-- OSINT Signals -->
-        <tr><td style="background:#ffffff;padding:20px;border-left:4px solid #34d399;border-right:4px solid #34d399;">
+        <tr><td style="background:#ffffff !important;padding:24px;border-left:4px solid #34d399;border-right:4px solid #34d399;">
           <h2 style="color:#059669;font-size:16px;margin:0 0 12px;">📡 Señales Relevantes</h2>
-          ${signalsHtml}
+          <div style="color:#0f172a !important;font-size:14px;line-height:1.6;">
+            ${signalsHtml}
+          </div>
         </td></tr>
 
         <!-- Destination Spotlight -->
-        <tr><td style="background:#ffffff;padding:20px;border-left:4px solid #3b82f6;border-right:4px solid #3b82f6;">
+        <tr><td style="background:#ffffff !important;padding:24px;border-left:4px solid #3b82f6;border-right:4px solid #3b82f6;">
           <h2 style="color:#2563eb;font-size:16px;margin:0 0 12px;">🌍 Destino de la Semana</h2>
-          <p style="color:#1e293b;font-size:14px;line-height:1.6;margin:0;">${content.destinationSection}</p>
+          <p style="color:#0f172a !important;font-size:14px;line-height:1.6;margin:0;">${content.destinationSection}</p>
         </td></tr>
 
         <!-- CTA -->
-        <tr><td style="background:#ffffff;border-radius:0 0 12px 12px;padding:20px;text-align:center;border-left:4px solid #1e293b;border-right:4px solid #1e293b;">
-          <a href="https://www.viajeinteligencia.com" style="display:inline-block;background:#3b82f6;color:#ffffff;padding:12px 32px;border-radius:8px;text-decoration:none;font-weight:600;font-size:14px;">
+        <tr><td style="background:#ffffff !important;padding:24px;text-align:center;border-left:4px solid #0f172a;border-right:4px solid #0f172a;border-radius:0 0 12px 12px;">
+          <a href="https://www.viajeinteligencia.com" style="display:inline-block;background:#3b82f6;color:#ffffff !important;padding:12px 32px;border-radius:8px;text-decoration:none;font-weight:600;font-size:14px;">
             Ver mapa interactivo
           </a>
         </td></tr>
