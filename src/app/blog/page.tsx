@@ -1,8 +1,10 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Calendar, Clock, Tag, Search } from 'lucide-react';
-import { getAllPosts, getCategories, PostMeta } from '@/lib/posts';
+import { Calendar, Clock, Tag, Search, ChevronLeft, ChevronRight, List, Grid } from 'lucide-react';
+import { getAllPosts, getCategories, getPostsPagination, PostMeta } from '@/lib/posts';
+
+const POSTS_PER_PAGE = 10;
 
 export const metadata: Metadata = {
   title: 'Blog OSINT | Análisis de Viajes y Seguridad - Viaje con Inteligencia',
@@ -70,28 +72,93 @@ function PostCard({ post }: { post: PostMeta }) {
   );
 }
 
-export default function BlogPage({
-  searchParams,
-}: {
-  searchParams: { category?: string; search?: string };
-}) {
-  const category = searchParams.category;
-  const search = searchParams.search;
+function PostListItem({ post }: { post: PostMeta }) {
+  return (
+    <Link href={`/blog/${post.slug}`} className="group flex gap-4 p-4 bg-slate-800/50 border border-slate-700/50 rounded-xl hover:border-blue-500/30 transition-all duration-300 hover:bg-slate-800/80">
+      <div className="relative w-32 h-24 flex-shrink-0 bg-slate-700 rounded-lg overflow-hidden">
+        {post.image && post.image.trim() !== '' ? (
+          <Image
+            src={post.image}
+            alt={post.title}
+            fill
+            className="object-cover opacity-80 grayscale-[20%] group-hover:opacity-100 group-hover:grayscale-0 transition-all duration-300"
+            loading="lazy"
+            sizes="128px"
+          />
+        ) : (
+          <div className="flex items-center justify-center h-full">
+            <Tag className="w-8 h-8 text-slate-500" />
+          </div>
+        )}
+      </div>
+      <div className="flex-1 min-w-0">
+        <div className="flex items-start justify-between gap-2">
+          <div>
+            <span className="px-2 py-0.5 bg-blue-500/20 text-blue-400 text-xs font-medium rounded-full">
+              {post.category}
+            </span>
+            <h3 className="text-base font-semibold text-white mt-1 line-clamp-1 group-hover:text-blue-400 transition-colors">
+              {post.title}
+            </h3>
+          </div>
+          <ChevronRight className="w-5 h-5 text-slate-600 flex-shrink-0 mt-1 group-hover:text-blue-400 transition-colors" />
+        </div>
+        <p className="text-slate-400 text-sm mt-1 line-clamp-2">
+          {post.excerpt || post.description || ''}
+        </p>
+        <div className="flex items-center gap-3 text-slate-500 text-xs mt-2">
+          <span className="flex items-center gap-1">
+            <Calendar className="w-3 h-3" />
+            {new Date(post.date).toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' })}
+          </span>
+          <span className="flex items-center gap-1">
+            <Clock className="w-3 h-3" />
+            {post.readTime}
+          </span>
+        </div>
+      </div>
+    </Link>
+  );
+}
+
+interface BlogPageProps {
+  searchParams: Promise<{ category?: string; search?: string; page?: string; view?: string }>;
+}
+
+export default async function BlogPage({ searchParams }: BlogPageProps) {
+  const params = await searchParams;
+  const category = params.category;
+  const search = params.search;
+  const page = parseInt(params.page || '1') || 1;
+  const view = params.view || 'list';
   
-  const posts = getAllPosts({
+  const allPosts = getAllPosts({
     category: category,
     search: search,
   });
   
   const categories = getCategories();
-  const featuredPosts = posts.filter(p => (p as any).featured).slice(0, 3);
-  const regularPosts = posts.filter(p => !(p as any).featured);
+  
+  const { posts, totalPages } = getPostsPagination(page, POSTS_PER_PAGE, {
+    category: category,
+    search: search,
+    skip: 0,
+  });
+
+  const paginationLinks = (p: number) => {
+    const qs = new URLSearchParams();
+    if (category) qs.set('category', category);
+    if (search) qs.set('search', search);
+    if (view === 'grid') qs.set('view', 'grid');
+    if (p > 1) qs.set('page', String(p));
+    return `/blog${qs.toString() ? '?' + qs.toString() : ''}`;
+  };
 
   return (
     <div className="min-h-screen bg-slate-900">
       {/* Header */}
       <header className="bg-gradient-to-b from-slate-800 to-slate-900 border-b border-slate-700">
-        <div className="max-w-7xl mx-auto px-6 py-12">
+        <div className="max-w-5xl mx-auto px-6 py-10">
           <div className="text-center mb-8">
             <span className="px-3 py-1 bg-blue-500/20 text-blue-400 text-sm font-medium rounded-full">
               Blog OSINT
@@ -100,12 +167,12 @@ export default function BlogPage({
               Análisis de Viajes y Seguridad
             </h1>
             <p className="text-slate-400 max-w-2xl mx-auto">
-              Guías prácticas, análisis geopolíticos y tendencias basadas en datos OSINT e inteligencia artificial para viajeros inteligentes.
+              Guías prácticas, análisis geopolíticos y tendencias basadas en datos OSINT para viajeros inteligentes.
             </p>
           </div>
 
           {/* Search and Filters */}
-          <div className="flex flex-col md:flex-row gap-4 max-w-3xl mx-auto">
+          <div className="flex flex-col md:flex-row gap-3 max-w-3xl mx-auto">
             <form className="flex-1 relative" action="/blog" method="GET">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
               <input
@@ -115,15 +182,14 @@ export default function BlogPage({
                 defaultValue={search || ''}
                 className="w-full pl-10 pr-4 py-2.5 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 transition-colors"
               />
-              {category && (
-                <input type="hidden" name="category" value={category} />
-              )}
+              {category && <input type="hidden" name="category" value={category} />}
+              {view === 'grid' && <input type="hidden" name="view" value="grid" />}
               <button type="submit" className="sr-only">Buscar</button>
             </form>
-            <div className="flex gap-2 flex-wrap justify-center">
+            <div className="flex items-center gap-2">
               <Link
-                href="/blog"
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                href={paginationLinks(1)}
+                className={`px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                   !category
                     ? 'bg-blue-500 text-white'
                     : 'bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700'
@@ -134,8 +200,8 @@ export default function BlogPage({
               {categories.map((cat) => (
                 <Link
                   key={cat}
-                  href={`/blog?category=${encodeURIComponent(cat)}`}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  href={`/blog?category=${encodeURIComponent(cat)}${view === 'grid' ? '&view=grid' : ''}`}
+                  className={`px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                     category === cat
                       ? 'bg-blue-500 text-white'
                       : 'bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700'
@@ -146,52 +212,123 @@ export default function BlogPage({
               ))}
             </div>
           </div>
+
+          {/* View Toggle */}
+          <div className="flex justify-center mt-4">
+            <div className="inline-flex bg-slate-800 rounded-lg p-1 border border-slate-700">
+              <Link
+                href={(() => {
+                  const qs = new URLSearchParams();
+                  if (category) qs.set('category', category);
+                  if (search) qs.set('search', search);
+                  return `/blog${qs.toString() ? '?' + qs.toString() : ''}`;
+                })()}
+                className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors flex items-center gap-1.5 ${
+                  view === 'list'
+                    ? 'bg-blue-500 text-white'
+                    : 'text-slate-400 hover:text-white'
+                }`}
+              >
+                <List className="w-3.5 h-3.5" />
+                Lista
+              </Link>
+              <Link
+                href={(() => {
+                  const qs = new URLSearchParams();
+                  if (category) qs.set('category', category);
+                  if (search) qs.set('search', search);
+                  qs.set('view', 'grid');
+                  return `/blog?${qs.toString()}`;
+                })()}
+                className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors flex items-center gap-1.5 ${
+                  view === 'grid'
+                    ? 'bg-blue-500 text-white'
+                    : 'text-slate-400 hover:text-white'
+                }`}
+              >
+                <Grid className="w-3.5 h-3.5" />
+                Grid
+              </Link>
+            </div>
+          </div>
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-6 py-12">
-        {/* Featured Posts */}
-        {featuredPosts.length > 0 && !category && !search && (
-          <section className="mb-12">
-            <h2 className="text-xl font-semibold text-white mb-6 flex items-center gap-2">
-              <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
-              Destacados
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {featuredPosts.map((post) => (
-                <PostCard key={post.slug} post={post} />
-              ))}
-            </div>
-          </section>
-        )}
-
-        {/* All Posts */}
-        <section>
-          <h2 className="text-xl font-semibold text-white mb-6 flex items-center gap-2">
+      <main className="max-w-5xl mx-auto px-6 py-10">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-lg font-semibold text-white flex items-center gap-2">
             <span className="w-2 h-2 bg-emerald-500 rounded-full"></span>
             {search ? `Resultados para "${search}"` : category ? category : 'Todos los artículos'}
             <span className="text-slate-500 text-sm font-normal">
-              ({(category || search ? [...featuredPosts, ...regularPosts] : regularPosts).length} artículos)
+              ({allPosts.length} artículos)
             </span>
           </h2>
-          
-          {(category || search ? [...featuredPosts, ...regularPosts] : regularPosts).length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {(category || search ? [...featuredPosts, ...regularPosts] : regularPosts).map((post) => (
-                <PostCard key={post.slug} post={post} />
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-16">
-              <Search className="w-12 h-12 text-slate-600 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-slate-400 mb-2">No se encontraron artículos</h3>
-              <p className="text-slate-500">Prueba con otra búsqueda o categoría</p>
-              <Link href="/blog" className="mt-4 inline-block text-blue-400 hover:text-blue-300">
-                Ver todos los artículos
-              </Link>
-            </div>
-          )}
-        </section>
+          <span className="text-slate-500 text-sm">
+            Página {page} de {totalPages}
+          </span>
+        </div>
+        
+        {posts.length > 0 ? (
+          <>
+            {view === 'grid' ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {posts.map((post) => (
+                  <PostCard key={post.slug} post={post} />
+                ))}
+              </div>
+            ) : (
+              <div className="flex flex-col gap-3">
+                {posts.map((post) => (
+                  <PostListItem key={post.slug} post={post} />
+                ))}
+              </div>
+            )}
+
+            {/* Pagination */}
+            {totalPages > 1 && (
+              <div className="flex items-center justify-center gap-2 mt-10">
+                {page > 1 && (
+                  <Link
+                    href={paginationLinks(page - 1)}
+                    className="px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-slate-400 hover:text-white hover:border-blue-500/30 transition-colors"
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                  </Link>
+                )}
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+                  <Link
+                    key={p}
+                    href={paginationLinks(p)}
+                    className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                      p === page
+                        ? 'bg-blue-500 text-white'
+                        : 'bg-slate-800 border border-slate-700 text-slate-400 hover:text-white hover:border-blue-500/30'
+                    }`}
+                  >
+                    {p}
+                  </Link>
+                ))}
+                {page < totalPages && (
+                  <Link
+                    href={paginationLinks(page + 1)}
+                    className="px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-slate-400 hover:text-white hover:border-blue-500/30 transition-colors"
+                  >
+                    <ChevronRight className="w-4 h-4" />
+                  </Link>
+                )}
+              </div>
+            )}
+          </>
+        ) : (
+          <div className="text-center py-16">
+            <Search className="w-12 h-12 text-slate-600 mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-slate-400 mb-2">No se encontraron artículos</h3>
+            <p className="text-slate-500">Prueba con otra búsqueda o categoría</p>
+            <Link href="/blog" className="mt-4 inline-block text-blue-400 hover:text-blue-300">
+              Ver todos los artículos
+            </Link>
+          </div>
+        )}
       </main>
     </div>
   );

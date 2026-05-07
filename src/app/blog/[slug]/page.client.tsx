@@ -49,16 +49,24 @@ function BlogPostRating({ slug }: { slug: string }) {
     setCount(prev => prev + 1);
   };
 
-  if (loading) return null;
+  if (loading) {
+    return (
+      <div className="flex items-center gap-3 justify-center">
+        <div className="flex gap-0.5">
+          {[1, 2, 3, 4, 5].map((i) => (
+            <div key={i} className="w-5 h-5 bg-slate-700 animate-pulse rounded" />
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex items-center gap-3 justify-center">
       <StarRating initialRating={rating} onRate={handleRate} size="md" />
-      {count > 0 && (
-        <span className="text-slate-400 text-sm">
-          ({count})
-        </span>
-      )}
+      <span className="text-slate-400 text-sm">
+        {count > 0 ? `(${count} valoraciones)` : 'Sin valoraciones'}
+      </span>
     </div>
   );
 }
