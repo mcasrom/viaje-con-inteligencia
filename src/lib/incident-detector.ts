@@ -2,10 +2,10 @@ import { supabaseAdmin } from './supabase-admin';
 
 const TYPE_CONFIG: Record<string, { label: string; verb: string; icon: string }> = {
   terrorism: { label: 'Terrorismo', verb: 'evitar', icon: '⚠️' },
-  airspace_closure: { label: 'Cierre espacio aéreo', verb: 'monitorizar', icon: '✈️' },
+  airspace_closure: { label: 'Cierre espacio aereo', verb: 'monitorizar', icon: '✈️' },
   conflict: { label: 'Conflicto activo', verb: 'evitar', icon: '💥' },
   natural_disaster: { label: 'Desastre natural', verb: 'monitorizar', icon: '🌍' },
-  flight_disruption: { label: 'Disrupción vuelos', verb: 'preparar', icon: '🛫' },
+  flight_disruption: { label: 'Disrupcion vuelos', verb: 'preparar', icon: '🛫' },
   health_outbreak: { label: 'Brote sanitario', verb: 'preparar', icon: '🏥' },
   protest: { label: 'Protestas / Huelgas', verb: 'monitorizar', icon: '📢' },
   travel_advisory: { label: 'Aviso de viaje', verb: 'preparar', icon: '📋' },
@@ -31,46 +31,46 @@ const URGENCY_TO_SEVERITY: Record<string, string> = {
 
 const RECOMMENDATIONS: Record<string, Record<string, string>> = {
   terrorism: {
-    critical: 'NO viajar a la zona. Contacta con embajada si estás allí. Registra tu viaje en consulado.',
+    critical: 'NO viajar a la zona. Contacta con embajada si estas alli. Registra tu viaje en consulado.',
     high: 'Evitar la zona afectada. Extremar precauciones. Seguro de viaje imprescindible.',
-    medium: 'Monitorizar situación. Evitar aglomeraciones. Tener plan de salida.',
-    low: 'Situación bajo control. Mantenerse informado de fuentes oficiales.',
+    medium: 'Monitorizar situacion. Evitar aglomeraciones. Tener plan de salida.',
+    low: 'Situacion bajo control. Mantenerse informado de fuentes oficiales.',
   },
   conflict: {
-    critical: 'NO viajar. Evacuar si estás en la zona. Contactar con embajada urgente.',
-    high: 'Evitar la zona. Si viajas, tener plan de evacuación. Seguro obligatorio.',
-    medium: 'Monitorizar evolución. Considerar posponer viaje. Registra viaje en consulado.',
+    critical: 'NO viajar. Evacuar si estas en la zona. Contactar con embajada urgente.',
+    high: 'Evitar la zona. Si viajas, tener plan de evacuacion. Seguro obligatorio.',
+    medium: 'Monitorizar evolucion. Considerar posponer viaje. Registra viaje en consulado.',
     low: 'Zona estable pero monitorizar. Seguro de viaje recomendado.',
   },
   flight_disruption: {
-    critical: 'Posible cancelación. Contacta con aerolínea ANTES de ir al aeropuerto. Considera alternativas.',
+    critical: 'Posible cancelacion. Contacta con aerolinea ANTES de ir al aeropuerto. Considera alternativas.',
     high: 'Alta probabilidad de retrasos. Llega 3h antes al aeropuerto. Monitoriza tu vuelo.',
     medium: 'Posibles retrasos. Verifica estado de vuelo antes de salir. Seguro de viaje cubre.',
-    low: 'Situación normal pero puede afectar a algunas rutas. Verifica con tu aerolínea.',
+    low: 'Situacion normal pero puede afectar a algunas rutas. Verifica con tu aerolinea.',
   },
   natural_disaster: {
     critical: 'NO viajar a la zona. Emergencia activa. Sigue instrucciones autoridades locales.',
-    high: 'Zona afectada. Si estás allí, sigue protocolos de emergencia. Evacuar si es necesario.',
+    high: 'Zona afectada. Si estas alli, sigue protocolos de emergencia. Evacuar si es necesario.',
     medium: 'Monitorizar alertas. Tener kit emergencia. Seguro con cobertura desastres.',
-    low: 'Situación controlada. Mantenerse informado. Seguro básico recomendado.',
+    low: 'Situacion controlada. Mantenerse informado. Seguro basico recomendado.',
   },
   health_outbreak: {
-    critical: 'NO viajar. Brote activo. Vacunación obligatoria si disponible.',
-    high: 'Evitar zona. Vacunarse antes de viajar. Seguro médico con cobertura amplia.',
-    medium: 'Precauciones extra. Botiquín básico. Agua embotellada solo. Seguro médico.',
-    low: 'Situación estable. Higiene reforzada. Seguro médico básico.',
+    critical: 'NO viajar. Brote activo. Vacunacion obligatoria si disponible.',
+    high: 'Evitar zona. Vacunarse antes de viajar. Seguro medico con cobertura amplia.',
+    medium: 'Precauciones extra. Botiquin basico. Agua embotellada solo. Seguro medico.',
+    low: 'Situacion estable. Higiene reforzada. Seguro medico basico.',
   },
   protest: {
     critical: 'Evitar zona de protestas. Posibles disturbios. Tener plan alternativo.',
     high: 'Evitar manifestaciones. Transportes afectados. Monitorizar redes locales.',
     medium: 'Posibles afectaciones puntuales. Rutas alternativas disponibles.',
-    low: 'Protestas pacíficas planificadas. Sin impacto significativo en turismo.',
+    low: 'Protestas pacificas planificadas. Sin impacto significativo en turismo.',
   },
   airspace_closure: {
-    critical: 'Espacio aéreo cerrado. NO intentar volar. Buscar alternativas terrestres.',
-    high: 'Rutas desviadas. Vuelos cancelados/retrasados. Contactar aerolínea.',
-    medium: 'Posibles desvíos. Monitorizar estado de vuelos. Plan B recomendado.',
-    low: 'Restricciones menores. Impacto mínimo en vuelos comerciales.',
+    critical: 'Espacio aereo cerrado. NO intentar volar. Buscar alternativas terrestres.',
+    high: 'Rutas desviadas. Vuelos cancelados/retrasados. Contactar aerolinea.',
+    medium: 'Posibles desvios. Monitorizar estado de vuelos. Plan B recomendado.',
+    low: 'Restricciones menores. Impacto minimo en vuelos comerciales.',
   },
 };
 
@@ -86,18 +86,6 @@ const EXPIRY_HOURS: Record<string, number> = {
   security_threat: 72,
   infrastructure: 168,
 };
-
-export interface SignalForClustering {
-  category: string;
-  urgency: string;
-  location_name: string | null;
-  country_code: string | null;
-  summary: string;
-  source: string;
-  source_url: string | null;
-  created_at: Date;
-  is_first_person: boolean;
-}
 
 function extractCountryCode(text: string): string | null {
   const countryMap: Record<string, string> = {
@@ -133,7 +121,7 @@ function extractCountryCode(text: string): string | null {
 }
 
 function getIncidentType(category: string, title: string): string {
-  const lower = title.toLowerCase();
+  const lower = title ? title.toLowerCase() : '';
   
   if (lower.includes('terror') || lower.includes('bomb') || lower.includes('shooting') || lower.includes('attack')) return 'terrorism';
   if (lower.includes('airspace') || lower.includes('no-fly') || lower.includes('closed airspace')) return 'airspace_closure';
@@ -148,7 +136,12 @@ function getIncidentType(category: string, title: string): string {
 }
 
 function getRecommendation(type: string, severity: string): string {
-  return RECOMMENDATIONS[type]?.[severity] || RECOMMENDATIONS.travel_advisory[severity] || 'Monitorizar situación y seguir fuentes oficiales.';
+  const sev = severity || 'low';
+  const typeRecs = RECOMMENDATIONS[type];
+  if (typeRecs && typeRecs[sev]) return typeRecs[sev];
+  const travelRecs = RECOMMENDATIONS.travel_advisory;
+  if (travelRecs && travelRecs[sev]) return travelRecs[sev];
+  return 'Monitorizar situacion y seguir fuentes oficiales.';
 }
 
 function getExpiryDate(type: string): Date {
@@ -183,7 +176,8 @@ export async function detectAndCreateIncidents(): Promise<{ created: number; upd
   const clusterKey = (signal: any): string => {
     const type = getIncidentType(signal.category || 'otro', signal.title || signal.summary || '');
     const location = (signal.location_name || '').toLowerCase().trim();
-    const country = signal.country_code || extractCountryCode(signal.title + ' ' + signal.summary + ' ' + location) || 'unknown';
+    const textForCountry = (signal.title || '') + ' ' + (signal.summary || '') + ' ' + location;
+    const country = signal.country_code || extractCountryCode(textForCountry) || 'unknown';
     const dateStr = signal.created_at ? new Date(signal.created_at).toISOString().split('T')[0] : now.toISOString().split('T')[0];
     return `${type}-${country}-${location}-${dateStr}`;
   };
@@ -199,22 +193,28 @@ export async function detectAndCreateIncidents(): Promise<{ created: number; upd
   let updated = 0;
 
   for (const [key, clusterSignals] of Object.entries(clusters)) {
+    if (clusterSignals.length === 0) continue;
+    
     const topSignal = clusterSignals[0];
     const type = getIncidentType(topSignal.category || 'otro', topSignal.title || topSignal.summary || '');
-    const country = topSignal.country_code || extractCountryCode(topSignal.title + ' ' + topSignal.summary + ' ' + (topSignal.location_name || '')) || 'unknown';
+    const textForCountry = (topSignal.title || '') + ' ' + (topSignal.summary || '') + ' ' + (topSignal.location_name || '');
+    const country = topSignal.country_code || extractCountryCode(textForCountry) || 'unknown';
     const location = topSignal.location_name || '';
+    
+    const urgencyOrder = ['low', 'medium', 'high', 'critical'];
     const maxUrgency = clusterSignals.reduce((max, s) => {
-      const order = ['low', 'medium', 'high', 'critical'];
-      return order.indexOf(s.urgency) > order.indexOf(max) ? s.urgency : max;
+      const urgency = s.urgency || 'low';
+      return urgencyOrder.indexOf(urgency) > urgencyOrder.indexOf(max) ? urgency : max;
     }, 'low');
-    const severity = URGENCY_TO_SEVERITY[maxUrgency];
+    
+    const severity = URGENCY_TO_SEVERITY[maxUrgency] || 'low';
     const title = topSignal.title || topSignal.summary || 'Incidente detectado';
     const cleanTitle = title.replace(/^📡\s*GDELT:\s*/i, '').replace(/^⚠️\s*GDACS:\s*/i, '').replace(/^🌍\s*/i, '').replace(/^📰\s*/i, '');
     
     const firstPersonCount = clusterSignals.filter(s => s.is_first_person).length;
     const sources = [...new Set(clusterSignals.map(s => s.source))];
-    const source = sources.length > 1 ? 'combined' : sources[0];
-    const description = clusterSignals.slice(0, 3).map(s => s.summary || s.title).join('\n');
+    const source = sources.length > 1 ? 'combined' : (sources[0] || 'osint');
+    const description = clusterSignals.slice(0, 3).map(s => s.summary || s.title).filter(Boolean).join('\n');
     const recommendation = getRecommendation(type, severity);
     const typeConfig = TYPE_CONFIG[type] || TYPE_CONFIG.travel_advisory;
     const expiresAt = getExpiryDate(type);
@@ -224,7 +224,7 @@ export async function detectAndCreateIncidents(): Promise<{ created: number; upd
       await supabaseAdmin
         .from('incidents')
         .update({
-          signal_count: existingInc.signal_count + clusterSignals.length,
+          signal_count: (existingInc.signal_count || 0) + clusterSignals.length,
           severity,
           recommendation,
           expires_at: expiresAt.toISOString(),
@@ -239,7 +239,7 @@ export async function detectAndCreateIncidents(): Promise<{ created: number; upd
           type,
           entity_id: key,
           title: cleanTitle,
-          description,
+          description: description || null,
           country_code: country === 'unknown' ? null : country,
           location: location || null,
           severity,
