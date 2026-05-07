@@ -95,6 +95,68 @@ function BlogPostViews({ slug }: { slug: string }) {
   );
 }
 
+function OptimizedImage({ src, alt, title }: { src: string; alt: string; title?: string }) {
+  const isRemote = src.startsWith('http') || src.startsWith('//');
+  const hasRemotePattern = isRemote && (
+    src.includes('unsplash.com') ||
+    src.includes('images.unsplash.com') ||
+    src.includes('cdn.') ||
+    src.includes('i.imgur.com') ||
+    src.includes('i.ytimg.com')
+  );
+
+  if (hasRemotePattern) {
+    return (
+      <figure className="my-8">
+        <div className="relative w-full h-64 md:h-80 lg:h-96 rounded-xl overflow-hidden">
+          <Image
+            src={src}
+            alt={alt || title || ''}
+            fill
+            className="object-contain"
+            loading="lazy"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 70vw"
+          />
+        </div>
+        {(alt || title) && (
+          <figcaption className="text-center text-slate-500 text-sm mt-2 italic">
+            {alt || title}
+          </figcaption>
+        )}
+      </figure>
+    );
+  }
+
+  return (
+    <figure className="my-8">
+      <div className="relative w-full h-64 md:h-80 lg:h-96 rounded-xl overflow-hidden bg-slate-800 flex items-center justify-center">
+        {src.startsWith('/') ? (
+          <Image
+            src={src}
+            alt={alt || title || ''}
+            fill
+            className="object-contain"
+            loading="lazy"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 70vw"
+          />
+        ) : (
+          <img
+            src={src}
+            alt={alt || title || ''}
+            className="max-h-full max-w-full object-contain"
+            loading="lazy"
+          />
+        )}
+      </div>
+      {(alt || title) && (
+        <figcaption className="text-center text-slate-500 text-sm mt-2 italic">
+          {alt || title}
+        </figcaption>
+      )}
+    </figure>
+  );
+}
+
 export default function BlogPostPage({ post }: { post: Post }) {
   if (!post) {
     return (
@@ -158,7 +220,15 @@ export default function BlogPostPage({ post }: { post: Post }) {
           </div>
 
           <div className="prose prose-invert max-w-none">
-            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+            <ReactMarkdown
+              remarkPlugins={[remarkGfm]}
+              components={{
+                img: ({ src, alt, title }) => {
+                  if (!src || typeof src !== 'string') return null;
+                  return <OptimizedImage src={src} alt={alt || ''} title={typeof title === 'string' ? title : undefined} />;
+                },
+              }}
+            >
               {post.content}
             </ReactMarkdown>
           </div>
