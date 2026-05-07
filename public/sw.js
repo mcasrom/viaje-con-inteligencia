@@ -1,4 +1,4 @@
-const CACHE_NAME = 'viaje-ia-v4';
+const CACHE_NAME = 'viaje-ia-v5';
 const STATIC_ASSETS = [
   '/',
   '/manifest.json',
@@ -26,9 +26,7 @@ self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((cacheNames) => {
       return Promise.all(
-        cacheNames
-          .filter((name) => name !== CACHE_NAME)
-          .map((name) => caches.delete(name))
+        cacheNames.map((name) => caches.delete(name))
       );
     })
   );
@@ -38,8 +36,8 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
   
-  // Never cache API routes or authenticated requests
-  if (url.pathname.startsWith('/api/') || event.request.headers.get('authorization')) {
+  // Never cache API routes, admin routes, or authenticated requests
+  if (url.pathname.startsWith('/api/') || url.pathname.startsWith('/admin') || event.request.headers.get('authorization')) {
     event.respondWith(fetch(event.request));
     return;
   }
@@ -60,6 +58,9 @@ self.addEventListener('fetch', (event) => {
       }
       return fetch(event.request).then((response) => {
         if (!response || response.status !== 200 || response.type !== 'basic') {
+          return response;
+        }
+        if (event.request.method !== 'GET') {
           return response;
         }
         const responseToCache = response.clone();
