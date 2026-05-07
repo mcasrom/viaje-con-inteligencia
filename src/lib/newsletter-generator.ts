@@ -422,6 +422,29 @@ export async function buildWeeklyEmailHtml(issue: NewsletterIssue): Promise<stri
       <p style="font-size:14px;color:#334155;line-height:1.6;margin:0;">${issue.weeklyQuestion.answer}</p>
     </td></tr>` : '';
 
+  // Founder letter — shown only in first 3 editions
+  const showFounderLetter = issue.edition <= 3;
+  const founderLetterHtml = showFounderLetter ? `
+    <tr><td style="background:#ffffff;padding:20px 24px;border-top:1px solid #e2e8f0;border-bottom:1px solid #e2e8f0;">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+        <div style="width:40px;height:40px;border-radius:50%;background:#3b82f6;display:flex;align-items:center;justify-content:center;font-size:18px;color:#fff;font-weight:bold;">M</div>
+        <div>
+          <div style="font-size:14px;font-weight:bold;color:#0f172a;">Miguel Castillo</div>
+          <div style="font-size:11px;color:#64748b;">Fundador de Viaje con Inteligencia</div>
+        </div>
+      </div>
+      <div style="border-left:3px solid #3b82f6;padding-left:16px;">
+        <p style="font-size:14px;color:#334155;line-height:1.7;margin:0 0 8px;">Esto no es un boletín corporativo. Creé esta plataforma porque me cansé de consultar diez webs distintas antes de cada viaje: alertas del MAEC por un lado, precios de vuelos cambiando cada día, noticias sobre conflictos internacionales en otra página y experiencias dispersas en distintos foros.</p>
+        <p style="font-size:14px;color:#334155;line-height:1.7;margin:0 0 8px;">Mientras aumentan las tensiones entre Irán, Estados Unidos e Israel, los precios del petróleo y de los vuelos vuelven a dispararse, generando incertidumbre para millones de viajeros.</p>
+        <p style="font-size:14px;color:#334155;line-height:1.7;margin:0 0 8px;">Por eso construí un sistema que reúne información útil, contexto y datos reales en un solo lugar. Cada semana recibirás señales claras sobre riesgos, estabilidad, clima geopolítico, evolución de precios y destinos que todavía merecen la pena.</p>
+        <p style="font-size:14px;color:#0f172a;line-height:1.7;margin:0;"><strong>El compromiso es sencillo: transparencia total, sin publicidad invasiva y sin venderte viajes. Solo inteligencia aplicada al viaje.</strong></p>
+      </div>
+      <div style="text-align:right;margin-top:12px;">
+        <a href="https://www.viajeinteligencia.com/blog/por-que-creé-viaje-con-inteligencia" style="font-size:12px;color:#3b82f6;text-decoration:none;">Leer la historia completa →</a>
+      </div>
+    </td></tr>
+  ` : '';
+
   return `
 <!DOCTYPE html>
 <html>
@@ -442,6 +465,9 @@ export async function buildWeeklyEmailHtml(issue: NewsletterIssue): Promise<stri
           <h1 style="color:#ffffff;font-size:22px;margin:8px 0 4px;">Briefing semanal de inteligencia de viaje</h1>
           <p style="color:#94a3b8;font-size:14px;margin:0;">Lo que necesitas saber esta semana antes de decidir a dónde viajar</p>
         </td></tr>
+
+        <!-- Founder Letter (editions 1-3 only) -->
+        ${founderLetterHtml}
 
         <!-- Stats -->
         ${statsHtml}
