@@ -13,8 +13,83 @@ import LanguageSelector from '@/components/LanguageSelector';
 
 const MapaInteractivo = dynamic(
   () => import('@/components/MapaInteractivo'),
-  { ssr: false, loading: () => <div className="w-full h-[70vh] bg-slate-900" /> }
+  { ssr: false, loading: () => <MapFallback /> }
 );
+
+// ============================================================
+// SSR FALLBACK — SVG world map with risk dots (instant visual)
+// ============================================================
+const RISK_DOT_POSITIONS = [
+  // Americas (mostly green/yellow)
+  { cx: 20, cy: 35, r: 6, color: '#22c55e' }, // Canada/US
+  { cx: 18, cy: 45, r: 5, color: '#eab308' }, // Mexico
+  { cx: 25, cy: 55, r: 4, color: '#eab308' }, // Central America
+  { cx: 30, cy: 60, r: 6, color: '#22c55e' }, // Brazil
+  { cx: 28, cy: 65, r: 4, color: '#eab308' }, // Argentina
+  { cx: 27, cy: 52, r: 4, color: '#f97316' }, // Colombia/Venezuela
+  { cx: 24, cy: 48, r: 3, color: '#f97316' }, // Venezuela
+  // Europe (mostly green)
+  { cx: 48, cy: 28, r: 3, color: '#22c55e' }, // UK
+  { cx: 50, cy: 30, r: 4, color: '#22c55e' }, // France/Germany
+  { cx: 52, cy: 32, r: 3, color: '#22c55e' }, // Italy
+  { cx: 50, cy: 26, r: 3, color: '#22c55e' }, // Spain
+  { cx: 54, cy: 28, r: 3, color: '#22c55e' }, // Poland
+  { cx: 53, cy: 24, r: 3, color: '#22c55e' }, // Scandinavia
+  // Middle East (red/orange)
+  { cx: 60, cy: 38, r: 4, color: '#dc2626' }, // Iraq/Syria
+  { cx: 58, cy: 40, r: 3, color: '#dc2626' }, // Israel/Palestine
+  { cx: 62, cy: 42, r: 4, color: '#991b1b' }, // Iran
+  { cx: 58, cy: 44, r: 3, color: '#dc2626' }, // Yemen
+  // Africa (mixed)
+  { cx: 55, cy: 50, r: 4, color: '#22c55e' }, // South Africa
+  { cx: 58, cy: 46, r: 4, color: '#dc2626' }, // Sudan
+  { cx: 60, cy: 52, r: 4, color: '#991b1b' }, // Somalia/DRC
+  { cx: 54, cy: 48, r: 3, color: '#dc2626' }, // Libya
+  { cx: 52, cy: 50, r: 3, color: '#f97316' }, // Sahel
+  // Asia (mixed)
+  { cx: 72, cy: 35, r: 5, color: '#dc2626' }, // Afghanistan
+  { cx: 75, cy: 30, r: 4, color: '#f97316' }, // India
+  { cx: 78, cy: 28, r: 5, color: '#22c55e' }, // China
+  { cx: 82, cy: 28, r: 4, color: '#22c55e' }, // Japan
+  { cx: 80, cy: 38, r: 4, color: '#22c55e' }, // Thailand
+  { cx: 74, cy: 42, r: 4, color: '#f97316' }, // Pakistan
+  { cx: 76, cy: 44, r: 3, color: '#dc2626' }, // Myanmar
+  // Oceania
+  { cx: 85, cy: 62, r: 5, color: '#22c55e' }, // Australia
+  { cx: 88, cy: 58, r: 3, color: '#22c55e' }, // New Zealand
+  // Eastern Europe / Russia
+  { cx: 58, cy: 22, r: 6, color: '#dc2626' }, // Russia
+  { cx: 55, cy: 26, r: 4, color: '#dc2626' }, // Ukraine
+];
+
+function MapFallback() {
+  return (
+    <div className="relative w-full h-[70vh] bg-slate-900 overflow-hidden">
+      {/* SVG World Map Fallback */}
+      <svg viewBox="0 0 100 80" className="absolute inset-0 w-full h-full" preserveAspectRatio="xMidYMid meet">
+        {/* Subtle grid */}
+        {Array.from({ length: 20 }).map((_, i) => (
+          <line key={`vg-${i}`} x1={i * 5} y1="0" x2={i * 5} y2="80" stroke="#1e293b" strokeWidth="0.3" />
+        ))}
+        {Array.from({ length: 16 }).map((_, i) => (
+          <line key={`hg-${i}`} x1="0" y1={i * 5} x2="100" y2={i * 5} stroke="#1e293b" strokeWidth="0.3" />
+        ))}
+        {/* Risk dots */}
+        {RISK_DOT_POSITIONS.map((dot, i) => (
+          <g key={i}>
+            <circle cx={dot.cx} cy={dot.cy} r={dot.r + 2} fill={dot.color} opacity="0.2" />
+            <circle cx={dot.cx} cy={dot.cy} r={dot.r} fill={dot.color} opacity="0.7" />
+          </g>
+        ))}
+      </svg>
+      {/* Loading text */}
+      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-slate-800/80 backdrop-blur-sm rounded-full px-4 py-2 flex items-center gap-2">
+        <span className="w-2 h-2 bg-blue-400 rounded-full animate-pulse" />
+        <span className="text-slate-300 text-xs font-medium">Cargando mapa interactivo...</span>
+      </div>
+    </div>
+  );
+}
 
 // ============================================================
 // TOP BAR (Flotante)
@@ -413,13 +488,13 @@ function SidePanel() {
 }
 
 // ============================================================
-// SINGLE CTA BUTTON
+// SINGLE CTA BUTTON — visible during loading & after map loads
 // ============================================================
 function PrimaryCTA() {
   return (
-    <div className="fixed bottom-[8rem] left-1/2 -translate-x-1/2 z-[1005]">
-      <Link 
-        href="/decidir" 
+    <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-[1020]">
+      <Link
+        href="/decidir"
         className="flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-purple-600 to-violet-600 text-white rounded-2xl hover:opacity-90 transition-all shadow-2xl shadow-purple-500/25 text-base font-semibold group"
       >
         <Sparkles className="w-5 h-5 group-hover:scale-110 transition-transform" />
@@ -442,12 +517,10 @@ export default function Home() {
       {/* Side Panel */}
       <SidePanel />
 
-      {/* Primary CTA — single action */}
-      <PrimaryCTA />
-
-      {/* Map — dominant 70% of viewport */}
+      {/* Map — dominant 70% of viewport with CTA overlay */}
       <div className="relative w-full h-[70vh] pt-24 pb-24">
         <MapaInteractivo fullScreen />
+        <PrimaryCTA />
       </div>
 
       {/* Content below map */}
