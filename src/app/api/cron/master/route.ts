@@ -421,6 +421,62 @@ async function runWeeklyDigest(): Promise<any> {
   }
 }
 
+// ===== TRIAL NOTIFICATIONS =====
+async function runTrialNotifications(): Promise<any> {
+  try {
+    if (!resend) return { status: 'skipped', reason: 'No resend API key' };
+
+    const now = new Date();
+    const twoDaysFromNow = new Date(now.getTime() + 2 * 24 * 60 * 60 * 1000);
+
+    const { data: profiles, error } = await supabaseAdmin
+      .from('profiles')
+      .select('id, email, trial_end, is_premium, username')
+      .eq('is_premium', false)
+      .not('trial_end', 'is', null)
+      .filter('trial_end', 'gte', now.toISOString())
+      .filter('trial_end', 'lte', twoDaysFromNow.toISOString());
+
+    if (error) return { status: 'error', message: error.message };
+    if (!profiles || profiles.length === 0) return { status: 'ok', sent: 0 };
+
+    let sentCount = 0;
+    const today = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+
+    for (const profile of profiles) {
+      const trialEnd = new Date(profile.trial_end);
+      const daysLeft = Math.ceil((trialEnd.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+      const isExpiringToday = trialEnd <= today;
+
+      try {
+        await resend.emails.send({
+          from: 'Viaje con Inteligencia <notificaciones@viajeinteligencia.com>',
+          to: profile.email,
+          subject: isExpiringToday
+            ? 'Tu prueba gratuita termina HOY'
+            : `Tu prueba gratuita termina en ${daysLeft} dia${daysLeft !== 1 ? 's' : ''}`,
+          html: `<div style="font-family:system-ui,sans-serif;max-width:600px;margin:0 auto;padding:20px;">
+            <div style="background:linear-gradient(135deg,#1e293b,#0f172a);border-radius:16px;padding:32px;text-align:center;">
+              <h1 style="color:#f59e0b;font-size:24px;margin:0 0 16px;">${isExpiringToday ? 'Tu prueba termina HOY!' : 'Tu prueba termina pronto'}</h1>
+              <p style="color:#e2e8f0;font-size:16px;line-height:1.6;margin:0 0 24px;">
+                Tu prueba gratuita termina ${isExpiringToday ? 'hoy' : `en ${daysLeft} dia${daysLeft !== 1 ? 's' : ''}`}.
+              </p>
+              <a href="${BASE_URL}/premium" style="display:inline-block;background:linear-gradient(135deg,#f59e0b,#f97316);color:#0f172a;padding:14px 32px;border-radius:12px;text-decoration:none;font-weight:bold;font-size:16px;">
+                Activar Premium
+              </a>
+            </div>
+          </div>`,
+        });
+        sentCount++;
+      } catch { /* skip */ }
+    }
+
+    return { status: 'ok', sent: sentCount, total: profiles.length };
+  } catch (e: any) {
+    return { status: 'error', error: e.message };
+  }
+}
+
 // ===== MASTER CRON =====
 async function withTimeout<T>(fn: () => Promise<T>, ms: number, label: string): Promise<T | { status: 'error'; error: string }> {
   try {
@@ -477,9 +533,12 @@ export async function GET(request: Request) {
     '5b/8 Incident detection'
   );
 
-  // Phase 4: Digests (always run last)
+  // Phase 4: Digests and notifications (always run last)
   console.log('[Master] 7/8 Daily digest...');
   results.digest = await withTimeout(() => runDailyDigest(results), 30000, '7/8 Daily digest');
+
+  console.log('[Master] 7b/8 Trial notifications...');
+  results.trial_notifications = await withTimeout(() => runTrialNotifications(), 15000, '7b/8 Trial notifications');
 
   console.log('[Master] 8/8 Weekly digest...');
   results.weekly = await withTimeout(() => runWeeklyDigest(), 30000, '8/8 Weekly digest');

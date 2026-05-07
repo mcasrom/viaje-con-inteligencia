@@ -857,10 +857,10 @@ export default function DashboardPage() {
             <h3 className="font-bold text-white">KPIs de Riesgo</h3>
             <p className="text-white/70 text-sm">Dashboard en vivo</p>
           </Link>
-          <Link href="/premium" className="bg-gradient-to-br from-purple-600 to-blue-600 rounded-xl p-6 text-center hover:opacity-90 transition-opacity">
-            <Crown className="w-8 h-8 text-white mx-auto mb-2" />
-            <h3 className="font-bold text-white">Hazte Premium</h3>
-            <p className="text-white/70 text-sm">Alertas IA y más</p>
+          <Link href="/dashboard/subscription" className="bg-gradient-to-br from-yellow-500 to-amber-500 rounded-xl p-6 text-center hover:opacity-90 transition-opacity">
+            <Crown className="w-8 h-8 text-slate-900 mx-auto mb-2" />
+            <h3 className="font-bold text-slate-900">Mi Suscripción</h3>
+            <p className="text-slate-800/70 text-sm">Plan, facturas y gestión</p>
           </Link>
           <Link href="/checklist" className="bg-slate-800 rounded-xl p-6 border border-slate-700 text-center hover:border-slate-600 transition-colors">
             <CheckCircle className="w-8 h-8 text-green-400 mx-auto mb-2" />
