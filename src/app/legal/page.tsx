@@ -5,6 +5,7 @@ import { ArrowLeft, Shield, FileText, Mail, AlertTriangle, Cookie } from 'lucide
 export const metadata: Metadata = {
   title: 'Aviso Legal | Viaje con Inteligencia',
   description: 'Aviso legal, términos de uso y política de privacidad de Viaje con Inteligencia.',
+  robots: { index: false, follow: true },
   openGraph: {
     title: 'Aviso Legal | Viaje con Inteligencia',
     url: 'https://www.viajeinteligencia.com/legal',
