@@ -7,6 +7,7 @@ import { calculateTCI } from '@/data/tci-engine';
 import { generateRiskChangeAlert } from '@/lib/alerts-system';
 import { fetchAllPosts, classifySignal, detectFirstPerson, type ClassifiedSignal, type SignalCategory } from '@/lib/osint-sensor';
 import { Resend } from 'resend';
+import { detectAndCreateIncidents } from '@/lib/incident-detector';
 
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const TELEGRAM_CHANNEL_ID = process.env.TELEGRAM_CHANNEL_ID;
@@ -467,6 +468,14 @@ export async function GET(request: Request) {
   // Phase 3: News sentiment (most variable, isolated timeout)
   console.log('[Master] 5/8 News sentiment...');
   results.news_sentiment = await withTimeout(() => runNewsSentiment(), 90000, '5/8 News sentiment');
+
+  // Phase 3b: Incident detection (clusters signals → actionable incidents)
+  console.log('[Master] 5b/8 Incident detection...');
+  results.incidents = await withTimeout(
+    async () => detectAndCreateIncidents(),
+    15000,
+    '5b/8 Incident detection'
+  );
 
   // Phase 4: Digests (always run last)
   console.log('[Master] 7/8 Daily digest...');

@@ -186,7 +186,7 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
               {view === 'grid' && <input type="hidden" name="view" value="grid" />}
               <button type="submit" className="sr-only">Buscar</button>
             </form>
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               <Link
                 href={paginationLinks(1)}
                 className={`px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${
