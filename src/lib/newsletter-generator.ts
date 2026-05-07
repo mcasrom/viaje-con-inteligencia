@@ -59,7 +59,7 @@ async function generateRiskSummary(changes: WeeklyDigestData['riskChanges']): Pr
       ],
       model: 'llama-3.1-8b-instant',
       temperature: 0.3,
-      max_tokens: 150,
+      max_tokens: 200,
     });
 
     return res.choices[0]?.message?.content?.trim() || `Cambios detectados:\n${changeLines}`;
@@ -91,7 +91,7 @@ async function generateSignalsSummary(signals: WeeklyDigestData['topSignals']): 
       ],
       model: 'llama-3.1-8b-instant',
       temperature: 0.3,
-      max_tokens: 120,
+      max_tokens: 200,
     });
 
     return res.choices[0]?.message?.content?.trim() || signalLines;
@@ -120,7 +120,7 @@ Escribe un spotlight para newsletter.`,
       ],
       model: 'llama-3.1-8b-instant',
       temperature: 0.6,
-      max_tokens: 120,
+      max_tokens: 200,
     });
 
     return res.choices[0]?.message?.content?.trim() || `${dest.name}: Capital ${dest.capital}, moneda ${dest.currency}. Riesgo MAEC: ${dest.risk}.`;
@@ -134,53 +134,61 @@ export async function buildWeeklyEmailHtml(
   content: { riskSection: string; signalsSection: string; destinationSection: string },
   weekDate: string
 ): Promise<string> {
-  const riskHtml = content.riskSection.split('\n').map(l => `<p style="margin:4px 0;font-size:14px;">${l}</p>`).join('');
-  const signalsHtml = content.signalsSection.split('\n').map(l => `<p style="margin:4px 0;font-size:14px;">${l}</p>`).join('');
+  const riskHtml = content.riskSection.split('\n').map(l => {
+    const trimmed = l.trim();
+    if (!trimmed) return '';
+    return `<p style="margin:4px 0;font-size:14px;color:#1e293b;line-height:1.5;">${trimmed}</p>`;
+  }).join('');
+  const signalsHtml = content.signalsSection.split('\n').map(l => {
+    const trimmed = l.trim();
+    if (!trimmed) return '';
+    return `<p style="margin:4px 0;font-size:14px;color:#1e293b;line-height:1.5;">${trimmed}</p>`;
+  }).join('');
 
   return `
 <!DOCTYPE html>
 <html>
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
-<body style="margin:0;padding:0;background:#0f172a;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
-  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#0f172a;padding:24px 0;">
+<body style="margin:0;padding:0;background:#f1f5f9;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#1e293b;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f1f5f9;padding:24px 0;">
     <tr><td align="center">
       <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;">
         <!-- Header -->
-        <tr><td style="padding:0 0 24px;">
+        <tr><td style="background:#1e293b;border-radius:12px 12px 0 0;padding:24px;">
           <h1 style="color:#60a5fa;font-size:22px;margin:0 0 4px;">📬 Resumen Semanal</h1>
           <p style="color:#94a3b8;font-size:13px;margin:0;">${weekDate} · Viaje con Inteligencia</p>
         </td></tr>
 
         <!-- Risk Section -->
-        <tr><td style="background:#1e293b;border-radius:12px;padding:20px;margin-bottom:16px;border:1px solid #334155;">
-          <h2 style="color:#fbbf24;font-size:16px;margin:0 0 12px;">🔔 Cambios de Riesgo</h2>
+        <tr><td style="background:#ffffff;border-radius:0;padding:20px;border-left:4px solid #fbbf24;border-right:4px solid #fbbf24;">
+          <h2 style="color:#d97706;font-size:16px;margin:0 0 12px;">🔔 Cambios de Riesgo</h2>
           ${riskHtml}
         </td></tr>
 
         <!-- OSINT Signals -->
-        <tr><td style="background:#1e293b;border-radius:12px;padding:20px;margin-bottom:16px;border:1px solid #334155;">
-          <h2 style="color:#34d399;font-size:16px;margin:0 0 12px;">📡 Señales Relevantes</h2>
+        <tr><td style="background:#ffffff;padding:20px;border-left:4px solid #34d399;border-right:4px solid #34d399;">
+          <h2 style="color:#059669;font-size:16px;margin:0 0 12px;">📡 Señales Relevantes</h2>
           ${signalsHtml}
         </td></tr>
 
         <!-- Destination Spotlight -->
-        <tr><td style="background:#1e293b;border-radius:12px;padding:20px;margin-bottom:16px;border:1px solid #334155;">
-          <h2 style="color:#60a5fa;font-size:16px;margin:0 0 12px;">🌍 Destino de la Semana</h2>
-          <p style="color:#e2e8f0;font-size:14px;line-height:1.6;margin:0;">${content.destinationSection}</p>
+        <tr><td style="background:#ffffff;padding:20px;border-left:4px solid #3b82f6;border-right:4px solid #3b82f6;">
+          <h2 style="color:#2563eb;font-size:16px;margin:0 0 12px;">🌍 Destino de la Semana</h2>
+          <p style="color:#1e293b;font-size:14px;line-height:1.6;margin:0;">${content.destinationSection}</p>
         </td></tr>
 
         <!-- CTA -->
-        <tr><td style="text-align:center;padding:16px 0;">
-          <a href="https://www.viajeinteligencia.com" style="display:inline-block;background:#3b82f6;color:#fff;padding:12px 32px;border-radius:8px;text-decoration:none;font-weight:600;font-size:14px;">
+        <tr><td style="background:#ffffff;border-radius:0 0 12px 12px;padding:20px;text-align:center;border-left:4px solid #1e293b;border-right:4px solid #1e293b;">
+          <a href="https://www.viajeinteligencia.com" style="display:inline-block;background:#3b82f6;color:#ffffff;padding:12px 32px;border-radius:8px;text-decoration:none;font-weight:600;font-size:14px;">
             Ver mapa interactivo
           </a>
         </td></tr>
 
         <!-- Footer -->
-        <tr><td style="text-align:center;padding:16px 0 0;border-top:1px solid #334155;">
+        <tr><td style="text-align:center;padding:16px 0 0;">
           <p style="color:#64748b;font-size:12px;margin:4px 0;">Datos: MAEC, USGS, GDACS, GDELT</p>
           <p style="color:#64748b;font-size:12px;margin:4px 0;">
-            <a href="https://www.viajeinteligencia.com/api/newsletter/subscribe?action=unsubscribe&email={{EMAIL}}" style="color:#94a3b8;text-decoration:underline;">Cancelar suscripción</a>
+            <a href="https://www.viajeinteligencia.com/api/newsletter/subscribe?action=unsubscribe&email={{EMAIL}}" style="color:#475569;text-decoration:underline;">Cancelar suscripción</a>
           </p>
         </td></tr>
       </table>
