@@ -1,8 +1,29 @@
 import { NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase-server';
 
+const RATE_LIMIT_WINDOW = 60 * 1000; // 1 minute
+const RATE_LIMIT_MAX = 10; // max attempts per window
+const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
+
+function checkRateLimit(ip: string): boolean {
+  const now = Date.now();
+  const entry = rateLimitMap.get(ip);
+  if (!entry || now > entry.resetAt) {
+    rateLimitMap.set(ip, { count: 1, resetAt: now + RATE_LIMIT_WINDOW });
+    return true;
+  }
+  if (entry.count >= RATE_LIMIT_MAX) return false;
+  entry.count++;
+  return true;
+}
+
 export async function POST(request: Request) {
   try {
+    const ip = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown';
+    if (!checkRateLimit(ip)) {
+      return NextResponse.json({ error: 'Demasiados intentos. Espera un minuto.' }, { status: 429 });
+    }
+
     const body = await request.json();
     const { email, password, mode, action } = body;
 
@@ -29,7 +50,7 @@ export async function POST(request: Request) {
 
     // Password login
     if (mode === 'password' && password) {
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signInWithPassword({
         email: email.toLowerCase().trim(),
         password,
       });
@@ -38,6 +59,14 @@ export async function POST(request: Request) {
           return NextResponse.json({ error: 'Email o contraseña incorrectos' }, { status: 401 });
         }
         return NextResponse.json({ error: error.message }, { status: 400 });
+      }
+      if (!data.user?.email_confirmed_at) {
+        await supabase.auth.signOut();
+        return NextResponse.json({
+          error: 'Debes verificar tu email antes de iniciar sesión. Revisa tu bandeja de entrada (y spam).',
+          needsVerification: true,
+          email: email.toLowerCase().trim(),
+        }, { status: 403 });
       }
       return NextResponse.json({ success: true, message: '✅ Sesión iniciada' });
     }

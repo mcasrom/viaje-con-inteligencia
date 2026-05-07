@@ -22,6 +22,7 @@ interface User {
 interface AuthContextType {
   user: User | null;
   loading: boolean;
+  emailVerified: boolean;
   signInWithEmail: (email: string) => Promise<{ error?: string }>;
   signInWithPassword: (email: string, password: string) => Promise<{ error?: string }>;
   signUpWithPassword: (email: string, password: string) => Promise<{ error?: string }>;
@@ -29,6 +30,7 @@ interface AuthContextType {
   updatePassword: (password: string) => Promise<{ error?: string }>;
   signInWithTelegram: (userId: string, username?: string) => Promise<{ error?: string }>;
   signOut: () => Promise<void>;
+  resendVerificationEmail: () => Promise<{ error?: string }>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -36,6 +38,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [emailVerified, setEmailVerified] = useState(true);
 
   useEffect(() => {
     if (!supabase) { setLoading(false); return; }
@@ -44,7 +47,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const loadUser = async () => {
       try {
         const { data } = await supabase.auth.getUser();
-        if (!cancelled) setUser(data.user as User | null);
+        if (!cancelled) {
+          setUser(data.user as User | null);
+          setEmailVerified(!!data.user?.email_confirmed_at);
+        }
       } catch {
         if (!cancelled) setUser(null);
       } finally {
@@ -55,6 +61,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     loadUser();
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user as User | null);
+      setEmailVerified(!!session?.user?.email_confirmed_at);
     });
     return () => { cancelled = true; clearTimeout(timeout); subscription.unsubscribe(); };
   }, []);
@@ -107,13 +114,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return { error: error?.message };
   };
 
+  const resendVerificationEmail = async () => {
+    if (!supabase || !user?.email) return { error: 'No hay sesión activa' };
+    const { error } = await supabase.auth.resend({
+      type: 'signup',
+      email: user.email,
+      options: { emailRedirectTo: `${window.location.origin}/auth/callback?next=/dashboard` },
+    });
+    return { error: error?.message };
+  };
+
   const signOut = async () => {
     if (!supabase) return;
     await supabase.auth.signOut();
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, signInWithEmail, signInWithPassword, signUpWithPassword, resetPassword, updatePassword, signInWithTelegram, signOut }}>
+    <AuthContext.Provider value={{ user, loading, emailVerified, signInWithEmail, signInWithPassword, signUpWithPassword, resetPassword, updatePassword, signInWithTelegram, signOut, resendVerificationEmail }}>
       {children}
     </AuthContext.Provider>
   );

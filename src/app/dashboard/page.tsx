@@ -31,7 +31,7 @@ interface Favorite {
 }
 
 export default function DashboardPage() {
-  const { user: authUser, loading: authLoading, signInWithPassword: authSignInPassword, signUpWithPassword, resetPassword, signOut: authSignOut, signInWithEmail } = useAuth();
+  const { user: authUser, loading: authLoading, signInWithPassword: authSignInPassword, signUpWithPassword, resetPassword, signOut: authSignOut, signInWithEmail, emailVerified, resendVerificationEmail } = useAuth();
   const [user, setUser] = useState<User | null>(null);
   const [favorites, setFavorites] = useState<Favorite[]>([]);
   const [loading, setLoading] = useState(true);
@@ -47,137 +47,15 @@ export default function DashboardPage() {
   const [showChangePassword, setShowChangePassword] = useState(false);
   const [newPassword, setNewPassword] = useState('');
   const [favError, setFavError] = useState(false);
+  const [resendLoading, setResendLoading] = useState(false);
+  const [resendStatus, setResendStatus] = useState<'idle' | 'sent'>('idle');
+  const [pendingVerificationEmail, setPendingVerificationEmail] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (authUser) {
-      setUser(authUser as User);
-      setLoading(false);
-    } else if (!authLoading) {
-      setLoading(false);
-    }
-  }, [authUser, authLoading]);
-
-  useEffect(() => {
-    if (user) {
-      loadFavorites();
-    }
-  }, [user]);
-
-  useEffect(() => {
-    const handleMagicLink = async () => {
-      const url = new URL(window.location.href);
-      
-      const success = url.searchParams.get('success');
-      if (success === 'true') {
-        setNotification({
-          type: 'success',
-          message: '¡Operación completada!'
-        });
-        url.searchParams.delete('success');
-        window.history.replaceState({}, '', url.pathname);
-      }
-      
-      const canceled = url.searchParams.get('canceled');
-      if (canceled === 'true') {
-        setNotification({
-          type: 'error',
-          message: 'Operación cancelada'
-        });
-        url.searchParams.delete('canceled');
-        window.history.replaceState({}, '', url.pathname);
-      }
-
-      const reset = url.searchParams.get('reset');
-      if (reset === 'true') {
-        setShowChangePassword(true);
-        url.searchParams.delete('reset');
-        window.history.replaceState({}, '', url.pathname);
-      }
-      
-      const telegramLogin = url.searchParams.get('telegram_login');
-      if (telegramLogin && supabaseClient) {
-        try {
-          setNotification({
-            type: 'success',
-            message: '¡Sesión de Telegram iniciada! Ya puedes usar el dashboard.'
-          });
-          url.searchParams.delete('telegram_login');
-          window.history.replaceState({}, '', url.pathname);
-        } catch (err) {
-          console.error('Telegram login error:', err);
-          setNotification({
-            type: 'error',
-            message: 'Error al iniciar sesión con Telegram'
-          });
-        }
-      }
-      
-      const error = url.searchParams.get('error');
-      if (error) {
-        setNotification({
-          type: 'error',
-          message: error
-        });
-        url.searchParams.delete('error');
-        window.history.replaceState({}, '', url.pathname);
-      }
-      
-      const hashParams = new URLSearchParams(url.hash.substring(1));
-      const accessToken = hashParams.get('access_token');
-      const refreshToken = hashParams.get('refresh_token');
-      
-      if (accessToken && supabaseClient) {
-        try {
-          const { error: sessionError } = await supabaseClient.auth.setSession({
-            access_token: accessToken,
-            refresh_token: refreshToken || '',
-          });
-          
-          if (sessionError) {
-            console.error('Session error:', sessionError);
-            setNotification({
-              type: 'error',
-              message: 'Error al establecer sesión'
-            });
-          } else {
-            setNotification({
-              type: 'success',
-              message: '¡Sesión iniciada correctamente!'
-            });
-          }
-          window.history.replaceState({}, '', url.pathname);
-        } catch (err) {
-          console.error('Magic link error:', err);
-          setNotification({
-            type: 'error',
-            message: 'Error al iniciar sesión'
-          });
-        }
-      }
-    };
-    
-    handleMagicLink();
-  }, []);
-
-
-  const loadFavorites = async () => {
-    setFavError(false);
-    try {
-      
-      const response = await fetch(`/api/auth/favorites?t=${Date.now()}`, { 
-        
-        cache: 'no-store',
-      });
-      if (response.ok) {
-        const data = await response.json();
-        setFavorites(data.favorites || []);
-      } else {
-        setFavError(true);
-      }
-    } catch {
-      setFavError(true);
-      console.log('Error loading favorites');
-    }
+  const handleResendVerification = async () => {
+    setResendLoading(true);
+    const result = await resendVerificationEmail();
+    if (!result?.error) setResendStatus('sent');
+    setResendLoading(false);
   };
 
   const handleAuth = async (e: React.FormEvent) => {
@@ -213,6 +91,12 @@ export default function DashboardPage() {
         }
         setEmail('');
         setPassword('');
+      } else if (data.needsVerification) {
+        setNotification({
+          type: 'error',
+          message: 'Email no verificado. Revisa tu bandeja de entrada o solicita un nuevo enlace.',
+        });
+        setPendingVerificationEmail(data.email);
       } else {
         setNotification({ type: 'error', message: data.error || 'Error al autenticar' });
       }
@@ -282,6 +166,22 @@ export default function DashboardPage() {
       setLoading(false);
     }
   };
+
+  const loadFavorites = async () => {
+    try {
+      const response = await fetch('/api/auth/favorites');
+      if (response.ok) {
+        const data = await response.json();
+        setFavorites(data.favorites || []);
+      }
+    } catch {
+      setFavorites([]);
+    }
+  };
+
+  useEffect(() => {
+    if (user) loadFavorites();
+  }, [user]);
 
   const addFavorite = async (countryCode: string) => {
     try {
@@ -450,7 +350,7 @@ export default function DashboardPage() {
               <div className="flex gap-1 mb-6 bg-slate-700/50 rounded-lg p-1">
                 <button
                   type="button"
-                  onClick={() => setAuthMode('login')}
+                  onClick={() => { setAuthMode('login'); setPendingVerificationEmail(null); }}
                   className={`flex-1 py-2 rounded-lg font-medium transition-colors text-sm ${
                     authMode === 'login' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:text-white'
                   }`}
@@ -459,7 +359,7 @@ export default function DashboardPage() {
                 </button>
                 <button
                   type="button"
-                  onClick={() => setAuthMode('magic')}
+                  onClick={() => { setAuthMode('magic'); setPendingVerificationEmail(null); }}
                   className={`flex-1 py-2 rounded-lg font-medium transition-colors text-sm ${
                     authMode === 'magic' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:text-white'
                   }`}
@@ -468,7 +368,7 @@ export default function DashboardPage() {
                 </button>
                 <button
                   type="button"
-                  onClick={() => setAuthMode('register')}
+                  onClick={() => { setAuthMode('register'); setPendingVerificationEmail(null); }}
                   className={`flex-1 py-2 rounded-lg font-medium transition-colors text-sm ${
                     authMode === 'register' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:text-white'
                   }`}
@@ -485,7 +385,7 @@ export default function DashboardPage() {
                     <input
                       type="email"
                       value={email}
-                      onChange={(e) => setEmail(e.target.value)}
+                      onChange={(e) => { setEmail(e.target.value); setPendingVerificationEmail(null); }}
                       placeholder="tu@email.com"
                       required
                       className="w-full pl-10 pr-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-blue-500"
@@ -540,7 +440,7 @@ export default function DashboardPage() {
                 </button>
 
                 {/* Forgot password link */}
-                {authMode === 'login' && (
+                {authMode === 'login' && !pendingVerificationEmail && (
                   <button
                     type="button"
                     onClick={() => setShowResetPassword(true)}
@@ -548,6 +448,29 @@ export default function DashboardPage() {
                   >
                     ¿Olvidaste tu contraseña?
                   </button>
+                )}
+
+                {/* Resend verification email */}
+                {pendingVerificationEmail && (
+                  <div className="mt-4 p-3 bg-amber-500/10 border border-amber-500/30 rounded-lg">
+                    <p className="text-amber-300 text-sm font-medium mb-2">Email no verificado</p>
+                    <p className="text-amber-200/60 text-xs mb-3">Revisa tu bandeja de entrada (y spam) y haz clic en el enlace de verificación.</p>
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        const res = await fetch('/api/auth/resend-verification', {
+                          method: 'POST',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify({ email: pendingVerificationEmail }),
+                        });
+                        const data = await res.json();
+                        setNotification({ type: res.ok ? 'success' : 'error', message: data.message || data.error });
+                      }}
+                      className="text-blue-400 text-xs hover:text-blue-300 underline"
+                    >
+                      Reenviar email de verificación
+                    </button>
+                  </div>
                 )}
               </div>
             </form>
@@ -604,6 +527,28 @@ export default function DashboardPage() {
       </header>
 
       <main className="max-w-4xl mx-auto px-6 py-8">
+        {/* Email Verification Banner */}
+        {!emailVerified && user && (
+          <div className="mb-6 p-4 bg-amber-500/10 border border-amber-500/30 rounded-xl flex items-start gap-3">
+            <AlertTriangle className="w-5 h-5 text-amber-400 flex-shrink-0 mt-0.5" />
+            <div className="flex-1">
+              <p className="text-amber-300 font-medium text-sm">Verifica tu email</p>
+              <p className="text-amber-200/60 text-xs mt-1">Revisa tu bandeja de entrada (y spam) para confirmar tu cuenta.</p>
+              {resendStatus === 'sent' ? (
+                <p className="text-emerald-400 text-xs mt-2">✓ Email reenviado</p>
+              ) : (
+                <button
+                  onClick={handleResendVerification}
+                  disabled={resendLoading}
+                  className="text-blue-400 text-xs mt-2 hover:text-blue-300 underline disabled:opacity-50"
+                >
+                  {resendLoading ? 'Enviando...' : 'Reenviar email de verificación'}
+                </button>
+              )}
+            </div>
+          </div>
+        )}
+
         {/* Change Password Modal */}
         {showChangePassword && (
           <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setShowChangePassword(false)}>
