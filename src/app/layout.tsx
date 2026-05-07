@@ -31,12 +31,13 @@ const geistSans = Geist({
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.viajeinteligencia.com"),
   title: "Viaje con Inteligencia | Mapa de Riesgos de Viaje MAEC - Riesgo Zero",
-  description: "Tu guía completa de viajes seguros. Mapa interactivo de riesgos por país según MAEC español. Embajadas, requisitos, consejos, qué hacer y qué no hacer en cada destino. Viaja con inteligencia, viajanSeguro.",
-  keywords: "viaje seguro, mapa de riesgos, MAEC, embajadas, requisitos viaje, travel risk, países riesgo, seguro viaje,外交部, risk assessment, travel advisory",
+  description: "Tu guía completa de viajes seguros. Mapa interactivo de riesgos por país según MAEC español. Embajadas, requisitos, consejos, qué hacer y qué no hacer en cada destino. Viaja con inteligencia, viaja seguro.",
   authors: [{ name: "M.Castillo" }],
   creator: "M.Castillo",
   publisher: "Viaje con Inteligencia",
-  manifest: '/manifest.json',
+  alternates: {
+    canonical: 'https://www.viajeinteligencia.com',
+  },
   openGraph: {
     title: "Viaje con Inteligencia | Riesgo Zero",
     description: "Mapa interactivo de riesgos de viaje por país. Información oficial MAEC. Embajadas, requisitos y consejos para viajar seguro.",
@@ -96,27 +97,6 @@ export default function RootLayout({
         <link rel="alternate" hrefLang="x-default" href="https://www.viajeinteligencia.com" />
         <link rel="sitemap" type="application/xml" href="https://www.viajeinteligencia.com/sitemap.xml" />
         <meta name="thumbnail" content="/preview_favicon.jpg" />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "WebSite",
-              "name": "Viaje con Inteligencia",
-              "url": "https://www.viajeinteligencia.com",
-              "description": "Tu guía completa de viajes seguros. Mapa interactivo de riesgos por país según MAEC español.",
-              "publisher": {
-                "@type": "Organization",
-                "name": "Viaje con Inteligencia"
-              },
-              "potentialAction": {
-                "@type": "SearchAction",
-                "target": "https://www.viajeinteligencia.com/blog?search={search_term_string}",
-                "query-input": "required name=search_term_string"
-              }
-            })
-          }}
-        />
       </head>
       <body className={`${geistSans.variable} antialiased`}>
 <Analytics />

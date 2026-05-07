@@ -22,61 +22,51 @@ const MapaInteractivo = dynamic(
 // SSR FALLBACK — SVG world map with risk dots (instant visual)
 // ============================================================
 const RISK_DOT_POSITIONS = [
-  // Americas (mostly green/yellow)
-  { cx: 20, cy: 35, r: 6, color: '#22c55e' }, // Canada/US
-  { cx: 18, cy: 45, r: 5, color: '#eab308' }, // Mexico
-  { cx: 25, cy: 55, r: 4, color: '#eab308' }, // Central America
-  { cx: 30, cy: 60, r: 6, color: '#22c55e' }, // Brazil
-  { cx: 28, cy: 65, r: 4, color: '#eab308' }, // Argentina
-  { cx: 27, cy: 52, r: 4, color: '#f97316' }, // Colombia/Venezuela
-  { cx: 24, cy: 48, r: 3, color: '#f97316' }, // Venezuela
-  // Europe (mostly green)
-  { cx: 48, cy: 28, r: 3, color: '#22c55e' }, // UK
-  { cx: 50, cy: 30, r: 4, color: '#22c55e' }, // France/Germany
-  { cx: 52, cy: 32, r: 3, color: '#22c55e' }, // Italy
-  { cx: 50, cy: 26, r: 3, color: '#22c55e' }, // Spain
-  { cx: 54, cy: 28, r: 3, color: '#22c55e' }, // Poland
-  { cx: 53, cy: 24, r: 3, color: '#22c55e' }, // Scandinavia
-  // Middle East (red/orange)
-  { cx: 60, cy: 38, r: 4, color: '#dc2626' }, // Iraq/Syria
-  { cx: 58, cy: 40, r: 3, color: '#dc2626' }, // Israel/Palestine
-  { cx: 62, cy: 42, r: 4, color: '#991b1b' }, // Iran
-  { cx: 58, cy: 44, r: 3, color: '#dc2626' }, // Yemen
-  // Africa (mixed)
-  { cx: 55, cy: 50, r: 4, color: '#22c55e' }, // South Africa
-  { cx: 58, cy: 46, r: 4, color: '#dc2626' }, // Sudan
-  { cx: 60, cy: 52, r: 4, color: '#991b1b' }, // Somalia/DRC
-  { cx: 54, cy: 48, r: 3, color: '#dc2626' }, // Libya
-  { cx: 52, cy: 50, r: 3, color: '#f97316' }, // Sahel
-  // Asia (mixed)
-  { cx: 72, cy: 35, r: 5, color: '#dc2626' }, // Afghanistan
-  { cx: 75, cy: 30, r: 4, color: '#f97316' }, // India
-  { cx: 78, cy: 28, r: 5, color: '#22c55e' }, // China
-  { cx: 82, cy: 28, r: 4, color: '#22c55e' }, // Japan
-  { cx: 80, cy: 38, r: 4, color: '#22c55e' }, // Thailand
-  { cx: 74, cy: 42, r: 4, color: '#f97316' }, // Pakistan
-  { cx: 76, cy: 44, r: 3, color: '#dc2626' }, // Myanmar
-  // Oceania
-  { cx: 85, cy: 62, r: 5, color: '#22c55e' }, // Australia
-  { cx: 88, cy: 58, r: 3, color: '#22c55e' }, // New Zealand
-  // Eastern Europe / Russia
-  { cx: 58, cy: 22, r: 6, color: '#dc2626' }, // Russia
-  { cx: 55, cy: 26, r: 4, color: '#dc2626' }, // Ukraine
+  { cx: 20, cy: 35, r: 6, color: '#22c55e' },
+  { cx: 18, cy: 45, r: 5, color: '#eab308' },
+  { cx: 25, cy: 55, r: 4, color: '#eab308' },
+  { cx: 30, cy: 60, r: 6, color: '#22c55e' },
+  { cx: 28, cy: 65, r: 4, color: '#eab308' },
+  { cx: 27, cy: 52, r: 4, color: '#f97316' },
+  { cx: 24, cy: 48, r: 3, color: '#f97316' },
+  { cx: 48, cy: 28, r: 3, color: '#22c55e' },
+  { cx: 50, cy: 30, r: 4, color: '#22c55e' },
+  { cx: 52, cy: 32, r: 3, color: '#22c55e' },
+  { cx: 50, cy: 26, r: 3, color: '#22c55e' },
+  { cx: 54, cy: 28, r: 3, color: '#22c55e' },
+  { cx: 53, cy: 24, r: 3, color: '#22c55e' },
+  { cx: 60, cy: 38, r: 4, color: '#dc2626' },
+  { cx: 58, cy: 40, r: 3, color: '#dc2626' },
+  { cx: 62, cy: 42, r: 4, color: '#991b1b' },
+  { cx: 58, cy: 44, r: 3, color: '#dc2626' },
+  { cx: 55, cy: 50, r: 4, color: '#22c55e' },
+  { cx: 58, cy: 46, r: 4, color: '#dc2626' },
+  { cx: 60, cy: 52, r: 4, color: '#991b1b' },
+  { cx: 54, cy: 48, r: 3, color: '#dc2626' },
+  { cx: 52, cy: 50, r: 3, color: '#f97316' },
+  { cx: 72, cy: 35, r: 5, color: '#dc2626' },
+  { cx: 75, cy: 30, r: 4, color: '#f97316' },
+  { cx: 78, cy: 28, r: 5, color: '#22c55e' },
+  { cx: 82, cy: 28, r: 4, color: '#22c55e' },
+  { cx: 80, cy: 38, r: 4, color: '#22c55e' },
+  { cx: 74, cy: 42, r: 4, color: '#f97316' },
+  { cx: 76, cy: 44, r: 3, color: '#dc2626' },
+  { cx: 85, cy: 62, r: 5, color: '#22c55e' },
+  { cx: 88, cy: 58, r: 3, color: '#22c55e' },
+  { cx: 58, cy: 22, r: 6, color: '#dc2626' },
+  { cx: 55, cy: 26, r: 4, color: '#dc2626' },
 ];
 
 function MapFallback() {
   return (
     <div className="relative w-full h-[70vh] bg-slate-900 overflow-hidden">
-      {/* SVG World Map Fallback */}
       <svg viewBox="0 0 100 80" className="absolute inset-0 w-full h-full" preserveAspectRatio="xMidYMid meet">
-        {/* Subtle grid */}
         {Array.from({ length: 20 }).map((_, i) => (
           <line key={`vg-${i}`} x1={i * 5} y1="0" x2={i * 5} y2="80" stroke="#1e293b" strokeWidth="0.3" />
         ))}
         {Array.from({ length: 16 }).map((_, i) => (
           <line key={`hg-${i}`} x1="0" y1={i * 5} x2="100" y2={i * 5} stroke="#1e293b" strokeWidth="0.3" />
         ))}
-        {/* Risk dots */}
         {RISK_DOT_POSITIONS.map((dot, i) => (
           <g key={i}>
             <circle cx={dot.cx} cy={dot.cy} r={dot.r + 2} fill={dot.color} opacity="0.2" />
@@ -84,7 +74,6 @@ function MapFallback() {
           </g>
         ))}
       </svg>
-      {/* Loading text */}
       <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-slate-800/80 backdrop-blur-sm rounded-full px-4 py-2 flex items-center gap-2">
         <span className="w-2 h-2 bg-blue-400 rounded-full animate-pulse" />
         <span className="text-slate-300 text-xs font-medium">Cargando mapa interactivo...</span>
@@ -102,7 +91,6 @@ function TopBar() {
   return (
     <header className="fixed top-16 left-0 right-0 z-[1010] pointer-events-none">
       <div className="max-w-7xl mx-auto px-4 flex items-start justify-between gap-4 pointer-events-auto">
-        {/* Logo + Brand */}
         <div className="bg-slate-900/90 backdrop-blur-md rounded-xl border border-slate-700/50 px-4 py-2 flex items-center gap-3 shadow-xl">
           <img src="/logo.png" alt="Viaje con Inteligencia" className="w-8 h-8 object-contain" />
           <div className="flex items-center gap-2">
@@ -123,7 +111,6 @@ function TopBar() {
           </div>
         </div>
 
-        {/* Desktop Nav — Dock pill */}
         <div className="hidden md:flex items-center gap-2">
           <div className="bg-slate-900/90 backdrop-blur-md rounded-2xl border border-slate-700/50 px-2 py-1.5 flex items-center gap-1 shadow-2xl shadow-black/30">
             <Link href="/decidir" className="group flex flex-col items-center gap-0.5 px-4 py-1.5 text-slate-400 hover:text-white rounded-xl hover:bg-slate-800/80 transition-all">
@@ -166,7 +153,6 @@ function TopBar() {
           </div>
         </div>
 
-        {/* Mobile Menu */}
         <button 
           onClick={() => setMenuOpen(!menuOpen)}
           className="md:hidden bg-slate-900/90 backdrop-blur-md rounded-xl border border-slate-700/50 p-3 shadow-xl text-white"
@@ -175,7 +161,6 @@ function TopBar() {
         </button>
       </div>
 
-      {/* Mobile Dropdown */}
       {menuOpen && (
         <div className="md:hidden max-w-7xl mx-auto px-4 mt-2 pointer-events-auto">
           <div className="bg-slate-900/95 backdrop-blur-md rounded-xl border border-slate-700/50 p-2 shadow-xl space-y-1">
@@ -336,7 +321,6 @@ function SidePanel() {
   return (
     <div className={`fixed left-4 top-28 z-[1005] transition-all duration-300 ${open ? 'w-72' : 'w-12'}`}>
       <div className="bg-slate-900/90 backdrop-blur-md rounded-xl border border-slate-700/50 shadow-xl overflow-hidden">
-        {/* Toggle */}
         <button 
           onClick={() => setOpen(!open)}
           className="w-full flex items-center justify-between p-3 border-b border-slate-700/50 text-white hover:bg-slate-800"
@@ -350,7 +334,6 @@ function SidePanel() {
 
         {open && (
           <div className="p-3 space-y-4 max-h-[calc(100vh-10rem)] overflow-y-auto">
-            {/* Search */}
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
               <input
@@ -362,7 +345,6 @@ function SidePanel() {
               />
             </div>
 
-            {/* Search results */}
             {filteredCountries.length > 0 && (
               <div className="space-y-1">
                 {filteredCountries.map(p => (
@@ -384,7 +366,6 @@ function SidePanel() {
               </div>
             )}
 
-            {/* Quick Filters */}
             {!search && (
               <div className="space-y-2">
                 <div className="text-xs text-slate-500 font-bold uppercase tracking-wider">Filtrar por riesgo</div>
@@ -408,7 +389,6 @@ function SidePanel() {
               </div>
             )}
 
-            {/* Alerts — datos reales de MAEC */}
             {!search && alerts.length > 0 && (
               <div className="space-y-2">
                 <div className="text-xs text-slate-500 font-bold uppercase tracking-wider flex items-center gap-1">
@@ -434,7 +414,6 @@ function SidePanel() {
               </div>
             )}
 
-            {/* Tools Section */}
             {!search && (
               <div className="space-y-2">
                 <div className="text-xs text-slate-500 font-bold uppercase tracking-wider">Herramientas</div>
@@ -453,7 +432,6 @@ function SidePanel() {
               </div>
             )}
 
-            {/* Blog Section — datos reales de Supabase */}
             {!search && posts.length > 0 && (
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
@@ -510,22 +488,17 @@ function PrimaryCTA() {
 // ============================================================
 // HOME (Mapa 70vh dominante + contenido debajo)
 // ============================================================
-export default function Home() {
+export default function HomeClient() {
   return (
     <div className="min-h-screen bg-slate-950">
-      {/* Top Bar */}
       <TopBar />
-
-      {/* Side Panel */}
       <SidePanel />
 
-      {/* Map — dominant 70% of viewport with CTA overlay */}
       <div className="relative w-full h-[70vh] pt-24 pb-24">
         <MapaInteractivo fullScreen />
         <PrimaryCTA />
       </div>
 
-      {/* Content below map */}
       <section className="max-w-7xl mx-auto px-4 pt-32 pb-12">
         <div className="text-center mb-8">
           <h2 className="text-2xl md:text-3xl font-bold text-white mb-3">
@@ -536,7 +509,6 @@ export default function Home() {
           </p>
         </div>
 
-        {/* Quick links */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 max-w-3xl mx-auto">
           <Link href="/paises" className="bg-slate-800/50 rounded-xl p-3 text-center hover:bg-slate-800 transition-colors border border-slate-700/50">
             <Globe className="w-5 h-5 text-blue-400 mx-auto mb-1.5" />
@@ -556,14 +528,24 @@ export default function Home() {
           </Link>
         </div>
 
-        {/* Data Widgets */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-3xl mx-auto mt-8">
           <OilPriceWidget />
           <AirportDelaysWidget />
         </div>
-      </section>
 
-      {/* Footer — shared component from layout */}
+        <div className="max-w-3xl mx-auto mt-12 border-t border-slate-800 pt-8">
+          <h2 className="text-xl font-bold text-white mb-4">Mapa de Riesgos de Viaje con Inteligencia Artificial</h2>
+          <p className="text-slate-400 text-sm leading-relaxed mb-4">
+            <strong className="text-slate-300">Viaje con Inteligencia</strong> es la primera plataforma que combina el índice de riesgo MAEC español con análisis de Machine Learning para 107 países. Nuestro <strong className="text-slate-300">índice IRV</strong> (Indicador de Riesgo de Viaje) cruza 16 KPIs — desde seguridad y terrorismo hasta coste de vida e inflación — para darte una puntuación única y actualizada.
+          </p>
+          <p className="text-slate-400 text-sm leading-relaxed mb-4">
+            El motor de <strong className="text-slate-300">clustering ML</strong> agrupa destinos según tu perfil: presupuesto, tipo de viaje y preferencias. El <strong className="text-slate-300">Chat IA</strong> con Groq te da recomendaciones personalizadas en segundos. El sistema <strong className="text-slate-300">OSINT</strong> monitoriza 73+ fuentes en tiempo real: GDELT, USGS, GDACS, Reddit y RSS.
+          </p>
+          <p className="text-slate-400 text-sm leading-relaxed">
+            Herramientas adicionales: calculadora de coste de viaje ajustada al petróleo, rutas temáticas de España, alertas de cambio de riesgo MAEC, generador de reclamaciones para aerolíneas y dashboard con KPIs globales de 6 índices internacionales.
+          </p>
+        </div>
+      </section>
     </div>
   );
 }

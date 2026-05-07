@@ -62,5 +62,30 @@ export default async function Page({ params }: PageProps) {
     notFound();
   }
 
-  return <BlogPostPage post={post} />;
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: post.title,
+    description: post.excerpt || post.description || '',
+    author: { '@type': 'Person', name: post.author },
+    datePublished: post.date,
+    dateModified: post.date,
+    ...(post.image ? { image: post.image } : {}),
+    publisher: {
+      '@type': 'Organization',
+      name: 'Viaje con Inteligencia',
+      logo: { '@type': 'ImageObject', url: 'https://www.viajeinteligencia.com/logo.png' },
+    },
+    mainEntityOfPage: `https://www.viajeinteligencia.com/blog/${post.slug}`,
+  };
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+      />
+      <BlogPostPage post={post} />
+    </>
+  );
 }

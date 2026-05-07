@@ -6,6 +6,8 @@ import { getAllPosts, getCategories, getPostsPagination, PostMeta } from '@/lib/
 
 const POSTS_PER_PAGE = 10;
 
+export const revalidate = 3600;
+
 export const metadata: Metadata = {
   title: 'Blog OSINT | Análisis de Viajes y Seguridad - Viaje con Inteligencia',
   description: 'Análisis geopolíticos, guías de seguridad y tendencias de viaje basadas en datos OSINT e inteligencia artificial.',
