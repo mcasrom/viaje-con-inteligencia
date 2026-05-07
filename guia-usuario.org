@@ -1,0 +1,139 @@
+#+TITLE: Viaje con Inteligencia — Guía del Usuario
+#+SUBTITLE: Todo lo que puedes hacer como viajero inteligente
+#+AUTHOR: Viaje con Inteligencia
+#+DATE: 2026-05-07
+#+LANGUAGE: es
+#+OPTIONS: toc:nil num:nil
+#+LATEX_HEADER: \usepackage[margin=2.5cm]{geometry}
+#+LATEX_HEADER: \usepackage{hyperref}
+#+LATEX_HEADER: \definecolor{brandblue}{HTML}{3B82F6}
+#+PDF_TITLE: Viaje con Inteligencia - Guia del Usuario
+
+* ¿Qué es Viaje con Inteligencia?
+
+Una plataforma que combina datos de riesgo oficial (MAEC), inteligencia OSINT
+(reddit, GDELT, USGS, RSS), analisis de costes y algoritmos propios para que
+tomes decisiones de viaje informadas.
+
+No es un blog. No es una agencia. Es un *sistema de decision*.
+
+* Funcionalidades Principales
+
+** 🌍 Mapa de Riesgo Interactivo
+- Mapa mundial con niveles de riesgo MAEC actualizados automaticamente
+- 5 niveles: Sin riesgo → Riesgo muy alto
+- Capas adicionales: terremotos (USGS 24h), conflictos activos, alertas sanitarias
+- Click en cualquier pais para ver analisis detallado
+
+** 💰 Calculadora de Coste de Viaje
+- Coste diario estimado para 107 paises
+- Incluye alojamiento, comida, transporte, actividades
+- Ajustado por presupuesto (bajo, medio, alto)
+- Algoritmo TCI (Travel Cost Index) que incorpora precio del petroleo y conflictos
+
+** 🤖 Chat IA de Viajes
+- Asistente entrenado con datos de seguridad, costes y recomendaciones
+- Planifica itinerarios personalizados
+- Responde preguntas sobre visados, seguros, clima
+- Disponible en /ai/chat
+
+** 🎯 /decidir — ¿A dónde voy?
+- Modo Internacional: 107 paises con datos de riesgo, coste, clima
+- Modo España: 20 regiones con turismo, costes locales, mejor epoca
+- Filtros por presupuesto, tipo de viaje, duracion
+- Recomendaciones basadas en clustering K-Means
+
+** 📊 Inteligencia en Vivo (/osint)
+- Incidentes activos detectados automaticamente
+- Terrorismo, conflictos, cierres aereos, desastres, huelgas, alertas sanitarias
+- 3 niveles de informacion por incidente:
+  1. Recomendacion automatica del sistema
+  2. Nota del analista (criterio experto humano)
+  3. Valoracion de la comunidad (estrellas 1-5)
+- Actualizado cada 6 horas automaticamente
+
+** 📝 Blog OSINT (60+ articulos)
+- Guías por pais (¿Es seguro viajar a Japon?)
+- Analisis de costes y presupuestos
+- Derechos del viajero en la UE
+- Seguros de viaje comparados
+- Visados y documentacion
+- Busqueda y filtros por categoria
+- Valoraciones con estrellas
+
+** 🔄 Comparador de Paises
+- Compara 2 paises lado a lado
+- Riesgo, coste, clima, idioma, distancia
+- Indicadores visuales con barras de progreso
+
+** ⚠️ Sistema de Alertas
+- Alertas de cambio de riesgo (via Telegram)
+- Newsletter semanal con briefing
+- Deteccion automatica de incidentes relevantes
+
+** 🗺️ Rutas Tematicas
+- Rutas por Espana generadas con IA
+- Recomendaciones de destinos similares
+- Basado en preferencias (playa, cultural, naturaleza)
+
+* Indicadores Propios
+
+** IRV — Índice de Riesgo de Viaje
+Calculado a partir de:
+- Nivel MAEC (peso 40%)
+- Estabilidad geopolitica (20%)
+- Infraestructura sanitaria (15%)
+- Calidad de transporte (10%)
+- Idioma/barreras culturales (10%)
+- Saturacion turistica (5%)
+
+Escala: 0-100 (100 = maximo riesgo)
+
+** TCI — Travel Cost Index
+Coste total del viaje ajustado por:
+- Precio del petroleo (impacta vuelos)
+- Cierres de espacio aereo (desvios)
+- IPC del pais destino
+- Estacion del ano
+
+** IST — Índice de Saturacion Turistica
+Mide la presion turistica de un destino:
+- Llegadas internacionales
+- Pernoctaciones
+- Estancia media
+- Ratio turistas/poblacion local
+
+* Fuentes de Datos
+
+| Fuente | Tipo | Frecuencia |
+|--------+------+------------|
+| MAEC | Riesgo oficial | Diario |
+| USGS | Terremotos | Tiempo real |
+| GDACS | Desastres naturales | 24h |
+| GDELT | Noticias globales | Continuo |
+| Reddit | Experiencias viajeros | 6h |
+| RSS (BBC, AP, Reuters, etc) | Noticias internacionales | 6h |
+| Yahoo Finance | Precio petroleo | Diario |
+| INE/UNWTO | Estadisticas turismo | Mensual |
+
+* Valoraciones y Comunidad
+
+Cada incidente y articulo puede valorarse con 1-5 estrellas:
+- ⭐ = No me fue util
+- ⭐⭐⭐ = Informacion basica
+- ⭐⭐⭐⭐⭐ = Me ayudo a tomar una decision
+
+Las valoraciones mejoran las recomendaciones para todos los usuarios.
+
+* Acceder a la Plataforma
+
+URL: https://www.viajeinteligencia.com
+
+No requiere registro para usar las herramientas publicas.
+Registro gratuito para: guardar favoritos, recibir alertas, newsletter.
+
+* Contacto
+
+- Telegram: Canal de alertas
+- Email: info@viajeinteligencia.com
+- Newsletter: Suscripcion en la web

@@ -1,0 +1,219 @@
+#+TITLE: Viaje con Inteligencia — Guía del Gestor
+#+SUBTITLE: Como administrar y mantener la plataforma
+#+AUTHOR: Viaje con Inteligencia
+#+DATE: 2026-05-07
+#+LANGUAGE: es
+#+OPTIONS: toc:nil num:nil
+#+LATEX_HEADER: \usepackage[margin=2.5cm]{geometry}
+#+PDF_TITLE: Viaje con Inteligencia - Guia del Gestor
+
+* Arquitectura del Sistema
+
+** Stack Tecnologico
+- Frontend: Next.js 16 + App Router + TypeScript
+- UI: Tailwind CSS + Lucide icons + ReactMarkdown
+- AI: Groq API (llama-3.1-8b-instant gratuito, llama-3.3-70b-versatile premium)
+- Base de datos: Supabase (PostgreSQL + Auth + RLS)
+- Email: Resend (3.000 emails/mes gratis)
+- Deploy: Vercel (Hobby plan)
+- Bot: Telegram
+
+** Estructura de Archivos Clave
+#+BEGIN_SRC text
+src/
+├── app/
+│   ├── api/cron/master/route.ts    ← CRON UNICO (todos los jobs)
+│   ├── api/incidents/route.ts       ← API publica de incidentes
+│   ├── api/data-ratings/route.ts    ← API de valoraciones
+│   ├── api/admin/incidents/         ← Notas de analista
+│   ├── blog/                        ← Blog con 60+ posts
+│   ├── osint/                       ← Pagina publica de incidentes
+│   ├── decidir/                     ← Selector de destinos
+│   └── admin/                       ← Dashboard admin
+├── lib/
+│   ├── incident-detector.ts         ← Motor de deteccion de incidentes
+│   ├── osint-sensor.ts              ← Recolector de señales OSINT
+│   ├── newsletter-generator.ts      ← Generador de newsletter
+│   └── posts.ts                     ← CMS del blog (markdown)
+├── data/
+│   ├── paises.ts                    ← 107 paises con riesgo MAEC
+│   └── clustering.ts                ← K-Means, atributos, datos INE
+└── content/posts/                   ← 60 articulos en markdown
+#+END_SRC
+
+* Cron Master (UNICO permitido en Hobby)
+
+** Horario: 06:00 UTC diario (Vercel Cron)
+
+** Fases de ejecucion (94s promedio):
+
+#+BEGIN_SRC text
+Fase 1 (paralelo):
+├─ MAEC scrape (90s timeout) — 26 paises prioritarios
+├─ Airspace OSINT (30s) — cierres espacio aereo
+└─ Oil price (15s) — Yahoo Finance
+
+Fase 2 (depende de Fase 1):
+├─ Risk alerts check (30s) — cambios de riesgo MAEC
+└─ Flight costs / TCI (60s) — 107 paises
+
+Fase 3:
+├─ News sentiment (90s) — OSINT sensor (73 fuentes → 5-20 señales)
+└─ Incident detection (15s) — agrupa señales → incidentes
+
+Fase 4:
+├─ Daily digest (30s) — resumen Telegram + email
+└─ Weekly digest (30s, solo lunes) — newsletter semanal
+#+END_SRC
+
+** Comando de prueba:
+#+BEGIN_SRC bash
+curl -s -H "Authorization: Bearer $CRON_SECRET" \
+  "https://www.viajeinteligencia.com/api/cron/master"
+#+END_SRC
+
+* Gestion de Incidentes
+
+** Flujo automatico
+1. OSINT sensor recolecta señales de 5 fuentes
+2. Clasificacion por keywords (GDELT/RSS) o Groq (Reddit)
+3. Detector agrupa 2+ señales del mismo tipo+ubicacion = incidente
+4. Se crea incidente con recomendacion automatica
+5. Expira automaticamente segun tipo (12h-168h)
+
+** Añadir nota de analista
+
+Via panel admin (recomendado):
+#+BEGIN_SRC text
+1. Ir a /admin/incidents
+2. Click "Añadir nota de analista" en el incidente
+3. Escribir criterio experto
+4. Guardar → aparece en /osint para usuarios
+#+END_SRC
+
+Via API (rapido):
+#+BEGIN_SRC bash
+# Añadir nota
+curl -X POST https://www.viajeinteligencia.com/api/admin/incidents/123/note \
+  -H "Content-Type: application/json" \
+  -d '{"note":"No afecta vuelos internacionales"}'
+
+# Eliminar nota
+curl -X DELETE https://www.viajeinteligencia.com/api/admin/incidents/123/note
+#+END_SRC
+
+** Tipos de incidentes detectados
+
+| Tipo | Expiracion | Deteccion |
+|------+------------+-----------|
+| terrorism | 72h | Keywords: terror, bomb, shooting, attack |
+| conflict | 48h | Keywords: conflict, war, military |
+| flight_disruption | 24h | Keywords: flight, cancel, airline, delay, strike |
+| natural_disaster | 36h | Keywords: earthquake, flood, hurricane |
+| health_outbreak | 168h | Keywords: outbreak, disease, epidemic |
+| protest | 12h | Keywords: protest, strike, riot |
+| airspace_closure | 24h | Keywords: airspace, no-fly |
+| travel_advisory | 168h | Keywords: advisory, warning, alert |
+| security_threat | 72h | Keywords: robbery, attacked, danger |
+| infrastructure | 168h | Keywords: road, bridge, power |
+
+* Blog — Gestion de Contenido
+
+** Estructura de un post (Markdown + Frontmatter)
+#+BEGIN_SRC markdown
+---
+title: "¿Es SEGURO viajar a JAPON en 2026?"
+slug: "es-seguro-viajar-japon"
+date: "2026-04-21"
+author: "M. Castillo"
+category: "Destinos"
+readTime: "11 min"
+image: "https://images.unsplash.com/photo-..."
+keywords: "japon seguridad, riesgo japon 2026"
+tags: ["Analisis"]
+excerpt: "Analisis completo de seguridad en Japon..."
+---
+
+# Contenido en Markdown...
+#+END_SRC
+
+** Añadir nuevo post
+1. Crear archivo en `content/posts/mi-post.md`
+2. Seguir estructura de frontmatter
+3. Push a main → deploy automatico → pagina generada
+
+** Categorias actuales: Destinos, Seguridad, Costes, Derechos, Seguros, Tecnologia
+
+* Variables de Entorno
+
+#+BEGIN_SRC text
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_ANON_KEY=
+SUPABASE_SERVICE_ROLE_KEY=
+GROQ_API_KEY=
+TELEGRAM_BOT_TOKEN=
+TELEGRAM_CHANNEL_ID=
+RESEND_API_KEY=
+CRON_SECRET=
+FLIGHTLABS_API_KEY= (opcional)
+FLIGHTSTATS_API_KEY= (opcional)
+#+END_SRC
+
+* Base de Datos — Tablas Principales
+
+| Tabla | Funcion | RLS |
+|-------+---------+-----|
+| incidents | Incidentes activos | Solo lectura publica |
+| incident_ratings | Valoraciones de incidentes | Lectura + escritura |
+| data_ratings | Valoraciones genericas | Lectura + escritura |
+| osint_signals | Señales raw del sensor | Solo lectura |
+| post_views | Contador de visitas blog | Lectura + escritura |
+| post_ratings | Valoraciones de posts | Lectura + escritura |
+| maec_risk_history | Historial riesgo paises | Solo escritura cron |
+| risk_alerts | Alertas de cambio riesgo | Solo escritura cron |
+| oil_prices_history | Historial petroleo | Solo escritura cron |
+| flight_tci_cache | Cache TCI vuelos | Solo escritura cron |
+| airspace_closures | Cierres espacio aereo | Solo lectura |
+| affected_routes | Rutas afectadas | Solo escritura cron |
+| newsletter_subscribers | Suscriptores | Escritura publica |
+| bot_stats | Estadisticas Telegram | Solo escritura |
+
+* Comandos Utiles
+
+#+BEGIN_SRC bash
+# Deploy (push a main)
+git add -A && git commit -m "mensaje" && git push
+
+# Build local
+npm run build
+
+# Dev server
+npm run dev
+
+# Linting
+npm run lint
+
+# Check completo
+npm run check
+
+# Probar cron
+curl -s -H "Authorization: Bearer $CRON_SECRET" \
+  "https://www.viajeinteligencia.com/api/cron/master" | python3 -m json.tool
+#+END_SRC
+
+* Solucion de Problemas
+
+** Cron tarda mas de 90s
+- Reducir timeout de news_sentiment (actual 90s)
+- Limitar posts procesados (actual 20 max)
+- Verificar que MAEC no scrapea 107 paises (solo 26)
+
+** Incidentes no se crean
+- Verificar que hay señales en osint_signals
+- Revisar logs de detectAndCreateIncidents()
+- Comprobar que la tabla incidents existe
+
+** Newsletter no se envia
+- Verificar RESEND_API_KEY
+- Comprobar que hay suscriptores confirmados
+- El weekly digest solo funciona los lunes
