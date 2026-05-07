@@ -16,10 +16,11 @@ interface Post {
   category: string;
   readTime: string;
   image: string;
-  keywords: string;
+  keywords: string | string[];
   excerpt: string;
   content: string;
   tags?: string[];
+  description?: string;
 }
 
 function BlogPostRating({ slug }: { slug: string }) {

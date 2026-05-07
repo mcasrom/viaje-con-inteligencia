@@ -96,12 +96,17 @@ export default function MapaInteractivo({ fullScreen = false }: { fullScreen?: b
   useEffect(() => {
     setMounted(true);
     import('leaflet').then((L) => {
-      delete (L as any).Default.prototype._initMapDefaults;
-      (L as any).Default.mergeOptions({
-        iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
-        iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
-        shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
-      });
+      try {
+        if ((L as any).Icon?.Default?.prototype) {
+          (L as any).Icon.Default.mergeOptions({
+            iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
+            iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+            shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+          });
+        }
+      } catch {
+        // Leaflet icon initialization is optional
+      }
     });
   }, []);
 
