@@ -4,7 +4,7 @@ date: "2026-04-27"
 excerpt: "Guía práctica basada en datos reales para evitar comisiones ocultas al pagar en el extranjero. Comparativa entre pagar en euros o moneda local en Reino Unido, Turquía, Noruega y Australia con estrategias optimizadas."
 image: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=800&q=80"
 tags: ["viajes", "finanzas viajeras", "tipo de cambio", "tarjetas", "Wise", "Revolut", "ahorro en viajes", "turismo inteligente", "pagos internacionales", "economía personal"]
-category: "finanzas-viajeras"
+category: "Finanzas"
 readTime: "10 min"
 ---
 

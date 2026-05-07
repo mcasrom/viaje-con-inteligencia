@@ -4,7 +4,7 @@ date: "2026-04-27"
 excerpt: "Descubrimiento único: Nuestro canal de Telegram combina inteligencia artificial y machine learning con datos oficiales del MAEC, INE y fuentes en tiempo real para ofrecerte recomendaciones personalizadas y alertas que ningún otro servicio proporciona."
 image: "https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=800&q=80"
 tags: ["Telegram", "IA", "Machine Learning", "Viajes", "Inteligencia Artificial", "MAEC", "INE", "España", "Turismo", "Enoturismo", "Rutas Temáticas"]
-category: "tecnologia"
+category: "Tecnología"
 readTime: "12 min"
 ---
 

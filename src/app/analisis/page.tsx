@@ -7,6 +7,17 @@ export const metadata: Metadata = {
   alternates: {
     canonical: 'https://www.viajeinteligencia.com/analisis',
   },
+  openGraph: {
+    title: 'Análisis de Petróleo y Vuelos | Impacto en Viajes - Viaje con Inteligencia',
+    description: 'Análisis del precio del petróleo y su impacto en vuelos. Predicciones y tendencias para planificar viajes inteligentes.',
+    url: 'https://www.viajeinteligencia.com/analisis',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Análisis de Petróleo y Vuelos | Impacto en Viajes - Viaje con Inteligencia',
+    description: 'Análisis del precio del petróleo y su impacto en vuelos. Predicciones y tendencias para planificar viajes inteligentes.',
+  },
 };
 
 export default function AnalisisPage() {

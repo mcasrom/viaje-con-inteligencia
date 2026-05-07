@@ -5,7 +5,7 @@ date: '2026-04-27'
 author: 'Viaje con Inteligencia'
 image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200&q=80'
 tags: ['españa', 'rutas', 'ia', 'viajes', 'inteligencia artificial', 'turismo', 'escapada', 'molinos', 'faros', 'murcia']
-category: 'Tecnología'
+category: "Tecnología"
 featured: true
 ---
 

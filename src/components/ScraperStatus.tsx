@@ -55,12 +55,7 @@ export default function ScraperStatusDisplay({ compact = false }: ScraperStatusD
   };
 
   if (loading) {
-    return (
-      <div className="flex items-center gap-2 text-slate-400">
-        <RefreshCw className="w-4 h-4 animate-spin" />
-        <span className="text-sm">Verificando...</span>
-      </div>
-    );
+    return <div className="h-5" />;
   }
 
   const today = currentTime.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit' });

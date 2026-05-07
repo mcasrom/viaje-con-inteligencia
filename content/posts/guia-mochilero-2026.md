@@ -5,7 +5,7 @@ image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=1200&h=630&f
 date: "2026-04-18"
 author: "Viaje con Inteligencia"
 tags: ["mochilero", "equipaje", "viaje", "consejos", "backpacking", "essentials"]
-category: "Consejos de Viaje"
+category: "Consejos"
 ---
 
 # Guía Completa: Qué Llevar en la Mochila para Viajar en 2026
