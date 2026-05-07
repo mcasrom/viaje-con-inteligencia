@@ -1,61 +1,144 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { chatWithAI } from '@/lib/groq-ai';
 import { checkPremium } from '@/lib/premium-check';
+import { supabaseAdmin } from '@/lib/supabase-admin';
+import { createSupabaseServerClient } from '@/lib/supabase-server';
 
 const PREMIUM_MODEL = 'llama-3.3-70b-versatile';
+const FREE_MODEL = 'llama-3.1-8b-instant';
+const FREE_DAILY_LIMIT = 5;
 
-const RATE_LIMIT = 10;
-const RATE_WINDOW_MS = 60 * 1000;
+async function getDailyUsage(userId: string): Promise<number> {
+  const today = new Date().toISOString().split('T')[0];
+  const { data } = await supabaseAdmin
+    .from('chat_usage')
+    .select('free_count')
+    .eq('user_id', userId)
+    .eq('date', today)
+    .single();
 
-const requestCounts = new Map<string, { count: number; resetAt: number }>();
-
-function getIp(request: Request): string {
-  return (
-    request.headers.get('x-forwarded-for')?.split(',')[0] ||
-    request.headers.get('x-real-ip') ||
-    'unknown'
-  );
+  return data?.free_count || 0;
 }
 
-function checkRateLimit(ip: string): { allowed: boolean; remaining: number; resetAt: number } {
-  const now = Date.now();
-  const entry = requestCounts.get(ip);
+async function incrementDailyUsage(userId: string, model: string): Promise<void> {
+  const today = new Date().toISOString().split('T')[0];
+  const field = model === PREMIUM_MODEL ? 'premium_count' : 'free_count';
 
-  if (!entry || now > entry.resetAt) {
-    requestCounts.set(ip, { count: 1, resetAt: now + RATE_WINDOW_MS });
-    return { allowed: true, remaining: RATE_LIMIT - 1, resetAt: now + RATE_WINDOW_MS };
-  }
+  await supabaseAdmin.from('chat_usage').upsert({
+    user_id: userId,
+    date: today,
+    [field]: 1,
+  }, {
+    onConflict: 'user_id,date',
+  });
 
-  entry.count += 1;
+  // Increment using raw SQL since upsert doesn't support increment
+  // We do a read + write
+  const { data } = await supabaseAdmin
+    .from('chat_usage')
+    .select('free_count, premium_count')
+    .eq('user_id', userId)
+    .eq('date', today)
+    .single();
 
-  if (entry.count > RATE_LIMIT) {
-    return { allowed: false, remaining: 0, resetAt: entry.resetAt };
-  }
+  const currentFree = data?.free_count || 0;
+  const currentPremium = data?.premium_count || 0;
 
-  return { allowed: true, remaining: RATE_LIMIT - entry.count, resetAt: entry.resetAt };
+  await supabaseAdmin.from('chat_usage').upsert({
+    user_id: userId,
+    date: today,
+    free_count: field === 'free_count' ? currentFree + 1 : currentFree,
+    premium_count: field === 'premium_count' ? currentPremium + 1 : currentPremium,
+  }, { onConflict: 'user_id,date' });
 }
 
-export async function POST(request: Request) {
+async function saveConversation(conversationId: number | null, userId: string, role: string, content: string, model: string): Promise<number> {
+  let convId = conversationId;
+
+  if (!convId) {
+    const { data: conv } = await supabaseAdmin.from('chat_conversations').insert({
+      user_id: userId,
+      model,
+      title: content.substring(0, 80),
+    }).select('id').single();
+
+    convId = conv?.id;
+    if (!convId) throw new Error('Failed to create conversation');
+  }
+
+  await supabaseAdmin.from('chat_messages').insert({
+    conversation_id: convId,
+    role,
+    content,
+    model: role === 'assistant' ? model : null,
+  });
+
+  await supabaseAdmin.from('chat_conversations').update({
+    message_count: supabaseAdmin.rpc('increment', { x: 1 }) as any,
+    updated_at: new Date().toISOString(),
+  }).eq('id', convId);
+
+  return convId;
+}
+
+async function getConversationHistory(conversationId: number): Promise<{ role: string; content: string }[]> {
+  const { data } = await supabaseAdmin
+    .from('chat_messages')
+    .select('role, content')
+    .eq('conversation_id', conversationId)
+    .order('created_at', { ascending: true });
+
+  return data || [];
+}
+
+async function getUserContext(userId: string): Promise<string[]> {
+  const contexts: string[] = [];
+
+  const { data: favorites } = await supabaseAdmin
+    .from('favorites')
+    .select('country_code')
+    .eq('user_id', userId);
+
+  if (favorites && favorites.length > 0) {
+    contexts.push(`El usuario tiene ${favorites.length} paises favoritos: ${favorites.map(f => f.country_code.toUpperCase()).join(', ')}`);
+  }
+
+  const { data: trips } = await supabaseAdmin
+    .from('trips')
+    .select('*')
+    .eq('user_id', userId)
+    .limit(3);
+
+  if (trips && trips.length > 0) {
+    contexts.push(`Viajes guardados: ${trips.map((t: any) => t.destination || t.country || 'destino desconocido').join(', ')}`);
+  }
+
+  const { data: profile } = await supabaseAdmin
+    .from('profiles')
+    .select('is_premium, subscription_status')
+    .eq('id', userId)
+    .single();
+
+  if (profile?.is_premium || profile?.subscription_status === 'active') {
+    contexts.push('Usuario Premium - tiene acceso a modelo 70b y todas las funciones');
+  }
+
+  return contexts;
+}
+
+export async function POST(request: NextRequest) {
   try {
-    const ip = getIp(request);
-    const limit = checkRateLimit(ip);
+    const supabase = await createSupabaseServerClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    const userId = user?.id;
 
-    if (!limit.allowed) {
-      const waitSec = Math.ceil((limit.resetAt - Date.now()) / 1000);
-      return NextResponse.json({
-        error: 'Rate limit exceeded',
-        message: `Demasiadas solicitudes. Espera ${waitSec} segundos antes de intentar de nuevo.`,
-        retryAfter: waitSec,
-      }, { status: 429, headers: { 'Retry-After': String(waitSec) } });
-    }
-
-    const { message, country, history, model } = await request.json();
+    const { message, country, conversationId, model } = await request.json();
 
     if (!message) {
       return NextResponse.json({ error: 'Message is required' }, { status: 400 });
     }
 
-    const requestedModel = model || 'llama-3.1-8b-instant';
+    const requestedModel = model || FREE_MODEL;
     const isPremiumModel = requestedModel === PREMIUM_MODEL;
 
     if (isPremiumModel) {
@@ -64,20 +147,62 @@ export async function POST(request: Request) {
         return NextResponse.json({
           error: 'Premium required',
           requires: 'premium',
-          message: 'El modelo 70b requiere suscripción Premium. Actualiza tu plan para desbloquearlo.',
+          message: 'El modelo 70b requiere suscripcion Premium. Actualiza tu plan para desbloquearlo.',
         }, { status: 403 });
       }
     }
 
-    const response = await chatWithAI(message, {
+    // Server-side daily rate limit for free users
+    if (!isPremiumModel && userId) {
+      const used = await getDailyUsage(userId);
+      if (used >= FREE_DAILY_LIMIT) {
+        return NextResponse.json({
+          error: 'Daily limit exceeded',
+          message: `Has alcanzado el limite de ${FREE_DAILY_LIMIT} mensajes gratis hoy. Actualiza a Premium para chat ilimitado.`,
+        }, { status: 429 });
+      }
+    }
+
+    let history: { role: string; content: string }[] = [];
+
+    // Load existing conversation history
+    if (conversationId) {
+      history = await getConversationHistory(conversationId);
+    }
+
+    // Build personalized context for the system
+    let systemContext = '';
+    if (userId) {
+      const contexts = await getUserContext(userId);
+      if (contexts.length > 0) {
+        systemContext = `\n\nContexto del usuario:\n${contexts.join('\n')}`;
+      }
+    }
+
+    const fullMessage = systemContext ? `${message}\n\n[Contexto del usuario: ${systemContext}]` : message;
+
+    const response = await chatWithAI(fullMessage, {
       country,
-      previousMessages: history,
+      previousMessages: history.map(m => m.content).slice(-10),
       model: requestedModel,
     });
+
+    let newConversationId = conversationId;
+
+    // Save to Supabase if user is authenticated
+    if (userId) {
+      newConversationId = await saveConversation(conversationId, userId, 'user', message, requestedModel);
+      await saveConversation(newConversationId, userId, 'assistant', response, requestedModel);
+
+      if (!isPremiumModel) {
+        await incrementDailyUsage(userId, requestedModel);
+      }
+    }
 
     return NextResponse.json({
       response,
       model: requestedModel,
+      conversationId: newConversationId,
       timestamp: new Date().toISOString(),
     });
   } catch (error) {
@@ -86,5 +211,48 @@ export async function POST(request: Request) {
       { error: 'Failed to process message' },
       { status: 500 }
     );
+  }
+}
+
+// GET /api/ai/chat?conversations=true → list user conversations
+// GET /api/ai/chat?conversationId=123 → get conversation messages
+export async function GET(request: NextRequest) {
+  try {
+    const supabase = await createSupabaseServerClient();
+    const { data: { user } } = await supabase.auth.getUser();
+
+    if (!user) {
+      return NextResponse.json({ conversations: [] });
+    }
+
+    const { searchParams } = new URL(request.url);
+    const getConversations = searchParams.get('conversations') === 'true';
+    const getConversationId = searchParams.get('conversationId');
+
+    if (getConversationId) {
+      const { data: messages } = await supabaseAdmin
+        .from('chat_messages')
+        .select('role, content, created_at')
+        .eq('conversation_id', parseInt(getConversationId))
+        .order('created_at', { ascending: true });
+
+      return NextResponse.json({ messages: messages || [] });
+    }
+
+    if (getConversations) {
+      const { data: conversations } = await supabaseAdmin
+        .from('chat_conversations')
+        .select('id, title, model, message_count, created_at, updated_at')
+        .eq('user_id', user.id)
+        .order('updated_at', { ascending: false })
+        .limit(30);
+
+      return NextResponse.json({ conversations: conversations || [] });
+    }
+
+    return NextResponse.json({ conversations: [] });
+  } catch (err: any) {
+    console.error('Chat GET error:', err);
+    return NextResponse.json({ error: err.message }, { status: 500 });
   }
 }

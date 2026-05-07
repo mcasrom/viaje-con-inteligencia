@@ -41,6 +41,17 @@ async function runMaecScrape(): Promise<any> {
 // ===== RISK ALERTS CHECK =====
 async function runRiskCheck(): Promise<any> {
   try {
+    // Save daily MAEC risk snapshot for ALL countries
+    const today = new Date().toISOString().split('T')[0];
+    for (const [code, pais] of Object.entries(paisesData)) {
+      if (code === 'cu') continue;
+      await supabase.from('maec_risk_history').upsert({
+        country_code: code,
+        nivel_riesgo: pais.nivelRiesgo,
+        date: today,
+      }, { onConflict: 'country_code,date' });
+    }
+
     const { data: latest } = await supabase
       .from('maec_risk_history')
       .select('country_code, nivel_riesgo')
