@@ -3,7 +3,6 @@ import type { NextRequest } from 'next/server';
 import { createServerClient } from '@supabase/ssr';
 
 const BLOCKED_COUNTRIES = ['cu'];
-const ADMIN_PASSWORD = 'admin';
 
 export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
@@ -20,7 +19,7 @@ export async function middleware(request: NextRequest) {
   const IS_DEV = process.env.NODE_ENV !== 'production';
   if (!IS_DEV && pathname.startsWith('/admin') && pathname !== '/admin/login') {
     const cookie = request.cookies.get('admin_session')?.value;
-    if (cookie !== ADMIN_PASSWORD) {
+    if (cookie !== '1') {
       const loginUrl = new URL('/admin/login', request.url);
       loginUrl.searchParams.set('from', pathname);
       return NextResponse.redirect(loginUrl);
@@ -30,9 +29,9 @@ export async function middleware(request: NextRequest) {
   // Dev: auto-set session cookie if visiting admin
   if (IS_DEV && pathname.startsWith('/admin')) {
     const cookie = request.cookies.get('admin_session')?.value;
-    if (!cookie || cookie === 'undefined') {
+    if (!cookie) {
       const response = NextResponse.next({ request });
-      response.cookies.set('admin_session', 'dev', {
+      response.cookies.set('admin_session', '1', {
         httpOnly: true,
         secure: false,
         sameSite: 'lax',

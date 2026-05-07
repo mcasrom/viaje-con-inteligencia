@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, RefreshCw, AlertTriangle, Shield, Cloud, HeartPulse, Truck, Globe, MapPin, Clock } from 'lucide-react';
 import DataRating from '@/components/DataRating';
+import AirportDelaysWidget from '@/components/AirportDelaysWidget';
 
 const TYPE_CONFIG: Record<string, { label: string; icon: any; color: string; bg: string; border: string }> = {
   terrorism: { label: 'Terrorismo', icon: AlertTriangle, color: 'text-red-400', bg: 'bg-red-500/10', border: 'border-red-500/20' },
@@ -168,6 +169,11 @@ export default function OsintFeed() {
       </header>
 
       <main className="max-w-4xl mx-auto px-6 py-8">
+        {/* Airport Delays Widget */}
+        <div className="mb-8">
+          <AirportDelaysWidget />
+        </div>
+
         {loading ? (
           <div className="flex items-center justify-center py-20">
             <RefreshCw className="w-6 h-6 animate-spin text-blue-400" />

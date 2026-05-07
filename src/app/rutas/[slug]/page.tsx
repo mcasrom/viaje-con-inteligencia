@@ -3,7 +3,7 @@
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { thematicRoutes, ThemeRoute, ThematicRoute } from '@/data/rutas-espanas';
-import { ArrowLeft, Car, Clock, Shield, Star, MapPin, TrendingUp, AlertTriangle, Globe, BarChart3, Sparkles, DollarSign, Navigation } from 'lucide-react';
+import { ArrowLeft, Car, Clock, Shield, Star, MapPin, TrendingUp, AlertTriangle, Globe, BarChart3, Sparkles, DollarSign, Navigation, Download } from 'lucide-react';
 
 export default function RouteDetailPage() {
   const params = useParams();
@@ -21,6 +21,10 @@ export default function RouteDetailPage() {
     );
   }
 
+  const handleExportPDF = () => {
+    window.print();
+  };
+
   const difficultyColors: Record<string, string> = {
     facil: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30',
     moderado: 'bg-amber-500/20 text-amber-400 border-amber-500/30',
@@ -37,9 +41,18 @@ export default function RouteDetailPage() {
               <ArrowLeft className="w-4 h-4" />
               <span className="hidden sm:inline">Volver a Rutas</span>
             </Link>
-            <div className="flex items-center gap-2 px-3 py-1.5 bg-emerald-500/15 rounded-full border border-emerald-500/30">
-              <MapPin className="w-4 h-4 text-emerald-400" />
-              <span className="text-emerald-300 text-sm font-semibold">Detalle de Ruta</span>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={handleExportPDF}
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-500/15 text-blue-400 rounded-full border border-blue-500/30 text-sm font-semibold hover:bg-blue-500/25 transition-colors print:hidden"
+              >
+                <Download className="w-4 h-4" />
+                <span className="hidden sm:inline">PDF</span>
+              </button>
+              <div className="flex items-center gap-2 px-3 py-1.5 bg-emerald-500/15 rounded-full border border-emerald-500/30">
+                <MapPin className="w-4 h-4 text-emerald-400" />
+                <span className="text-emerald-300 text-sm font-semibold">Detalle de Ruta</span>
+              </div>
             </div>
           </div>
           <div className="flex items-center gap-1 pb-2 overflow-x-auto">
@@ -107,10 +120,23 @@ export default function RouteDetailPage() {
               <Star className="w-5 h-5 text-yellow-400 mb-2" />
               <div className="text-white font-bold">{route.mlFeatures.popularityScore}/10</div>
               <div className="text-slate-500 text-xs">Popularidad</div>
-            </div>
-          </div>
         </div>
       </div>
+    </div>
+
+    <style jsx global>{`
+      @media print {
+        body { background: white !important; color: black !important; }
+        .print\\:hidden { display: none !important; }
+        header { position: static !important; }
+        div { border-color: #e2e8f0 !important; }
+        .bg-slate-900, .bg-slate-800\\/50 { background: white !important; }
+        .text-white, .text-slate-300, .text-slate-400 { color: #1e293b !important; }
+        .text-blue-400, .text-emerald-400, .text-amber-400, .text-red-400, .text-yellow-400 { color: #2563eb !important; }
+        .border-slate-700, .border-slate-800 { border-color: #e2e8f0 !important; }
+      }
+    `}</style>
+  </div>
 
       {/* SEGMENTOS */}
       <div className="max-w-4xl mx-auto px-6 py-12">

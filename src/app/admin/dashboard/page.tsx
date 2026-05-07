@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Shield, Clock, Mail, Globe, Users, AlertTriangle, CheckCircle, XCircle, FileText, Database, MessageSquare, ExternalLink, RefreshCw, Play, Send, Radio, Bot, LogOut } from 'lucide-react';
+import { Shield, Clock, Mail, Globe, Users, AlertTriangle, CheckCircle, XCircle, FileText, Database, MessageSquare, ExternalLink, RefreshCw, Play, Send, Radio, Bot, LogOut, DollarSign } from 'lucide-react';
 
 export default function AdminDashboard() {
   const router = useRouter();
@@ -314,6 +314,29 @@ export default function AdminDashboard() {
           ) : (
             <p className="text-slate-500 text-sm">No hay historial de envíos</p>
           )}
+        </section>
+
+        {/* Stripe */}
+        <section className="bg-slate-800 rounded-2xl border border-slate-700 p-6">
+          <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+            <DollarSign className="w-5 h-5 text-green-400" />
+            Stripe — Pagos y Suscripciones
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div className="bg-slate-700 rounded-xl p-4">
+              <p className="text-slate-400 text-xs">Plan Mensual</p>
+              <p className="text-white font-mono text-sm mt-1">price_1TNvdo1yXjIoL1LjxAec6d2C</p>
+              <p className="text-green-400 text-xs mt-1">4.99€/mes</p>
+            </div>
+            <div className="bg-slate-700 rounded-xl p-4">
+              <p className="text-slate-400 text-xs">Plan Anual</p>
+              <p className="text-white font-mono text-sm mt-1">price_1TQ0Ng1yXjIoL1LjZTzKEfOF</p>
+              <p className="text-green-400 text-xs mt-1">19.99€/año</p>
+            </div>
+          </div>
+          <a href="/admin/stripe" className="inline-flex items-center gap-2 px-4 py-2 bg-green-600/20 border border-green-500/30 text-green-400 rounded-lg hover:bg-green-600/30 transition-colors text-sm font-medium">
+            Ver dashboard completo <ExternalLink className="w-4 h-4" />
+          </a>
         </section>
 
         {/* Social Media */}

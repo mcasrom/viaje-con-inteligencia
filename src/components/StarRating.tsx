@@ -25,21 +25,6 @@ export default function StarRating({ initialRating = 0, readonly = false, onRate
     if (readonly) return;
     setRating(value);
     onRate?.(value);
-    
-    if (onRate) {
-      setSubmitting(true);
-      try {
-        await fetch('/api/posts/rate', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ rating: value }),
-        });
-      } catch (e) {
-        console.error('Error submitting rating:', e);
-      } finally {
-        setSubmitting(false);
-      }
-    }
   };
 
   return (

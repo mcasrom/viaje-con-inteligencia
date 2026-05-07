@@ -1,0 +1,518 @@
+#+TITLE: Viaje con Inteligencia — Guia del Gestor
+#+SUBTITLE: Como administrar y mantener la plataforma
+#+AUTHOR: Viaje con Inteligencia
+#+DATE: 2026-05-07
+#+LANGUAGE: es
+#+OPTIONS: toc:nil num:nil
+#+LATEX_HEADER: \usepackage[margin=2.5cm]{geometry}
+#+PDF_TITLE: Viaje con Inteligencia - Guia del Gestor
+
+* Arquitectura del Sistema
+
+** Stack Tecnologico
+- Frontend: Next.js 16 + App Router + TypeScript
+- UI: Tailwind CSS + Lucide icons + ReactMarkdown
+- AI: Groq API (llama-3.1-8b-instant gratuito, llama-3.3-70b-versatile premium)
+- Base de datos: Supabase (PostgreSQL + Auth + RLS)
+- Email: Resend (3.000 emails/mes gratis)
+- Deploy: Vercel (Hobby plan)
+- Bot: Telegram
+
+** Diagrama de Arquitectura
+
+#+BEGIN_SRC plantuml :file assets/architecture.png :exports results
+@startuml
+skinparam backgroundColor #0F172A
+skinparam defaultFontSize 13
+
+title Arquitectura del Sistema
+
+actor Usuario as User
+actor Admin as Admin
+
+cloud "Vercel (Next.js 16)" as Vercel {
+  rectangle "App Router" as App {
+    [Mapa Riesgo] as Map
+    [Calculadora] as Calc
+    [Chat IA] as Chat
+    [Blog] as Blog
+    [Decidir] as Decide
+    [OSINT] as Osint
+    [Admin Panel] as AdminPanel
+  }
+  
+  rectangle "API Routes" as API {
+    [/api/cron/master] as Cron
+    [/api/incidents] as IncAPI
+    [/api/data-ratings] as RateAPI
+    [/api/ai/chat] as AiAPI
+    [/api/admin/incidents] as AdminAPI
+  }
+  
+  rectangle "Librerias" as Lib {
+    [osint-sensor.ts] as Sensor
+    [incident-detector.ts] as Detector
+    [newsletter-generator.ts] as NewsGen
+    [scraper/maec.ts] as MaecScraper
+  }
+}
+
+database "Supabase (PostgreSQL)" as DB {
+  [incidents] as IncTable
+  [osint_signals] as SigTable
+  [maec_risk_history] as MaecTable
+  [oil_prices_history] as OilTable
+  [flight_tci_cache] as TciTable
+  [newsletter_subscribers] as SubTable
+  [post_views/ratings] as BlogTable
+  [airspace_closures] as AirTable
+}
+
+package "Servicios externos" as Ext {
+  [MAEC\nWeb Scraping] as MAEC
+  [GDELT\nNoticias] as GDELT
+  [USGS\nTerremotos] as USGS
+  [Reddit RSS\nExperiencias] as Reddit
+  [Yahoo Finance\nPetroleo] as Oil
+  [Groq API\nClasificacion] as Groq
+  [Resend\nEmail] as Resend
+  [Telegram\nAlertas] as Telegram
+}
+
+User --> Map
+User --> Calc
+User --> Chat
+User --> Blog
+User --> Decide
+User --> Osint
+
+Admin --> AdminPanel
+AdminPanel --> AdminAPI
+
+Cron --> Sensor
+Sensor --> SigTable
+SigTable --> Detector
+Detector --> IncTable
+IncTable --> IncAPI
+IncAPI --> Osint
+
+Cron --> MaecScraper
+MaecScraper --> MaecTable
+MaecScraper --> Oil
+Cron --> OilTable
+OilTable --> TciTable
+
+Sensor --> GDELT
+Sensor --> USGS
+Sensor --> Reddit
+Sensor --> Groq
+
+NewsGen --> SubTable
+NewsGen --> Resend
+Resend --> User
+
+Telegram --> User
+
+@enduml
+#+END_SRC
+
+#+RESULTS:
+[[file:assets/architecture.png]]
+
+** Estructura de Archivos Clave
+
+| Capa | Archivos | Funcion |
+|------+----------+---------|
+| UI | `src/app/*/page.tsx` | Server pages con metadata |
+| Componentes | `src/app/*/*Client.tsx` | Client components con 'use client' |
+| API | `src/app/api/*/route.ts` | Endpoints REST |
+| Librerias | `src/lib/*.ts` | Logica de negocio |
+| Datos | `src/data/paises.ts` | 107 paises con riesgo MAEC |
+| ML | `src/data/clustering.ts` | K-Means, atributos, datos INE |
+| Contenido | `src/content/posts/*.md` | 60 articulos en markdown |
+| SQL | `sql/incidents.sql` | Migraciones de base de datos |
+
+* Cron Master (UNICO permitido en Hobby)
+
+** Horario: 06:00 UTC diario (Vercel Cron)
+
+#+BEGIN_SRC plantuml :file assets/cron-flow.png :exports results
+@startuml
+skinparam backgroundColor #0F172A
+skinparam defaultFontSize 12
+
+title Cron Master — Flujo de Ejecucion (~94s)
+
+start
+
+partition "Fase 1: Paralelo (0-90s)" {
+  :MAEC scrape (26 paises);\nnote right: 90s timeout
+  :Airspace OSINT (cierres);\nnote right: 30s timeout
+  :Oil price (Yahoo Finance);\nnote right: 15s timeout
+}
+
+partition "Fase 2: Dependencias (90-150s)" {
+  :Risk alerts check;\nnote right: Necesita datos MAEC\n30s timeout
+  :Flight costs / TCI (107 paises);\nnote right: Necesita precio petroleo\n60s timeout
+}
+
+partition "Fase 3: OSINT (150-240s)" {
+  :News sentiment (OSINT sensor);\nnote right: 73 fuentes → 5-20 señales\n90s timeout
+  :Incident detection;\nnote right: Agrupa señales → incidentes\n15s timeout
+}
+
+partition "Fase 4: Comunicacion (240-300s)" {
+  :Daily digest (Telegram + email);\nnote right: Resumen del dia\n30s timeout
+  :Weekly digest (solo lunes);\nnote right: Newsletter semanal\n30s timeout
+}
+
+stop
+
+@enduml
+#+END_SRC
+
+** Fases de ejecucion detalladas:
+
+| Fase | Tarea | Timeout | Dependencias | Resultado |
+|------+-------+---------+--------------+-----------|
+| 1 | MAEC scrape | 90s | Ninguna | 26 paises actualizados |
+| 1 | Airspace OSINT | 30s | Ninguna | Cierres espacio aereo |
+| 1 | Oil price | 15s | Ninguna | Precio Brent actual |
+| 2 | Risk alerts | 30s | MAEC data | Alertas de cambio riesgo |
+| 2 | Flight costs | 60s | Oil price | TCI para 107 paises |
+| 3 | News sentiment | 90s | None | Señales OSINT en DB |
+| 3 | Incident detection | 15s | OSINT signals | Incidentes agrupados |
+| 4 | Daily digest | 30s | Todos los anteriores | Resumen Telegram + email |
+| 4 | Weekly digest | 30s | Solo lunes | Newsletter semanal |
+
+** Comando de prueba:
+
+#+BEGIN_SRC bash
+curl -s -H "Authorization: Bearer $CRON_SECRET" \
+  "https://www.viajeinteligencia.com/api/cron/master"
+#+END_SRC
+
+* Gestion de Incidentes
+
+** Flujo automatico: de señal a incidente
+
+#+BEGIN_SRC plantuml :file assets/incident-pipeline.png :exports results
+@startuml
+skinparam backgroundColor #0F172A
+skinparam defaultFontSize 12
+
+title Pipeline: Señal → Incidente → Accion
+
+start
+
+:OSINT Sensor recolecta señales;\nnote right: Reddit, GDELT, USGS, RSS\nCada 6h
+
+partition "Clasificacion" {
+  :Keywords (GDELT/RSS);\nnote right: 0 coste API\n3 categorias principales
+  :Groq (Reddit);\nnote right: llama-3.1-8b-instant\nDetecta primera persona
+}
+
+partition "Agrupacion (incident-detector)" {
+  :Cluster por tipo + pais + fecha;\nnote right: Mismo tipo y ubicacion\nen 48h = mismo incidente
+  if (2+ señales?) then (si)
+    :Crear/Actualizar incidente;\nnote right: Incluye:\n- Recomendacion automatica\n- Severidad maxima\n- Fuentes combinadas
+  else (no)
+    :Señal se queda en DB;\nnote right: Puede agruparse mas tarde
+    stop
+  endif
+}
+
+partition "Expiracion automatica" {
+  :Expiracion segun tipo;\nnote right: Protest: 12h\nFlight: 24h\nHealth: 168h
+}
+
+partition "Nota del analista (manual)" {
+  :Admin añade nota experta;\nnote right: Via /admin/incidents\no API REST
+}
+
+partition "Visualizacion publica" {
+  :/osint muestra incidente;\nnote right: 3 capas:\n1. Recomendacion auto\n2. Nota analista\n3. Valoracion comunidad
+}
+
+stop
+
+@enduml
+#+END_SRC
+
+** Flujo automatico
+1. OSINT sensor recolecta señales de 5 fuentes
+2. Clasificacion por keywords (GDELT/RSS) o Groq (Reddit)
+3. Detector agrupa 2+ señales del mismo tipo+ubicacion = incidente
+4. Se crea incidente con recomendacion automatica
+5. Expira automaticamente segun tipo (12h-168h)
+
+** Añadir nota de analista
+
+Via panel admin (recomendado):
+
+| Paso | Accion | Resultado |
+|------+--------+-----------|
+| 1 | Ir a `/admin/incidents` | Lista de incidentes activos |
+| 2 | Click "Añadir nota de analista" | Formulario aparece |
+| 3 | Escribir criterio experto | Nota guardada |
+| 4 | Verificar en `/osint` | Usuarios ven la nota |
+
+Via API (rapido):
+
+#+BEGIN_SRC bash
+# Añadir nota
+curl -X POST https://www.viajeinteligencia.com/api/admin/incidents/123/note \
+  -H "Content-Type: application/json" \
+  -d '{"note":"No afecta vuelos internacionales"}'
+
+# Eliminar nota
+curl -X DELETE https://www.viajeinteligencia.com/api/admin/incidents/123/note
+#+END_SRC
+
+** Tipos de incidentes detectados
+
+| Tipo | Expiracion | Deteccion | Verb accion | Icono |
+|------+------------+-----------+-------------+-------|
+| terrorism | 72h | terror, bomb, shooting, attack | evitar | ⚠️ |
+| conflict | 48h | conflict, war, military | evitar | 💥 |
+| flight_disruption | 24h | flight, cancel, airline, strike | preparar | 🛫 |
+| natural_disaster | 36h | earthquake, flood, hurricane | monitorizar | 🌍 |
+| health_outbreak | 168h | outbreak, disease, epidemic | preparar | 🏥 |
+| protest | 12h | protest, strike, riot | monitorizar | 📢 |
+| airspace_closure | 24h | airspace, no-fly | monitorizar | ✈️ |
+| travel_advisory | 168h | advisory, warning, alert | preparar | 📋 |
+| security_threat | 72h | robbery, attacked, danger | evitar | 🔒 |
+| infrastructure | 168h | road, bridge, power | evitar | 🏗️ |
+
+* Blog — Gestion de Contenido
+
+** Estructura de un post (Markdown + Frontmatter)
+
+#+BEGIN_SRC markdown
+---
+title: "¿Es SEGURO viajar a JAPON en 2026?"
+slug: "es-seguro-viajar-japon"
+date: "2026-04-21"
+author: "M. Castillo"
+category: "Destinos"
+readTime: "11 min"
+image: "https://images.unsplash.com/photo-..."
+keywords: "japon seguridad, riesgo japon 2026"
+tags: ["Analisis"]
+excerpt: "Analisis completo de seguridad en Japon..."
+---
+
+# Contenido en Markdown...
+#+END_SRC
+
+** Añadir nuevo post
+
+| Paso | Accion | Comando |
+|------+--------+---------|
+| 1 | Crear archivo `.md` | `touch content/posts/mi-post.md` |
+| 2 | Escribir frontmatter + contenido | Editor de texto |
+| 3 | Commit y push | `git add . && git commit && git push` |
+| 4 | Deploy automatico | Vercel genera la pagina |
+
+** Categorias actuales: Destinos, Seguridad, Costes, Derechos, Seguros, Tecnologia
+
+** Estadisticas del blog
+
+| Metrica | Fuente | Endpoint |
+|---------+--------+----------|
+| Visitas por post | `post_views` table | `/api/posts/[slug]/views` |
+| Valoraciones | `post_ratings` table | `/api/data-ratings` |
+| Posts totales | `src/content/posts/` | `getAllPosts()` |
+| Paginacion | 10 posts/pagina | `getPostsPagination()` |
+
+* Variables de Entorno
+
+| Variable | Requerida | Funcion |
+|----------+-----------+---------|
+| NEXT_PUBLIC_SUPABASE_URL | Si | URL de Supabase |
+| NEXT_PUBLIC_SUPABASE_ANON_KEY | Si | Clave anonima Supabase |
+| SUPABASE_SERVICE_ROLE_KEY | Si | Clave admin (cron) |
+| GROQ_API_KEY | Si | AI classification + chat |
+| TELEGRAM_BOT_TOKEN | Si | Alertas Telegram |
+| TELEGRAM_CHANNEL_ID | Si | Canal destino |
+| RESEND_API_KEY | Si | Newsletter emails |
+| CRON_SECRET | Si | Proteccion cron |
+| FLIGHTLABS_API_KEY | No | Costes vuelos (fallback) |
+| FLIGHTSTATS_API_KEY | No | Delays aeropuertos |
+
+* Base de Datos — Tablas Principales
+
+#+BEGIN_SRC plantuml :file assets/db-schema.png :exports results
+@startuml
+skinparam backgroundColor #0F172A
+skinparam defaultFontSize 12
+
+title Esquema de Base de Datos (Supabase)
+
+entity "incidents" as Inc {
+  * id : bigint PK
+  --
+  type : text
+  entity_id : text UNIQUE
+  title : text
+  description : text
+  country_code : text
+  location : text
+  severity : text
+  recommendation : text
+  action_verb : text
+  source : text
+  signal_count : int
+  detected_at : timestamptz
+  resolved_at : timestamptz
+  is_active : boolean
+  expires_at : timestamptz
+  analyst_note : text
+  analyst_updated_at : timestamptz
+}
+
+entity "incident_ratings" as IncRate {
+  * id : bigint PK
+  --
+  incident_id : bigint FK
+  rating : int (1-5)
+  user_ip : text
+  created_at : timestamptz
+}
+
+entity "data_ratings" as DataRate {
+  * id : bigint PK
+  --
+  entity_type : text
+  entity_id : text
+  rating : int (1-5)
+  comment : text
+  user_ip : text
+  created_at : timestamptz
+}
+
+entity "osint_signals" as Sig {
+  * id : bigint PK
+  --
+  source : text
+  source_url : text
+  title : text
+  content : text
+  category : text
+  confidence : float
+  urgency : text
+  is_first_person : boolean
+  location_name : text
+  created_at : timestamptz
+}
+
+entity "maec_risk_history" as Maec {
+  * id : bigint PK
+  --
+  country_code : text
+  nivel_riesgo : text
+  date : date
+}
+
+entity "oil_prices_history" as Oil {
+  * id : bigint PK
+  --
+  date : date UNIQUE
+  price_usd : float
+  source : text
+}
+
+entity "flight_tci_cache" as Tci {
+  * country_code : text PK
+  --
+  tci_value : float
+  tci_trend : text
+  last_calculated : timestamptz
+}
+
+entity "airspace_closures" as Air {
+  * id : bigint PK
+  --
+  country_code : text UNIQUE
+  country_name : text
+  closure_date : date
+  reason : text
+  severity : text
+  is_active : boolean
+}
+
+entity "newsletter_subscribers" as Sub {
+  * id : bigint PK
+  --
+  email : text UNIQUE
+  name : text
+  confirmed : boolean
+  confirmed_at : timestamptz
+}
+
+Inc "1" --> "*" IncRate : has
+Sig "*" --> "*" Inc : clusters into
+
+@enduml
+#+END_SRC
+
+| Tabla | Funcion | RLS | Politicas |
+|-------+---------+-----+-----------|
+| incidents | Incidentes activos | Lectura publica | Anyone can read |
+| incident_ratings | Valoraciones incidentes | Lectura + escritura | Anyone can rate |
+| data_ratings | Valoraciones genericas | Lectura + escritura | Anyone can rate |
+| osint_signals | Señales raw del sensor | Solo lectura | No public access |
+| maec_risk_history | Historial riesgo paises | Solo escritura cron | No public access |
+| oil_prices_history | Historial petroleo | Solo escritura cron | No public access |
+| flight_tci_cache | Cache TCI vuelos | Solo escritura cron | No public access |
+| airspace_closures | Cierres espacio aereo | Solo lectura | No public access |
+| newsletter_subscribers | Suscriptores | Escritura publica | Anyone can subscribe |
+
+* Comandos Utiles
+
+#+BEGIN_SRC bash
+# Deploy (push a main)
+git add -A && git commit -m "mensaje" && git push
+
+# Build local
+npm run build
+
+# Dev server
+npm run dev
+
+# Linting
+npm run lint
+
+# Check completo
+npm run check
+
+# Probar cron
+curl -s -H "Authorization: Bearer $CRON_SECRET" \
+  "https://www.viajeinteligencia.com/api/cron/master" | python3 -m json.tool
+#+END_SRC
+
+* Solucion de Problemas
+
+** Cron tarda mas de 90s
+
+| Sintoma | Causa probable | Solucion |
+|---------+----------------+----------|
+| Timeout en Fase 1 | MAEC scrape 26 paises | Reducir a 20 paises |
+| Timeout en Fase 3 | Groq API lento | Limitar posts a 10 (actual 20) |
+| Timeout en Fase 4 | Newsletter batch grande | Procesar 50 por batch |
+
+** Incidentes no se crean
+
+| Verificacion | Comando | Esperado |
+|--------------+---------+----------|
+| Hay señales en DB | `SELECT count(*) FROM osint_signals WHERE created_at > now() - interval '48h';` | > 0 |
+| Tabla incidents existe | `\dt incidents` | Tabla encontrada |
+| Detector funciona | Trigger cron manual | `created > 0` en respuesta |
+
+** Newsletter no se envia
+
+| Verificacion | Causa | Solucion |
+|--------------+-------+----------|
+| RESEND_API_KEY | Variable no configurada | Añadir a .env.local + Vercel |
+| Suscriptores confirmados | No hay suscriptores | Verificar tabla newsletter_subscribers |
+| Dia correcto | Weekly solo funciona lunes | Probar daily digest en su lugar |

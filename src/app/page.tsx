@@ -10,6 +10,8 @@ import {
 } from 'lucide-react';
 import { paisesData } from '@/data/paises';
 import LanguageSelector from '@/components/LanguageSelector';
+import OilPriceWidget from '@/components/OilPriceWidget';
+import AirportDelaysWidget from '@/components/AirportDelaysWidget';
 
 const MapaInteractivo = dynamic(
   () => import('@/components/MapaInteractivo'),
@@ -552,6 +554,12 @@ export default function Home() {
             <Route className="w-5 h-5 text-green-400 mx-auto mb-1.5" />
             <span className="text-white text-xs font-medium">Rutas</span>
           </Link>
+        </div>
+
+        {/* Data Widgets */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-3xl mx-auto mt-8">
+          <OilPriceWidget />
+          <AirportDelaysWidget />
         </div>
       </section>
 
