@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, BarChart3, Shield, TrendingUp, Users, DollarSign, Award, AlertTriangle, Plane, Globe, MapPin, ChevronUp, ChevronDown, Activity, Loader2, Heart, Syringe, Stethoscope, BedDouble, Zap, Radio } from 'lucide-react';
+import { ArrowLeft, BarChart3, Shield, TrendingUp, Users, DollarSign, Award, AlertTriangle, Plane, Globe, MapPin, ChevronUp, ChevronDown, Activity, Loader2, Heart, Syringe, Stethoscope, BedDouble, Zap, Radio, Crown } from 'lucide-react';
+import { useRequirePremium } from '@/hooks/useRequirePremium';
 
 interface WHOHealthData {
   timestamp: string;
@@ -66,6 +67,7 @@ export default function KPIDashboard({
   topTourism, tciBaratos, tciCaros, oilPrice, totalCountries, totalSafe,
   avgHDI, avgGPI, continentDistribution, ipcDistribution, gpiByRegion,
 }: KPIProps) {
+  const { isPremium, loading: premiumLoading } = useRequirePremium();
   const [activeTab, setActiveTab] = useState('paz');
   const [healthData, setHealthData] = useState<WHOHealthData | null>(null);
   const [healthLoading, setHealthLoading] = useState(false);
@@ -73,6 +75,32 @@ export default function KPIDashboard({
   const [sismosLoading, setSismosLoading] = useState(false);
   const [conflictosData, setConflictosData] = useState<any[]>([]);
   const [conflictosLoading, setConflictosLoading] = useState(false);
+
+  if (premiumLoading) {
+    return (
+      <div className="min-h-screen bg-slate-900 flex items-center justify-center">
+        <Loader2 className="w-8 h-8 text-blue-500 animate-spin" />
+      </div>
+    );
+  }
+
+  if (!isPremium) {
+    return (
+      <div className="min-h-screen bg-slate-900 flex items-center justify-center p-6">
+        <div className="text-center max-w-md">
+          <Crown className="w-16 h-16 text-yellow-400 mx-auto mb-4" />
+          <h2 className="text-2xl font-bold text-white mb-2">Acceso Premium</h2>
+          <p className="text-slate-400 mb-6">El Dashboard de KPIs es exclusivo para usuarios Premium. Activa tu prueba gratuita de 7 días.</p>
+          <Link
+            href="/premium"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-amber-500 to-orange-500 text-slate-900 font-bold rounded-xl hover:from-amber-400 hover:to-orange-400 transition-all"
+          >
+            Empezar prueba gratuita
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   useEffect(() => {
     if (activeTab === 'salud' && !healthData && !healthLoading) {

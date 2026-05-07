@@ -1,8 +1,9 @@
 'use client';
 import { useState } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, MapPin, Calendar, DollarSign, Sparkles, Loader2, Send } from 'lucide-react';
+import { ArrowLeft, MapPin, Calendar, DollarSign, Sparkles, Loader2, Send, Crown } from 'lucide-react';
 import { getTodosLosPaises } from '@/data/paises';
+import { useRequirePremium } from '@/hooks/useRequirePremium';
 
 const paises = getTodosLosPaises();
 
@@ -18,6 +19,7 @@ const budgetOptions = [
 ];
 
 export default function ItinerarioClient() {
+  const { isPremium, loading: premiumLoading } = useRequirePremium();
   const [destination, setDestination] = useState('');
   const [days, setDays] = useState(7);
   const [budget, setBudget] = useState('moderate');
@@ -25,6 +27,32 @@ export default function ItinerarioClient() {
   const [itinerary, setItinerary] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+
+  if (premiumLoading) {
+    return (
+      <div className="min-h-screen bg-slate-900 flex items-center justify-center">
+        <Loader2 className="w-8 h-8 text-blue-500 animate-spin" />
+      </div>
+    );
+  }
+
+  if (!isPremium) {
+    return (
+      <div className="min-h-screen bg-slate-900 flex items-center justify-center p-6">
+        <div className="text-center max-w-md">
+          <Crown className="w-16 h-16 text-yellow-400 mx-auto mb-4" />
+          <h2 className="text-2xl font-bold text-white mb-2">Planificador IA Premium</h2>
+          <p className="text-slate-400 mb-6">Genera itinerarios personalizados con inteligencia artificial. Activa tu prueba gratuita de 7 días.</p>
+          <Link
+            href="/premium"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-amber-500 to-orange-500 text-slate-900 font-bold rounded-xl hover:from-amber-400 hover:to-orange-400 transition-all"
+          >
+            Empezar prueba gratuita
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   const toggleInterest = (interest: string) => {
     setSelectedInterests(prev => 

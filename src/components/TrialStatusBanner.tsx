@@ -150,7 +150,7 @@ export default function TrialStatusBanner() {
           <p className="text-slate-500 text-xs">Sin tarjeta de crédito. Cancela cuando quieras.</p>
         </div>
         <Link
-          href="/free-trial"
+          href="/premium"
           className="flex items-center gap-1 px-3 py-1.5 bg-purple-600 hover:bg-purple-500 text-white rounded-lg text-xs font-bold whitespace-nowrap transition-all"
         >
           Empezar

@@ -1,8 +1,9 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, Check, X, Sparkles, Shield, Bell, MessageSquare, FileCheck, TrendingUp, Map, Plane, Star, Zap, Crown } from 'lucide-react';
+import { ArrowLeft, Check, X, Sparkles, Shield, Bell, MessageSquare, FileCheck, TrendingUp, Map, Plane, Star, Zap, Crown, Loader2 } from 'lucide-react';
 
 const FEATURES = [
   { icon: <MessageSquare className="w-5 h-5" />, title: 'Chat IA de Viajes', desc: '5 mensajes/día gratis con llama-3.1-8b. Premium: ilimitado con llama-3.1-70b (9x más inteligente).' },
@@ -35,6 +36,35 @@ const COMPARISON = [
 
 export default function PremiumPage() {
   const [isAnnual, setIsAnnual] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+
+  const handleSubscribe = async () => {
+    setLoading(true);
+    try {
+      const priceId = isAnnual
+        ? 'price_1TQ0Ng1yXjIoL1LjZTzKEfOF'
+        : 'price_1TNvdo1yXjIoL1LjxAec6d2C';
+
+      const res = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ priceId, trialDays: 7 }),
+      });
+
+      const data = await res.json();
+
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        alert(data.error || 'Error al crear la sesión');
+        setLoading(false);
+      }
+    } catch (e) {
+      alert('Error de conexión');
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-slate-900">
@@ -271,12 +301,20 @@ export default function PremiumPage() {
                 ))}
               </ul>
 
-              <a
-                href="/free-trial"
-                className="block w-full py-3.5 bg-gradient-to-r from-amber-500 to-orange-500 text-slate-900 font-bold rounded-xl text-center hover:from-amber-400 hover:to-orange-400 transition-all text-sm"
+              <button
+                onClick={handleSubscribe}
+                disabled={loading}
+                className="block w-full py-3.5 bg-gradient-to-r from-amber-500 to-orange-500 text-slate-900 font-bold rounded-xl text-center hover:from-amber-400 hover:to-orange-400 transition-all text-sm disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
-                Empezar prueba gratuita
-              </a>
+                {loading ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    Redirigiendo a Stripe...
+                  </>
+                ) : (
+                  'Empezar prueba gratuita'
+                )}
+              </button>
               <p className="text-slate-500 text-xs text-center mt-3">
                 Sin compromiso · Cancela cuando quieras · Pago seguro con Stripe
               </p>

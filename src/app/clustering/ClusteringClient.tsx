@@ -1,13 +1,14 @@
 'use client';
 import { useMemo, useState } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, MapPin, TrendingUp, Shield, DollarSign, Plane, Users, Sparkles } from 'lucide-react';
+import { ArrowLeft, MapPin, TrendingUp, Shield, DollarSign, Plane, Users, Sparkles, Loader2, Crown } from 'lucide-react';
 import {
   clusterDestinations,
   getDestinationsWithFeatures,
   travelAttributes,
 } from '@/data/clustering';
 import { paisesData as paises } from '@/data/paises';
+import { useRequirePremium } from '@/hooks/useRequirePremium';
 
 const riskColor: Record<string, string> = {
   'sin-riesgo': 'bg-green-500',
@@ -20,6 +21,7 @@ const riskColor: Record<string, string> = {
 const clusterIcon = ['🛡️', '✈️', '💰', '🌍', '⭐', '🔥'];
 
 export default function ClusteringClient() {
+  const { isPremium, loading: premiumLoading } = useRequirePremium();
   const [k, setK] = useState(4);
   const clusters = useMemo(() => clusterDestinations(k), [k]);
   const destinations = useMemo(() => getDestinationsWithFeatures(), []);
@@ -29,6 +31,32 @@ export default function ClusteringClient() {
     destinations.forEach(d => { m[d.code] = d; });
     return m;
   }, [destinations]);
+
+  if (premiumLoading) {
+    return (
+      <div className="min-h-screen bg-slate-900 flex items-center justify-center">
+        <Loader2 className="w-8 h-8 text-blue-500 animate-spin" />
+      </div>
+    );
+  }
+
+  if (!isPremium) {
+    return (
+      <div className="min-h-screen bg-slate-900 flex items-center justify-center p-6">
+        <div className="text-center max-w-md">
+          <Crown className="w-16 h-16 text-yellow-400 mx-auto mb-4" />
+          <h2 className="text-2xl font-bold text-white mb-2">ML Clustering Premium</h2>
+          <p className="text-slate-400 mb-6">Descubre destinos agrupados por IA según seguridad, coste y preferencias. Activa tu prueba gratuita de 7 días.</p>
+          <Link
+            href="/premium"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-amber-500 to-orange-500 text-slate-900 font-bold rounded-xl hover:from-amber-400 hover:to-orange-400 transition-all"
+          >
+            Empezar prueba gratuita
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-slate-900">

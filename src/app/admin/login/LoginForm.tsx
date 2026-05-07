@@ -1,48 +1,77 @@
 'use client';
 
-import { useActionState, useEffect } from 'react';
+import { useState } from 'react';
 import { useFormStatus } from 'react-dom';
-import { Lock } from 'lucide-react';
-import { loginAction } from '@/lib/admin-auth';
+import { Lock, Loader2 } from 'lucide-react';
 
-function SubmitButton() {
+function SubmitButton({ loading }: { loading: boolean }) {
   const { pending } = useFormStatus();
   return (
     <button
       type="submit"
-      disabled={pending}
-      className="w-full bg-purple-600 text-white font-bold py-3 rounded-xl hover:bg-purple-700 transition-colors disabled:opacity-50"
+      disabled={pending || loading}
+      className="w-full bg-purple-600 text-white font-bold py-3 rounded-xl hover:bg-purple-700 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
     >
-      {pending ? 'Verificando...' : 'Acceder'}
+      {pending || loading ? (
+        <>
+          <Loader2 className="w-4 h-4 animate-spin" />
+          Verificando...
+        </>
+      ) : (
+        'Acceder'
+      )}
     </button>
   );
 }
 
 export default function LoginForm({ from }: { from: string }) {
-  const [state, action, pending] = useActionState(loginAction, null);
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (state?.success && state.redirect) {
-      window.location.href = state.redirect;
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+
+    try {
+      const res = await fetch('/api/admin/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password }),
+        credentials: 'include',
+      });
+
+      const data = await res.json();
+
+      if (data.success) {
+        window.location.href = data.redirect;
+      } else {
+        setError(data.error || 'Error desconocido');
+      }
+    } catch (err) {
+      setError('Error de conexion');
+    } finally {
+      setLoading(false);
     }
-  }, [state?.success, state?.redirect]);
+  };
 
   return (
-    <form action={action}>
-      <input type="hidden" name="from" value={from} />
+    <form onSubmit={handleSubmit}>
       <div className="relative mb-4">
         <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
         <input
           type="password"
-          name="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
           className="w-full bg-slate-700 text-white pl-11 pr-4 py-3 rounded-xl border border-slate-600 focus:border-purple-500 focus:outline-none"
           placeholder="Contraseña..."
           autoFocus
           required
         />
       </div>
-      {state?.error && <p className="text-red-400 text-sm mb-4">{state.error}</p>}
-      <SubmitButton />
+      {error && <p className="text-red-400 text-sm mb-4">{error}</p>}
+      <SubmitButton loading={loading} />
     </form>
   );
 }
