@@ -10,6 +10,17 @@
       ],
       "destination": "https://www.viajeinteligencia.com/:path*",
       "permanent": true
+    },
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "viajeinteligencia.com"
+        }
+      ],
+      "destination": "https://www.viajeinteligencia.com/:path*",
+      "permanent": true
     }
   ],
   "headers": [

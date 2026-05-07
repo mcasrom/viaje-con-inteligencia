@@ -35,9 +35,7 @@ export const metadata: Metadata = {
   authors: [{ name: "M.Castillo" }],
   creator: "M.Castillo",
   publisher: "Viaje con Inteligencia",
-  alternates: {
-    canonical: 'https://www.viajeinteligencia.com',
-  },
+  alternates: {},
   openGraph: {
     title: "Viaje con Inteligencia | Riesgo Zero",
     description: "Mapa interactivo de riesgos de viaje por país. Información oficial MAEC. Embajadas, requisitos y consejos para viajar seguro.",
