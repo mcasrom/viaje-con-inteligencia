@@ -11,6 +11,7 @@
     "predeploy": "npm run check"
   },
   "dependencies": {
+    "@marsidev/react-turnstile": "^1.5.2",
     "@stripe/stripe-js": "^9.2.0",
     "@supabase/ssr": "^0.10.2",
     "@supabase/supabase-js": "^2.103.3",

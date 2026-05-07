@@ -1,6 +1,23 @@
 import { NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase-server';
 import { logAuditEvent } from '@/lib/audit-log';
+import { isDisposableEmail } from '@/lib/disposable-emails';
+
+async function verifyTurnstile(token: string): Promise<boolean> {
+  const secret = process.env.TURNSTILE_SECRET_KEY;
+  if (!secret) return true; // skip if not configured
+  try {
+    const res = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+      method: 'POST',
+      body: `secret=${secret}&response=${token}`,
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    });
+    const data = await res.json();
+    return data.success === true;
+  } catch {
+    return false;
+  }
+}
 
 const RATE_LIMIT_WINDOW = 60 * 1000; // 1 minute
 const RATE_LIMIT_MAX = 10; // max attempts per window
@@ -75,15 +92,28 @@ export async function POST(request: Request) {
 
     // Password registration
     if (mode === 'register' && password) {
+      const cleanEmail = email.toLowerCase().trim();
+
+      // Turnstile check
+      const turnToken = body.turnstileToken;
+      if (!(await verifyTurnstile(turnToken))) {
+        return NextResponse.json({ error: 'Verificación de seguridad fallada. Recarga e inténtalo de nuevo.' }, { status: 403 });
+      }
+
+      // Disposable email check
+      if (isDisposableEmail(cleanEmail)) {
+        return NextResponse.json({ error: 'No se permiten emails temporales o desechables. Usa un email real.' }, { status: 403 });
+      }
+
       const { error } = await supabase.auth.signUp({
-        email: email.toLowerCase().trim(),
+        email: cleanEmail,
         password,
         options: { emailRedirectTo: `${siteUrl}/auth/callback?next=/dashboard` },
       });
       if (error) {
         return NextResponse.json({ error: error.message }, { status: 400 });
       }
-      logAuditEvent({ action: 'register', entityType: 'user', email: email.toLowerCase().trim(), ip });
+      logAuditEvent({ action: 'register', entityType: 'user', email: cleanEmail, ip });
       return NextResponse.json({
         success: true,
         message: '📧 Cuenta creada. Revisa tu email para verificar.',

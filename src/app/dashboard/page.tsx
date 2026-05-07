@@ -10,12 +10,15 @@ import {
   Cloud, CheckCircle, XCircle, Star, Sparkles, Activity,
   Key, Lock, User, Eye, EyeOff, KeyRound
 } from 'lucide-react';
+import dynamic from 'next/dynamic';
 import TrialStatusBanner from '@/components/TrialStatusBanner';
 import RecommendationsList from '@/components/RecommendationsList';
 import { UserLevelBadge, trackActivity } from '@/components/UserLevel';
 import { paisesData, getLabelRiesgo } from '@/data/paises';
 import WeatherWidget from '@/components/WeatherWidget';
 import { useAuth } from '@/contexts/AuthContext';
+
+const Turnstile = dynamic(() => import('@marsidev/react-turnstile').then(m => m.Turnstile), { ssr: false });
 
 interface User {
   id: string;
@@ -50,6 +53,7 @@ export default function DashboardPage() {
   const [resendLoading, setResendLoading] = useState(false);
   const [resendStatus, setResendStatus] = useState<'idle' | 'sent'>('idle');
   const [pendingVerificationEmail, setPendingVerificationEmail] = useState<string | null>(null);
+  const [turnstileToken, setTurnstileToken] = useState('');
 
   const handleResendVerification = async () => {
     setResendLoading(true);
@@ -72,6 +76,7 @@ export default function DashboardPage() {
       } else if (authMode === 'register' && password) {
         body.password = password;
         body.mode = 'register';
+        body.turnstileToken = turnstileToken;
       }
 
       const response = await fetch('/api/auth/login', {
@@ -419,9 +424,17 @@ export default function DashboardPage() {
                   </div>
                 )}
 
+                {authMode === 'register' && process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY && (
+                  <Turnstile
+                    siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY}
+                    onSuccess={setTurnstileToken}
+                    options={{ theme: 'dark' }}
+                  />
+                )}
+
                 <button
                   type="submit"
-                  disabled={loading}
+                  disabled={loading || (authMode === 'register' && !turnstileToken && !!process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY)}
                   className="w-full py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-bold hover:from-blue-700 hover:to-purple-700 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
                 >
                   {loading ? (
