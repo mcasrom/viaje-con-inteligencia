@@ -1,8 +1,14 @@
 import { NextResponse } from 'next/server';
+import { checkPremium } from '@/lib/premium-check';
 import { generateItinerary } from '@/lib/groq-ai';
 
 export async function POST(request: Request) {
   try {
+    const premium = await checkPremium();
+    if (!premium.isPremium) {
+      return NextResponse.json({ error: 'Se requiere suscripción Premium', requires: 'premium' }, { status: 403 });
+    }
+
     const { destination, days, interests, budget } = await request.json();
 
     if (!destination) {

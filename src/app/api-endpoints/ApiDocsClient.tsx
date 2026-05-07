@@ -211,8 +211,12 @@ export default function ApiDocsClient() {
 
         {/* Pricing */}
         <div className="mt-12">
-          <h2 className="text-lg font-bold text-white mb-4">Planes</h2>
-          <div className="grid md:grid-cols-3 gap-4">
+          <div className="flex items-center gap-3 mb-4">
+            <h2 className="text-lg font-bold text-white">Planes</h2>
+            <span className="px-2.5 py-0.5 bg-amber-500/20 text-amber-400 text-xs font-bold rounded-full border border-amber-500/30">Próximamente</span>
+          </div>
+          <p className="text-slate-500 text-sm mb-6">Los planes de pago aún no están disponibles. Por ahora, todos los endpoints son accesibles gratis con un API Key.</p>
+          <div className="grid md:grid-cols-3 gap-4 opacity-60">
             {PRICING.map((p, i) => (
               <div key={i} className={`bg-slate-800 rounded-xl border p-6 ${i === 1 ? 'border-green-500 relative' : 'border-slate-700'}`}>
                 {i === 1 && <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 bg-green-500 text-slate-900 text-xs font-bold rounded-full">Recomendado</div>}
@@ -227,8 +231,8 @@ export default function ApiDocsClient() {
                     </li>
                   ))}
                 </ul>
-                <button className="w-full mt-6 py-3 bg-slate-700 text-white rounded-lg hover:bg-slate-600 transition-colors text-sm font-medium">
-                  Solicitar acceso
+                <button disabled className="w-full mt-6 py-3 bg-slate-700/50 text-slate-500 rounded-lg text-sm font-medium cursor-not-allowed">
+                  Próximamente
                 </button>
               </div>
             ))}

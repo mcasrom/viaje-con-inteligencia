@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
+import { verifyAdminPassword } from '@/lib/admin-auth';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -7,13 +8,12 @@ const supabase = createClient(
 );
 
 function requireAuth(request: NextRequest) {
-  const ADMIN_PASSWORD = 'admin';
   const authHeader = request.headers.get('authorization');
   const cookie = request.cookies.get('admin_session')?.value;
   const url = new URL(request.url);
   const queryToken = url.searchParams.get('token');
   const provided = authHeader?.replace('Bearer ', '') || cookie || queryToken || '';
-  return ADMIN_PASSWORD && provided === ADMIN_PASSWORD;
+  return verifyAdminPassword(provided);
 }
 
 export async function GET(request: NextRequest) {

@@ -4,12 +4,11 @@ import { getAllPosts, getPostSlugs } from '@/lib/posts';
 import { paisesData } from '@/data/paises';
 import fs from 'fs';
 import path from 'path';
+import { getAdminPassword, verifyAdminPassword } from '@/lib/admin-auth';
 
 export const dynamic = 'force-dynamic';
 
 function requireAuth(request: NextRequest) {
-  const ADMIN_PASSWORD = 'admin';
-
   const authHeader = request.headers.get('authorization');
   const cookie = request.cookies.get('admin_session')?.value;
   const url = new URL(request.url);
@@ -17,7 +16,7 @@ function requireAuth(request: NextRequest) {
 
   const provided = authHeader?.replace('Bearer ', '') || cookie || queryToken || '';
 
-  if (ADMIN_PASSWORD && provided === ADMIN_PASSWORD) {
+  if (verifyAdminPassword(provided)) {
     return true;
   }
 

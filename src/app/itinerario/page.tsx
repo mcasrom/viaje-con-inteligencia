@@ -1,4 +1,6 @@
 import type { Metadata } from 'next';
+import { redirect } from 'next/navigation';
+import { checkPremium } from '@/lib/premium-check';
 import ItinerarioClient from './ItinerarioClient';
 
 export const metadata: Metadata = {
@@ -9,6 +11,8 @@ export const metadata: Metadata = {
   },
 };
 
-export default function ItinerarioPage() {
+export default async function ItinerarioPage() {
+  const { isPremium } = await checkPremium();
+  if (!isPremium) redirect('/premium?redirect=/itinerario');
   return <ItinerarioClient />;
 }

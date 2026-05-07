@@ -3,17 +3,17 @@ import { supabase } from '@/lib/supabase';
 import { getAllPosts } from '@/lib/posts';
 import { publishToMastodon } from '@/lib/mastodon';
 import { sendTelegramMessage } from '@/lib/telegram-channel';
+import { getAdminPassword, verifyAdminPassword } from '@/lib/admin-auth';
 
 export const dynamic = 'force-dynamic';
 
 function requireAuth(request: NextRequest) {
-  const ADMIN_PASSWORD = 'admin';
   const authHeader = request.headers.get('authorization');
   const cookie = request.cookies.get('admin_session')?.value;
   const url = new URL(request.url);
   const queryToken = url.searchParams.get('token');
   const provided = authHeader?.replace('Bearer ', '') || cookie || queryToken || '';
-  return ADMIN_PASSWORD && provided === ADMIN_PASSWORD;
+  return verifyAdminPassword(provided);
 }
 
 const BLOG_URL = 'https://www.viajeinteligencia.com/blog';

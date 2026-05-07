@@ -1,4 +1,6 @@
 import type { Metadata } from 'next';
+import { redirect } from 'next/navigation';
+import { checkPremium } from '@/lib/premium-check';
 import ClusteringClient from './ClusteringClient';
 
 export const metadata: Metadata = {
@@ -9,6 +11,8 @@ export const metadata: Metadata = {
   },
 };
 
-export default function ClusteringPage() {
+export default async function ClusteringPage() {
+  const { isPremium } = await checkPremium();
+  if (!isPremium) redirect('/premium?redirect=/clustering');
   return <ClusteringClient />;
 }

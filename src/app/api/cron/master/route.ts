@@ -433,6 +433,35 @@ async function runWeeklyDigest(): Promise<any> {
   }
 }
 
+// ===== EXPIRE TRIALS =====
+async function expireTrials(): Promise<any> {
+  try {
+    const now = new Date().toISOString();
+
+    const { data: expired, error } = await supabaseAdmin
+      .from('profiles')
+      .select('id, email, username')
+      .lt('trial_end', now)
+      .eq('is_premium', true);
+
+    if (error) return { status: 'error', message: error.message };
+    if (!expired || expired.length === 0) return { status: 'ok', expired: 0 };
+
+    const ids = expired.map(p => p.id);
+
+    const { error: updateError } = await supabaseAdmin
+      .from('profiles')
+      .update({ is_premium: false, subscription_status: 'trial_expired' })
+      .in('id', ids);
+
+    if (updateError) return { status: 'error', message: updateError.message };
+
+    return { status: 'ok', expired: expired.length };
+  } catch (e: any) {
+    return { status: 'error', error: e.message };
+  }
+}
+
 // ===== TRIAL NOTIFICATIONS =====
 async function runTrialNotifications(): Promise<any> {
   try {
@@ -556,6 +585,9 @@ export async function GET(request: Request) {
   // Phase 4: Digests and notifications (always run last)
   console.log('[Master] 7/8 Daily digest...');
   results.digest = await withTimeout(() => runDailyDigest(results), 30000, '7/8 Daily digest');
+
+  console.log('[Master] 7a/8 Expire trials...');
+  results.expire_trials = await withTimeout(() => expireTrials(), 15000, '7a/8 Expire trials');
 
   console.log('[Master] 7b/8 Trial notifications...');
   results.trial_notifications = await withTimeout(() => runTrialNotifications(), 15000, '7b/8 Trial notifications');

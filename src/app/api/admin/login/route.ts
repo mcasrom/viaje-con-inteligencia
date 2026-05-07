@@ -1,21 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { getAdminPassword, verifyAdminPassword } from '@/lib/admin-auth';
 
 export const dynamic = 'force-dynamic';
 
-const ADMIN_PASSWORD = 'admin';
 const COOKIE_NAME = 'admin_session';
 const COOKIE_MAX_AGE = 60 * 60 * 24; // 24 hours
 
 export async function POST(request: NextRequest) {
   const { password } = await request.json();
 
-  if (!ADMIN_PASSWORD) {
+  if (!getAdminPassword()) {
     return NextResponse.json({ error: 'Admin password not configured' }, { status: 500 });
   }
 
-  if (password === ADMIN_PASSWORD) {
+  if (verifyAdminPassword(password)) {
     const response = NextResponse.json({ success: true });
-    response.cookies.set(COOKIE_NAME, ADMIN_PASSWORD, {
+    response.cookies.set(COOKIE_NAME, getAdminPassword(), {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
@@ -42,6 +42,6 @@ export async function DELETE() {
 
 export async function GET(request: NextRequest) {
   const cookie = request.cookies.get(COOKIE_NAME)?.value;
-  const isAuthenticated = cookie === ADMIN_PASSWORD;
+  const isAuthenticated = cookie === getAdminPassword();
   return NextResponse.json({ authenticated: isAuthenticated });
 }

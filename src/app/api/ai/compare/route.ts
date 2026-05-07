@@ -1,8 +1,14 @@
 import { NextResponse } from 'next/server';
+import { checkPremium } from '@/lib/premium-check';
 import { compareCountries, CountryComparisonData } from '@/lib/groq-ai';
 
 export async function POST(request: Request) {
   try {
+    const premium = await checkPremium();
+    if (!premium.isPremium) {
+      return NextResponse.json({ error: 'Se requiere suscripción Premium', requires: 'premium' }, { status: 403 });
+    }
+
     const { countries } = await request.json();
 
     if (!countries || !Array.isArray(countries) || countries.length < 2) {

@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { checkPremium } from '@/lib/premium-check';
 import { groqClient } from '@/lib/groq-ai';
 import { paisesData } from '@/data/paises';
 import { getTourismStats, formatTourismStats } from '@/data/tourism';
@@ -227,6 +228,11 @@ Formato: Markdown limpio. Responde en español.`;
 
 export async function POST(request: Request) {
   try {
+    const premium = await checkPremium();
+    if (!premium.isPremium) {
+      return NextResponse.json({ error: 'Se requiere suscripción Premium', requires: 'premium' }, { status: 403 });
+    }
+
     const body: GenerateDocRequest = await request.json();
     const { type, paises, opciones } = body;
 
