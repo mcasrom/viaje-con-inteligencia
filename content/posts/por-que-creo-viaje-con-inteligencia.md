@@ -1,7 +1,7 @@
 ---
 featured: true
 title: "Por qué creé Viaje con Inteligencia"
-slug: "por-que-creé-viaje-con-inteligencia"
+slug: "por-que-creo-viaje-con-inteligencia"
 date: "2026-05-07"
 author: "Miguel Castillo"
 category: "Estrategia"

@@ -440,7 +440,7 @@ export async function buildWeeklyEmailHtml(issue: NewsletterIssue): Promise<stri
         <p style="font-size:14px;color:#0f172a;line-height:1.7;margin:0;"><strong>El compromiso es sencillo: transparencia total, sin publicidad invasiva y sin venderte viajes. Solo inteligencia aplicada al viaje.</strong></p>
       </div>
       <div style="text-align:right;margin-top:12px;">
-        <a href="https://www.viajeinteligencia.com/blog/por-que-creé-viaje-con-inteligencia" style="font-size:12px;color:#3b82f6;text-decoration:none;">Leer la historia completa →</a>
+        <a href="https://www.viajeinteligencia.com/blog/por-que-creo-viaje-con-inteligencia" style="font-size:12px;color:#3b82f6;text-decoration:none;">Leer la historia completa →</a>
       </div>
     </td></tr>
   ` : '';
