@@ -435,7 +435,7 @@ export default function AdminDashboard() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             {[
-              { label: 'Chat IA', desc: 'Asistente IA sin límite', href: '/chat', icon: '💬', status: 'no-existe' },
+              { label: 'Chat IA', desc: 'Asistente IA sin límite', href: '/chat', icon: '💬', status: 'existe' },
               { label: 'Planificador Itinerarios IA', desc: 'Generar viajes con IA', href: '/itinerario', icon: '✈️', status: 'existe' },
               { label: 'Alertas en Tiempo Real', desc: 'Monitor MAEC en vivo', href: '/alertas', icon: '🔔', status: 'existe' },
               { label: 'Mapa de Sismos USGS', desc: 'Terremotos en vivo', href: '/dashboard/kpis', icon: '🌍', status: 'existe' },
