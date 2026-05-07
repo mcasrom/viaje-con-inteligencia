@@ -19,7 +19,7 @@ export async function middleware(request: NextRequest) {
   const IS_DEV = process.env.NODE_ENV !== 'production';
   if (!IS_DEV && pathname.startsWith('/admin') && pathname !== '/admin/login') {
     const cookie = request.cookies.get('admin_session')?.value;
-    if (cookie !== '1') {
+    if (!cookie) {
       const loginUrl = new URL('/admin/login', request.url);
       loginUrl.searchParams.set('from', pathname);
       return NextResponse.redirect(loginUrl);
