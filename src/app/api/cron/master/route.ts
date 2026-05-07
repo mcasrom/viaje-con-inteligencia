@@ -370,39 +370,51 @@ ${Object.entries(results).filter(([k, v]) => v && (v as any).status !== 'skipped
   }
 }
 
+// ===== SUBSCRIBERS =====
+async function getSubscribers(): Promise<Array<{ email: string; name: string }>> {
+  if (!supabaseAdmin) return [];
+  const { data } = await supabaseAdmin
+    .from('newsletter_subscribers')
+    .select('email, name')
+    .eq('confirmed', true)
+    .order('created_at', { ascending: true });
+  return (data || []).map((d: any) => ({ email: d.email, name: d.name || 'Usuario' }));
+}
+
 // ===== WEEKLY DIGEST (only on Mondays) =====
 async function runWeeklyDigest(): Promise<any> {
   const day = new Date().getDay();
   if (day !== 1) return { status: 'skipped', reason: 'Not Monday' };
 
   try {
-    const { collectWeeklyData, generateWeeklyContent, buildWeeklyEmailHtml } = await import('@/lib/newsletter-generator');
-    const { subscribers, digestData } = await collectWeeklyData();
+    const { collectNewsletterData, buildWeeklyEmailHtml } = await import('@/lib/newsletter-generator');
 
-    if (subscribers.length === 0) return { status: 'skipped', reason: 'No subscribers' };
     if (!resend) return { status: 'skipped', reason: 'No resend API key' };
 
-    const content = await generateWeeklyContent(digestData);
-    const weekDate = new Date().toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+    const subscribers = await getSubscribers();
+    if (subscribers.length === 0) return { status: 'skipped', reason: 'No subscribers' };
+
+    const issue = await collectNewsletterData();
+    const baseHtml = await buildWeeklyEmailHtml(issue);
 
     let sent = 0, errors = 0;
     for (const sub of subscribers) {
       try {
-        const html = (await buildWeeklyEmailHtml(sub.name, content, weekDate)).replace('{{EMAIL}}', encodeURIComponent(sub.email));
+        const html = baseHtml.replace('{{EMAIL}}', encodeURIComponent(sub.email));
         await resend.emails.send({
           from: 'Viaje con Inteligencia <newsletter@viajeinteligencia.com>',
           to: sub.email,
-          subject: `Resumen Semanal — ${weekDate}`,
+          subject: `Briefing Semanal #${issue.edition} — ${issue.weekDate}`,
           html,
         });
         sent++;
-        await new Promise(r => setTimeout(r, 300)); // Rate limit: 300ms between sends
+        await new Promise(r => setTimeout(r, 300));
       } catch {
         errors++;
       }
     }
 
-    return { status: 'ok', sent, errors };
+    return { status: 'ok', sent, errors, edition: issue.edition };
   } catch (e: any) {
     return { status: 'error', error: e.message };
   }
