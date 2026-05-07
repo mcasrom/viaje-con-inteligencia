@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Shield, Clock, Mail, Globe, Users, AlertTriangle, CheckCircle, XCircle, FileText, Database, MessageSquare, ExternalLink, RefreshCw, Play, Send, Radio, Bot, LogOut, DollarSign } from 'lucide-react';
+import { Shield, Clock, Mail, Globe, Users, AlertTriangle, CheckCircle, XCircle, FileText, Database, MessageSquare, ExternalLink, RefreshCw, Play, Send, Radio, Bot, LogOut, DollarSign, Key } from 'lucide-react';
 
 export default function AdminDashboard() {
   const router = useRouter();
@@ -337,6 +337,23 @@ export default function AdminDashboard() {
           <a href="/admin/stripe" className="inline-flex items-center gap-2 px-4 py-2 bg-green-600/20 border border-green-500/30 text-green-400 rounded-lg hover:bg-green-600/30 transition-colors text-sm font-medium">
             Ver dashboard completo <ExternalLink className="w-4 h-4" />
           </a>
+        </section>
+
+        {/* API Keys */}
+        <section className="bg-slate-800 rounded-2xl border border-slate-700 p-6">
+          <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+            <Key className="w-5 h-5 text-yellow-400" />
+            API Pública v1 — Keys
+          </h2>
+          <p className="text-slate-400 text-sm mb-4">Gestiona las API keys para integraciones B2B. Cada key tiene rate limit y registro de uso.</p>
+          <div className="flex gap-3">
+            <a href="/admin/api-keys" className="inline-flex items-center gap-2 px-4 py-2 bg-yellow-600/20 border border-yellow-500/30 text-yellow-400 rounded-lg hover:bg-yellow-600/30 transition-colors text-sm font-medium">
+              Gestionar API Keys <Key className="w-4 h-4" />
+            </a>
+            <a href="/api-endpoints" target="_blank" className="inline-flex items-center gap-2 px-4 py-2 bg-slate-700 border border-slate-600 text-slate-300 rounded-lg hover:bg-slate-600 transition-colors text-sm font-medium">
+              Documentación <ExternalLink className="w-4 h-4" />
+            </a>
+          </div>
         </section>
 
         {/* Social Media */}
