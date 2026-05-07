@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getAdminPassword, verifyAdminPassword } from '@/lib/admin-auth';
+import { logAuditEvent } from '@/lib/audit-log';
 
 export const dynamic = 'force-dynamic';
 
@@ -14,6 +15,8 @@ export async function POST(request: NextRequest) {
   }
 
   if (verifyAdminPassword(password)) {
+    const ip = request.headers.get('x-forwarded-for') || 'unknown';
+    logAuditEvent({ action: 'admin_login', entityType: 'admin', ip });
     const response = NextResponse.json({ success: true });
     response.cookies.set(COOKIE_NAME, getAdminPassword(), {
       httpOnly: true,

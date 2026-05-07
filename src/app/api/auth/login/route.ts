@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase-server';
+import { logAuditEvent } from '@/lib/audit-log';
 
 const RATE_LIMIT_WINDOW = 60 * 1000; // 1 minute
 const RATE_LIMIT_MAX = 10; // max attempts per window
@@ -68,6 +69,7 @@ export async function POST(request: Request) {
           email: email.toLowerCase().trim(),
         }, { status: 403 });
       }
+      logAuditEvent({ action: 'login', entityType: 'user', entityId: data.user.id, email: data.user.email, ip });
       return NextResponse.json({ success: true, message: '✅ Sesión iniciada' });
     }
 
@@ -81,6 +83,7 @@ export async function POST(request: Request) {
       if (error) {
         return NextResponse.json({ error: error.message }, { status: 400 });
       }
+      logAuditEvent({ action: 'register', entityType: 'user', email: email.toLowerCase().trim(), ip });
       return NextResponse.json({
         success: true,
         message: '📧 Cuenta creada. Revisa tu email para verificar.',

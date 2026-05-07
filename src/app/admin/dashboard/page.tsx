@@ -339,6 +339,20 @@ export default function AdminDashboard() {
           </a>
         </section>
 
+        {/* Users */}
+        <section className="bg-slate-800 rounded-2xl border border-slate-700 p-6">
+          <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+            <Users className="w-5 h-5 text-blue-400" />
+            Usuarios
+          </h2>
+          <p className="text-slate-400 text-sm mb-4">Listado de usuarios registrados, estado premium, trials activos.</p>
+          <div className="flex gap-3">
+            <a href="/admin/users" className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600/20 border border-blue-500/30 text-blue-400 rounded-lg hover:bg-blue-600/30 transition-colors text-sm font-medium">
+              Ver usuarios <Users className="w-4 h-4" />
+            </a>
+          </div>
+        </section>
+
         {/* API Keys */}
         <section className="bg-slate-800 rounded-2xl border border-slate-700 p-6">
           <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
