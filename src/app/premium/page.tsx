@@ -261,7 +261,7 @@ export default function PremiumPage() {
                 </h2>
                 <div className="flex items-baseline justify-center gap-1">
                   <span className="text-4xl font-bold text-white">
-                    {isAnnual ? '19' : '4.99'}€
+                    {isAnnual ? '19.99' : '4.99'}€
                   </span>
                   <span className="text-slate-400 text-sm">/{isAnnual ? 'año' : 'mes'}</span>
                 </div>
