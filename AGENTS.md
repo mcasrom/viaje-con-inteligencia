@@ -1,10 +1,10 @@
 # AGENTS.md — Viaje con Inteligencia
 
 ## PAUSED STATE (07 May 2026 — Resumed 07 May)
-- **Master cron**: Timeout fixed (deployed 91d6e6f). Keyword classification for GDELT/RSS (no Groq), Groq only for Reddit posts. Parallel execution + step timeouts (120s MAEC, 90s OSINT, 30s others). Cap 20 posts/run. **Needs verification** — run `/api/cron/master` manually to confirm <60s.
-- **OSINT /admin/osint/**: Still shows 13 stale entries. News RSS feeds in code but not populating until cron runs successfully.
+- **Master cron v2** (58bf127): Deployed. MAEC timeout fix (26 countries only), OSINT insert retry one-by-one on conflict. Newsletter weekly digest with Groq-generated content + HTML template. **Tested**: 150s (MAEC was 120s timeout, now ~26 countries). Expected: <60s after deploy.
+- **OSINT /admin/osint/**: 13 stale entries. Will populate after cron runs successfully (insert retry added).
+- **Newsletter**: Weekly digest implemented (Groq content generation + HTML template). Runs Mondays only via master cron. Not yet tested live (no Monday run yet).
 - **All API keys** saved in `.env.local`: Supabase, Stripe, Telegram, Resend, Groq, CRON_SECRET, Mastodon, Admin. No need to search again.
-- **Newsletter**: Architecture designed, not implemented. Pending discussion on what's viable.
 
 ## Project
 - **Framework**: Next.js 16 + App Router, TypeScript

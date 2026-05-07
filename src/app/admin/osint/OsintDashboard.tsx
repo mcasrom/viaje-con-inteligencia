@@ -4,6 +4,14 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, RefreshCw, AlertTriangle, Shield, Cloud, HeartPulse, Truck, Globe, ExternalLink, Clock, MapPin, Zap } from 'lucide-react';
 
+const SOURCE_CONFIG: Record<string, { color: string; label: string }> = {
+  reddit: { color: 'bg-orange-500/20 text-orange-400 border-orange-500/30', label: 'Reddit' },
+  gdacs: { color: 'bg-red-500/20 text-red-400 border-red-500/30', label: 'GDACS' },
+  usgs: { color: 'bg-blue-500/20 text-blue-400 border-blue-500/30', label: 'USGS' },
+  gdelt: { color: 'bg-purple-500/20 text-purple-400 border-purple-500/30', label: 'GDELT' },
+  rss: { color: 'bg-cyan-500/20 text-cyan-400 border-cyan-500/30', label: 'RSS' },
+};
+
 const CATEGORY_CONFIG: Record<string, { icon: any; color: string; label: string }> = {
   salud: { icon: HeartPulse, color: 'text-red-400 bg-red-500/10 border-red-500/20', label: 'Salud' },
   seguridad: { icon: Shield, color: 'text-orange-400 bg-orange-500/10 border-orange-500/20', label: 'Seguridad' },
@@ -134,8 +142,13 @@ export default function OsintDashboard() {
             <div className="text-slate-500 text-xs mt-1">Primera persona</div>
           </div>
           <div className="bg-slate-900 rounded-xl p-4 border border-slate-800">
-            <div className="text-2xl font-bold text-cyan-400">{signals.filter(s => s.source === 'reddit').length}</div>
-            <div className="text-slate-500 text-xs mt-1">Reddit detectadas</div>
+            <div className="text-2xl font-bold text-cyan-400">{Object.keys(SOURCE_CONFIG).map(src => signals.filter(s => s.source === src).length).reduce((a, b) => a + b, 0)}</div>
+            <div className="text-slate-500 text-xs mt-1">
+              {Object.entries(SOURCE_CONFIG).map(([src, cfg]) => {
+                const count = signals.filter(s => s.source === src).length;
+                return count > 0 ? `${cfg.label}:${count}` : null;
+              }).filter(Boolean).join(' · ') || 'Sin datos'}
+            </div>
           </div>
         </div>
 
@@ -185,7 +198,7 @@ export default function OsintDashboard() {
         ) : filtered.length === 0 ? (
           <div className="bg-slate-900 rounded-xl p-8 border border-slate-800 text-center">
             <p className="text-slate-400 text-sm">No hay señales registradas.</p>
-            <p className="text-slate-600 text-xs mt-2">Haz click en "Escanear ahora" para buscar en Reddit.</p>
+            <p className="text-slate-600 text-xs mt-2">Haz click en "Escanear ahora" para buscar en las fuentes OSINT.</p>
           </div>
         ) : (
           <div className="space-y-3">
@@ -222,6 +235,11 @@ export default function OsintDashboard() {
                             <Clock className="w-3 h-3" />
                             {timeAgo(signal.created_at)}
                           </span>
+                          {signal.source && SOURCE_CONFIG[signal.source] && (
+                            <span className={`px-1.5 py-0.5 rounded text-[10px] font-bold border ${SOURCE_CONFIG[signal.source].color}`}>
+                              {SOURCE_CONFIG[signal.source].label}
+                            </span>
+                          )}
                           {signal.subreddit && (
                             <span className="flex items-center gap-1">
                               <Globe className="w-3 h-3" />
