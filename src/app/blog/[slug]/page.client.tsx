@@ -27,12 +27,13 @@ function BlogPostRating({ slug }: { slug: string }) {
   const [rating, setRating] = useState(0);
   const [count, setCount] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     fetch(`/api/posts/rate?slug=${slug}`)
       .then(res => res.json())
       .then(data => {
-        setRating(data.average || 0);
+        setRating(data.userRating || data.average || 0);
         setCount(data.count || 0);
       })
       .catch(() => {})
@@ -40,13 +41,19 @@ function BlogPostRating({ slug }: { slug: string }) {
   }, [slug]);
 
   const handleRate = async (value: number) => {
-    await fetch('/api/posts/rate', {
+    setError('');
+    const res = await fetch('/api/posts/rate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ slug, rating: value }),
     });
+    if (!res.ok) {
+      const data = await res.json();
+      setError(data.error || 'Error al valorar');
+      return;
+    }
     setRating(value);
-    setCount(prev => prev + 1);
+    if (count === 0) setCount(1);
   };
 
   if (loading) {
@@ -62,11 +69,14 @@ function BlogPostRating({ slug }: { slug: string }) {
   }
 
   return (
-    <div className="flex items-center gap-3 justify-center">
-      <StarRating initialRating={rating} onRate={handleRate} size="md" />
-      <span className="text-slate-400 text-sm">
-        {count > 0 ? `(${count} valoraciones)` : 'Sin valoraciones'}
-      </span>
+    <div className="flex flex-col items-center gap-2">
+      <div className="flex items-center gap-3">
+        <StarRating initialRating={rating} onRate={handleRate} size="md" />
+        <span className="text-slate-400 text-sm">
+          {count > 0 ? `(${count} valoraciones)` : 'Sin valoraciones'}
+        </span>
+      </div>
+      {error && <p className="text-red-400 text-xs">{error}</p>}
     </div>
   );
 }

@@ -1,31 +1,36 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
+import { createSupabaseServerClient } from '@/lib/supabase-server';
+import { supabaseAdmin } from '@/lib/supabase-admin';
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const slug = searchParams.get('slug');
-  
+
   if (!slug) {
     return NextResponse.json({ error: 'Slug required' }, { status: 400 });
   }
 
-  if (!supabase) {
-    return NextResponse.json({ average: 0, count: 0 });
-  }
+  const supabase = await createSupabaseServerClient();
+  const { data: { user } } = await supabase.auth.getUser();
 
-  const { data } = await supabase
+  const { data: allRatings } = await supabaseAdmin
     .from('post_ratings')
-    .select('rating')
+    .select('rating, user_id')
     .eq('slug', slug);
 
-  if (!data || data.length === 0) {
-    return NextResponse.json({ slug, average: 0, count: 0 });
+  let average = 0;
+  let count = 0;
+  let userRating = 0;
+
+  if (allRatings && allRatings.length > 0) {
+    const total = allRatings.reduce((sum, r) => sum + r.rating, 0);
+    average = Math.round((total / allRatings.length) * 10) / 10;
+    count = allRatings.length;
+    const mine = allRatings.find(r => r.user_id === user?.id);
+    if (mine) userRating = mine.rating;
   }
 
-  const total = data.reduce((sum, r) => sum + r.rating, 0);
-  const average = Math.round((total / data.length) * 10) / 10;
-
-  return NextResponse.json({ slug, average, count: data.length });
+  return NextResponse.json({ slug, average, count, userRating });
 }
 
 export async function POST(request: NextRequest) {
@@ -36,30 +41,28 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Slug and rating required' }, { status: 400 });
   }
 
-  if (!supabase) {
-    return NextResponse.json({ error: 'Supabase no configurado' }, { status: 500 });
+  const supabase = await createSupabaseServerClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) {
+    return NextResponse.json({ error: 'Debes iniciar sesión para valorar' }, { status: 401 });
   }
 
-  const { data: existing } = await supabase
+  const { data: existing } = await supabaseAdmin
     .from('post_ratings')
-    .select('id, rating')
+    .select('id')
     .eq('slug', slug)
-    .eq('user_ip', request.headers.get('x-forwarded-for') || 'unknown')
+    .eq('user_id', user.id)
     .single();
 
   if (existing) {
-    await supabase
+    await supabaseAdmin
       .from('post_ratings')
-      .update({ rating, created_at: new Date().toISOString() })
+      .update({ rating })
       .eq('id', existing.id);
   } else {
-    await supabase
+    await supabaseAdmin
       .from('post_ratings')
-      .insert({ 
-        slug, 
-        rating, 
-        user_ip: request.headers.get('x-forwarded-for') || 'unknown' 
-      });
+      .insert({ slug, rating, user_id: user.id });
   }
 
   return NextResponse.json({ success: true });
