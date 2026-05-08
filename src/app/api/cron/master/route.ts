@@ -10,6 +10,7 @@ import { Resend } from 'resend';
 import { detectAndCreateIncidents } from '@/lib/incident-detector';
 import { saveAllPredictions } from '@/lib/ml-risk-predictor';
 import { fetchAndStoreEvents } from '@/lib/events-fetch';
+import { runMonitorForUser } from '@/lib/seguros/monitor';
 
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const TELEGRAM_CHANNEL_ID = process.env.TELEGRAM_CHANNEL_ID;
@@ -519,6 +520,33 @@ async function runTrialNotifications(): Promise<any> {
   }
 }
 
+// ===== INSURANCE MONITOR (weekly, for all premium users) =====
+async function runInsuranceMonitor(): Promise<any> {
+  const day = new Date().getDay();
+  if (day !== 1) return { status: 'skipped', reason: 'Not Monday' };
+
+  try {
+    const { data: premiumUsers } = await supabaseAdmin
+      .from('profiles')
+      .select('id')
+      .or('is_premium.eq.true,subscription_status.eq.active');
+
+    if (!premiumUsers || premiumUsers.length === 0) {
+      return { status: 'ok', checked: 0 };
+    }
+
+    let totalAlerts = 0;
+    for (const user of premiumUsers) {
+      const alerts = await runMonitorForUser(user.id);
+      totalAlerts += alerts;
+    }
+
+    return { status: 'ok', checked: premiumUsers.length, alerts_generated: totalAlerts };
+  } catch (e: any) {
+    return { status: 'error', error: e.message };
+  }
+}
+
 // ===== EVENTS FETCH (Wikidata + GDELT + Groq) =====
 async function runEventsFetch(): Promise<any> {
   console.log('[Master] Events fetch + enrich...');
@@ -620,6 +648,9 @@ export async function GET(request: Request) {
 
   console.log('[Master] 8/8 Weekly digest...');
   results.weekly = await withTimeout(() => runWeeklyDigest(), 30000, '8/8 Weekly digest');
+
+  console.log('[Master] 8b/8 Insurance monitor...');
+  results.insurance_monitor = await withTimeout(() => runInsuranceMonitor(), 30000, '8b/8 Insurance monitor');
 
   const elapsed = Date.now() - startTime;
 
