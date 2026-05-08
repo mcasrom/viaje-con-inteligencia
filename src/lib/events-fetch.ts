@@ -2,6 +2,7 @@ import { supabaseAdmin } from '@/lib/supabase-admin';
 import { fetchEventsByCountry } from '@/lib/events-wikidata';
 import { fetchGDELTEvents } from '@/lib/events-gdelt';
 import { enrichMany } from '@/lib/events-groq';
+import { getFallbackEvents, getUpcomingFallbackEvents } from '@/lib/events-fallback';
 
 const PRIORITY_COUNTRIES = [
   'ES', 'FR', 'IT', 'DE', 'GB', 'PT', 'GR', 'HR', 'MX', 'AR', 'CO', 'PE',
@@ -147,7 +148,7 @@ export async function getEvents(options: {
   endDate?: string;
   limit?: number;
   offset?: number;
-}) {
+}): Promise<{ data: any[]; count: number; source: string }> {
   let query = supabaseAdmin
     .from('events')
     .select('*', { count: 'exact' });
@@ -173,7 +174,14 @@ export async function getEvents(options: {
   const { data, error, count } = await query;
 
   if (error) throw new Error(error.message);
-  return { data: data || [], count: count || 0 };
+
+  // Fallback a eventos hardcodeados si Supabase no tiene datos
+  if (!data || data.length === 0) {
+    const fallback = getFallbackEvents(options);
+    return { data: fallback.data, count: fallback.count, source: 'fallback' };
+  }
+
+  return { data: data || [], count: count || 0, source: 'supabase' };
 }
 
 export async function getUpcomingEvents(country?: string, days = 30) {
@@ -184,7 +192,7 @@ export async function getUpcomingEvents(country?: string, days = 30) {
     country,
     startDate: today,
     endDate: future,
-    limit: 100,
+    limit: 200,
   });
 }
 

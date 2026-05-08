@@ -75,9 +75,10 @@ function getDangerLevel(codigo: string): { nivel: number; irv: number; nombre: s
   return { nivel, irv, nombre: pais.nombre };
 }
 
-function calcularPesos(input: SeguroInput, dangerLevel: number) {
+function calcularPesos(input: SeguroInput, dangerLevel: number, duracionDias: number) {
   const irv = dangerLevel;
-  const pesoMedica = irv > 70 ? 0.35 : irv > 60 ? 0.25 : 0.20;
+  const duracionBonus = Math.min(0.15, duracionDias / 200);
+  const pesoMedica = irv > 70 ? 0.35 + duracionBonus : irv > 60 ? 0.25 + duracionBonus : 0.20 + duracionBonus;
   const pesoEvacuacion = irv > 70 ? 0.30 : irv > 60 ? 0.20 : 0.10;
   const pesoCancelacion = input.costeViaje > 3000 ? 0.25 : input.costeViaje > 1500 ? 0.20 : 0.15;
   const pesoDeportes = input.actividades.length > 0 ? 0.20 : 0.05;
@@ -94,19 +95,23 @@ export function scoreSeguros(input: SeguroInput): {
   cobertura_recomendada: { medica: number; evacuacion: number };
 } {
   const { nivel, irv, nombre } = getDangerLevel(input.destino);
-  const pesos = calcularPesos(input, irv);
+  const duracionEstimada = input.fechaIda && input.fechaVuelta
+    ? Math.ceil((new Date(input.fechaVuelta).getTime() - new Date(input.fechaIda).getTime()) / 86400000)
+    : 14;
+  const pesos = calcularPesos(input, irv, duracionEstimada);
 
   const tieneActividadesAventura = input.actividades.some(
     a => (ACTIVIDAD_PESO[a.toLowerCase()] || 0) > 0.10
   );
   const numViajeros = input.edades.length;
-  const duracionEstimada = input.fechaIda && input.fechaVuelta
-    ? Math.ceil((new Date(input.fechaVuelta).getTime() - new Date(input.fechaIda).getTime()) / 86400000)
-    : 14;
+
+  // Duración impacta cobertura recomendada y precio
+  const duracionFactor = Math.max(0.5, Math.min(3, duracionEstimada / 14));
+  const duracionPremium = duracionEstimada > 30 ? 0.2 : duracionEstimada > 14 ? 0.1 : 0;
 
   const coberturaRecomendada = {
-    medica: irv > 65 ? 1000000 : irv > 50 ? 500000 : 300000,
-    evacuacion: irv > 65 ? 2000000 : irv > 50 ? 1000000 : 500000,
+    medica: Math.round((irv > 65 ? 1000000 : irv > 50 ? 500000 : 300000) * duracionFactor),
+    evacuacion: Math.round((irv > 65 ? 2000000 : irv > 50 ? 1000000 : 500000) * duracionFactor),
   };
 
   let alertaOsint: string | null = null;
@@ -123,6 +128,9 @@ export function scoreSeguros(input: SeguroInput): {
   }
   if (!alertaOsint && irv > 65) {
     alertaOsint = `IRV ${irv}/100 — se recomienda cobertura médica ≥${(coberturaRecomendada.medica / 1000000).toFixed(0)}M€ y evacuación ≥${(coberturaRecomendada.evacuacion / 1000000).toFixed(0)}M€.`;
+  }
+  if (duracionEstimada > 30) {
+    alertaOsint = (alertaOsint ? alertaOsint + ' ' : '') + `Viaje largo (${duracionEstimada}d). Verifica cobertura para estancias prolongadas.`;
   }
 
   const resultados: SeguroScore[] = (segurosData.productos as any[]).map(p => {

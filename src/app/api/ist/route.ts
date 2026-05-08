@@ -1,26 +1,6 @@
 import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase-admin';
-
-// Fallback mínimo: solo los eventos anuales más impactantes para el turismo
-// Se usa ÚNICAMENTE cuando Supabase no tiene eventos para el país/mes
-const CRITICAL_EVENTS: { name: string; code: string; month: number; istImpact: number }[] = [
-  { name: 'MWC Barcelona', code: 'es', month: 2, istImpact: 35 },
-  { name: 'Carnaval de Río', code: 'br', month: 2, istImpact: 30 },
-  { name: 'Carnaval de Venecia', code: 'it', month: 2, istImpact: 30 },
-  { name: 'Fallas de Valencia', code: 'es', month: 3, istImpact: 25 },
-  { name: 'Semana Santa', code: 'es', month: 3, istImpact: 25 },
-  { name: 'Oktoberfest', code: 'de', month: 9, istImpact: 35 },
-  { name: 'Feria de Abril', code: 'es', month: 4, istImpact: 20 },
-  { name: 'Grand Prix Mónaco', code: 'mc', month: 5, istImpact: 30 },
-  { name: 'Tomorrowland', code: 'be', month: 7, istImpact: 25 },
-  { name: 'Fiesta de San Fermín', code: 'es', month: 7, istImpact: 30 },
-  { name: 'Davos Foro Económico', code: 'ch', month: 1, istImpact: 30 },
-  { name: 'Año Nuevo Chino', code: 'cn', month: 1, istImpact: 25 },
-  { name: 'Super Bowl', code: 'us', month: 2, istImpact: 20 },
-  { name: 'Mardi Gras', code: 'us', month: 2, istImpact: 20 },
-  { name: 'Holi', code: 'in', month: 3, istImpact: 15 },
-  { name: 'Tour de Francia', code: 'fr', month: 7, istImpact: 20 },
-];
+import { EVENTS_FALLBACK, type FallbackEvent } from '@/lib/events-fallback';
 
 interface CityPattern {
   name: string;
@@ -48,6 +28,7 @@ const MONTH_SEASONALITY: Record<number, number> = {
 };
 
 async function getEventsForCountryMonth(countryCode: string, month: number): Promise<{ name: string; impact: number }[]> {
+  // Primero intentar desde Supabase
   try {
     const monthStr = String(month).padStart(2, '0');
     const result = await supabaseAdmin
@@ -65,10 +46,14 @@ async function getEventsForCountryMonth(countryCode: string, month: number): Pro
     }
   } catch {}
 
-  // Fallback a eventos críticos conocidos
-  return CRITICAL_EVENTS
-    .filter(e => e.code === countryCode.toLowerCase() && e.month === month)
-    .map(e => ({ name: e.name, impact: e.istImpact }));
+  // Fallback a eventos hardcodeados del calendario global
+  const monthStr = String(month).padStart(2, '0');
+  return EVENTS_FALLBACK
+    .filter(e => e.code.toUpperCase() === countryCode.toUpperCase() && e.start_date.startsWith(`2026-${monthStr}`))
+    .map(e => ({
+      name: e.title,
+      impact: e.impact_traveler === 'high' ? 25 : e.impact_traveler === 'medium' ? 15 : 5,
+    }));
 }
 
 async function calculateIST(cityCode: string, date: Date) {
@@ -131,7 +116,7 @@ export async function GET(request: Request) {
     date: targetDate.toISOString().split('T')[0],
     ist: result.ist, level: result.level, recommendation: result.recommendation,
     factors: result.factors, activeEvents: result.activeEvents,
-    methodology: 'IST = 0.35×Season + 0.25×Price + 0.20×Events (Global+Wikidata) + 0.20×Weekday',
-    note: 'Eventos desde Wikidata+GDELT con fallback a calendario crítico anual.',
+    methodology: 'IST = 0.35×Season + 0.25×Price + 0.20×Events + 0.20×Weekday',
+    note: 'Eventos desde Wikidata+GDELT con fallback a calendario global de 85+ eventos anuales.',
   });
 }
