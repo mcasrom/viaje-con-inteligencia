@@ -7,7 +7,7 @@ import { supabaseBrowserClient as supabaseClient } from '@/lib/supabase-browser'
 import { 
   ArrowLeft, Heart, MapPin, AlertTriangle, Trash2, 
   Plus, Mail, LogOut, Crown, Bell, Loader2, Calendar,
-  CheckCircle, XCircle, Star, Activity,
+  CheckCircle, XCircle, Star, Activity, Shield,
   Key, Lock, User, Eye, EyeOff, KeyRound
 } from 'lucide-react';
 import dynamic from 'next/dynamic';
@@ -835,6 +835,11 @@ export default function DashboardPage() {
         </div>
 
         <div className="mt-12 grid md:grid-cols-4 gap-4">
+          <Link href="/dashboard/seguros" className="bg-gradient-to-br from-indigo-600 to-purple-600 rounded-xl p-6 text-center hover:opacity-90 transition-opacity">
+            <Shield className="w-8 h-8 text-white mx-auto mb-2" />
+            <h3 className="font-bold text-white">Monitor Seguros</h3>
+            <p className="text-white/70 text-sm">Cobertura vs riesgo real</p>
+          </Link>
           <Link href="/dashboard/kpis" className="bg-gradient-to-br from-blue-600 to-cyan-600 rounded-xl p-6 text-center hover:opacity-90 transition-opacity">
             <Activity className="w-8 h-8 text-white mx-auto mb-2" />
             <h3 className="font-bold text-white">KPIs de Riesgo</h3>
