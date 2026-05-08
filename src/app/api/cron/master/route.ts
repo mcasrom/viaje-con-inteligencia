@@ -9,6 +9,7 @@ import { fetchAllPosts, classifySignal, detectFirstPerson, type ClassifiedSignal
 import { Resend } from 'resend';
 import { detectAndCreateIncidents } from '@/lib/incident-detector';
 import { saveAllPredictions } from '@/lib/ml-risk-predictor';
+import { fetchAndStoreEvents } from '@/lib/events-fetch';
 
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const TELEGRAM_CHANNEL_ID = process.env.TELEGRAM_CHANNEL_ID;
@@ -518,6 +519,23 @@ async function runTrialNotifications(): Promise<any> {
   }
 }
 
+// ===== EVENTS FETCH (Wikidata + GDELT + Groq) =====
+async function runEventsFetch(): Promise<any> {
+  console.log('[Master] Events fetch + enrich...');
+  try {
+    const result = await fetchAndStoreEvents();
+    return {
+      status: 'ok',
+      wikidata_events: result.wikidata,
+      gdelt_events: result.gdelt,
+      total_enriched: result.enriched,
+      errors: result.errors.length > 0 ? result.errors.slice(0, 5) : [],
+    };
+  } catch (e: any) {
+    return { status: 'error', error: e.message };
+  }
+}
+
 // ===== MASTER CRON =====
 async function withTimeout<T>(fn: () => Promise<T>, ms: number, label: string): Promise<T | { status: 'error'; error: string }> {
   try {
@@ -580,6 +598,14 @@ export async function GET(request: Request) {
     async () => saveAllPredictions(),
     30000,
     '6/8 ML Risk predictions'
+  );
+
+  // Phase 3d: Events fetch (Wikidata + GDELT + Groq enrichment)
+  console.log('[Master] 6b/8 Events intelligence...');
+  results.events = await withTimeout(
+    async () => fetchAndStoreEvents(),
+    120000,
+    '6b/8 Events intelligence'
   );
 
   // Phase 4: Digests and notifications (always run last)

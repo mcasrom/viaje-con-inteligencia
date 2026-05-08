@@ -31,7 +31,7 @@ export default function BlogSearch({ initialSearch, category, view }: Props) {
         value={value}
         onChange={(e) => setValue(e.target.value)}
         placeholder="Buscar artículos..."
-        className="w-full pl-10 pr-4 py-2.5 bg-slate-950 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-blue-500 transition-colors"
+        className="w-full pl-10 pr-4 py-2.5 bg-white/10 backdrop-blur-sm border-2 border-white/30 rounded-xl text-white placeholder-white/50 focus:outline-none focus:border-white/60 focus:bg-white/15 transition-all"
       />
       {category && <input type="hidden" name="category" value={category} />}
       <button type="submit" className="sr-only">Buscar</button>

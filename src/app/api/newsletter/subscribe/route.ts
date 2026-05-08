@@ -180,12 +180,30 @@ async function sendWelcomeEmail(email: string, name: string) {
   });
 }
 
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+const DISPOSABLE_DOMAINS = new Set([
+  'mailinator.com', 'guerrillamail.com', 'tempmail.com', 'tempmail.net',
+  'throwaway.email', 'yopmail.com', '10minutemail.com', 'sharklasers.com',
+  'trashmail.com', 'maildrop.cc', 'getnada.com', 'burner.email',
+  'temp-mail.org', 'fakeinbox.com', 'mailnator.com',
+]);
+
+function isValidEmail(email: string): boolean {
+  if (!EMAIL_REGEX.test(email)) return false;
+  const domain = email.split('@')[1].toLowerCase();
+  if (DISPOSABLE_DOMAINS.has(domain)) return false;
+  return true;
+}
+
 export async function POST(request: NextRequest) {
   try {
     const { email, name, source } = await request.json();
 
-    if (!email || !email.includes('@')) {
-      return NextResponse.json({ error: 'Email inválido' }, { status: 400 });
+    if (!email || !isValidEmail(email)) {
+      return NextResponse.json(
+        { error: 'Email inválido. Usa un email real.' },
+        { status: 400 }
+      );
     }
 
     const emailLower = email.toLowerCase();
@@ -195,10 +213,14 @@ export async function POST(request: NextRequest) {
         .from('newsletter_subscribers')
         .select('verified')
         .eq('email', emailLower)
-        .single();
+        .maybeSingle();
 
       if (existing?.verified) {
-        return NextResponse.json({ success: true, message: 'Ya estás suscrito al newsletter.' });
+        return NextResponse.json({
+          success: true,
+          already_subscribed: true,
+          message: 'Ya estás suscrito al newsletter.',
+        });
       }
     }
 
@@ -215,7 +237,11 @@ export async function POST(request: NextRequest) {
 
     await sendConfirmationEmail(emailLower, name || '', verifyToken);
 
-    return NextResponse.json({ success: true, message: 'Revisa tu email para confirmar la suscripción.' });
+    return NextResponse.json({
+      success: true,
+      already_subscribed: false,
+      message: 'Te hemos enviado un email de confirmación. Revisa tu bandeja de entrada.',
+    });
   } catch (error) {
     console.error('Newsletter error:', error);
     return NextResponse.json({ error: 'Error interno' }, { status: 500 });
@@ -228,13 +254,17 @@ export async function GET(request: NextRequest) {
   const token = searchParams.get('token');
 
   if (action === 'verify' && token && supabase) {
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from('newsletter_subscribers')
       .select('email, name, verified')
       .eq('verify_token', token)
-      .single();
+      .maybeSingle();
 
-    if (data && !data.verified) {
+    if (!data) {
+      return NextResponse.redirect(new URL('/?newsletter=invalid_token', request.url));
+    }
+
+    if (!data.verified) {
       await supabase
         .from('newsletter_subscribers')
         .update({ verified: true, verify_token: null })

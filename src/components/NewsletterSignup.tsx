@@ -27,9 +27,11 @@ export default function NewsletterSignup({ variant = 'blog' }: NewsletterSignupP
 
       if (res.ok) {
         setStatus('success');
-        setMessage('Revisa tu email para confirmar la suscripción. ¡Confirma y recibirás nuestro resumen semanal!');
-        setEmail('');
-        setName('');
+        setMessage(data.message || '¡Suscripción exitosa!');
+        if (!data.already_subscribed) {
+          setEmail('');
+          setName('');
+        }
       } else {
         setStatus('error');
         setMessage(data.error || 'Error al suscribir');
