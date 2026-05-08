@@ -189,6 +189,19 @@ export async function POST(request: NextRequest) {
     }
 
     const emailLower = email.toLowerCase();
+
+    if (supabase) {
+      const { data: existing } = await supabase
+        .from('newsletter_subscribers')
+        .select('verified')
+        .eq('email', emailLower)
+        .single();
+
+      if (existing?.verified) {
+        return NextResponse.json({ success: true, message: 'Ya estás suscrito al newsletter.' });
+      }
+    }
+
     const verifyToken = crypto.randomUUID();
 
     if (supabase) {
@@ -217,15 +230,15 @@ export async function GET(request: NextRequest) {
   if (action === 'verify' && token && supabase) {
     const { data } = await supabase
       .from('newsletter_subscribers')
-      .select('email, name')
+      .select('email, name, verified')
       .eq('verify_token', token)
       .single();
 
-    if (data) {
+    if (data && !data.verified) {
       await supabase
         .from('newsletter_subscribers')
         .update({ verified: true, verify_token: null })
-        .eq('verify_token', token);
+        .eq('email', data.email);
 
       await sendWelcomeEmail(data.email, data.name || '');
     }

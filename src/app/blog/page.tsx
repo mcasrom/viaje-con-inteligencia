@@ -3,6 +3,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Calendar, Clock, Tag, Search, ChevronLeft, ChevronRight, List, Grid } from 'lucide-react';
 import { getAllPosts, getCategories, getPostsPagination, PostMeta } from '@/lib/posts';
+import BlogSearch from './BlogSearch';
 
 const POSTS_PER_PAGE = 10;
 
@@ -177,19 +178,7 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
 
           {/* Search and Filters */}
           <div className="flex flex-col md:flex-row gap-3 max-w-3xl mx-auto">
-            <form className="flex-1 relative" action="/blog" method="GET">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
-              <input
-                type="text"
-                name="search"
-                placeholder="Buscar artículos..."
-                defaultValue={search || ''}
-                className="w-full pl-10 pr-4 py-2.5 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 transition-colors"
-              />
-              {category && <input type="hidden" name="category" value={category} />}
-              {view === 'grid' && <input type="hidden" name="view" value="grid" />}
-              <button type="submit" className="sr-only">Buscar</button>
-            </form>
+            <BlogSearch initialSearch={search || ''} category={category} view={view} />
             <div className="flex flex-wrap items-center gap-2">
               <Link
                 href={allLink}
