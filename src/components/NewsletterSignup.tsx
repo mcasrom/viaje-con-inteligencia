@@ -45,30 +45,45 @@ export default function NewsletterSignup({ variant = 'blog' }: NewsletterSignupP
   if (variant === 'footer') {
     return (
       <form onSubmit={handleSubmit} className="space-y-3">
-        <div className="flex flex-col sm:flex-row gap-3">
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Tu email"
-            required
-            className="flex-1 px-4 py-2 bg-slate-800 text-white rounded-lg border border-slate-600 focus:border-blue-500 focus:outline-none"
-          />
-          <button
-            type="submit"
-            disabled={status === 'loading'}
-            className="px-4 py-2 bg-blue-500 text-white rounded-lg font-medium hover:bg-blue-600 disabled:opacity-50 transition-colors"
-          >
-            {status === 'loading' ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Suscribirse'}
-          </button>
-        </div>
-        <p className="text-slate-500 text-xs">
-          Al suscribirte aceptas nuestra{' '}
-          <a href="/legal#privacidad" className="underline hover:text-slate-300">
-            política de privacidad
-          </a>
-          . Tu email solo se usará para el newsletter. Cancela en cualquier momento.
-        </p>
+        {status === 'success' ? (
+          <div className="flex items-center gap-2 text-green-400 text-sm">
+            <Check className="w-4 h-4" />
+            <span>{message}</span>
+          </div>
+        ) : (
+          <>
+            <div className="flex flex-col sm:flex-row gap-3">
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Tu email"
+                required
+                className="flex-1 px-4 py-2 bg-slate-800 text-white rounded-lg border border-slate-600 focus:border-blue-500 focus:outline-none"
+              />
+              <button
+                type="submit"
+                disabled={status === 'loading'}
+                className="px-4 py-2 bg-blue-500 text-white rounded-lg font-medium hover:bg-blue-600 disabled:opacity-50 transition-colors flex items-center gap-2"
+              >
+                {status === 'loading' ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Suscribirse'}
+              </button>
+            </div>
+            <p className="text-slate-500 text-xs">
+              Al suscribirte aceptas nuestra{' '}
+              <a href="/legal#privacidad" className="underline hover:text-slate-300">
+                política de privacidad
+              </a>
+              . Tu email solo se usará para el newsletter. Cancela en cualquier momento.
+            </p>
+            {status === 'error' && (
+              <div className="flex items-center gap-2 text-red-400 text-xs">
+                <AlertCircle className="w-3.5 h-3.5" />
+                <span>{message}</span>
+              </div>
+            )}
+          </>
+        )}
       </form>
     );
   }
