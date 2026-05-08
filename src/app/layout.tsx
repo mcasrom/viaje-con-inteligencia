@@ -28,10 +28,13 @@ const geistSans = Geist({
   subsets: ["latin"],
 });
 
+// Use environment-based URL for better dev/staging/prod support
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://www.viajeinteligencia.com";
+
 export const metadata: Metadata = {
-  metadataBase: new URL("https://www.viajeinteligencia.com"),
+  metadataBase: new URL(baseUrl),
   title: "Viaje con Inteligencia | Mapa de Riesgos de Viaje MAEC - Riesgo Zero",
-  description: "Tu guía completa de viajes seguros. Mapa interactivo de riesgos por país según MAEC español. Embajadas, requisitos, consejos, qué hacer y qué no hacer en cada destino. Viaja con inteligencia, viaja seguro.",
+  description: "Tu guía completa de viajes seguros. Mapa interactivo de riesgos por país según MAEC español. Embajadas, requisitos, consejos, qué hacer y qué no hacer en cada destino. Viaja seguro con información verificada.",
   authors: [{ name: "M.Castillo" }],
   creator: "M.Castillo",
   publisher: "Viaje con Inteligencia",
@@ -39,7 +42,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Viaje con Inteligencia | Riesgo Zero",
     description: "Mapa interactivo de riesgos de viaje por país. Información oficial MAEC. Embajadas, requisitos y consejos para viajar seguro.",
-    url: "https://www.viajeinteligencia.com",
+    url: baseUrl,
     siteName: "Viaje con Inteligencia",
     locale: "es_ES",
     type: "website",
@@ -90,16 +93,17 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-title" content="ViajeIA" />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="msapplication-TileColor" content="#0f172a" />
-        <link rel="alternate" hrefLang="es" href="https://www.viajeinteligencia.com" />
-        <link rel="alternate" hrefLang="en" href="https://www.viajeinteligencia.com/en" />
-        <link rel="alternate" hrefLang="x-default" href="https://www.viajeinteligencia.com" />
-        <link rel="sitemap" type="application/xml" href="https://www.viajeinteligencia.com/sitemap.xml" />
+        <link rel="alternate" hrefLang="es" href={`${baseUrl}`} />
+        {/* TODO: Add /en route when i18n is implemented */}
+        {/* <link rel="alternate" hrefLang="en" href={`${baseUrl}/en`} /> */}
+        <link rel="alternate" hrefLang="x-default" href={baseUrl} />
+        <link rel="sitemap" type="application/xml" href={`${baseUrl}/sitemap.xml`} />
         <meta name="thumbnail" content="/preview_favicon.jpg" />
       </head>
       <body className={`${geistSans.variable} antialiased`}>
-<Analytics />
+        <Analytics />
         <SpeedInsights />
-<Providers>
+        <Providers>
           <TopBar />
           <ServiceWorkerRegistration />
           <Onboarding />
@@ -108,7 +112,7 @@ export default function RootLayout({
           <QuickAccess />
           <AITravelAssistant />
           <Footer />
-          </Providers>
+        </Providers>
       </body>
     </html>
   );

@@ -3,9 +3,9 @@ const nextConfig: NextConfig = {
   images: {
     minimumCacheTTL: 60 * 60 * 24,
     remotePatterns: [
-      { hostname: 'images.unsplash.com' },
-      { hostname: 'viaje-con-inteligencia.vercel.app' },
-      { hostname: 'www.viajeinteligencia.com' },
+      { protocol: 'https', hostname: 'images.unsplash.com' },
+      { protocol: 'https', hostname: 'viaje-con-inteligencia.vercel.app' },
+      { protocol: 'https', hostname: 'www.viajeinteligencia.com' },
     ],
   },
   async headers() {
