@@ -6,7 +6,7 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { supabaseBrowserClient as supabaseClient } from '@/lib/supabase-browser';
 import { 
   ArrowLeft, Heart, MapPin, AlertTriangle, Trash2, 
-  Plus, Mail, LogOut, Crown, Bell, Loader2,
+  Plus, Mail, LogOut, Crown, Bell, Loader2, Calendar,
   CheckCircle, XCircle, Star, Activity,
   Key, Lock, User, Eye, EyeOff, KeyRound
 } from 'lucide-react';
@@ -16,6 +16,7 @@ import RecommendationsList from '@/components/RecommendationsList';
 import { UserLevelBadge, trackActivity } from '@/components/UserLevel';
 import { paisesData, getLabelRiesgo } from '@/data/paises';
 import WeatherWidget from '@/components/WeatherWidget';
+import EventTimeline from '@/components/EventTimeline';
 import { useAuth } from '@/contexts/AuthContext';
 
 const Turnstile = dynamic(() => import('@marsidev/react-turnstile').then(m => m.Turnstile), { ssr: false });
@@ -798,6 +799,30 @@ export default function DashboardPage() {
                 </div>
               );
             })}
+          </div>
+        )}
+
+        {favorites.length > 0 && (
+          <div className="mt-12">
+            <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
+              <Calendar className="w-5 h-5 text-yellow-400" />
+              Próximos eventos en tus favoritos
+            </h2>
+            <div className="space-y-6">
+              {favorites.map(fav => {
+                const pais = paisesData[fav.country_code];
+                if (!pais) return null;
+                return (
+                  <EventTimeline
+                    key={fav.id}
+                    country={pais.nombre}
+                    days={60}
+                    limit={5}
+                    title={pais.nombre}
+                  />
+                );
+              })}
+            </div>
           </div>
         )}
 

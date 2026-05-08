@@ -17,6 +17,7 @@ import WeatherWidget from '@/components/WeatherWidget';
 import TravelCostIndex from '@/components/TravelCostIndex';
 import LoginButton from '@/components/LoginButton';
 import OsintAlertsBanner from '@/components/OsintAlertsBanner';
+import EventTimeline from '@/components/EventTimeline';
 import { useAuth } from '@/contexts/AuthContext';
 
 interface DetallePaisClientProps {
@@ -203,6 +204,10 @@ export default function DetallePaisClient({ pais, relatedPosts = [] }: DetallePa
         </div>
 
         <OsintAlertsBanner countryName={pais.nombre} />
+
+        <div className="mb-8">
+          <EventTimeline country={pais.nombre} days={60} limit={8} title="Próximos eventos" />
+        </div>
 
         <div className="grid md:grid-cols-3 gap-6 mb-8">
           <div className="bg-slate-800 rounded-xl p-6 border border-slate-700">

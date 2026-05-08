@@ -1,0 +1,184 @@
+import segurosData from '@/data/seguros.json';
+import { paisesData, type NivelRiesgo } from '@/data/paises';
+
+export interface SeguroInput {
+  destino: string;
+  fechaIda?: string;
+  fechaVuelta?: string;
+  edades: number[];
+  actividades: string[];
+  costeViaje: number;
+  tipoViaje: 'individual' | 'familiar' | 'grupo';
+  residencia: 'ES' | 'EU';
+}
+
+export interface SeguroScore {
+  id: string;
+  nombre: string;
+  aseguradora: string;
+  web: string;
+  precio_min: number;
+  precio_max: number;
+  score: number;
+  score_max: number;
+  coberturas: {
+    medica: number;
+    evacuacion: number;
+    cancelacion: number;
+    repatriacion: boolean;
+    covid: boolean;
+    deportes_basicos: boolean;
+    deportes_aventura: boolean;
+    electronica: boolean;
+    equipaje: number;
+    responsabilidad_civil: number;
+  };
+  exclusiones: string[];
+  alerta_osint: string | null;
+  recomendado_para: string[];
+  afiliado: string;
+}
+
+const riskLevelNum: Record<NivelRiesgo, number> = {
+  'sin-riesgo': 1, 'bajo': 2, 'medio': 3, 'alto': 4, 'muy-alto': 5,
+};
+
+const ACTIVIDAD_PESO: Record<string, number> = {
+  senderismo: 0.05, trekking: 0.08, buceo: 0.15, snorkel: 0.03,
+  esquí: 0.12, snowboard: 0.12, surf: 0.08, kitesurf: 0.15,
+  moto: 0.10, ciclismo: 0.05, puenting: 0.20, paracaidismo: 0.20,
+  rafting: 0.15, escalada: 0.15, safari: 0.08, voluntariado: 0.03,
+};
+
+function getDangerLevel(codigo: string): { nivel: number; irv: number } {
+  const pais = paisesData[codigo as keyof typeof paisesData];
+  if (!pais) return { nivel: 2, irv: 80 };
+  const nivel = riskLevelNum[pais.nivelRiesgo] || 2;
+  const irv = Math.max(40, Math.min(100, 100 - nivel * 10));
+  return { nivel, irv };
+}
+
+function calcularPesos(input: SeguroInput, dangerLevel: number) {
+  const irv = dangerLevel;
+  const pesoMedica = irv > 70 ? 0.35 : irv > 60 ? 0.25 : 0.20;
+  const pesoEvacuacion = irv > 70 ? 0.30 : irv > 60 ? 0.20 : 0.10;
+  const pesoCancelacion = input.costeViaje > 3000 ? 0.25 : input.costeViaje > 1500 ? 0.20 : 0.15;
+  const pesoDeportes = input.actividades.length > 0 ? 0.20 : 0.05;
+  const pesoGeneral = 1 - pesoMedica - pesoEvacuacion - pesoCancelacion - pesoDeportes;
+
+  return { pesoMedica, pesoEvacuacion, pesoCancelacion, pesoDeportes, pesoGeneral };
+}
+
+export function scoreSeguros(input: SeguroInput): {
+  resultados: SeguroScore[];
+  alerta_osint: string | null;
+  irv: number;
+  cobertura_recomendada: { medica: number; evacuacion: number };
+} {
+  const { nivel, irv } = getDangerLevel(input.destino);
+  const pesos = calcularPesos(input, irv);
+
+  const tieneActividadesAventura = input.actividades.some(
+    a => (ACTIVIDAD_PESO[a.toLowerCase()] || 0) > 0.10
+  );
+  const numViajeros = input.edades.length;
+  const duracionEstimada = input.fechaIda && input.fechaVuelta
+    ? Math.ceil((new Date(input.fechaVuelta).getTime() - new Date(input.fechaIda).getTime()) / 86400000)
+    : 14;
+
+  const coberturaRecomendada = {
+    medica: irv > 65 ? 1000000 : irv > 50 ? 500000 : 300000,
+    evacuacion: irv > 65 ? 2000000 : irv > 50 ? 1000000 : 500000,
+  };
+
+  let alertaOsint: string | null = null;
+  if (input.actividades.length > 0 && !tieneActividadesAventura) {
+    const deportesAventura = Object.entries(ACTIVIDAD_PESO)
+      .filter(([, p]) => p > 0.10)
+      .map(([k]) => k);
+    const noCubiertas = input.actividades.filter(
+      a => deportesAventura.includes(a.toLowerCase())
+    );
+    if (noCubiertas.length > 0) {
+      alertaOsint = `Actividades como ${noCubiertas.join(', ')} requieren cobertura específica. Verifica exclusiones.`;
+    }
+  }
+  if (!alertaOsint && irv > 65) {
+    alertaOsint = `IRV ${irv}/100 — se recomienda cobertura médica ≥${(coberturaRecomendada.medica / 1000000).toFixed(0)}M€ y evacuación ≥${(coberturaRecomendada.evacuacion / 1000000).toFixed(0)}M€.`;
+  }
+
+  const resultados: SeguroScore[] = (segurosData.productos as any[]).map(p => {
+    const c = p.coberturas;
+    let score = 0;
+    const maxScore = 100;
+
+    const puntMedica = Math.min(1, c.medica / coberturaRecomendada.medica);
+    score += puntMedica * pesos.pesoMedica * 100;
+
+    const puntEvacuacion = Math.min(1, c.evacuacion / coberturaRecomendada.evacuacion);
+    score += puntEvacuacion * pesos.pesoEvacuacion * 100;
+
+    const puntCancelacion = c.cancelacion >= 100 ? 1 : c.cancelacion / 100;
+    score += puntCancelacion * pesos.pesoCancelacion * 100;
+
+    if (tieneActividadesAventura) {
+      score += (c.deportes_aventura ? 1 : 0) * pesos.pesoDeportes * 100;
+    } else if (input.actividades.length > 0) {
+      score += (c.deportes_basicos ? 0.8 : 0.3) * pesos.pesoDeportes * 100;
+    }
+
+    const extras = [
+      c.repatriacion ? 0.15 : 0,
+      c.covid ? 0.10 : 0,
+      duracionEstimada > 30 && c.electronica ? 0.10 : 0,
+      input.costeViaje > 3000 ? Math.min(0.10, c.equipaje / 2000 * 0.10) : 0,
+    ];
+    const extraTotal = extras.reduce((a, b) => a + b, 0);
+
+    score += extraTotal * pesos.pesoGeneral * 100;
+    score = Math.round(Math.min(maxScore, Math.max(0, score)));
+
+    const recomendadoPara = p.recomendado_para || [];
+
+    return {
+      id: p.id,
+      nombre: p.nombre,
+      aseguradora: p.aseguradora,
+      web: p.web,
+      precio_min: p.precio_min,
+      precio_max: p.precio_max,
+      score,
+      score_max: maxScore,
+      coberturas: {
+        medica: c.medica,
+        evacuacion: c.evacuacion,
+        cancelacion: c.cancelacion,
+        repatriacion: c.repatriacion,
+        covid: c.covid,
+        deportes_basicos: c.deportes_basicos,
+        deportes_aventura: c.deportes_aventura,
+        electronica: c.electronica,
+        equipaje: c.equipaje,
+        responsabilidad_civil: c.responsabilidad_civil || 0,
+      },
+      exclusiones: p.exclusiones || [],
+      alerta_osint: null,
+      recomendado_para: recomendadoPara,
+      afiliado: p.afiliado,
+    };
+  });
+
+  resultados.sort((a, b) => b.score - a.score);
+
+  const maxScore = Math.max(...resultados.map(r => r.score));
+  if (alertaOsint) {
+    resultados[0].alerta_osint = alertaOsint;
+  }
+
+  return {
+    resultados,
+    alerta_osint: alertaOsint,
+    irv,
+    cobertura_recomendada: coberturaRecomendada,
+  };
+}

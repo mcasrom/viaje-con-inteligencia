@@ -1,0 +1,275 @@
+{
+  "productos": [
+    {
+      "id": "iati-estandar",
+      "nombre": "IATI Estándar",
+      "aseguradora": "IATI Seguros",
+      "web": "https://www.iati.es/seguro-viaje-estandar/",
+      "precio_min": 49,
+      "precio_max": 89,
+      "moneda": "EUR",
+      "coberturas": {
+        "medica": 500000,
+        "evacuacion": 1000000,
+        "cancelacion": 75,
+        "repatriacion": true,
+        "covid": true,
+        "deportes_basicos": true,
+        "deportes_aventura": false,
+        "electronica": false,
+        "equipaje": 800,
+        "responsabilidad_civil": 300000,
+        "retraso_vuelo": 300,
+        "perdida_conexion": 500
+      },
+      "exclusiones": ["Deportes de aventura", "Buceo >30m", "Pre-existentes"],
+      "recomendado_para": ["viaje_estandar", "turismo", "ciudad"],
+      "afiliado": "https://www.iati.es/seguro-viaje-estandar/?ref=viajeinteligencia"
+    },
+    {
+      "id": "iati-plus",
+      "nombre": "IATI Viajes Plus",
+      "aseguradora": "IATI Seguros",
+      "web": "https://www.iati.es/seguro-viaje-plus/",
+      "precio_min": 64,
+      "precio_max": 119,
+      "moneda": "EUR",
+      "coberturas": {
+        "medica": 1000000,
+        "evacuacion": 2000000,
+        "cancelacion": 100,
+        "repatriacion": true,
+        "covid": true,
+        "deportes_basicos": true,
+        "deportes_aventura": true,
+        "electronica": false,
+        "equipaje": 1200,
+        "responsabilidad_civil": 500000,
+        "retraso_vuelo": 500,
+        "perdida_conexion": 800
+      },
+      "exclusiones": ["Pre-existentes", "Buceo >40m"],
+      "recomendado_para": ["riesgo_medio", "deportes", "viaje_largo", "familia"],
+      "afiliado": "https://www.iati.es/seguro-viaje-plus/?ref=viajeinteligencia"
+    },
+    {
+      "id": "iati-tope",
+      "nombre": "IATI Top Ventas",
+      "aseguradora": "IATI Seguros",
+      "web": "https://www.iati.es/seguro-viaje-top-ventas/",
+      "precio_min": 79,
+      "precio_max": 149,
+      "moneda": "EUR",
+      "coberturas": {
+        "medica": 2000000,
+        "evacuacion": 2000000,
+        "cancelacion": 100,
+        "repatriacion": true,
+        "covid": true,
+        "deportes_basicos": true,
+        "deportes_aventura": true,
+        "electronica": true,
+        "equipaje": 1500,
+        "responsabilidad_civil": 1000000,
+        "retraso_vuelo": 600,
+        "perdida_conexion": 1000
+      },
+      "exclusiones": ["Pre-existentes"],
+      "recomendado_para": ["riesgo_alto", "deportes_aventura", "lujo", "larga_estancia"],
+      "afiliado": "https://www.iati.es/seguro-viaje-top-ventas/?ref=viajeinteligencia"
+    },
+    {
+      "id": "chapka-cap",
+      "nombre": "Chapka Cap 500",
+      "aseguradora": "Chapka Assurances",
+      "web": "https://www.chapka.es/seguro-de-viaje/cap-500",
+      "precio_min": 45,
+      "precio_max": 75,
+      "moneda": "EUR",
+      "coberturas": {
+        "medica": 500000,
+        "evacuacion": 500000,
+        "cancelacion": 80,
+        "repatriacion": true,
+        "covid": true,
+        "deportes_basicos": true,
+        "deportes_aventura": false,
+        "electronica": false,
+        "equipaje": 600,
+        "responsabilidad_civil": 300000,
+        "retraso_vuelo": 200,
+        "perdida_conexion": 300
+      },
+      "exclusiones": ["Deportes de aventura", "Buceo", "Pre-existentes"],
+      "recomendado_para": ["viaje_estandar", "turismo", "corto"],
+      "afiliado": "https://www.chapka.es/seguro-de-viaje/cap-500?ref=viajeinteligencia"
+    },
+    {
+      "id": "chapka-cap1000",
+      "nombre": "Chapka Cap 1000",
+      "aseguradora": "Chapka Assurances",
+      "web": "https://www.chapka.es/seguro-de-viaje/cap-1000",
+      "precio_min": 59,
+      "precio_max": 99,
+      "moneda": "EUR",
+      "coberturas": {
+        "medica": 1000000,
+        "evacuacion": 1000000,
+        "cancelacion": 80,
+        "repatriacion": true,
+        "covid": true,
+        "deportes_basicos": true,
+        "deportes_aventura": true,
+        "electronica": false,
+        "equipaje": 1200,
+        "responsabilidad_civil": 500000,
+        "retraso_vuelo": 400,
+        "perdida_conexion": 600
+      },
+      "exclusiones": ["Pre-existentes"],
+      "recomendado_para": ["riesgo_medio", "deportes", "viaje_largo"],
+      "afiliado": "https://www.chapka.es/seguro-de-viaje/cap-1000?ref=viajeinteligencia"
+    },
+    {
+      "id": "intermundial-mundial",
+      "nombre": "Intermundial Mundial",
+      "aseguradora": "Intermundial",
+      "web": "https://www.intermundial.es/seguros-viaje/seguro-mundial",
+      "precio_min": 42,
+      "precio_max": 72,
+      "moneda": "EUR",
+      "coberturas": {
+        "medica": 400000,
+        "evacuacion": 600000,
+        "cancelacion": 70,
+        "repatriacion": true,
+        "covid": true,
+        "deportes_basicos": true,
+        "deportes_aventura": false,
+        "electronica": false,
+        "equipaje": 500,
+        "responsabilidad_civil": 150000,
+        "retraso_vuelo": 200,
+        "perdida_conexion": 300
+      },
+      "exclusiones": ["Deportes de aventura", "Buceo", "Pre-existentes"],
+      "recomendado_para": ["viaje_estandar", "turismo", "europa"],
+      "afiliado": "https://www.intermundial.es/seguros-viaje/seguro-mundial?ref=viajeinteligencia"
+    },
+    {
+      "id": "axa-asistencia",
+      "nombre": "AXA Asistencia Viaje",
+      "aseguradora": "AXA Partners",
+      "web": "https://www.axa.es/seguros-viaje",
+      "precio_min": 55,
+      "precio_max": 95,
+      "moneda": "EUR",
+      "coberturas": {
+        "medica": 750000,
+        "evacuacion": 1000000,
+        "cancelacion": 85,
+        "repatriacion": true,
+        "covid": true,
+        "deportes_basicos": true,
+        "deportes_aventura": true,
+        "electronica": true,
+        "equipaje": 1000,
+        "responsabilidad_civil": 600000,
+        "retraso_vuelo": 400,
+        "perdida_conexion": 600
+      },
+      "exclusiones": ["Pre-existentes"],
+      "recomendado_para": ["riesgo_alto", "deportes", "familia", "larga_estancia"],
+      "afiliado": "https://www.axa.es/seguros-viaje?ref=viajeinteligencia"
+    },
+    {
+      "id": "mapfre-asistencia",
+      "nombre": "Mapfre Asistencia Viaje",
+      "aseguradora": "Mapfre",
+      "web": "https://www.mapfre.es/seguros-viaje/",
+      "precio_min": 48,
+      "precio_max": 85,
+      "moneda": "EUR",
+      "coberturas": {
+        "medica": 600000,
+        "evacuacion": 800000,
+        "cancelacion": 80,
+        "repatriacion": true,
+        "covid": true,
+        "deportes_basicos": true,
+        "deportes_aventura": false,
+        "electronica": false,
+        "equipaje": 700,
+        "responsabilidad_civil": 300000,
+        "retraso_vuelo": 300,
+        "perdida_conexion": 400
+      },
+      "exclusiones": ["Deportes de aventura", "Pre-existentes"],
+      "recomendado_para": ["viaje_estandar", "familia", "europa"],
+      "afiliado": "https://www.mapfre.es/seguros-viaje/?ref=viajeinteligencia"
+    },
+    {
+      "id": "allianz-care",
+      "nombre": "Allianz Care Viaje",
+      "aseguradora": "Allianz",
+      "web": "https://www.allianz.es/seguros-viaje",
+      "precio_min": 52,
+      "precio_max": 88,
+      "moneda": "EUR",
+      "coberturas": {
+        "medica": 1000000,
+        "evacuacion": 1000000,
+        "cancelacion": 75,
+        "repatriacion": true,
+        "covid": true,
+        "deportes_basicos": true,
+        "deportes_aventura": false,
+        "electronica": false,
+        "equipaje": 800,
+        "responsabilidad_civil": 500000,
+        "retraso_vuelo": 350,
+        "perdida_conexion": 500
+      },
+      "exclusiones": ["Deportes de aventura", "Pre-existentes"],
+      "recomendado_para": ["viaje_estandar", "larga_estancia"],
+      "afiliado": "https://www.allianz.es/seguros-viaje?ref=viajeinteligencia"
+    }
+  ],
+  "perfiles": {
+    "viaje_estandar": {
+      "label": "Viaje estándar",
+      "descripcion": "Turismo, ciudad, sin actividades de riesgo",
+      "cobertura_minima": { "medica": 300000, "evacuacion": 500000 }
+    },
+    "riesgo_medio": {
+      "label": "Destino de riesgo medio",
+      "descripcion": "País con IRV >60, se recomienda cobertura ampliada",
+      "cobertura_minima": { "medica": 500000, "evacuacion": 1000000 }
+    },
+    "riesgo_alto": {
+      "label": "Destino de riesgo alto",
+      "descripcion": "País con IRV >70, evacuación obligatoria",
+      "cobertura_minima": { "medica": 1000000, "evacuacion": 2000000 }
+    },
+    "deportes": {
+      "label": "Viaje con deportes",
+      "descripcion": "Senderismo, trekking, deportes sin motor",
+      "cobertura_minima": { "medica": 500000, "evacuacion": 1000000 }
+    },
+    "deportes_aventura": {
+      "label": "Deportes de aventura",
+      "descripcion": "Buceo, esquí, moto, puenting, paracaidismo",
+      "cobertura_minima": { "medica": 1000000, "evacuacion": 2000000 }
+    },
+    "familia": {
+      "label": "Viaje familiar",
+      "descripcion": "Viaje con niños o mayores",
+      "cobertura_minima": { "medica": 500000, "evacuacion": 500000 }
+    },
+    "larga_estancia": {
+      "label": "Larga estancia",
+      "descripcion": "Viaje >30 días",
+      "cobertura_minima": { "medica": 1000000, "evacuacion": 1000000 }
+    }
+  }
+}
