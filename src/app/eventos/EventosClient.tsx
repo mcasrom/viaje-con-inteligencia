@@ -38,6 +38,7 @@ export default function EventosClient() {
       .then(res => res.json())
       .then(data => {
         if (data.events) setEvents(data.events);
+        else if (data.data) setEvents(data.data);
         else if (Array.isArray(data)) setEvents(data);
         else setEvents([]);
       })

@@ -178,7 +178,24 @@ export async function getEvents(options: {
   // Fallback a eventos hardcodeados si Supabase no tiene datos
   if (!data || data.length === 0) {
     const fallback = getFallbackEvents(options);
-    return { data: fallback.data, count: fallback.count, source: 'fallback' };
+    const mapped = fallback.data.map(e => ({
+      id: `fallback-${e.code}-${e.start_date}-${Math.random().toString(36).slice(2, 6)}`,
+      title: e.title,
+      country: e.code.toUpperCase(),
+      description: e.impact_note || e.title,
+      category: e.category,
+      subcategory: e.subcategory,
+      start_date: e.start_date,
+      end_date: e.end_date,
+      impact_traveler: e.impact_traveler,
+      impact_note: e.impact_note,
+      city: e.city,
+      source: e.source,
+      url: null,
+      lat: null,
+      lng: null,
+    }));
+    return { data: mapped, count: fallback.count, source: 'fallback' };
   }
 
   return { data: data || [], count: count || 0, source: 'supabase' };
