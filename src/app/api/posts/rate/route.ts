@@ -65,5 +65,19 @@ export async function POST(request: NextRequest) {
       .insert({ slug, rating, user_id: user.id });
   }
 
-  return NextResponse.json({ success: true });
+  const { data: allRatings } = await supabaseAdmin
+    .from('post_ratings')
+    .select('rating, user_id')
+    .eq('slug', slug);
+
+  let average = 0;
+  let count = 0;
+
+  if (allRatings && allRatings.length > 0) {
+    const total = allRatings.reduce((sum, r) => sum + r.rating, 0);
+    average = Math.round((total / allRatings.length) * 10) / 10;
+    count = allRatings.length;
+  }
+
+  return NextResponse.json({ success: true, average, count, userRating: rating });
 }

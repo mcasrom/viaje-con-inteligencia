@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Star, Send, User } from 'lucide-react';
+import { Star } from 'lucide-react';
 
 interface RatingProps {
   initialRating?: number;
@@ -13,7 +13,10 @@ interface RatingProps {
 export default function StarRating({ initialRating = 0, readonly = false, onRate, size = 'md' }: RatingProps) {
   const [rating, setRating] = useState(initialRating);
   const [hover, setHover] = useState(0);
-  const [submitting, setSubmitting] = useState(false);
+
+  useEffect(() => {
+    setRating(initialRating);
+  }, [initialRating]);
 
   const sizes = {
     sm: 14,

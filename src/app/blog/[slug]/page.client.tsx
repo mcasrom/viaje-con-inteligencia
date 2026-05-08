@@ -24,7 +24,8 @@ interface Post {
 }
 
 function BlogPostRating({ slug }: { slug: string }) {
-  const [rating, setRating] = useState(0);
+  const [average, setAverage] = useState(0);
+  const [userRating, setUserRating] = useState(0);
   const [count, setCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -33,7 +34,8 @@ function BlogPostRating({ slug }: { slug: string }) {
     fetch(`/api/posts/rate?slug=${slug}`)
       .then(res => res.json())
       .then(data => {
-        setRating(data.userRating || data.average || 0);
+        setAverage(data.average || 0);
+        setUserRating(data.userRating || 0);
         setCount(data.count || 0);
       })
       .catch(() => {})
@@ -52,8 +54,10 @@ function BlogPostRating({ slug }: { slug: string }) {
       setError(data.error || 'Error al valorar');
       return;
     }
-    setRating(value);
-    if (count === 0) setCount(1);
+    const data = await res.json();
+    setAverage(data.average || 0);
+    setUserRating(data.userRating || 0);
+    setCount(data.count || 0);
   };
 
   if (loading) {
@@ -71,11 +75,14 @@ function BlogPostRating({ slug }: { slug: string }) {
   return (
     <div className="flex flex-col items-center gap-2">
       <div className="flex items-center gap-3">
-        <StarRating initialRating={rating} onRate={handleRate} size="md" />
+        <StarRating initialRating={average} onRate={handleRate} size="md" />
         <span className="text-slate-400 text-sm">
           {count > 0 ? `(${count} valoraciones)` : 'Sin valoraciones'}
         </span>
       </div>
+      {userRating > 0 && (
+        <span className="text-yellow-400 text-xs">Tu valoración: {userRating}/5</span>
+      )}
       {error && <p className="text-red-400 text-xs">{error}</p>}
     </div>
   );
