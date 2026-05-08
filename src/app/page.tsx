@@ -6,7 +6,7 @@ import { useState, useEffect } from 'react';
 import { 
   Search, Sparkles, Crown, Bell, Globe, Filter, 
   ChevronRight, Menu, X, Calculator, Route, ClipboardList, BarChart3, 
-  BookOpen, Newspaper, ChevronRight as Chevron, Navigation, TrendingUp
+  BookOpen, Newspaper, ChevronRight as Chevron, Navigation, TrendingUp, Shield
 } from 'lucide-react';
 import { paisesData } from '@/data/paises';
 import LanguageSelector from '@/components/LanguageSelector';
@@ -316,6 +316,7 @@ function SidePanel() {
     { icon: <Route className="w-4 h-4 text-green-400" />, label: 'Rutas Seguras', href: '/rutas' },
     { icon: <ClipboardList className="w-4 h-4 text-orange-400" />, label: 'Checklist', href: '/checklist' },
     { icon: <BarChart3 className="w-4 h-4 text-purple-400" />, label: 'Dashboard KPIs', href: '/dashboard/kpis' },
+    { icon: <Shield className="w-4 h-4 text-indigo-400" />, label: 'Seguro Viaje', href: '/coste/seguros' },
   ];
 
   return (
