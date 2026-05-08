@@ -14,6 +14,7 @@ export default function AITravelAssistant() {
   const [messages, setMessages] = useState<{role: string; content: string}[]>([INITIAL_MESSAGE]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
+  const [conversationId, setConversationId] = useState<number | null>(null);
 
   const handleSend = async () => {
     if (!input.trim() || loading) return;
@@ -29,11 +30,12 @@ export default function AITravelAssistant() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           message: userMessage,
-          history: messages.map(m => m.content),
+          conversationId,
         }),
       });
 
       const data = await response.json();
+      if (data.conversationId) setConversationId(data.conversationId);
       setMessages(prev => [...prev, { role: 'assistant', content: data.response || 'Lo siento, no pude procesar tu solicitud. Intenta de nuevo.' }]);
     } catch {
       setMessages(prev => [...prev, { role: 'assistant', content: 'Error de conexión. Verifica tu conexión e intenta de nuevo.' }]);

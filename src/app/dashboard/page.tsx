@@ -6,8 +6,8 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { supabaseBrowserClient as supabaseClient } from '@/lib/supabase-browser';
 import { 
   ArrowLeft, Heart, MapPin, AlertTriangle, Trash2, 
-  Plus, Mail, LogOut, Crown, Bell, Settings, Loader2,
-  Cloud, CheckCircle, XCircle, Star, Sparkles, Activity,
+  Plus, Mail, LogOut, Crown, Bell, Loader2,
+  CheckCircle, XCircle, Star, Activity,
   Key, Lock, User, Eye, EyeOff, KeyRound
 } from 'lucide-react';
 import dynamic from 'next/dynamic';
@@ -749,7 +749,7 @@ export default function DashboardPage() {
               const pais = paisesData[fav.country_code];
               if (!pais) return null;
               
-              const riesgo = riesgoConfig[pais.nivelRiesgo];
+              const riesgo = riesgoConfig[pais.nivelRiesgo] || { color: 'text-slate-400', bg: 'bg-slate-500' };
               
               return (
                 <div key={fav.id} className="bg-slate-800 rounded-xl p-4 border border-slate-700">

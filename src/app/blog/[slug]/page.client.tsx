@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowLeft, Calendar, Clock, Tag, Eye } from 'lucide-react';
@@ -90,7 +90,7 @@ function BlogPostRating({ slug }: { slug: string }) {
 
 function BlogPostViews({ slug }: { slug: string }) {
   const [views, setViews] = useState(0);
-  const [counted, setCounted] = useState(false);
+  const countedRef = useRef(false);
 
   useEffect(() => {
     fetch(`/api/posts/views?slug=${slug}`)
@@ -98,11 +98,11 @@ function BlogPostViews({ slug }: { slug: string }) {
       .then(data => setViews(data.views || 0))
       .catch(() => {});
     
-    if (!counted && typeof window !== 'undefined') {
+    if (!countedRef.current) {
       const sessionKey = `viewed_${slug}`;
       if (!sessionStorage.getItem(sessionKey)) {
         sessionStorage.setItem(sessionKey, '1');
-        setCounted(true);
+        countedRef.current = true;
         fetch('/api/posts/views', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -110,7 +110,7 @@ function BlogPostViews({ slug }: { slug: string }) {
         }).catch(() => {});
       }
     }
-  }, [slug, counted]);
+  }, [slug]);
 
   return (
     <span className="flex items-center gap-1 text-slate-400 text-sm">

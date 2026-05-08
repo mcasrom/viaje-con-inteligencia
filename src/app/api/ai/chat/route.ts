@@ -24,16 +24,6 @@ async function incrementDailyUsage(userId: string, model: string): Promise<void>
   const today = new Date().toISOString().split('T')[0];
   const field = model === PREMIUM_MODEL ? 'premium_count' : 'free_count';
 
-  await supabaseAdmin.from('chat_usage').upsert({
-    user_id: userId,
-    date: today,
-    [field]: 1,
-  }, {
-    onConflict: 'user_id,date',
-  });
-
-  // Increment using raw SQL since upsert doesn't support increment
-  // We do a read + write
   const { data } = await supabaseAdmin
     .from('chat_usage')
     .select('free_count, premium_count')
