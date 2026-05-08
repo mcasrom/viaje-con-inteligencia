@@ -36,9 +36,9 @@ interface Favorite {
 
 export default function DashboardPage() {
   const { user: authUser, loading: authLoading, signInWithPassword: authSignInPassword, signUpWithPassword, resetPassword, signOut: authSignOut, signInWithEmail, emailVerified, resendVerificationEmail } = useAuth();
-  const [user, setUser] = useState<User | null>(null);
   const [favorites, setFavorites] = useState<Favorite[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
   const [authMode, setAuthMode] = useState<'login' | 'register' | 'magic'>('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -91,7 +91,7 @@ export default function DashboardPage() {
       if (response.ok) {
         if (authMode === 'login' && password) {
           setNotification({ type: 'success', message: data.message });
-          setUser({ email, id: '' });
+          setTimeout(() => window.location.reload(), 500);
         } else {
           setNotification({ type: 'success', message: data.message });
         }
@@ -115,7 +115,6 @@ export default function DashboardPage() {
 
   const handleLogout = async () => {
     await authSignOut();
-    setUser(null);
     setFavorites([]);
   };
 
@@ -186,8 +185,8 @@ export default function DashboardPage() {
   };
 
   useEffect(() => {
-    if (user) loadFavorites();
-  }, [user]);
+    if (authUser) loadFavorites();
+  }, [authUser]);
 
   const addFavorite = async (countryCode: string) => {
     try {
@@ -269,7 +268,7 @@ export default function DashboardPage() {
     );
   }
 
-  if (!user) {
+  if (!authUser) {
     return (
       <div className="min-h-screen bg-slate-900">
         <header className="bg-slate-800 border-b border-slate-700">
@@ -519,7 +518,7 @@ export default function DashboardPage() {
               <div className="flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/30 rounded-full px-3 py-1.5">
                 <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
                 <span className="text-emerald-400 text-xs font-medium hidden sm:block">Conectado</span>
-                <span className="text-slate-300 text-xs font-medium">{user.email}</span>
+                <span className="text-slate-300 text-xs font-medium">{authUser.email}</span>
               </div>
               <button
                 onClick={() => setShowChangePassword(true)}
@@ -542,7 +541,7 @@ export default function DashboardPage() {
 
       <main className="max-w-4xl mx-auto px-6 py-8">
         {/* Email Verification Banner */}
-        {!emailVerified && user && (
+        {!emailVerified && authUser && (
           <div className="mb-6 p-4 bg-amber-500/10 border border-amber-500/30 rounded-xl flex items-start gap-3">
             <AlertTriangle className="w-5 h-5 text-amber-400 flex-shrink-0 mt-0.5" />
             <div className="flex-1">

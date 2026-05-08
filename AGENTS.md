@@ -10,6 +10,52 @@
 - **Newsletter**: Weekly digest implemented (Groq + HTML template). Runs Mondays via master cron.
 - **All API keys** saved in `.env.local`.
 
+## Active Plan (Week 08 May — Real Data Migration)
+### Day 1 ✅ — POIs reales desde OSM (08 May)
+- Created `/api/pois` unified endpoint using OSM Overpass API with area ISO filter (all 205 countries)
+- Added 12 POI types: museum, heritage, beach, lighthouse, nature, viewpoint, castle, archaeological + tourism-disruptive: airport, border, police, hospital
+- `DetallePaisClient.tsx` updated to use `/api/pois` with new categories: "Turísticos" (all) and "Disrupción" (airport/border/police/hospital)
+- Removed `pois-fallback.ts` (223 lines hardcoded) and old `wikidata/pois` route
+
+### Day 2 ✅ — Eventos disruptivos reales (08 May)
+- Updated IST route to query real events from Supabase `events` table (Wikidata+GDELT) per country/month
+- Added minimal inline fallback (16 critical annual events) for when Supabase has no data yet
+- Rewrote `/eventos` page to fetch from `/api/events` (real time, 365-day window) instead of hardcoded list
+- Events page now shows: category badges, impact level, source attribution, and links to country pages
+- Removed `eventos-globales.ts` (74 lines hardcoded with 51 events)
+
+### Day 3 ✅ — TCI con datos reales (08 May)
+- `/api/oil-price` ahora consulta Supabase `oil_price_history` (datos reales del cron EIA/Yahoo) como fuente primaria
+- Fallback automático a datos hardcode en tci-engine.ts cuando Supabase no tiene datos
+- EUR/USD desde Frankfurter API (gratis, sin API key)
+
+### Day 4 ✅ — ML perfil de viajero en POIs (08 May)
+- API `/api/pois` acepta `?profile=mochilero|lujo|familiar|aventura|negocios` y devuelve POIs scoreados por relevancia (0-100)
+- 5 perfiles con pesos distintos para cada tipo de POI (museum, beach, nature, airport...)
+- UI en `DetallePaisClient`: selecto de perfil visible en pestaña POIs, badges de relevancia en cada POI
+- POIs ordenados por relevancia al perfil activo
+
+### Day 5 ✅ — User preferences persistentes (08 May)
+- Creada tabla `user_preferences` en Supabase (SQL: `supabase/user_preferences.sql`)
+- Creado `/api/user/preferences` (GET/POST) para leer y guardar preferencias
+- Creado `PreferencesSelector` componente en SidePanel: selector tipo viajero, tolerancia riesgo, presupuesto
+- `DetallePaisClient` conectado: carga perfil viajero desde preferencias al iniciar sesión, guarda al cambiar perfil
+- Perfil viajero persistido en Supabase afecta el scoring de POIs
+
+### Day 6 ✅ — Alternativas ML cuando hay disrupción (08 May)
+- Creado `/api/alternatives?country={code}` endpoint: detecta disrupción (eventos high-impact/protestas desde Supabase), llama a `findSimilarDestinations()` y filtra por riesgo igual o menor
+- Integrado en `DetallePaisClient`: al seleccionar pestaña "Disrupción" en POIs, se muestran destinos alternativos más seguros con % de compatibilidad
+- Alternativas ordenadas por similitud (riesgo, coste, distancia, turismo) usando clustering ML existente
+
+### Day 7 ✅ — Tests, caching, pulido, deploy (08 May)
+- Creada tabla `pois_cache` en Supabase con TTL 6h (SQL: `supabase/pois_cache.sql`)
+- `/api/pois` refactorizado: quita edge runtime, consulta cache antes de OSM, guarda respuesta en cache
+- Smoke tests: `src/test-smoke.ts` ejecutable con `npm test` (verifica POIs, alternativas, oil, IST)
+- Pulido: eliminados archivos muertos (`pois-fallback.ts`, `eventos-globales.ts`, `test-api.ts`)
+- `npm test` añadido a `package.json`
+
+## Week Complete ✅ — 7 días de migración a datos reales completados
+
 ## Project
 - **Framework**: Next.js 16 + App Router, TypeScript
 - **Deploy**: Vercel (auto-deploy on `main` push)

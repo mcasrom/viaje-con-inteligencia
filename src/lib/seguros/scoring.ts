@@ -50,12 +50,29 @@ const ACTIVIDAD_PESO: Record<string, number> = {
   rafting: 0.15, escalada: 0.15, safari: 0.08, voluntariado: 0.03,
 };
 
-function getDangerLevel(codigo: string): { nivel: number; irv: number } {
-  const pais = paisesData[codigo as keyof typeof paisesData];
-  if (!pais) return { nivel: 2, irv: 80 };
+export function resolvePais(input: string): { codigo: string; nombre: string } | null {
+  const lower = input.toLowerCase().trim().replace(/^es$/, 'es');
+  const direct = paisesData[lower as keyof typeof paisesData];
+  if (direct) return { codigo: direct.codigo.toUpperCase(), nombre: direct.nombre };
+  for (const p of Object.values(paisesData)) {
+    if (p.nombre.toLowerCase() === lower) return { codigo: p.codigo.toUpperCase(), nombre: p.nombre };
+  }
+  for (const p of Object.values(paisesData)) {
+    if (p.nombre.toLowerCase().includes(lower)) return { codigo: p.codigo.toUpperCase(), nombre: p.nombre };
+  }
+  return null;
+}
+
+export function listCountries(): { codigo: string; nombre: string }[] {
+  return Object.values(paisesData).map(p => ({ codigo: p.codigo.toUpperCase(), nombre: p.nombre }));
+}
+
+function getDangerLevel(codigo: string): { nivel: number; irv: number; nombre: string } {
+  const pais = paisesData[codigo.toLowerCase() as keyof typeof paisesData];
+  if (!pais) return { nivel: 2, irv: 80, nombre: codigo.toUpperCase() };
   const nivel = riskLevelNum[pais.nivelRiesgo] || 2;
   const irv = Math.max(40, Math.min(100, 100 - nivel * 10));
-  return { nivel, irv };
+  return { nivel, irv, nombre: pais.nombre };
 }
 
 function calcularPesos(input: SeguroInput, dangerLevel: number) {
@@ -70,12 +87,13 @@ function calcularPesos(input: SeguroInput, dangerLevel: number) {
 }
 
 export function scoreSeguros(input: SeguroInput): {
+  destino_nombre: string;
   resultados: SeguroScore[];
   alerta_osint: string | null;
   irv: number;
   cobertura_recomendada: { medica: number; evacuacion: number };
 } {
-  const { nivel, irv } = getDangerLevel(input.destino);
+  const { nivel, irv, nombre } = getDangerLevel(input.destino);
   const pesos = calcularPesos(input, irv);
 
   const tieneActividadesAventura = input.actividades.some(
@@ -176,6 +194,7 @@ export function scoreSeguros(input: SeguroInput): {
   }
 
   return {
+    destino_nombre: nombre,
     resultados,
     alerta_osint: alertaOsint,
     irv,

@@ -1,40 +1,84 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Calendar, MapPin, Music, Flag, Star, Search, Sparkles, TrendingUp, ShieldAlert } from 'lucide-react';
-import { GLOBAL_EVENTS, GlobalEvent } from '@/data/eventos-globales';
+import { ArrowLeft, Calendar, MapPin, Music, Flag, Star, Search, Sparkles, TrendingUp, ShieldAlert, Loader2 } from 'lucide-react';
 
 const MONTHS = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
 
 const TYPE_CONFIG: Record<string, { icon: any; color: string; bg: string; label: string }> = {
   festival: { icon: Music, color: 'text-pink-400', bg: 'bg-pink-500/10', label: 'Festival' },
-  national: { icon: Flag, color: 'text-blue-400', bg: 'bg-blue-500/10', label: 'Nacional' },
-  cultural: { icon: Star, color: 'text-purple-400', bg: 'bg-purple-500/10', label: 'Cultural' },
   sports: { icon: Sparkles, color: 'text-green-400', bg: 'bg-green-500/10', label: 'Deportivo' },
-  religious: { icon: Calendar, color: 'text-amber-400', bg: 'bg-amber-500/10', label: 'Religioso' },
+  protest: { icon: ShieldAlert, color: 'text-red-400', bg: 'bg-red-500/10', label: 'Protesta' },
   conference: { icon: MapPin, color: 'text-cyan-400', bg: 'bg-cyan-500/10', label: 'Congreso' },
-  'mega-event': { icon: TrendingUp, color: 'text-red-400', bg: 'bg-red-500/10', label: 'Mega-Evento' },
+  cultural: { icon: Star, color: 'text-purple-400', bg: 'bg-purple-500/10', label: 'Cultural' },
+  holiday: { icon: Flag, color: 'text-blue-400', bg: 'bg-blue-500/10', label: 'Feriado' },
+  commemoration: { icon: Calendar, color: 'text-amber-400', bg: 'bg-amber-500/10', label: 'Conmemoración' },
+  other: { icon: Calendar, color: 'text-slate-400', bg: 'bg-slate-500/10', label: 'Otro' },
+};
+
+const IMPACT_COLORS: Record<string, string> = {
+  high: 'text-red-400 bg-red-500/15 border-red-500/30',
+  medium: 'text-yellow-400 bg-yellow-500/15 border-yellow-500/30',
+  low: 'text-slate-400 bg-slate-500/15 border-slate-500/30',
+  positive: 'text-green-400 bg-green-500/15 border-green-500/30',
 };
 
 export default function EventosClient() {
+  const [events, setEvents] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [filterMonth, setFilterMonth] = useState<number>(-1);
   const [filterType, setFilterType] = useState<string>('all');
   const [search, setSearch] = useState('');
 
-  const filtered = GLOBAL_EVENTS.filter(e => {
-    const matchMonth = filterMonth === -1 || e.month === filterMonth;
-    const matchType = filterType === 'all' || e.type === filterType;
-    const matchSearch = !search || e.name.toLowerCase().includes(search.toLowerCase()) || e.country.toLowerCase().includes(search.toLowerCase());
+  useEffect(() => {
+    setLoading(true);
+    fetch('/api/events?limit=200&upcoming=true&days=365')
+      .then(res => res.json())
+      .then(data => {
+        if (data.events) setEvents(data.events);
+        else if (Array.isArray(data)) setEvents(data);
+        else setEvents([]);
+      })
+      .catch(() => setError('Error al cargar eventos'))
+      .finally(() => setLoading(false));
+  }, []);
+
+  const filtered = events.filter(e => {
+    let month: number;
+    if (e.start_date) {
+      month = new Date(e.start_date).getMonth() + 1;
+    } else if (e.month) {
+      month = e.month;
+    } else {
+      month = new Date().getMonth() + 1;
+    }
+    const matchMonth = filterMonth === -1 || month === filterMonth;
+    const matchType = filterType === 'all' || e.category === filterType;
+    const matchSearch = !search ||
+      (e.title || e.name || '').toLowerCase().includes(search.toLowerCase()) ||
+      (e.country || '').toLowerCase().includes(search.toLowerCase());
     return matchMonth && matchType && matchSearch;
   });
 
-  const grouped = filtered.reduce((acc, e) => {
-    const month = MONTHS[e.month - 1];
+  const grouped = filtered.reduce((acc: Record<string, any[]>, e) => {
+    const month = MONTHS[e.start_date ? new Date(e.start_date).getMonth() : 0];
     if (!acc[month]) acc[month] = [];
     acc[month].push(e);
     return acc;
-  }, {} as Record<string, GlobalEvent[]>);
+  }, {});
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800 flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="w-8 h-8 animate-spin text-blue-400 mx-auto mb-4" />
+          <p className="text-slate-400">Cargando eventos desde fuentes OSINT...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800">
@@ -48,11 +92,10 @@ export default function EventosClient() {
             <Calendar className="w-8 h-8 text-amber-400" />Eventos que Afectan tu Viaje
           </h1>
           <p className="text-slate-400 max-w-2xl mx-auto">
-            Grandes eventos, F1, congresos y festivales que disparan precios y cambian la logística. Planifica con inteligencia.
+            Eventos en tiempo real desde Wikidata + GDELT + alertas OSINT. Festivales, protestas, congresos y más.
           </p>
         </div>
 
-        {/* Filters */}
         <div className="flex flex-col sm:flex-row gap-3 mb-8">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
@@ -86,61 +129,58 @@ export default function EventosClient() {
           </select>
         </div>
 
-        {/* Events */}
         {Object.keys(grouped).length === 0 ? (
           <div className="text-center py-20">
             <Calendar className="w-16 h-16 text-slate-600 mx-auto mb-4" />
             <h3 className="text-xl font-bold text-white mb-2">Sin eventos</h3>
-            <p className="text-slate-400">No hay eventos para este filtro.</p>
+            <p className="text-slate-400">No hay eventos para este filtro. Los datos se actualizan con cada ejecución del cron.</p>
           </div>
         ) : (
           <div className="space-y-8">
-            {Object.entries(grouped).map(([month, events]) => (
+            {Object.entries(grouped).map(([month, monthEvents]) => (
               <div key={month}>
                 <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
                   <Calendar className="w-5 h-5 text-amber-400" />
                   {month}
-                  <span className="text-slate-500 text-sm font-normal">({events.length})</span>
+                  <span className="text-slate-500 text-sm font-normal">({monthEvents.length})</span>
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  {events.map((event, i) => {
-                    const tc = TYPE_CONFIG[event.type];
+                  {monthEvents.slice(0, 20).map((event: any, i: number) => {
+                    const tc = TYPE_CONFIG[event.category] || TYPE_CONFIG.other;
                     const Icon = tc.icon;
+                    const ic = IMPACT_COLORS[event.impact_traveler] || IMPACT_COLORS.low;
                     return (
-                      <div key={`${event.name}-${i}`} className="bg-slate-800/60 border border-slate-700/50 rounded-xl p-4 hover:bg-slate-700/40 transition-colors">
+                      <div key={event.id || i} className="bg-slate-800/60 border border-slate-700/50 rounded-xl p-4 hover:bg-slate-700/40 transition-colors">
                         <div className="flex items-start gap-3">
-                          <span className="text-3xl">{event.flag}</span>
                           <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-2 mb-1">
-                              <h3 className="text-white font-bold text-sm truncate">{event.name}</h3>
+                            <div className="flex items-center gap-2 mb-1 flex-wrap">
+                              <h3 className="text-white font-bold text-sm">{event.title}</h3>
                               <span className={`px-2 py-0.5 rounded text-[10px] font-medium border ${tc.bg} ${tc.color} border-current`}>
                                 <Icon className="w-3 h-3 inline mr-0.5" />{tc.label}
                               </span>
+                              <span className={`px-2 py-0.5 rounded text-[10px] font-medium border ${ic}`}>
+                                {event.impact_traveler === 'high' ? 'Alto impacto' : event.impact_traveler === 'medium' ? 'Impacto medio' : event.impact_traveler === 'positive' ? 'Positivo' : 'Bajo impacto'}
+                              </span>
                             </div>
-                            <p className="text-slate-400 text-xs mb-2">{event.description}</p>
-                            
-                            {/* Impact Badges */}
-                            <div className="flex flex-wrap gap-2">
-                              {event.priceImpact === 'extreme' && (
-                                <div className="flex items-center gap-1 px-2 py-0.5 bg-red-500/15 text-red-400 border border-red-500/30 rounded text-[10px] font-medium">
-                                  <TrendingUp className="w-3 h-3" /> Precios x10
-                                </div>
-                              )}
-                              {event.priceImpact === 'high' && (
-                                <div className="flex items-center gap-1 px-2 py-0.5 bg-orange-500/15 text-orange-400 border border-orange-500/30 rounded text-[10px] font-medium">
-                                  <TrendingUp className="w-3 h-3" /> Precios altos
-                                </div>
-                              )}
-                              {event.safetyNote && (
-                                <div className="flex items-center gap-1 px-2 py-0.5 bg-yellow-500/15 text-yellow-400 border border-yellow-500/30 rounded text-[10px] font-medium">
-                                  <ShieldAlert className="w-3 h-3" /> Nota: {event.safetyNote}
-                                </div>
-                              )}
+                            {event.description && (
+                              <p className="text-slate-400 text-xs mb-2 line-clamp-2">{event.description}</p>
+                            )}
+                            {event.impact_note && (
+                              <div className="flex items-center gap-1 px-2 py-0.5 bg-yellow-500/15 text-yellow-400 border border-yellow-500/30 rounded text-[10px] font-medium mb-2 w-fit">
+                                <ShieldAlert className="w-3 h-3" /> {event.impact_note}
+                              </div>
+                            )}
+                            <div className="flex items-center gap-2 text-slate-500 text-[10px]">
+                              {event.start_date && <span>{new Date(event.start_date).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' })}</span>}
+                              {event.city && <span>📍 {event.city}</span>}
+                              {event.source && <span>Fuente: {event.source}</span>}
                             </div>
                           </div>
-                          <Link href={`/pais/${event.code}`} className="text-blue-400 hover:text-blue-300 text-xs flex-shrink-0">
-                            Ver país →
-                          </Link>
+                          {event.country && (
+                            <Link href={`/pais/${event.country.toLowerCase()}`} className="text-blue-400 hover:text-blue-300 text-xs flex-shrink-0">
+                              Ver país →
+                            </Link>
+                          )}
                         </div>
                       </div>
                     );

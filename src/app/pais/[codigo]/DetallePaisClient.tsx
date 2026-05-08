@@ -40,7 +40,12 @@ export default function DetallePaisClient({ pais, relatedPosts = [] }: DetallePa
   const [istLoading, setIstLoading] = useState(false);
   const [poisData, setPoisData] = useState<any[]>([]);
   const [poisLoading, setPoisLoading] = useState(false);
-  const [poisType, setPoisType] = useState<string>('museum');
+  const [poisType, setPoisType] = useState<string>('tourist');
+  const [poisError, setPoisError] = useState<string | null>(null);
+  const [travelerProfile, setTravelerProfile] = useState<string>('mochilero');
+  const [profileOpen, setProfileOpen] = useState(false);
+  const [alternatives, setAlternatives] = useState<any[] | null>(null);
+  const [altLoading, setAltLoading] = useState(false);
 
   useEffect(() => {
     if (!authLoading && user) {
@@ -64,18 +69,59 @@ export default function DetallePaisClient({ pais, relatedPosts = [] }: DetallePa
   }, [activeTab, codigo, maecData]);
 
   useEffect(() => {
-    if (activeTab === 'pois' && poisData.length === 0 && !poisLoading) {
+    if (activeTab === 'pois' && !poisLoading) {
       setPoisLoading(true);
-      fetch(`/api/wikidata/pois?country=${codigo.toLowerCase()}&type=${poisType}&limit=15&sparql=true`)
+      setPoisError(null);
+      fetch(`/api/pois?country=${codigo.toLowerCase()}&type=${poisType}&limit=30&profile=${travelerProfile}`)
         .then(res => res.json())
         .then(data => {
-          console.log('POIs fetched:', data);
           if (data.pois) setPoisData(data.pois);
+          else setPoisError(data.error || 'Error al cargar POIs');
         })
-        .catch(console.error)
+        .catch(() => setPoisError('Error de conexión'))
         .finally(() => setPoisLoading(false));
     }
+  }, [activeTab, codigo, poisType, travelerProfile]);
+
+  useEffect(() => {
+    if (activeTab === 'pois' && poisType === 'disruption' && alternatives === null) {
+      setAltLoading(true);
+      fetch(`/api/alternatives?country=${codigo.toLowerCase()}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.alternatives) setAlternatives(data.alternatives);
+        })
+        .catch(() => {})
+        .finally(() => setAltLoading(false));
+    }
   }, [activeTab, codigo, poisType]);
+
+  useEffect(() => {
+    if (!authLoading && user) {
+      fetch('/api/user/preferences')
+        .then(res => res.json())
+        .then(data => {
+          if (data.preferences?.traveler_type) {
+            setTravelerProfile(data.preferences.traveler_type);
+          }
+        })
+        .catch(() => {});
+    }
+  }, [user, authLoading]);
+
+  const saveProfile = async (profile: string) => {
+    setTravelerProfile(profile);
+    setPoisData([]);
+    if (user) {
+      try {
+        await fetch('/api/user/preferences', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ traveler_type: profile }),
+        });
+      } catch {}
+    }
+  };
 
   const checkFavorite = async () => {
     try {
@@ -565,11 +611,37 @@ export default function DetallePaisClient({ pais, relatedPosts = [] }: DetallePa
             </h3>
             
             <div className="flex flex-wrap gap-2 mb-4">
+              <button
+                onClick={() => { setPoisType('tourist'); setPoisData([]); }}
+                className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${
+                  poisType === 'tourist'
+                    ? 'bg-purple-600 text-white'
+                    : 'bg-slate-700 text-slate-400 hover:text-white'
+                }`}
+              >
+                🎯 Turísticos
+              </button>
+              <button
+                onClick={() => { setPoisType('disruption'); setPoisData([]); }}
+                className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${
+                  poisType === 'disruption'
+                    ? 'bg-orange-600 text-white'
+                    : 'bg-slate-700 text-slate-400 hover:text-white'
+                }`}
+              >
+                ⚠️ Disrupción
+              </button>
               {[
                 { type: 'museum', label: 'Museos', icon: '🏛️' },
                 { type: 'heritage', label: 'Patrimonio', icon: '🏰' },
                 { type: 'beach', label: 'Playas', icon: '🏖️' },
                 { type: 'lighthouse', label: 'Faros', icon: '🗼' },
+                { type: 'viewpoint', label: 'Miradores', icon: '👁️' },
+                { type: 'castle', label: 'Castillos', icon: '🏯' },
+                { type: 'airport', label: 'Aeropuertos', icon: '✈️' },
+                { type: 'border', label: 'Fronteras', icon: '🛂' },
+                { type: 'police', label: 'Comisaría', icon: '👮' },
+                { type: 'hospital', label: 'Hospital', icon: '🏥' },
               ].map(({ type, label, icon }) => (
                 <button
                   key={type}
@@ -585,24 +657,68 @@ export default function DetallePaisClient({ pais, relatedPosts = [] }: DetallePa
               ))}
             </div>
 
+            <div className="flex items-center gap-2 mb-4">
+              <span className="text-xs text-slate-500">Perfil:</span>
+              {[
+                { id: 'mochilero', label: '🎒 Mochilero' },
+                { id: 'lujo', label: '💎 Lujo' },
+                { id: 'familiar', label: '👨‍👩‍👧‍👦 Familiar' },
+                { id: 'aventura', label: '🏔️ Aventura' },
+                { id: 'negocios', label: '💼 Negocios' },
+              ].map(p => (
+                <button
+                  key={p.id}
+                  onClick={() => saveProfile(p.id)}
+                  className={`px-2 py-1 rounded-lg text-[10px] font-medium transition-colors ${
+                    travelerProfile === p.id
+                      ? 'bg-blue-600 text-white'
+                      : 'bg-slate-700 text-slate-400 hover:text-white'
+                  }`}
+                >
+                  {p.label}
+                </button>
+              ))}
+            </div>
+
             {poisLoading ? (
               <div className="text-center py-8">
                 <Loader2 className="w-6 h-6 animate-spin text-purple-400 mx-auto" />
-                <p className="text-slate-400 text-sm mt-2">Cargando POIs...</p>
+                <p className="text-slate-400 text-sm mt-2">Cargando POIs desde OpenStreetMap...</p>
+              </div>
+            ) : poisError ? (
+              <div className="text-center py-8">
+                <p className="text-red-400 text-sm">{poisError}</p>
               </div>
             ) : poisData.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 {poisData.map((poi: any, idx: number) => (
                   <a
-                    key={idx}
-                    href={poi.url || `https://www.wikidata.org/wiki/${poi.name?.replace(/ /g, '_')}`}
+                    key={poi.id || idx}
+                    href={poi.website || `https://www.openstreetmap.org/${poi.type === 'node' ? 'node' : 'way'}/${poi.id}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="p-3 bg-slate-700/50 rounded-lg hover:bg-slate-700 transition-colors group"
                   >
-                    <p className="text-white font-medium text-sm">{poi.name}</p>
+                    <div className="flex items-center gap-2 mb-1">
+                      <span>{poi.icon || '📍'}</span>
+                      <p className="text-white font-medium text-sm">{poi.name}</p>
+                      {poi.relevance != null && (
+                        <span className={`ml-auto text-[10px] font-bold px-1.5 py-0.5 rounded ${
+                          poi.relevance >= 80 ? 'bg-green-500/20 text-green-400' :
+                          poi.relevance >= 50 ? 'bg-yellow-500/20 text-yellow-400' :
+                          'bg-slate-600 text-slate-400'
+                        }`}>
+                          {poi.relevance}%
+                        </span>
+                      )}
+                    </div>
                     {poi.description && (
                       <p className="text-slate-400 text-xs mt-1 line-clamp-2">{poi.description}</p>
+                    )}
+                    {poi.typeName && (
+                      <span className="inline-block px-1.5 py-0.5 bg-slate-600 rounded text-[10px] text-slate-300 mt-1">
+                        {poi.typeName}
+                      </span>
                     )}
                     <div className="flex items-center justify-between mt-2">
                       <p className="text-slate-500 text-xs">{poi.lat?.toFixed(4)}, {poi.lon?.toFixed(4)}</p>
@@ -613,7 +729,50 @@ export default function DetallePaisClient({ pais, relatedPosts = [] }: DetallePa
               </div>
             ) : (
               <div className="text-center py-8">
-                <p className="text-slate-400">No se encontraron POIs para este tipo</p>
+                <p className="text-slate-400">No se encontraron POIs para este tipo en OpenStreetMap</p>
+              </div>
+            )}
+
+            {poisType === 'disruption' && alternatives && alternatives.length > 0 && (
+              <div className="mt-6 pt-6 border-t border-slate-700">
+                <h4 className="text-sm font-bold text-white mb-3 flex items-center gap-2">
+                  <MapPinned className="w-4 h-4 text-green-400" />
+                  Alternativas más seguras
+                </h4>
+                <p className="text-xs text-slate-500 mb-3">
+                  Destinos con perfil similar pero menor nivel de disrupción:
+                </p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  {alternatives.map((alt: any) => (
+                    <Link
+                      key={alt.code}
+                      href={`/pais/${alt.code}`}
+                      className="flex items-center gap-3 bg-slate-700/40 hover:bg-slate-700 rounded-lg p-3 transition-colors border border-slate-600/30"
+                    >
+                      <span className="text-xl">{alt.flag}</span>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-white text-sm font-medium truncate">{alt.name}</p>
+                        <div className="flex items-center gap-2 text-[10px] text-slate-400">
+                          <span className={`w-1.5 h-1.5 rounded-full ${
+                            alt.risk === 'sin-riesgo' ? 'bg-green-500' :
+                            alt.risk === 'bajo' ? 'bg-emerald-500' :
+                            alt.risk === 'medio' ? 'bg-orange-500' : 'bg-red-500'
+                          }`} />
+                          <span>{alt.risk}</span>
+                          <span className="text-green-400">{alt.score}% compatible</span>
+                        </div>
+                      </div>
+                      <ExternalLink className="w-3 h-3 text-slate-500 shrink-0" />
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {poisType === 'disruption' && altLoading && (
+              <div className="mt-4 text-center">
+                <Loader2 className="w-4 h-4 animate-spin text-green-400 mx-auto" />
+                <p className="text-slate-500 text-xs mt-1">Buscando alternativas...</p>
               </div>
             )}
           </div>

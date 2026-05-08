@@ -1,13 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { scoreSeguros, type SeguroInput } from '@/lib/seguros/scoring';
+import { scoreSeguros, resolvePais, type SeguroInput } from '@/lib/seguros/scoring';
 
 export const dynamic = 'force-dynamic';
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
+
+    const resolved = resolvePais(body.destino);
+    if (!resolved) {
+      return NextResponse.json({ error: 'País no encontrado. Introduce un código ISO (ES, TH, ID...) o nombre del país.' }, { status: 400 });
+    }
+
     const input: SeguroInput = {
-      destino: body.destino,
+      destino: resolved.codigo,
       edades: body.edades || [30],
       actividades: body.actividades || [],
       costeViaje: body.costeViaje || 1000,

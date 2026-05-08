@@ -7,6 +7,7 @@ import Link from 'next/link';
 import type { SeguroScore } from '@/lib/seguros/scoring';
 
 interface CompareResult {
+  destino_nombre: string;
   resultados: SeguroScore[];
   alerta_osint: string | null;
   irv: number;
@@ -17,6 +18,20 @@ const ACTIVIDADES = [
   'senderismo', 'trekking', 'buceo', 'snorkel', 'esquí',
   'surf', 'kitesurf', 'moto', 'ciclismo', 'puenting',
   'paracaidismo', 'rafting', 'escalada', 'safari', 'voluntariado',
+];
+
+const PAISES = [
+  'España (ES)', 'Francia (FR)', 'Italia (IT)', 'Alemania (DE)', 'Reino Unido (GB)',
+  'Portugal (PT)', 'Grecia (GR)', 'Croacia (HR)', 'México (MX)', 'Argentina (AR)',
+  'Colombia (CO)', 'Perú (PE)', 'Chile (CL)', 'Brasil (BR)', 'Estados Unidos (US)',
+  'Canadá (CA)', 'Japón (JP)', 'Tailandia (TH)', 'Vietnam (VN)', 'Indonesia (ID)',
+  'Malasia (MY)', 'Filipinas (PH)', 'India (IN)', 'Turquía (TR)', 'Marruecos (MA)',
+  'Túnez (TN)', 'Egipto (EG)', 'EAU (AE)', 'Sudáfrica (ZA)', 'China (CN)',
+  'Corea del Sur (KR)', 'Australia (AU)', 'Nueva Zelanda (NZ)', 'Nepal (NP)',
+  'Sri Lanka (LK)', 'Camboya (KH)', 'Laos (LA)', 'Myanmar (MM)', 'Singapur (SG)',
+  'Noruega (NO)', 'Suecia (SE)', 'Dinamarca (DK)', 'Finlandia (FI)', 'Países Bajos (NL)',
+  'Bélgica (BE)', 'Suiza (CH)', 'Austria (AT)', 'Irlanda (IE)', 'Polonia (PL)',
+  'República Checa (CZ)', 'Hungría (HU)', 'Rumanía (RO)', 'Bulgaria (BG)',
 ];
 
 export default function SegurosPage() {
@@ -37,12 +52,15 @@ export default function SegurosPage() {
     setError(null);
     setResult(null);
 
+    const codeMatch = dest.match(/\(([A-Za-z]{2,3})\)$/);
+    const destinoCode = codeMatch ? codeMatch[1] : dest.trim();
+
     try {
       const res = await fetch('/api/seguros/compare', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          destino: dest.toUpperCase(),
+          destino: destinoCode.toUpperCase(),
           edades: edades.split(',').map(s => parseInt(s.trim())).filter(n => !isNaN(n)),
           actividades,
           costeViaje: parseInt(costeViaje) || 1500,
@@ -127,10 +145,14 @@ export default function SegurosPage() {
                     type="text"
                     value={destino}
                     onChange={e => setDestino(e.target.value)}
-                    placeholder="Código ISO del país (ES, FR, TH...)"
+                    placeholder="Ej: Tailandia, TH, Bali, Indonesia..."
                     className="w-full px-4 py-2.5 bg-slate-900 border border-slate-600 rounded-lg text-white placeholder-slate-500 focus:border-blue-500 focus:outline-none"
+                    list="paises-list"
                     required
                   />
+                  <datalist id="paises-list">
+                    {PAISES.map(p => <option key={p} value={p} />)}
+                  </datalist>
                 </div>
 
                 <div>
@@ -201,7 +223,9 @@ export default function SegurosPage() {
         ) : (
           <div className="space-y-6">
             <div className="flex items-center justify-between">
-              <h2 className="text-xl font-semibold text-white">Resultados</h2>
+              <h2 className="text-xl font-semibold text-white">
+                Resultados para <span className="text-blue-400">{result.destino_nombre}</span>
+              </h2>
               <button
                 onClick={() => { setResult(null); setSelectedId(null); }}
                 className="text-sm text-blue-400 hover:text-blue-300"
@@ -214,7 +238,7 @@ export default function SegurosPage() {
               <div className="p-4 bg-yellow-500/10 border border-yellow-500/30 rounded-xl flex items-start gap-3">
                 <AlertTriangle className="w-5 h-5 text-yellow-400 shrink-0 mt-0.5" />
                 <div>
-                  <p className="text-yellow-300 font-medium text-sm">Alerta OSINT para tu destino</p>
+                  <p className="text-yellow-300 font-medium text-sm">Alerta OSINT para {result.destino_nombre}</p>
                   <p className="text-yellow-400/80 text-sm mt-1">{result.alerta_osint}</p>
                 </div>
               </div>
@@ -223,7 +247,10 @@ export default function SegurosPage() {
             <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-4">
               <div className="flex flex-wrap items-center gap-4 text-sm">
                 <span className="text-slate-400">
-                  IRV destino: <strong className="text-white">{result.irv}/100</strong>
+                  Destino: <strong className="text-white">{result.destino_nombre}</strong>
+                </span>
+                <span className="text-slate-400">
+                  IRV: <strong className="text-white">{result.irv}/100</strong>
                 </span>
                 <span className="text-slate-400">
                   Cobertura médica recomendada: <strong className="text-white">{(result.cobertura_recomendada.medica / 1000000).toFixed(1)}M€</strong>

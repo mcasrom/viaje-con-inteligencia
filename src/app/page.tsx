@@ -12,6 +12,7 @@ import { paisesData } from '@/data/paises';
 import LanguageSelector from '@/components/LanguageSelector';
 import OilPriceWidget from '@/components/OilPriceWidget';
 import AirportDelaysWidget from '@/components/AirportDelaysWidget';
+import PreferencesSelector from '@/components/PreferencesSelector';
 
 const MapaInteractivo = dynamic(
   () => import('@/components/MapaInteractivo'),
@@ -414,6 +415,8 @@ function SidePanel() {
                 </Link>
               </div>
             )}
+
+            {!search && <PreferencesSelector />}
 
             {!search && (
               <div className="space-y-2">

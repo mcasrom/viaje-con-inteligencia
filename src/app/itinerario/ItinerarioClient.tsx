@@ -1,9 +1,11 @@
 'use client';
 import { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { ArrowLeft, MapPin, Calendar, DollarSign, Sparkles, Loader2, Send, Crown } from 'lucide-react';
 import { getTodosLosPaises } from '@/data/paises';
 import { useRequirePremium } from '@/hooks/useRequirePremium';
+import { useAuth } from '@/contexts/AuthContext';
 
 const paises = getTodosLosPaises();
 
@@ -19,6 +21,8 @@ const budgetOptions = [
 ];
 
 export default function ItinerarioClient() {
+  const { user } = useAuth();
+  const router = useRouter();
   const { isPremium, loading: premiumLoading } = useRequirePremium();
   const [destination, setDestination] = useState('');
   const [days, setDays] = useState(7);
@@ -89,7 +93,34 @@ export default function ItinerarioClient() {
       if (!res.ok) {
         throw new Error(data.error || 'Error al generar');
       }
-      setItinerary(data.itinerary);
+
+      const itineraryText = data.itinerary;
+
+      // Save trip and redirect
+      if (user) {
+        const saveRes = await fetch('/api/trips', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: `Viaje a ${destination}`,
+            destination,
+            days,
+            budget,
+            interests: selectedInterests,
+            itinerary_raw: itineraryText,
+            status: 'draft',
+          }),
+        });
+
+        if (saveRes.ok) {
+          const saved = await saveRes.json();
+          router.push(`/viajes/${saved.trip.id}`);
+          return;
+        }
+      }
+
+      // Fallback: show on same page if save fails or no auth
+      setItinerary(itineraryText);
     } catch (err: any) {
       setError(err.message || 'Error de conexión');
     } finally {
