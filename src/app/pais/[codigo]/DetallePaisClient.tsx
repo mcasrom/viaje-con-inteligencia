@@ -835,6 +835,13 @@ export default function DetallePaisClient({ pais, relatedPosts = [] }: DetallePa
             la situación geopolítica y sanitaria del momento. Se recomienda contratar un seguro de viaje con 
             cobertura médica completa y revisar las recomendaciones de viaje del Ministerio de Asuntos Exteriores.
           </p>
+          <Link
+            href={`/coste/seguros?destino=${codigo.toUpperCase()}`}
+            className="inline-flex items-center gap-2 mt-4 px-5 py-2.5 bg-blue-500 hover:bg-blue-400 text-white font-semibold rounded-xl transition-colors text-sm"
+          >
+            <Shield className="w-4 h-4" />
+            Comparar seguros para {pais.nombre}
+          </Link>
         </div>
 
         <TravelCostIndex countryCode={codigo} />
