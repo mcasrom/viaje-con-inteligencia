@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, MapPin, Calendar, DollarSign, Sparkles, Loader2, Send, Plane } from 'lucide-react';
-import { useAuth, supabase } from '@/contexts/AuthContext';
+import { useAuth } from '@/contexts/AuthContext';
 import { getTodosLosPaises } from '@/data/paises';
 
 const paises = getTodosLosPaises();
@@ -69,7 +69,7 @@ export default function NuevoViajePage() {
     setError('');
 
     try {
-      const res = await fetch('/api/ai/itinerary', {
+      const res = await fetch('/api/itinerario', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -89,7 +89,7 @@ export default function NuevoViajePage() {
   };
 
   const handleSave = async () => {
-    if (!user || !supabase) return;
+    if (!user) return;
     if (!name || !destination) {
       setError('Completa los campos requeridos');
       return;
@@ -99,21 +99,28 @@ export default function NuevoViajePage() {
     setError('');
 
     try {
-      const { error: err } = await supabase.from('trips').insert([{
-        user_id: user.id,
-        name,
-        destination,
-        country_code: countryCode,
-        start_date: startDate || null,
-        end_date: endDate || null,
-        days,
-        budget,
-        interests: selectedInterests,
-        itinerary_raw: itinerary || null,
-        status: 'draft',
-      }]);
+      const res = await fetch('/api/trips', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name,
+          destination,
+          country_code: countryCode,
+          start_date: startDate || null,
+          end_date: endDate || null,
+          days,
+          budget,
+          interests: selectedInterests,
+          itinerary_raw: itinerary || null,
+          status: 'draft',
+        }),
+      });
 
-      if (err) throw err;
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || 'Error al guardar');
+      }
+
       router.push('/viajes');
     } catch (err: any) {
       setError(err.message || 'Error al guardar');
