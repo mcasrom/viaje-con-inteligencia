@@ -3,12 +3,13 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter, useParams } from 'next/navigation';
-import { ArrowLeft, MapPin, Calendar, DollarSign, Sparkles, Loader2, Send, Plane, Clock, Pencil, X, Check, FileDown } from 'lucide-react';
+import { ArrowLeft, MapPin, Calendar, DollarSign, Sparkles, Loader2, Send, Plane, Clock, Pencil, X, Check, FileDown, Download } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import type { Trip } from '@/lib/supabase';
 import PDFExportButton from '@/components/PDFExportButton';
 import { ShareTrip } from '@/components/ShareTrip';
 import { trackActivity } from '@/components/UserLevel';
+import { generateIcs } from '@/lib/ics';
 
 const statusOptions: { value: Trip['status']; label: string }[] = [
   { value: 'draft', label: 'Borrador' },
@@ -144,6 +145,36 @@ export default function ViajeDetallePage() {
     }
   };
 
+  const handleExportIcs = () => {
+    if (!trip) return;
+    const startDate = trip.start_date || trip.created_at;
+    const endDate = trip.end_date || (() => {
+      const d = new Date(startDate);
+      d.setDate(d.getDate() + trip.days);
+      return d.toISOString().split('T')[0];
+    })();
+
+    const ics = generateIcs({
+      uid: `trip-${trip.id}@viajeinteligencia.com`,
+      startDate: startDate.split('T')[0],
+      endDate: endDate.split('T')[0],
+      summary: `${trip.name} - ${trip.destination}`,
+      description: trip.itinerary_raw?.slice(0, 2000) || '',
+      location: trip.destination,
+      url: `${window.location.origin}/viajes/${trip.id}`,
+    });
+
+    const blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${trip.name.replace(/[^a-zA-Z0-9]/g, '_')}.ics`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
   if (authLoading || loading) {
     return (
       <div className="min-h-screen bg-slate-900 flex items-center justify-center">
@@ -163,6 +194,14 @@ export default function ViajeDetallePage() {
             <span>Mis Viajes</span>
           </Link>
           <div className="flex items-center gap-3">
+            <button
+              onClick={handleExportIcs}
+              className="flex items-center gap-1.5 bg-slate-700 hover:bg-slate-600 text-slate-200 px-3 py-2 rounded-lg text-sm transition-colors"
+              title="Exportar a calendario (ICS)"
+            >
+              <Download className="w-4 h-4" />
+              <span className="hidden sm:inline">Calendario</span>
+            </button>
             {trip && trip.itinerary_raw && (
               <PDFExportButton trip={trip} />
             )}
