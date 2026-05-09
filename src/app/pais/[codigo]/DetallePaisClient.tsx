@@ -252,7 +252,7 @@ export default function DetallePaisClient({ pais, relatedPosts = [] }: DetallePa
         <OsintAlertsBanner countryName={pais.nombre} />
 
         <div className="mb-8">
-          <EventTimeline country={pais.nombre} days={60} limit={8} title="Próximos eventos" />
+          <EventTimeline country={pais.codigo} days={60} limit={8} title="Próximos eventos" />
         </div>
 
         <div className="grid md:grid-cols-3 gap-6 mb-8">

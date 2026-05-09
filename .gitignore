@@ -54,3 +54,4 @@ proyecto.org
 # Potential pictures (local reference only)
 /potential_pics
 temp_scraper_tables.sql
+.aider*

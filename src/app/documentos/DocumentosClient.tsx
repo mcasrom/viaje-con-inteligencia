@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Upload, FileText, Image, Plane, Hotel, CreditCard, Shield, MapPin, Trash2, Search, FolderOpen, Eye, Download, Plus, X, FileImage, File, Camera } from 'lucide-react';
+import { ArrowLeft, Upload, FileText, Image, Plane, Hotel, CreditCard, Shield, MapPin, Trash2, Search, FolderOpen, Eye, Download, Plus, X, FileImage, File, Camera, AlertCircle } from 'lucide-react';
 
 interface TravelDoc {
   id: string;
@@ -171,7 +171,7 @@ export default function DocumentosClient() {
           <ArrowLeft className="w-4 h-4" />Volver al inicio
         </Link>
 
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
           <div>
             <h1 className="text-3xl font-bold text-white flex items-center gap-3">
               <FolderOpen className="w-8 h-8 text-blue-400" />Mis Documentos
@@ -186,6 +186,18 @@ export default function DocumentosClient() {
           >
             <Upload className="w-4 h-4" />Subir documento
           </button>
+        </div>
+
+        <div className="mb-6 p-4 bg-amber-500/10 border border-amber-500/20 rounded-xl">
+          <p className="text-amber-400 text-sm font-medium flex items-start gap-2">
+            <AlertCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
+            <span>
+              Los documentos se guardan <strong>exclusivamente de forma local</strong> en el navegador (IndexedDB).
+              No se suben a la nube ni a servidores externos. La pérdida del smartphone o tablet
+              supondrá la pérdida de la documentación. Esta herramienta no compite con aplicaciones
+              de respaldo cloud ni de terceros.
+            </span>
+          </p>
         </div>
 
         <div className="flex flex-col sm:flex-row gap-3 mb-6">

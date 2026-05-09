@@ -66,29 +66,15 @@ export function ShareTrip({ tripId, tripName }: ShareTripProps) {
   const sendEmailInvite = async () => {
     if (!email || !shareLink) return;
 
-    const supabase = getBrowserClient();
-    if (!supabase) return;
-
     setLoading(true);
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
+      const res = await fetch('/api/trips/send-invite', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ tripId, email, shareLink, tripName }),
+      });
 
-      const { data: shareData } = await supabase
-        .from('shared_trips')
-        .select('id')
-        .eq('trip_id', tripId)
-        .eq('user_id', user.id)
-        .single();
-
-      if (shareData) {
-        await supabase
-          .from('trip_invitees')
-          .insert({
-            share_id: shareData.id,
-            email,
-          });
-
+      if (res.ok) {
         setInviteSent(true);
         setEmail('');
         setTimeout(() => setInviteSent(false), 3000);
