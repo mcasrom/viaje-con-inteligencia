@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
+import React from 'react';
 import { renderToStream } from '@react-pdf/renderer';
 import ManualDocument from '@/components/pdf/ManualDocument';
-import { createSupabaseServerClient } from '@/lib/supabase';
+import { createSupabaseServerClient } from '@/lib/supabase-server';
 
 export const dynamic = 'force-dynamic';
 
