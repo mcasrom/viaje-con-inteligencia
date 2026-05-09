@@ -1,4 +1,7 @@
+import { createLogger } from '@/lib/logger';
 import { paisesData } from '@/data/paises';
+
+const log = createLogger('TelegramChannel');
 
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const TELEGRAM_CHANNEL_ID = process.env.TELEGRAM_CHANNEL_ID;
@@ -27,7 +30,7 @@ function escapeMD(text: string): string {
 
 export async function sendTelegramMessage(text: string): Promise<boolean> {
   if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHANNEL_ID) {
-    console.error('[Telegram] Missing BOT_TOKEN or CHANNEL_ID');
+    log.error('Missing BOT_TOKEN or CHANNEL_ID');
     return false;
   }
 
@@ -49,14 +52,14 @@ export async function sendTelegramMessage(text: string): Promise<boolean> {
     const result = await response.json();
 
     if (!result.ok) {
-      console.error('[Telegram API ERROR]', result);
+      log.error('Telegram API error', result);
       return false;
     }
 
     return true;
 
   } catch (error) {
-    console.error('[Telegram] Network error:', error);
+    log.error('Network error', error);
     return false;
   }
 }
@@ -134,12 +137,12 @@ export async function sendCountryAlert(countryCode: string): Promise<boolean> {
 ========================= */
 
 export async function subscribeUser(chatId: number, username?: string): Promise<boolean> {
-  console.log(`[Subscription] ${chatId} (@${username || 'unknown'})`);
+  log.info(`Subscription: ${chatId} (@${username || 'unknown'})`);
   return true;
 }
 
 export async function unsubscribeUser(chatId: number): Promise<boolean> {
-  console.log(`[Unsubscribe] ${chatId}`);
+  log.info(`Unsubscribe: ${chatId}`);
   return true;
 }
 

@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, Check, X, Sparkles, Shield, Bell, MessageSquare, FileCheck, TrendingUp, Map, Plane, Star, Zap, Crown, Loader2 } from 'lucide-react';
+import { TOTAL_PAISES } from '@/lib/constants';
 
 const FEATURES = [
   { icon: <MessageSquare className="w-5 h-5" />, title: 'Chat IA de Viajes', desc: '5 mensajes/día gratis con llama-3.1-8b. Premium: ilimitado con llama-3.1-70b (9x más inteligente).' },
@@ -18,7 +19,7 @@ const FEATURES = [
 
 const COMPARISON = [
   { feature: 'Mapa de riesgos MAEC', free: true, premium: true },
-  { feature: '107 países con datos', free: true, premium: true },
+  { feature: `${TOTAL_PAISES} países con datos`, free: true, premium: true },
   { feature: 'Filtros por nivel de riesgo', free: true, premium: true },
   { feature: 'Blog OSINT', free: true, premium: true },
   { feature: 'Chat IA (5 mensajes/día)', free: true, premium: true },
@@ -331,7 +332,7 @@ export default function PremiumClient() {
             <span className="text-slate-400 text-sm ml-2">4.8/5</span>
           </div>
           <p className="text-slate-500 text-sm">
-            2.400+ viajeros activos · 107 países con datos MAEC
+            2.400+ viajeros activos · {TOTAL_PAISES} países con datos MAEC
           </p>
         </div>
 

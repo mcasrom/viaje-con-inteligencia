@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { ArrowLeft, Shield, TrendingUp, BarChart3, Globe, AlertTriangle, Activity, Zap, Target, Layers, HeartPulse, Plane, DollarSign, Map, Calculator } from 'lucide-react';
+import { TOTAL_PAISES } from '@/lib/constants';
 
 const proprietaryIndices = [
   {
@@ -368,7 +369,7 @@ export default function IndicesClient() {
             <h1 className="text-3xl font-bold">Índices y Métricas</h1>
           </div>
           <p className="text-slate-400 text-lg">
-            Transparencia total: todos los índices, KPIs y algoritmos que usamos para analizar 107 países
+            Transparencia total: todos los índices, KPIs y algoritmos que usamos para analizar {TOTAL_PAISES} países
           </p>
         </div>
 

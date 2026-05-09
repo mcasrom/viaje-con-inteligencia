@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ArrowLeft, Shield, AlertTriangle, BarChart3, FileText, Globe, Database, TrendingUp } from 'lucide-react';
+import { TOTAL_PAISES } from '@/lib/constants';
 
 export const metadata: Metadata = {
   title: 'Metodología MAEC | Cómo calculamos el riesgo de viaje - Viaje con Inteligencia',
@@ -78,7 +79,7 @@ export default function MetodologiaPage() {
         <div className="text-center mb-10">
           <h1 className="text-3xl md:text-4xl font-bold text-white mb-3">Metodología MAEC</h1>
           <p className="text-slate-400 max-w-2xl mx-auto">
-            Cómo analizamos y clasificamos el riesgo de 107 países para viajeros españoles. Basado en las recomendaciones oficiales del Ministerio de Asuntos Exteriores.
+            Cómo analizamos y clasificamos el riesgo de {TOTAL_PAISES} países para viajeros españoles. Basado en las recomendaciones oficiales del Ministerio de Asuntos Exteriores.
           </p>
         </div>
 

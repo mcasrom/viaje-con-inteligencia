@@ -1,7 +1,11 @@
+import { createLogger } from '@/lib/logger';
 import { groqClient } from './groq-ai';
 import { supabaseAdmin } from './supabase-admin';
 import { paisesData } from '@/data/paises';
 import { calculateTCI } from '@/data/tci-engine';
+import { TOTAL_PAISES } from '@/lib/constants';
+
+const log = createLogger('Newsletter');
 
 const riesgoLabels: Record<string, string> = {
   'sin-riesgo': 'Bajo',
@@ -495,7 +499,7 @@ export async function buildWeeklyEmailHtml(issue: NewsletterIssue): Promise<stri
 
         <!-- Footer -->
         <tr><td style="background:#f1f5f9;padding:20px;text-align:center;border-top:1px solid #e2e8f0;">
-          <p style="color:#64748b;font-size:12px;margin:0 0 8px;">Viaje con Inteligencia · datos OSINT · 107 países · actualización semanal</p>
+          <p style="color:#64748b;font-size:12px;margin:0 0 8px;">Viaje con Inteligencia · datos OSINT · ${TOTAL_PAISES} países · actualización semanal</p>
           <p style="margin:0;">
             <a href="https://www.viajeinteligencia.com" style="color:#3b82f6;text-decoration:none;font-size:12px;margin:0 8px;">Web</a>
             <a href="https://t.me/ViajeConInteligencia" style="color:#3b82f6;text-decoration:none;font-size:12px;margin:0 8px;">Telegram</a>

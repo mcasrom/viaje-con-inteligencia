@@ -9,6 +9,7 @@ import {
   BookOpen, Newspaper, ChevronRight as Chevron, Navigation, TrendingUp, Shield
 } from 'lucide-react';
 import { paisesData } from '@/data/paises';
+import { TOTAL_PAISES } from '@/lib/constants';
 import LanguageSelector from '@/components/LanguageSelector';
 import OilPriceWidget from '@/components/OilPriceWidget';
 import AirportDelaysWidget from '@/components/AirportDelaysWidget';
@@ -98,7 +99,7 @@ function TopBar() {
             <div>
               <h1 className="text-white font-bold text-sm leading-tight">Viaje con Inteligencia</h1>
               <div className="flex items-center gap-2">
-                <span className="text-slate-400 text-[10px]">107 países</span>
+                <span className="text-slate-400 text-[10px]">{TOTAL_PAISES} países</span>
                 <span className="w-1 h-1 rounded-full bg-slate-600" />
                 <span className="flex items-center gap-1 text-[10px]">
                   <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
@@ -516,7 +517,7 @@ export default function HomeClient() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 max-w-3xl mx-auto">
           <Link href="/paises" className="bg-slate-800/50 rounded-xl p-3 text-center hover:bg-slate-800 transition-colors border border-slate-700/50">
             <Globe className="w-5 h-5 text-blue-400 mx-auto mb-1.5" />
-            <span className="text-white text-xs font-medium">107 Países</span>
+            <span className="text-white text-xs font-medium">{TOTAL_PAISES} Países</span>
           </Link>
           <Link href="/coste" className="bg-slate-800/50 rounded-xl p-3 text-center hover:bg-slate-800 transition-colors border border-slate-700/50">
             <Calculator className="w-5 h-5 text-blue-400 mx-auto mb-1.5" />
@@ -540,7 +541,7 @@ export default function HomeClient() {
         <div className="max-w-3xl mx-auto mt-12 border-t border-slate-800 pt-8">
           <h2 className="text-xl font-bold text-white mb-4">Mapa de Riesgos de Viaje con Inteligencia Artificial</h2>
           <p className="text-slate-400 text-sm leading-relaxed mb-4">
-            <strong className="text-slate-300">Viaje con Inteligencia</strong> es la primera plataforma que combina el índice de riesgo MAEC español con análisis de Machine Learning para 107 países. Nuestro <strong className="text-slate-300">índice IRV</strong> (Indicador de Riesgo de Viaje) cruza 16 KPIs — desde seguridad y terrorismo hasta coste de vida e inflación — para darte una puntuación única y actualizada.
+            <strong className="text-slate-300">Viaje con Inteligencia</strong> es la primera plataforma que combina el índice de riesgo MAEC español con análisis de Machine Learning para {TOTAL_PAISES} países. Nuestro <strong className="text-slate-300">índice IRV</strong> (Indicador de Riesgo de Viaje) cruza 16 KPIs — desde seguridad y terrorismo hasta coste de vida e inflación — para darte una puntuación única y actualizada.
           </p>
           <p className="text-slate-400 text-sm leading-relaxed mb-4">
             El motor de <strong className="text-slate-300">clustering ML</strong> agrupa destinos según tu perfil: presupuesto, tipo de viaje y preferencias. El <strong className="text-slate-300">Chat IA</strong> con Groq te da recomendaciones personalizadas en segundos. El sistema <strong className="text-slate-300">OSINT</strong> monitoriza 73+ fuentes en tiempo real: GDELT, USGS, GDACS, Reddit y RSS.

@@ -14,6 +14,7 @@
   "dependencies": {
     "@marsidev/react-turnstile": "^1.5.2",
     "@react-pdf/renderer": "^4.5.1",
+    "@sentry/nextjs": "^10.52.0",
     "@stripe/stripe-js": "^9.2.0",
     "@supabase/ssr": "^0.10.2",
     "@supabase/supabase-js": "^2.103.3",
@@ -41,7 +42,8 @@
     "remark-gfm": "^4.0.1",
     "resend": "^6.12.2",
     "stripe": "^22.0.2",
-    "web-push": "^3.6.7"
+    "web-push": "^3.6.7",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

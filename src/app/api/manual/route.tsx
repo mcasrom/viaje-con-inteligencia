@@ -3,6 +3,10 @@ import React from 'react';
 import { renderToStream } from '@react-pdf/renderer';
 import ManualDocument from '@/components/pdf/ManualDocument';
 import { createSupabaseServerClient } from '@/lib/supabase-server';
+import { getManualPaises, getManualEvents, getManualSeguros } from '@/lib/manual-data';
+import { createLogger } from '@/lib/logger';
+
+const log = createLogger('ManualPDF');
 
 export const dynamic = 'force-dynamic';
 
@@ -21,7 +25,16 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    const stream = await renderToStream(<ManualDocument lang={lang} />);
+    // Fetch live data in parallel
+    const [paises, events, seguros] = await Promise.all([
+      Promise.resolve(getManualPaises()),
+      getManualEvents(lang),
+      getManualSeguros(),
+    ]);
+
+    log.info('PDF generado', { lang, paises: paises.length, events: events.length, seguros: seguros.length });
+
+    const stream = await renderToStream(<ManualDocument lang={lang} paises={paises} events={events} seguros={seguros} />);
 
     const chunks: Uint8Array[] = [];
     for await (const chunk of stream as any) {
@@ -40,7 +53,7 @@ export async function GET(request: NextRequest) {
       },
     });
   } catch (error: any) {
-    console.error('[Manual PDF] Error:', error);
+    log.error('Error al generar PDF', { error: error.message });
     return NextResponse.json(
       { error: 'Error al generar el PDF: ' + (error.message || 'desconocido') },
       { status: 500 }

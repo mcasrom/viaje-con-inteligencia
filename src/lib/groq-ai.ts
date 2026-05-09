@@ -1,5 +1,11 @@
 import Groq from 'groq-sdk';
 import { paisesData } from '@/data/paises';
+import { createLogger } from '@/lib/logger';
+import { isCircuitOpen, recordSuccess, recordFailure } from '@/lib/circuit-breaker';
+import { trackFailure, trackSuccess } from '@/lib/alert-webhook';
+
+const log = createLogger('GroqAI');
+const CB_NAME = 'groq-api';
 
 const groq = new Groq({
   apiKey: process.env.GROQ_API_KEY || '',
@@ -51,6 +57,11 @@ Incluye:
 
 Responde en español, en formato markdown. Sé conciso pero útil.`;
 
+  if (isCircuitOpen(CB_NAME)) {
+    log.warn('Circuit open, skipping itinerary generation');
+    return 'Servicio de IA temporalmente no disponible. Intenta de nuevo mas tarde.';
+  }
+
   try {
     const chatCompletion = await groqClient.chat.completions.create({
       messages: [
@@ -68,9 +79,13 @@ Responde en español, en formato markdown. Sé conciso pero útil.`;
       max_tokens: 4096,
     });
 
+    recordSuccess(CB_NAME);
+    trackSuccess(CB_NAME);
     return chatCompletion.choices[0]?.message?.content || 'No pude generar el itinerario.';
   } catch (error) {
-    console.error('Groq API error:', error);
+    log.error('API error:', error);
+    recordFailure(CB_NAME);
+    trackFailure(CB_NAME, 'generateItinerary failed');
     return 'Error al generar el itinerario. Por favor, intenta de nuevo.';
   }
 }
@@ -93,6 +108,11 @@ Proporciona en formato JSON:
 
 Responde SOLO con el JSON, sin explicaciones adicionales.`;
 
+  if (isCircuitOpen(CB_NAME)) {
+    log.warn('Circuit open, skipping risk analysis');
+    return { level: 'desconocido', factors: ['Servicio no disponible'], recommendations: ['Verifica fuentes oficiales'] };
+  }
+
   try {
     const chatCompletion = await groqClient.chat.completions.create({
       messages: [
@@ -110,10 +130,14 @@ Responde SOLO con el JSON, sin explicaciones adicionales.`;
       max_tokens: 1024,
     });
 
+    recordSuccess(CB_NAME);
+    trackSuccess(CB_NAME);
     const response = chatCompletion.choices[0]?.message?.content || '{}';
     return JSON.parse(response);
   } catch (error) {
-    console.error('Groq API error:', error);
+    log.error('API error:', error);
+    recordFailure(CB_NAME);
+    trackFailure(CB_NAME, 'analyzeRisk failed');
     return {
       level: 'desconocido',
       factors: ['No se pudo analizar'],
@@ -168,6 +192,11 @@ Proporciona:
 
 Usa un formato limpio y práctico. Responde en español.`;
 
+  if (isCircuitOpen(CB_NAME)) {
+    log.warn('Circuit open, skipping comparison');
+    return 'Servicio de IA temporalmente no disponible. Intenta de nuevo mas tarde.';
+  }
+
   try {
     const chatCompletion = await groqClient.chat.completions.create({
       messages: [
@@ -183,9 +212,13 @@ Usa un formato limpio y práctico. Responde en español.`;
       max_tokens: 2048,
     });
 
+    recordSuccess(CB_NAME);
+    trackSuccess(CB_NAME);
     return chatCompletion.choices[0]?.message?.content || 'No pude completar la comparación.';
   } catch (error) {
-    console.error('Groq API error:', error);
+    log.error('API error:', error);
+    recordFailure(CB_NAME);
+    trackFailure(CB_NAME, 'compareCountries failed');
     return 'Error al comparar. Intenta de nuevo.';
   }
 }
@@ -208,6 +241,11 @@ export async function chatWithAI(
     .join('\n');
 
   const selectedModel = context.model || 'llama-3.1-8b-instant';
+
+  if (isCircuitOpen(CB_NAME)) {
+    log.warn('Circuit open, skipping chat response');
+    return 'Servicio de IA temporalmente no disponible. Intenta de nuevo mas tarde.';
+  }
 
   try {
     const chatCompletion = await groqClient.chat.completions.create({
@@ -245,9 +283,13 @@ Responde en español, de forma clara y útil. Sugiere consultar la web del MAEC.
       max_tokens: 2048,
     });
 
+    recordSuccess(CB_NAME);
+    trackSuccess(CB_NAME);
     return chatCompletion.choices[0]?.message?.content || 'No pude procesar tu mensaje.';
   } catch (error: any) {
-    console.error('Groq API error:', error?.message || error?.error || error);
+    log.error('API error:', error);
+    recordFailure(CB_NAME);
+    trackFailure(CB_NAME, 'chatWithAI failed');
     return `Error de conexión: ${error?.message || 'verifica GROQ_API_KEY'}`;
   }
 }

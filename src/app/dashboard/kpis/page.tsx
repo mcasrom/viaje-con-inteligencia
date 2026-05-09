@@ -1,5 +1,5 @@
 import { getTodosLosPaises } from '@/data/paises';
-import { GPI_DATA, GTI_DATA, HDI_DATA, IPC_DATA } from '@/data/indices';
+import { getGPI, getGTI, getHDI, getIPC } from '@/lib/indices';
 import { getTCIForAllCountries, getCurrentOilPrice } from '@/data/tci-engine';
 import { tourismData } from '@/data/tourism';
 import KPIDashboard from './KPIDashboardClient';
@@ -16,7 +16,14 @@ function getNombre(code: string): string {
   return pais?.nombre || code;
 }
 
-export default function KPIsPage() {
+export default async function KPIsPage() {
+  const [GPI_DATA, GTI_DATA, HDI_DATA, IPC_DATA] = await Promise.all([
+    getGPI(),
+    getGTI(),
+    getHDI(),
+    getIPC(),
+  ]);
+
   const allPaises = getTodosLosPaises().filter(p => p.visible !== false && p.codigo !== 'cu');
   const allTCI = getTCIForAllCountries();
   const oil = getCurrentOilPrice();

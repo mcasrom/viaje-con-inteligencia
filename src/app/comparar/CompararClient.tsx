@@ -1,10 +1,19 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, X, Search, TrendingUp, TrendingDown, Minus, Shield, Globe, DollarSign, Activity, Award, AlertTriangle } from 'lucide-react';
 import { paisesData, getLabelRiesgo, NivelRiesgo } from '@/data/paises';
-import { GPI_DATA, GTI_DATA, HDI_DATA, IPC_DATA } from '@/data/indices';
 import { calculateTCI } from '@/data/tci-engine';
+
+interface IndexEntry {
+  codigo_pais: string;
+  nombre_pais: string;
+  valor: number;
+  rank: number;
+  cambio?: number;
+  nivel?: string;
+  region: string;
+}
 
 interface CountryData {
   code: string;
@@ -22,36 +31,6 @@ interface CountryData {
   hdi: { score: number; rank: number } | null;
   ipc: { value: string; level: string } | null;
   tci: number | null;
-}
-
-function getCountryData(code: string): CountryData | null {
-  const pais = paisesData[code];
-  if (!pais) return null;
-
-  const gpi = GPI_DATA.find(d => d.code === code.toUpperCase()) || null;
-  const gti = GTI_DATA.find(d => d.code === code.toUpperCase()) || null;
-  const hdi = HDI_DATA.find(d => d.code === code.toUpperCase()) || null;
-  const ipc = IPC_DATA.find(d => d.code === code.toUpperCase()) || null;
-
-  const tciData = calculateTCI(code);
-
-  return {
-    code,
-    name: pais.nombre,
-    flag: pais.bandera,
-    capital: pais.capital,
-    continent: pais.continente,
-    language: pais.idioma,
-    currency: pais.moneda,
-    population: pais.poblacion,
-    riesgo: pais.nivelRiesgo,
-    riesgoLabel: getLabelRiesgo(pais.nivelRiesgo),
-    gpi: gpi ? { score: gpi.score, rank: gpi.rank } : null,
-    gti: gti ? { score: gti.score, rank: gti.rank } : null,
-    hdi: hdi ? { score: hdi.score, rank: hdi.rank } : null,
-    ipc: ipc ? { value: ipc.ipc, level: ipc.nivel } : null,
-    tci: tciData ? Math.round(tciData.tci * 10) / 10 : null,
-  };
 }
 
 function getAllCountries() {
@@ -84,10 +63,60 @@ function ValueIndicator({ value, invert = false }: { value: number | null; inver
 }
 
 export default function CompararClient() {
+  const [gpiData, setGpiData] = useState<IndexEntry[]>([]);
+  const [gtiData, setGtiData] = useState<IndexEntry[]>([]);
+  const [hdiData, setHdiData] = useState<IndexEntry[]>([]);
+  const [ipcData, setIpcData] = useState<IndexEntry[]>([]);
   const allCountries = getAllCountries();
   const [selectedCodes, setSelectedCodes] = useState<string[]>(['es', 'fr', 'de']);
   const [search, setSearch] = useState('');
   const [showDropdown, setShowDropdown] = useState(false);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const [gpi, gti, hdi, ipc] = await Promise.all([
+        fetch('/api/indices?tipo=gpi').then(r => r.json()),
+        fetch('/api/indices?tipo=gti').then(r => r.json()),
+        fetch('/api/indices?tipo=hdi').then(r => r.json()),
+        fetch('/api/indices?tipo=ipc').then(r => r.json()),
+      ]);
+      setGpiData(gpi);
+      setGtiData(gti);
+      setHdiData(hdi);
+      setIpcData(ipc);
+    };
+    fetchData();
+  }, []);
+
+  function getCountryData(code: string): CountryData | null {
+    const pais = paisesData[code];
+    if (!pais) return null;
+
+    const gpi = gpiData.find(d => d.codigo_pais === code.toLowerCase()) || null;
+    const gti = gtiData.find(d => d.codigo_pais === code.toLowerCase()) || null;
+    const hdi = hdiData.find(d => d.codigo_pais === code.toLowerCase()) || null;
+    const ipc = ipcData.find(d => d.codigo_pais === code.toLowerCase()) || null;
+
+    const tciData = calculateTCI(code);
+
+    return {
+      code,
+      name: pais.nombre,
+      flag: pais.bandera,
+      capital: pais.capital,
+      continent: pais.continente,
+      language: pais.idioma,
+      currency: pais.moneda,
+      population: pais.poblacion,
+      riesgo: pais.nivelRiesgo,
+      riesgoLabel: getLabelRiesgo(pais.nivelRiesgo),
+      gpi: gpi ? { score: gpi.valor, rank: gpi.rank } : null,
+      gti: gti ? { score: gti.valor, rank: gti.rank } : null,
+      hdi: hdi ? { score: hdi.valor, rank: hdi.rank } : null,
+      ipc: ipc ? { value: ipc.valor.toString(), level: ipc.nivel || '' } : null,
+      tci: tciData ? Math.round(tciData.tci * 10) / 10 : null,
+    };
+  }
 
   const selectedCountries = selectedCodes.map(getCountryData).filter(Boolean) as CountryData[];
 

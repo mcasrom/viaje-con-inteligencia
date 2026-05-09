@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ArrowLeft, Activity, Database, Globe, Clock, CheckCircle, AlertTriangle, XCircle, Server, MapPin, Cloud, Zap, Shield, Newspaper } from 'lucide-react';
+import { TOTAL_PAISES } from '@/lib/constants';
 
 export const metadata: Metadata = {
   title: 'Transparencia | Estado del Sistema - Viaje con Inteligencia',
@@ -89,7 +90,7 @@ export default async function TransparenciaPage() {
   ];
 
   const cronJobs = [
-    { name: 'Scraper MAEC', icon: Shield, status: cronStatus?.scrapeMaec?.status || 'pending', lastUpdate: cronStatus?.scrapeMaec?.lastRun, nextRun: cronStatus?.scrapeMaec?.nextRun, desc: 'Actualiza riesgos de 107 países desde maec.es', schedule: 'Diario a las 6:00' },
+    { name: 'Scraper MAEC', icon: Shield, status: cronStatus?.scrapeMaec?.status || 'pending', lastUpdate: cronStatus?.scrapeMaec?.lastRun, nextRun: cronStatus?.scrapeMaec?.nextRun, desc: `Actualiza riesgos de ${TOTAL_PAISES} países desde maec.es`, schedule: 'Diario a las 6:00' },
     { name: 'Alertas de riesgo', icon: AlertTriangle, status: cronStatus?.checkAlerts?.status || 'pending', lastUpdate: cronStatus?.checkAlerts?.lastRun, nextRun: cronStatus?.checkAlerts?.nextRun, desc: 'Genera alertas automáticas por cambios de riesgo', schedule: 'Diario a las 8:00' },
     { name: 'Digest semanal', icon: Newspaper, status: cronStatus?.weeklyDigest?.status || 'pending', lastUpdate: cronStatus?.weeklyDigest?.lastRun, nextRun: cronStatus?.weeklyDigest?.nextRun, desc: 'Resumen semanal de eventos y tendencias', schedule: 'Lunes a las 8:00' },
   ];
@@ -184,7 +185,7 @@ export default async function TransparenciaPage() {
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {[
-              { label: 'Países analizados', value: '107', icon: Globe },
+              { label: 'Países analizados', value: `${TOTAL_PAISES}`, icon: Globe },
               { label: 'Ciudades en mapa', value: '47K+', icon: MapPin },
               { label: 'Fuentes activas', value: '6', icon: Database },
               { label: 'Actualización MAEC', value: 'Diaria', icon: Clock },

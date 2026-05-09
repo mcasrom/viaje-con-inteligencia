@@ -1,14 +1,31 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { z } from 'zod';
 import { createSupabaseServerClient } from '@/lib/supabase-server';
 import { supabaseAdmin } from '@/lib/supabase-admin';
+import { apiError } from '@/lib/api-schemas';
+import { createLogger } from '@/lib/logger';
+
+const log = createLogger('Posts');
+
+const getQuerySchema = z.object({
+  slug: z.string().min(1, 'Slug is required'),
+});
+
+const postBodySchema = z.object({
+  slug: z.string().min(1, 'Slug is required'),
+  rating: z.number().int().min(1).max(5),
+});
 
 export async function GET(request: NextRequest) {
-  const searchParams = request.nextUrl.searchParams;
-  const slug = searchParams.get('slug');
+  const searchParams = Object.fromEntries(request.nextUrl.searchParams.entries());
 
-  if (!slug) {
-    return NextResponse.json({ error: 'Slug required' }, { status: 400 });
+  const parsed = getQuerySchema.safeParse(searchParams);
+  if (!parsed.success) {
+    log.error('GET /posts/rate validation failed', parsed.error.format());
+    return apiError('Parámetros inválidos');
   }
+
+  const { slug } = parsed.data;
 
   const supabase = await createSupabaseServerClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -30,21 +47,27 @@ export async function GET(request: NextRequest) {
     if (mine) userRating = mine.rating;
   }
 
+  log.info(`GET /posts/rate - slug: ${slug}, count: ${count}, average: ${average}`);
+
   return NextResponse.json({ slug, average, count, userRating });
 }
 
 export async function POST(request: NextRequest) {
   const body = await request.json();
-  const { slug, rating } = body;
 
-  if (!slug || !rating) {
-    return NextResponse.json({ error: 'Slug and rating required' }, { status: 400 });
+  const parsed = postBodySchema.safeParse(body);
+  if (!parsed.success) {
+    log.error('POST /posts/rate validation failed', parsed.error.format());
+    return apiError('Datos inválidos');
   }
+
+  const { slug, rating } = parsed.data;
 
   const supabase = await createSupabaseServerClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) {
-    return NextResponse.json({ error: 'Debes iniciar sesión para valorar' }, { status: 401 });
+    log.error('POST /posts/rate - unauthorized');
+    return apiError('Debes iniciar sesión para valorar', undefined, 401);
   }
 
   const { data: existing } = await supabaseAdmin
@@ -78,6 +101,8 @@ export async function POST(request: NextRequest) {
     average = Math.round((total / allRatings.length) * 10) / 10;
     count = allRatings.length;
   }
+
+  log.info(`POST /posts/rate - slug: ${slug}, rating: ${rating}, user: ${user.id}`);
 
   return NextResponse.json({ success: true, average, count, userRating: rating });
 }

@@ -1,4 +1,7 @@
+import { createLogger } from '@/lib/logger';
 import { logScraperSuccess, logScraperError } from './audit';
+
+const log = createLogger('WB');
 
 const WB_API = 'https://api.worldbank.org/v2';
 const CACHE_DURATION = 1000 * 60 * 60 * 24;

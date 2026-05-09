@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server';
 import { supabaseAdmin, isSupabaseAdminConfigured } from '@/lib/supabase-admin';
 import { fetchAllPosts, classifySignal, detectFirstPerson, type SignalCategory } from '@/lib/osint-sensor';
+import { createLogger } from '@/lib/logger';
+
+const log = createLogger('OSINT');
 
 const LAST_RUN_KEY = 'last_osint_run';
 const PROCESSED_URLS_KEY = 'osint_processed_urls';
@@ -62,15 +65,15 @@ async function fetchAndSaveOilPrice(): Promise<{ success: boolean; price?: numbe
           );
 
         if (error) {
-          console.error('[Oil] Save error:', error);
+          log.error('Save error', error);
           return { success: false };
         }
 
-        console.log(`[Oil] Saved $${rounded} from ${src.name}`);
+        log.info(`Saved $${rounded} from ${src.name}`);
         return { success: true, price: rounded, source: src.name };
       }
     } catch (e) {
-      console.warn(`[Oil] Fetch failed (${src.name}):`, e);
+      log.warn(`Fetch failed (${src.name})`, e);
     }
   }
 
@@ -84,12 +87,12 @@ export async function GET(request: Request) {
   }
 
   try {
-    console.log('[OSINT] Starting sensor scan...');
+    log.info('Starting sensor scan...');
     const startTime = Date.now();
 
     // 1. Fetch posts from all sources (Reddit + GDACS + USGS + GDELT)
     const posts = await fetchAllPosts();
-    console.log(`[OSINT] Fetched ${posts.length} posts from 4 sources`);
+    log.info(`Fetched ${posts.length} posts from 4 sources`);
     
     if (!supabaseAdmin) {
       return NextResponse.json({ error: 'Supabase not configured', postsFound: posts.length });
@@ -105,7 +108,7 @@ export async function GET(request: Request) {
 
     // 3. Filter new posts
     const newPosts = posts.filter(p => !processedUrls.has(p.sourceUrl));
-    console.log(`[OSINT] ${newPosts.length} new posts to process`);
+    log.info(`${newPosts.length} new posts to process`);
 
     const signals = [];
     for (const post of newPosts) {
@@ -172,7 +175,7 @@ export async function GET(request: Request) {
         .insert(signals);
 
       if (error) {
-        console.error('[OSINT] Insert error:', error);
+        log.error('Insert error', error);
       } else {
         inserted = signals.length;
       }
@@ -210,7 +213,7 @@ export async function GET(request: Request) {
       timestamp: new Date().toISOString(),
     });
   } catch (error) {
-    console.error('[OSINT] Error:', error);
+    log.error('Error', error);
     return NextResponse.json({ error: 'Internal error' }, { status: 500 });
   }
 }

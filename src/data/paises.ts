@@ -6058,6 +6058,134 @@ si: {
     ],
     bandera: '🇭🇹',
     mapaCoordenadas: [18.5944, -72.3074]
+  },
+  ru: {
+    codigo: 'ru',
+    nombre: 'Rusia',
+    capital: 'Moscú',
+    continente: 'Europa',
+    idioma: 'Ruso',
+    moneda: 'Rublo (RUB)',
+    tipoCambio: '1 EUR ≈ 100 RUB',
+    zonaHoraria: 'UTC+2 a UTC+12',
+    conduccion: 'derecha',
+    poblacion: '144 millones',
+    pib: '1.8 billones USD',
+    indicadores: { ipc: '6.5%', indicePrecios: 'Medio' },
+    voltaje: '220V / 50Hz',
+    prefijoTelefono: '+7',
+    nivelRiesgo: 'alto',
+    ultimoInforme: 'Abril 2026',
+    contactos: [
+      {
+        tipo: 'Embajada',
+        nombre: 'Embajada de España en Moscú',
+        direccion: 'Ul. Bolshaya Nikitskaya, 50/8, Moscú 121069',
+        telefono: '+7 495 690 29 93',
+        email: 'emb.moscu@maec.es',
+        horario: 'Lunes a viernes 9:00-17:00'
+      },
+      {
+        tipo: 'Consulado',
+        nombre: 'Consulado General de España en San Petersburgo',
+        direccion: 'Ul. Furshtatskaya, 9, San Petersburgo 191028',
+        telefono: '+7 812 327 35 34',
+        email: 'cog.sanpetersburgo@maec.es',
+        horario: 'Lunes a viernes 9:00-14:00'
+      }
+    ],
+    requerimientos: [
+      { categoria: 'Documentacion', icon: '📄', items: ['Pasaporte valido 6 meses', 'Visado obligatorio para espanoles', 'Invitation letter original', 'Registro migratorio en 7 dias'] },
+      { categoria: 'Sanitario', icon: '🏥', items: ['Seguro medico obligatorio', 'Vacunas: ninguna obligatoria', 'Farmacias con prescripcion'] },
+      { categoria: 'Seguridad', icon: '⚠️', items: ['Viajar con precaucion por conflicto Ucrania', 'Evitar zonas fronterizas con Ucrania', 'Registrar viaje en consulado', 'Sanciones afectan pagos con tarjeta'] }
+    ],
+    queHacer: [
+      'Visitar la Plaza Roja y el Kremlin en Moscu',
+      'Recorrer el Museo del Hermitage en San Petersburgo',
+      'Viajar en el Transiberiano hasta Vladivostok',
+      'Explorar la Catedral de San Basilio',
+      'Disfrutar del ballet en el Teatro Bolshoi',
+      'Visitar el Lago Baikal en Siberia',
+      'Recorrer el Anillo de Oro (Suzdal, Vladimir)',
+    ],
+    queNoHacer: [
+      'No fotografiar instalaciones militares o gubernamentales',
+      'No llevar drones sin permiso',
+      'No viajar a Chechenia, Daguestan o zonas fronterizas con Ucrania sin evaluar riesgo',
+      'No ignorar las sanciones financieras (lleva efectivo)',
+      'No beber agua del grifo',
+    ],
+    diarios: [
+      { nombre: 'RT', url: 'https://actualidad.rt.com' },
+      { nombre: 'TASS', url: 'https://tass.ru' },
+      { nombre: 'The Moscow Times', url: 'https://www.themoscowtimes.com' }
+    ],
+    urlsUtiles: [
+      { nombre: 'Embajada Espana Moscu', url: 'https://www.exteriores.gob.es/Embajadas/Moscu' },
+      { nombre: 'Turismo Rusia', url: 'https://www.russia.travel' },
+      { nombre: 'MAEC - Rusia', url: 'https://www.exteriores.gob.es/Embajadas/Moscu/es/Viajar/Paginas/Recomendaciones-de-viaje.aspx' }
+    ],
+    bandera: '🇷🇺',
+    mapaCoordenadas: [61.5240, 105.3188]
+  },
+  ua: {
+    codigo: 'ua',
+    nombre: 'Ucrania',
+    capital: 'Kiev',
+    continente: 'Europa',
+    idioma: 'Ucraniano',
+    moneda: 'Grivna (UAH)',
+    tipoCambio: '1 EUR ≈ 40 UAH',
+    zonaHoraria: 'UTC+2',
+    conduccion: 'derecha',
+    poblacion: '44 millones',
+    pib: '160 mil millones USD',
+    indicadores: { ipc: '10%', indicePrecios: 'Medio' },
+    voltaje: '230V / 50Hz',
+    prefijoTelefono: '+380',
+    nivelRiesgo: 'muy-alto',
+    ultimoInforme: 'Mayo 2026',
+    contactos: [
+      {
+        tipo: 'Embajada',
+        nombre: 'Embajada de Espana en Kiev',
+        direccion: 'Vulytsya Mykoly Pymonenka, 6, Kiev 04050',
+        telefono: '+380 44 585 13 00',
+        email: 'emb.kiev@maec.es',
+        horario: 'Lunes a viernes 9:00-14:00'
+      }
+    ],
+    requerimientos: [
+      { categoria: 'Documentacion', icon: '📄', items: ['Pasaporte valido 6 meses', 'Sin visa para estancias turisticas (90 dias)', 'Registro en consulados recomendado'] },
+      { categoria: 'Sanitario', icon: '🏥', items: ['Seguro medico con repatriacion imprescindible', 'Vacunas: ninguna obligatoria', 'Farmacias limitadas en zonas de conflicto'] },
+      { categoria: 'Seguridad', icon: '⚠️', items: ['NO VIAJAR por conflicto activo con Rusia', 'Si estas alli, registrar en consulado', 'Toque de queda nocturno activo', 'Estaciones de metro como refugios'] }
+    ],
+    queHacer: [
+      'Recorrer el centro historico de Lviv',
+      'Visitar la Catedral de Santa Sofia en Kiev',
+      'Explorar el tunel del amor cerca de Klevan',
+      'Descubrir la fortaleza de Kamianets-Podilskyi',
+      'Visitar los Cárpatos ucranianos en invierno',
+      'Degustar borscht y varenyky tradicionales',
+      'Recorrer la campiña de Poltava y Járkov',
+    ],
+    queNoHacer: [
+      'No viajar a zonas de conflicto activo (Donetsk, Lugansk, Crimea)',
+      'No ignorar alarmas antiaereas',
+      'No fotografiar instalaciones militares',
+      'No viajar sin seguro medico completo',
+      'No asumir que hay combustible disponible en rutas largas',
+    ],
+    diarios: [
+      { nombre: 'Ukrainska Pravda', url: 'https://www.pravda.com.ua' },
+      { nombre: 'Kyiv Independent', url: 'https://kyivindependent.com' }
+    ],
+    urlsUtiles: [
+      { nombre: 'Embajada Espana Kiev', url: 'https://www.exteriores.gob.es/Embajadas/Kiev' },
+      { nombre: 'MAEC - Ucrania', url: 'https://www.exteriores.gob.es/Embajadas/Kiev/es/Viajar/Paginas/Recomendaciones-de-viaje.aspx' }
+    ],
+    bandera: '🇺🇦',
+    mapaCoordenadas: [48.3794, 31.1656]
   }
 };
 

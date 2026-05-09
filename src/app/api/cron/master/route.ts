@@ -11,6 +11,8 @@ import { detectAndCreateIncidents } from '@/lib/incident-detector';
 import { saveAllPredictions } from '@/lib/ml-risk-predictor';
 import { fetchAndStoreEvents } from '@/lib/events-fetch';
 import { runMonitorForUser } from '@/lib/seguros/monitor';
+import { createLogger } from '@/lib/logger';
+const log = createLogger('Master');
 
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const TELEGRAM_CHANNEL_ID = process.env.TELEGRAM_CHANNEL_ID;
@@ -296,7 +298,7 @@ async function runNewsSentiment(): Promise<any> {
     if (signals.length > 0) {
       const { error } = await supabaseAdmin.from('osint_signals').insert(signals);
       if (error) {
-        console.error('[OSINT] Insert error:', error.message, error.details, error.hint);
+        log.error('Insert error:', { message: error.message, details: error.details, hint: error.hint });
         // Try one-by-one to skip duplicates
         for (const sig of signals) {
           try {
@@ -549,7 +551,7 @@ async function runInsuranceMonitor(): Promise<any> {
 
 // ===== EVENTS FETCH (Wikidata + GDELT + Groq) =====
 async function runEventsFetch(): Promise<any> {
-  console.log('[Master] Events fetch + enrich...');
+  log.info('Events fetch + enrich...');
   try {
     const result = await fetchAndStoreEvents();
     return {
@@ -572,7 +574,7 @@ async function withTimeout<T>(fn: () => Promise<T>, ms: number, label: string): 
       new Promise<never>((_, reject) => setTimeout(() => reject(new Error(`Timeout after ${ms}ms`)), ms)),
     ]);
   } catch (e: any) {
-    console.error(`[Master] ${label} failed:`, e.message);
+    log.error(`${label} failed:`, e);
     return { status: 'error', error: e.message };
   }
 }
@@ -586,7 +588,7 @@ export async function GET(request: Request) {
   const startTime = Date.now();
   const results: Record<string, any> = {};
 
-  console.log('[Master Cron] Starting...');
+  log.info('Starting...');
 
   // Phase 1: Independent tasks (run in parallel)
   // MAEC scrape (120s timeout), Airspace OSINT (30s), Oil Price (15s)
@@ -609,11 +611,11 @@ export async function GET(request: Request) {
   results.flight_costs = flightRes;
 
   // Phase 3: News sentiment (most variable, isolated timeout)
-  console.log('[Master] 5/8 News sentiment...');
+  log.info('5/8 News sentiment...');
   results.news_sentiment = await withTimeout(() => runNewsSentiment(), 90000, '5/8 News sentiment');
 
   // Phase 3b: Incident detection (clusters signals → actionable incidents)
-  console.log('[Master] 5b/8 Incident detection...');
+  log.info('5b/8 Incident detection...');
   results.incidents = await withTimeout(
     async () => detectAndCreateIncidents(),
     15000,
@@ -621,7 +623,7 @@ export async function GET(request: Request) {
   );
 
   // Phase 3c: ML Risk Predictions
-  console.log('[Master] 6/8 ML Risk predictions...');
+  log.info('6/8 ML Risk predictions...');
   results.risk_predictions = await withTimeout(
     async () => saveAllPredictions(),
     30000,
@@ -629,7 +631,7 @@ export async function GET(request: Request) {
   );
 
   // Phase 3d: Events fetch (Wikidata + GDELT + Groq enrichment)
-  console.log('[Master] 6b/8 Events intelligence...');
+  log.info('6b/8 Events intelligence...');
   results.events = await withTimeout(
     async () => fetchAndStoreEvents(),
     120000,
@@ -637,19 +639,19 @@ export async function GET(request: Request) {
   );
 
   // Phase 4: Digests and notifications (always run last)
-  console.log('[Master] 7/8 Daily digest...');
+  log.info('7/8 Daily digest...');
   results.digest = await withTimeout(() => runDailyDigest(results), 30000, '7/8 Daily digest');
 
-  console.log('[Master] 7a/8 Expire trials...');
+  log.info('7a/8 Expire trials...');
   results.expire_trials = await withTimeout(() => expireTrials(), 15000, '7a/8 Expire trials');
 
-  console.log('[Master] 7b/8 Trial notifications...');
+  log.info('7b/8 Trial notifications...');
   results.trial_notifications = await withTimeout(() => runTrialNotifications(), 15000, '7b/8 Trial notifications');
 
-  console.log('[Master] 8/8 Weekly digest...');
+  log.info('8/8 Weekly digest...');
   results.weekly = await withTimeout(() => runWeeklyDigest(), 30000, '8/8 Weekly digest');
 
-  console.log('[Master] 8b/8 Insurance monitor...');
+  log.info('8b/8 Insurance monitor...');
   results.insurance_monitor = await withTimeout(() => runInsuranceMonitor(), 30000, '8b/8 Insurance monitor');
 
   const elapsed = Date.now() - startTime;

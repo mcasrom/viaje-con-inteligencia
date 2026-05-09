@@ -1,4 +1,13 @@
-export const GPI_DATA = [
+export interface GPICountry {
+  rank: number;
+  country: string;
+  code: string;
+  score: number;
+  change: number;
+  region: string;
+}
+
+export const GPI_DATA: GPICountry[] = [
   { rank: 1, country: 'Islandia', code: 'IS', score: 1.095, change: 0, region: 'Europa' },
   { rank: 2, country: 'Irlanda', code: 'IE', score: 1.260, change: 0, region: 'Europa' },
   { rank: 3, country: 'Nueva Zelanda', code: 'NZ', score: 1.282, change: 2, region: 'Oceanía' },

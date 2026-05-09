@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { createLogger } from '@/lib/logger';
 import { supabase, isSupabaseConfigured } from '@/lib/supabase';
 import {
   getUserState,
@@ -21,6 +22,8 @@ import {
   getAlertsFullKeyboard
 } from '@/lib/telegram-bot';
 
+const log = createLogger('Telegram');
+
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || '';
 const TELEGRAM_API = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}`;
 
@@ -35,7 +38,7 @@ async function trackStart(chatId: number, username?: string, firstName?: string)
     last_active: new Date().toISOString(),
   }, { onConflict: 'chat_id' });
   
-  if (error) console.error('Track start error:', error);
+  if (error) log.error('Track start error', error);
 }
 
 async function trackCommand(chatId: number, command: string) {
@@ -137,7 +140,7 @@ function detectLanguage(text: string): Lang {
 
 async function sendMessage(chatId: number, text: string, keyboard?: TelegramKeyboard) {
   if (!TELEGRAM_BOT_TOKEN) {
-    console.log('Mensaje (sin bot configurado):', text.substring(0, 50));
+    log.info('Mensaje (sin bot configurado)', text.substring(0, 50));
     return;
   }
   
@@ -153,7 +156,7 @@ async function sendMessage(chatId: number, text: string, keyboard?: TelegramKeyb
       }),
     });
   } catch (error) {
-    console.error('Error sending message:', error);
+    log.error('Error sending message', error);
   }
 }
 
@@ -204,14 +207,14 @@ Responde en español, de forma clara y útil. Máximo 500 caracteres.`;
     });
 
     if (!response.ok) {
-      console.error('Groq error:', await response.text());
+      log.error('Groq error', await response.text());
       return translations[lang].aiError();
     }
 
     const data = await response.json();
     return data.choices?.[0]?.message?.content || 'No pude procesar tu mensaje.';
   } catch (error) {
-    console.error('AI chat error:', error);
+    log.error('AI chat error', error);
     return translations[lang].aiConnectionError();
   }
 }
@@ -289,7 +292,7 @@ export async function POST(request: NextRequest) {
     // Handle /pais or /country command
     if (text.startsWith('/pais') || text.startsWith('/country')) {
       const query = text.replace(/^\/(pais|country)\s*/i, '').trim().toLowerCase();
-      console.log('/pais command - query:', query);
+      log.info('/pais command - query', query);
       
       if (!query) {
         await sendMessage(chatId, '🇬🇧 *Buscar país*\n\nUsa: /pais [código o nombre]\n\n_Ejemplos:_\n/pais ES\n/pais España\n/pais Japón', {
@@ -311,7 +314,7 @@ export async function POST(request: NextRequest) {
       }
       
       if (country) {
-        console.log('Found country:', country.nombre);
+        log.info('Found country', country.nombre);
         resetUserState(chatId);
         const weather = await getWeatherForCountry(country.codigo);
         let info = formatCountryInfo(country.codigo);
@@ -752,7 +755,7 @@ await sendMessage(chatId, t.notUnderstood(), {
     
     return NextResponse.json({ ok: true });
   } catch (error) {
-    console.error('Telegram webhook error:', error);
+    log.error('Telegram webhook error', error);
     return NextResponse.json({ ok: false, error: 'Internal error' }, { status: 500 });
   }
 }
@@ -780,7 +783,7 @@ async function answerInlineQuery(inlineQueryId: string, results: any[]) {
       }),
     });
   } catch (error) {
-    console.error('Inline query error:', error);
+    log.error('Inline query error', error);
   }
 }
 
@@ -797,7 +800,7 @@ async function answerCallbackQuery(callbackQueryId: string, text?: string) {
       }),
     });
   } catch (error) {
-    console.error('Callback query error:', error);
+    log.error('Callback query error', error);
   }
 }
 

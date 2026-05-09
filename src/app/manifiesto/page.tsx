@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ArrowLeft, Shield, Eye, TrendingUp, Zap, Target, Users } from 'lucide-react';
+import { TOTAL_PAISES } from '@/lib/constants';
 
 export const metadata: Metadata = {
   title: 'Manifiesto | Miguel Castillo - Viaje con Inteligencia',
@@ -85,7 +86,7 @@ export default function ManifiestoPage() {
             {[
               { icon: Shield, label: '26 países MAEC escaneados', desc: 'Riesgo actualizado diariamente' },
               { icon: Eye, label: '73+ fuentes OSINT analizadas', desc: 'GDELT, USGS, Reddit, RSS' },
-              { icon: TrendingUp, label: '107 países con TCI calculado', desc: 'Coste real ajustado a petróleo' },
+              { icon: TrendingUp, label: `${TOTAL_PAISES} países con TCI calculado`, desc: 'Coste real ajustado a petróleo' },
               { icon: Zap, label: 'Incidentes detectados automáticamente', desc: '10 tipos, recomendaciones claras' },
             ].map((item) => (
               <div key={item.label} className="bg-slate-800/30 rounded-xl p-5 border border-slate-700/50">

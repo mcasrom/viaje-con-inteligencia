@@ -1,4 +1,7 @@
+import { createLogger } from '@/lib/logger';
 import { logScraperSuccess, logScraperWarning, logScraperError } from './audit';
+
+const log = createLogger('MAEC');
 
 const MAEC_BASE = 'https://www.exteriores.gob.es';
 const CACHE_DURATION = 1000 * 60 * 60;
@@ -181,7 +184,7 @@ export async function getMAECData(countryCode: string): Promise<MAECCountryData 
   } catch (error: any) {
     const errorMsg = error?.message || String(error);
     logScraperError(SCRAPER_NAME, `Error al obtener datos de ${countryName}`, errorMsg);
-    console.error(`Error fetching MAEC data for ${countryCode}:`, error);
+    log.error(`Error fetching MAEC data for ${countryCode}`, error);
     return null;
   }
 }

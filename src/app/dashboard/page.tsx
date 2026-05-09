@@ -16,7 +16,6 @@ import RecommendationsList from '@/components/RecommendationsList';
 import { UserLevelBadge, trackActivity } from '@/components/UserLevel';
 import { paisesData, getLabelRiesgo } from '@/data/paises';
 import WeatherWidget from '@/components/WeatherWidget';
-import EventTimeline from '@/components/EventTimeline';
 import { useAuth } from '@/contexts/AuthContext';
 
 const Turnstile = dynamic(() => import('@marsidev/react-turnstile').then(m => m.Turnstile), { ssr: false });
@@ -55,6 +54,8 @@ export default function DashboardPage() {
   const [resendStatus, setResendStatus] = useState<'idle' | 'sent'>('idle');
   const [pendingVerificationEmail, setPendingVerificationEmail] = useState<string | null>(null);
   const [turnstileToken, setTurnstileToken] = useState('');
+  const [favoriteEvents, setFavoriteEvents] = useState<any[]>([]);
+  const [favEventsLoading, setFavEventsLoading] = useState(false);
 
   const handleResendVerification = async () => {
     setResendLoading(true);
@@ -187,6 +188,26 @@ export default function DashboardPage() {
   useEffect(() => {
     if (authUser) loadFavorites();
   }, [authUser]);
+
+  useEffect(() => {
+    if (favorites.length === 0) {
+      setFavoriteEvents([]);
+      return;
+    }
+    setFavEventsLoading(true);
+    const codes = favorites.map(f => f.country_code.toUpperCase());
+    fetch('/api/events?upcoming=true&days=60&limit=100')
+      .then(r => r.json())
+      .then(d => {
+        const filtered = (d.data || []).filter((ev: any) => codes.includes(ev.country));
+        setFavoriteEvents(filtered);
+        setFavEventsLoading(false);
+      })
+      .catch(() => {
+        setFavoriteEvents([]);
+        setFavEventsLoading(false);
+      });
+  }, [favorites]);
 
   const addFavorite = async (countryCode: string) => {
     try {
@@ -807,21 +828,58 @@ export default function DashboardPage() {
               <Calendar className="w-5 h-5 text-yellow-400" />
               Próximos eventos en tus favoritos
             </h2>
-            <div className="space-y-6">
-              {favorites.map(fav => {
-                const pais = paisesData[fav.country_code];
-                if (!pais) return null;
-                return (
-                  <EventTimeline
-                    key={fav.id}
-                    country={pais.nombre}
-                    days={60}
-                    limit={5}
-                    title={pais.nombre}
-                  />
-                );
-              })}
-            </div>
+            {favEventsLoading ? (
+              <div className="animate-pulse space-y-4">
+                {Array.from({ length: 2 }).map((_, i) => (
+                  <div key={i} className="h-20 bg-slate-800/50 rounded-xl" />
+                ))}
+              </div>
+            ) : favoriteEvents.length === 0 ? (
+              <div className="text-center py-8 text-slate-500 bg-slate-800/30 rounded-xl">
+                <Calendar className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                <p>No hay eventos próximos</p>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {favoriteEvents.map(ev => {
+                  const pais = paisesData[ev.country.toLowerCase() as keyof typeof paisesData];
+                  return (
+                    <div key={ev.id} className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-4 hover:bg-slate-800/80 transition-colors">
+                      <div className="flex items-start gap-3">
+                        <div className={`p-2 rounded-lg shrink-0 ${
+                          ev.impact_traveler === 'high' || ev.impact_traveler === 'critical'
+                            ? 'bg-red-500/20 text-red-400'
+                            : ev.impact_traveler === 'medium'
+                            ? 'bg-yellow-500/20 text-yellow-400'
+                            : 'bg-slate-500/20 text-slate-400'
+                        }`}>
+                          <Calendar className="w-4 h-4" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-start justify-between gap-2">
+                            <h4 className="text-white font-medium text-sm leading-tight">{ev.title}</h4>
+                            {pais && (
+                              <span className="shrink-0 text-xs text-slate-400 bg-slate-700/50 px-2 py-0.5 rounded-full">
+                                {pais.nombre}
+                              </span>
+                            )}
+                          </div>
+                          {ev.start_date && (
+                            <p className="text-slate-500 text-xs mt-1">
+                              {new Date(ev.start_date).toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' })}
+                              {ev.end_date && ev.end_date !== ev.start_date && (
+                                <> — {new Date(ev.end_date).toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' })}</>
+                              )}
+                            </p>
+                          )}
+                          {ev.city && <p className="text-slate-500 text-xs mt-0.5">{ev.city}</p>}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
           </div>
         )}
 
@@ -859,6 +917,12 @@ export default function DashboardPage() {
             <FileText className="w-8 h-8 text-white mx-auto mb-2" />
             <h3 className="font-bold text-white">Manual PDF</h3>
             <p className="text-white/70 text-sm">Guía completa del viajero</p>
+          </a>
+          <a href="/api/manual?lang=en" target="_blank" rel="noopener noreferrer"
+             className="bg-gradient-to-br from-teal-600 to-cyan-600 rounded-xl p-6 text-center hover:opacity-90 transition-opacity">
+            <FileText className="w-8 h-8 text-white mx-auto mb-2" />
+            <h3 className="font-bold text-white">PDF Manual</h3>
+            <p className="text-white/70 text-sm">Complete traveler guide (EN)</p>
           </a>
           <a href="https://t.me/ViajeConInteligenciaBot" target="_blank" rel="noopener noreferrer" 
              className="bg-slate-800 rounded-xl p-6 border border-slate-700 text-center hover:border-slate-600 transition-colors">

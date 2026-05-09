@@ -1,13 +1,14 @@
 import { getTCIForAllCountries, getCurrentOilPrice } from '@/data/tci-engine';
 import CosteClient from './CosteClient';
+import { TOTAL_PAISES } from '@/lib/constants';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'Coste de Viaje por País | Comparador TCI - Viaje con Inteligencia',
-  description: 'Índice de Coste de Viaje (TCI) para 107 países. Compara precios de vuelos, alojamiento, comida y transporte. Datos actualizados.',
+  description: `Índice de Coste de Viaje (TCI) para ${TOTAL_PAISES} países. Compara precios de vuelos, alojamiento, comida y transporte. Datos actualizados.`,
   openGraph: {
     title: 'Coste de Viaje por País | Comparador TCI',
-    description: 'Índice de Coste de Viaje (TCI) para 107 países. Compara precios actualizados.',
+    description: `Índice de Coste de Viaje (TCI) para ${TOTAL_PAISES} países. Compara precios actualizados.`,
     url: 'https://www.viajeinteligencia.com/coste',
   },
   alternates: {

@@ -5,7 +5,7 @@ import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { getTodosLosPaises } from '@/data/paises';
 import { calculateTCI } from '@/data/tci-engine';
-import { GPI_DATA } from '@/data/gpi';
+
 import { Shield, DollarSign, Globe, Loader2 } from 'lucide-react';
 
 type MapLayer = 'maec' | 'gpi' | 'tci';
@@ -73,6 +73,14 @@ export default function MapaIndices() {
   const [layer, setLayer] = useState<MapLayer>('maec');
   const [countries, setCountries] = useState<any[]>([]);
   const [mounted, setMounted] = useState(false);
+  const [gpiData, setGpiData] = useState<any[]>([]);
+
+  useEffect(() => {
+    fetch('/api/indices?tipo=gpi')
+      .then(r => r.json())
+      .then(data => setGpiData(data))
+      .catch(() => setGpiData([]));
+  }, []);
 
   useEffect(() => {
     setMounted(true);
@@ -103,15 +111,15 @@ export default function MapaIndices() {
       });
     } else if (layer === 'gpi') {
       const gpiMap: Record<string, any> = {};
-      GPI_DATA.forEach(g => { gpiMap[g.code.toLowerCase()] = g; });
+      gpiData.forEach(g => { gpiMap[g.codigo_pais] = g; });
       paises.forEach(p => {
         const gpi = gpiMap[p.codigo];
         result.push({
           code: p.codigo,
           name: p.nombre,
           coords: p.mapaCoordenadas,
-          color: gpi ? getGPIColor(gpi.score) : '#475569',
-          label: gpi ? `GPI: ${gpi.score} (#${gpi.rank})` : 'Sin datos GPI',
+          color: gpi ? getGPIColor(gpi.valor) : '#475569',
+          label: gpi ? `GPI: ${gpi.valor} (#${gpi.rank})` : 'Sin datos GPI',
           description: `${p.nombre} — ${p.capital}`,
         });
       });
@@ -130,7 +138,7 @@ export default function MapaIndices() {
     }
 
     setCountries(result);
-  }, [layer]);
+  }, [layer, gpiData]);
 
   useEffect(() => {
     if (!mounted) return;

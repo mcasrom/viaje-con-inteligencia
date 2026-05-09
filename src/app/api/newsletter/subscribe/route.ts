@@ -1,15 +1,26 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { z } from 'zod';
 import { supabase } from '@/lib/supabase';
 import { Resend } from 'resend';
+import { createLogger } from '@/lib/logger';
+import { apiError } from '@/lib/api-schemas';
+import { TOTAL_PAISES } from '@/lib/constants';
+
+const log = createLogger('Newsletter');
 
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 
 const BASE_URL = process.env.APP_BASE_URL || 'https://www.viajeinteligencia.com';
 const VERIFY_URL = `${BASE_URL}/api/newsletter/subscribe`;
 
+const subscribeSchema = z.object({
+  email: z.string().email('Email inválido'),
+  nombre: z.string().optional(),
+});
+
 async function sendConfirmationEmail(email: string, name: string, verifyToken: string) {
   if (!resend) {
-    console.log('RESEND_API_KEY not configured');
+    log.info('RESEND_API_KEY not configured');
     return;
   }
 
@@ -164,7 +175,7 @@ async function sendWelcomeEmail(email: string, name: string) {
 
         <!-- Footer -->
         <tr><td style="background:#f1f5f9;padding:20px;text-align:center;border-top:1px solid #e2e8f0;">
-          <p style="color:#64748b;font-size:12px;margin:0 0 8px;">Viaje con Inteligencia · datos OSINT · 107 países · actualizacion semanal</p>
+          <p style="color:#64748b;font-size:12px;margin:0 0 8px;">Viaje con Inteligencia · datos OSINT · ${TOTAL_PAISES} países · actualizacion semanal</p>
           <p style="margin:0;">
             <a href="https://www.viajeinteligencia.com" style="color:#3b82f6;text-decoration:none;font-size:12px;margin:0 8px;">Web</a>
             <a href="https://t.me/ViajeConInteligencia" style="color:#3b82f6;text-decoration:none;font-size:12px;margin:0 8px;">Telegram</a>
@@ -197,9 +208,17 @@ function isValidEmail(email: string): boolean {
 
 export async function POST(request: NextRequest) {
   try {
-    const { email, name, source } = await request.json();
+    const body = await request.json();
 
-    if (!email || !isValidEmail(email)) {
+    const parsed = subscribeSchema.safeParse(body);
+    if (!parsed.success) {
+      return apiError('Datos inválidos');
+    }
+
+    const { email, nombre } = parsed.data;
+    const { source } = body;
+
+    if (!isValidEmail(email)) {
       return NextResponse.json(
         { error: 'Email inválido. Usa un email real.' },
         { status: 400 }
@@ -230,12 +249,12 @@ export async function POST(request: NextRequest) {
       await supabase
         .from('newsletter_subscribers')
         .upsert(
-          { email: emailLower, name, verify_token: verifyToken, verified: false, source: source || 'web', subscribed_at: new Date().toISOString() },
+          { email: emailLower, name: nombre, verify_token: verifyToken, verified: false, source: source || 'web', subscribed_at: new Date().toISOString() },
           { onConflict: 'email' }
         );
     }
 
-    await sendConfirmationEmail(emailLower, name || '', verifyToken);
+    await sendConfirmationEmail(emailLower, nombre || '', verifyToken);
 
     return NextResponse.json({
       success: true,
@@ -243,7 +262,7 @@ export async function POST(request: NextRequest) {
       message: 'Te hemos enviado un email de confirmación. Revisa tu bandeja de entrada.',
     });
   } catch (error) {
-    console.error('Newsletter error:', error);
+    log.error('Error', error);
     return NextResponse.json({ error: 'Error interno' }, { status: 500 });
   }
 }

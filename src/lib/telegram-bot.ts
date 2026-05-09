@@ -1,4 +1,7 @@
+import { createLogger } from '@/lib/logger';
 import { paisesData, getPaisPorCodigo, getLabelRiesgo, DatoPais } from '@/data/paises';
+
+const log = createLogger('TelegramBot');
 
 const OPEN_METEO_API = 'https://api.open-meteo.com/v1/forecast';
 
@@ -423,7 +426,7 @@ export async function getTravelAlertsSummary(): Promise<any> {
     if (!res.ok) return null;
     return await res.json();
   } catch (e) {
-    console.error('[TravelAlerts] Error:', e);
+    log.error('Error fetching travel alerts summary', e);
     return null;
   }
 }
@@ -434,7 +437,7 @@ export async function getTravelAlertsAll(): Promise<any> {
     if (!res.ok) return null;
     return await res.json();
   } catch (e) {
-    console.error('[TravelAlerts] Error:', e);
+    log.error('Error fetching travel alerts all', e);
     return null;
   }
 }

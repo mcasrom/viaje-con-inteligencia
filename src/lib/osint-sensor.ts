@@ -1,4 +1,7 @@
 import { groqClient } from './groq-ai';
+import { createLogger } from '@/lib/logger';
+
+const log = createLogger('OSINT');
 
 export type SignalCategory = 'salud' | 'seguridad' | 'clima' | 'logistico' | 'geopolitico' | 'otro';
 
@@ -124,7 +127,7 @@ export async function fetchNewsRSS(limit = 50): Promise<RawPost[]> {
         if (posts.length >= limit) break;
       }
     } catch (e) {
-      console.error(`[OSINT] News RSS error (${feed.name}):`, e);
+      log.error(`News RSS error (${feed.name}):`, e);
     }
   }
 
@@ -145,7 +148,7 @@ export async function fetchAllPosts(): Promise<RawPost[]> {
     if (result.status === 'fulfilled') {
       posts.push(...result.value);
     } else {
-      console.error('[OSINT] Source failed:', result.reason);
+      log.error('Source failed:', result.reason);
     }
   }
   return posts;
@@ -195,7 +198,7 @@ export async function fetchGdacsAlerts(limit = 20): Promise<RawPost[]> {
       if (posts.length >= limit) break;
     }
   } catch (e) {
-    console.error('[OSINT] GDACS Feed error:', e);
+    log.error('GDACS Feed error:', e);
   }
 
   return posts;
@@ -240,7 +243,7 @@ export async function fetchUsgsEarthquakes(limit = 15): Promise<RawPost[]> {
       });
     }
   } catch (e) {
-    console.error('[OSINT] USGS Feed error:', e);
+    log.error('USGS Feed error:', e);
   }
 
   return posts;
@@ -292,7 +295,7 @@ export async function fetchGdeltEvents(limit = 30): Promise<RawPost[]> {
       });
     }
   } catch (e) {
-    console.error('[OSINT] GDELT Feed error:', e);
+    log.error('GDELT Feed error:', e);
   }
 
   return posts;
@@ -352,7 +355,7 @@ export async function fetchRedditPosts(limit = 50): Promise<RawPost[]> {
         });
       }
     } catch (e) {
-      console.error(`[OSINT] RSS Feed error:`, e);
+      log.error('RSS Feed error:', e);
     }
   }
 
@@ -410,7 +413,7 @@ export async function classifySignal(post: RawPost): Promise<ClassifiedSignal> {
       summary: parsed.summary || post.title,
     };
   } catch (e) {
-    console.error('[OSINT] Classification error:', e);
+    log.error('Classification error:', e);
     return {
       category: 'otro',
       confidence: 0.3,

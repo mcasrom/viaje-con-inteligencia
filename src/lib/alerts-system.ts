@@ -1,6 +1,9 @@
+import { createLogger } from '@/lib/logger';
 import { paisesData, getPaisPorCodigo, NivelRiesgo } from '@/data/paises';
 import { getAllPosts, PostMeta } from './posts';
 import { getAllMAECAlerts } from './scraper/maec';
+
+const log = createLogger('Alerts');
 
 interface ChangeLog {
   fecha: string;
@@ -18,7 +21,7 @@ export function registerChange(change: Omit<ChangeLog, 'fecha'>): void {
     ...change,
     fecha: new Date().toISOString(),
   });
-  console.log(`[ChangeLog] ${change.pais}: ${change.descripcion}`);
+  log.info(`${change.pais}: ${change.descripcion}`);
 }
 
 export function getRecentChanges(days: number = 7): ChangeLog[] {
@@ -96,7 +99,7 @@ export async function generateWeeklyDigest(): Promise<string> {
   try {
     maecAlerts = await getAllMAECAlerts();
   } catch (e) {
-    console.error('[Newsletter] Error getting MAEC alerts:', e);
+    log.error('Error getting MAEC alerts', e);
   }
   
   const formatDate = (dateStr: string) => {
@@ -156,6 +159,6 @@ function getWeekNumber(): number {
 }
 
 export function registerInitialData(): void {
-  console.log(`[Init] Cargados ${Object.keys(paisesData).length} países`);
-  console.log(`[Init] Alertas registradas: 0`);
+  log.info(`Cargados ${Object.keys(paisesData).length} países`);
+  log.info('Alertas registradas: 0');
 }

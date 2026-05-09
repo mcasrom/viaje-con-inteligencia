@@ -2,6 +2,9 @@ import { NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase-server';
 import { logAuditEvent } from '@/lib/audit-log';
 import { isDisposableEmail } from '@/lib/disposable-emails';
+import { createLogger } from '@/lib/logger';
+
+const log = createLogger('Auth');
 
 async function verifyTurnstile(token: string): Promise<boolean> {
   const secret = process.env.TURNSTILE_SECRET_KEY;
@@ -58,7 +61,7 @@ export async function POST(request: Request) {
         redirectTo: `${siteUrl}/auth/callback?next=/dashboard&reset=true`,
       });
       if (error) {
-        console.error('Reset password error:', error.message);
+        log.error('Reset password', error.message);
         return NextResponse.json({ error: 'Error al enviar el enlace. Intenta de nuevo.' }, { status: 400 });
       }
       return NextResponse.json({
@@ -74,7 +77,7 @@ export async function POST(request: Request) {
         password,
       });
       if (error) {
-        console.error('Login error:', error.message);
+        log.error('Login', error.message);
         return NextResponse.json({ error: 'Email o contraseña incorrectos' }, { status: 401 });
       }
       if (!data.user?.email_confirmed_at) {
@@ -110,7 +113,7 @@ export async function POST(request: Request) {
         options: { emailRedirectTo: `${siteUrl}/auth/callback?next=/dashboard` },
       });
       if (error) {
-        console.error('Register error:', error.message);
+        log.error('Register', error.message);
         return NextResponse.json({ error: 'Error al registrar. Intenta de nuevo.' }, { status: 400 });
       }
       await logAuditEvent({ action: 'register', entityType: 'user', email: cleanEmail, ip });
@@ -129,7 +132,7 @@ export async function POST(request: Request) {
     });
 
     if (error) {
-      console.error('Magic link error:', error.message);
+      log.error('Magic link', error.message);
       return NextResponse.json({ error: 'Error al enviar el enlace. Intenta de nuevo.' }, { status: 400 });
     }
 
@@ -139,7 +142,7 @@ export async function POST(request: Request) {
       note: 'Revisa tu bandeja de entrada (y spam)'
     });
   } catch (err: any) {
-    console.error('Auth error:', err);
+    log.error('Request failed', err);
     return NextResponse.json({ error: 'Error interno. Intenta de nuevo.' }, { status: 500 });
   }
 }

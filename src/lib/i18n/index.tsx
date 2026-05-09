@@ -1,6 +1,9 @@
 'use client';
 
 import { createContext, useContext, useState, ReactNode } from 'react';
+import { createLogger } from '@/lib/logger';
+
+const log = createLogger('I18n');
 
 type Locale = 'es' | 'en';
 
@@ -221,7 +224,7 @@ export function I18nProvider({ children }: { children: ReactNode }) {
   const t = (key: string): string => {
     const translation = translations[key];
     if (!translation) {
-      console.warn(`Translation missing for key: ${key}`);
+      log.warn(`Translation missing for key: ${key}`);
       return key;
     }
     return translation[locale] || translation.es;
