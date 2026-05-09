@@ -570,7 +570,9 @@ export function getGlobalConflictImpact(
   return { totalClosures: activeClosures.length, totalRoutesAffected: activeRoutes.length, worstAffected: worst, avgSurcharge };
 }
 
-export function getDemandShiftAnalysis(): {
+export function getDemandShiftAnalysis(
+  demandShifts?: Record<string, { extraDemandPct: number; reason: string }>,
+): {
   conflictBeneficiaries: { country: string; flag: string; name: string; extraDemandPct: number; reason: string }[];
   oilSensitive: { country: string; flag: string; name: string; oilImpact: number }[];
   safeHavens: { country: string; flag: string; name: string; riskScore: number; tci: number }[];
@@ -586,14 +588,8 @@ export function getDemandShiftAnalysis(): {
       let extraDemand = 0;
       let reason = '';
 
-      if (p.codigo === 'tr') { extraDemand = 15; reason = 'Desvío masivo de rutas a Oriente Medio por conflictos Siria, Irán e Israel'; }
-      else if (p.codigo === 'jo') { extraDemand = 12; reason = 'Hub alternativo para viajeros a Líbano, Iraq y Palestina'; }
-      else if (p.codigo === 'eg') { extraDemand = 10; reason = 'Refugio turístico de Oriente Medio, Red替代 a Líbano'; }
-      else if (p.codigo === 'ae') { extraDemand = 8; reason = 'Hub aéreo alternativo al espacio aéreo iraní cerrado'; }
-      else if (p.codigo === 'om') { extraDemand = 6; reason = 'Ruta alternativa al Golfo Pérsico desviada de Irán'; }
-      else if (p.codigo === 'es' || p.codigo === 'pt' || p.codigo === 'gr' || p.codigo === 'hr') { extraDemand = 8; reason = 'Turismo redirigido desde destinos de riesgo medio'; }
-      else if (p.codigo === 'mx' || p.codigo === 'cr') { extraDemand = 6; reason = 'Alternativa segura a Caribe inestable'; }
-      else if (p.codigo === 'jp' || p.codigo === 'kr' || p.codigo === 'sg') { extraDemand = 5; reason = 'Destino asiático seguro sin conflicto aéreo'; }
+      const shift = demandShifts?.[p.codigo];
+      if (shift) { extraDemand = shift.extraDemandPct; reason = shift.reason; }
 
       return { country: p.codigo, flag: p.bandera, name: p.nombre, extraDemandPct: extraDemand, reason };
     })
