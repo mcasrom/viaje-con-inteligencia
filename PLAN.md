@@ -49,7 +49,7 @@
 
 | # | Tarea | Esfuerzo | Estado |
 |---|-------|----------|--------|
-| 4.1 | Feature store en Supabase — tabla `ml_features` | 1 día | pendiente |
+| 4.1 | Feature store en Supabase — tabla `ml_features` | 1 día | ✅ completado |
 | 4.2 | Pipeline de entrenamiento semanal vía cron | 2 días | pendiente |
 | 4.3 | Modelo de predicción de riesgo con features históricas | 2 días | pendiente |
 
