@@ -15,6 +15,7 @@ import TrialStatusBanner from '@/components/TrialStatusBanner';
 import RecommendationsList from '@/components/RecommendationsList';
 import SmartFeed from '@/components/SmartFeed';
 import OneClickRecommendations from '@/components/OneClickRecommendations';
+import TripTracker from '@/components/TripTracker';
 import { UserLevelBadge, trackActivity } from '@/components/UserLevel';
 import { paisesData, getLabelRiesgo } from '@/data/paises';
 import { calculateTCI } from '@/data/tci-engine';
@@ -949,6 +950,10 @@ export default function DashboardPage() {
             <OneClickRecommendations favorites={favorites.map(f => f.country_code)} />
           </div>
         )}
+
+        <div className="mt-8">
+          <TripTracker />
+        </div>
 
         <div className="mt-8 grid md:grid-cols-4 gap-4">
           <Link href="/dashboard/seguros" className="bg-gradient-to-br from-indigo-600 to-purple-600 rounded-xl p-6 text-center hover:opacity-90 transition-opacity">
