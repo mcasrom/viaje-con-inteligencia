@@ -8,7 +8,7 @@ import {
   ArrowLeft, Heart, MapPin, AlertTriangle, Trash2, 
   Plus, Mail, LogOut, Crown, Bell, Loader2, Calendar,
   CheckCircle, XCircle, Star, Activity, Shield,
-  Key, Lock, User, Eye, EyeOff, KeyRound
+  Key, Lock, User, Eye, EyeOff, KeyRound, FileText
 } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import TrialStatusBanner from '@/components/TrialStatusBanner';
@@ -854,6 +854,12 @@ export default function DashboardPage() {
             <h3 className="font-bold text-white">Checklist</h3>
             <p className="text-slate-400 text-sm">+80 items para tu viaje</p>
           </Link>
+          <a href="/api/manual" target="_blank" rel="noopener noreferrer"
+             className="bg-gradient-to-br from-emerald-600 to-teal-600 rounded-xl p-6 text-center hover:opacity-90 transition-opacity">
+            <FileText className="w-8 h-8 text-white mx-auto mb-2" />
+            <h3 className="font-bold text-white">Manual PDF</h3>
+            <p className="text-white/70 text-sm">Guía completa del viajero</p>
+          </a>
           <a href="https://t.me/ViajeConInteligenciaBot" target="_blank" rel="noopener noreferrer" 
              className="bg-slate-800 rounded-xl p-6 border border-slate-700 text-center hover:border-slate-600 transition-colors">
             <Bell className="w-8 h-8 text-blue-400 mx-auto mb-2" />
