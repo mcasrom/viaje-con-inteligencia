@@ -3,9 +3,11 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Plus, MapPin, Calendar, Plane, Clock, ChevronRight, Trash2, Loader2, Lock, Mail, Send, CheckCircle } from 'lucide-react';
+import { Plus, MapPin, Calendar, Plane, Clock, ChevronRight, Trash2, Loader2, Lock, Mail, Send, CheckCircle, Download, Share2 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import type { Trip } from '@/lib/supabase';
+import { generateIcs } from '@/lib/ics';
+import { ShareTrip } from '@/components/ShareTrip';
 
 type StatusConfig = Record<Trip['status'], { label: string; color: string }>;
 
@@ -275,60 +277,105 @@ function TripCard({
   onDelete: (id: string) => void;
   deletingId: string | null;
 }) {
+  const handleExportIcs = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const startDate = trip.start_date || trip.created_at;
+    const endDate = trip.end_date || (() => {
+      const d = new Date(startDate);
+      d.setDate(d.getDate() + trip.days);
+      return d.toISOString().split('T')[0];
+    })();
+
+    const ics = generateIcs({
+      uid: `trip-${trip.id}@viajeinteligencia.com`,
+      startDate: startDate.split('T')[0],
+      endDate: endDate.split('T')[0],
+      summary: `${trip.name} - ${trip.destination}`,
+      description: trip.itinerary_raw?.slice(0, 2000) || '',
+      location: trip.destination,
+      url: `${window.location.origin}/viajes/${trip.id}`,
+    });
+
+    const blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${trip.name.replace(/[^a-zA-Z0-9]/g, '_')}.ics`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
   return (
-    <Link
-      href={`/viajes/${trip.id}`}
-      className="block bg-slate-800 rounded-xl p-5 border border-slate-700 hover:border-blue-500 transition-colors group"
-    >
-      <div className="flex items-start justify-between">
-        <div className="flex-1">
-          <div className="flex items-center gap-3 mb-2">
-            <h3 className="text-lg font-bold text-white group-hover:text-blue-400 transition-colors">
-              {trip.name}
-            </h3>
-            <span className={`text-xs px-2 py-0.5 rounded-full ${statusLabels[trip.status].color}`}>
-              {statusLabels[trip.status].label}
-            </span>
-          </div>
-
-          <div className="flex flex-wrap gap-4 text-sm text-slate-400">
-            <span className="flex items-center gap-1">
-              <MapPin className="w-4 h-4" />
-              {trip.destination}
-            </span>
-            <span className="flex items-center gap-1">
-              <Clock className="w-4 h-4" />
-              {trip.days} {trip.days === 1 ? 'día' : 'días'}
-            </span>
-            {trip.start_date && (
-              <span className="flex items-center gap-1">
-                <Calendar className="w-4 h-4" />
-                {new Date(trip.start_date).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' })}
-                {trip.end_date && ` - ${new Date(trip.end_date).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' })}`}
+    <div className="bg-slate-800 rounded-xl border border-slate-700 hover:border-blue-500 transition-colors group">
+      <Link
+        href={`/viajes/${trip.id}`}
+        className="block p-5"
+      >
+        <div className="flex items-start justify-between">
+          <div className="flex-1">
+            <div className="flex items-center gap-3 mb-2">
+              <h3 className="text-lg font-bold text-white group-hover:text-blue-400 transition-colors">
+                {trip.name}
+              </h3>
+              <span className={`text-xs px-2 py-0.5 rounded-full ${statusLabels[trip.status].color}`}>
+                {statusLabels[trip.status].label}
               </span>
-            )}
+            </div>
+
+            <div className="flex flex-wrap gap-4 text-sm text-slate-400">
+              <span className="flex items-center gap-1">
+                <MapPin className="w-4 h-4" />
+                {trip.destination}
+              </span>
+              <span className="flex items-center gap-1">
+                <Clock className="w-4 h-4" />
+                {trip.days} {trip.days === 1 ? 'día' : 'días'}
+              </span>
+              {trip.start_date && (
+                <span className="flex items-center gap-1">
+                  <Calendar className="w-4 h-4" />
+                  {new Date(trip.start_date).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' })}
+                  {trip.end_date && ` - ${new Date(trip.end_date).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' })}`}
+                </span>
+              )}
+            </div>
           </div>
         </div>
+      </Link>
 
-        <div className="flex items-center gap-2">
-          <button
-            onClick={(e) => {
-              e.preventDefault();
-              onDelete(trip.id);
-            }}
-            disabled={deletingId === trip.id}
-            className="p-2 text-slate-500 hover:text-red-400 transition-colors disabled:opacity-50"
-            title="Eliminar"
-          >
-            {deletingId === trip.id ? (
-              <Loader2 className="w-4 h-4 animate-spin" />
-            ) : (
-              <Trash2 className="w-4 h-4" />
-            )}
-          </button>
-          <ChevronRight className="w-5 h-5 text-slate-500 group-hover:text-blue-400 transition-colors" />
+      <div className="flex items-center gap-1 px-5 pb-4">
+        <button
+          onClick={handleExportIcs}
+          className="flex items-center gap-1 px-2 py-1.5 text-xs text-slate-400 hover:text-white bg-slate-700/50 hover:bg-slate-700 rounded-lg transition-colors"
+          title="Exportar a calendario"
+        >
+          <Download className="w-3 h-3" />
+          Calendario
+        </button>
+        <div className="flex-1" />
+        <div onClick={(e) => e.stopPropagation()}>
+          <ShareTrip tripId={trip.id} tripName={trip.name} />
         </div>
+        <button
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            onDelete(trip.id);
+          }}
+          disabled={deletingId === trip.id}
+          className="p-1.5 text-slate-500 hover:text-red-400 transition-colors disabled:opacity-50"
+          title="Eliminar"
+        >
+          {deletingId === trip.id ? (
+            <Loader2 className="w-3 h-3 animate-spin" />
+          ) : (
+            <Trash2 className="w-3 h-3" />
+          )}
+        </button>
       </div>
-    </Link>
+    </div>
   );
 }
