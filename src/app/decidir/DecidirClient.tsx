@@ -447,9 +447,9 @@ export default function DecidirClient() {
                 <div className="flex gap-2">
                   {[
                     { id: 'europa', label: '🇪🇺' },
-                    { id: 'latam', label: '🌎' },
-                    { id: 'asia', label: '🌏' },
-                    { id: 'africa', label: '🌍' },
+                    { id: 'latam', label: '💃' },
+                    { id: 'asia', label: '🐉' },
+                    { id: 'africa', label: '🦁' },
                     { id: 'oceania', label: '🏝️' },
                   ].map(r => (
                     <button
