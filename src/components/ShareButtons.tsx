@@ -61,6 +61,32 @@ export default function ShareButtons({
     facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`,
     linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`,
     email: `mailto:?subject=${encodedTitle}&body=${encodedDesc}%0A%0A${encodedUrl}`,
+    whatsapp: `https://wa.me/?text=${encodedTitle}%20${encodedUrl}`,
+    telegram: `https://t.me/share/url?url=${encodedUrl}&text=${encodedTitle}`,
+  };
+
+  const handleWebShare = async () => {
+    if (typeof navigator !== 'undefined' && navigator.share) {
+      try {
+        await navigator.share({
+          title,
+          text: description || title,
+          url: shareUrl,
+        });
+        setShowOptions(false);
+        return true;
+      } catch {
+        return false;
+      }
+    }
+    return false;
+  };
+
+  const handleClick = async () => {
+    const shared = await handleWebShare();
+    if (!shared) {
+      setShowOptions(!showOptions);
+    }
   };
 
   const copyToClipboard = async () => {
@@ -76,20 +102,35 @@ export default function ShareButtons({
   return (
     <div className="relative">
       <button
-        onClick={() => setShowOptions(!showOptions)}
-        className={`flex items-center gap-2 bg-slate-700 hover:bg-slate-600 text-white rounded-lg transition-colors ${
+        onClick={handleClick}
+        className={`flex items-center gap-2 bg-slate-700 hover:bg-slate-600 text-white rounded-lg transition-colors active:scale-95 ${
           showLabels ? 'px-4 py-2' : sizeClasses[size]
         }`}
+        aria-label="Compartir"
       >
         <Share2 className={iconSizes[size]} />
         {showLabels && <span>Compartir</span>}
       </button>
 
       {showOptions && (
-        <div className="absolute bottom-full right-0 mb-3 bg-slate-800 border border-slate-600 rounded-xl p-4 shadow-2xl z-50 min-w-[280px]">
+        <div className="absolute bottom-full right-0 mb-3 bg-slate-800 border border-slate-600 rounded-xl p-4 shadow-2xl z-50 min-w-[300px]">
           <p className="text-white font-medium mb-3 text-sm">Compartir en:</p>
           
           <div className="grid grid-cols-4 gap-2">
+            <button
+              onClick={() => { window.open(shareLinks.whatsapp, '_blank'); setShowOptions(false); }}
+              className="flex flex-col items-center gap-1.5 p-3 bg-slate-700/70 hover:bg-slate-600 rounded-lg transition-colors group"
+            >
+              <span className="text-2xl group-hover:scale-110 transition-transform">💬</span>
+              <span className="text-[10px] text-slate-400">WhatsApp</span>
+            </button>
+            <button
+              onClick={() => { window.open(shareLinks.telegram, '_blank'); setShowOptions(false); }}
+              className="flex flex-col items-center gap-1.5 p-3 bg-slate-700/70 hover:bg-slate-600 rounded-lg transition-colors group"
+            >
+              <span className="text-2xl group-hover:scale-110 transition-transform">✈️</span>
+              <span className="text-[10px] text-slate-400">Telegram</span>
+            </button>
             <a
               href={shareLinks.twitter}
               target="_blank"
@@ -98,7 +139,7 @@ export default function ShareButtons({
               onClick={() => setShowOptions(false)}
             >
               <TwitterIcon className="w-5 h-5 text-white group-hover:text-blue-400" />
-              <span className="text-[10px] text-slate-400">Twitter</span>
+              <span className="text-[10px] text-slate-400">Twitter/X</span>
             </a>
             <a
               href={shareLinks.facebook}
@@ -137,10 +178,11 @@ export default function ShareButtons({
                 value={shareUrl}
                 readOnly
                 className="flex-1 bg-slate-700 text-slate-300 text-xs px-3 py-2 rounded-lg truncate"
+                onClick={(e) => e.currentTarget.select()}
               />
               <button
                 onClick={copyToClipboard}
-                className="px-3 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-colors flex items-center gap-1.5 text-xs font-medium"
+                className="px-3 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-colors flex items-center gap-1.5 text-xs font-medium active:scale-95"
               >
                 {copied ? (
                   <>

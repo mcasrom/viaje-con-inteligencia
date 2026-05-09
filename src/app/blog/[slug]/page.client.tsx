@@ -3,10 +3,11 @@
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { ArrowLeft, Calendar, Clock, Tag, Eye } from 'lucide-react';
+import { ArrowLeft, Calendar, Clock, Tag, Eye, Share2 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import StarRating from '@/components/StarRating';
+import ShareButtons from '@/components/ShareButtons';
 
 interface Post {
   slug: string;
@@ -31,15 +32,20 @@ function BlogPostRating({ slug }: { slug: string }) {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    fetch(`/api/posts/rate?slug=${slug}`)
+    let cancelled = false;
+    fetch(`/api/posts/rate?slug=${slug}`, { cache: 'no-store' })
       .then(res => res.json())
       .then(data => {
+        if (cancelled) return;
         setAverage(data.average || 0);
         setUserRating(data.userRating || 0);
         setCount(data.count || 0);
       })
       .catch(() => {})
-      .finally(() => setLoading(false));
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => { cancelled = true; };
   }, [slug]);
 
   const handleRate = async (value: number) => {
@@ -227,8 +233,9 @@ export default function BlogPostPage({ post }: { post: Post }) {
               </span>
               <BlogPostViews slug={post.slug} />
             </div>
-            <div className="mt-2">
+            <div className="mt-2 flex items-center justify-center gap-3">
               <BlogPostRating slug={post.slug} />
+              <ShareButtons title={post.title} description={post.excerpt || post.description} size="sm" />
             </div>
           </div>
 

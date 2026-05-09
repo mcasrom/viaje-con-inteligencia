@@ -1,17 +1,10 @@
-import { Document, Page, View, Text, StyleSheet, Image, Font } from '@react-pdf/renderer';
+import { Document, Page, View, Text, StyleSheet, Image } from '@react-pdf/renderer';
 import { paisesData, type NivelRiesgo } from '@/data/paises';
-
-Font.register({
-  family: 'Helvetica',
-  fonts: [
-    { src: 'https://fonts.gstatic.com/s/helvetica/Helvetica.ttf', fontWeight: 'normal' },
-    { src: 'https://fonts.gstatic.com/s/helvetica/Helvetica-Bold.ttf', fontWeight: 'bold' },
-  ],
-});
 
 const COLORS = {
   primary: '#1e40af',
   primaryLight: '#3b82f6',
+  accent: '#6366f1',
   dark: '#0f172a',
   slate: '#1e293b',
   slateLight: '#475569',
@@ -34,6 +27,7 @@ const RISK_COLORS: Record<NivelRiesgo, string> = {
 const styles = StyleSheet.create({
   page: {
     padding: 40,
+    paddingBottom: 60,
     fontFamily: 'Helvetica',
     fontSize: 10,
     color: COLORS.white,
@@ -54,7 +48,13 @@ const styles = StyleSheet.create({
     right: 0,
     height: '60%',
     backgroundColor: COLORS.primary,
-    opacity: 0.15,
+    opacity: 0.12,
+  },
+  coverLogo: {
+    width: 80,
+    height: 80,
+    marginBottom: 20,
+    borderRadius: 16,
   },
   coverTitle: {
     fontSize: 36,
@@ -73,19 +73,27 @@ const styles = StyleSheet.create({
     fontSize: 11,
     color: COLORS.muted,
     textAlign: 'center',
-    maxWidth: 320,
+    maxWidth: 360,
     marginTop: 16,
     lineHeight: 1.5,
   },
+  coverValidity: {
+    position: 'absolute',
+    bottom: 100,
+    fontSize: 9,
+    color: COLORS.slateLight,
+    textAlign: 'center',
+    maxWidth: 360,
+  },
   coverVersion: {
     position: 'absolute',
-    bottom: 60,
+    bottom: 70,
     fontSize: 9,
     color: COLORS.slateLight,
   },
   coverDate: {
     position: 'absolute',
-    bottom: 40,
+    bottom: 50,
     fontSize: 9,
     color: COLORS.slateLight,
   },
@@ -146,7 +154,7 @@ const styles = StyleSheet.create({
 
   footer: {
     position: 'absolute',
-    bottom: 16,
+    bottom: 20,
     left: 40,
     right: 40,
     flexDirection: 'row',
@@ -154,7 +162,7 @@ const styles = StyleSheet.create({
     fontSize: 7,
     color: COLORS.slateLight,
     borderTop: '0.5 solid ' + COLORS.slate,
-    paddingTop: 6,
+    paddingTop: 4,
   },
 
   pageNumber: { color: COLORS.slateLight },
@@ -174,7 +182,6 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     padding: 10,
   },
-  featureIcon: { fontSize: 18, marginBottom: 4, color: COLORS.primaryLight },
   featureName: { fontSize: 10, fontWeight: 'bold', color: COLORS.white, marginBottom: 2 },
   featureDesc: { fontSize: 8, color: COLORS.muted, lineHeight: 1.3 },
   riskRow: {
@@ -187,6 +194,16 @@ const styles = StyleSheet.create({
   riskDot: { width: 8, height: 8, borderRadius: 4 },
   riskName: { fontSize: 9, color: COLORS.white, flex: 1 },
   riskLevel: { fontSize: 8, color: COLORS.muted, width: 60, textAlign: 'right' },
+
+  updateBox: {
+    backgroundColor: '#1e3a5f',
+    borderRadius: 6,
+    padding: 10,
+    marginVertical: 8,
+    border: '1 solid ' + COLORS.primaryLight,
+  },
+  updateTitle: { fontSize: 10, fontWeight: 'bold', color: COLORS.primaryLight, marginBottom: 4 },
+  updateText: { fontSize: 8, color: COLORS.muted, lineHeight: 1.4 },
 });
 
 const RISK_LABELS: Record<NivelRiesgo, string> = {
@@ -222,8 +239,7 @@ const GROUPS: Record<string, { label: string; codes: string[] }> = {
 
 function getPaisSafe(code: string) {
   const p = paisesData[code.toLowerCase() as keyof typeof paisesData];
-  if (!p) return null;
-  return p;
+  return p || null;
 }
 
 function genPage(pageNum: number, children: React.ReactNode) {
@@ -231,7 +247,7 @@ function genPage(pageNum: number, children: React.ReactNode) {
     <Page size="A4" style={styles.page}>
       {children}
       <View style={styles.footer} fixed>
-        <Text>Viaje con Inteligencia — Manual de Viajero</Text>
+        <Text>Viaje con Inteligencia — Manual de Viajero — Compilado M.Castillo</Text>
         <Text style={styles.pageNumber}>{pageNum}</Text>
       </View>
     </Page>
@@ -240,32 +256,52 @@ function genPage(pageNum: number, children: React.ReactNode) {
 
 export default function ManualDocument({ lang = 'es' }: { lang?: string }) {
   const t = (es: string, en: string) => lang === 'en' ? en : es;
-  const today = new Date().toLocaleDateString(lang === 'en' ? 'en-US' : 'es-ES', { year: 'numeric', month: 'long', day: 'numeric' });
+  const today = new Date();
+  const todayStr = today.toLocaleDateString(lang === 'en' ? 'en-US' : 'es-ES', { year: 'numeric', month: 'long', day: 'numeric' });
+  const validUntil = new Date(today.getTime() + 90 * 86400000);
+  const validUntilStr = validUntil.toLocaleDateString(lang === 'en' ? 'en-US' : 'es-ES', { year: 'numeric', month: 'long', day: 'numeric' });
   const version = process.env.NEXT_PUBLIC_APP_VERSION || '1.0.0';
+  const copyrightYear = today.getFullYear();
 
   const countries = Object.entries(paisesData).map(([code, p]) => ({ code, ...p }));
   const riesgoCount: Record<NivelRiesgo, number> = { 'sin-riesgo': 0, 'bajo': 0, 'medio': 0, 'alto': 0, 'muy-alto': 0 };
   for (const p of countries) { riesgoCount[p.nivelRiesgo]++; }
 
   return (
-    <Document title={t('Manual de Viajero - Viaje con Inteligencia', 'Traveler Manual - Viaje con Inteligencia')} author="Viaje con Inteligencia" subject={t('Guía completa de viajes', 'Complete travel guide')}>
+    <Document title={t('Manual de Viajero - Viaje con Inteligencia', 'Traveler Manual - Viaje con Inteligencia')} author="Viaje con Inteligencia - M.Castillo" subject={t('Guía completa de viajes', 'Complete travel guide')}>
       {/* === Cover === */}
       <Page size="A4" style={styles.coverPage}>
         <View style={styles.coverGradient} />
+        <Image style={styles.coverLogo} src="/logo.png" />
         <Text style={styles.coverTitle}>{t('Manual de', 'Traveler')}</Text>
         <Text style={styles.coverTitle}>{t('Viajero', 'Manual')}</Text>
         <Text style={styles.coverSubtitle}>Viaje con Inteligencia</Text>
         <Text style={styles.coverDesc}>
           {t('Guía completa con niveles de riesgo, contactos de emergencia, herramientas IA, comparativa de seguros y eventos globales para viajeros.', 'Complete guide with risk levels, emergency contacts, AI tools, insurance comparison and global events for travelers.')}
         </Text>
+        <Text style={styles.coverValidity}>
+          {t('Válido desde', 'Valid from')} {todayStr} {t('hasta', 'until')} {validUntilStr}
+        </Text>
         <Text style={styles.coverVersion}>v{version}</Text>
-        <Text style={styles.coverDate}>{today}</Text>
+        <Text style={styles.coverDate}>© {copyrightYear} Viaje con Inteligencia — Compilado M.Castillo</Text>
       </Page>
 
       {/* === TOC === */}
       {genPage(2,
         <>
           <Text style={styles.sectionTitle}>{t('Índice', 'Table of Contents')}</Text>
+
+          <View style={styles.updateBox}>
+            <Text style={styles.updateTitle}>{t('📅 Acerca de esta guía', '📅 About this guide')}</Text>
+            <Text style={styles.updateText}>
+              {t(
+                `Este manual se generó el ${todayStr} con datos actualizados del Ministerio de Asuntos Exteriores (MAEC), fuentes OSINT y calendario de eventos globales. Los niveles de riesgo pueden cambiar. Descarga una nueva versión en cualquier momento desde viajeinteligencia.com/dashboard o fuerza la actualización con ?auth=false en la URL.`,
+                `This manual was generated on ${todayStr} with updated data from the Ministry of Foreign Affairs (MAEC), OSINT sources and global events calendar. Risk levels may change. Download a new version anytime at viajeinteligencia.com/en/dashboard or force refresh with ?auth=false in the URL.`
+              )}
+            </Text>
+          </View>
+
+          <View style={styles.dividerLight} />
           <Text style={styles.tocSection}>1</Text>
           <View style={styles.tocItem}><Text style={styles.tocTitle}>{t('Resumen de Riesgos por País', 'Country Risk Summary')}</Text><Text style={styles.tocPage}>3</Text></View>
           <Text style={styles.tocSection}>2</Text>
@@ -330,9 +366,7 @@ export default function ManualDocument({ lang = 'es' }: { lang?: string }) {
           <Text style={styles.h3}>{t('Top 10 países con riesgo más bajo', 'Top 10 lowest risk countries')}</Text>
           {countries.sort((a, b) => {
             const order: NivelRiesgo[] = ['sin-riesgo', 'bajo', 'medio', 'alto', 'muy-alto'];
-            const ai = order.indexOf(a.nivelRiesgo);
-            const bi = order.indexOf(b.nivelRiesgo);
-            return ai - bi;
+            return order.indexOf(a.nivelRiesgo) - order.indexOf(b.nivelRiesgo);
           }).slice(0, 10).map((c, i) => (
             <View key={i} style={styles.riskRow}>
               <View style={[styles.riskDot, { backgroundColor: RISK_COLORS[c.nivelRiesgo] }]} />
@@ -383,7 +417,7 @@ export default function ManualDocument({ lang = 'es' }: { lang?: string }) {
                 ))}
               </View>
               <Text style={styles.small}>
-                {t('Fuente: MAEC (Ministerio de Asuntos Exteriores). Actualizado: ', 'Source: MAEC (Ministry of Foreign Affairs). Updated: ')}{today}
+                {t('Fuente: MAEC. Actualizado: ', 'Source: MAEC. Updated: ')}{todayStr}
               </Text>
             </>
           );
@@ -400,50 +434,62 @@ export default function ManualDocument({ lang = 'es' }: { lang?: string }) {
 
           <View style={styles.featureGrid}>
             <View style={styles.featureCard}>
-              <Text style={styles.featureIcon}>🌍</Text>
+              <Text style={[styles.featureName, { fontSize: 16 }]}>🌍</Text>
               <Text style={styles.featureName}>{t('Mapa Interactivo', 'Interactive Map')}</Text>
-              <Text style={styles.featureDesc}>{t('Mapa mundial con niveles de riesgo MAEC por país, alertas en tiempo real y POIs.', 'World map with MAEC risk levels, real-time alerts and POIs.')}</Text>
+              <Text style={styles.featureDesc}>{t('Mapa mundial con niveles de riesgo MAEC, alertas en tiempo real y POIs.', 'World map with MAEC risk levels, real-time alerts and POIs.')}</Text>
             </View>
             <View style={styles.featureCard}>
-              <Text style={styles.featureIcon}>🤖</Text>
+              <Text style={[styles.featureName, { fontSize: 16 }]}>🤖</Text>
               <Text style={styles.featureName}>Chat IA</Text>
-              <Text style={styles.featureDesc}>{t('Asistente IA para resolver dudas sobre viajes, destinos y requisitos.', 'AI assistant for travel questions, destinations and requirements.')}</Text>
+              <Text style={styles.featureDesc}>{t('Asistente IA para resolver dudas sobre viajes y destinos.', 'AI assistant for travel questions.')}</Text>
             </View>
             <View style={styles.featureCard}>
-              <Text style={styles.featureIcon}>📋</Text>
+              <Text style={[styles.featureName, { fontSize: 16 }]}>📋</Text>
               <Text style={styles.featureName}>{t('Itinerario IA', 'AI Itinerary')}</Text>
-              <Text style={styles.featureDesc}>{t('Genera itinerarios personalizados con IA según tu perfil viajero.', 'Generate personalized AI itineraries based on your traveler profile.')}</Text>
+              <Text style={styles.featureDesc}>{t('Genera itinerarios personalizados según tu perfil viajero.', 'Generate personalized AI itineraries.')}</Text>
             </View>
             <View style={styles.featureCard}>
-              <Text style={styles.featureIcon}>🛡️</Text>
+              <Text style={[styles.featureName, { fontSize: 16 }]}>🛡️</Text>
               <Text style={styles.featureName}>{t('Comparador Seguros', 'Insurance Compare')}</Text>
-              <Text style={styles.featureDesc}>{t('Compara 9 seguros de viaje por cobertura, precio y riesgo del destino.', 'Compare 9 travel insurance plans by coverage, price and destination risk.')}</Text>
+              <Text style={styles.featureDesc}>{t('Compara 9 seguros de viaje por cobertura, precio y riesgo del destino.', 'Compare 9 travel insurance plans.')}</Text>
             </View>
             <View style={styles.featureCard}>
-              <Text style={styles.featureIcon}>📊</Text>
+              <Text style={[styles.featureName, { fontSize: 16 }]}>📊</Text>
               <Text style={styles.featureName}>TCI</Text>
-              <Text style={styles.featureDesc}>{t('Índice de coste de viaje con petróleo, estacionalidad y demanda.', 'Travel cost index with oil price, seasonality and demand.')}</Text>
+              <Text style={styles.featureDesc}>{t('Índice de coste de viaje con petróleo, estacionalidad y demanda.', 'Travel cost index with oil and demand.')}</Text>
             </View>
             <View style={styles.featureCard}>
-              <Text style={styles.featureIcon}>🔔</Text>
+              <Text style={[styles.featureName, { fontSize: 16 }]}>🔔</Text>
               <Text style={styles.featureName}>{t('Alertas OSINT', 'OSINT Alerts')}</Text>
-              <Text style={styles.featureDesc}>{t('Alertas en tiempo real: terremotos, protestas, clima extremo, seguridad.', 'Real-time alerts: earthquakes, protests, extreme weather, security.')}</Text>
+              <Text style={styles.featureDesc}>{t('Alertas en tiempo real: terremotos, protestas, clima extremo.', 'Real-time alerts: earthquakes, protests, weather.')}</Text>
             </View>
             <View style={styles.featureCard}>
-              <Text style={styles.featureIcon}>⛽</Text>
+              <Text style={[styles.featureName, { fontSize: 16 }]}>⛽</Text>
               <Text style={styles.featureName}>{t('Petróleo y Vuelos', 'Oil & Flights')}</Text>
-              <Text style={styles.featureDesc}>{t('Precio del petróleo Brent y su impacto en el coste de vuelos.', 'Brent oil price and its impact on flight costs.')}</Text>
+              <Text style={styles.featureDesc}>{t('Precio Brent y su impacto en coste de vuelos.', 'Brent oil price impact on flights.')}</Text>
             </View>
             <View style={styles.featureCard}>
-              <Text style={styles.featureIcon}>📰</Text>
+              <Text style={[styles.featureName, { fontSize: 16 }]}>📰</Text>
               <Text style={styles.featureName}>Blog</Text>
-              <Text style={styles.featureDesc}>{t('Artículos, análisis y consejos sobre destinos y viajes.', 'Articles, analysis and tips about destinations and travel.')}</Text>
+              <Text style={styles.featureDesc}>{t('Artículos, análisis y consejos sobre destinos.', 'Articles, analysis and tips.')}</Text>
             </View>
           </View>
 
           <View style={styles.divider} />
 
-          <Text style={styles.h3}>{t('Comparativa de Perfiles de Viajero', 'Traveler Profile Comparison')}</Text>
+          <View style={styles.updateBox}>
+            <Text style={styles.updateTitle}>{t('🔄 ¿Necesitas una versión más reciente?', '🔄 Need a newer version?')}</Text>
+            <Text style={styles.updateText}>
+              {t(
+                `Este documento expira el ${validUntilStr}. Los niveles de riesgo MAEC, eventos globales y alertas OSINT se actualizan diariamente. Descarga la guía actualizada en cualquier momento desde www.viajeinteligencia.com/dashboard.`,
+                `This document expires on ${validUntilStr}. MAEC risk levels, global events and OSINT alerts are updated daily. Download the updated guide anytime at www.viajeinteligencia.com/en/dashboard.`
+              )}
+            </Text>
+          </View>
+
+          <View style={styles.divider} />
+
+          <Text style={styles.h3}>{t('Perfiles de Viajero', 'Traveler Profiles')}</Text>
           <View style={styles.table}>
             <View style={[styles.tableRow, styles.tableHeader]}>
               <Text style={[styles.tableCell, { flex: 1.5 }]}>{t('Perfil', 'Profile')}</Text>
@@ -452,27 +498,27 @@ export default function ManualDocument({ lang = 'es' }: { lang?: string }) {
             </View>
             <View style={styles.tableRow}>
               <Text style={styles.tableCellBold}>{t('Mochilero', 'Backpacker')}</Text>
-              <Text style={[styles.tableCell, { flex: 2 }]}>{t('Viajes largos, albergues, transporte público', 'Long trips, hostels, public transport')}</Text>
+              <Text style={[styles.tableCell, { flex: 2 }]}>{t('Viajes largos, albergues, transp. público', 'Long trips, hostels, public transport')}</Text>
               <Text style={styles.tableCell}>€</Text>
             </View>
             <View style={styles.tableRow}>
               <Text style={styles.tableCellBold}>{t('Lujo', 'Luxury')}</Text>
-              <Text style={[styles.tableCell, { flex: 2 }]}>{t('Hoteles 5*, gastronomía, experiencias premium', '5* hotels, gastronomy, premium experiences')}</Text>
+              <Text style={[styles.tableCell, { flex: 2 }]}>{t('Hoteles 5*, gastronomía, premium', '5* hotels, gastronomy, premium')}</Text>
               <Text style={styles.tableCell}>€€€</Text>
             </View>
             <View style={styles.tableRow}>
               <Text style={styles.tableCellBold}>{t('Familiar', 'Family')}</Text>
-              <Text style={[styles.tableCell, { flex: 2 }]}>{t('Seguridad, actividades infantiles, resorts', 'Safety, kids activities, resorts')}</Text>
+              <Text style={[styles.tableCell, { flex: 2 }]}>{t('Seguridad, actividades infantiles', 'Safety, kids activities')}</Text>
               <Text style={styles.tableCell}>€€</Text>
             </View>
             <View style={styles.tableRow}>
               <Text style={styles.tableCellBold}>{t('Aventura', 'Adventure')}</Text>
-              <Text style={[styles.tableCell, { flex: 2 }]}>{t('Deportes extremos, naturaleza, retos', 'Extreme sports, nature, challenges')}</Text>
+              <Text style={[styles.tableCell, { flex: 2 }]}>{t('Deportes extremos, naturaleza', 'Extreme sports, nature')}</Text>
               <Text style={styles.tableCell}>€€</Text>
             </View>
             <View style={styles.tableRow}>
               <Text style={styles.tableCellBold}>{t('Negocios', 'Business')}</Text>
-              <Text style={[styles.tableCell, { flex: 2 }]}>{t('Conectividad, centros de negocios, eficiencia', 'Connectivity, business hubs, efficiency')}</Text>
+              <Text style={[styles.tableCell, { flex: 2 }]}>{t('Conectividad, centros negocios', 'Connectivity, business hubs')}</Text>
               <Text style={styles.tableCell}>€€€</Text>
             </View>
           </View>
@@ -484,7 +530,7 @@ export default function ManualDocument({ lang = 'es' }: { lang?: string }) {
         <>
           <Text style={styles.sectionTitle}>{t('Comparativa de Seguros de Viaje', 'Travel Insurance Comparison')}</Text>
           <Text style={styles.p}>
-            {t('Viaje con Inteligencia compara 9 aseguradoras analizando coberturas médicas, de evacuación, cancelación, equipaje y más. El sistema IRV (Índice de Riesgo de Viaje) ajusta las recomendaciones según el destino.', 'Viaje con Inteligencia compares 9 insurers analyzing medical, evacuation, cancellation, baggage coverage and more. The IRV (Index of Risk for Travelers) adjusts recommendations by destination.')}
+            {t('Viaje con Inteligencia compara 9 aseguradoras analizando coberturas médicas, de evacuación, cancelación, equipaje y más. El sistema IRV ajusta las recomendaciones según el destino.', 'Viaje con Inteligencia compares 9 insurers analyzing medical, evacuation, cancellation, baggage coverage and more. The IRV system adjusts recommendations by destination.')}
           </Text>
 
           <View style={styles.divider} />
@@ -495,34 +541,20 @@ export default function ManualDocument({ lang = 'es' }: { lang?: string }) {
               <Text style={[styles.tableCell, { flex: 2 }]}>{t('Cobertura', 'Coverage')}</Text>
               <Text style={[styles.tableCell, { flex: 3 }]}>{t('Descripción', 'Description')}</Text>
             </View>
-            <View style={styles.tableRow}>
-              <Text style={styles.tableCellBold}>{t('Médica', 'Medical')}</Text>
-              <Text style={[styles.tableCell, { flex: 3 }]}>{t('Gastos médicos: hospitalización, consultas, medicamentos', 'Medical expenses: hospitalization, consultations, medication')}</Text>
-            </View>
-            <View style={styles.tableRow}>
-              <Text style={styles.tableCellBold}>{t('Evacuación', 'Evacuation')}</Text>
-              <Text style={[styles.tableCell, { flex: 3 }]}>{t('Repatriación o traslado a centro médico especializado', 'Repatriation or transfer to specialized medical center')}</Text>
-            </View>
-            <View style={styles.tableRow}>
-              <Text style={styles.tableCellBold}>{t('Cancelación', 'Cancellation')}</Text>
-              <Text style={[styles.tableCell, { flex: 3 }]}>{t('Reembolso por cancelación del viaje', 'Refund for trip cancellation')}</Text>
-            </View>
-            <View style={styles.tableRow}>
-              <Text style={styles.tableCellBold}>{t('Equipaje', 'Baggage')}</Text>
-              <Text style={[styles.tableCell, { flex: 3 }]}>{t('Pérdida, robo o daño del equipaje', 'Lost, stolen or damaged baggage')}</Text>
-            </View>
-            <View style={styles.tableRow}>
-              <Text style={styles.tableCellBold}>{t('RC', 'Liability')}</Text>
-              <Text style={[styles.tableCell, { flex: 3 }]}>{t('Responsabilidad civil a terceros', 'Third-party liability')}</Text>
-            </View>
-            <View style={styles.tableRow}>
-              <Text style={styles.tableCellBold}>{t('Deportes', 'Sports')}</Text>
-              <Text style={[styles.tableCell, { flex: 3 }]}>{t('Cobertura de deportes básicos o de aventura', 'Basic or adventure sports coverage')}</Text>
-            </View>
-            <View style={styles.tableRow}>
-              <Text style={styles.tableCellBold}>Covid</Text>
-              <Text style={[styles.tableCell, { flex: 3 }]}>{t('Gastos médicos relacionados con COVID-19', 'COVID-19 related medical expenses')}</Text>
-            </View>
+            {[
+              { name: t('Médica', 'Medical'), desc: t('Hospitalización, consultas, medicamentos', 'Hospitalization, consultations, medication') },
+              { name: t('Evacuación', 'Evacuation'), desc: t('Repatriación o traslado a centro médico', 'Repatriation or medical transfer') },
+              { name: t('Cancelación', 'Cancellation'), desc: t('Reembolso por cancelación del viaje', 'Trip cancellation refund') },
+              { name: t('Equipaje', 'Baggage'), desc: t('Pérdida, robo o daño del equipaje', 'Lost, stolen or damaged baggage') },
+              { name: t('RC', 'Liability'), desc: t('Responsabilidad civil a terceros', 'Third-party liability') },
+              { name: t('Deportes', 'Sports'), desc: t('Deportes básicos o de aventura', 'Basic or adventure sports') },
+              { name: 'Covid', desc: t('Gastos médicos COVID-19', 'COVID-19 medical expenses') },
+            ].map((row, i) => (
+              <View key={i} style={styles.tableRow}>
+                <Text style={styles.tableCellBold}>{row.name}</Text>
+                <Text style={[styles.tableCell, { flex: 3 }]}>{row.desc}</Text>
+              </View>
+            ))}
           </View>
 
           <View style={styles.divider} />
@@ -530,14 +562,12 @@ export default function ManualDocument({ lang = 'es' }: { lang?: string }) {
           <View style={styles.card}>
             <Text style={styles.cardTitle}>{t('Recomendación por nivel de riesgo', 'Recommendation by risk level')}</Text>
             <Text style={styles.cardSub}>
-              {t('Riesgo bajo: cobertura médica ≥300.000€ • Riesgo medio: ≥500.000€ • Riesgo alto: ≥1.000.000€ con evacuación ≥2.000.000€', 'Low risk: medical ≥€300K • Medium risk: ≥€500K • High risk: ≥€1M with evacuation ≥€2M')}
+              {t('Bajo: ≥300.000€ • Medio: ≥500.000€ • Alto: ≥1.000.000€ con evacuación ≥2.000.000€', 'Low: ≥€300K • Medium: ≥€500K • High: ≥€1M with evacuation ≥€2M')}
             </Text>
           </View>
 
-          <View style={styles.divider} />
-
-          <Text style={styles.small}>
-            {t('Los precios varían según duración del viaje, destino, edades y actividades. Calcula tu seguro en viajeinteligencia.com/coste/seguros', 'Prices vary by trip duration, destination, ages and activities. Calculate your insurance at viajeinteligencia.com/en/cost/insurance')}
+          <Text style={[styles.small, { marginTop: 12 }]}>
+            {t('Calcula tu seguro en viajeinteligencia.com/coste/seguros', 'Calculate at viajeinteligencia.com/en/cost/insurance')}
           </Text>
         </>
       )}
@@ -545,9 +575,9 @@ export default function ManualDocument({ lang = 'es' }: { lang?: string }) {
       {/* === 5. Global Events === */}
       {genPage(9,
         <>
-          <Text style={styles.sectionTitle}>{t('Eventos Globales que Afectan tu Viaje', 'Global Events Affecting Your Trip')}</Text>
+          <Text style={styles.sectionTitle}>{t('Eventos Globales', 'Global Events')}</Text>
           <Text style={styles.p}>
-            {t('El calendario de eventos globales incluye festivales, conferencias, eventos deportivos y religiosos que pueden afectar tu viaje (precios, disponibilidad, seguridad).', 'The global events calendar includes festivals, conferences, sports and religious events that may affect your trip (prices, availability, security).')}
+            {t('Calendario de eventos que pueden afectar tu viaje (precios, disponibilidad, seguridad).', 'Calendar of events that may affect your trip (prices, availability, security).')}
           </Text>
 
           <View style={styles.table}>
@@ -558,35 +588,33 @@ export default function ManualDocument({ lang = 'es' }: { lang?: string }) {
               <Text style={styles.tableCell}>{t('Impacto', 'Impact')}</Text>
             </View>
             {[
-              { name: 'Davos (Foro Económico Mundial)', country: 'Suiza', month: 'Enero', impact: 'Alto' },
-              { name: 'Año Nuevo Chino', country: 'China', month: 'Enero/Feb', impact: 'Alto' },
-              { name: 'Carnaval de Río', country: 'Brasil', month: 'Febrero', impact: 'Alto' },
-              { name: 'MWC Barcelona', country: 'España', month: 'Febrero', impact: 'Alto' },
-              { name: 'Fallas de Valencia', country: 'España', month: 'Marzo', impact: 'Alto' },
-              { name: 'Ramadán', country: 'Mundial', month: 'Marzo', impact: 'Alto' },
-              { name: 'Semana Santa', country: 'España/México', month: 'Marzo/Abr', impact: 'Alto' },
-              { name: 'Songkran (Año Nuevo Tailandés)', country: 'Tailandia', month: 'Abril', impact: 'Alto' },
-              { name: 'F1 Gran Premio de Mónaco', country: 'Mónaco', month: 'Mayo', impact: 'Extremo' },
-              { name: 'Mundial de Fútbol 2026', country: 'EE.UU./MX/CA', month: 'Junio-Julio', impact: 'Extremo' },
-              { name: 'Tomorrowland', country: 'Bélgica', month: 'Julio', impact: 'Alto' },
-              { name: 'San Fermín', country: 'España', month: 'Julio', impact: 'Alto' },
-              { name: 'Oktoberfest', country: 'Alemania', month: 'Septiembre', impact: 'Extremo' },
-              { name: 'Web Summit', country: 'Portugal', month: 'Octubre', impact: 'Alto' },
-              { name: 'Diwali', country: 'India', month: 'Noviembre', impact: 'Alto' },
-              { name: 'Mercados Navideños', country: 'Alemania', month: 'Diciembre', impact: 'Alto' },
+              { name: t('Davos (Foro Económico)', 'Davos (World Economic Forum)'), country: t('Suiza', 'Switzerland'), month: t('Enero', 'January'), impact: t('Alto', 'High') },
+              { name: t('Año Nuevo Chino', 'Chinese New Year'), country: t('China', 'China'), month: t('Ene/Feb', 'Jan/Feb'), impact: t('Alto', 'High') },
+              { name: t('Carnaval de Río', 'Rio Carnival'), country: t('Brasil', 'Brazil'), month: t('Febrero', 'February'), impact: t('Alto', 'High') },
+              { name: 'MWC Barcelona', country: t('España', 'Spain'), month: t('Febrero', 'February'), impact: t('Alto', 'High') },
+              { name: t('Fallas de Valencia', 'Fallas Valencia'), country: t('España', 'Spain'), month: t('Marzo', 'March'), impact: t('Alto', 'High') },
+              { name: t('Ramadán', 'Ramadan'), country: t('Mundial', 'Worldwide'), month: t('Marzo', 'March'), impact: t('Alto', 'High') },
+              { name: t('Semana Santa', 'Easter Week'), country: t('España/México', 'Spain/Mexico'), month: t('Mar/Abr', 'Mar/Apr'), impact: t('Alto', 'High') },
+              { name: t('Songkran', 'Songkran'), country: t('Tailandia', 'Thailand'), month: t('Abril', 'April'), impact: t('Alto', 'High') },
+              { name: t('F1 Gran Premio Mónaco', 'F1 Monaco Grand Prix'), country: t('Mónaco', 'Monaco'), month: t('Mayo', 'May'), impact: t('Extremo', 'Extreme') },
+              { name: t('Mundial Fútbol 2026', 'FIFA World Cup 2026'), country: 'EE.UU./MX/CA', month: t('Jun-Jul', 'Jun-Jul'), impact: t('Extremo', 'Extreme') },
+              { name: 'Tomorrowland', country: t('Bélgica', 'Belgium'), month: t('Julio', 'July'), impact: t('Alto', 'High') },
+              { name: t('San Fermín', 'San Fermin'), country: t('España', 'Spain'), month: t('Julio', 'July'), impact: t('Alto', 'High') },
+              { name: 'Oktoberfest', country: t('Alemania', 'Germany'), month: t('Septiembre', 'September'), impact: t('Extremo', 'Extreme') },
+              { name: 'Web Summit', country: t('Portugal', 'Portugal'), month: t('Octubre', 'October'), impact: t('Alto', 'High') },
+              { name: 'Diwali', country: t('India', 'India'), month: t('Noviembre', 'November'), impact: t('Alto', 'High') },
+              { name: t('Mercados Navideños', 'Christmas Markets'), country: t('Alemania', 'Germany'), month: t('Diciembre', 'December'), impact: t('Alto', 'High') },
             ].map((ev, i) => (
               <View key={i} style={styles.tableRow}>
                 <Text style={[styles.tableCellBold, { flex: 2 }]}>{ev.name}</Text>
                 <Text style={styles.tableCell}>{ev.country}</Text>
                 <Text style={styles.tableCell}>{ev.month}</Text>
-                <Text style={[styles.tableCell, { color: ev.impact === 'Extremo' ? COLORS.red : COLORS.amber }]}>{ev.impact}</Text>
+                <Text style={[styles.tableCell, { color: ev.impact === t('Extremo', 'Extreme') ? COLORS.red : COLORS.amber }]}>{ev.impact}</Text>
               </View>
             ))}
           </View>
 
-          <View style={styles.divider} />
-
-          <Text style={styles.small}>
+          <Text style={[styles.small, { marginTop: 12 }]}>
             {t('Calendario completo con 85+ eventos en viajeinteligencia.com/eventos', 'Full calendar with 85+ events at viajeinteligencia.com/en/events')}
           </Text>
         </>
@@ -597,7 +625,7 @@ export default function ManualDocument({ lang = 'es' }: { lang?: string }) {
         <>
           <Text style={styles.sectionTitle}>{t('Teléfonos de Emergencia', 'Emergency Numbers')}</Text>
           <Text style={styles.p}>
-            {t('Números de emergencia generales por región. Guarda el 112 como número universal desde cualquier móvil en la UE.', 'General emergency numbers by region. Save 112 as universal number from any mobile in the EU.')}
+            {t('Números de emergencia generales por región. El 112 funciona en toda la UE.', 'General emergency numbers by region. 112 works across the EU.')}
           </Text>
 
           <View style={styles.emergencyBox}>
@@ -622,7 +650,7 @@ export default function ManualDocument({ lang = 'es' }: { lang?: string }) {
             </View>
             {[
               { region: 'Europa', general: '112', policia: '112', ambulancia: '112', bomberos: '112' },
-              { region: 'América', general: '911', policia: '911', ambulancia: '911', bomberos: '911' },
+              { region: t('América', 'Americas'), general: '911', policia: '911', ambulancia: '911', bomberos: '911' },
               { region: 'Asia', general: '112', policia: '110', ambulancia: '120', bomberos: '119' },
               { region: 'África', general: '112', policia: '112', ambulancia: '112', bomberos: '112' },
               { region: 'Oceanía', general: '112', policia: '112', ambulancia: '112', bomberos: '112' },
@@ -639,23 +667,13 @@ export default function ManualDocument({ lang = 'es' }: { lang?: string }) {
 
           <View style={styles.divider} />
 
-          <Text style={styles.h3}>{t('Recomendaciones de Seguridad', 'Safety Recommendations')}</Text>
+          <Text style={styles.h3}>{t('Recomendaciones', 'Recommendations')}</Text>
           <View style={styles.card}>
-            <Text style={styles.cardSub}>
-              • {t('Regístrate en el Registro de Viajeros del MAEC', 'Register in the MAEC Traveler Registry')}
-            </Text>
-            <Text style={styles.cardSub}>
-              • {t('Lleva siempre copia del pasaporte y documentación', 'Always carry a copy of your passport and documents')}
-            </Text>
-            <Text style={styles.cardSub}>
-              • {t('Contrata un seguro de viaje con cobertura médica suficiente', 'Get travel insurance with adequate medical coverage')}
-            </Text>
-            <Text style={styles.cardSub}>
-              • {t('Descarga la app y actúa las notificaciones para alertas en tiempo real', 'Download the app and enable notifications for real-time alerts')}
-            </Text>
-            <Text style={styles.cardSub}>
-              • {t('Comparte tu itinerario con familiares o amigos', 'Share your itinerary with family or friends')}
-            </Text>
+            <Text style={styles.cardSub}>• {t('Regístrate en el Registro de Viajeros del MAEC', 'Register in the MAEC Traveler Registry')}</Text>
+            <Text style={styles.cardSub}>• {t('Lleva copia del pasaporte y documentación', 'Carry a copy of your passport and documents')}</Text>
+            <Text style={styles.cardSub}>• {t('Contrata seguro de viaje con cobertura suficiente', 'Get travel insurance with adequate coverage')}</Text>
+            <Text style={styles.cardSub}>• {t('Activa notificaciones para alertas en tiempo real', 'Enable notifications for real-time alerts')}</Text>
+            <Text style={styles.cardSub}>• {t('Comparte tu itinerario con familiares', 'Share your itinerary with family')}</Text>
           </View>
         </>
       )}
@@ -663,12 +681,16 @@ export default function ManualDocument({ lang = 'es' }: { lang?: string }) {
       {/* === Back Cover === */}
       <Page size="A4" style={styles.coverPage}>
         <View style={styles.coverGradient} />
+        <Image style={styles.coverLogo} src="/logo.png" />
         <Text style={styles.coverTitle}>{t('Buen viaje', 'Safe travels')}</Text>
         <Text style={{ fontSize: 40, marginVertical: 16 }}>🌍✈️</Text>
         <Text style={styles.coverDesc}>
           {t('Viaje con Inteligencia — Tu compañero de viaje inteligente', 'Viaje con Inteligencia — Your intelligent travel companion')}
         </Text>
         <Text style={styles.coverVersion}>www.viajeinteligencia.com</Text>
+        <Text style={{ position: 'absolute', bottom: 30, fontSize: 8, color: COLORS.slateLight }}>
+          © {copyrightYear} Viaje con Inteligencia — Compilado M.Castillo
+        </Text>
       </Page>
     </Document>
   );
