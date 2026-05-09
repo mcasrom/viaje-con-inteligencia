@@ -90,12 +90,17 @@ function getDemandIndex(countryCode: string): number {
   return (ineData.arrivals / avgArrivals) * 100;
 }
 
-function getSeasonalityIndex(countryCode: string, month: number): number {
-  const data = SEASONALITY_MAP[countryCode.toLowerCase()];
+function getSeasonalityIndex(
+  countryCode: string,
+  month: number,
+  liveMap?: Record<string, Record<string, number>>,
+): number {
+  const map = liveMap && Object.keys(liveMap).length > 0 ? liveMap : SEASONALITY_MAP;
+  const data = map[countryCode.toLowerCase()];
   if (!data) {
     const pais = paisesData[countryCode.toLowerCase()];
     if (pais && pais.continente === 'Europa') {
-      return SEASONALITY_MAP['es']?.[String(month)] || 100;
+      return map['es']?.[String(month)] || 100;
     }
     return 100;
   }
@@ -128,7 +133,10 @@ function getRiskIndex(countryCode: string): number {
   }
 }
 
-export function calculateTCI(countryCode: string): {
+export function calculateTCI(
+  countryCode: string,
+  seasonality?: Record<string, Record<string, number>>,
+): {
   tci: number;
   trend: string;
   recommendation: string;
@@ -144,7 +152,7 @@ export function calculateTCI(countryCode: string): {
 
   const demandIdx = getDemandIndex(countryCode);
   const oilIdx = getOilIndex();
-  const seasonalityIdx = getSeasonalityIndex(countryCode, month);
+  const seasonalityIdx = getSeasonalityIndex(countryCode, month, seasonality);
   const ipcIdx = getIPCIndex(countryCode);
   const riskIdx = getRiskIndex(countryCode);
 
@@ -491,7 +499,7 @@ export function analyzeTCITrend(countryCode: string, history?: number[]): {
 }
 
 // Patrón mensual TCI (para encontrar mejor mes)
-export function monthlyTCIPattern(countryCode: string): number[] {
+export function monthlyTCIPattern(countryCode: string, seasonality?: Record<string, Record<string, number>>): number[] {
   const weights = { demand: 0.30, oil: 0.25, seasonality: 0.25, ipc: 0.10, risk: 0.10 };
   const oilIdx = getOilIndex();
   const ipcIdx = getIPCIndex(countryCode);
@@ -499,7 +507,7 @@ export function monthlyTCIPattern(countryCode: string): number[] {
 
   const months: number[] = [];
   for (let m = 1; m <= 12; m++) {
-    const seasonalityIdx = getSeasonalityIndex(countryCode, m);
+    const seasonalityIdx = getSeasonalityIndex(countryCode, m, seasonality);
     const demandIdx = getDemandIndex(countryCode);
     const tci = (
       demandIdx * weights.demand +
@@ -572,6 +580,7 @@ export function getGlobalConflictImpact(
 
 export function getDemandShiftAnalysis(
   demandShifts?: Record<string, { extraDemandPct: number; reason: string }>,
+  seasonality?: Record<string, Record<string, number>>,
 ): {
   conflictBeneficiaries: { country: string; flag: string; name: string; extraDemandPct: number; reason: string }[];
   oilSensitive: { country: string; flag: string; name: string; oilImpact: number }[];
@@ -579,12 +588,10 @@ export function getDemandShiftAnalysis(
 } {
   const allPaises = Object.values(paisesData).filter(p => p.visible !== false && p.codigo !== 'cu');
 
-  // Conflict beneficiaries: safe countries in same region as closed airspace
   const conflictBeneficiaries = allPaises
     .filter(p => p.nivelRiesgo === 'sin-riesgo' || p.nivelRiesgo === 'bajo')
     .map(p => {
-      const affected = AFFECTED_ROUTES_FALLBACK.find(r => r.destination.toLowerCase().includes(p.nombre.toLowerCase()));
-      const tci = calculateTCI(p.codigo);
+      const tci = calculateTCI(p.codigo, seasonality);
       let extraDemand = 0;
       let reason = '';
 
@@ -597,22 +604,20 @@ export function getDemandShiftAnalysis(
     .sort((a, b) => b.extraDemandPct - a.extraDemandPct)
     .slice(0, 8);
 
-  // Oil-sensitive: long-haul destinations most affected by oil prices
   const oilSensitive = allPaises
     .filter(p => p.continente === 'Asia' || p.continente === 'Oceanía' || p.continente === 'América del Sur')
     .map(p => {
-      const tci = calculateTCI(p.codigo);
+      const tci = calculateTCI(p.codigo, seasonality);
       const oilImpact = tci.oilIdx - 100;
       return { country: p.codigo, flag: p.bandera, name: p.nombre, oilImpact: Math.round(oilImpact * 10) / 10 };
     })
     .sort((a, b) => b.oilImpact - a.oilImpact)
     .slice(0, 6);
 
-  // Safe havens: low risk + affordable TCI
   const safeHavens = allPaises
     .filter(p => (p.nivelRiesgo === 'sin-riesgo' || p.nivelRiesgo === 'bajo'))
     .map(p => {
-      const tci = calculateTCI(p.codigo);
+      const tci = calculateTCI(p.codigo, seasonality);
       const riskScore = p.nivelRiesgo === 'sin-riesgo' ? 95 : 85;
       return { country: p.codigo, flag: p.bandera, name: p.nombre, riskScore, tci: tci.tci };
     })

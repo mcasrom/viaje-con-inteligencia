@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase-admin';
 import { getCurrentOilPrice, getOilImpactAnalysis, getGlobalConflictImpact, getDemandShiftAnalysis, getOilHistory } from '@/data/tci-engine';
-import { getAirspaceClosuresLive, getAffectedRoutesLive, getDemandShiftsLive } from '@/lib/airspace';
+import { getAirspaceClosuresLive, getAffectedRoutesLive, getDemandShiftsLive, getSeasonalityLive } from '@/lib/airspace';
 
 async function getEurUsd(): Promise<number> {
   try {
@@ -54,8 +54,8 @@ export async function GET(request: NextRequest) {
   }
 
   if (action === 'shifts') {
-    const demandShifts = await getDemandShiftsLive();
-    return NextResponse.json(getDemandShiftAnalysis(demandShifts));
+    const [demandShifts, seasonality] = await Promise.all([getDemandShiftsLive(), getSeasonalityLive()]);
+    return NextResponse.json(getDemandShiftAnalysis(demandShifts, seasonality));
   }
 
   const real = await getRealOilData();

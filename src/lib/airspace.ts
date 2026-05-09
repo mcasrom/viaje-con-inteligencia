@@ -102,3 +102,25 @@ export async function getDemandShiftsLive(): Promise<DemandShiftMap> {
     return DEMAND_SHIFTS_FALLBACK;
   }
 }
+
+export async function getSeasonalityLive(): Promise<Record<string, Record<string, number>>> {
+  const admin = getAdmin();
+  if (!admin) return {};
+
+  try {
+    const { data, error } = await admin
+      .from('seasonality')
+      .select('country_code, month, index_value');
+
+    if (error || !data || data.length === 0) return {};
+
+    const map: Record<string, Record<string, number>> = {};
+    for (const r of data) {
+      if (!map[r.country_code]) map[r.country_code] = {};
+      map[r.country_code][String(r.month)] = r.index_value;
+    }
+    return map;
+  } catch {
+    return {};
+  }
+}
