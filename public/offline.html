@@ -2,54 +2,103 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Sin conexión - Viaje con Inteligencia</title>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       background: #0f172a;
       color: #f8fafc;
       min-height: 100vh;
+      min-height: 100dvh;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 2rem;
+      padding: 1.5rem;
       text-align: center;
     }
-    .icon { font-size: 4rem; margin-bottom: 1rem; }
-    h1 { font-size: 1.5rem; margin-bottom: 0.5rem; }
-    p { color: #94a3b8; margin-bottom: 1.5rem; }
+    .icon { font-size: 3.5rem; margin-bottom: 1rem; }
+    h1 { font-size: 1.4rem; margin-bottom: 0.4rem; color: #f8fafc; }
+    p.sub { color: #94a3b8; font-size: 0.9rem; margin-bottom: 1.5rem; }
     .btn {
       background: #3b82f6;
       color: white;
       border: none;
-      padding: 0.75rem 1.5rem;
-      border-radius: 0.5rem;
+      padding: 0.8rem 2rem;
+      border-radius: 999px;
       font-size: 1rem;
+      font-weight: 600;
       cursor: pointer;
       text-decoration: none;
+      display: inline-block;
+      transition: background 0.2s;
     }
-    .info {
-      margin-top: 2rem;
+    .btn:active { background: #2563eb; transform: scale(0.97); }
+    .cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.6rem;
+      width: 100%;
+      max-width: 320px;
+      margin-top: 1.5rem;
+    }
+    .card {
+      background: #1e293b;
+      border-radius: 0.75rem;
+      padding: 0.8rem;
+      text-decoration: none;
+      color: inherit;
+      transition: background 0.2s;
+    }
+    .card:active { background: #334155; }
+    .card .emoji { font-size: 1.5rem; }
+    .card .label { font-size: 0.75rem; color: #94a3b8; margin-top: 0.3rem; }
+    .emergency {
+      margin-top: 1.5rem;
       padding: 1rem;
       background: #1e293b;
-      border-radius: 0.5rem;
-      max-width: 300px;
+      border-radius: 0.75rem;
+      max-width: 320px;
+      width: 100%;
+      border: 1px solid #334155;
     }
-    .info h2 { font-size: 1rem; margin-bottom: 0.5rem; color: #fbbf24; }
-    .info p { font-size: 0.875rem; margin: 0; }
+    .emergency h2 { font-size: 0.85rem; color: #fbbf24; margin-bottom: 0.4rem; }
+    .emergency p { font-size: 0.8rem; color: #94a3b8; }
+    .emergency .tel { font-size: 1.2rem; font-weight: 700; color: #f87171; margin-top: 0.3rem; }
   </style>
 </head>
 <body>
   <div class="icon">✈️</div>
   <h1>Sin conexión</h1>
-  <p>No tienes internet en este momento.</p>
+  <p class="sub">Vuelve a conectarte para acceder al mapa interactivo y alertas en tiempo real.</p>
   <a href="/" class="btn">Reintentar</a>
-  <div class="info">
-    <h2>💡 Datos guardados</h2>
-    <p>Algunos datos de países pueden estar disponibles sin conexión.</p>
+
+  <div class="cards">
+    <a href="/checklist" class="card">
+      <div class="emoji">✅</div>
+      <div class="label">Checklist Viaje</div>
+    </a>
+    <a href="/relojes" class="card">
+      <div class="emoji">🕐</div>
+      <div class="label">Relojes Mundiales</div>
+    </a>
+    <a href="/blog" class="card">
+      <div class="emoji">📰</div>
+      <div class="label">Blog (offline)</div>
+    </a>
+    <a href="/pwa" class="card">
+      <div class="emoji">📱</div>
+      <div class="label">Instalar App</div>
+    </a>
+  </div>
+
+  <div class="emergency">
+    <h2>🚨 Emergencias en el extranjero</h2>
+    <p>Contacta con la embajada o consulado de España más cercano:</p>
+    <p class="tel">+34 91 394 89 00</p>
+    <p style="font-size:0.75rem;color:#64748b;margin-top:0.3rem;">MAEC - Protección Consular</p>
   </div>
 </body>
 </html>

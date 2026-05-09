@@ -1,15 +1,22 @@
 {
   "name": "Viaje con Inteligencia",
   "short_name": "ViajeIA",
-  "description": "Tu guía de viajes inteligentes. Mapa de riesgos, alertas IA y herramientas premium.",
-  "start_url": "/",
+  "description": "Mapa interactivo de riesgos de viaje, alertas MAEC, POIs y herramientas IA para viajeros.",
+  "start_url": "/?source=pwa",
   "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone"],
   "background_color": "#0f172a",
-  "theme_color": "#3b82f6",
+  "theme_color": "#0f172a",
   "orientation": "any",
-  "categories": ["travel", "utilities"],
+  "categories": ["travel", "navigation", "utilities"],
   "lang": "es",
   "scope": "/",
+  "id": "/",
+  "edge_side_panel": {},
+  "handle_links": "preferred",
+  "launch_handler": {
+    "client_mode": ["navigate-existing", "auto"]
+  },
   "icons": [
     {
       "src": "/icon-192.png",
@@ -29,7 +36,52 @@
       "src": "/preview_favicon.jpg",
       "sizes": "1200x630",
       "type": "image/jpeg",
-      "form_factor": "wide"
+      "form_factor": "wide",
+      "label": "Mapa interactivo de riesgos globales"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Buscar País",
+      "short_name": "Buscar",
+      "description": "Busca información detallada de cualquier país",
+      "url": "/?search=1&source=pwa",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Alertas MAEC",
+      "short_name": "Alertas",
+      "description": "Alertas de viaje del Ministerio de Asuntos Exteriores",
+      "url": "/alertas?source=pwa",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Blog de Viajes",
+      "short_name": "Blog",
+      "description": "Análisis y consejos de viaje",
+      "url": "/blog?source=pwa",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Petróleo y TCI",
+      "short_name": "Petróleo",
+      "description": "Índice de coste de viaje y precio del petróleo",
+      "url": "/petroleo?source=pwa",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Dashboard",
+      "short_name": "Dashboard",
+      "description": "Tu panel de control personal",
+      "url": "/dashboard?source=pwa",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Relojes Mundiales",
+      "short_name": "Relojes",
+      "description": "Hora actual en todos los países",
+      "url": "/relojes?source=pwa",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
     }
   ]
 }

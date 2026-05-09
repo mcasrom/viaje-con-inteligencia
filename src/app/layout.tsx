@@ -15,7 +15,8 @@ import Onboarding from "@/components/Onboarding";
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  maximumScale: 5,
+  maximumScale: 1,
+  userScalable: false,
   viewportFit: "cover",
   themeColor: [
     { media: "(prefers-color-scheme: light)", color: "#ffffff" },
@@ -84,12 +85,16 @@ export default function RootLayout({
       <head>
         <meta name="msvalidate.01" content="79B687F3E7391A245058BD02622B5D5D" />
         <link rel="icon" href="/logo.png" type="image/png" sizes="32x32" />
+        <link rel="manifest" href="/manifest.json" />
         <link rel="apple-touch-icon" href="/icon-192.png" />
+        <link rel="apple-touch-startup-image" href="/icon-512.png" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <meta name="apple-mobile-web-app-title" content="ViajeIA" />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="msapplication-TileColor" content="#0f172a" />
+        <meta name="application-name" content="ViajeIA" />
+        <meta name="format-detection" content="telephone=no" />
         <link rel="alternate" hrefLang="es" href="https://www.viajeinteligencia.com" />
         <link rel="alternate" hrefLang="en" href="https://www.viajeinteligencia.com/en" />
         <link rel="alternate" hrefLang="x-default" href="https://www.viajeinteligencia.com" />
