@@ -14,6 +14,8 @@ export async function POST(request: NextRequest) {
 
     const input: SeguroInput = {
       destino: resolved.codigo,
+      fechaIda: body.fechaIda || undefined,
+      fechaVuelta: body.fechaVuelta || undefined,
       edades: body.edades || [30],
       actividades: body.actividades || [],
       costeViaje: body.costeViaje || 1000,

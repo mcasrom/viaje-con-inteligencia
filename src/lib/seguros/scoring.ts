@@ -93,6 +93,7 @@ export function scoreSeguros(input: SeguroInput): {
   alerta_osint: string | null;
   irv: number;
   cobertura_recomendada: { medica: number; evacuacion: number };
+  duracion_dias: number;
 } {
   const { nivel, irv, nombre } = getDangerLevel(input.destino);
   const duracionEstimada = input.fechaIda && input.fechaVuelta
@@ -208,5 +209,6 @@ export function scoreSeguros(input: SeguroInput): {
     alerta_osint: alertaOsint,
     irv,
     cobertura_recomendada: coberturaRecomendada,
+    duracion_dias: duracionEstimada,
   };
 }

@@ -12,6 +12,7 @@ interface CompareResult {
   alerta_osint: string | null;
   irv: number;
   cobertura_recomendada: { medica: number; evacuacion: number };
+  duracion_dias?: number;
 }
 
 const ACTIVIDADES = [
@@ -38,6 +39,8 @@ export default function SegurosPage() {
   const [destino, setDestino] = useState('');
   const [edades, setEdades] = useState('30');
   const [costeViaje, setCosteViaje] = useState('1500');
+  const [fechaIda, setFechaIda] = useState('');
+  const [fechaVuelta, setFechaVuelta] = useState('');
   const [actividades, setActividades] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<CompareResult | null>(null);
@@ -61,6 +64,8 @@ export default function SegurosPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           destino: destinoCode.toUpperCase(),
+          fechaIda: fechaIda || undefined,
+          fechaVuelta: fechaVuelta || undefined,
           edades: edades.split(',').map(s => parseInt(s.trim())).filter(n => !isNaN(n)),
           actividades,
           costeViaje: parseInt(costeViaje) || 1500,
@@ -184,6 +189,31 @@ export default function SegurosPage() {
                 </div>
               </div>
 
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm text-slate-400 mb-1.5 flex items-center gap-1">
+                    Fecha de ida
+                  </label>
+                  <input
+                    type="date"
+                    value={fechaIda}
+                    onChange={e => setFechaIda(e.target.value)}
+                    className="w-full px-4 py-2.5 bg-slate-900 border border-slate-600 rounded-lg text-white focus:border-blue-500 focus:outline-none [color-scheme:dark]"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm text-slate-400 mb-1.5 flex items-center gap-1">
+                    Fecha de vuelta
+                  </label>
+                  <input
+                    type="date"
+                    value={fechaVuelta}
+                    onChange={e => setFechaVuelta(e.target.value)}
+                    className="w-full px-4 py-2.5 bg-slate-900 border border-slate-600 rounded-lg text-white focus:border-blue-500 focus:outline-none [color-scheme:dark]"
+                  />
+                </div>
+              </div>
+
               <div>
                 <label className="block text-sm text-slate-400 mb-2 flex items-center gap-1">
                   <Activity className="w-3.5 h-3.5" />
@@ -252,11 +282,16 @@ export default function SegurosPage() {
                 <span className="text-slate-400">
                   IRV: <strong className="text-white">{result.irv}/100</strong>
                 </span>
+                {result.duracion_dias && (
+                  <span className="text-slate-400">
+                    Duración: <strong className="text-white">{result.duracion_dias} días</strong>
+                  </span>
+                )}
                 <span className="text-slate-400">
-                  Cobertura médica recomendada: <strong className="text-white">{(result.cobertura_recomendada.medica / 1000000).toFixed(1)}M€</strong>
+                  Cobertura médica: <strong className="text-white">{(result.cobertura_recomendada.medica / 1000000).toFixed(1)}M€</strong>
                 </span>
                 <span className="text-slate-400">
-                  Evacuación recomendada: <strong className="text-white">{(result.cobertura_recomendada.evacuacion / 1000000).toFixed(1)}M€</strong>
+                  Evacuación: <strong className="text-white">{(result.cobertura_recomendada.evacuacion / 1000000).toFixed(1)}M€</strong>
                 </span>
               </div>
             </div>
