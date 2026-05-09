@@ -538,6 +538,12 @@ export default function HomeClient() {
           <AirportDelaysWidget />
         </div>
 
+        <div className="max-w-3xl mx-auto mt-6">
+          <p className="text-slate-400 text-sm text-center bg-slate-800/30 rounded-xl px-4 py-3 border border-slate-700/30">
+            {Object.values(paisesData).filter(p => p.nivelRiesgo === 'alto' || p.nivelRiesgo === 'muy-alto').length} países en riesgo alto o muy alto — consulta las alertas activas antes de viajar
+          </p>
+        </div>
+
         <div className="max-w-3xl mx-auto mt-12 border-t border-slate-800 pt-8">
           <h2 className="text-xl font-bold text-white mb-4">Mapa de Riesgos de Viaje con Inteligencia Artificial</h2>
           <p className="text-slate-400 text-sm leading-relaxed mb-4">
