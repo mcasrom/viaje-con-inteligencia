@@ -318,6 +318,14 @@ Ciudad de gobierno:
 
 ---
 
+## Recursos adicionales
+
+- [Ver nivel de riesgo de Países Bajos](/pais/nl)
+- [Checklist de viaje](/checklist)
+- [Alertas MAEC oficiales](https://www.exteriores.gob.es)
+
+---
+
 #ViajeSeguro #Viajar2026 #PaisesBajos #Amsterdam #Rotterdam #ViajeInteligencia #MAEC #Holanda
 
 ---

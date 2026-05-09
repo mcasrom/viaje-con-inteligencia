@@ -270,6 +270,14 @@ El Ministerio de Asuntos Exteriores clasifica Indonesia como **riesgo bajo-medio
 
 ---
 
+## Recursos adicionales
+
+- [Ver nivel de riesgo de Indonesia](/pais/id)
+- [Checklist de viaje](/checklist)
+- [Alertas MAEC oficiales](https://www.exteriores.gob.es)
+
+---
+
 #ViajeSeguro #Viajar2026 #Bali #Indonesia #ViajeInteligencia #MAEC
 
 ---

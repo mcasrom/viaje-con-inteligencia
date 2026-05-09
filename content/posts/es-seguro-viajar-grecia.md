@@ -285,6 +285,14 @@ Isla grande:
 
 ---
 
+## Recursos adicionales
+
+- [Ver nivel de riesgo de Grecia](/pais/gr)
+- [Checklist de viaje](/checklist)
+- [Alertas MAEC oficiales](https://www.exteriores.gob.es)
+
+---
+
 #ViajeSeguro #Viajar2026 #Grecia #Atenas #Santorini #Mykonos #ViajeInteligencia #MAEC #IslasGriegas
 
 ---

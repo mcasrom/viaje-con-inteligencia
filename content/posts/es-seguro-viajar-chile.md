@@ -318,6 +318,14 @@ Naturaleza:
 
 ---
 
+## Recursos adicionales
+
+- [Ver nivel de riesgo de Chile](/pais/cl)
+- [Checklist de viaje](/checklist)
+- [Alertas MAEC oficiales](https://www.exteriores.gob.es)
+
+---
+
 #ViajeSeguro #Viajar2026 #Chile #Santiago #Patagonia #Atacama #ViajeInteligencia #MAEC #TurismoChile
 
 ---

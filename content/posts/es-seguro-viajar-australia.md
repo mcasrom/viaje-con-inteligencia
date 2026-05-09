@@ -387,6 +387,14 @@ Capital de Queensland:
 
 ---
 
+## Recursos adicionales
+
+- [Ver nivel de riesgo de Australia](/pais/au)
+- [Checklist de viaje](/checklist)
+- [Alertas MAEC oficiales](https://www.exteriores.gob.es)
+
+---
+
 #ViajeSeguro #Viajar2026 #Australia #Sydney #Melbourne #GreatBarrierReef #ViajeInteligencia #MAEC #TurismoAustralia
 
 ---

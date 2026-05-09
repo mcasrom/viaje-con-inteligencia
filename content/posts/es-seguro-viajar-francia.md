@@ -325,6 +325,14 @@ Gastronomía:
 
 ---
 
+## Recursos adicionales
+
+- [Ver nivel de riesgo de Francia](/pais/fr)
+- [Checklist de viaje](/checklist)
+- [Alertas MAEC oficiales](https://www.exteriores.gob.es)
+
+---
+
 #ViajeSeguro #Viajar2026 #Francia #Paris #CostaAzul #ViajeInteligencia #MAEC #Eiffel
 
 ---

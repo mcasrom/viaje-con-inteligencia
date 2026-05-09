@@ -265,6 +265,14 @@ Capital alpina:
 
 ---
 
+## Recursos adicionales
+
+- [Ver nivel de riesgo de Austria](/pais/at)
+- [Checklist de viaje](/checklist)
+- [Alertas MAEC oficiales](https://www.exteriores.gob.es)
+
+---
+
 #ViajeSeguro #Viajar2026 #Austria #Vienna #Salzburg #Innsbruck #ViajeInteligencia #MAEC #Alps
 
 ---

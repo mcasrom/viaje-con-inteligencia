@@ -335,6 +335,14 @@ Ciudad de la moda:
 
 ---
 
+## Recursos adicionales
+
+- [Ver nivel de riesgo de Italia](/pais/it)
+- [Checklist de viaje](/checklist)
+- [Alertas MAEC oficiales](https://www.exteriores.gob.es)
+
+---
+
 #ViajeSeguro #Viajar2026 #Italia #Roma #Venezia #Firenze #ViajeInteligencia #MAEC #SeguridadViajera
 
 ---

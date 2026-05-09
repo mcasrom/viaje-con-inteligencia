@@ -338,6 +338,14 @@ Capital de aventura:
 
 ---
 
+## Recursos adicionales
+
+- [Ver nivel de riesgo de Suiza](/pais/ch)
+- [Checklist de viaje](/checklist)
+- [Alertas MAEC oficiales](https://www.exteriores.gob.es)
+
+---
+
 #ViajeSeguro #Viajar2026 #Suiza #Zurich #Ginebra #ViajeInteligencia #MAEC #Alps
 
 ---

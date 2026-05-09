@@ -14,6 +14,7 @@ import LanguageSelector from '@/components/LanguageSelector';
 import OilPriceWidget from '@/components/OilPriceWidget';
 import AirportDelaysWidget from '@/components/AirportDelaysWidget';
 import PreferencesSelector from '@/components/PreferencesSelector';
+import NewsletterPopup from '@/components/NewsletterPopup';
 
 const MapaInteractivo = dynamic(
   () => import('@/components/MapaInteractivo'),
@@ -557,6 +558,7 @@ export default function HomeClient() {
           </p>
         </div>
       </section>
+      <NewsletterPopup />
     </div>
   );
 }

@@ -368,6 +368,14 @@ Canadá tiene una cultura diversa y acogedora.
 
 ---
 
+## Recursos adicionales
+
+- [Ver nivel de riesgo de Canadá](/pais/ca)
+- [Checklist de viaje](/checklist)
+- [Alertas MAEC oficiales](https://www.exteriores.gob.es)
+
+---
+
 #ViajeSeguro #Viajar2026 #Canada #Toronto #Vancouver #Montreal #ViajeInteligencia #MAEC #TurismoCanada
 
 ---

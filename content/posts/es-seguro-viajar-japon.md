@@ -359,6 +359,14 @@ Japón tiene una cultura única con normas específicas.
 
 ---
 
+## Recursos adicionales
+
+- [Ver nivel de riesgo de Japón](/pais/jp)
+- [Checklist de viaje](/checklist)
+- [Alertas MAEC oficiales](https://www.exteriores.gob.es)
+
+---
+
 #ViajeSeguro #Viajar2026 #Japon #Tokyo #Kioto #Osaka #ViajeInteligencia #MAEC #TurismoJapon #SeguridadViajera
 
 ---

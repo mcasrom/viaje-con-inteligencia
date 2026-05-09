@@ -19,6 +19,7 @@ import LoginButton from '@/components/LoginButton';
 import OsintAlertsBanner from '@/components/OsintAlertsBanner';
 import EventTimeline from '@/components/EventTimeline';
 import { useAuth } from '@/contexts/AuthContext';
+import ShareButtons from '@/components/ShareButtons';
 
 interface DetallePaisClientProps {
   pais: DatoPais;
@@ -181,29 +182,32 @@ export default function DetallePaisClient({ pais, relatedPosts = [] }: DetallePa
             <ArrowLeft className="w-5 h-5" />
             <span>Volver al mapa</span>
           </Link>
-          <button
-            onClick={toggleFavorite}
-            disabled={favLoading}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
-              isFavorite 
-                ? 'bg-red-500/20 text-red-400 hover:bg-red-500/30' 
-                : 'bg-slate-700 text-slate-400 hover:text-white hover:bg-slate-600'
-            }`}
-          >
-            {favLoading ? (
-              <Loader2 className="w-5 h-5 animate-spin" />
-            ) : isFavorite ? (
-              <>
-                <CheckCircle className="w-5 h-5" />
-                <span>En favoritos</span>
-              </>
-            ) : (
-              <>
-                <Heart className="w-5 h-5" />
-                <span>Añadir a favoritos</span>
-              </>
-            )}
-          </button>
+          <div className="flex items-center gap-2">
+            <ShareButtons title={`Viajar a ${pais.nombre} — Riesgo, Visado y Consejos | Viaje con Inteligencia`} description={`Guía de ${pais.nombre}: nivel de riesgo MAEC, requisitos de entrada, embajadas y consejos de viaje.`} size="sm" />
+            <button
+              onClick={toggleFavorite}
+              disabled={favLoading}
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
+                isFavorite 
+                  ? 'bg-red-500/20 text-red-400 hover:bg-red-500/30' 
+                  : 'bg-slate-700 text-slate-400 hover:text-white hover:bg-slate-600'
+              }`}
+            >
+              {favLoading ? (
+                <Loader2 className="w-5 h-5 animate-spin" />
+              ) : isFavorite ? (
+                <>
+                  <CheckCircle className="w-5 h-5" />
+                  <span>En favoritos</span>
+                </>
+              ) : (
+                <>
+                  <Heart className="w-5 h-5" />
+                  <span>Añadir a favoritos</span>
+                </>
+              )}
+            </button>
+          </div>
         </div>
       </header>
 

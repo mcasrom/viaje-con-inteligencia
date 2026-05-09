@@ -339,6 +339,14 @@ Patrimonio UNESCO:
 
 ---
 
+## Recursos adicionales
+
+- [Ver nivel de riesgo de Vietnam](/pais/vn)
+- [Checklist de viaje](/checklist)
+- [Alertas MAEC oficiales](https://www.exteriores.gob.es)
+
+---
+
 #ViajeSeguro #Viajar2026 #Vietnam #Hanoi #HoChiMinh #HaLong #ViajeInteligencia #MAEC #TurismoVietnam #SeguridadViajera
 
 ---

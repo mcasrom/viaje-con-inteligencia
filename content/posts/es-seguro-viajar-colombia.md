@@ -390,6 +390,14 @@ Colombia tiene una cultura cálida y acogedora.
 
 ---
 
+## Recursos adicionales
+
+- [Ver nivel de riesgo de Colombia](/pais/co)
+- [Checklist de viaje](/checklist)
+- [Alertas MAEC oficiales](https://www.exteriores.gob.es)
+
+---
+
 #ViajeSeguro #Viajar2026 #Colombia #Cartagena #Medellin #Bogota #ViajeInteligencia #MAEC #TurismoColombia
 
 ---

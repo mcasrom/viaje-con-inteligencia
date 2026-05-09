@@ -236,6 +236,14 @@ República Checa es uno de los destinos más seguros de Europa Central.
 
 ---
 
+## Recursos adicionales
+
+- [Ver nivel de riesgo de República Checa](/pais/cz)
+- [Checklist de viaje](/checklist)
+- [Alertas MAEC oficiales](https://www.exteriores.gob.es)
+
+---
+
 #ViajeSeguro #Viajar2026 #RepublicaCheca #Praga #CeskyKrumlov #ViajeInteligencia #MAEC
 
 ---

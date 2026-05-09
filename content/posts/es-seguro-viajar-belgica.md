@@ -201,6 +201,14 @@ Bélgica es uno de los destinos más seguros de Europa.
 
 ---
 
+## Recursos adicionales
+
+- [Ver nivel de riesgo de Bélgica](/pais/be)
+- [Checklist de viaje](/checklist)
+- [Alertas MAEC oficiales](https://www.exteriores.gob.es)
+
+---
+
 #ViajeSeguro #Viajar2026 #Belgica #Bruselas #Brujas #ViajeInteligencia #MAEC
 
 ---

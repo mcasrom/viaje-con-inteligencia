@@ -331,6 +331,14 @@ Ciudad cultural:
 
 ---
 
+## Recursos adicionales
+
+- [Ver nivel de riesgo de Sri Lanka](/pais/lk)
+- [Checklist de viaje](/checklist)
+- [Alertas MAEC oficiales](https://www.exteriores.gob.es)
+
+---
+
 #ViajeSeguro #Viajar2026 #SriLanka #ViajeInteligencia #MAEC #SeguridadViajera
 
 ---

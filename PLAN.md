@@ -68,6 +68,12 @@
 - Eventos país: EventTimeline recibía nombre ("Alemania") en vez de código ("de")
 - Documentos: caveat almacenamiento local exclusivo añadido
 
+## Quick Wins — User Acquisition (09 May)
+- **ShareButtons en país**: Botón compartir (WhatsApp/Telegram/Twitter/FB/LinkedIn/Email) en sticky header de todas las páginas de país
+- **Internal links blog → país**: Añadidos enlaces `/pais/{code}` + `/checklist` a 17 posts "es-seguro-viajar-*" que no tenían ningún enlace interno
+- **Newsletter popup landing**: Slide-in desde esquina inferior derecha a los 25s, ofrece Checklist PDF gratis a cambio de email. Dismissible, localStorage 7 días
+- **@keyframes slide-up**: Añadida animación faltante en globals.css (usada por InstallPWA y NewsletterPopup)
+
 ---
 
 ## Orden recomendado (próximos pasos)

@@ -323,6 +323,14 @@ Centro financiero:
 
 ---
 
+## Recursos adicionales
+
+- [Ver nivel de riesgo de Alemania](/pais/de)
+- [Checklist de viaje](/checklist)
+- [Alertas MAEC oficiales](https://www.exteriores.gob.es)
+
+---
+
 #ViajeSeguro #Viajar2026 #Alemania #Berlin #Munich #ViajeInteligencia #MAEC #Oktoberfest
 
 ---
