@@ -7,14 +7,16 @@ import { supabaseBrowserClient as supabaseClient } from '@/lib/supabase-browser'
 import { 
   ArrowLeft, Heart, MapPin, AlertTriangle, Trash2, 
   Plus, Mail, LogOut, Crown, Bell, Loader2, Calendar,
-  CheckCircle, XCircle, Star, Activity, Shield,
+  CheckCircle, XCircle, Star, Activity, Shield, BarChart3,
   Key, Lock, User, Eye, EyeOff, KeyRound, FileText
 } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import TrialStatusBanner from '@/components/TrialStatusBanner';
 import RecommendationsList from '@/components/RecommendationsList';
+import SmartFeed from '@/components/SmartFeed';
 import { UserLevelBadge, trackActivity } from '@/components/UserLevel';
 import { paisesData, getLabelRiesgo } from '@/data/paises';
+import { calculateTCI } from '@/data/tci-engine';
 import WeatherWidget from '@/components/WeatherWidget';
 import { useAuth } from '@/contexts/AuthContext';
 
@@ -652,20 +654,137 @@ export default function DashboardPage() {
         {/* USER LEVEL / GAMIFICATION */}
         <UserLevelBadge />
 
-        {/* Banner KPIs destacado */}
-        <Link href="/dashboard/kpis" className="block mb-6 bg-gradient-to-r from-blue-600 to-cyan-600 rounded-xl p-4 hover:opacity-90 transition-opacity">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <Activity className="w-8 h-8 text-white" />
-              <div>
-                <span className="text-blue-200 text-xs font-medium">NUEVO</span>
-                <h3 className="text-white font-bold">📊 Dashboard de KPIs de Seguridad</h3>
-                <p className="text-blue-200 text-sm">Riesgo político, aéreo, restricciones y recomendaciones IA</p>
+        {/* KPIs personalizados del viajero */}
+        {favorites.length > 0 && (() => {
+          const riskLevels = ['sin-riesgo', 'bajo', 'medio', 'alto', 'muy-alto'];
+          const riskLabels = ['Sin riesgo', 'Bajo', 'Medio', 'Alto', 'Muy alto'];
+          const riskColors = ['bg-green-500', 'bg-emerald-500', 'bg-orange-500', 'bg-red-500', 'bg-red-700'];
+
+          const safe = favorites.filter(f => {
+            const p = paisesData[f.country_code];
+            return p && (p.nivelRiesgo === 'sin-riesgo' || p.nivelRiesgo === 'bajo');
+          }).length;
+          const warning = favorites.filter(f => {
+            const p = paisesData[f.country_code];
+            return p && (p.nivelRiesgo !== 'sin-riesgo' && p.nivelRiesgo !== 'bajo');
+          }).length;
+          const safetyPct = favorites.length > 0 ? Math.round((safe / favorites.length) * 100) : 0;
+
+          const counts = riskLevels.map(level =>
+            favorites.filter(f => {
+              const p = paisesData[f.country_code];
+              return p?.nivelRiesgo === level;
+            }).length
+          );
+
+          const tciTotal = favorites.reduce((sum, f) => {
+            const p = paisesData[f.country_code];
+            if (!p) return sum;
+            try { return sum + calculateTCI(p.codigo).tci; } catch { return sum; }
+          }, 0);
+          const avgTCI = favorites.length > 0 ? Math.round(tciTotal / favorites.length) : 0;
+
+          const continentCounts: Record<string, number> = {};
+          favorites.forEach(f => {
+            const p = paisesData[f.country_code];
+            if (p) continentCounts[p.continente] = (continentCounts[p.continente] || 0) + 1;
+          });
+          const topContinents = Object.entries(continentCounts)
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 2)
+            .map(([c, n]) => `${c} (${n})`).join(', ');
+
+          return (
+            <div className="mb-6">
+              <div className="flex items-center gap-2 mb-3">
+                <BarChart3 className="w-5 h-5 text-blue-400" />
+                <h2 className="text-lg font-bold text-white">Tus KPIs de Viaje</h2>
+              </div>
+              <div className="grid grid-cols-2 md:grid-cols-6 gap-3">
+                <div className="bg-slate-800/80 rounded-xl p-3 border border-slate-700/50">
+                  <div className="text-slate-400 text-[10px] font-medium uppercase tracking-wider mb-1">Guardados</div>
+                  <div className="text-2xl font-bold text-white">{favorites.length}</div>
+                  <div className="text-[10px] text-slate-500">países en tu lista</div>
+                </div>
+                <div className="bg-slate-800/80 rounded-xl p-3 border border-slate-700/50">
+                  <div className="text-slate-400 text-[10px] font-medium uppercase tracking-wider mb-1">Riesgo bajo</div>
+                  <div className="text-2xl font-bold text-green-400">{safe}</div>
+                  <div className="text-[10px] text-slate-500">sin riesgo o bajo</div>
+                </div>
+                <div className="bg-slate-800/80 rounded-xl p-3 border border-slate-700/50">
+                  <div className="text-slate-400 text-[10px] font-medium uppercase tracking-wider mb-1">Riesgo alto</div>
+                  <div className="text-2xl font-bold text-orange-400">{warning}</div>
+                  <div className="text-[10px] text-slate-500">requiere precaución</div>
+                </div>
+                <div className="bg-slate-800/80 rounded-xl p-3 border border-slate-700/50">
+                  <div className="text-slate-400 text-[10px] font-medium uppercase tracking-wider mb-1">Coste medio</div>
+                  <div className="text-2xl font-bold text-blue-400">{avgTCI}</div>
+                  <div className="text-[10px] text-slate-500">TCI promedio</div>
+                </div>
+                <div className="bg-slate-800/80 rounded-xl p-3 border border-slate-700/50">
+                  <div className="text-slate-400 text-[10px] font-medium uppercase tracking-wider mb-1">Continentes</div>
+                  <div className="text-2xl font-bold text-purple-400">{Object.keys(continentCounts).length}</div>
+                  <div className="text-[10px] text-slate-500">{topContinents}</div>
+                </div>
+                <div className="bg-slate-800/80 rounded-xl p-3 border border-slate-700/50">
+                  <div className="text-slate-400 text-[10px] font-medium uppercase tracking-wider mb-1">Score viajero</div>
+                  <div className={`text-2xl font-bold ${safetyPct >= 80 ? 'text-green-400' : safetyPct >= 50 ? 'text-yellow-400' : 'text-red-400'}`}>
+                    {safetyPct}%
+                  </div>
+                  <div className="text-[10px] text-slate-500">destinos seguros</div>
+                </div>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3">
+                <div className="bg-slate-800/80 rounded-xl p-3 border border-slate-700/50">
+                  <div className="text-slate-400 text-[10px] font-medium uppercase tracking-wider mb-2">Distribución de riesgo</div>
+                  <div className="flex h-3 rounded-full overflow-hidden">
+                    {counts.map((count, i) =>
+                      count > 0 ? (
+                        <div key={i} className={`${riskColors[i]} transition-all`} style={{ width: `${(count / favorites.length) * 100}%` }} />
+                      ) : null
+                    )}
+                  </div>
+                  <div className="flex flex-wrap gap-x-4 gap-y-1 mt-2">
+                    {riskLevels.map((level, i) => {
+                      if (counts[i] === 0) return null;
+                      return (
+                        <div key={level} className="flex items-center gap-1.5">
+                          <span className={`w-2 h-2 rounded-full ${riskColors[i]}`} />
+                          <span className="text-[10px] text-slate-400">{riskLabels[i]}: {counts[i]}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+                <div className="bg-slate-800/80 rounded-xl p-3 border border-slate-700/50">
+                  <div className="text-slate-400 text-[10px] font-medium uppercase tracking-wider mb-2">Eventos próximos</div>
+                  <div className="flex items-center gap-3">
+                    <div className={`text-3xl font-bold ${favoriteEvents.length > 0 ? 'text-yellow-400' : 'text-slate-500'}`}>{favoriteEvents.length}</div>
+                    <div className="text-[10px] text-slate-500 leading-snug">
+                      {favoriteEvents.length > 0
+                        ? `eventos en los próximos 60 días en tus destinos`
+                        : `no hay eventos destacados en tus países favoritos`}
+                    </div>
+                  </div>
+                  {favoriteEvents.length > 0 && (
+                    <div className="mt-2 flex flex-wrap gap-1.5">
+                      {favoriteEvents.slice(0, 3).map((ev: any) => (
+                        <span key={ev.id} className="px-2 py-0.5 bg-slate-700/50 rounded text-[9px] text-slate-300 truncate max-w-[140px]">
+                          {ev.title}
+                        </span>
+                      ))}
+                      {favoriteEvents.length > 3 && (
+                        <span className="px-2 py-0.5 bg-slate-700/50 rounded text-[9px] text-slate-500">
+                          +{favoriteEvents.length - 3}
+                        </span>
+                      )}
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
-            <span className="text-white font-bold">→</span>
-          </div>
-        </Link>
+          );
+        })()}
 
         <div className="flex items-center justify-between mb-8">
           <div>
@@ -822,74 +941,7 @@ export default function DashboardPage() {
           </div>
         )}
 
-        {favorites.length > 0 && (
-          <div className="mt-12">
-            <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
-              <Calendar className="w-5 h-5 text-yellow-400" />
-              Próximos eventos en tus favoritos
-            </h2>
-            {favEventsLoading ? (
-              <div className="animate-pulse space-y-4">
-                {Array.from({ length: 2 }).map((_, i) => (
-                  <div key={i} className="h-20 bg-slate-800/50 rounded-xl" />
-                ))}
-              </div>
-            ) : favoriteEvents.length === 0 ? (
-              <div className="text-center py-8 text-slate-500 bg-slate-800/30 rounded-xl">
-                <Calendar className="w-8 h-8 mx-auto mb-2 opacity-50" />
-                <p>No hay eventos próximos</p>
-              </div>
-            ) : (
-              <div className="space-y-3">
-                {favoriteEvents.map(ev => {
-                  const pais = paisesData[ev.country.toLowerCase() as keyof typeof paisesData];
-                  return (
-                    <div key={ev.id} className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-4 hover:bg-slate-800/80 transition-colors">
-                      <div className="flex items-start gap-3">
-                        <div className={`p-2 rounded-lg shrink-0 ${
-                          ev.impact_traveler === 'high' || ev.impact_traveler === 'critical'
-                            ? 'bg-red-500/20 text-red-400'
-                            : ev.impact_traveler === 'medium'
-                            ? 'bg-yellow-500/20 text-yellow-400'
-                            : 'bg-slate-500/20 text-slate-400'
-                        }`}>
-                          <Calendar className="w-4 h-4" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-start justify-between gap-2">
-                            <h4 className="text-white font-medium text-sm leading-tight">{ev.title}</h4>
-                            {pais && (
-                              <span className="shrink-0 text-xs text-slate-400 bg-slate-700/50 px-2 py-0.5 rounded-full">
-                                {pais.nombre}
-                              </span>
-                            )}
-                          </div>
-                          {ev.start_date && (
-                            <p className="text-slate-500 text-xs mt-1">
-                              {new Date(ev.start_date).toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' })}
-                              {ev.end_date && ev.end_date !== ev.start_date && (
-                                <> — {new Date(ev.end_date).toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' })}</>
-                              )}
-                            </p>
-                          )}
-                          {ev.city && <p className="text-slate-500 text-xs mt-0.5">{ev.city}</p>}
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-          </div>
-        )}
-
-        <div className="mt-12">
-          <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
-            <Star className="w-5 h-5 text-yellow-400" />
-            Recomendaciones para ti
-          </h2>
-          <RecommendationsList favorites={favorites.map(f => f.country_code)} />
-        </div>
+        <SmartFeed favorites={favorites.map(f => f.country_code)} events={favoriteEvents} />
 
         <div className="mt-12 grid md:grid-cols-4 gap-4">
           <Link href="/dashboard/seguros" className="bg-gradient-to-br from-indigo-600 to-purple-600 rounded-xl p-6 text-center hover:opacity-90 transition-opacity">

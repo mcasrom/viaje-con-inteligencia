@@ -74,7 +74,6 @@ function QuickAccessInner() {
           <Link href="/blog" className="block p-2 bg-green-600/20 text-green-400 rounded-lg hover:bg-green-600/30">📖 Blog recomendaciones</Link>
           <Link href="https://t.me/ViajeConInteligenciaBot" target="_blank" rel="noopener noreferrer" className="block p-2 bg-cyan-600/20 text-cyan-400 rounded-lg hover:bg-cyan-600/30">🤖 Bot Telegram</Link>
           <Link href="/chat" className="block p-2 bg-purple-600/20 text-purple-400 rounded-lg hover:bg-purple-600/30">💬 Chat IA</Link>
-          <Link href="/kpi" className="block p-2 bg-green-600/20 text-green-400 rounded-lg hover:bg-green-600/30">🛡️ Índice de Paz</Link>
           <Link href="/rutas?route=vino" className="block p-2 bg-red-600/20 text-red-400 rounded-lg hover:bg-red-600/30">🍷 Rutas del Vino</Link>
           <Link href="/dashboard" className="block p-2 bg-red-600/20 text-red-400 rounded-lg hover:bg-red-600/30">📊 Mi Dashboard</Link>
           <Link href="/reclamaciones" className="block p-2 bg-red-600/20 text-red-400 rounded-lg hover:bg-red-600/30">📝 Reclamaciones</Link>
