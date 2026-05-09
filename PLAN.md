@@ -59,7 +59,7 @@
 |---|-------|----------|--------|
 | 5.1 | Dashboard del viajero con KPIs | 1 día | ✅ completado |
 | 5.2 | Feed inteligente (cards en lugar de tablas) | 2 días | ✅ completado |
-| 5.3 | Recomendaciones 1-click — perfil + presupuesto → destinos | 1 día | pendiente |
+| 5.3 | Recomendaciones 1-click — perfil + presupuesto → destinos | 1 día | ✅ completado |
 | 5.4 | Seguimiento de viaje — fechas → notificaciones | 1 día | pendiente |
 
 ## Bugs recientes corregidos (09 May)

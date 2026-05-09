@@ -14,6 +14,7 @@ import dynamic from 'next/dynamic';
 import TrialStatusBanner from '@/components/TrialStatusBanner';
 import RecommendationsList from '@/components/RecommendationsList';
 import SmartFeed from '@/components/SmartFeed';
+import OneClickRecommendations from '@/components/OneClickRecommendations';
 import { UserLevelBadge, trackActivity } from '@/components/UserLevel';
 import { paisesData, getLabelRiesgo } from '@/data/paises';
 import { calculateTCI } from '@/data/tci-engine';
@@ -943,7 +944,13 @@ export default function DashboardPage() {
 
         <SmartFeed favorites={favorites.map(f => f.country_code)} events={favoriteEvents} />
 
-        <div className="mt-12 grid md:grid-cols-4 gap-4">
+        {favorites.length > 0 && (
+          <div className="mt-8">
+            <OneClickRecommendations favorites={favorites.map(f => f.country_code)} />
+          </div>
+        )}
+
+        <div className="mt-8 grid md:grid-cols-4 gap-4">
           <Link href="/dashboard/seguros" className="bg-gradient-to-br from-indigo-600 to-purple-600 rounded-xl p-6 text-center hover:opacity-90 transition-opacity">
             <Shield className="w-8 h-8 text-white mx-auto mb-2" />
             <h3 className="font-bold text-white">Monitor Seguros</h3>
