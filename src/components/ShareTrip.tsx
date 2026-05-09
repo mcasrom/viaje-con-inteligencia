@@ -1,6 +1,6 @@
 'use client';
 import { useState } from 'react';
-import { supabase } from '@/lib/supabase';
+import { getBrowserClient } from '@/lib/supabase-browser';
 import { Share2, Copy, Mail, Check, Loader2, Users, Link as LinkIcon } from 'lucide-react';
 
 interface ShareTripProps {
@@ -17,6 +17,7 @@ export function ShareTrip({ tripId, tripName }: ShareTripProps) {
   const [inviteSent, setInviteSent] = useState(false);
 
   const generateShareLink = async () => {
+    const supabase = getBrowserClient();
     if (!supabase) return;
 
     setLoading(true);
@@ -24,7 +25,6 @@ export function ShareTrip({ tripId, tripName }: ShareTripProps) {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
-      // Check if already shared
       const { data: existing } = await supabase
         .from('shared_trips')
         .select('*')
@@ -38,7 +38,6 @@ export function ShareTrip({ tripId, tripName }: ShareTripProps) {
         return;
       }
 
-      // Create new share
       const token = `trip_${Date.now()}_${Math.random().toString(36).substring(7)}`;
       const { data, error } = await supabase
         .from('shared_trips')
@@ -67,12 +66,14 @@ export function ShareTrip({ tripId, tripName }: ShareTripProps) {
   const sendEmailInvite = async () => {
     if (!email || !shareLink) return;
 
+    const supabase = getBrowserClient();
+    if (!supabase) return;
+
     setLoading(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
-      // Get share_id
       const { data: shareData } = await supabase
         .from('shared_trips')
         .select('id')
