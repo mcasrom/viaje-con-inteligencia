@@ -539,26 +539,29 @@ export function getOilImpactAnalysis(): {
   return { currentPrice: latest.price, avgPrice: Math.round(OIL_AVG * 10) / 10, changePct, trend, months };
 }
 
-export function getGlobalConflictImpact(): {
+export function getGlobalConflictImpact(
+  closures?: AirspaceClosure[],
+  routes?: AffectedRoute[],
+): {
   totalClosures: number;
   totalRoutesAffected: number;
   worstAffected: { country: string; flag: string; surcharge: number; reason: string }[];
   avgSurcharge: number;
 } {
-  const activeClosures = AIRSPACE_CLOSURES_FALLBACK.filter(c => c.isActive);
-  const activeRoutes = AFFECTED_ROUTES_FALLBACK.filter(r => r.isActive);
+  const activeClosures = (closures || AIRSPACE_CLOSURES_FALLBACK).filter(c => c.isActive);
+  const activeRoutes = (routes || AFFECTED_ROUTES_FALLBACK).filter(r => r.isActive);
 
   const worst = activeRoutes
     .sort((a, b) => b.fuelSurchargePct - a.fuelSurchargePct)
     .slice(0, 6)
     .map(r => {
       const pais = paisesData[r.countryCode.toLowerCase()];
-      const closure = AIRSPACE_CLOSURES_FALLBACK.find(c => c.code === r.closedAirspace);
+      const closure = (closures || AIRSPACE_CLOSURES_FALLBACK).find(c => c.code === r.closedAirspace);
       return {
         country: r.destination,
-        flag: pais?.bandera || '🌍',
+        flag: pais?.bandera || '',
         surcharge: r.fuelSurchargePct,
-        reason: closure?.reason || 'Espacio aéreo cerrado',
+        reason: closure?.reason || 'Espacio aereo cerrado',
       };
     });
 

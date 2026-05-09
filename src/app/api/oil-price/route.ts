@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase-admin';
 import { getCurrentOilPrice, getOilImpactAnalysis, getGlobalConflictImpact, getDemandShiftAnalysis, getOilHistory } from '@/data/tci-engine';
+import { getAirspaceClosuresLive, getAffectedRoutesLive } from '@/lib/airspace';
 
 async function getEurUsd(): Promise<number> {
   try {
@@ -48,7 +49,8 @@ export async function GET(request: NextRequest) {
   }
 
   if (action === 'conflicts') {
-    return NextResponse.json(getGlobalConflictImpact());
+    const [closures, routes] = await Promise.all([getAirspaceClosuresLive(), getAffectedRoutesLive()]);
+    return NextResponse.json(getGlobalConflictImpact(closures, routes));
   }
 
   if (action === 'shifts') {
@@ -56,6 +58,8 @@ export async function GET(request: NextRequest) {
   }
 
   const real = await getRealOilData();
+
+  const [liveClosures, liveRoutes] = await Promise.all([getAirspaceClosuresLive(), getAffectedRoutesLive()]);
 
   if (real) {
     const eurUsd = await getEurUsd();
@@ -66,7 +70,7 @@ export async function GET(request: NextRequest) {
       trend: real.trend,
       eurUsd,
       history: real.history.slice(-12),
-      avgSurcharge: getGlobalConflictImpact().avgSurcharge,
+      avgSurcharge: getGlobalConflictImpact(liveClosures, liveRoutes).avgSurcharge,
       tciImpact: 0,
     });
   }
@@ -75,7 +79,7 @@ export async function GET(request: NextRequest) {
   const oil = getCurrentOilPrice();
   const avg = oil.price - oil.vsAvg;
   const impact = getOilImpactAnalysis();
-  const conflict = getGlobalConflictImpact();
+  const conflict = getGlobalConflictImpact(liveClosures, liveRoutes);
   const history = getOilHistory();
   const eurUsd = await getEurUsd();
 
