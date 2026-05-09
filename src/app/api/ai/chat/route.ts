@@ -124,9 +124,14 @@ export async function POST(request: NextRequest) {
 
     const { message, country, conversationId, model } = await request.json();
 
-    if (!message) {
+    if (!message || typeof message !== 'string') {
       return NextResponse.json({ error: 'Message is required' }, { status: 400 });
     }
+
+    const trimmed = message.trim().slice(0, 4000);
+    const sanitized = trimmed
+      .replace(/<[^>]*>/g, '')
+      .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F]/g, '');
 
     const requestedModel = model || FREE_MODEL;
     const isPremiumModel = requestedModel === PREMIUM_MODEL;
@@ -169,7 +174,7 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    const fullMessage = systemContext ? `${message}\n\n[Contexto del usuario: ${systemContext}]` : message;
+    const fullMessage = systemContext ? `${sanitized}\n\n[Contexto del usuario: ${systemContext}]` : sanitized;
 
     const response = await chatWithAI(fullMessage, {
       country,
@@ -181,7 +186,7 @@ export async function POST(request: NextRequest) {
 
     // Save to Supabase if user is authenticated
     if (userId) {
-      newConversationId = await saveConversation(conversationId, userId, 'user', message, requestedModel);
+      newConversationId = await saveConversation(conversationId, userId, 'user', sanitized, requestedModel);
       await saveConversation(newConversationId, userId, 'assistant', response, requestedModel);
 
       if (!isPremiumModel) {
