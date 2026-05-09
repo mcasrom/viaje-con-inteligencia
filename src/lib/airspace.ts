@@ -22,8 +22,8 @@ export async function getAirspaceClosuresLive(): Promise<AirspaceClosure[]> {
     if (error || !data || data.length === 0) return AIRSPACE_CLOSURES_FALLBACK;
 
     return data.map((r: any) => ({
-      code: r.code,
-      name: r.name,
+      code: r.country_code,
+      name: r.country_name,
       closureDate: r.closure_date,
       reason: r.reason,
       severity: r.severity,
@@ -48,8 +48,8 @@ export async function getAffectedRoutesLive(): Promise<AffectedRoute[]> {
     if (error || !data || data.length === 0) return AFFECTED_ROUTES_FALLBACK;
 
     return data.map((r: any) => ({
-      destination: r.destination,
-      countryCode: r.country_code,
+      destination: r.destination_iata,
+      countryCode: r.destination_country,
       closedAirspace: r.closed_airspace,
       detourKm: r.detour_km,
       fuelSurchargePct: r.fuel_surcharge_pct,

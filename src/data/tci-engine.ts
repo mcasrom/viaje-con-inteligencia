@@ -555,10 +555,10 @@ export function getGlobalConflictImpact(
     .sort((a, b) => b.fuelSurchargePct - a.fuelSurchargePct)
     .slice(0, 6)
     .map(r => {
-      const pais = paisesData[r.countryCode.toLowerCase()];
+      const pais = r.countryCode ? paisesData[r.countryCode.toLowerCase()] : undefined;
       const closure = (closures || AIRSPACE_CLOSURES_FALLBACK).find(c => c.code === r.closedAirspace);
       return {
-        country: r.destination,
+        country: r.destination || r.countryCode || 'Desconocido',
         flag: pais?.bandera || '',
         surcharge: r.fuelSurchargePct,
         reason: closure?.reason || 'Espacio aereo cerrado',
