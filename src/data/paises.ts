@@ -6252,3 +6252,57 @@ export function getEmergenciasPorPais(codigo: string): EmergenciasPais | null {
   }
   return null;
 }
+
+// ──────────────────────────────────────────────
+// Async DB-first wrappers (2.1 migration)
+// Usan Supabase como fuente primaria con fallback
+// a datos hardcodeados. Importar desde paises-db
+// para acceso directo sin fallback.
+// ──────────────────────────────────────────────
+
+async function loadPaisesFromDB(): Promise<Map<string, DatoPais> | null> {
+  try {
+    const { loadAllPaisesToCache } = await import('@/lib/paises-db');
+    const cache = await loadAllPaisesToCache();
+    return cache?.data ?? null;
+  } catch {
+    return null;
+  }
+}
+
+export async function getPaisPorCodigoAsync(codigo: string): Promise<DatoPais | undefined> {
+  const db = await loadPaisesFromDB();
+  if (db) {
+    const pais = db.get(codigo.toLowerCase());
+    if (pais && pais.visible !== false) return pais;
+    if (pais && pais.visible === false) return undefined;
+  }
+  return getPaisPorCodigo(codigo);
+}
+
+export async function getTodosLosPaisesAsync(): Promise<DatoPais[]> {
+  const db = await loadPaisesFromDB();
+  if (db) return Array.from(db.values()).filter(p => p.visible !== false);
+  return getTodosLosPaises();
+}
+
+export async function getPaisesPorNivelRiesgoAsync(nivel: NivelRiesgo): Promise<DatoPais[]> {
+  const db = await loadPaisesFromDB();
+  if (db) return Array.from(db.values()).filter(p => p.visible !== false && p.nivelRiesgo === nivel);
+  return getPaisesPorNivelRiesgo(nivel);
+}
+
+export async function getPaisesPorContinenteAsync(continente: string): Promise<DatoPais[]> {
+  const db = await loadPaisesFromDB();
+  if (db) return Array.from(db.values()).filter(p => p.visible !== false && p.continente === continente);
+  return getPaisesPorContinente(continente);
+}
+
+export async function getEmergenciasPorPaisAsync(codigo: string): Promise<EmergenciasPais | null> {
+  try {
+    const { getEmergenciasFromDB } = await import('@/lib/paises-db');
+    const em = await getEmergenciasFromDB(codigo);
+    if (em) return em;
+  } catch {}
+  return getEmergenciasPorPais(codigo);
+}
