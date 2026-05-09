@@ -107,7 +107,8 @@ export function scoreSeguros(input: SeguroInput): {
 
   // Duración impacta cobertura recomendada y precio
   const duracionFactor = Math.max(0.5, Math.min(3, duracionEstimada / 14));
-  const duracionPremium = duracionEstimada > 30 ? 0.2 : duracionEstimada > 14 ? 0.1 : 0;
+  // Cada 7 días extra ≈ 10% de incremento sobre precio base
+  const precioMultiplier = Math.max(0.5, 1 + (duracionEstimada - 14) * 0.015);
 
   const coberturaRecomendada = {
     medica: Math.round((irv > 65 ? 1000000 : irv > 50 ? 500000 : 300000) * duracionFactor),
@@ -171,8 +172,8 @@ export function scoreSeguros(input: SeguroInput): {
       nombre: p.nombre,
       aseguradora: p.aseguradora,
       web: p.web,
-      precio_min: p.precio_min,
-      precio_max: p.precio_max,
+      precio_min: Math.round(p.precio_min * precioMultiplier),
+      precio_max: Math.round(p.precio_max * precioMultiplier),
       score,
       score_max: maxScore,
       coberturas: {
