@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
+import { supabaseAdmin } from '@/lib/supabase-admin';
 
 const RISK_SCORES: Record<string, number> = {
   'sin-riesgo': 100,
@@ -103,14 +103,17 @@ export async function POST(request: NextRequest) {
 
     const radiusInDegrees = radius / 111.32;
 
-    if (!supabase) {
+    let admin;
+    try { admin = supabaseAdmin; } catch { admin = null; }
+
+    if (!admin) {
       return NextResponse.json(
         { error: 'Supabase no configurado', places: [], message: 'Modo local sin base de datos' },
         { status: 200 }
       );
     }
 
-    const { data: places, error } = await supabase
+    const { data: places, error } = await admin
       .from('places')
       .select('*')
       .gte('lat', lat - radiusInDegrees)

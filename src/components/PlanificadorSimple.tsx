@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { Loader2, Sparkles, Clock, MapPin, Compass, ChevronRight } from 'lucide-react';
 
 const photos = ['/photos/1.jpg', '/photos/2.jpg', '/photos/3.jpg', '/photos/4.jpg'];
@@ -288,9 +289,9 @@ export default function PlanificadorSimple() {
           <div className="flex flex-wrap gap-2 justify-center mt-4 text-sm">
             <span className="text-slate-600 font-medium">Powered by </span>
             <span className="text-slate-900 font-bold">ML Clustering</span>
-            <a href="/viajes/clima" className="text-blue-600 hover:text-blue-700 font-medium ml-2 underline underline-offset-2">
+            <Link href="/viajes/clima" className="text-blue-600 hover:text-blue-700 font-medium ml-2 underline underline-offset-2">
               🌤️ Ver clima
-            </a>
+            </Link>
           </div>
         </div>
       </div>
@@ -359,13 +360,13 @@ export default function PlanificadorSimple() {
           </div>
 
           {/* Botón Hero - Ver todas las rutas */}
-          <a
+          <Link
             href="/rutas"
             className="group flex items-center justify-center gap-3 w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold py-3 px-6 rounded-xl transition-all duration-300 hover:shadow-lg hover:shadow-emerald-500/25 hover:scale-[1.02]"
           >
             <span>Rutas Temáticas</span>
             <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-          </a>
+          </Link>
           
           <p className="text-center text-slate-500 text-xs mt-2">
             Molinos • Faros • Murcia Interior • Vino

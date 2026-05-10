@@ -209,7 +209,8 @@ export default function TripTracker() {
 
 function TripRow({ trip, onDelete, compact }: { trip: Trip; onDelete: (id: string) => void; compact?: boolean }) {
   const pais = trip.country_code ? paisesData[trip.country_code as keyof typeof paisesData] : null;
-  const isUpcoming = trip.start_date && new Date(trip.start_date) >= new Date(Date.now() - 86400000);
+  const [now] = useState(() => Date.now());
+  const isUpcoming = trip.start_date && new Date(trip.start_date) >= new Date(now - 86400000);
 
   return (
     <div className="flex items-center gap-3 bg-slate-700/30 hover:bg-slate-700/50 rounded-xl p-3 transition-colors group">

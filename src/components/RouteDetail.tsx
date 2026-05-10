@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { MapPin, Clock, Compass, Euro, Calendar, ChevronRight, ArrowLeft, Star, Check } from 'lucide-react';
 import { thematicRoutes, generateDayByDay, ThemeRoute, DurationOption } from '@/data/rutas-espanas';
 
@@ -24,7 +25,7 @@ export default function RouteDetail({ routeId, days: initialDays }: RouteDetailP
     return (
       <div className="text-center py-20">
         <h2 className="text-2xl font-bold text-white">Ruta no encontrada</h2>
-        <a href="/rutas" className="text-emerald-400 mt-4 inline-block">Volver a rutas</a>
+        <Link href="/rutas" className="text-emerald-400 mt-4 inline-block">Volver a rutas</Link>
       </div>
     );
   }
@@ -47,9 +48,9 @@ export default function RouteDetail({ routeId, days: initialDays }: RouteDetailP
       <div className={`relative rounded-2xl overflow-hidden bg-gradient-to-br ${gradients[routeId]} p-8 mb-8`}>
         <div className="absolute inset-0 bg-black/30" />
         <div className="relative z-10">
-          <a href="/rutas" className="inline-flex items-center gap-2 text-white/80 hover:text-white mb-4 transition-colors">
+          <Link href="/rutas" className="inline-flex items-center gap-2 text-white/80 hover:text-white mb-4 transition-colors">
             <ArrowLeft className="w-4 h-4" /> Volver a todas las rutas
-          </a>
+          </Link>
           
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
             <div>

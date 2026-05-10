@@ -176,10 +176,10 @@ export default function RadiusExplorer() {
           setCenter(newCenter);
           setMapZoom(10);
           handleSearch(pos.coords.latitude, pos.coords.longitude, radius);
-          fetch(`https://nominatim.openstreetmap.org/reverse?lat=${pos.coords.latitude}&lon=${pos.coords.longitude}&format=json`)
+          fetch(`/api/geocode?q=${pos.coords.latitude},${pos.coords.longitude}&format=jsonv2&limit=1`)
             .then(res => res.json())
             .then(data => {
-              setSearchQuery(data.display_name || 'Mi ubicación');
+              setSearchQuery(data[0]?.display_name || 'Mi ubicación');
             })
             .catch(() => setSearchQuery('Mi ubicación'));
         },
@@ -195,7 +195,7 @@ export default function RadiusExplorer() {
     e.preventDefault();
     if (!searchQuery.trim()) return;
 
-    fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(searchQuery)}&format=json&limit=1`)
+    fetch(`/api/geocode?q=${encodeURIComponent(searchQuery)}&limit=1`)
       .then(res => res.json())
       .then(data => {
         if (data.length > 0) {
