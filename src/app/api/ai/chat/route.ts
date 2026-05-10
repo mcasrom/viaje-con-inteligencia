@@ -3,6 +3,7 @@ import { chatWithAI } from '@/lib/groq-ai';
 import { checkPremium } from '@/lib/premium-check';
 import { supabaseAdmin } from '@/lib/supabase-admin';
 import { createSupabaseServerClient } from '@/lib/supabase-server';
+import { checkIpRateLimit, checkBurstRateLimit } from '@/lib/rate-limit-server';
 
 const PREMIUM_MODEL = 'llama-3.3-70b-versatile';
 const FREE_MODEL = 'llama-3.1-8b-instant';
@@ -118,9 +119,32 @@ async function getUserContext(userId: string): Promise<string[]> {
 
 export async function POST(request: NextRequest) {
   try {
+    const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim()
+      || request.headers.get('x-real-ip')
+      || '127.0.0.1';
+
+    const ipLimit = checkIpRateLimit(ip);
+    if (!ipLimit.allowed) {
+      return NextResponse.json({
+        error: 'Rate limit exceeded',
+        message: 'Demasiadas solicitudes desde esta IP. Intenta de nuevo en un minuto.',
+        retryAfter: Math.ceil((ipLimit.resetAt - Date.now()) / 1000),
+      }, { status: 429, headers: { 'Retry-After': String(Math.ceil((ipLimit.resetAt - Date.now()) / 1000)) } });
+    }
+
     const supabase = await createSupabaseServerClient();
     const { data: { user } } = await supabase.auth.getUser();
     const userId = user?.id;
+
+    const burstKey = userId || ip;
+    const burstLimit = checkBurstRateLimit(burstKey);
+    if (!burstLimit.allowed) {
+      return NextResponse.json({
+        error: 'Too fast',
+        message: 'Estás enviando mensajes demasiado rápido. Espera unos segundos.',
+        retryAfter: Math.ceil((burstLimit.resetAt - Date.now()) / 1000),
+      }, { status: 429, headers: { 'Retry-After': String(Math.ceil((burstLimit.resetAt - Date.now()) / 1000)) } });
+    }
 
     const { message, country, conversationId, model } = await request.json();
 

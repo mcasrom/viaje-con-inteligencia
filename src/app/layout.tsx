@@ -11,6 +11,7 @@ import AITravelAssistant from "@/components/AITravelAssistant";
 import ServiceWorkerRegistration from "@/components/ServiceWorkerRegistration";
 import InstallPWA from "@/components/InstallPWA";
 import Onboarding from "@/components/Onboarding";
+import { initPaisesData } from "@/lib/paises-init";
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -57,7 +58,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Viaje con Inteligencia | Riesgo Zero",
     description: "Mapa interactivo de riesgos de viaje por país según MAEC.",
-    creator: "@viajeinteligencia",
+    creator: "@ViajeIntel2026",
   },
   robots: {
     index: true,
@@ -75,11 +76,12 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  await initPaisesData();
   return (
     <html lang="es">
       <head>

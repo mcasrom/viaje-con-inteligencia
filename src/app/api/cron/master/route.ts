@@ -9,6 +9,7 @@ import { fetchAllPosts, classifySignal, detectFirstPerson, type ClassifiedSignal
 import { Resend } from 'resend';
 import { detectAndCreateIncidents } from '@/lib/incident-detector';
 import { saveAllPredictions } from '@/lib/ml-risk-predictor';
+import { computeFeaturesForAllCountries } from '@/lib/ml-features';
 import { fetchAndStoreEvents } from '@/lib/events-fetch';
 import { runMonitorForUser } from '@/lib/seguros/monitor';
 import { createLogger } from '@/lib/logger';
@@ -566,6 +567,17 @@ async function runEventsFetch(): Promise<any> {
   }
 }
 
+// ===== FEATURE COMPUTATION =====
+async function runFeatureComputation(): Promise<any> {
+  log.info('Computing ML features for all countries...');
+  try {
+    const result = await computeFeaturesForAllCountries();
+    return { status: 'ok', computed: result.ok, errors: result.errors };
+  } catch (e: any) {
+    return { status: 'error', error: e.message };
+  }
+}
+
 // ===== MASTER CRON =====
 async function withTimeout<T>(fn: () => Promise<T>, ms: number, label: string): Promise<T | { status: 'error'; error: string }> {
   try {
@@ -622,20 +634,28 @@ export async function GET(request: Request) {
     '5b/8 Incident detection'
   );
 
-  // Phase 3c: ML Risk Predictions
-  log.info('6/8 ML Risk predictions...');
+  // Phase 3c1: Feature computation (feeds ML predictions)
+  log.info('6a/8 Feature computation...');
+  results.features = await withTimeout(
+    async () => runFeatureComputation(),
+    60000,
+    '6a/8 Feature computation'
+  );
+
+  // Phase 3c2: ML Risk Predictions
+  log.info('6b/8 ML Risk predictions...');
   results.risk_predictions = await withTimeout(
     async () => saveAllPredictions(),
     30000,
-    '6/8 ML Risk predictions'
+    '6b/8 ML Risk predictions'
   );
 
   // Phase 3d: Events fetch (Wikidata + GDELT + Groq enrichment)
-  log.info('6b/8 Events intelligence...');
+  log.info('6c/8 Events intelligence...');
   results.events = await withTimeout(
     async () => fetchAndStoreEvents(),
     120000,
-    '6b/8 Events intelligence'
+    '6c/8 Events intelligence'
   );
 
   // Phase 4: Digests and notifications (always run last)

@@ -1185,7 +1185,7 @@
       "codigo": "us",
       "nombre": "Estados Unidos",
       "capital": "Washington D.C.",
-      "continente": "Norteamérica",
+      "continente": "América",
       "nivel_riesgo": "sin-riesgo",
       "ultimo_informe": "Marzo 2026",
       "bandera": "🇺🇸",
@@ -1287,7 +1287,7 @@
       "codigo": "ca",
       "nombre": "Canadá",
       "capital": "Ottawa",
-      "continente": "Norteamérica",
+      "continente": "América",
       "nivel_riesgo": "sin-riesgo",
       "ultimo_informe": "Marzo 2026",
       "bandera": "🇨🇦",
@@ -1389,7 +1389,7 @@
       "codigo": "mx",
       "nombre": "México",
       "capital": "Ciudad de México",
-      "continente": "Norteamérica",
+      "continente": "América",
       "nivel_riesgo": "bajo",
       "ultimo_informe": "Marzo 2026",
       "bandera": "🇲🇽",
@@ -1491,7 +1491,7 @@
       "codigo": "cu",
       "nombre": "Cuba",
       "capital": "La Habana",
-      "continente": "Caribe",
+      "continente": "América",
       "nivel_riesgo": "bajo",
       "ultimo_informe": "Marzo 2026",
       "bandera": "🇨🇺",
@@ -1593,7 +1593,7 @@
       "codigo": "co",
       "nombre": "Colombia",
       "capital": "Bogotá",
-      "continente": "Sudamérica",
+      "continente": "América",
       "nivel_riesgo": "bajo",
       "ultimo_informe": "Marzo 2026",
       "bandera": "🇨🇴",
@@ -1695,7 +1695,7 @@
       "codigo": "pe",
       "nombre": "Perú",
       "capital": "Lima",
-      "continente": "Sudamérica",
+      "continente": "América",
       "nivel_riesgo": "bajo",
       "ultimo_informe": "Marzo 2026",
       "bandera": "🇵🇪",
@@ -1797,7 +1797,7 @@
       "codigo": "br",
       "nombre": "Brasil",
       "capital": "Brasilia",
-      "continente": "Sudamérica",
+      "continente": "América",
       "nivel_riesgo": "bajo",
       "ultimo_informe": "Marzo 2026",
       "bandera": "🇧🇷",
@@ -1899,7 +1899,7 @@
       "codigo": "ar",
       "nombre": "Argentina",
       "capital": "Buenos Aires",
-      "continente": "Sudamérica",
+      "continente": "América",
       "nivel_riesgo": "bajo",
       "ultimo_informe": "Marzo 2026",
       "bandera": "🇦🇷",
@@ -2001,7 +2001,7 @@
       "codigo": "cl",
       "nombre": "Chile",
       "capital": "Santiago",
-      "continente": "Sudamérica",
+      "continente": "América",
       "nivel_riesgo": "sin-riesgo",
       "ultimo_informe": "Marzo 2026",
       "bandera": "🇨🇱",
@@ -2817,7 +2817,7 @@
       "codigo": "ae",
       "nombre": "Emiratos Árabes Unidos",
       "capital": "Abu Dhabi",
-      "continente": "Oriente Medio",
+      "continente": "Asia",
       "nivel_riesgo": "sin-riesgo",
       "ultimo_informe": "Marzo 2026",
       "bandera": "🇦🇪",
@@ -3531,7 +3531,7 @@
       "codigo": "tr",
       "nombre": "Turquía",
       "capital": "Ankara",
-      "continente": "Asia/Europa",
+      "continente": "Europa",
       "nivel_riesgo": "bajo",
       "ultimo_informe": "Marzo 2026",
       "bandera": "🇹🇷",
@@ -4449,7 +4449,7 @@
       "codigo": "sa",
       "nombre": "Arabia Saudita",
       "capital": "Riad",
-      "continente": "Oriente Medio",
+      "continente": "Asia",
       "nivel_riesgo": "medio",
       "ultimo_informe": "Marzo 2026",
       "bandera": "🇸🇦",
@@ -4551,7 +4551,7 @@
       "codigo": "qa",
       "nombre": "Catar",
       "capital": "Doha",
-      "continente": "Oriente Medio",
+      "continente": "Asia",
       "nivel_riesgo": "bajo",
       "ultimo_informe": "Marzo 2026",
       "bandera": "🇶🇦",
@@ -4653,7 +4653,7 @@
       "codigo": "jo",
       "nombre": "Jordania",
       "capital": "Amán",
-      "continente": "Oriente Medio",
+      "continente": "Asia",
       "nivel_riesgo": "bajo",
       "ultimo_informe": "Marzo 2026",
       "bandera": "🇯🇴",
@@ -4755,7 +4755,7 @@
       "codigo": "om",
       "nombre": "Omán",
       "capital": "Muscat",
-      "continente": "Oriente Medio",
+      "continente": "Asia",
       "nivel_riesgo": "sin-riesgo",
       "ultimo_informe": "Marzo 2026",
       "bandera": "🇴🇲",
@@ -5061,7 +5061,7 @@
       "codigo": "il",
       "nombre": "Israel",
       "capital": "Jerusalén",
-      "continente": "Oriente Medio",
+      "continente": "Asia",
       "nivel_riesgo": "medio",
       "ultimo_informe": "Abril 2026",
       "bandera": "🇮🇱",
@@ -5163,7 +5163,7 @@
       "codigo": "lb",
       "nombre": "Líbano",
       "capital": "Beirut",
-      "continente": "Oriente Medio",
+      "continente": "Asia",
       "nivel_riesgo": "medio",
       "ultimo_informe": "Marzo 2026",
       "bandera": "🇱🇧",
@@ -9297,7 +9297,7 @@
       "codigo": "uy",
       "nombre": "Uruguay",
       "capital": "Montevideo",
-      "continente": "Sudamérica",
+      "continente": "América",
       "nivel_riesgo": "sin-riesgo",
       "ultimo_informe": "Abril 2026",
       "bandera": "🇺🇾",
@@ -9396,7 +9396,7 @@
       "codigo": "py",
       "nombre": "Paraguay",
       "capital": "Asunción",
-      "continente": "Sudamérica",
+      "continente": "América",
       "nivel_riesgo": "bajo",
       "ultimo_informe": "Abril 2026",
       "bandera": "🇵🇾",
@@ -9495,7 +9495,7 @@
       "codigo": "bo",
       "nombre": "Bolivia",
       "capital": "Sucre (constitucional), La Paz (administrativa)",
-      "continente": "Sudamérica",
+      "continente": "América",
       "nivel_riesgo": "bajo",
       "ultimo_informe": "Abril 2026",
       "bandera": "🇧🇴",
@@ -9806,7 +9806,7 @@
       "codigo": "gl",
       "nombre": "Groenlandia",
       "capital": "Nuuk",
-      "continente": "América del Norte",
+      "continente": "América",
       "nivel_riesgo": "sin-riesgo",
       "ultimo_informe": "Abril 2026",
       "bandera": "🇬🇱",
@@ -11431,37 +11431,9 @@
       "ambulancia": "123"
     },
     {
-      "codigo": "hn",
-      "general": "911",
-      "policia": "911",
-      "bomberos": "911",
-      "ambulancia": "911"
-    },
-    {
-      "codigo": "sv",
-      "general": "911",
-      "policia": "911",
-      "bomberos": "911",
-      "ambulancia": "911"
-    },
-    {
-      "codigo": "ni",
-      "general": "118",
-      "policia": "118",
-      "bomberos": "115",
-      "ambulancia": "128"
-    },
-    {
       "codigo": "is",
       "general": "112",
       "policia": "112",
-      "bomberos": "112",
-      "ambulancia": "112"
-    },
-    {
-      "codigo": "lu",
-      "general": "112",
-      "policia": "113",
       "bomberos": "112",
       "ambulancia": "112"
     },
@@ -11471,13 +11443,6 @@
       "policia": "158",
       "bomberos": "150",
       "ambulancia": "155"
-    },
-    {
-      "codigo": "ro",
-      "general": "112",
-      "policia": "112",
-      "bomberos": "112",
-      "ambulancia": "112"
     },
     {
       "codigo": "hu",
@@ -11501,13 +11466,6 @@
       "ambulancia": "194"
     },
     {
-      "codigo": "sk",
-      "general": "112",
-      "policia": "158",
-      "bomberos": "150",
-      "ambulancia": "155"
-    },
-    {
       "codigo": "si",
       "general": "112",
       "policia": "113",
@@ -11515,39 +11473,11 @@
       "ambulancia": "112"
     },
     {
-      "codigo": "rs",
-      "general": "112",
-      "policia": "192",
-      "bomberos": "193",
-      "ambulancia": "194"
-    },
-    {
-      "codigo": "ba",
-      "general": "122",
-      "policia": "122",
-      "bomberos": "123",
-      "ambulancia": "124"
-    },
-    {
       "codigo": "al",
       "general": "112",
       "policia": "129",
       "bomberos": "128",
       "ambulancia": "127"
-    },
-    {
-      "codigo": "mk",
-      "general": "112",
-      "policia": "192",
-      "bomberos": "193",
-      "ambulancia": "194"
-    },
-    {
-      "codigo": "me",
-      "general": "112",
-      "policia": "192",
-      "bomberos": "193",
-      "ambulancia": "194"
     },
     {
       "codigo": "ge",
@@ -11648,20 +11578,6 @@
       "ambulancia": "140"
     },
     {
-      "codigo": "ir",
-      "general": "112",
-      "policia": "110",
-      "bomberos": "125",
-      "ambulancia": "115"
-    },
-    {
-      "codigo": "iq",
-      "general": "104",
-      "policia": "104",
-      "bomberos": "115",
-      "ambulancia": "122"
-    },
-    {
       "codigo": "tn",
       "general": "197",
       "policia": "197",
@@ -11694,13 +11610,6 @@
       "general": "112",
       "policia": "111",
       "bomberos": "114",
-      "ambulancia": "112"
-    },
-    {
-      "codigo": "ug",
-      "general": "999",
-      "policia": "999",
-      "bomberos": "999",
       "ambulancia": "112"
     },
     {

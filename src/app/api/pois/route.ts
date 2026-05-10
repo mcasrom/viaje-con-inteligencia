@@ -5,6 +5,14 @@ export const dynamic = 'force-dynamic';
 
 const OSM_OVERPASS = 'https://overpass-api.de/api/interpreter';
 
+export const maxDuration = 60;
+
+const FETCH_HEADERS = {
+  'User-Agent': 'ViajeConInteligencia/1.0 (travel intelligence platform; admin@viajeinteligencia.com)',
+  'Accept': '*/*',
+  'Content-Type': 'text/plain',
+};
+
 const POI_TYPES: Record<string, { osm: string; label: string; icon: string }> = {
   museum:        { osm: 'tourism=museum',           label: 'Museos',           icon: '🏛️' },
   heritage:      { osm: 'historic=monument',         label: 'Patrimonio',       icon: '🏰' },
@@ -76,6 +84,10 @@ export async function GET(request: NextRequest) {
   const limit = Math.min(parseInt(params.get('limit') || '30', 10), 50);
   const profile = params.get('profile') || '';
 
+  // Timeout controller (AbortSignal.timeout no disponible en todas las versiones)
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 30000);
+
   let typeList: string[];
   if (type === 'all') {
     typeList = Object.keys(POI_TYPES);
@@ -119,9 +131,10 @@ export async function GET(request: NextRequest) {
     const res = await fetch(OSM_OVERPASS, {
       method: 'POST',
       body: query,
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      signal: AbortSignal.timeout(30000),
+      headers: FETCH_HEADERS,
+      signal: controller.signal,
     });
+    clearTimeout(timeoutId);
 
     if (!res.ok) {
       return NextResponse.json({
@@ -198,6 +211,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(response);
   } catch (err: any) {
+    clearTimeout(timeoutId);
     return NextResponse.json({
       source: 'error',
       error: err.message,

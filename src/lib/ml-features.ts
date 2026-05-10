@@ -27,6 +27,10 @@ export interface MlFeatures {
   model_version: string | null;
 }
 
+const RISK_NUM: Record<string, number> = {
+  'sin-riesgo': 1, 'bajo': 2, 'medio': 3, 'alto': 4, 'muy-alto': 5,
+};
+
 function getAdmin() {
   try { return supabaseAdmin; } catch { return null; }
 }
@@ -74,6 +78,20 @@ export async function upsertFeatures(features: Partial<MlFeatures> & { country_c
   return !error;
 }
 
+function computeRiskTrend(values: number[]): { trend7d: number; trend30d: number } {
+  if (values.length < 2) return { trend7d: 0, trend30d: 0 };
+
+  const n = values.length;
+  const trend30d = (values[n - 1] - values[0]) / n;
+
+  const last7 = values.slice(-7);
+  const trend7d = last7.length >= 2
+    ? (last7[last7.length - 1] - last7[0]) / last7.length
+    : 0;
+
+  return { trend7d, trend30d };
+}
+
 export async function computeAndStoreFeatures(code: string, riskLevel: string): Promise<MlFeatures | null> {
   const admin = getAdmin();
   if (!admin) return null;
@@ -85,31 +103,76 @@ export async function computeAndStoreFeatures(code: string, riskLevel: string): 
     'sin-riesgo': 10, 'bajo': 25, 'medio': 50, 'alto': 75, 'muy-alto': 95,
   };
 
+  const thirtyDaysAgo = new Date(Date.now() - 30 * 86400000).toISOString();
+  const sevenDaysAgo = new Date(Date.now() - 7 * 86400000).toISOString();
+  const today = new Date().toISOString().split('T')[0];
+  const thirtyDaysAgoDate = new Date(Date.now() - 30 * 86400000).toISOString().split('T')[0];
+  const codeUpper = code.toUpperCase();
+
+  const [eventsRes, highImpactRes, signalsRes, incidentsRes, airspaceRes, routesRes, riskHistory] = await Promise.all([
+    admin.from('events').select('id', { count: 'exact', head: true }).eq('country_code', codeUpper).gte('date', thirtyDaysAgo),
+    admin.from('events').select('id', { count: 'exact', head: true }).eq('country_code', codeUpper).eq('impact', 'high').gte('date', thirtyDaysAgo),
+    admin.from('osint_signals').select('id', { count: 'exact', head: true }).or(`location_name.ilike.%${code}%,title.ilike.%${code}%`).gte('post_timestamp', sevenDaysAgo),
+    admin.from('incidents').select('id', { count: 'exact', head: true }).eq('country_code', codeUpper).eq('is_active', true),
+    admin.from('airspace_closures').select('id', { count: 'exact', head: true }).eq('country_code', codeUpper).eq('is_active', true),
+    admin.from('affected_routes').select('id', { count: 'exact', head: true }).or(`origin.eq.${codeUpper},destination.eq.${codeUpper}`).eq('is_active', true),
+    admin.from('maec_risk_history').select('nivel_riesgo, date').eq('country_code', code).gte('date', thirtyDaysAgoDate).order('date'),
+  ]);
+
+  const events30d = eventsRes.count ?? 0;
+  const highImpactEvents30d = highImpactRes.count ?? 0;
+  const signalCount7d = signalsRes.count ?? 0;
+  const incidentCount7d = incidentsRes.count ?? 0;
+  const airspaceActive = (airspaceRes.count ?? 0) > 0;
+  const routesDisrupted = (routesRes.count ?? 0) > 0;
+
+  const riskValues = (riskHistory.data || []).map(r => RISK_NUM[r.nivel_riesgo] || 1);
+  const { trend7d, trend30d } = computeRiskTrend(riskValues);
+
   const features: Partial<MlFeatures> = {
     country_code: code,
     risk_level: riskLevel,
     risk_score: riskScoreMap[riskLevel] || 50,
-    risk_trend_7d: 0,
-    risk_trend_30d: 0,
+    risk_trend_7d: Math.round(trend7d * 1000) / 1000,
+    risk_trend_30d: Math.round(trend30d * 1000) / 1000,
     gpi_score: null,
     gti_score: null,
     hdi_score: null,
     ipc_score: null,
     tci_score: tci.tci,
     tci_trend: tci.trend,
-    events_30d: 0,
-    high_impact_events_30d: 0,
+    events_30d: events30d,
+    high_impact_events_30d: highImpactEvents30d,
     demand_index: tci.demandIdx,
     seasonality_index: tci.seasonalityIdx,
-    signal_count_7d: 0,
-    incident_count_7d: 0,
-    airspace_closure_active: false,
-    route_disruption_active: false,
+    signal_count_7d: signalCount7d,
+    incident_count_7d: incidentCount7d,
+    airspace_closure_active: airspaceActive,
+    route_disruption_active: routesDisrupted,
     safety_composite: 100 - (riskScoreMap[riskLevel] || 50),
     cost_composite: Math.min(100, Math.round((tci.tci / 150) * 100)),
-    model_version: 'v1',
+    model_version: 'v2',
   };
 
   const ok = await upsertFeatures(features as MlFeatures);
   return ok ? (await getFeaturesByCountry(code)) : null;
+}
+
+export async function computeFeaturesForAllCountries(): Promise<{ ok: number; errors: number }> {
+  const { paisesData } = await import('@/data/paises');
+  const countries = Object.keys(paisesData).filter(c => c !== 'cu');
+  let ok = 0, errors = 0;
+
+  for (const code of countries) {
+    try {
+      const pais = paisesData[code];
+      if (!pais) continue;
+      await computeAndStoreFeatures(code, pais.nivelRiesgo);
+      ok++;
+    } catch {
+      errors++;
+    }
+  }
+
+  return { ok, errors };
 }

@@ -108,8 +108,8 @@ export default function Footer() {
                 </a>
               </li>
               <li>
-                <a href="https://twitter.com/viajeinteligencia" target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-white transition-colors">
-                  Twitter / X
+                <a href="https://x.com/ViajeIntel2026" target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-white transition-colors flex items-center gap-1">
+                  𝕏 Twitter / X
                 </a>
               </li>
               <li>

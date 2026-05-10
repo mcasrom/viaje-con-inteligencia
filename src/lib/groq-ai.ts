@@ -3,9 +3,19 @@ import { paisesData } from '@/data/paises';
 import { createLogger } from '@/lib/logger';
 import { isCircuitOpen, recordSuccess, recordFailure } from '@/lib/circuit-breaker';
 import { trackFailure, trackSuccess } from '@/lib/alert-webhook';
+import { checkGlobalGroqRateLimit } from '@/lib/rate-limit-server';
 
 const log = createLogger('GroqAI');
 const CB_NAME = 'groq-api';
+
+function checkGlobalGroq(): string | null {
+  const groqLimit = checkGlobalGroqRateLimit(20);
+  if (!groqLimit.allowed) {
+    log.warn('Global Groq rate limit hit');
+    return 'Servicio de IA temporalmente congestionado. Intenta de nuevo en unos segundos.';
+  }
+  return null;
+}
 
 const groq = new Groq({
   apiKey: process.env.GROQ_API_KEY || '',
@@ -62,6 +72,9 @@ Responde en español, en formato markdown. Sé conciso pero útil.`;
     return 'Servicio de IA temporalmente no disponible. Intenta de nuevo mas tarde.';
   }
 
+  const groqLimitMsg = checkGlobalGroq();
+  if (groqLimitMsg) return groqLimitMsg;
+
   try {
     const chatCompletion = await groqClient.chat.completions.create({
       messages: [
@@ -111,6 +124,11 @@ Responde SOLO con el JSON, sin explicaciones adicionales.`;
   if (isCircuitOpen(CB_NAME)) {
     log.warn('Circuit open, skipping risk analysis');
     return { level: 'desconocido', factors: ['Servicio no disponible'], recommendations: ['Verifica fuentes oficiales'] };
+  }
+
+  const groqLimitMsg = checkGlobalGroq();
+  if (groqLimitMsg) {
+    return { level: 'desconocido', factors: ['Servicio congestionado'], recommendations: ['Intenta de nuevo más tarde'] };
   }
 
   try {
@@ -197,6 +215,9 @@ Usa un formato limpio y práctico. Responde en español.`;
     return 'Servicio de IA temporalmente no disponible. Intenta de nuevo mas tarde.';
   }
 
+  const groqLimitMsg = checkGlobalGroq();
+  if (groqLimitMsg) return groqLimitMsg;
+
   try {
     const chatCompletion = await groqClient.chat.completions.create({
       messages: [
@@ -246,6 +267,9 @@ export async function chatWithAI(
     log.warn('Circuit open, skipping chat response');
     return 'Servicio de IA temporalmente no disponible. Intenta de nuevo mas tarde.';
   }
+
+  const groqLimitMsg = checkGlobalGroq();
+  if (groqLimitMsg) return groqLimitMsg;
 
   try {
     const chatCompletion = await groqClient.chat.completions.create({
