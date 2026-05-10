@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, Search, Crown, Loader2, Mail, Calendar, Clock, AlertTriangle, Shield } from 'lucide-react';
 
+const MODULE_LOAD_TIME = Date.now();
+
 interface UserProfile {
   id: string;
   email: string;
@@ -110,8 +112,8 @@ export default function AdminUsersPage() {
                 </thead>
                 <tbody>
                   {filtered.map(u => {
-                    const trialActive = u.trial_end && new Date(u.trial_end) > new Date();
-                    const trialDaysLeft = u.trial_end ? Math.ceil((new Date(u.trial_end).getTime() - Date.now()) / 86400000) : null;
+                    const trialActive = u.trial_end && new Date(u.trial_end) > new Date(MODULE_LOAD_TIME);
+                    const trialDaysLeft = u.trial_end ? Math.ceil((new Date(u.trial_end).getTime() - MODULE_LOAD_TIME) / 86400000) : null;
                     return (
                       <tr key={u.id} className="border-b border-slate-700/20 hover:bg-slate-700/20 transition-colors">
                         <td className="px-4 py-3">

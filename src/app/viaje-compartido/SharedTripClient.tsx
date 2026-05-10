@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, MapPin, Calendar, Clock, Users, TrendingUp, Star, CheckCircle } from 'lucide-react';
 
@@ -12,6 +12,7 @@ interface SharedTripClientProps {
 
 export default function SharedTripClient({ token, sharedTrip, tripData, ownerData }: SharedTripClientProps) {
   const [accepted, setAccepted] = useState(false);
+  const [now] = useState(() => Date.now());
 
   if (!sharedTrip || !tripData) {
     return (
@@ -32,7 +33,7 @@ export default function SharedTripClient({ token, sharedTrip, tripData, ownerDat
   }
 
   const expiresAt = sharedTrip.expires_at ? new Date(sharedTrip.expires_at) : null;
-  const daysLeft = expiresAt ? Math.ceil((expiresAt.getTime() - Date.now()) / (1000 * 60 * 60 * 24)) : null;
+  const daysLeft = expiresAt ? Math.ceil((expiresAt.getTime() - now) / (1000 * 60 * 60 * 24)) : null;
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800">

@@ -138,6 +138,26 @@ function DestinosContent() {
   const matchedRoutes = interes ? INTEREST_ROUTES[interes]?.routes || [] : [];
   const isSpain = destino === 'es';
 
+  const calculateLocalScores = (routes: string[], int: string): MLRecommendation[] => {
+    return routes
+      .map((routeId) => {
+        const route = ROUTES_INFO[routeId];
+        if (!route) return null;
+        let score = 70;
+        let reason = 'Buena opción general';
+        if (int === 'vino' && routeId === 'vino') { score = 98; reason = 'Match perfecto con tu interés'; }
+        else if (int === 'gastronomia' && routeId === 'vino') { score = 92; reason = 'Excelente maridaje gastronómico'; }
+        else if (int === 'playa' && routeId === 'faros') { score = 95; reason = 'Ruta costera ideal'; }
+        else if (int === 'playa' && routeId === 'costa') { score = 96; reason = 'Las mejores playas'; }
+        else if (int === 'cultural' && routeId === 'molinos') { score = 90; reason = 'Patrimonio histórico único'; }
+        else if (int === 'cultural' && routeId === 'patrimonio') { score = 94; reason = 'Ciudades UNESCO'; }
+        else if (int === 'naturaleza' && routeId === 'norte') { score = 91; reason = 'Naturaleza exuberante'; }
+        else if (int === 'aventura' && routeId === 'pirineos') { score = 95; reason = 'Deportes de montaña'; }
+        return { routeId, route, score, reason, source: 'local' as const };
+      })
+      .filter(Boolean) as MLRecommendation[];
+  };
+
   // Fetch ML recommendations from API (only for Spain)
   useEffect(() => {
     if (!interes || !isSpain) return;
@@ -180,29 +200,6 @@ function DestinosContent() {
         setLoading(false);
       });
   }, [interes, presupuesto, isSpain]);
-
-  const calculateLocalScores = (routes: string[], int: string): MLRecommendation[] => {
-    return routes
-      .map((routeId) => {
-        const route = ROUTES_INFO[routeId];
-        if (!route) return null;
-
-        let score = 70;
-        let reason = 'Buena opción general';
-
-        if (int === 'vino' && routeId === 'vino') { score = 98; reason = 'Match perfecto con tu interés'; }
-        else if (int === 'gastronomia' && routeId === 'vino') { score = 92; reason = 'Excelente maridaje gastronómico'; }
-        else if (int === 'playa' && routeId === 'faros') { score = 95; reason = 'Ruta costera ideal'; }
-        else if (int === 'playa' && routeId === 'costa') { score = 96; reason = 'Las mejores playas'; }
-        else if (int === 'cultural' && routeId === 'molinos') { score = 90; reason = 'Patrimonio histórico único'; }
-        else if (int === 'cultural' && routeId === 'patrimonio') { score = 94; reason = 'Ciudades UNESCO'; }
-        else if (int === 'naturaleza' && routeId === 'norte') { score = 91; reason = 'Naturaleza exuberante'; }
-        else if (int === 'aventura' && routeId === 'pirineos') { score = 95; reason = 'Deportes de montaña'; }
-
-        return { routeId, route, score, reason, source: 'local' as const };
-      })
-      .filter(Boolean) as MLRecommendation[];
-  };
 
   const countryItin = destino ? countryItineraries[destino] : null;
   const attrs = destino ? clusteringAttrs[destino] : null;

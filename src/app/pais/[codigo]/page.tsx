@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { getTodosLosPaises } from '@/data/paises';
 import { getPostsPagination } from '@/lib/posts';
 import DetallePaisClient from './DetallePaisClient';
@@ -41,7 +42,7 @@ export default async function PaisPage({ params }: { params: Promise<{ codigo: s
       <div className="min-h-screen bg-slate-900 flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-white mb-2">País no encontrado</h1>
-          <a href="/" className="text-blue-400 hover:underline">Volver al mapa →</a>
+          <Link href="/" className="text-blue-400 hover:underline">Volver al mapa →</Link>
         </div>
       </div>
     );
