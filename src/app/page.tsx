@@ -6,7 +6,7 @@ import { useState, useEffect } from 'react';
 import { 
   Search, Sparkles, Crown, Bell, Globe, Filter, 
   ChevronRight, Menu, X, Calculator, Route, ClipboardList, BarChart3, 
-  BookOpen, Newspaper, ChevronRight as Chevron, Navigation, TrendingUp, Shield
+  BookOpen, Newspaper, ChevronRight as Chevron, Navigation, TrendingUp, Shield, ArrowRight
 } from 'lucide-react';
 import { paisesData } from '@/data/paises';
 import { TOTAL_PAISES } from '@/lib/constants';
@@ -136,6 +136,11 @@ function TopBar() {
             <Link href="/rutas" className="group flex flex-col items-center gap-0.5 px-4 py-1.5 text-slate-400 hover:text-white rounded-xl hover:bg-slate-800/80 transition-all">
               <Route className="w-4 h-4 text-green-400 group-hover:scale-110 transition-transform" />
               <span className="text-[10px] font-medium">Rutas</span>
+            </Link>
+            <div className="w-px h-5 bg-slate-700" />
+            <Link href="/rutas/planificar" className="group flex flex-col items-center gap-0.5 px-4 py-1.5 text-slate-400 hover:text-white rounded-xl hover:bg-slate-800/80 transition-all">
+              <ArrowRight className="w-4 h-4 text-rose-400 group-hover:scale-110 transition-transform" />
+              <span className="text-[10px] font-medium">Ruta</span>
             </Link>
             <Link href="/radius" className="group flex flex-col items-center gap-0.5 px-4 py-1.5 text-slate-400 hover:text-white rounded-xl hover:bg-slate-800/80 transition-all">
               <Navigation className="w-4 h-4 text-cyan-400 group-hover:scale-110 transition-transform" />

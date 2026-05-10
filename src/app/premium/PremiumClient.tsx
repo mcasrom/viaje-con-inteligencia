@@ -1,8 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { getBrowserClient } from '@/lib/supabase-browser';
 import { ArrowLeft, Check, X, Sparkles, Shield, Bell, MessageSquare, FileCheck, TrendingUp, Map, Plane, Star, Zap, Crown, Loader2 } from 'lucide-react';
 import { TOTAL_PAISES } from '@/lib/constants';
 
@@ -38,7 +39,15 @@ const COMPARISON = [
 export default function PremiumClient() {
   const [isAnnual, setIsAnnual] = useState(true);
   const [loading, setLoading] = useState(false);
+  const [userEmail, setUserEmail] = useState<string | null>(null);
   const router = useRouter();
+  useEffect(() => {
+    const client = getBrowserClient();
+    if (!client) return;
+    client.auth.getSession().then(({ data }) => {
+      if (data.session?.user?.email) setUserEmail(data.session.user.email);
+    });
+  }, []);
 
   const handleSubscribe = async () => {
     setLoading(true);
@@ -47,10 +56,13 @@ export default function PremiumClient() {
         ? 'price_1TQ0Ng1yXjIoL1LjZTzKEfOF'
         : 'price_1TNvdo1yXjIoL1LjxAec6d2C';
 
+      const body: Record<string, unknown> = { priceId, trialDays: 7 };
+      if (userEmail) body.email = userEmail;
+
       const res = await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ priceId, trialDays: 7 }),
+        body: JSON.stringify(body),
       });
 
       const data = await res.json();

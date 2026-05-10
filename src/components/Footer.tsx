@@ -62,6 +62,7 @@ export default function Footer() {
               <li><Link href="/checklist" className="text-slate-400 hover:text-white transition-colors">Checklist</Link></li>
               <li><Link href="/comparar" className="text-slate-400 hover:text-white transition-colors">Comparar</Link></li>
               <li><Link href="/rutas" className="text-slate-400 hover:text-white transition-colors">Rutas</Link></li>
+              <li><Link href="/rutas/planificar" className="text-slate-400 hover:text-white transition-colors">Planificar Ruta</Link></li>
               <li><Link href="/relojes" className="text-slate-400 hover:text-white transition-colors">Horario Global</Link></li>
               <li><Link href="/eventos" className="text-slate-400 hover:text-white transition-colors">Eventos</Link></li>
             </ul>
