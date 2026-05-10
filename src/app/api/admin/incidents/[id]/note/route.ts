@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabaseAdmin } from '@/lib/supabase-admin';
+import { supabaseAdmin, isSupabaseAdminConfigured } from '@/lib/supabase-admin';
 
 export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  if (!supabaseAdmin) {
+  if (!isSupabaseAdminConfigured()) {
     return NextResponse.json({ error: 'DB not configured' }, { status: 500 });
   }
 
@@ -43,7 +43,7 @@ export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  if (!supabaseAdmin) {
+  if (!isSupabaseAdminConfigured()) {
     return NextResponse.json({ error: 'DB not configured' }, { status: 500 });
   }
 

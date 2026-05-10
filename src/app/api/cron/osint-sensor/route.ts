@@ -94,7 +94,7 @@ export async function GET(request: Request) {
     const posts = await fetchAllPosts();
     log.info(`Fetched ${posts.length} posts from 4 sources`);
     
-    if (!supabaseAdmin) {
+    if (!isSupabaseAdminConfigured()) {
       return NextResponse.json({ error: 'Supabase not configured', postsFound: posts.length });
     }
 

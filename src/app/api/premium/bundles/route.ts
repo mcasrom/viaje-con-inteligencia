@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { supabaseAdmin } from '@/lib/supabase-admin';
+import { supabaseAdmin, isSupabaseAdminConfigured } from '@/lib/supabase-admin';
 import { createLogger } from '@/lib/logger';
 import { apiError } from '@/lib/api-schemas';
 import { z } from 'zod';
@@ -19,7 +19,7 @@ const BundleListSchema = z.array(BundleSchema);
 
 export async function GET() {
   try {
-    if (!supabaseAdmin) {
+    if (!isSupabaseAdminConfigured()) {
       const { MOCHILERO_BUNDLE, VIP_ACCESS } = await import('@/data/mochilero-premium');
       return NextResponse.json(BundleListSchema.parse([
         { id: 'mochilero-pro', ...MOCHILERO_BUNDLE },

@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
-import { supabaseAdmin } from '@/lib/supabase-admin';
+import { supabaseAdmin, isSupabaseAdminConfigured } from '@/lib/supabase-admin';
 
 export async function GET() {
-  if (!supabaseAdmin) {
+  if (!isSupabaseAdminConfigured()) {
     return NextResponse.json({ signals: [], stats: { total: 0, urgent: 0, firstPerson: 0 } });
   }
 

@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { supabaseAdmin } from '@/lib/supabase-admin';
+import { supabaseAdmin, isSupabaseAdminConfigured } from '@/lib/supabase-admin';
 import { createLogger } from '@/lib/logger';
 import { apiError, apiResponse, CountryCodeSchema } from '@/lib/api-schemas';
 import { z } from 'zod';
@@ -25,7 +25,7 @@ export async function GET(req: Request) {
     const { searchParams } = new URL(req.url);
     const perfil = searchParams.get('perfil');
 
-    if (!supabaseAdmin) {
+    if (!isSupabaseAdminConfigured()) {
       const { default: segurosData } = await import('@/data/seguros.json') as any;
       let productos = segurosData.productos;
       if (perfil && (segurosData.perfiles as Record<string, any>)[perfil]) {

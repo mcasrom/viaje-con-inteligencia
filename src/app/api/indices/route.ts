@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { supabaseAdmin } from '@/lib/supabase-admin';
+import { supabaseAdmin, isSupabaseAdminConfigured } from '@/lib/supabase-admin';
 import { createLogger } from '@/lib/logger';
 import { apiError } from '@/lib/api-schemas';
 import { z } from 'zod';
@@ -20,7 +20,7 @@ export async function GET(req: Request) {
     const tipo = parsed.success ? parsed.data.tipo : undefined;
     const pais = parsed.success ? parsed.data.pais : undefined;
 
-    if (!supabaseAdmin) {
+    if (!isSupabaseAdminConfigured()) {
       const { GPI_DATA, GTI_DATA, HDI_DATA, IPC_DATA } = await import('@/data/indices');
       const all = {
         gpi: GPI_DATA.map(d => ({ tipo: 'gpi', codigo_pais: d.code.toLowerCase(), nombre_pais: d.country, valor: d.score, rank: d.rank, cambio: d.change, region: d.region })),

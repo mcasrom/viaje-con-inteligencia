@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getAllMAECAlerts, getMAECData } from '@/lib/scraper/maec';
 import { supabase } from '@/lib/supabase';
-import { supabaseAdmin } from '@/lib/supabase-admin';
+import { supabaseAdmin, isSupabaseAdminConfigured } from '@/lib/supabase-admin';
 import { paisesData } from '@/data/paises';
 import { calculateTCI } from '@/data/tci-engine';
 import { generateRiskChangeAlert } from '@/lib/alerts-system';
@@ -239,7 +239,7 @@ function classifyByKeywords(text: string, toneScore?: number): ClassifiedSignal 
 async function runNewsSentiment(): Promise<any> {
   try {
     const posts = await fetchAllPosts();
-    if (!supabaseAdmin) return { status: 'skipped', reason: 'No supabase' };
+    if (!isSupabaseAdminConfigured()) return { status: 'skipped', reason: 'No supabase' };
 
     // Only process last 72h to avoid stale posts
     const cutoff = new Date(Date.now() - 72 * 60 * 60 * 1000);
@@ -389,7 +389,7 @@ ${Object.entries(results).filter(([k, v]) => v && (v as any).status !== 'skipped
 
 // ===== SUBSCRIBERS =====
 async function getSubscribers(): Promise<Array<{ email: string; name: string }>> {
-  if (!supabaseAdmin) return [];
+  if (!isSupabaseAdminConfigured()) return [];
   const { data } = await supabaseAdmin
     .from('newsletter_subscribers')
     .select('email, name')

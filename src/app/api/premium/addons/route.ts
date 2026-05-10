@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { supabaseAdmin } from '@/lib/supabase-admin';
+import { supabaseAdmin, isSupabaseAdminConfigured } from '@/lib/supabase-admin';
 import { createLogger } from '@/lib/logger';
 import { apiError } from '@/lib/api-schemas';
 import { z } from 'zod';
@@ -18,7 +18,7 @@ const AddonListSchema = z.array(AddonSchema);
 
 export async function GET() {
   try {
-    if (!supabaseAdmin) {
+    if (!isSupabaseAdminConfigured()) {
       const { ONE_TIME_BUNDLES } = await import('@/data/mochilero-premium');
       return NextResponse.json(AddonListSchema.parse(
         Object.entries(ONE_TIME_BUNDLES).map(([id, b]) => ({ id, ...b }))

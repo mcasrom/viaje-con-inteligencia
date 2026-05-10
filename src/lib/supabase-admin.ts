@@ -2,7 +2,7 @@ import { createClient } from '@supabase/supabase-js';
 import type { SupabaseClient } from '@supabase/supabase-js';
 
 let cachedClient: SupabaseClient | null = null;
-let cachedInitError: Error | null = null;
+let initAttempted = false;
 
 function createAdminClient(): SupabaseClient {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -13,27 +13,28 @@ function createAdminClient(): SupabaseClient {
   return createClient(url, key);
 }
 
-/** Lazy getter — solo falla cuando se usa, no al importar */
-export function getSupabaseAdmin(): SupabaseClient | null {
-  if (cachedClient) return cachedClient;
-  if (cachedInitError) return null;
+function getClient(): SupabaseClient | null {
+  if (initAttempted) return cachedClient;
+  initAttempted = true;
   try {
     cachedClient = createAdminClient();
-    return cachedClient;
-  } catch (e) {
-    cachedInitError = e as Error;
-    return null;
+  } catch {
+    cachedClient = null;
   }
+  return cachedClient;
 }
 
-/** @deprecated Usa getSupabaseAdmin() para evitar falsos positivos */
+/**
+ * Proxy lazy de supabaseAdmin — no lanza al importar.
+ * ⚠️ `if (!supabaseAdmin)` NO funciona (Proxy siempre truthy).
+ * Usa `isSupabaseAdminConfigured()` para comprobar disponibilidad.
+ */
 export const supabaseAdmin = new Proxy<SupabaseClient>({} as SupabaseClient, {
   get(_, prop: string | symbol) {
-    const client = getSupabaseAdmin();
+    const client = getClient();
     if (!client) {
-      // Dev warning
       if (process.env.NODE_ENV === 'development') {
-        console.warn('supabaseAdmin no disponible (SUPABASE_SERVICE_ROLE_KEY no configurada)');
+        console.warn('supabaseAdmin no disponible — SUPABASE_SERVICE_ROLE_KEY no configurada');
       }
       return () => Promise.resolve({ data: null, error: new Error('Supabase admin not configured') });
     }
@@ -41,4 +42,6 @@ export const supabaseAdmin = new Proxy<SupabaseClient>({} as SupabaseClient, {
   },
 });
 
-export const isSupabaseAdminConfigured = () => !!getSupabaseAdmin();
+export function isSupabaseAdminConfigured(): boolean {
+  return !!getClient();
+}

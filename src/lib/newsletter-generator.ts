@@ -1,6 +1,6 @@
 import { createLogger } from '@/lib/logger';
 import { groqClient } from './groq-ai';
-import { supabaseAdmin } from './supabase-admin';
+import { supabaseAdmin, isSupabaseAdminConfigured } from './supabase-admin';
 import { paisesData } from '@/data/paises';
 import { calculateTCI } from '@/data/tci-engine';
 import { TOTAL_PAISES } from '@/lib/constants';
@@ -80,7 +80,7 @@ export interface WeeklyQA {
 // DATA COLLECTION
 // ============================================================
 export async function collectNewsletterData(): Promise<NewsletterIssue> {
-  if (!supabaseAdmin) throw new Error('No supabase admin');
+  if (!isSupabaseAdminConfigured()) throw new Error('No supabase admin');
 
   const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
   const edition = Math.floor((Date.now() - new Date('2025-09-01').getTime()) / (7 * 24 * 60 * 60 * 1000)) + 1;

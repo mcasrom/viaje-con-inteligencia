@@ -1,4 +1,4 @@
-import { supabaseAdmin } from './supabase-admin';
+import { supabaseAdmin, isSupabaseAdminConfigured } from './supabase-admin';
 
 const TYPE_CONFIG: Record<string, { label: string; verb: string; icon: string }> = {
   terrorism: { label: 'Terrorismo', verb: 'evitar', icon: '⚠️' },
@@ -150,7 +150,7 @@ function getExpiryDate(type: string): Date {
 }
 
 export async function detectAndCreateIncidents(): Promise<{ created: number; updated: number }> {
-  if (!supabaseAdmin) return { created: 0, updated: 0 };
+  if (!isSupabaseAdminConfigured()) return { created: 0, updated: 0 };
 
   const now = new Date();
   const windowStart = new Date(now.getTime() - 48 * 60 * 60 * 1000);

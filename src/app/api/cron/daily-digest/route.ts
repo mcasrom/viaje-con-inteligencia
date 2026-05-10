@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { supabaseAdmin } from '@/lib/supabase-admin';
+import { supabaseAdmin, isSupabaseAdminConfigured } from '@/lib/supabase-admin';
 import { Resend } from 'resend';
 
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
@@ -21,7 +21,7 @@ async function getUptimeStatus(): Promise<{ status: string; latency: number }> {
 }
 
 async function getUserStats() {
-  if (!supabaseAdmin) return { total: 0, newToday: 0 };
+  if (!isSupabaseAdminConfigured()) return { total: 0, newToday: 0 };
   
   const today = new Date().toISOString().split('T')[0];
   
@@ -38,7 +38,7 @@ async function getUserStats() {
 }
 
 async function getNewsletterStats() {
-  if (!supabaseAdmin) return { total: 0, pending: 0 };
+  if (!isSupabaseAdminConfigured()) return { total: 0, pending: 0 };
   
   try {
     const { data: all } = await supabaseAdmin
@@ -55,7 +55,7 @@ async function getNewsletterStats() {
 }
 
 async function getAlertsStats() {
-  if (!supabaseAdmin) return { newToday: 0, total: 0 };
+  if (!isSupabaseAdminConfigured()) return { newToday: 0, total: 0 };
   
   const today = new Date().toISOString().split('T')[0];
   
@@ -72,7 +72,7 @@ async function getAlertsStats() {
 }
 
 async function getScraperStats() {
-  if (!supabaseAdmin) return { runs: 0, errors: 0 };
+  if (!isSupabaseAdminConfigured()) return { runs: 0, errors: 0 };
   
   const today = new Date().toISOString().split('T')[0];
   
@@ -91,7 +91,7 @@ async function getScraperStats() {
 }
 
 async function getBotStats() {
-  if (!supabaseAdmin) return { users: 0, messages: 0 };
+  if (!isSupabaseAdminConfigured()) return { users: 0, messages: 0 };
   
   const { count: users } = await supabaseAdmin
     .from('bot_users')

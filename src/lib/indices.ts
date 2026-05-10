@@ -1,4 +1,4 @@
-import { supabaseAdmin } from './supabase-admin';
+import { supabaseAdmin, isSupabaseAdminConfigured } from './supabase-admin';
 
 export interface IndiceEntry {
   rank: number;
@@ -26,7 +26,7 @@ function mapToIPC(item: any): IPCEntry {
 }
 
 async function fetchFromDB(tipo: string): Promise<any[] | null> {
-  if (!supabaseAdmin) return null;
+  if (!isSupabaseAdminConfigured()) return null;
   const { data, error } = await supabaseAdmin
     .from('indices')
     .select('*')
