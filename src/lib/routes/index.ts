@@ -1,6 +1,6 @@
-import { getGoogleRoutes } from './google'
-import { getFlights, type FlightOption } from './serpapi'
-import { estimateAllModes, type FallbackRoute } from './fallback'
+import { getOpenRouteRoutes } from './openroute'
+import { getFlights } from './serpapi'
+import { estimateAllModes } from './fallback'
 import { paisesData } from '@/data/paises'
 
 export interface RouteResult {
@@ -12,7 +12,7 @@ export interface RouteResult {
   summary: string
   riskLevel: string
   riskScore: number
-  source: 'google' | 'serpapi' | 'fallback'
+  source: 'openroute' | 'serpapi' | 'fallback'
   details?: Record<string, unknown>
 }
 
@@ -72,36 +72,44 @@ export async function findRoutes(
   const destCoords = paisesData[destCode.toLowerCase()]?.mapaCoordenadas
 
   if (originCoords && destCoords) {
-    for (const mode of ['driving', 'transit'] as const) {
-      const googleRoutes = await getGoogleRoutes(
+    for (const mode of ['driving', 'walking', 'cycling'] as const) {
+      const orsRoutes = await getOpenRouteRoutes(
         { lat: originCoords[0], lng: originCoords[1] },
         { lat: destCoords[0], lng: destCoords[1] },
         mode
       )
-      for (const gr of googleRoutes) {
+      for (const or of orsRoutes) {
         const hasExisting = results.some(
-          (r) => r.mode === mode && Math.abs(r.durationMinutes - gr.durationMinutes) < 10
+          (r) => r.mode === mode && Math.abs(r.durationMinutes - or.durationMinutes) < 10
         )
         if (hasExisting) continue
 
-        const baseCost = gr.mode === 'driving'
-          ? Math.round(gr.distanceKm * 0.12)
-          : Math.round(gr.distanceKm * 0.08)
+        const baseCost = or.mode === 'driving'
+          ? Math.round(or.distanceKm * 0.12)
+          : or.mode === 'cycling'
+            ? 0
+            : Math.round(or.distanceKm * 0.08)
 
         const riskAdjustment = Math.round((destRisk.score - 50) * 0.3)
         const adjustedCost = Math.round(baseCost * (1 + riskAdjustment / 100))
 
+        const modeLabel: Record<string, string> = {
+          driving: 'Coche',
+          cycling: 'Bicicleta',
+          walking: 'A pie',
+        }
+
         results.push({
-          mode: gr.mode,
-          durationMinutes: gr.durationMinutes,
-          distanceKm: gr.distanceKm,
+          mode: or.mode,
+          durationMinutes: or.durationMinutes,
+          distanceKm: or.distanceKm,
           costEur: adjustedCost,
           costRange: [Math.round(adjustedCost * 0.7), Math.round(adjustedCost * 1.5)],
-          summary: `${gr.mode === 'driving' ? 'Coche' : 'Transporte público'} • ${gr.distanceKm} km • ${gr.durationMinutes} min`,
+          summary: `${modeLabel[or.mode] || or.mode} • ${or.distanceKm} km • ${or.durationMinutes} min`,
           riskLevel: destRisk.level,
           riskScore: avgRisk,
-          source: 'google',
-          details: { steps: gr.steps.length > 10 ? gr.steps.slice(0, 10) : gr.steps },
+          source: 'openroute',
+          details: { steps: or.steps.length > 10 ? or.steps.slice(0, 10) : or.steps },
         })
       }
     }
@@ -153,16 +161,16 @@ export function getRouteRecommendation(routes: RouteResult[]): string {
 
   const best = routes[0]
   const riskAdvice = best.riskScore >= 75
-    ? '⚠️ Destino de alto riesgo. Considera alternativas más seguras.'
+    ? 'Destino de alto riesgo. Considera alternativas más seguras.'
     : best.riskScore >= 50
-      ? 'ℹ️ Riesgo moderado. Toma precauciones normales.'
-      : '✅ Destino seguro para viajar.'
+      ? 'Riesgo moderado. Toma precauciones normales.'
+      : 'Destino seguro para viajar.'
 
   const costAdvice = best.costEur > 1000
-    ? 'Coste elevado. Revisa opciones más económicas.'
+    ? 'Coste elevado.'
     : best.costEur > 300
-      ? 'Coste medio. Presupuesto estándar.'
-      : 'Coste bajo. Viaje económico.'
+      ? 'Coste medio.'
+      : 'Coste bajo.'
 
   return `${riskAdvice} ${costAdvice} Mejor opción: ${best.summary}`
 }

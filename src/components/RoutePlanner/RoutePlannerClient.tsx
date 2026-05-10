@@ -13,7 +13,7 @@ interface RouteResult {
   summary: string
   riskLevel: string
   riskScore: number
-  source: 'google' | 'serpapi' | 'fallback'
+  source: 'openroute' | 'serpapi' | 'fallback'
   details?: Record<string, unknown>
 }
 
@@ -28,13 +28,13 @@ interface RoutesResponse {
 const modeIcons: Record<string, React.ReactNode> = {
   flight: <Plane className="w-5 h-5" />,
   driving: <Car className="w-5 h-5" />,
-  transit: <Bus className="w-5 h-5" />,
+  walking: <Bus className="w-5 h-5" />,
 }
 
 const modeColors: Record<string, string> = {
   flight: 'bg-sky-100 text-sky-700 border-sky-200',
   driving: 'bg-emerald-100 text-emerald-700 border-emerald-200',
-  transit: 'bg-amber-100 text-amber-700 border-amber-200',
+  walking: 'bg-amber-100 text-amber-700 border-amber-200',
 }
 
 const riskColors: Record<string, string> = {
@@ -202,13 +202,13 @@ export default function RoutePlannerClient() {
                     <div>
                       <div className="flex items-center gap-2">
                         <span className="font-medium text-slate-800 dark:text-white capitalize">
-                          {route.mode === 'flight' ? 'Vuelo' : route.mode === 'driving' ? 'Coche' : 'Transporte público'}
+                          {route.mode === 'flight' ? 'Vuelo' : route.mode === 'driving' ? 'Coche' : route.mode === 'cycling' ? 'Bicicleta' : 'A pie'}
                         </span>
                         {route.source === 'serpapi' && (
                           <span className="text-xs bg-purple-100 text-purple-700 px-1.5 py-0.5 rounded">Precio real</span>
                         )}
-                        {route.source === 'google' && (
-                          <span className="text-xs bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded">Ruta real</span>
+                        {route.source === 'openroute' && (
+                          <span className="text-xs bg-green-100 text-green-700 px-1.5 py-0.5 rounded">Ruta real</span>
                         )}
                       </div>
                       <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">
