@@ -11,6 +11,24 @@ const QuerySchema = z.object({
   pais: z.string().length(2).optional(),
 });
 
+async function getHardcoded(tipo?: string, pais?: string) {
+  const { GPI_DATA, GTI_DATA, HDI_DATA, IPC_DATA } = await import('@/data/indices');
+  const all: Record<string, any[]> = {
+    gpi: GPI_DATA.map(d => ({ tipo: 'gpi', codigo_pais: d.code.toLowerCase(), nombre_pais: d.country, valor: d.score, rank: d.rank, cambio: d.change, region: d.region })),
+    gti: GTI_DATA.map(d => ({ tipo: 'gti', codigo_pais: d.code.toLowerCase(), nombre_pais: d.country, valor: d.score, rank: d.rank, cambio: d.change, region: d.region })),
+    hdi: HDI_DATA.map(d => ({ tipo: 'hdi', codigo_pais: d.code.toLowerCase(), nombre_pais: d.country, valor: d.score, rank: d.rank, cambio: d.change, region: d.region })),
+    ipc: IPC_DATA.map(d => {
+      const numeric = parseFloat(String(d.ipc).replace('%', ''));
+      return { tipo: 'ipc', codigo_pais: d.code.toLowerCase(), nombre_pais: d.country, valor: numeric, nivel: d.nivel, region: d.region };
+    }),
+  };
+
+  let result = Object.values(all).flat();
+  if (tipo) result = all[tipo] || [];
+  if (pais) result = result.filter(r => r.codigo_pais === pais.toLowerCase());
+  return result;
+}
+
 export async function GET(req: Request) {
   try {
     const url = new URL(req.url);
@@ -21,21 +39,7 @@ export async function GET(req: Request) {
     const pais = parsed.success ? parsed.data.pais : undefined;
 
     if (!isSupabaseAdminConfigured()) {
-      const { GPI_DATA, GTI_DATA, HDI_DATA, IPC_DATA } = await import('@/data/indices');
-      const all = {
-        gpi: GPI_DATA.map(d => ({ tipo: 'gpi', codigo_pais: d.code.toLowerCase(), nombre_pais: d.country, valor: d.score, rank: d.rank, cambio: d.change, region: d.region })),
-        gti: GTI_DATA.map(d => ({ tipo: 'gti', codigo_pais: d.code.toLowerCase(), nombre_pais: d.country, valor: d.score, rank: d.rank, cambio: d.change, region: d.region })),
-        hdi: HDI_DATA.map(d => ({ tipo: 'hdi', codigo_pais: d.code.toLowerCase(), nombre_pais: d.country, valor: d.score, rank: d.rank, cambio: d.change, region: d.region })),
-        ipc: IPC_DATA.map(d => {
-          const numeric = parseFloat(String(d.ipc).replace('%', ''));
-          return { tipo: 'ipc', codigo_pais: d.code.toLowerCase(), nombre_pais: d.country, valor: numeric, nivel: d.nivel, region: d.region };
-        }),
-      } as Record<string, any[]>;
-
-      let result = Object.values(all).flat();
-      if (tipo) result = all[tipo] || [];
-      if (pais) result = result.filter(r => r.codigo_pais === pais.toLowerCase());
-      return NextResponse.json(result);
+      return NextResponse.json(await getHardcoded(tipo, pais));
     }
 
     let query = supabaseAdmin.from('indices').select('*');
@@ -45,12 +49,12 @@ export async function GET(req: Request) {
 
     const { data, error } = await query;
 
-    if (error) {
-      log.error('Error fetching indices:', error);
-      return apiError('Error al obtener indices', undefined, 500);
+    if (error || !data) {
+      log.warn('Supabase indices query failed, using fallback:', error?.message);
+      return NextResponse.json(await getHardcoded(tipo, pais));
     }
 
-    return NextResponse.json(data || []);
+    return NextResponse.json(data);
   } catch (err) {
     log.error('Indices error:', err);
     return apiError('Error interno', undefined, 500);
