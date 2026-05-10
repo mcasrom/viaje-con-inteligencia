@@ -362,7 +362,11 @@ function movingAverage(data: number[], window: number): number[] {
 }
 
 // Obtener impacto de conflicto para un país
-export function getConflictImpact(countryCode: string): {
+export function getConflictImpact(
+  countryCode: string,
+  liveClosures?: AirspaceClosure[],
+  liveRoutes?: AffectedRoute[],
+): {
   isAffected: boolean;
   surchargePct: number;
   timeExtraHours: number;
@@ -370,11 +374,14 @@ export function getConflictImpact(countryCode: string): {
   reason: string;
   alternativeRoute: string;
 } {
-  const routes = AFFECTED_ROUTES_FALLBACK.filter(r => r.countryCode === countryCode.toLowerCase() && r.isActive);
-  if (routes.length === 0) {
-  const pais = paisesData[countryCode.toLowerCase()];
+  const closures = liveClosures || AIRSPACE_CLOSURES_FALLBACK;
+  const routes = liveRoutes || AFFECTED_ROUTES_FALLBACK;
+
+  const matchedRoutes = routes.filter(r => r.countryCode === countryCode.toLowerCase() && r.isActive);
+  if (matchedRoutes.length === 0) {
+    const pais = paisesData[countryCode.toLowerCase()];
     if (pais) {
-      const closure = AIRSPACE_CLOSURES_FALLBACK.find(c => c.code === countryCode.toUpperCase() && c.isActive);
+      const closure = closures.find(c => c.code === countryCode.toUpperCase() && c.isActive);
       if (closure) {
         return {
           isAffected: true,
@@ -389,13 +396,13 @@ export function getConflictImpact(countryCode: string): {
     return { isAffected: false, surchargePct: 0, timeExtraHours: 0, closedAirspace: '', reason: '', alternativeRoute: '' };
   }
 
-  const worstRoute = routes.reduce((max, r) => r.fuelSurchargePct > max.fuelSurchargePct ? r : max, routes[0]);
+  const worstRoute = matchedRoutes.reduce((max, r) => r.fuelSurchargePct > max.fuelSurchargePct ? r : max, matchedRoutes[0]);
   return {
     isAffected: true,
     surchargePct: worstRoute.fuelSurchargePct,
     timeExtraHours: worstRoute.timeExtraHours,
-    closedAirspace: AIRSPACE_CLOSURES_FALLBACK.find(c => c.code === worstRoute.closedAirspace)?.name || worstRoute.closedAirspace,
-    reason: AIRSPACE_CLOSURES_FALLBACK.find(c => c.code === worstRoute.closedAirspace)?.reason || 'Espacio aéreo cerrado',
+    closedAirspace: closures.find(c => c.code === worstRoute.closedAirspace)?.name || worstRoute.closedAirspace,
+    reason: closures.find(c => c.code === worstRoute.closedAirspace)?.reason || 'Espacio aéreo cerrado',
     alternativeRoute: worstRoute.alternativeRoute,
   };
 }

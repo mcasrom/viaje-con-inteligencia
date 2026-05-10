@@ -1,7 +1,8 @@
 'use client';
 import { useState, useMemo } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, MapPin, Calendar, Clock, Users, TrendingUp, Star, CheckCircle } from 'lucide-react';
+import { ArrowLeft, MapPin, Calendar, Clock, Users, TrendingUp, Star, CheckCircle, FileText } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
 
 interface SharedTripClientProps {
   token: string;
@@ -127,6 +128,19 @@ export default function SharedTripClient({ token, sharedTrip, tripData, ownerDat
             </div>
           </div>
         </div>
+
+        {/* Itinerary */}
+        {tripData.itinerary_raw && (
+          <div className="bg-slate-800 rounded-xl p-6 mb-8 border border-slate-700">
+            <h3 className="text-lg font-bold text-white mb-3 flex items-center gap-2">
+              <FileText className="w-5 h-5 text-indigo-400" />
+              Itinerario del viaje
+            </h3>
+            <div className="prose prose-invert max-w-none text-sm text-slate-300 leading-relaxed">
+              <ReactMarkdown>{tripData.itinerary_raw}</ReactMarkdown>
+            </div>
+          </div>
+        )}
 
         {/* CTA */}
         <div className="text-center">

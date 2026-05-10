@@ -4,6 +4,7 @@ import { calculateTCI, getCheapestDestinations, getMostExpensiveDestinations, ge
 import ViajeCosteClient from '@/app/viaje-coste/[codigo]/ViajeCosteClient';
 import { JsonLd } from '@/components/seo/JsonLd';
 import { generateFAQSchema, generateBreadcrumbSchema } from '@/lib/schemas';
+import { getLiveTCIData } from '@/lib/tci-db';
 
 export const revalidate = 3600;
 
@@ -125,9 +126,10 @@ export default async function CosteDetailPage({ params }: PageProps) {
   const pais = getPaisPorCodigo(codigo);
   if (!pais || pais.visible === false) notFound();
 
-  const tci = calculateTCI(codigo);
+  const live = await getLiveTCIData();
+  const tci = calculateTCI(codigo, live.seasonality || undefined);
   const mlAnalysis = analyzeTCITrend(codigo);
-  const conflict = getConflictImpact(codigo);
+  const conflict = getConflictImpact(codigo, live.closures || undefined, live.routes || undefined);
   const presupuesto = getPresupuesto(tci.tci, pais);
   const mesIdeal = getMesIdeal(codigo);
 

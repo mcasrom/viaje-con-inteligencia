@@ -7,8 +7,11 @@ import {
   getConflictImpact,
   getOilHistory,
   getOilImpactAnalysis,
+  getGlobalConflictImpact,
+  getDemandShiftAnalysis,
 } from '@/data/tci-engine';
 import { supabaseAdmin, isSupabaseAdminConfigured } from '@/lib/supabase-admin';
+import { getLiveTCIData } from '@/lib/tci-db';
 
 async function getDynamicOilData(): Promise<{
   currentPrice: number | null;
@@ -46,6 +49,12 @@ export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const action = searchParams.get('action');
 
+  const live = await getLiveTCIData();
+  const liveClosures = live.closures || undefined;
+  const liveRoutes = live.routes || undefined;
+  const liveSeasonality = live.seasonality || undefined;
+  const liveDemandShifts = live.demandShifts || undefined;
+
   if (action === 'all') {
     const all = getTCIForAllCountries();
     const oilData = await getDynamicOilData();
@@ -61,10 +70,10 @@ export async function GET(request: NextRequest) {
     const country = searchParams.get('country');
     if (!country) return NextResponse.json({ error: 'country required' }, { status: 400 });
 
-    const tci = calculateTCI(country);
+    const tci = calculateTCI(country, liveSeasonality);
     const trend = analyzeTCITrend(country);
-    const monthly = monthlyTCIPattern(country);
-    const conflict = getConflictImpact(country);
+    const monthly = monthlyTCIPattern(country, liveSeasonality);
+    const conflict = getConflictImpact(country, liveClosures, liveRoutes);
     const oilData = await getDynamicOilData();
 
     return NextResponse.json({
@@ -74,6 +83,21 @@ export async function GET(request: NextRequest) {
       conflict,
       oilPrice: oilData?.currentPrice || tci.oilPrice,
       oilSource: oilData?.source || 'hardcoded',
+      dataSource: live.source || 'hardcoded',
+    });
+  }
+
+  if (action === 'conflict-summary') {
+    return NextResponse.json({
+      global: getGlobalConflictImpact(liveClosures, liveRoutes),
+      dataSource: live.source,
+    });
+  }
+
+  if (action === 'demand-shifts') {
+    return NextResponse.json({
+      analysis: getDemandShiftAnalysis(liveDemandShifts, liveSeasonality),
+      dataSource: live.source,
     });
   }
 
