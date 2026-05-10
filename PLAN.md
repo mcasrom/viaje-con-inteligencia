@@ -22,7 +22,7 @@
 
 | # | Tarea | Hardcoded reemplazado | Esfuerzo | Estado |
 |---|-------|----------------------|----------|--------|
-| 2.1 | Paises en Supabase — migrar `paises.ts` (~2000 líneas) a tabla `paises` con caché KV | `src/data/paises.ts` | 3 días | pendiente |
+| 2.1 | Paises en Supabase — migrar `paises.ts` (~6300 líneas) a tabla `paises` con caché KV | `src/data/paises.ts` | 3 días | ✅ |
 | 2.2 | Índices vivos — GPI/GTI/HDI/IPC desde Supabase + API | `src/data/indices.ts` | 1 día | ✅ |
 | 2.3 | TCI real-time — Brent vía Yahoo, seasonality vía NOAA, airspace vía OpenSky | `src/data/tci-engine.ts` | 2 días | en progreso |
 | 2.4 | Eliminar `events-fallback.ts` (cuando live data sea fiable) | `src/lib/events-fallback.ts` | ½ día | no recomendado |

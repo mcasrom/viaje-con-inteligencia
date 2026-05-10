@@ -481,7 +481,7 @@ function PrimaryCTA() {
     <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-[1020]">
       <Link
         href="/decidir"
-        className="flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-purple-600 to-violet-600 text-white rounded-2xl hover:opacity-90 transition-all shadow-2xl shadow-purple-500/25 text-base font-semibold group"
+        className="flex items-center gap-2 sm:gap-3 px-5 sm:px-6 py-2.5 sm:py-3 bg-gradient-to-r from-purple-600 to-violet-600 text-white rounded-xl sm:rounded-2xl hover:opacity-90 transition-all shadow-2xl shadow-purple-500/25 text-sm sm:text-base font-semibold group"
       >
         <Sparkles className="w-5 h-5 group-hover:scale-110 transition-transform" />
         Decide tu viaje en 30 segundos

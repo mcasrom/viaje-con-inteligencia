@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, X, Search, TrendingUp, TrendingDown, Minus, Shield, Globe, DollarSign, Activity, Award, AlertTriangle } from 'lucide-react';
+import { ArrowLeft, X, Search, TrendingUp, TrendingDown, Minus, Shield, Globe, DollarSign, Activity, Award, AlertTriangle, Sparkles, Loader2, SlidersHorizontal } from 'lucide-react';
 import { paisesData, getLabelRiesgo, NivelRiesgo } from '@/data/paises';
 import { calculateTCI } from '@/data/tci-engine';
 
@@ -71,6 +71,23 @@ export default function CompararClient() {
   const [selectedCodes, setSelectedCodes] = useState<string[]>(['es', 'fr', 'de']);
   const [search, setSearch] = useState('');
   const [showDropdown, setShowDropdown] = useState(false);
+  const [prefs, setPrefs] = useState({ safety: 0.7, cost: 0.5, development: 0.5 });
+  const [prompt, setPrompt] = useState('');
+  const [showPrompt, setShowPrompt] = useState(false);
+  const [recommendations, setRecommendations] = useState<RecommendResult | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [recError, setRecError] = useState('');
+
+  interface RecommendCountry {
+    code: string; name: string; flag: string; capital: string; continent: string;
+    ranking: number; summary: string; highlights: string[];
+    scores: { safety: number; cost: number; development: number; overall: number };
+  }
+  interface RecommendResult {
+    recommendations: RecommendCountry[];
+    method: 'ai' | 'deterministic';
+    warning?: string;
+  }
 
   useEffect(() => {
     const fetchData = async () => {
@@ -138,6 +155,45 @@ export default function CompararClient() {
   const removeCountry = (code: string) => {
     setSelectedCodes(selectedCodes.filter(c => c !== code));
   };
+
+  async function fetchRecommendations() {
+    setLoading(true);
+    setRecError('');
+    setRecommendations(null);
+    try {
+      const res = await fetch('/api/comparar/recomendar', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          countries: selectedCodes,
+          preferences: prefs,
+          prompt: prompt || undefined,
+        }),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({ error: 'Error de conexión' }));
+        throw new Error(err.error || 'Error al obtener recomendaciones');
+      }
+      const data = await res.json();
+      setRecommendations(data);
+    } catch (e: any) {
+      setRecError(e.message || 'Error al obtener recomendaciones');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function scoreColor(score: number): string {
+    if (score >= 70) return 'text-emerald-400';
+    if (score >= 50) return 'text-yellow-400';
+    return 'text-orange-400';
+  }
+
+  function scoreBarColor(score: number): string {
+    if (score >= 70) return 'bg-emerald-500';
+    if (score >= 50) return 'bg-yellow-500';
+    return 'bg-orange-500';
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800">
@@ -216,6 +272,146 @@ export default function CompararClient() {
 
         {selectedCountries.length > 0 && (
           <div className="space-y-6">
+
+            <div className="bg-gradient-to-r from-indigo-900/40 to-slate-800/60 rounded-xl border border-indigo-700/30 p-5">
+              <div className="flex items-center gap-2 mb-4">
+                <Sparkles className="w-5 h-5 text-indigo-400" />
+                <h2 className="text-lg font-bold text-white">Recomendación Inteligente</h2>
+              </div>
+              <p className="text-slate-400 text-sm mb-5">Ajusta tus preferencias para obtener una recomendación personalizada basada en datos objetivos + IA.</p>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                <div>
+                  <label className="text-slate-400 text-xs uppercase tracking-wider">Seguridad</label>
+                  <div className="flex items-center gap-3 mt-1">
+                    <Shield className="w-4 h-4 text-emerald-400 shrink-0" />
+                    <input type="range" min="0" max="1" step="0.1" value={prefs.safety}
+                      onChange={e => setPrefs(p => ({ ...p, safety: parseFloat(e.target.value) }))}
+                      className="w-full h-2 rounded-full appearance-none cursor-pointer accent-emerald-500" />
+                    <span className="text-white text-sm font-mono w-8 text-right">{Math.round(prefs.safety * 100)}%</span>
+                  </div>
+                </div>
+                <div>
+                  <label className="text-slate-400 text-xs uppercase tracking-wider">Coste bajo</label>
+                  <div className="flex items-center gap-3 mt-1">
+                    <DollarSign className="w-4 h-4 text-amber-400 shrink-0" />
+                    <input type="range" min="0" max="1" step="0.1" value={prefs.cost}
+                      onChange={e => setPrefs(p => ({ ...p, cost: parseFloat(e.target.value) }))}
+                      className="w-full h-2 rounded-full appearance-none cursor-pointer accent-amber-500" />
+                    <span className="text-white text-sm font-mono w-8 text-right">{Math.round(prefs.cost * 100)}%</span>
+                  </div>
+                </div>
+                <div>
+                  <label className="text-slate-400 text-xs uppercase tracking-wider">Desarrollo</label>
+                  <div className="flex items-center gap-3 mt-1">
+                    <Award className="w-4 h-4 text-blue-400 shrink-0" />
+                    <input type="range" min="0" max="1" step="0.1" value={prefs.development}
+                      onChange={e => setPrefs(p => ({ ...p, development: parseFloat(e.target.value) }))}
+                      className="w-full h-2 rounded-full appearance-none cursor-pointer accent-blue-500" />
+                    <span className="text-white text-sm font-mono w-8 text-right">{Math.round(prefs.development * 100)}%</span>
+                  </div>
+                </div>
+              </div>
+
+              <button onClick={() => setShowPrompt(!showPrompt)} className="text-xs text-slate-400 hover:text-white transition-colors mb-3 flex items-center gap-1">
+                <SlidersHorizontal className="w-3 h-3" />Añadir preferencias de texto libre
+              </button>
+
+              {showPrompt && (
+                <textarea value={prompt} onChange={e => setPrompt(e.target.value)}
+                  placeholder="Ej: busco playas tranquilas, buena gastronomía y que sea seguro para viajar solo..."
+                  className="w-full h-20 bg-slate-700/50 border border-slate-600 rounded-lg p-3 text-white text-sm placeholder-slate-500 focus:outline-none focus:border-indigo-500 mb-4 resize-none" />
+              )}
+
+              <button onClick={fetchRecommendations} disabled={loading || selectedCodes.length < 2}
+                className="w-full flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-500 disabled:bg-slate-700 disabled:text-slate-500 text-white font-medium rounded-lg px-4 py-3 transition-colors">
+                {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Sparkles className="w-5 h-5" />}
+                {loading ? 'Analizando países...' : 'Recomendar con IA'}
+              </button>
+            </div>
+
+            {recommendations && (
+              <div className="bg-slate-800/60 rounded-xl border border-slate-700/50 overflow-hidden">
+                <div className="p-4 bg-slate-700/30 border-b border-slate-700/50 flex items-center justify-between">
+                  <h2 className="text-lg font-bold text-white flex items-center gap-2">
+                    <Sparkles className="w-5 h-5 text-indigo-400" />Ranking Recomendado
+                  </h2>
+                  <span className="text-xs text-slate-500">
+                    {recommendations.method === 'ai' ? 'Con IA' : 'Datos objetivos'}
+                  </span>
+                </div>
+                {recommendations.warning && (
+                  <div className="mx-4 mt-4 px-3 py-2 bg-yellow-900/20 border border-yellow-700/30 rounded-lg text-yellow-400 text-xs">
+                    {recommendations.warning}
+                  </div>
+                )}
+                <div className="divide-y divide-slate-700/50">
+                  {recommendations.recommendations.map((rec: RecommendCountry) => (
+                    <div key={rec.code} className="p-4 md:p-5">
+                      <div className="flex items-start gap-4">
+                        <div className="flex-shrink-0 w-8 h-8 rounded-full bg-indigo-600/30 border border-indigo-500/40 flex items-center justify-center text-indigo-300 font-bold text-sm">
+                          {rec.ranking}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 mb-2">
+                            <span className="text-2xl">{rec.flag}</span>
+                            <h3 className="text-white font-bold text-lg">{rec.name}</h3>
+                            <span className="text-slate-500 text-xs">{rec.capital}</span>
+                          </div>
+
+                          <div className="flex items-center gap-3 mb-3">
+                            <span className={`text-2xl font-bold ${scoreColor(rec.scores.overall)}`}>{rec.scores.overall}</span>
+                            <div className="flex-1 h-2 bg-slate-700 rounded-full overflow-hidden">
+                              <div className={`h-full rounded-full transition-all ${scoreBarColor(rec.scores.overall)}`}
+                                style={{ width: `${rec.scores.overall}%` }} />
+                            </div>
+                          </div>
+
+                          <div className="grid grid-cols-3 gap-3 mb-3">
+                            {[
+                              { label: 'Seguridad', value: rec.scores.safety, color: 'emerald' },
+                              { label: 'Coste', value: rec.scores.cost, color: 'amber' },
+                              { label: 'Desarrollo', value: rec.scores.development, color: 'blue' },
+                            ].map(dim => (
+                              <div key={dim.label}>
+                                <div className="flex justify-between text-xs mb-1">
+                                  <span className="text-slate-500">{dim.label}</span>
+                                  <span className={`text-${dim.color}-400 font-mono`}>{dim.value}</span>
+                                </div>
+                                <div className="h-1.5 bg-slate-700 rounded-full overflow-hidden">
+                                  <div className={`h-full rounded-full bg-${dim.color}-500`}
+                                    style={{ width: `${dim.value}%` }} />
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+
+                          {rec.summary && (
+                            <p className="text-slate-300 text-sm leading-relaxed mb-2">{rec.summary}</p>
+                          )}
+
+                          {rec.highlights.length > 0 && (
+                            <div className="flex flex-wrap gap-1.5">
+                              {rec.highlights.map((h: string, i: number) => (
+                                <span key={i} className="px-2 py-0.5 bg-slate-700/60 border border-slate-600/50 rounded text-xs text-slate-300">
+                                  {h}
+                                </span>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {recError && (
+              <div className="bg-red-900/20 border border-red-700/30 rounded-xl p-4 text-red-400 text-sm text-center">
+                {recError}
+              </div>
+            )}
             <div className="bg-slate-800/60 rounded-xl border border-slate-700/50 overflow-hidden">
               <div className="p-4 bg-slate-700/30 border-b border-slate-700/50">
                 <h2 className="text-lg font-bold text-white flex items-center gap-2">
