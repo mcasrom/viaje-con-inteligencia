@@ -490,15 +490,17 @@ export interface TourismKPI {
   stayAvg: number;
 }
 
-const turismoData: Record<string, TourismKPI> = {
-  es: { arrivals: 85000000, receipts: 92000000000, spendPerDay: 85, stayAvg: 8 },
-  fr: { arrivals: 100000000, receipts: 65000000000, spendPerDay: 75, stayAvg: 7 },
-  us: { arrivals: 67000000, receipts: 175000000000, spendPerDay: 150, stayAvg: 10 },
-  it: { arrivals: 57000000, receipts: 48000000000, spendPerDay: 80, stayAvg: 7 },
-};
-
 export function getTourismKPIs(): Record<string, TourismKPI> {
-  return turismoData;
+  const result: Record<string, TourismKPI> = {};
+  for (const [code, data] of Object.entries(ineTourismData)) {
+    result[code] = {
+      arrivals: data.arrivals,
+      receipts: 0,
+      spendPerDay: 0,
+      stayAvg: data.estanciaMedia,
+    };
+  }
+  return Object.keys(result).length > 0 ? result : {};
 }
 
 export function getTopDestinations(metric: string, limit: number = 10) {

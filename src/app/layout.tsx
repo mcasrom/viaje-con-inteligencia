@@ -14,6 +14,7 @@ import Onboarding from "@/components/Onboarding";
 import { initPaisesData } from "@/lib/paises-init";
 import { initRutasData } from "@/lib/rutas-init";
 import { initClusteringData } from "@/lib/clustering-init";
+import { initIndicesData } from "@/lib/indices-init";
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -85,7 +86,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  await Promise.all([initPaisesData(), initRutasData(), initClusteringData()]);
+  await Promise.all([initPaisesData(), initRutasData(), initClusteringData(), initIndicesData()]);
   return (
     <html lang="es">
       <head>
