@@ -33,20 +33,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.85,
   }));
 
-  const viajeCosteEntries = paises.map((pais) => ({
-    url: `${BASE_URL}/viaje-coste/${pais.codigo}`,
-    lastModified: new Date(),
-    changeFrequency: 'weekly' as const,
-    priority: 0.75,
-  }));
-
-  const viajeClimaEntries = paises.map((pais) => ({
-    url: `${BASE_URL}/viajes/clima/${pais.codigo}`,
-    lastModified: new Date(),
-    changeFrequency: 'monthly' as const,
-    priority: 0.7,
-  }));
-
   const blogSlugs = getPostSlugs();
   const blogEntries = blogSlugs.map((slug) => ({
     url: `${BASE_URL}/blog/${slug}`,
@@ -56,8 +42,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   }));
 
   const staticPages: MetadataRoute.Sitemap = [
-    { url: BASE_URL, priority: 1.0, changeFrequency: 'weekly' as const, lastModified: new Date(), alternates: { languages: { es: BASE_URL, en: `${BASE_URL}/en`, 'x-default': BASE_URL } } },
-    { url: `${BASE_URL}/en`, priority: 0.9, changeFrequency: 'monthly' as const, lastModified: new Date() },
+    { url: BASE_URL, priority: 1.0, changeFrequency: 'weekly' as const, lastModified: new Date(), alternates: { languages: { es: BASE_URL, 'x-default': BASE_URL } } },
     { url: `${BASE_URL}/analisis`, priority: 0.85, changeFrequency: 'weekly' as const, lastModified: new Date() },
     { url: `${BASE_URL}/coste`, priority: 0.85, changeFrequency: 'weekly' as const, lastModified: new Date() },
     { url: `${BASE_URL}/decidir`, priority: 0.85, changeFrequency: 'weekly' as const, lastModified: new Date() },
@@ -67,7 +52,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${BASE_URL}/checklist`, priority: 0.8, changeFrequency: 'monthly' as const, lastModified: new Date() },
     { url: `${BASE_URL}/alertas`, priority: 0.8, changeFrequency: 'weekly' as const, lastModified: new Date() },
     { url: `${BASE_URL}/blog`, priority: 0.8, changeFrequency: 'weekly' as const, lastModified: new Date() },
-    { url: `${BASE_URL}/viaje-coste`, priority: 0.8, changeFrequency: 'monthly' as const, lastModified: new Date() },
     { url: `${BASE_URL}/documentos`, priority: 0.8, changeFrequency: 'monthly' as const, lastModified: new Date() },
     { url: `${BASE_URL}/paises`, priority: 0.8, changeFrequency: 'weekly' as const, lastModified: new Date() },
     { url: `${BASE_URL}/petroleo`, priority: 0.75, changeFrequency: 'weekly' as const, lastModified: new Date() },
@@ -78,7 +62,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${BASE_URL}/clustering`, priority: 0.75, changeFrequency: 'monthly' as const, lastModified: new Date() },
     { url: `${BASE_URL}/destinos`, priority: 0.75, changeFrequency: 'monthly' as const, lastModified: new Date() },
     { url: `${BASE_URL}/predicciones`, priority: 0.75, changeFrequency: 'monthly' as const, lastModified: new Date() },
-    { url: `${BASE_URL}/viajes/clima`, priority: 0.75, changeFrequency: 'monthly' as const, lastModified: new Date() },
     { url: `${BASE_URL}/rutas`, priority: 0.75, changeFrequency: 'monthly' as const, lastModified: new Date() },
     { url: `${BASE_URL}/chat`, priority: 0.7, changeFrequency: 'monthly' as const, lastModified: new Date() },
     { url: `${BASE_URL}/contact`, priority: 0.7, changeFrequency: 'monthly' as const, lastModified: new Date() },
@@ -97,8 +80,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...staticPages,
     ...paisEntries,
     ...costeEntries,
-    ...viajeCosteEntries,
-    ...viajeClimaEntries,
+
     ...blogEntries,
   ];
 }

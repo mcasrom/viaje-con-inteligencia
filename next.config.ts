@@ -24,6 +24,16 @@ const nextConfig: NextConfig = {
       { hostname: 'www.viajeinteligencia.com' },
     ],
   },
+  async redirects() {
+    return [
+      {
+        source: '/:path*',
+        has: [{ type: 'host', value: 'viajeinteligencia.com' }],
+        destination: 'https://www.viajeinteligencia.com/:path*',
+        permanent: true,
+      },
+    ];
+  },
   async headers() {
     return [
       {
