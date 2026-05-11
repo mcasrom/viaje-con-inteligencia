@@ -13,6 +13,7 @@ interface RouteResult {
   distanceKm: number
   costEur: number
   costRange: [number, number]
+  co2Kg: number
   summary: string
   riskLevel: string
   riskScore: number
@@ -219,6 +220,71 @@ export default function RoutePlannerClient() {
                 <Share2 className="w-4 h-4" />
                 {copied ? '¡Copiado!' : 'Compartir'}
               </button>
+            </div>
+          </div>
+
+          <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
+            <div className="p-3 border-b border-slate-100 dark:border-slate-700">
+              <h4 className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+                Comparativa
+              </h4>
+            </div>
+            <div className="overflow-x-auto">
+              <table className="w-full text-xs">
+                <thead>
+                  <tr className="border-b border-slate-100 dark:border-slate-700 text-slate-500 dark:text-slate-400">
+                    <th className="p-2 text-left font-medium">Modo</th>
+                    <th className="p-2 text-right font-medium">Duración</th>
+                    <th className="p-2 text-right font-medium">Distancia</th>
+                    <th className="p-2 text-right font-medium">Coste</th>
+                    <th className="p-2 text-right font-medium">CO₂</th>
+                    <th className="p-2 text-center font-medium">Riesgo</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {result.routes.map((route, i) => {
+                    const modeLabel: Record<string, string> = {
+                      flight: 'Vuelo', driving: 'Coche', walking: 'A pie',
+                      cycling: 'Bicicleta', transit: 'Transporte público',
+                    }
+                    const co2 = route.co2Kg
+                    const co2Label = co2 === 0 ? '0 kg' : co2 < 1 ? '<1 kg' : `${co2} kg`
+                    return (
+                      <tr key={i} className={`border-b border-slate-50 dark:border-slate-700/50 ${i === 0 ? 'bg-blue-50 dark:bg-blue-900/10' : ''}`}>
+                        <td className="p-2 text-left">
+                          <div className="flex items-center gap-1.5">
+                            <span className={`p-1 rounded ${modeColors[route.mode] || 'bg-gray-100'}`}>
+                              {modeIcons[route.mode] || <Car className="w-3.5 h-3.5" />}
+                            </span>
+                            <span className="font-medium text-slate-700 dark:text-slate-300">
+                              {modeLabel[route.mode] || route.mode}
+                            </span>
+                            {route.source === 'serpapi' && <span className="text-purple-600 text-[10px]">✈</span>}
+                            {route.source === 'openroute' && <span className="text-green-600 text-[10px]">●</span>}
+                          </div>
+                        </td>
+                        <td className="p-2 text-right text-slate-600 dark:text-slate-400 whitespace-nowrap">
+                          {formatDuration(route.durationMinutes)}
+                        </td>
+                        <td className="p-2 text-right text-slate-600 dark:text-slate-400">
+                          {route.distanceKm > 0 ? `${route.distanceKm} km` : '—'}
+                        </td>
+                        <td className="p-2 text-right text-slate-600 dark:text-slate-400 whitespace-nowrap">
+                          {route.costRange[0]}–{route.costRange[1]}€
+                        </td>
+                        <td className="p-2 text-right text-slate-600 dark:text-slate-400 whitespace-nowrap">
+                          {co2Label}
+                        </td>
+                        <td className="p-2 text-center">
+                          <span className={`inline-block text-[10px] px-1.5 py-0.5 rounded-full font-medium ${riskColors[route.riskLevel] || 'bg-gray-100 text-gray-700'}`}>
+                            {route.riskLevel}
+                          </span>
+                        </td>
+                      </tr>
+                    )
+                  })}
+                </tbody>
+              </table>
             </div>
           </div>
 

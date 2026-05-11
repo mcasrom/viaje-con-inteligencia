@@ -9,11 +9,32 @@ export interface RouteResult {
   distanceKm: number
   costEur: number
   costRange: [number, number]
+  co2Kg: number
   summary: string
   riskLevel: string
   riskScore: number
   source: 'openroute' | 'serpapi' | 'fallback'
   details?: Record<string, unknown>
+}
+
+const CO2_PER_KM: Record<string, number> = {
+  flight: 0.255,
+  driving: 0.120,
+  transit: 0.030,
+  walking: 0,
+  cycling: 0,
+}
+
+function calcCo2(mode: string, distanceKm: number): number {
+  return Math.round((CO2_PER_KM[mode] || 0) * distanceKm * 10) / 10
+}
+
+function haversineKm(lat1: number, lon1: number, lat2: number, lon2: number): number {
+  const R = 6371
+  const dLat = (lat2 - lat1) * Math.PI / 180
+  const dLon = (lon2 - lon1) * Math.PI / 180
+  const a = Math.sin(dLat / 2) ** 2 + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon / 2) ** 2
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
 }
 
 const riesgoLabels: Record<string, string> = {
@@ -67,6 +88,7 @@ export async function findRoutes(
       distanceKm: fr.distanceKm,
       costEur: fr.estimatedCostEur,
       costRange: [adjustedCostMin, adjustedCostMax],
+      co2Kg: calcCo2(fr.mode, fr.distanceKm),
       summary: fr.summary,
       riskLevel: destRisk.level,
       riskScore: avgRisk,
@@ -74,6 +96,10 @@ export async function findRoutes(
       details: straightPolyline ? { polyline: straightPolyline } : undefined,
     })
   }
+
+  const airDistanceKm = originCoords && destCoords
+    ? Math.round(haversineKm(originCoords[0], originCoords[1], destCoords[0], destCoords[1]))
+    : 0
 
   if (originCoords && destCoords) {
     for (const mode of ['driving', 'walking', 'cycling', 'transit'] as const) {
@@ -110,6 +136,7 @@ export async function findRoutes(
           distanceKm: or.distanceKm,
           costEur: adjustedCost,
           costRange: [Math.round(adjustedCost * 0.7), Math.round(adjustedCost * 1.5)],
+          co2Kg: calcCo2(or.mode, or.distanceKm),
           summary: `${modeLabel[or.mode] || or.mode} • ${or.distanceKm} km • ${or.durationMinutes} min`,
           riskLevel: destRisk.level,
           riskScore: avgRisk,
@@ -154,6 +181,7 @@ export async function findRoutes(
           distanceKm: 0,
           costEur: f.priceEur,
           costRange: [f.priceEur, f.priceEur],
+          co2Kg: calcCo2('flight', airDistanceKm),
           summary: `${f.airline} • ${f.stops === 0 ? 'Directo' : `${f.stops} escala${f.stops > 1 ? 's' : ''}`} • ${f.durationMinutes} min`,
           riskLevel: destRisk.level,
           riskScore: avgRisk,
@@ -204,5 +232,11 @@ export function getRouteRecommendation(routes: RouteResult[]): string {
       ? 'Coste medio.'
       : 'Coste bajo.'
 
-  return `${riskAdvice} ${costAdvice} Mejor opción: ${best.summary}`
+  const co2Advice = best.co2Kg > 200
+    ? 'Huella de carbono alta.'
+    : best.co2Kg > 50
+      ? 'Huella de carbono moderada.'
+      : 'Huella de carbono baja.'
+
+  return `${riskAdvice} ${costAdvice} ${co2Advice} Mejor opción: ${best.summary}`
 }

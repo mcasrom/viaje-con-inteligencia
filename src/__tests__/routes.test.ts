@@ -50,6 +50,7 @@ describe('getRouteRecommendation', () => {
     distanceKm: 1000,
     costEur: 100,
     costRange: [70, 150] as [number, number],
+    co2Kg: 120,
     summary: 'Coche • 1000 km • 600 min',
     riskLevel: 'Sin riesgo',
     riskScore: 10,
@@ -61,10 +62,11 @@ describe('getRouteRecommendation', () => {
     expect(getRouteRecommendation([])).toBe('No hay rutas disponibles para este destino.')
   })
 
-  it('safe + low cost recommendation', () => {
+  it('safe + low cost + low co2 recommendation', () => {
     const rec = getRouteRecommendation([makeRoute()])
     expect(rec).toContain('seguro')
     expect(rec).toContain('Coste bajo')
+    expect(rec).toContain('Huella de carbono')
   })
 
   it('high risk warning', () => {
