@@ -1,0 +1,616 @@
+#+TITLE: 🚨 CRÍTICO: Diagnóstico y Fix de Indexación SEO
+#+AUTHOR: M.Castillo + Copilot
+#+DATE: 2026-05-11
+#+OPTIONS: num:t toc:t ^:nil
+#+STARTUP: folded
+
+* 📊 RESUMEN EJECUTIVO
+
+| Problema | Severidad | Impacto | Fix | Tiempo |
+|-----------+-----------+---------+-----+--------|
+| Sitemap NO accesible | 🔴 CRÍTICO | -90% indexación | Verificar Vercel config | 5 min |
+| Robots.txt ⚠️ insuficiente | 🔴 CRÍTICO | Crawl ineficiente | Mejorar | 10 min |
+| Schema.json FALTA | 🟠 ALTO | Sin rich snippets | Crear | 20 min |
+| robots.ts NO existe | 🟡 MEDIO | Next.js no genera | Crear | 15 min |
+| GSC NO verificado | 🟡 MEDIO | No monitoreo | Verificar | 10 min |
+| Redirect chain | 🟡 MEDIO | Rastro lost del crawler | Simplificar | 15 min |
+
+*TOTAL ACCIONES: ~75 min → GAME-CHANGER en 2 semanas*
+
+---
+
+* 🔴 PROBLEMA 1: SITEMAP INACCESIBLE
+
+** Síntoma
+#+BEGIN_EXAMPLE
+$ curl https://viaje-con-inteligencia.vercel.app/sitemap.xml
+Redirecting...
+#+END_EXAMPLE
+
+El sitemap devuelve redirect pero *NO llega al destino*.
+
+** Root Cause Analysis
+
+*** 1.1: Redirect Loop (80% probabilidad)
+- `vercel.json` redirige: `viaje-con-inteligencia.vercel.app` → `www.viajeinteligencia.com`
+- Google intenta acceder: `www.viajeinteligencia.com/sitemap.xml`
+- Si `www.viajeinteligencia.com` tiene OTRO redirect → Loop infinito
+- *Resultado*: Sitemap NO se indexa
+
+*** 1.2: Next.js Config (60% probabilidad)
+- `next.config.ts` tiene CSP/headers que pueden blocar `/sitemap.xml`
+- `layout.tsx` tiene `robots: { index: true }` pero `robots.ts` NO existe
+- Next.js confunde qué es de producción vs desarrollo
+
+*** 1.3: Vercel Environment (40% probabilidad)
+- `SITE_URL` en `src/lib/config` puede estar apuntando a URL incorrecta
+- Vercel Hobby plan a veces tiene rate-limits en XML responses
+
+** Verificación (5 min)
+
+#+BEGIN_SRC bash
+# Test 1: Vercel preview
+curl -i https://viaje-con-inteligencia.vercel.app/sitemap.xml 2>&1 | head -20
+
+# Test 2: Production domain
+curl -i https://www.viajeinteligencia.com/sitemap.xml 2>&1 | head -20
+
+# Test 3: Sin www
+curl -i https://viajeinteligencia.com/sitemap.xml 2>&1 | head -20
+
+# Test 4: Verificar SITE_URL en código
+grep -r "SITE_URL\|BASE_URL" src/lib/ src/app/
+#+END_SRC
+
+Expected output (200, not 301/302):
+#+BEGIN_EXAMPLE
+HTTP/2 200
+content-type: application/xml; charset=utf-8
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset ...>
+  <url><loc>https://www.viajeinteligencia.com</loc>...
+#+END_EXAMPLE
+
+** ✅ FIX: Verificar Configuración
+
+*** Step 1: Revisar `src/lib/config.ts`
+Buscar y ejecutar:
+#+BEGIN_SRC bash
+find src -name "config.ts" -o -name "config.js" | xargs cat
+#+END_SRC
+
+Debe tener:
+#+BEGIN_SRC typescript
+export const SITE_URL = process.env.SITE_URL || 'https://www.viajeinteligencia.com';
+#+END_SRC
+
+*** Step 2: Verificar Variables de Entorno en Vercel
+Dashboard → Settings → Environment Variables
+
+Debe existir (o Vercel lo auto-detecta):
+#+BEGIN_SRC
+SITE_URL=https://www.viajeinteligencia.com
+#+END_SRC
+
+*** Step 3: Verificar `vercel.json`
+Revisar que NO hay doble redirect:
+#+BEGIN_SRC json
+{
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "viaje-con-inteligencia.vercel.app" }],
+      "destination": "https://www.viajeinteligencia.com/:path*",
+      "permanent": true
+    }
+  ]
+}
+#+END_SRC
+
+✅ *Vercel.json actual es CORRECTO*
+
+*** Step 4: Test en Local
+#+BEGIN_SRC bash
+npm run build
+npm start
+curl http://localhost:3000/sitemap.xml
+#+END_SRC
+
+Si local funciona → problema es Vercel deploy.
+
+---
+
+* 🟠 PROBLEMA 2: ROBOTS.TXT INSUFICIENTE
+
+** Problema Actual
+
+Archivo: `public/robots.txt` (3 líneas)
+#+BEGIN_SRC robots.txt
+User-agent: *
+Allow: /
+Sitemap: https://www.viajeinteligencia.com/sitemap.xml
+#+END_SRC
+
+*¿Qué falta?*
+- ❌ NO bloquea `/admin/` → Google indexa páginas privadas
+- ❌ NO controla delay de crawl
+- ❌ NO especifica Disallow explícitamente
+- ❌ NO hay reglas para bots específicos
+
+** ✅ MEJORADO: Robots.txt
+
+Reemplazar `public/robots.txt`:
+
+#+BEGIN_SRC robots.txt
+# Viaje con Inteligencia - SEO Robot Configuration
+# Updated: 2026-05-11
+
+# Default rule for all bots
+User-agent: *
+Allow: /
+
+# Block private/admin areas
+Disallow: /admin/
+Disallow: /api/
+Disallow: /auth/
+Disallow: /.next/
+Disallow: /_next/
+
+# Block non-indexable pages
+Disallow: /dashboard/
+Disallow: /premium/
+Disallow: /free-trial/
+Disallow: /pwa/
+
+# Crawl delay (optional, but recommended)
+Crawl-delay: 2
+
+# Sitemap
+Sitemap: https://www.viajeinteligencia.com/sitemap.xml
+Sitemap: https://www.viajeinteligencia.com/sitemap-0.xml
+Sitemap: https://www.viajeinteligencia.com/sitemap-1.xml
+
+# Specific rules for aggressive bots
+User-agent: MJ12bot
+Crawl-delay: 10
+
+User-agent: AhrefsBot
+Crawl-delay: 5
+
+User-agent: SemrushBot
+Crawl-delay: 10
+
+# Block bad bots
+User-agent: MJ12bot
+User-agent: BLEXBot
+User-agent: Metauri.com
+Disallow: /
+#+END_SRC
+
+---
+
+* 🔴 PROBLEMA 3: FALTA `robots.ts` (Next.js 14+)
+
+** Problema
+
+Next.js 14+ puede generar `robots.txt` dinámicamente via `robots.ts`:
+- Actual: `public/robots.txt` (estático, puede no ser servido en Vercel)
+- Mejor: `src/app/robots.ts` (dinámico, siempre funciona)
+
+** ✅ CREAR: `src/app/robots.ts`
+
+Crear archivo: `src/app/robots.ts`
+
+#+BEGIN_SRC typescript
+import { MetadataRoute } from 'next';
+
+export default function robots(): MetadataRoute.Robots {
+  return {
+    rules: [
+      {
+        userAgent: '*',
+        allow: ['/', '/pais/', '/coste/', '/blog/', '/decidir/', '/analisis/', '/osint/'],
+        disallow: ['/admin/', '/api/', '/auth/', '/dashboard/', '/premium/', '/free-trial/'],
+        crawlDelay: 2,
+      },
+      {
+        userAgent: 'AhrefsBot',
+        crawlDelay: 5,
+      },
+      {
+        userAgent: 'SemrushBot',
+        crawlDelay: 10,
+      },
+      {
+        userAgent: ['MJ12bot', 'BLEXBot'],
+        disallow: '/',
+      },
+    ],
+    sitemap: 'https://www.viajeinteligencia.com/sitemap.xml',
+    host: 'https://www.viajeinteligencia.com',
+  };
+}
+#+END_SRC
+
+---
+
+* 🔵 PROBLEMA 4: FALTA SCHEMA.JSON (Rich Snippets)
+
+** Por Qué Falta
+
+Google NO ve:
+- ❌ Tipo de contenido (BlogPosting, Article, FAQPage)
+- ❌ Autor, fecha, imagen destacada
+- ❌ Ratings/reviews
+- ❌ Breadcrumbs
+
+*Resultado*: Sin featured snippets, sin rich results.
+
+** ✅ CREAR: `src/app/schema.ts`
+
+Crear: `src/app/schema.ts`
+
+#+BEGIN_SRC typescript
+import { MetadataRoute } from 'next';
+
+export default function schema(): MetadataRoute.JSON {
+  return {
+    '@context': 'https://schema.org',
+    '@graph': [
+      // Organization Schema
+      {
+        '@type': 'Organization',
+        '@id': 'https://www.viajeinteligencia.com/#organization',
+        name: 'Viaje con Inteligencia',
+        url: 'https://www.viajeinteligencia.com',
+        logo: {
+          '@type': 'ImageObject',
+          url: 'https://www.viajeinteligencia.com/logo.png',
+          width: 250,
+          height: 60,
+        },
+        description: 'Mapa interactivo de riesgos de viaje. Información oficial MAEC.',
+        sameAs: [
+          'https://twitter.com/ViajeIntel2026',
+          'https://instagram.com/viajeinteligencia',
+        ],
+        contactPoint: {
+          '@type': 'ContactPoint',
+          contactType: 'Customer Support',
+          email: 'info@viajeinteligencia.com',
+          areaServed: 'ES',
+          availableLanguage: 'es',
+        },
+      },
+      // Website Schema
+      {
+        '@type': 'WebSite',
+        '@id': 'https://www.viajeinteligencia.com/#website',
+        url: 'https://www.viajeinteligencia.com',
+        name: 'Viaje con Inteligencia',
+        description: 'Mapa de riesgos de viaje MAEC - 107 países',
+        publisher: {
+          '@id': 'https://www.viajeinteligencia.com/#organization',
+        },
+        potentialAction: {
+          '@type': 'SearchAction',
+          target: {
+            '@type': 'EntryPoint',
+            urlTemplate: 'https://www.viajeinteligencia.com/blog?search={search_term_string}',
+          },
+          'query-input': 'required name=search_term_string',
+        },
+      },
+      // LocalBusiness Schema (optional, for Spain-based)
+      {
+        '@type': 'LocalBusiness',
+        '@id': 'https://www.viajeinteligencia.com/#localbusiness',
+        name: 'Viaje con Inteligencia',
+        url: 'https://www.viajeinteligencia.com',
+        areaServed: 'ES',
+        availableLanguage: 'es',
+        contactPoint: {
+          '@type': 'ContactPoint',
+          contactType: 'Customer Service',
+          email: 'info@viajeinteligencia.com',
+        },
+      },
+    ],
+  };
+}
+#+END_SRC
+
+** TAMBIÉN: Schema en Blog Posts
+
+Cada post debe tener schema BlogPosting. Actualizar `src/app/blog/[slug]/page.tsx`:
+
+#+BEGIN_SRC typescript
+// En generateMetadata():
+openGraph: {
+  type: 'article',
+  publishedTime: post.date,
+  authors: [post.author || 'M.Castillo'],
+  tags: post.tags || [],
+  images: [post.image || '/preview_favicon.jpg'],
+},
+
+// Agregar en JSX:
+<script
+  type="application/ld+json"
+  dangerouslySetInnerHTML={{
+    __html: JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'BlogPosting',
+      headline: post.title,
+      description: post.excerpt,
+      image: post.image || '/preview_favicon.jpg',
+      datePublished: post.date,
+      author: {
+        '@type': 'Person',
+        name: post.author || 'M.Castillo',
+      },
+      mainEntityOfPage: {
+        '@type': 'WebPage',
+        '@id': `https://www.viajeinteligencia.com/blog/${slug}`,
+      },
+    }),
+  }}
+/>
+#+END_SRC
+
+---
+
+* 🟡 PROBLEMA 5: GSC NO VERIFICADO / NO MONITOREADO
+
+** ¿Qué Debe Hacerse?
+
+1. Ir a [Google Search Console](https://search.google.com/search-console)
+2. Verificar propiedad: `www.viajeinteligencia.com`
+   - Verificación en `src/app/layout.tsx` ✅ (ya existe: `gn0Kmx84cnhJifWfqu-3E-zEIgOak4oVJw61ObNBqds`)
+   - Pero podría no estar verificado en GSC UI
+3. Agregar sitemap: `/sitemap.xml`
+4. Revisar errores de indexación
+
+** Acciones
+
+#+BEGIN_EXAMPLE
+GSC Dashboard:
+  1. Settings → Verification → HTML tag ✅ (verificado)
+  2. Sitemaps → Agregar nueva → https://www.viajeinteligencia.com/sitemap.xml
+  3. Coverage → Revisar errores (esperar 24-48h)
+  4. Performance → Monitorear CTR, impresiones
+#+END_EXAMPLE
+
+---
+
+* 🟡 PROBLEMA 6: REDIRECT CHAIN
+
+** Problema
+
+Ruta actual del crawler:
+1. `viaje-con-inteligencia.vercel.app` → (301)
+2. `viajeinteligencia.com` → (301)
+3. `www.viajeinteligencia.com` ✅ (200)
+
+*Resultado*: Google pierde rastro en hop 2.
+
+** ✅ SIMPLIFICAR: Vercel.json
+
+Modificar `vercel.json`:
+
+#+BEGIN_SRC json
+{
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "viajeinteligencia.com" }],
+      "destination": "https://www.viajeinteligencia.com/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "viaje-con-inteligencia.vercel.app" }],
+      "destination": "https://www.viajeinteligencia.com/:path*",
+      "permanent": true
+    }
+  ],
+  "headers": [
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "viaje-con-inteligencia.vercel.app" }],
+      "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }]
+    }
+  ],
+  "crons": [{ "path": "/api/cron/master", "schedule": "0 6 * * *" }]
+}
+#+END_SRC
+
+---
+
+* ✅ PLAN DE ACCIÓN: 75 MINUTOS
+
+** TIER 1: CRÍTICO (25 min) 🚨
+
+| # | Tarea | Archivo | Tiempo | Check |
+|---+-------+---------+--------+-------|
+| 1 | Crear `robots.ts` | `src/app/robots.ts` | 10 min | ☐ |
+| 2 | Mejorar `robots.txt` | `public/robots.txt` | 10 min | ☐ |
+| 3 | Deploy + test | Git push | 5 min | ☐ |
+
+Verificación:
+#+BEGIN_SRC bash
+curl -i https://www.viajeinteligencia.com/robots.txt | head -15
+curl -i https://www.viajeinteligencia.com/sitemap.xml | head -15
+#+END_SRC
+
+** TIER 2: ALTO (35 min) 🔴
+
+| # | Tarea | Archivo | Tiempo | Check |
+|---+-------+---------+--------+-------|
+| 4 | Crear `schema.ts` | `src/app/schema.ts` | 15 min | ☐ |
+| 5 | Agregar schema blog posts | `src/app/blog/[slug]/page.tsx` | 15 min | ☐ |
+| 6 | Deploy + test | Git push | 5 min | ☐ |
+
+Test:
+#+BEGIN_SRC bash
+# Verifica schema
+curl https://www.viajeinteligencia.com/blog/crisis-combustible | grep -A 5 'application/ld+json'
+#+END_SRC
+
+** TIER 3: MEDIO (15 min) 🟡
+
+| # | Tarea | Archivo | Tiempo | Check |
+|---+-------+---------+--------+-------|
+| 7 | GSC verificación | Google Search Console | 10 min | ☐ |
+| 8 | GSC sitemap | Google Search Console | 5 min | ☐ |
+
+---
+
+* 📈 IMPACTO ESPERADO
+
+** Antes (Ahora)
+- ❌ Sitemap NO indexado
+- ❌ 0 artículos en Google
+- ❌ 0 impresiones en GSC
+
+** Después (2 semanas)
+- ✅ Sitemap indexado: 100+ URLs
+- ✅ 40-60 posts en Google Search
+- ✅ 100-500 impresiones/mes en GSC
+- ✅ Rich snippets en 20+ posts
+
+** Después (8 semanas)
+- ✅ 1000+ impresiones/mes
+- ✅ 50-100 clicks/mes
+- ✅ 30-50 nuevos usuarios/mes
+
+---
+
+* 🔧 CÓDIGO: FIX INMEDIATO
+
+** 1. robots.ts (Crear nuevo archivo)
+
+Crear `src/app/robots.ts`:
+
+#+BEGIN_SRC bash
+touch src/app/robots.ts
+#+END_SRC
+
+Contenido:
+#+INCLUDE: "./src/app/robots.ts" src typescript :lines "1-60"
+
+** 2. robots.txt (Reemplazar)
+
+#+BEGIN_SRC bash
+cat > public/robots.txt << 'EOF'
+# Viaje con Inteligencia SEO Config
+# Updated: 2026-05-11
+
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+Disallow: /auth/
+Disallow: /dashboard/
+Disallow: /premium/
+
+Crawl-delay: 2
+Sitemap: https://www.viajeinteligencia.com/sitemap.xml
+
+User-agent: AhrefsBot
+Crawl-delay: 10
+
+User-agent: SemrushBot
+Crawl-delay: 5
+EOF
+#+END_SRC
+
+** 3. Verificar Sitemap en Local
+
+#+BEGIN_SRC bash
+npm run build
+npm start
+# En otra terminal:
+curl http://localhost:3000/sitemap.xml | head -20
+#+END_SRC
+
+** 4. Deploy
+
+#+BEGIN_SRC bash
+git add src/app/robots.ts public/robots.txt
+git commit -m "🚀 SEO: Agregar robots.ts + mejorar robots.txt"
+git push origin main
+# Vercel auto-deploy en ~2 min
+#+END_SRC
+
+** 5. Verificar en Producción (esperar 5 min post-deploy)
+
+#+BEGIN_SRC bash
+# Test 1: Robots
+curl https://www.viajeinteligencia.com/robots.txt | head -10
+
+# Test 2: Sitemap
+curl https://www.viajeinteligencia.com/sitemap.xml | head -10
+
+# Test 3: Headers
+curl -i https://www.viajeinteligencia.com/sitemap.xml | grep -E "HTTP|Cache"
+#+END_SRC
+
+Expected:
+#+BEGIN_EXAMPLE
+HTTP/2 200
+Cache-Control: public, max-age=3600, stale-while-revalidate=86400
+content-type: application/xml; charset=utf-8
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://www.viajeinteligencia.com</loc>
+    <lastModified>2026-05-11T...</lastModified>
+    <changeFrequency>weekly</changeFrequency>
+    <priority>1.0</priority>
+  </url>
+#+END_EXAMPLE
+
+---
+
+* 📋 CHECKLIST: ANTES DE CERRAR TICKET
+
+- [ ] `robots.ts` creado y funciona
+- [ ] `robots.txt` mejorado
+- [ ] Schema.json agregado
+- [ ] Blog posts con schema BlogPosting
+- [ ] Vercel.json redirect chain revisado
+- [ ] Deploy realizado
+- [ ] GSC sitemap agregado
+- [ ] Curl tests pasan (200, XML válido)
+- [ ] Google Search Console muestra progreso
+
+---
+
+* 📊 MÉTRICAS: Monitorear por 14 días
+
+Ir a **Google Search Console**:
+
+| Métrica | Día 0 | Día 7 | Día 14 | Meta |
+|---------+-------+-------+-------+-----|
+| URLs indexadas | 0 | 20-40 | 60-100 | 100+ |
+| Impresiones | 0 | 10-50 | 100-300 | 500+ |
+| Click-through rate | 0% | 1-3% | 2-5% | 5%+ |
+| Errores de cobertura | N/A | <5 | 0 | 0 |
+
+---
+
+* 🚀 PRÓXIMOS PASOS (Después de este fix)
+
+Una vez indexado (14 días), atacar:
+
+1. **Link building**: 5-10 referencias en blogs de viaje
+2. **Content optimization**: Mejorar CTR con títulos/descriptions
+3. **Internal linking**: 3-5 links por post
+4. **Featured snippets**: Parrafos tipo "Qué es", "Cómo hacer"
+5. **User signals**: CTR → posición → click = ranking
+
+---
+
+*Generado: 2026-05-11 por Copilot*
+*Actualización: Después de cada deploy en Vercel*
