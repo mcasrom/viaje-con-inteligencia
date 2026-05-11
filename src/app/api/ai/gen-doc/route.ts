@@ -2,7 +2,8 @@ import { NextResponse } from 'next/server';
 import { checkPremium } from '@/lib/premium-check';
 import { groqClient } from '@/lib/groq-ai';
 import { paisesData } from '@/data/paises';
-import { getTourismStats, formatTourismStats } from '@/data/tourism';
+import { formatTourismStats } from '@/data/tourism';
+import { getTourismStats } from '@/lib/tourism-db';
 
 export const runtime = 'edge';
 
@@ -49,7 +50,7 @@ async function generateInforme(pais: string) {
     return { error: `País ${pais} no encontrado` };
   }
 
-  const tourismStats = getTourismStats(pais);
+  const tourismStats = await getTourismStats(pais);
   const tourismInfo = tourismStats ? formatTourismStats(tourismStats) : 'No disponible';
 
   const prompt = `Genera un informe completo de viaje para ${paisData.nombre} ${paisData.bandera}

@@ -23,23 +23,6 @@
       "permanent": true
     }
   ],
-  "headers": [
-    {
-      "source": "/:path*",
-      "has": [
-        {
-          "type": "host",
-          "value": "viaje-con-inteligencia.vercel.app"
-        }
-      ],
-      "headers": [
-        {
-          "key": "X-Robots-Tag",
-          "value": "noindex, nofollow"
-        }
-      ]
-    }
-  ],
   "crons": [
     {
       "path": "/api/cron/master",

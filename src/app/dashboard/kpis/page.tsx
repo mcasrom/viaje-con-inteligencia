@@ -1,7 +1,7 @@
 import { getTodosLosPaises } from '@/data/paises';
 import { getGPI, getGTI, getHDI, getIPC } from '@/lib/indices';
 import { getTCIForAllCountries, getCurrentOilPrice } from '@/data/tci-engine';
-import { tourismData } from '@/data/tourism';
+import { getTourismByCodeMap } from '@/lib/tourism-db';
 import KPIDashboard from './KPIDashboardClient';
 
 export const revalidate = 3600;
@@ -69,7 +69,8 @@ export default async function KPIsPage() {
     .map(i => ({ code: i.code.toLowerCase(), country: i.country, ipc: i.ipc, nivel: i.nivel, bandera: getBandera(i.code.toLowerCase()) }));
 
   // Top tourism destinations
-  const topTourism = Object.entries(tourismData)
+  const tourismDataMap = await getTourismByCodeMap();
+  const topTourism = Object.entries(tourismDataMap)
     .sort((a, b) => b[1].arrivals - a[1].arrivals)
     .slice(0, 15)
     .map(([code, stats]) => ({
