@@ -1,5 +1,5 @@
 import { paisesData, DatoPais, NivelRiesgo } from './paises';
-import { GPI_DATA } from './indices';
+import { GPI_DATA, IPC_DATA } from './indices';
 
 const COORD_ES: [number, number] = [40.4168, -3.7038];
 
@@ -155,17 +155,23 @@ for (const g of GPI_DATA) {
   gpiMap[g.code.toLowerCase()] = g.score;
 }
 
+const ipcMap: Record<string, number> = {};
+for (const d of IPC_DATA) {
+  ipcMap[d.code.toLowerCase()] = parseFloat(d.ipc.replace('%', ''));
+}
+
 export function getDestinationsWithFeatures(): DestinationFeatures[] {
   const destinations: DestinationFeatures[] = [];
 
   Object.values(paisesData).forEach((pais) => {
     if (pais.visible !== false) {
       const coords = pais.mapaCoordenadas;
-      const ipcValue = getIpcNumber(pais.indicadores.ipc);
+      const code = pais.codigo.toLowerCase();
+      const ipcValue = ipcMap[code] ?? getIpcNumber(pais.indicadores.ipc);
       const distancia = haversineDistance(COORD_ES, coords);
-      const tourism = ineTourismData[pais.codigo.toLowerCase()];
+      const tourism = ineTourismData[code];
       const turistas = tourism?.arrivals || 0;
-      const gpiRaw = gpiMap[pais.codigo.toLowerCase()];
+      const gpiRaw = gpiMap[code];
 
       destinations.push({
         code: pais.codigo,
