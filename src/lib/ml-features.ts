@@ -109,7 +109,7 @@ export async function computeAndStoreFeatures(code: string, riskLevel: string): 
   const thirtyDaysAgoDate = new Date(Date.now() - 30 * 86400000).toISOString().split('T')[0];
   const codeUpper = code.toUpperCase();
 
-  const [eventsRes, highImpactRes, signalsRes, incidentsRes, airspaceRes, routesRes, riskHistory] = await Promise.all([
+  const [eventsRes, highImpactRes, signalsRes, incidentsRes, airspaceRes, routesRes, riskHistory, indicesRes] = await Promise.all([
     admin.from('events').select('id', { count: 'exact', head: true }).eq('country_code', codeUpper).gte('date', thirtyDaysAgo),
     admin.from('events').select('id', { count: 'exact', head: true }).eq('country_code', codeUpper).eq('impact', 'high').gte('date', thirtyDaysAgo),
     admin.from('osint_signals').select('id', { count: 'exact', head: true }).or(`location_name.ilike.%${code}%,title.ilike.%${code}%`).gte('post_timestamp', sevenDaysAgo),
@@ -117,6 +117,7 @@ export async function computeAndStoreFeatures(code: string, riskLevel: string): 
     admin.from('airspace_closures').select('id', { count: 'exact', head: true }).eq('country_code', codeUpper).eq('is_active', true),
     admin.from('affected_routes').select('id', { count: 'exact', head: true }).or(`origin.eq.${codeUpper},destination.eq.${codeUpper}`).eq('is_active', true),
     admin.from('maec_risk_history').select('nivel_riesgo, date').eq('country_code', code).gte('date', thirtyDaysAgoDate).order('date'),
+    admin.from('indices').select('tipo, valor').eq('codigo_pais', code),
   ]);
 
   const events30d = eventsRes.count ?? 0;
@@ -129,16 +130,22 @@ export async function computeAndStoreFeatures(code: string, riskLevel: string): 
   const riskValues = (riskHistory.data || []).map(r => RISK_NUM[r.nivel_riesgo] || 1);
   const { trend7d, trend30d } = computeRiskTrend(riskValues);
 
+  const indexRows = (indicesRes.data || []) as { tipo: string; valor: number }[];
+  const indexScore = (tipo: string): number | null => {
+    const row = indexRows.find(r => r.tipo === tipo);
+    return row ? row.valor : null;
+  };
+
   const features: Partial<MlFeatures> = {
     country_code: code,
     risk_level: riskLevel,
     risk_score: riskScoreMap[riskLevel] || 50,
     risk_trend_7d: Math.round(trend7d * 1000) / 1000,
     risk_trend_30d: Math.round(trend30d * 1000) / 1000,
-    gpi_score: null,
-    gti_score: null,
-    hdi_score: null,
-    ipc_score: null,
+    gpi_score: indexScore('gpi'),
+    gti_score: indexScore('gti'),
+    hdi_score: indexScore('hdi'),
+    ipc_score: indexScore('ipc'),
     tci_score: tci.tci,
     tci_trend: tci.trend,
     events_30d: events30d,
@@ -151,7 +158,7 @@ export async function computeAndStoreFeatures(code: string, riskLevel: string): 
     route_disruption_active: routesDisrupted,
     safety_composite: 100 - (riskScoreMap[riskLevel] || 50),
     cost_composite: Math.min(100, Math.round((tci.tci / 150) * 100)),
-    model_version: 'v2',
+    model_version: 'v3',
   };
 
   const ok = await upsertFeatures(features as MlFeatures);
