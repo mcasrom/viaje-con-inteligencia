@@ -21,13 +21,11 @@ export async function GET() {
 
     const isPremium = profile?.is_premium || profile?.subscription_status === 'active';
     const trialEnd = profile?.trial_end || null;
+    const isTrialActive = trialEnd && new Date(trialEnd) > new Date();
 
-    // Calcular status real
-    let status = profile?.subscription_status || 'none';
-    if (!isPremium && trialEnd) {
-      const isTrialActive = new Date(trialEnd) > new Date();
-      status = isTrialActive ? 'trialing' : 'trial_expired';
-    }
+    // Calcular status real: trial activo siempre tiene prioridad
+    let status = isTrialActive ? 'trialing' : (profile?.subscription_status || 'none');
+    if (!isTrialActive && trialEnd) status = 'trial_expired';
 
     return NextResponse.json({
       premium: isPremium,

@@ -12,6 +12,8 @@ import ServiceWorkerRegistration from "@/components/ServiceWorkerRegistration";
 import InstallPWA from "@/components/InstallPWA";
 import Onboarding from "@/components/Onboarding";
 import { initPaisesData } from "@/lib/paises-init";
+import { initRutasData } from "@/lib/rutas-init";
+import { initClusteringData } from "@/lib/clustering-init";
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -83,7 +85,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  await initPaisesData();
+  await Promise.all([initPaisesData(), initRutasData(), initClusteringData()]);
   return (
     <html lang="es">
       <head>

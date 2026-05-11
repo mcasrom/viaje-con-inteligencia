@@ -78,7 +78,9 @@ INSERT INTO airspace_closures (country_code, country_name, closure_date, reason,
   ('ET', 'Etiopía', '2020-11-01', 'Conflicto Tigray (parcialmente resuelto)', 'medium', false, 'Mejorando, pero con precaución'),
   ('SD', 'Sudán', '2023-04-15', 'Conflicto SAF-RSF', 'critical', true, 'Espacio aéreo cerrado desde abril 2023'),
   ('IR', 'Irán', '2020-01-01', 'Tensiones geopolíticas, derribo PS752', 'medium', true, 'Algunas aerolíneas evitan espacio aéreo'),
-  ('PS', 'Palestina/Gaza', '2023-10-07', 'Conflicto Israel-Hamás', 'critical', true, 'Restricciones totales en Gaza, parciales en Cisjordania')
+  ('PS', 'Palestina/Gaza', '2023-10-07', 'Conflicto Israel-Hamás', 'critical', true, 'Restricciones totales en Gaza, parciales en Cisjordania'),
+  ('IL', 'Israel', '2023-10-07', 'Conflicto Gaza-Israel, ataques con misiles', 'critical', true, 'Apertura intermitente — cierres frecuentes'),
+  ('LB', 'Líbano', '2024-09-01', 'Escalada Hezbollah-Israel', 'critical', true, 'Aeropuerto Beirut con operatividad muy reducida')
 ON CONFLICT (country_code) DO NOTHING;
 
 -- 6. Seed: rutas afectadas desde MAD
@@ -94,7 +96,9 @@ INSERT INTO affected_routes (origin_iata, destination_iata, destination_country,
   ('MAD', 'TLV', 'IL', 'PS', 150, 1.0, 0.2, 'Aproximación alternativa', true),
   ('MAD', 'CAI', 'EG', 'LY', 500, 2.5, 0.5, 'Ruta este de Libia', true),
   ('MAD', 'ADD', 'ET', 'SD', 800, 4.0, 0.5, 'Ruta este de Sudán', true),
-  ('MAD', 'KBP', 'UA', 'UA', 0, 0, 0, 'Sin vuelos directos - destino afectado', false)
+  ('MAD', 'KBP', 'UA', 'UA', 0, 0, 0, 'Sin vuelos directos - destino afectado', false),
+  ('MAD', 'TLV', 'IL', 'IL', 2200, 35.0, 4.0, 'Vía Chipre + transporte terrestre', true),
+  ('MAD', 'BEY', 'LB', 'LB', 1500, 30.0, 3.5, 'Vía Amán (Jordania) + terrestre', true)
 ON CONFLICT DO NOTHING;
 
 -- 7. Seed inicial de histórico TCI (datos simulados para las últimas 12 semanas)

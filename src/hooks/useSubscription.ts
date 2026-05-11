@@ -59,7 +59,7 @@ export function useSubscription(): SubscriptionInfo {
         }
 
         let status: SubscriptionStatus = data.status || 'none';
-        if (data.trialEnd && !data.premium) {
+        if (data.trialEnd) {
           status = trialExpired ? 'trial_expired' : 'trialing';
         }
 

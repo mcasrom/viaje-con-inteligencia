@@ -8,6 +8,7 @@ export interface TCILiveData {
   affectedRoutes?: AffectedRoute[];
   oilPrice?: number;
   oilHistory?: { month: string; price: number }[];
+  usRiskMap?: Record<string, number>;
 }
 
 // Estacionalidad turística por mes (índice base 100)
@@ -133,10 +134,8 @@ function getIPCIndex(countryCode: string): number {
   return 180;
 }
 
-function getRiskIndex(countryCode: string): number {
-  const pais = paisesData[countryCode.toLowerCase()];
-  if (!pais) return 100;
-  switch (pais.nivelRiesgo) {
+function maecToRiskIndex(nivel: string): number {
+  switch (nivel) {
     case 'sin-riesgo': return 95;
     case 'bajo': return 100;
     case 'medio': return 110;
@@ -144,6 +143,26 @@ function getRiskIndex(countryCode: string): number {
     case 'muy-alto': return 145;
     default: return 100;
   }
+}
+
+function usToRiskIndex(usLevel: number): number {
+  switch (usLevel) {
+    case 1: return 95;
+    case 2: return 105;
+    case 3: return 130;
+    case 4: return 150;
+    default: return 100;
+  }
+}
+
+function getRiskIndex(countryCode: string, liveData?: TCILiveData): number {
+  const pais = paisesData[countryCode.toLowerCase()];
+  const maecIdx = pais ? maecToRiskIndex(pais.nivelRiesgo) : 100;
+
+  const usLevel = liveData?.usRiskMap?.[countryCode.toUpperCase()];
+  const usIdx = usLevel ? usToRiskIndex(usLevel) : 0;
+
+  return Math.max(maecIdx, usIdx);
 }
 
 export function calculateTCI(
@@ -168,7 +187,7 @@ export function calculateTCI(
   const oilIdx = getOilIndex(liveData);
   const seasonalityIdx = getSeasonalityIndex(countryCode, month, seasonality, liveData);
   const ipcIdx = getIPCIndex(countryCode);
-  const riskIdx = getRiskIndex(countryCode);
+  const riskIdx = getRiskIndex(countryCode, liveData);
 
   const weights = {
     demand: 0.30,

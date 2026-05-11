@@ -17,7 +17,7 @@ async function getEurUsd(): Promise<number> {
 async function getRealOilData() {
   try {
     const { data, error } = await supabaseAdmin
-      .from('oil_price_history')
+      .from('oil_prices_history')
       .select('date, price_usd')
       .order('date', { ascending: true });
 

@@ -206,6 +206,9 @@ function computeRiskScore(
     if (features.high_impact_events_30d > 0) {
       score += Math.min(features.high_impact_events_30d * 2, 8);
     }
+    if (features.us_risk_score && features.us_risk_score >= 3) {
+      score += (features.us_risk_score - 2) * 10;
+    }
   }
 
   return Math.min(Math.max(score, 1), 100);

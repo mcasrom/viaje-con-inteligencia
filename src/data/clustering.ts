@@ -505,7 +505,7 @@ export function getTopDestinations(metric: string, limit: number = 10) {
   const destinations = getDestinationsWithFeatures();
   const sorted = [...destinations].sort((a, b) => {
     if (metric === 'arrivals') return b.arrivals - a.arrivals;
-    if (metric === 'receipts') return b.receipts - b.receipts;
+    if (metric === 'receipts') return b.receipts - a.receipts;
     return 0;
   });
 

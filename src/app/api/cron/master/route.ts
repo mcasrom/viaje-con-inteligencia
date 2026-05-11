@@ -132,16 +132,17 @@ async function runFlightCosts(): Promise<any> {
     } catch {}
 
     if (oilPrice) {
-      await supabase.from('oil_price_history').upsert({
+      await supabase.from('oil_prices_history').upsert({
         date: new Date().toISOString().split('T')[0], price_usd: oilPrice, source: 'Yahoo',
       }, { onConflict: 'date' });
     }
 
-    const [{ data: oilHistory }, { data: seasonalityRows }, { data: closures }, { data: routes }] = await Promise.all([
-      supabase.from('oil_price_history').select('date, price_usd').order('date', { ascending: true }),
+    const [{ data: oilHistory }, { data: seasonalityRows }, { data: closures }, { data: routes }, { data: usRiskRows }] = await Promise.all([
+      supabase.from('oil_prices_history').select('date, price_usd').order('date', { ascending: true }),
       supabase.from('seasonality').select('country_code, month, index_value'),
       supabase.from('airspace_closures').select('*').eq('is_active', true),
       supabase.from('affected_routes').select('*').eq('is_active', true),
+      supabase.from('external_risk').select('country_code, risk_level').eq('source', 'us_state_dept'),
     ]);
 
     const liveOilHistory = (oilHistory || []).map(o => ({ month: o.date.slice(0, 7), price: Number(o.price_usd) }));
@@ -159,12 +160,17 @@ async function runFlightCosts(): Promise<any> {
       detourKm: r.detour_km, fuelSurchargePct: Number(r.fuel_surcharge_pct),
       timeExtraHours: Number(r.time_extra_hours), alternativeRoute: r.alternative_route, isActive: r.is_active,
     }));
+    const usRiskMap: Record<string, number> = {};
+    for (const row of (usRiskRows || [])) {
+      usRiskMap[row.country_code] = Number(row.risk_level);
+    }
     const liveData = {
       seasonality: Object.keys(liveSeasonality).length > 0 ? liveSeasonality : undefined,
       oilHistory: liveOilHistory.length > 0 ? liveOilHistory : undefined,
       oilPrice: oilPrice ?? undefined,
       airspaceClosures: liveClosures.length > 0 ? liveClosures : undefined,
       affectedRoutes: liveRoutes.length > 0 ? liveRoutes : undefined,
+      usRiskMap: Object.keys(usRiskMap).length > 0 ? usRiskMap : undefined,
     };
 
     const today = new Date().toISOString().split('T')[0];

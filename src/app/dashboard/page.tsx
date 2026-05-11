@@ -543,7 +543,10 @@ export default function DashboardPage() {
               <div className="flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/30 rounded-full px-3 py-1.5">
                 <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
                 <span className="text-emerald-400 text-xs font-medium hidden sm:block">Conectado</span>
-                <span className="text-slate-300 text-xs font-medium">{authUser.email}</span>
+                {authUser.user_metadata?.username && (
+                  <span className="text-slate-300 text-xs font-medium">{authUser.user_metadata.username}</span>
+                )}
+                <span className="text-slate-400/70 text-xs">{authUser.email}</span>
               </div>
               <button
                 onClick={() => setShowChangePassword(true)}
