@@ -54,16 +54,19 @@ export async function getFlights(
     if (data.error) return []
 
     const all = [...(data.best_flights || []), ...(data.other_flights || [])]
-    return all.slice(0, 10).map((f) => ({
-      airline: f.flights[0]?.airline || 'Unknown',
-      flightNumber: f.flights[0]?.flight_number,
-      departure: f.flights[0]?.departure || '',
-      arrival: f.flights[f.flights.length - 1]?.arrival_airport?.id || '',
-      durationMinutes: f.total_duration,
-      priceEur: f.price,
-      stops: f.stops,
-      stopoverAirports: f.flights.slice(1, -1).map((seg) => seg.arrival_airport?.id).filter(Boolean),
-    }))
+    return all.slice(0, 10).map((f) => {
+      const stops = typeof f.stops === 'number' ? f.stops : f.flights.length - 1
+      return {
+        airline: f.flights[0]?.airline || 'Unknown',
+        flightNumber: f.flights[0]?.flight_number,
+        departure: f.flights[0]?.departure || '',
+        arrival: f.flights[f.flights.length - 1]?.arrival_airport?.id || '',
+        durationMinutes: f.total_duration,
+        priceEur: f.price,
+        stops,
+        stopoverAirports: f.flights.slice(1, -1).map((seg) => seg.arrival_airport?.id).filter(Boolean),
+      }
+    })
   } catch {
     return []
   }

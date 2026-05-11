@@ -1,25 +1,27 @@
+import polyline from '@mapbox/polyline'
+
 export interface OpenRouteRouteOption {
   mode: 'driving' | 'cycling' | 'walking'
   durationMinutes: number
   distanceKm: number
   summary: string
   steps: { instruction: string; distance: string; duration: string }[]
+  polyline?: number[][]
 }
 
 interface ORSResponse {
-  features?: {
-    properties: {
-      segments: {
-        duration: number
+  routes?: {
+    summary: { duration: number; distance: number }
+    segments: {
+      duration: number
+      distance: number
+      steps: {
+        instruction: string
         distance: number
-        steps: {
-          instruction: string
-          distance: number
-          duration: number
-        }[]
+        duration: number
       }[]
-      summary: { duration: number; distance: number }
-    }
+    }[]
+    geometry?: string
   }[]
 }
 
@@ -76,7 +78,7 @@ export async function getOpenRouteRoutes(
         coordinates: [originCoords, destCoords],
         units: 'km',
         language: 'es',
-        geometry: false,
+        geometry: true,
         instructions: true,
       }),
     })
@@ -84,22 +86,39 @@ export async function getOpenRouteRoutes(
     if (!res.ok) return [] as any
 
     const data: ORSResponse = await res.json()
-    if (!data.features?.length) return [] as any
+    if (!data.routes?.length) return [] as any
 
-    const route = data.features[0]
-    const summary = route.properties.summary
-    const segments = route.properties.segments?.[0]
+    const route = data.routes[0]
+    const summary = route.summary
+    const segments = route.segments?.[0]
+    const geometry = route.geometry
+    let coordinates: [number, number][] | undefined
+    if (geometry && geometry.length > 0) {
+      try {
+        coordinates = polyline.decode(geometry).map(([lat, lng]) => [lat, lng] as [number, number])
+      } catch {
+        coordinates = undefined
+      }
+    }
+
+    const durationMinutes = Math.round((summary?.duration || 0) / 60)
+    const distanceKm = Math.round((summary?.distance || 0) * 10) / 10
+
+    if ((mode === 'cycling' && distanceKm > 500) || (mode === 'walking' && distanceKm > 200)) {
+      return []
+    }
 
     const result: OpenRouteRouteOption = {
       mode,
-      durationMinutes: Math.round((summary?.duration || 0) / 60),
-      distanceKm: Math.round((summary?.distance || 0) * 10) / 10,
+      durationMinutes,
+      distanceKm,
       summary: `${mode === 'driving' ? 'Coche' : mode === 'cycling' ? 'Bici' : 'A pie'} ${Math.round(summary?.distance || 0)} km`,
       steps: segments?.steps?.map((s) => ({
         instruction: s.instruction || '',
         distance: `${Math.round(s.distance * 10) / 10} km`,
         duration: `${Math.round(s.duration / 60)} min`,
       })) || [],
+      polyline: coordinates,
     }
 
     return [result]

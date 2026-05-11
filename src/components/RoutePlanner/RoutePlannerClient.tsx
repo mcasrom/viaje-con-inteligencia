@@ -1,7 +1,10 @@
 'use client'
 
 import { useState } from 'react'
-import { Plane, Car, Bus, AlertTriangle, CheckCircle, Info, ArrowRight, Euro } from 'lucide-react'
+import dynamic from 'next/dynamic'
+import { Plane, Car, Bus, AlertTriangle, CheckCircle, Info, ArrowRight, Euro, Share2, MapIcon } from 'lucide-react'
+
+const RouteMap = dynamic(() => import('./RouteMap'), { ssr: false })
 import { paisesData, type DatoPais } from '@/data/paises'
 
 interface RouteResult {
@@ -67,6 +70,26 @@ export default function RoutePlannerClient() {
   const [loading, setLoading] = useState(false)
   const [result, setResult] = useState<RoutesResponse | null>(null)
   const [error, setError] = useState('')
+  const [copied, setCopied] = useState(false)
+
+  function shareRoute() {
+    if (!result) return
+    const lines = [
+      `🗺️ ${paisesData[result.origin]?.nombre || result.origin} → ${paisesData[result.destination]?.nombre || result.destination}`,
+      `🏆 ${result.recommendation}`,
+      '',
+      ...result.routes.slice(0, 3).map(r =>
+        `${r.mode === 'flight' ? '✈️' : r.mode === 'driving' ? '🚗' : '🚌'} ${r.summary} — ${r.costEur}€`
+      ),
+      '',
+      `🔗 viajeinteligencia.com/rutas/planificar`,
+    ]
+    const text = lines.join('\n')
+    navigator.clipboard.writeText(text).then(() => {
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    })
+  }
 
   const countryList = Object.entries(paisesData)
     .filter(([_, p]) => p.visible !== false)
@@ -182,10 +205,21 @@ export default function RoutePlannerClient() {
       {result && (
         <div className="space-y-4">
           <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-6">
-            <h3 className="text-lg font-semibold text-slate-800 dark:text-white mb-2">
-              Recomendación
-            </h3>
-            <p className="text-slate-600 dark:text-slate-400">{result.recommendation}</p>
+            <div className="flex items-start justify-between gap-4">
+              <div className="flex-1">
+                <h3 className="text-lg font-semibold text-slate-800 dark:text-white mb-2">
+                  Recomendación
+                </h3>
+                <p className="text-slate-600 dark:text-slate-400">{result.recommendation}</p>
+              </div>
+              <button
+                onClick={shareRoute}
+                className="flex items-center gap-1.5 px-3 py-1.5 text-sm bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-lg transition-colors whitespace-nowrap"
+              >
+                <Share2 className="w-4 h-4" />
+                {copied ? '¡Copiado!' : 'Compartir'}
+              </button>
+            </div>
           </div>
 
           <div className="space-y-3">
@@ -209,6 +243,9 @@ export default function RoutePlannerClient() {
                         )}
                         {route.source === 'openroute' && (
                           <span className="text-xs bg-green-100 text-green-700 px-1.5 py-0.5 rounded">Ruta real</span>
+                        )}
+                        {route.source === 'fallback' && (
+                          <span className="text-xs bg-slate-100 text-slate-500 px-1.5 py-0.5 rounded">Estimado</span>
                         )}
                       </div>
                       <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">
@@ -244,11 +281,17 @@ export default function RoutePlannerClient() {
                   const steps = route.details?.steps
                   if (!steps || !Array.isArray(steps)) return null
                   const typedSteps = steps as { instruction: string; distance: string; duration: string }[]
+                  const polyline = route.details?.polyline as [number, number][] | undefined
                   return (
                     <details className="mt-2">
                       <summary className="text-xs text-blue-600 dark:text-blue-400 cursor-pointer hover:underline">
                         Ver detalles de la ruta
                       </summary>
+                      {polyline && polyline.length > 1 && (
+                        <div className="mt-2 mb-2">
+                          <RouteMap polyline={polyline} />
+                        </div>
+                      )}
                       <ol className="mt-2 space-y-1 text-xs text-slate-500 dark:text-slate-400">
                         {typedSteps.slice(0, 5).map((step, j) => (
                           <li key={j} className="flex items-start gap-2">

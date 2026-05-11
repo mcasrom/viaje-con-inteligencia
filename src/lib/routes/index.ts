@@ -109,7 +109,10 @@ export async function findRoutes(
           riskLevel: destRisk.level,
           riskScore: avgRisk,
           source: 'openroute',
-          details: { steps: or.steps.length > 10 ? or.steps.slice(0, 10) : or.steps },
+          details: {
+            steps: or.steps.length > 10 ? or.steps.slice(0, 10) : or.steps,
+            polyline: or.polyline,
+          },
         })
       }
     }
@@ -118,11 +121,27 @@ export async function findRoutes(
   if (date) {
     const originPais = paisesData[originCode.toLowerCase()]
     const destPais = paisesData[destCode.toLowerCase()]
-    const originAirport = originPais?.transporte?.aeropuertos?.[0]?.iata
-    const destAirport = destPais?.transporte?.aeropuertos?.[0]?.iata
+    const airportMap: Record<string, string> = {
+      es: 'MAD', fr: 'CDG', de: 'FRA', it: 'FCO', gb: 'LHR', pt: 'LIS',
+      nl: 'AMS', be: 'BRU', ch: 'ZRH', at: 'VIE', ie: 'DUB', dk: 'CPH',
+      se: 'ARN', no: 'OSL', fi: 'HEL', pl: 'WAW', cz: 'PRG', hu: 'BUD',
+      gr: 'ATH', ro: 'OTP', bg: 'SOF', hr: 'ZAG', rs: 'BEG', tr: 'IST',
+      us: 'JFK', ca: 'YYZ', mx: 'MEX', br: 'GRU', ar: 'EZE', cl: 'SCL',
+      jp: 'NRT', cn: 'PEK', kr: 'ICN', in: 'DEL', au: 'SYD', nz: 'AKL',
+      eg: 'CAI', za: 'JNB', ma: 'CMN', tn: 'TUN', ke: 'NBO', ng: 'LOS',
+    }
+    const originAirport = originPais?.transporte?.aeropuertos?.[0]?.iata || airportMap[originCode.toLowerCase()]
+    const destAirport = destPais?.transporte?.aeropuertos?.[0]?.iata || airportMap[destCode.toLowerCase()]
 
     if (originAirport && destAirport) {
       const flights = await getFlights(originAirport, destAirport, date)
+      if (flights.length > 0) {
+        for (let i = results.length - 1; i >= 0; i--) {
+          if (results[i].mode === 'flight' && results[i].source === 'fallback') {
+            results.splice(i, 1)
+          }
+        }
+      }
       for (const f of flights.slice(0, 3)) {
         results.push({
           mode: 'flight',
@@ -146,10 +165,17 @@ export async function findRoutes(
     }
   }
 
+  const modePriority: Record<string, number> = {
+    flight: 1, driving: 2, transit: 3, walking: 4, cycling: 5,
+  }
+
   results.sort((a, b) => {
     const riskA = a.riskScore
     const riskB = b.riskScore
     if (Math.abs(riskA - riskB) > 10) return riskA - riskB
+    const prioA = modePriority[a.mode] ?? 99
+    const prioB = modePriority[b.mode] ?? 99
+    if (prioA !== prioB) return prioA - prioB
     return a.costEur - b.costEur
   })
 
