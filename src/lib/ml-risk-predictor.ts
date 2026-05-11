@@ -209,6 +209,11 @@ function computeRiskScore(
     if (features.us_risk_score && features.us_risk_score >= 3) {
       score += (features.us_risk_score - 2) * 10;
     }
+    if (features.ipc_score !== null && features.ipc_score !== undefined) {
+      if (features.ipc_score > 50) score += 15;
+      else if (features.ipc_score > 10) score += 10;
+      else if (features.ipc_score > 5) score += 5;
+    }
   }
 
   return Math.min(Math.max(score, 1), 100);
@@ -236,6 +241,11 @@ function computeProbability(
     if (features.risk_trend_7d > 0.1) trendBoost += 0.05;
     if (features.risk_trend_30d > 0.05) trendBoost += 0.03;
     if (features.high_impact_events_30d > 0) trendBoost += 0.03;
+    if (features.ipc_score !== null && features.ipc_score !== undefined) {
+      if (features.ipc_score > 50) trendBoost += 0.08;
+      else if (features.ipc_score > 10) trendBoost += 0.05;
+      else if (features.ipc_score > 5) trendBoost += 0.03;
+    }
   }
 
   const base = Math.min(
@@ -280,6 +290,11 @@ function getTopFactors(
   if (features) {
     if (features.risk_trend_7d > 0.1) factors.push('Tendencia de riesgo al alza (7d)');
     if (features.events_30d > 0) factors.push(`${features.events_30d} eventos en 30d`);
+    if (features.ipc_score !== null && features.ipc_score !== undefined) {
+      if (features.ipc_score > 50) factors.push(`Inflación extrema (${features.ipc_score}%)`);
+      else if (features.ipc_score > 10) factors.push(`Inflación muy alta (${features.ipc_score}%)`);
+      else if (features.ipc_score > 5) factors.push(`Inflación elevada (${features.ipc_score}%)`);
+    }
   }
 
   if (seasonalMult > 1.1) factors.push('Temporada de alto riesgo climático');

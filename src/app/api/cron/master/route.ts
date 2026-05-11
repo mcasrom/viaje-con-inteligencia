@@ -9,8 +9,7 @@ import { generateRiskChangeAlert } from '@/lib/alerts-system';
 import { fetchAllPosts, classifySignal, detectFirstPerson, type ClassifiedSignal, type SignalCategory } from '@/lib/osint-sensor';
 import { Resend } from 'resend';
 import { detectAndCreateIncidents } from '@/lib/incident-detector';
-import { saveAllPredictions } from '@/lib/ml-risk-predictor';
-import { computeFeaturesForAllCountries } from '@/lib/ml-features';
+import { trainModel } from '@/lib/model-trainer';
 import { fetchAndStoreEvents } from '@/lib/events-fetch';
 import { runMonitorForUser } from '@/lib/seguros/monitor';
 import { createLogger } from '@/lib/logger';
@@ -137,12 +136,13 @@ async function runFlightCosts(): Promise<any> {
       }, { onConflict: 'date' });
     }
 
-    const [{ data: oilHistory }, { data: seasonalityRows }, { data: closures }, { data: routes }, { data: usRiskRows }] = await Promise.all([
+    const [{ data: oilHistory }, { data: seasonalityRows }, { data: closures }, { data: routes }, { data: usRiskRows }, { data: demandShiftRows }] = await Promise.all([
       supabase.from('oil_prices_history').select('date, price_usd').order('date', { ascending: true }),
       supabase.from('seasonality').select('country_code, month, index_value'),
       supabase.from('airspace_closures').select('*').eq('is_active', true),
       supabase.from('affected_routes').select('*').eq('is_active', true),
       supabase.from('external_risk').select('country_code, risk_level').eq('source', 'us_state_dept'),
+      supabase.from('demand_shifts').select('country_code, extra_demand_pct, reason').eq('is_active', true),
     ]);
 
     const liveOilHistory = (oilHistory || []).map(o => ({ month: o.date.slice(0, 7), price: Number(o.price_usd) }));
@@ -164,6 +164,10 @@ async function runFlightCosts(): Promise<any> {
     for (const row of (usRiskRows || [])) {
       usRiskMap[row.country_code] = Number(row.risk_level);
     }
+    const liveDemandShifts: Record<string, { extraDemandPct: number; reason: string }> = {};
+    for (const row of (demandShiftRows || [])) {
+      liveDemandShifts[row.country_code] = { extraDemandPct: Number(row.extra_demand_pct), reason: row.reason };
+    }
     const liveData = {
       seasonality: Object.keys(liveSeasonality).length > 0 ? liveSeasonality : undefined,
       oilHistory: liveOilHistory.length > 0 ? liveOilHistory : undefined,
@@ -171,6 +175,7 @@ async function runFlightCosts(): Promise<any> {
       airspaceClosures: liveClosures.length > 0 ? liveClosures : undefined,
       affectedRoutes: liveRoutes.length > 0 ? liveRoutes : undefined,
       usRiskMap: Object.keys(usRiskMap).length > 0 ? usRiskMap : undefined,
+      demandShifts: Object.keys(liveDemandShifts).length > 0 ? liveDemandShifts : undefined,
     };
 
     const today = new Date().toISOString().split('T')[0];
@@ -623,12 +628,20 @@ async function runEventsFetch(): Promise<any> {
   }
 }
 
-// ===== FEATURE COMPUTATION =====
-async function runFeatureComputation(): Promise<any> {
-  log.info('Computing ML features for all countries...');
+// ===== MODEL TRAINING =====
+async function runModelTraining(): Promise<any> {
+  log.info('Running offline ML model training...');
   try {
-    const result = await computeFeaturesForAllCountries();
-    return { status: 'ok', computed: result.ok, errors: result.errors };
+    const result = await trainModel();
+    return {
+      status: result.success ? 'ok' : 'error',
+      features_computed: result.metrics.featuresComputed,
+      features_errors: result.metrics.featuresErrors,
+      predictions_made: result.metrics.predictionsMade,
+      predictions_errors: result.metrics.predictionsErrors,
+      total_countries: result.metrics.totalCountries,
+      duration_ms: result.metrics.durationMs,
+    };
   } catch (e: any) {
     return { status: 'error', error: e.message };
   }
@@ -692,20 +705,12 @@ export async function GET(request: Request) {
     '5b/8 Incident detection'
   );
 
-  // Phase 3c1: Feature computation (feeds ML predictions)
-  log.info('6a/8 Feature computation...');
-  results.features = await withTimeout(
-    async () => runFeatureComputation(),
-    60000,
-    '6a/8 Feature computation'
-  );
-
-  // Phase 3c2: ML Risk Predictions
-  log.info('6b/8 ML Risk predictions...');
-  results.risk_predictions = await withTimeout(
-    async () => saveAllPredictions(),
-    30000,
-    '6b/8 ML Risk predictions'
+  // Phase 3c: Offline ML model training (features + predictions)
+  log.info('6/8 Model training...');
+  results.model_training = await withTimeout(
+    async () => runModelTraining(),
+    90000,
+    '6/8 Model training'
   );
 
   // Phase 3d: Events fetch (Wikidata + GDELT + Groq enrichment)

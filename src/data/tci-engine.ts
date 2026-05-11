@@ -9,6 +9,7 @@ export interface TCILiveData {
   oilPrice?: number;
   oilHistory?: { month: string; price: number }[];
   usRiskMap?: Record<string, number>;
+  demandShifts?: Record<string, { extraDemandPct: number; reason: string }>;
 }
 
 // Estacionalidad turística por mes (índice base 100)
@@ -90,17 +91,24 @@ function getOilIndex(liveData?: TCILiveData): number {
   return (latest.price / avg) * 100;
 }
 
-function getDemandIndex(countryCode: string): number {
+function getDemandIndex(countryCode: string, demandShifts?: Record<string, { extraDemandPct: number; reason: string }>): number {
   const code = countryCode.toLowerCase();
   const ineData = ineTourismData[code];
+  let base: number;
   if (!ineData) {
     const pais = paisesData[code];
-    if (pais && pais.continente === 'Europa') return 80;
-    if (pais) return 50;
-    return 60;
+    if (pais && pais.continente === 'Europa') base = 80;
+    else if (pais) base = 50;
+    else base = 60;
+  } else {
+    const avgArrivals = Object.values(ineTourismData).reduce((s, d) => s + d.arrivals, 0) / Object.keys(ineTourismData).length;
+    base = (ineData.arrivals / avgArrivals) * 100;
   }
-  const avgArrivals = Object.values(ineTourismData).reduce((s, d) => s + d.arrivals, 0) / Object.keys(ineTourismData).length;
-  return (ineData.arrivals / avgArrivals) * 100;
+  const shift = demandShifts?.[code];
+  if (shift && shift.extraDemandPct > 0) {
+    base = base * (1 + shift.extraDemandPct / 100);
+  }
+  return base;
 }
 
 function getSeasonalityIndex(
@@ -183,7 +191,7 @@ export function calculateTCI(
 } {
   const month = new Date().getMonth() + 1;
 
-  const demandIdx = getDemandIndex(countryCode);
+  const demandIdx = getDemandIndex(countryCode, liveData?.demandShifts);
   const oilIdx = getOilIndex(liveData);
   const seasonalityIdx = getSeasonalityIndex(countryCode, month, seasonality, liveData);
   const ipcIdx = getIPCIndex(countryCode);

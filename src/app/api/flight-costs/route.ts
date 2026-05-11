@@ -70,7 +70,8 @@ export async function GET(request: NextRequest) {
     const country = searchParams.get('country');
     if (!country) return NextResponse.json({ error: 'country required' }, { status: 400 });
 
-    const tci = calculateTCI(country, liveSeasonality);
+    const liveDataTCI = { demandShifts: liveDemandShifts };
+    const tci = calculateTCI(country, liveSeasonality, liveDataTCI);
     const trend = analyzeTCITrend(country);
     const monthly = monthlyTCIPattern(country, liveSeasonality);
     const conflict = getConflictImpact(country, liveClosures, liveRoutes);
