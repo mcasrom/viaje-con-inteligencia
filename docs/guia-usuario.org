@@ -23,6 +23,7 @@ No es un blog. No es una agencia. Es un *sistema de decision*.
 - Mapa mundial con niveles de riesgo MAEC actualizados automaticamente
 - 5 niveles: Sin riesgo → Riesgo muy alto
 - Capas adicionales: terremotos (USGS 24h), conflictos activos, alertas sanitarias
+- Doble validacion: Badge US State Dept en cada pais (cuando disponible)
 - Click en cualquier pais para ver analisis detallado
 
 ** 💰 Calculadora de Coste de Viaje
@@ -108,12 +109,15 @@ Mide la presion turistica de un destino:
 | Fuente | Tipo | Frecuencia |
 |--------+------+------------|
 | MAEC | Riesgo oficial | Diario |
+| US State Dept | Riesgo secundario (doble validacion) | Diario |
 | USGS | Terremotos | Tiempo real |
 | GDACS | Desastres naturales | 24h |
 | GDELT | Noticias globales | Continuo |
 | Reddit | Experiencias viajeros | 6h |
 | RSS (BBC, AP, Reuters, etc) | Noticias internacionales | 6h |
 | Yahoo Finance | Precio petroleo | Diario |
+| Open-Meteo | Clima | Diario |
+| OpenStreetMap (Overpass) | POIs turisticos | Bajo demanda |
 | INE/UNWTO | Estadisticas turismo | Mensual |
 
 * Valoraciones y Comunidad

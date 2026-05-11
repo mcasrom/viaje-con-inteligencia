@@ -50,12 +50,13 @@ src/
 #+BEGIN_SRC text
 Fase 1 (paralelo):
 ├─ MAEC scrape (90s timeout) — 26 paises prioritarios
+├─ US State Dept scrape (20s) — Travel Advisories EEUU
 ├─ Airspace OSINT (30s) — cierres espacio aereo
 └─ Oil price (15s) — Yahoo Finance
 
 Fase 2 (depende de Fase 1):
 ├─ Risk alerts check (30s) — cambios de riesgo MAEC
-└─ Flight costs / TCI (60s) — 107 paises
+└─ Flight costs / TCI (60s) — 107 paises con datos vivos
 
 Fase 3:
 ├─ News sentiment (90s) — OSINT sensor (73 fuentes → 5-20 señales)
@@ -155,6 +156,7 @@ TELEGRAM_BOT_TOKEN=
 TELEGRAM_CHANNEL_ID=
 RESEND_API_KEY=
 CRON_SECRET=
+NEXT_PUBLIC_SITE_URL=https://www.viajeinteligencia.com
 FLIGHTLABS_API_KEY= (opcional)
 FLIGHTSTATS_API_KEY= (opcional)
 #+END_SRC
@@ -171,11 +173,18 @@ FLIGHTSTATS_API_KEY= (opcional)
 | post_ratings | Valoraciones de posts | Lectura + escritura |
 | maec_risk_history | Historial riesgo paises | Solo escritura cron |
 | risk_alerts | Alertas de cambio riesgo | Solo escritura cron |
-| oil_prices_history | Historial petroleo | Solo escritura cron |
+| external_risk | Riesgo US State Dept + UK FCDO | Solo escritura cron |
+| ml_features | Vector de caracteristicas ML | Solo escritura cron |
+| risk_predictions | Predicciones de riesgo | Solo escritura cron |
+| oil_prices_history | Historial petroleo (vivo) | Solo escritura cron |
 | flight_tci_cache | Cache TCI vuelos | Solo escritura cron |
-| airspace_closures | Cierres espacio aereo | Solo lectura |
-| affected_routes | Rutas afectadas | Solo escritura cron |
+| tci_history | Historial TCI diario | Solo escritura cron |
+| seasonality | Estacionalidad turistica (22 paises) | Solo lectura |
+| airspace_closures | Cierres espacio aereo (vivos) | Solo lectura |
+| affected_routes | Rutas afectadas (vivas) | Solo lectura |
+| pois_cache | Cache POIs OpenStreetMap | Solo escritura cron |
 | newsletter_subscribers | Suscriptores | Escritura publica |
+| scraper_logs | Auditoria de scrapers | Solo escritura |
 | bot_stats | Estadisticas Telegram | Solo escritura |
 
 * Comandos Utiles
