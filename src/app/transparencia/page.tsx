@@ -83,6 +83,7 @@ export default async function TransparenciaPage() {
   const sources: StatusItem[] = [
     { name: 'MAEC - Ministerio Asuntos Exteriores', status: maecData ? 'healthy' : 'error', lastUpdate: maecData?.fechaActualizacion || null, source: 'maec.es' },
     { name: 'USGS - Terremotos en tiempo real', status: 'healthy', lastUpdate: new Date().toISOString(), source: 'earthquake.usgs.gov' },
+    { name: 'US State Department - Alertas de viaje', status: 'healthy', lastUpdate: new Date().toISOString(), source: 'travel.state.gov' },
     { name: 'GDACS - Alertas de desastres', status: 'healthy', lastUpdate: new Date().toISOString(), source: 'gdacs.org' },
     { name: 'OpenWeather - Datos climáticos', status: 'healthy', lastUpdate: new Date().toISOString(), source: 'openweathermap.org' },
     { name: 'Wikidata - Puntos de interés', status: 'healthy', lastUpdate: new Date().toISOString(), source: 'query.wikidata.org' },
@@ -187,7 +188,7 @@ export default async function TransparenciaPage() {
             {[
               { label: 'Países analizados', value: `${TOTAL_PAISES}`, icon: Globe },
               { label: 'Ciudades en mapa', value: '47K+', icon: MapPin },
-              { label: 'Fuentes activas', value: '6', icon: Database },
+              { label: 'Fuentes activas', value: '7', icon: Database },
               { label: 'Actualización MAEC', value: 'Diaria', icon: Clock },
             ].map((m) => (
               <div key={m.label} className="bg-slate-800/30 rounded-xl p-4 border border-slate-700 text-center">
