@@ -455,7 +455,7 @@ export default function ManualDocument({
             <View style={styles.featureCard}>
               <Text style={[styles.featureName, { fontSize: 14 }]}>[MAP]</Text>
               <Text style={styles.featureName}>{t('Mapa Interactivo', 'Interactive Map')}</Text>
-              <Text style={styles.featureDesc}>{t('Mapa mundial con niveles de riesgo MAEC, alertas en tiempo real y POIs.', 'World map with MAEC risk levels, real-time alerts and POIs.')}</Text>
+              <Text style={styles.featureDesc}>{t('Mapa mundial con niveles de riesgo MAEC, alertas en tiempo real, badge US State Dept y POIs.', 'World map with MAEC risk levels, real-time alerts, US State Dept badge and POIs.')}</Text>
             </View>
             <View style={styles.featureCard}>
               <Text style={[styles.featureName, { fontSize: 14 }]}>[AI]</Text>
@@ -466,6 +466,16 @@ export default function ManualDocument({
               <Text style={[styles.featureName, { fontSize: 14 }]}>[IA]</Text>
               <Text style={styles.featureName}>{t('Itinerario IA', 'AI Itinerary')}</Text>
               <Text style={styles.featureDesc}>{t('Genera itinerarios personalizados según tu perfil viajero.', 'Generate personalized AI itineraries.')}</Text>
+            </View>
+            <View style={styles.featureCard}>
+              <Text style={[styles.featureName, { fontSize: 14 }]}>[WX]</Text>
+              <Text style={styles.featureName}>{t('Clima en Vivo', 'Live Weather')}</Text>
+              <Text style={styles.featureDesc}>{t('Pronóstico meteorológico Open-Meteo para cualquier destino.', 'Open-Meteo weather forecast for any destination.')}</Text>
+            </View>
+            <View style={styles.featureCard}>
+              <Text style={[styles.featureName, { fontSize: 14 }]}>[POI]</Text>
+              <Text style={styles.featureName}>{t('Puntos de Interés', 'Points of Interest')}</Text>
+              <Text style={styles.featureDesc}>{t('Hoteles, restaurantes y atracciones desde OpenStreetMap.', 'Hotels, restaurants and attractions from OpenStreetMap.')}</Text>
             </View>
             <View style={styles.featureCard}>
               <Text style={[styles.featureName, { fontSize: 14 }]}>[SEG]</Text>
@@ -486,6 +496,16 @@ export default function ManualDocument({
               <Text style={[styles.featureName, { fontSize: 14 }]}>[OIL]</Text>
               <Text style={styles.featureName}>{t('Petróleo y Vuelos', 'Oil & Flights')}</Text>
               <Text style={styles.featureDesc}>{t('Precio Brent y su impacto en coste de vuelos.', 'Brent oil price impact on flights.')}</Text>
+            </View>
+            <View style={styles.featureCard}>
+              <Text style={[styles.featureName, { fontSize: 14 }]}>[USA]</Text>
+              <Text style={styles.featureName}>{t('Doble Validación', 'Dual Validation')}</Text>
+              <Text style={styles.featureDesc}>{t('Compara riesgo MAEC con US State Dept Travel Advisories.', 'Compare MAEC risk with US State Dept Travel Advisories.')}</Text>
+            </View>
+            <View style={styles.featureCard}>
+              <Text style={[styles.featureName, { fontSize: 14 }]}>[API]</Text>
+              <Text style={styles.featureName}>API v1</Text>
+              <Text style={styles.featureDesc}>{t('Endpoint REST público con riesgo, predicciones ML y usRisk.', 'Public REST endpoint with risk, ML predictions and usRisk.')}</Text>
             </View>
             <View style={styles.featureCard}>
               <Text style={[styles.featureName, { fontSize: 14 }]}>[BLOG]</Text>

@@ -61,17 +61,28 @@ database "Supabase (PostgreSQL)" as DB {
   [incidents] as IncTable
   [osint_signals] as SigTable
   [maec_risk_history] as MaecTable
+  [external_risk] as ExtRiskTable
   [oil_prices_history] as OilTable
   [flight_tci_cache] as TciTable
+  [tci_history] as TciHistTable
+  [seasonality] as SeasonTable
+  [airspace_closures] as AirTable
+  [affected_routes] as RoutesTable
+  [pois_cache] as PoiTable
+  [ml_features] as MlTable
+  [risk_predictions] as PredTable
+  [scraper_logs] as LogTable
   [newsletter_subscribers] as SubTable
   [post_views/ratings] as BlogTable
-  [airspace_closures] as AirTable
 }
 
 package "Servicios externos" as Ext {
   [MAEC\nWeb Scraping] as MAEC
+  [US State Dept\nTravel Advisories] as USState
   [GDELT\nNoticias] as GDELT
   [USGS\nTerremotos] as USGS
+  [Open-Meteo\nClima] as Meteo
+  [OpenStreetMap\nOverpass POIs] as OSM
   [Reddit RSS\nExperiencias] as Reddit
   [Yahoo Finance\nPetroleo] as Oil
   [Groq API\nClasificacion] as Groq
@@ -144,6 +155,7 @@ start
 
 partition "Fase 1: Paralelo (0-90s)" {
   :MAEC scrape (26 paises);\nnote right: 90s timeout
+  :US State Dept scrape;\nnote right: 20s timeout
   :Airspace OSINT (cierres);\nnote right: 30s timeout
   :Oil price (Yahoo Finance);\nnote right: 15s timeout
 }
@@ -173,10 +185,11 @@ stop
 | Fase | Tarea | Timeout | Dependencias | Resultado |
 |------+-------+---------+--------------+-----------|
 | 1 | MAEC scrape | 90s | Ninguna | 26 paises actualizados |
+| 1 | US State Dept scrape | 20s | Ninguna | Travel advisories EEUU |
 | 1 | Airspace OSINT | 30s | Ninguna | Cierres espacio aereo |
 | 1 | Oil price | 15s | Ninguna | Precio Brent actual |
 | 2 | Risk alerts | 30s | MAEC data | Alertas de cambio riesgo |
-| 2 | Flight costs | 60s | Oil price | TCI para 107 paises |
+| 2 | Flight costs | 60s | Oil price + seasonality + airspace | TCI con datos vivos para 107 paises |
 | 3 | News sentiment | 90s | None | Señales OSINT en DB |
 | 3 | Incident detection | 15s | OSINT signals | Incidentes agrupados |
 | 4 | Daily digest | 30s | Todos los anteriores | Resumen Telegram + email |
@@ -460,9 +473,17 @@ Sig "*" --> "*" Inc : clusters into
 | data_ratings | Valoraciones genericas | Lectura + escritura | Anyone can rate |
 | osint_signals | Señales raw del sensor | Solo lectura | No public access |
 | maec_risk_history | Historial riesgo paises | Solo escritura cron | No public access |
-| oil_prices_history | Historial petroleo | Solo escritura cron | No public access |
+| external_risk | Riesgo US State Dept | Solo escritura cron | No public access |
+| oil_prices_history | Historial petroleo vivo | Solo escritura cron | No public access |
 | flight_tci_cache | Cache TCI vuelos | Solo escritura cron | No public access |
-| airspace_closures | Cierres espacio aereo | Solo lectura | No public access |
+| tci_history | Historial TCI diario | Solo escritura cron | No public access |
+| seasonality | Estacionalidad turistica (22 paises) | Solo lectura | No public access |
+| airspace_closures | Cierres espacio aereo vivos | Solo lectura | No public access |
+| affected_routes | Rutas aereas afectadas | Solo lectura | No public access |
+| pois_cache | Cache POIs OpenStreetMap | Solo escritura cron | No public access |
+| ml_features | Vector caracteristicas ML | Solo escritura cron | No public access |
+| risk_predictions | Predicciones de riesgo | Solo escritura cron | No public access |
+| scraper_logs | Auditoria de scrapers | Solo escritura | Solo escritura |
 | newsletter_subscribers | Suscriptores | Escritura publica | Anyone can subscribe |
 
 * Comandos Utiles

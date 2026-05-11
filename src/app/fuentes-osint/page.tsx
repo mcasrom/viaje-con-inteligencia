@@ -24,6 +24,7 @@ const SOURCES = [
       { name: 'MAEC España', desc: 'Recomendaciones de viaje oficiales del Ministerio de Asuntos Exteriores', url: 'https://www.exteriores.gob.es' },
       { name: 'Global Peace Index (IEP)', desc: 'Índice de paz global por país y región', url: 'https://www.visionofhumanity.org' },
       { name: 'Global Terrorism Index', desc: 'Impacto del terrorismo mundial', url: 'https://www.visionofhumanity.org' },
+      { name: 'US State Dept Travel Advisories', desc: 'Alertas de viaje del Departamento de Estado de EE.UU. (doble validación)', url: 'https://travel.state.gov' },
     ],
   },
   {
@@ -35,6 +36,8 @@ const SOURCES = [
       { name: 'World Bank Open Data', desc: 'Indicadores económicos: IPC, PIB, población por país', url: 'https://data.worldbank.org' },
       { name: 'UNDP Human Development', desc: 'Índice de Desarrollo Humano (HDI)', url: 'https://hdr.undp.org' },
       { name: 'UN Tourism (UNWTO)', desc: 'Estadísticas internacionales de turismo', url: 'https://www.unwto.org' },
+      { name: 'Open-Meteo', desc: 'Pronóstico meteorológico gratuito y en vivo para cualquier destino', url: 'https://open-meteo.com' },
+      { name: 'OpenStreetMap Overpass API', desc: 'Puntos de interés (POIs): hoteles, restaurantes, atracciones por país', url: 'https://overpass-api.de' },
     ],
   },
   {
@@ -135,9 +138,11 @@ export default function FuentesOSINTPage() {
           <div className="space-y-3">
             {[
               'Scraping automatizado de recomendaciones MAEC cada hora',
-              'Ingesta de APIs públicas de WHO, USGS y World Bank',
+              'Scraping de alertas US State Dept (doble validación de riesgo)',
+              'Ingesta de APIs públicas de WHO, USGS, World Bank y Open-Meteo',
+              'Puntos de interés vía OpenStreetMap Overpass API',
               'Normalización de códigos ISO2 para cruce de datos',
-              'Cálculo del índice TCI con 5 factores ponderados',
+              'Cálculo del índice TCI con datos vivos (petróleo, estacionalidad, espacio aéreo)',
               'Generación de alertas automáticas por cambios de riesgo',
             ].map((step, i) => (
               <div key={i} className="flex items-center gap-3 text-slate-400 text-sm">

@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { getBrowserClient } from '@/lib/supabase-browser';
-import { ArrowLeft, Check, X, Sparkles, Shield, Bell, MessageSquare, FileCheck, TrendingUp, Map, Plane, Star, Zap, Crown, Loader2 } from 'lucide-react';
+import { ArrowLeft, Check, X, Sparkles, Shield, Bell, MessageSquare, FileCheck, TrendingUp, Map, Plane, Star, Zap, Crown, Loader2, Cloud, MapPin, BadgeCheck, Code, Thermometer } from 'lucide-react';
 import { TOTAL_PAISES } from '@/lib/constants';
 
 const FEATURES = [
@@ -16,6 +16,11 @@ const FEATURES = [
   { icon: <FileCheck className="w-5 h-5" />, title: 'Reclamaciones PDF', desc: 'Genera formularios de reclamación listos para enviar a aerolíneas.' },
   { icon: <TrendingUp className="w-5 h-5" />, title: 'KPIs Globales', desc: '6 índices comparativos: paz, terrorismo, desarrollo, inflación, sismos.' },
   { icon: <Sparkles className="w-5 h-5" />, title: 'ML Clustering', desc: 'Destinos agrupados por IA según seguridad, coste y preferencias.' },
+  { icon: <Cloud className="w-5 h-5" />, title: 'Clima en Vivo', desc: 'Pronóstico meteorológico actualizado con Open-Meteo para cualquier destino.' },
+  { icon: <MapPin className="w-5 h-5" />, title: 'Puntos de Interés (POIs)', desc: 'Explora hoteles, restaurantes y atracciones desde OpenStreetMap en cada país.' },
+  { icon: <BadgeCheck className="w-5 h-5" />, title: 'Doble Validación de Riesgo', desc: 'Compara la valoración MAEC con el aviso de viaje del Departamento de Estado de EE.UU.' },
+  { icon: <Thermometer className="w-5 h-5" />, title: 'Índice TCI en Vivo', desc: 'Travel Cost Index con precio real de combustible, estacionalidad y cierres aéreos desde Supabase.' },
+  { icon: <Code className="w-5 h-5" />, title: 'API Pública v1', desc: 'Accede a datos de riesgo, predicciones ML y alertas vía REST. Ideal para integraciones.' },
 ];
 
 const COMPARISON = [
@@ -34,6 +39,11 @@ const COMPARISON = [
   { feature: 'Reclamaciones PDF', free: false, premium: true },
   { feature: 'Dashboard personalizado', free: false, premium: true },
   { feature: 'Mis Viajes + documentos', free: false, premium: true },
+  { feature: 'Clima en vivo (Open-Meteo)', free: true, premium: true },
+  { feature: 'Puntos de interés OpenStreetMap', free: true, premium: true },
+  { feature: 'Doble validación MAEC + US State Dept', free: true, premium: true },
+  { feature: 'Travel Cost Index con datos vivos', free: false, premium: true },
+  { feature: 'API pública v1 (risk, predictions, usRisk)', free: true, premium: true },
 ];
 
 export default function PremiumClient() {
@@ -306,6 +316,11 @@ export default function PremiumClient() {
                   'Generador de reclamaciones PDF',
                   'KPIs globales comparativos',
                   'ML Clustering de destinos',
+                  'Clima en vivo por destino',
+                  'Puntos de interés OpenStreetMap',
+                  'Doble validación MAEC + US State Dept',
+                  'Travel Cost Index con datos vivos',
+                  'API pública v1 con usRisk',
                 ].map((f, i) => (
                   <li key={i} className="flex items-start gap-2 text-slate-300 text-sm">
                     <Check className="w-4 h-4 text-green-400 flex-shrink-0 mt-0.5" />

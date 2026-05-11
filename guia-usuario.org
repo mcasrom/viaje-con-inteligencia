@@ -11,9 +11,10 @@
 
 * ¿Que es Viaje con Inteligencia?
 
-Una plataforma que combina datos de riesgo oficial (MAEC), inteligencia OSINT
-(reddit, GDELT, USGS, RSS), analisis de costes y algoritmos propios para que
-tomes decisiones de viaje informadas.
+Una plataforma que combina datos de riesgo oficial (MAEC + US State Dept),
+inteligencia OSINT (reddit, GDELT, USGS, RSS), clima en vivo (Open-Meteo),
+puntos de interes (OpenStreetMap), analisis de costes con datos vivos y
+algoritmos propios para que tomes decisiones de viaje informadas.
 
 No es un blog. No es una agencia. Es un *sistema de decision*.
 
@@ -80,7 +81,7 @@ Mapa mundial con 5 niveles de riesgo, actualizado automaticamente:
 | Riesgo alto | 🔴 Rojo | Zona conflictiva | Reconsiderar viaje |
 | Riesgo muy alto | 🟣 Rojo oscuro | Peligro activo | NO viajar |
 
-Capas adicionales: terremotos (USGS 24h), conflictos activos, alertas sanitarias.
+Capas adicionales: terremotos (USGS 24h), conflictos activos, alertas sanitarias, badge de doble validacion US State Dept.
 
 ** 💰 Calculadora de Coste de Viaje
 
@@ -136,6 +137,27 @@ TCI --> Flight
 - Incluye: alojamiento, comida, transporte, actividades
 - Ajustado por presupuesto: bajo, medio, alto, luxury
 - Algoritmo TCI incorpora petroleo + conflictos
+
+** 🌤️ Clima en Vivo (Open-Meteo)
+- Pronostico meteorologico para cualquier pais destino
+- Temperatura, precipitaciones, viento, indice UV
+- Datos actualizados de Open-Meteo (gratuito, sin API key)
+- Integrado directamente en la ficha de cada pais
+- Llamada directa desde el navegador para minimizar latencia
+
+** 📍 Puntos de Interes (POIs)
+- Explora hoteles, restaurantes, atracciones y monumentos
+- Datos via OpenStreetMap Overpass API
+- Filtros por tipo de POI: turismo, comida, alojamiento, compras
+- Fallo explicito si Overpass no responde (no silencia errores)
+- Integrado en la ficha detallada de cada pais
+
+** 🛡️ Doble Validacion de Riesgo
+- Badge del Departamento de Estado de EE.UU. en cada pais
+- Compara la valoracion MAEC (Espania) con US State Dept (EE.UU.)
+- 4 niveles: "Exercise Normal Precautions" → "Do Not Travel"
+- Muestra "No disponible" si la API de US State Dept no responde
+- Datos scrapeados automaticamente cada 24h via cron
 
 ** 🤖 Chat IA de Viajes
 
@@ -259,6 +281,24 @@ Compara 2 paises lado a lado:
 - Recomendaciones de destinos similares (K-Means)
 - Basado en preferencias: playa, cultural, naturaleza, familiar
 
+** 🔌 API Publica v1
+- Endpoint REST: /api/v1/risk/{country}
+- Datos: riesgo MAEC, predicciones ML, incidentes activos, usRisk
+- Endpoint adicional: /api/us-risk/{country}
+- Ideal para integraciones y aplicaciones third-party
+- Documentacion en /api-endpoints
+
+** ⭐ Premium
+- Chat IA ilimitado con modelo llama-3.3-70b-versatile (9x mas potente)
+- Travel Cost Index con datos vivos (petroleo, estacionalidad, cierres aereos)
+- Alertas en tiempo real
+- Planificador de itinerarios IA
+- Mapa de sismos USGS en vivo
+- ML Clustering de destinos
+- KPIs globales comparativos
+- Dashboard personalizado + Mis Viajes
+- Prueba 7 dias gratis sin tarjeta
+
 * Indicadores Propios
 
 ** IRV — Indice de Riesgo de Viaje
@@ -328,10 +368,10 @@ Coste total del viaje ajustado por:
 
 | Componente | Impacto | Fuente |
 |------------+---------+--------|
-| Precio petroleo | Alto (afecta vuelos) | Yahoo Finance |
-| Cierres espacio aereo | Medio (desvios) | OSINT sensor |
-| IPC pais destino | Medio (coste vida) | INE/Eurostat |
-| Estacion del ano | Bajo (temporada) | Datos turismo |
+| Precio petroleo | Alto (afecta vuelos) | Yahoo Finance + historial vivo en Supabase |
+| Cierres espacio aereo | Medio (desvios) | OSINT sensor + tabla afectadas en Supabase |
+| IPC pais destino | Medio (coste vida) | INE/Eurostat + World Bank |
+| Estacion del ano | Bajo (temporada) | Seasonality viva en Supabase (22 paises, 12 meses) |
 
 ** IST — Indice de Saturacion Turistica
 
