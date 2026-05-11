@@ -28,6 +28,16 @@ async function main() {
 
   await check('IST Barcelona', '/api/ist?city=barcelona', b => b.ist >= 0);
 
+  await check('Routes ES→FR (fallback)', '/api/routes?origin=es&destination=fr', b =>
+    b.routes?.length >= 3 && b.routes.every((r: any) => r.mode && r.durationMinutes > 0 && r.costEur > 0)
+  );
+
+  await check('Routes ES→FR (con fecha)', '/api/routes?origin=es&destination=fr&date=2026-06-15', b =>
+    b.routes?.length >= 3 && b.routes.some((r: any) => r.source === 'serpapi')
+  );
+
+  await check('Routes sin params 400', '/api/routes', b => b.error != null); // expect 400
+
   console.log('\n🏁 Done\n');
 }
 

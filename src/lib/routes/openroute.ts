@@ -1,7 +1,7 @@
 import polyline from '@mapbox/polyline'
 
 export interface OpenRouteRouteOption {
-  mode: 'driving' | 'cycling' | 'walking'
+  mode: 'driving' | 'cycling' | 'walking' | 'transit'
   durationMinutes: number
   distanceKm: number
   summary: string
@@ -29,6 +29,7 @@ const PROFILE_MAP: Record<string, string> = {
   driving: 'driving-car',
   cycling: 'cycling-regular',
   walking: 'foot-walking',
+  transit: 'public-transport',
 }
 
 const KEY = () => process.env.OPENROUTESERVICE_API_KEY || ''
@@ -56,7 +57,7 @@ async function geocode(location: { lat: number; lng: number } | string): Promise
 export async function getOpenRouteRoutes(
   origin: { lat: number; lng: number } | string,
   destination: { lat: number; lng: number } | string,
-  mode: 'driving' | 'cycling' | 'walking' = 'driving'
+  mode: 'driving' | 'cycling' | 'walking' | 'transit' = 'driving'
 ): Promise<OpenRouteRouteOption[]> {
   const key = KEY()
   if (!key) return []
@@ -104,15 +105,22 @@ export async function getOpenRouteRoutes(
     const durationMinutes = Math.round((summary?.duration || 0) / 60)
     const distanceKm = Math.round((summary?.distance || 0) * 10) / 10
 
-    if ((mode === 'cycling' && distanceKm > 500) || (mode === 'walking' && distanceKm > 200)) {
+    if ((mode === 'cycling' && distanceKm > 500) || (mode === 'walking' && distanceKm > 200) || (mode === 'transit' && distanceKm > 1000)) {
       return []
+    }
+
+    const modeLabel: Record<string, string> = {
+      driving: 'Coche',
+      cycling: 'Bicicleta',
+      walking: 'A pie',
+      transit: 'Transporte público',
     }
 
     const result: OpenRouteRouteOption = {
       mode,
       durationMinutes,
       distanceKm,
-      summary: `${mode === 'driving' ? 'Coche' : mode === 'cycling' ? 'Bici' : 'A pie'} ${Math.round(summary?.distance || 0)} km`,
+      summary: `${modeLabel[mode] || mode} ${Math.round(summary?.distance || 0)} km`,
       steps: segments?.steps?.map((s) => ({
         instruction: s.instruction || '',
         distance: `${Math.round(s.distance * 10) / 10} km`,

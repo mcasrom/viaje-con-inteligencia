@@ -48,6 +48,12 @@ export async function findRoutes(
   const originRisk = getRiskLevel(originCode)
   const avgRisk = Math.round((destRisk.score + originRisk.score) / 2)
 
+  const originCoords = paisesData[originCode.toLowerCase()]?.mapaCoordenadas
+  const destCoords = paisesData[destCode.toLowerCase()]?.mapaCoordenadas
+  const straightPolyline = originCoords && destCoords
+    ? [[originCoords[0], originCoords[1]] as [number, number], [destCoords[0], destCoords[1]] as [number, number]]
+    : undefined
+
   const fallbackRoutes = estimateAllModes(originCode, destCode)
 
   for (const fr of fallbackRoutes) {
@@ -65,14 +71,12 @@ export async function findRoutes(
       riskLevel: destRisk.level,
       riskScore: avgRisk,
       source: 'fallback',
+      details: straightPolyline ? { polyline: straightPolyline } : undefined,
     })
   }
 
-  const originCoords = paisesData[originCode.toLowerCase()]?.mapaCoordenadas
-  const destCoords = paisesData[destCode.toLowerCase()]?.mapaCoordenadas
-
   if (originCoords && destCoords) {
-    for (const mode of ['driving', 'walking', 'cycling'] as const) {
+    for (const mode of ['driving', 'walking', 'cycling', 'transit'] as const) {
       const orsRoutes = await getOpenRouteRoutes(
         { lat: originCoords[0], lng: originCoords[1] },
         { lat: destCoords[0], lng: destCoords[1] },
@@ -97,6 +101,7 @@ export async function findRoutes(
           driving: 'Coche',
           cycling: 'Bicicleta',
           walking: 'A pie',
+          transit: 'Transporte público',
         }
 
         results.push({
@@ -159,6 +164,7 @@ export async function findRoutes(
             stops: f.stops,
             departure: f.departure,
             arrival: f.arrival,
+            polyline: straightPolyline,
           },
         })
       }

@@ -278,10 +278,9 @@ export default function RoutePlannerClient() {
                 </div>
 
                 {(() => {
-                  const steps = route.details?.steps
-                  if (!steps || !Array.isArray(steps)) return null
-                  const typedSteps = steps as { instruction: string; distance: string; duration: string }[]
+                  const steps = route.details?.steps as { instruction: string; distance: string; duration: string }[] | undefined
                   const polyline = route.details?.polyline as [number, number][] | undefined
+                  if (!steps?.length && !polyline) return null
                   return (
                     <details className="mt-2">
                       <summary className="text-xs text-blue-600 dark:text-blue-400 cursor-pointer hover:underline">
@@ -292,15 +291,17 @@ export default function RoutePlannerClient() {
                           <RouteMap polyline={polyline} />
                         </div>
                       )}
-                      <ol className="mt-2 space-y-1 text-xs text-slate-500 dark:text-slate-400">
-                        {typedSteps.slice(0, 5).map((step, j) => (
-                          <li key={j} className="flex items-start gap-2">
-                            <span className="text-slate-300 mt-0.5">•</span>
-                            <span dangerouslySetInnerHTML={{ __html: step.instruction }} />
-                            <span className="text-slate-400 whitespace-nowrap">({step.distance}, {step.duration})</span>
-                          </li>
-                        ))}
-                      </ol>
+                      {steps && steps.length > 0 && (
+                        <ol className="mt-2 space-y-1 text-xs text-slate-500 dark:text-slate-400">
+                          {steps.slice(0, 5).map((step, j) => (
+                            <li key={j} className="flex items-start gap-2">
+                              <span className="text-slate-300 mt-0.5">•</span>
+                              <span dangerouslySetInnerHTML={{ __html: step.instruction }} />
+                              <span className="text-slate-400 whitespace-nowrap">({step.distance}, {step.duration})</span>
+                            </li>
+                          ))}
+                        </ol>
+                      )}
                     </details>
                   )
                 })()}
