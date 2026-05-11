@@ -1,4 +1,5 @@
 import { paisesData, DatoPais, NivelRiesgo } from './paises';
+import { GPI_DATA } from './indices';
 
 const COORD_ES: [number, number] = [40.4168, -3.7038];
 
@@ -56,6 +57,7 @@ export interface DestinationFeatures {
   riskScore: number;
   riskLevel: number;
   ipc: number;
+  gpiScore: number | null;
   clima: string;
   idiomaEspanol: boolean;
   continente: string;
@@ -148,6 +150,11 @@ export const travelAttributes: Record<string, TravelAttributes> = {
   ch: { playa: 3, cultural: 8, naturaleza: 10, familiar: 7, mejorEpoca: ['Dic', 'Jan', 'Feb'], duracionOptima: 7 },
 };
 
+const gpiMap: Record<string, number> = {};
+for (const g of GPI_DATA) {
+  gpiMap[g.code.toLowerCase()] = g.score;
+}
+
 export function getDestinationsWithFeatures(): DestinationFeatures[] {
   const destinations: DestinationFeatures[] = [];
 
@@ -158,6 +165,7 @@ export function getDestinationsWithFeatures(): DestinationFeatures[] {
       const distancia = haversineDistance(COORD_ES, coords);
       const tourism = ineTourismData[pais.codigo.toLowerCase()];
       const turistas = tourism?.arrivals || 0;
+      const gpiRaw = gpiMap[pais.codigo.toLowerCase()];
 
       destinations.push({
         code: pais.codigo,
@@ -170,6 +178,7 @@ export function getDestinationsWithFeatures(): DestinationFeatures[] {
         riskScore: 100 - (getRiskScore(pais.nivelRiesgo) * 20),
         riskLevel: getRiskScore(pais.nivelRiesgo),
         ipc: ipcValue,
+        gpiScore: gpiRaw ? Math.round((4 - gpiRaw) / 3 * 1000) / 10 : null,
         clima: getClima(pais.continente),
         idiomaEspanol: espanolHabla[pais.codigo] || pais.idioma === 'Español',
         continente: pais.continente,
@@ -186,6 +195,7 @@ export const clusteringFeatures = [
   { name: 'ipc', weight: 1.5, label: 'Coste vida' },
   { name: 'distanciaES', weight: 1, label: 'Distancia' },
   { name: 'arrivals', weight: 0.5, label: 'Turismo' },
+  { name: 'gpiScore', weight: 1, label: 'Paz global' },
 ];
 
 export function normalizeFeatures(destinations: DestinationFeatures[]): number[][] {
@@ -194,6 +204,7 @@ export function normalizeFeatures(destinations: DestinationFeatures[]): number[]
     d.ipc,
     d.distanciaES / 15000,
     Math.log10(d.arrivals + 1) / 8,
+    d.gpiScore ?? 50,
   ]);
   const weights = clusteringFeatures.map(f => f.weight);
   return features.map(f => f.map((v, i) => v * weights[i]));
