@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getAllMAECAlerts, getMAECData } from '@/lib/scraper/maec';
+import { scrapeUSAdvisories } from '@/lib/scraper/us-state-dept';
 import { supabase } from '@/lib/supabase';
 import { supabaseAdmin, isSupabaseAdminConfigured } from '@/lib/supabase-admin';
 import { paisesData } from '@/data/paises';
@@ -38,6 +39,16 @@ async function runMaecScrape(): Promise<any> {
     });
 
     return { status: 'ok', alerts: alerts.length, countries_checked: 26 };
+  } catch (e: any) {
+    return { status: 'error', error: e.message };
+  }
+}
+
+// ===== US STATE DEPT SCRAPE =====
+async function runUSStateDept(): Promise<any> {
+  try {
+    const result = await scrapeUSAdvisories();
+    return { status: 'ok', stored: result.stored, errors: result.errors, total: result.total };
   } catch (e: any) {
     return { status: 'error', error: e.message };
   }
@@ -603,13 +614,15 @@ export async function GET(request: Request) {
   log.info('Starting...');
 
   // Phase 1: Independent tasks (run in parallel)
-  // MAEC scrape (120s timeout), Airspace OSINT (30s), Oil Price (15s)
-  const [maecRes, airspaceRes, oilRes] = await Promise.all([
+  // MAEC scrape (90s), US State Dept (20s), Airspace OSINT (30s), Oil Price (15s)
+  const [maecRes, usStateDeptRes, airspaceRes, oilRes] = await Promise.all([
     withTimeout(() => runMaecScrape(), 90000, '1/8 MAEC scrape'),
+    withTimeout(() => runUSStateDept(), 20000, '1b/8 US State Dept'),
     withTimeout(() => runAirspaceOsint(), 30000, '4/8 Airspace OSINT'),
     withTimeout(() => runOilPrice(), 15000, '6/8 Oil price'),
   ]);
   results.maec = maecRes;
+  results.us_state_dept = usStateDeptRes;
   results.airspace = airspaceRes;
   results.oil = oilRes;
 

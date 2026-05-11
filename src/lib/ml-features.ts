@@ -25,6 +25,7 @@ export interface MlFeatures {
   cost_composite: number | null;
   cluster_label: string | null;
   model_version: string | null;
+  us_risk_score: number | null;
 }
 
 const RISK_NUM: Record<string, number> = {
@@ -120,6 +121,12 @@ export async function computeAndStoreFeatures(code: string, riskLevel: string): 
     admin.from('indices').select('tipo, valor').eq('codigo_pais', code),
   ]);
 
+  let usRiskLevel: number | null = null;
+  try {
+    const { data: usData } = await admin.from('external_risk').select('risk_level').eq('source', 'us_state_dept').eq('country_code', code).maybeSingle();
+    usRiskLevel = (usData as { risk_level: number } | null)?.risk_level ?? null;
+  } catch {}
+
   const events30d = eventsRes.count ?? 0;
   const highImpactEvents30d = highImpactRes.count ?? 0;
   const signalCount7d = signalsRes.count ?? 0;
@@ -156,6 +163,7 @@ export async function computeAndStoreFeatures(code: string, riskLevel: string): 
     incident_count_7d: incidentCount7d,
     airspace_closure_active: airspaceActive,
     route_disruption_active: routesDisrupted,
+    us_risk_score: usRiskLevel,
     safety_composite: 100 - (riskScoreMap[riskLevel] || 50),
     cost_composite: Math.min(100, Math.round((tci.tci / 150) * 100)),
     model_version: 'v3',
