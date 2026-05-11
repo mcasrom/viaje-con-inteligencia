@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
-import { calculateTCI, getOilHistory } from '@/data/tci-engine';
+import { calculateTCI } from '@/data/tci-engine';
 import { paisesData } from '@/data/paises';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
@@ -62,14 +62,41 @@ export async function GET(request: NextRequest) {
         }, { onConflict: 'date' });
     }
 
-    // Fetch conflict data from Supabase (not hardcoded)
-    const [closuresRes, routesRes] = await Promise.all([
+    // Fetch live data from Supabase
+    const [closuresRes, routesRes, seasonalityRes, oilHistoryRes] = await Promise.all([
       supabase.from('airspace_closures').select('*').eq('is_active', true),
       supabase.from('affected_routes').select('*').eq('is_active', true),
+      supabase.from('seasonality').select('country_code, month, index_value'),
+      supabase.from('oil_price_history').select('date, price_usd').order('date', { ascending: true }),
     ]);
 
     const closures = closuresRes.data || [];
     const routes = routesRes.data || [];
+
+    const liveSeasonality: Record<string, Record<string, number>> = {};
+    for (const row of (seasonalityRes.data || [])) {
+      if (!liveSeasonality[row.country_code]) liveSeasonality[row.country_code] = {};
+      liveSeasonality[row.country_code][String(row.month)] = Number(row.index_value);
+    }
+    const liveOilHistory = (oilHistoryRes.data || []).map(o => ({
+      month: o.date.slice(0, 7), price: Number(o.price_usd),
+    }));
+    const liveClosures = closures.map((c: any) => ({
+      code: c.code, name: c.name, closureDate: c.closure_date, reason: c.reason,
+      severity: c.severity, isActive: c.is_active, notes: c.notes || '',
+    }));
+    const liveRoutes = routes.map((r: any) => ({
+      destination: r.destination, countryCode: r.country_code, closedAirspace: r.closed_airspace,
+      detourKm: r.detour_km, fuelSurchargePct: Number(r.fuel_surcharge_pct),
+      timeExtraHours: Number(r.time_extra_hours), alternativeRoute: r.alternative_route, isActive: r.is_active,
+    }));
+    const liveData = {
+      seasonality: Object.keys(liveSeasonality).length > 0 ? liveSeasonality : undefined,
+      oilHistory: liveOilHistory.length > 0 ? liveOilHistory : undefined,
+      oilPrice: currentOilPrice ?? undefined,
+      airspaceClosures: liveClosures.length > 0 ? liveClosures : undefined,
+      affectedRoutes: liveRoutes.length > 0 ? liveRoutes : undefined,
+    };
 
     // Calculate TCI for all countries
     const countries = Object.values(paisesData).filter(p => p.visible !== false);
@@ -78,11 +105,11 @@ export async function GET(request: NextRequest) {
     let historyInserted = 0;
 
     for (const pais of countries) {
-      const tci = calculateTCI(pais.codigo);
+      const tci = calculateTCI(pais.codigo, liveData.seasonality, liveData);
 
       // Calculate conflict surcharge from DB data
-      const route = routes.find(r => r.destination_country === pais.codigo.toUpperCase());
-      const closure = closures.find(c => c.code === pais.codigo.toUpperCase());
+      const route = routes.find((r: any) => r.destination_country === pais.codigo.toUpperCase());
+      const closure = closures.find((c: any) => c.code === pais.codigo.toUpperCase());
       let conflictSurcharge = 0;
 
       if (route) {

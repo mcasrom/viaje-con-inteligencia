@@ -36,6 +36,8 @@ export default function DetallePaisClient({ pais, relatedPosts = [] }: DetallePa
   const [activeTab, setActiveTab] = useState<'info' | 'legal' | 'saturacion' | 'dinero' | 'emergencia' | 'pois'>('info');
   const [maecData, setMaecData] = useState<any>(null);
   const [maecLoading, setMaecLoading] = useState(false);
+  const [usRiskData, setUsRiskData] = useState<{ level: number; label: string; summary: string | null; updatedAt: string } | null>(null);
+  const [usRiskLoading, setUsRiskLoading] = useState(false);
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
   const [istData, setIstData] = useState<any>(null);
   const [istLoading, setIstLoading] = useState(false);
@@ -70,19 +72,32 @@ export default function DetallePaisClient({ pais, relatedPosts = [] }: DetallePa
   }, [activeTab, codigo, maecData]);
 
   useEffect(() => {
-    if (activeTab === 'pois' && !poisLoading) {
+    if (!usRiskData && !usRiskLoading) {
+      setUsRiskLoading(true);
+      fetch(`/api/us-risk/${codigo}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.risk) setUsRiskData(data.risk);
+        })
+        .catch(() => {})
+        .finally(() => setUsRiskLoading(false));
+    }
+  }, [codigo, usRiskData, usRiskLoading]);
+
+  useEffect(() => {
+    if (activeTab === 'pois') {
       setPoisLoading(true);
       setPoisError(null);
       fetch(`/api/pois?country=${codigo.toLowerCase()}&type=${poisType}&limit=30&profile=${travelerProfile}`)
         .then(res => res.json())
         .then(data => {
-          if (data.pois) setPoisData(data.pois);
+          if (data.pois?.length > 0) setPoisData(data.pois);
           else setPoisError(data.error || 'Error al cargar POIs');
         })
         .catch(() => setPoisError('Error de conexión'))
         .finally(() => setPoisLoading(false));
     }
-  }, [activeTab, codigo, poisType, travelerProfile]);
+  }, [activeTab, codigo, poisType, travelerProfile, poisLoading]);
 
   useEffect(() => {
     if (activeTab === 'pois' && poisType === 'disruption' && alternatives === null) {
@@ -252,6 +267,24 @@ export default function DetallePaisClient({ pais, relatedPosts = [] }: DetallePa
             </div>
           </div>
         </div>
+
+        {usRiskData ? (
+          <div className="mt-4 flex items-center gap-4">
+            <div className="flex items-center gap-2 px-3 py-1.5 bg-blue-900/30 rounded-full border border-blue-800/50">
+              <span className="text-blue-300 font-medium text-sm">
+                US State Dept: {usRiskData.label}
+              </span>
+            </div>
+          </div>
+        ) : !usRiskLoading && (
+          <div className="mt-4 flex items-center gap-4">
+            <div className="flex items-center gap-2 px-3 py-1.5 bg-slate-700/50 rounded-full">
+              <span className="text-slate-500 text-sm">
+                US State Dept: No disponible
+              </span>
+            </div>
+          </div>
+        )}
 
         <OsintAlertsBanner countryName={pais.nombre} />
 
@@ -616,7 +649,7 @@ export default function DetallePaisClient({ pais, relatedPosts = [] }: DetallePa
             
             <div className="flex flex-wrap gap-2 mb-4">
               <button
-                onClick={() => { setPoisType('tourist'); setPoisData([]); }}
+                onClick={() => { setPoisType('tourist'); setPoisData([]); setPoisLoading(false); setPoisError(null); }}
                 className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${
                   poisType === 'tourist'
                     ? 'bg-purple-600 text-white'
@@ -626,7 +659,7 @@ export default function DetallePaisClient({ pais, relatedPosts = [] }: DetallePa
                 🎯 Turísticos
               </button>
               <button
-                onClick={() => { setPoisType('disruption'); setPoisData([]); }}
+                onClick={() => { setPoisType('disruption'); setPoisData([]); setPoisLoading(false); setPoisError(null); }}
                 className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${
                   poisType === 'disruption'
                     ? 'bg-orange-600 text-white'
@@ -649,7 +682,7 @@ export default function DetallePaisClient({ pais, relatedPosts = [] }: DetallePa
               ].map(({ type, label, icon }) => (
                 <button
                   key={type}
-                  onClick={() => { setPoisType(type); setPoisData([]); }}
+                  onClick={() => { setPoisType(type); setPoisData([]); setPoisLoading(false); setPoisError(null); }}
                   className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${
                     poisType === type
                       ? 'bg-purple-600 text-white'

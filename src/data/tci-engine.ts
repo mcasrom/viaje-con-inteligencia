@@ -2,6 +2,14 @@ import { paisesData } from './paises';
 import { ineTourismData } from './clustering';
 import { IPC_DATA } from './indices';
 
+export interface TCILiveData {
+  seasonality?: Record<string, Record<string, number>>;
+  airspaceClosures?: AirspaceClosure[];
+  affectedRoutes?: AffectedRoute[];
+  oilPrice?: number;
+  oilHistory?: { month: string; price: number }[];
+}
+
 // Estacionalidad turística por mes (índice base 100)
 // Fuente: patrones históricos de turismo en España
 const SEASONALITY_MAP: Record<string, Record<string, number>> = {
@@ -64,17 +72,21 @@ const OIL_BRENT_HISTORY = [
 
 const OIL_AVG = OIL_BRENT_HISTORY.reduce((s, o) => s + o.price, 0) / OIL_BRENT_HISTORY.length;
 
-export function getCurrentOilPrice(): { price: number; trend: 'up' | 'down' | 'stable'; vsAvg: number } {
-  const latest = OIL_BRENT_HISTORY[OIL_BRENT_HISTORY.length - 1];
-  const prev = OIL_BRENT_HISTORY[OIL_BRENT_HISTORY.length - 2];
+export function getCurrentOilPrice(liveData?: TCILiveData): { price: number; trend: 'up' | 'down' | 'stable'; vsAvg: number } {
+  const history = liveData?.oilHistory || OIL_BRENT_HISTORY;
+  const latest = history[history.length - 1];
+  const prev = history.length > 1 ? history[history.length - 2] : history[0];
+  const avg = history.reduce((s, o) => s + o.price, 0) / history.length;
   const trend: 'up' | 'down' | 'stable' = latest.price > prev.price ? 'up' : latest.price < prev.price ? 'down' : 'stable';
-  const vsAvg = Math.round((latest.price - OIL_AVG) * 10) / 10;
+  const vsAvg = Math.round((latest.price - avg) * 10) / 10;
   return { price: latest.price, trend, vsAvg };
 }
 
-function getOilIndex(): number {
-  const latest = OIL_BRENT_HISTORY[OIL_BRENT_HISTORY.length - 1];
-  return (latest.price / OIL_AVG) * 100;
+function getOilIndex(liveData?: TCILiveData): number {
+  const history = liveData?.oilHistory || OIL_BRENT_HISTORY;
+  const latest = history[history.length - 1];
+  const avg = history.reduce((s, o) => s + o.price, 0) / history.length;
+  return (latest.price / avg) * 100;
 }
 
 function getDemandIndex(countryCode: string): number {
@@ -94,8 +106,9 @@ function getSeasonalityIndex(
   countryCode: string,
   month: number,
   liveMap?: Record<string, Record<string, number>>,
+  liveData?: TCILiveData,
 ): number {
-  const map = liveMap && Object.keys(liveMap).length > 0 ? liveMap : SEASONALITY_MAP;
+  const map = (liveMap && Object.keys(liveMap).length > 0 ? liveMap : liveData?.seasonality) || SEASONALITY_MAP;
   const data = map[countryCode.toLowerCase()];
   if (!data) {
     const pais = paisesData[countryCode.toLowerCase()];
@@ -136,6 +149,7 @@ function getRiskIndex(countryCode: string): number {
 export function calculateTCI(
   countryCode: string,
   seasonality?: Record<string, Record<string, number>>,
+  liveData?: TCILiveData,
 ): {
   tci: number;
   trend: string;
@@ -151,8 +165,8 @@ export function calculateTCI(
   const month = new Date().getMonth() + 1;
 
   const demandIdx = getDemandIndex(countryCode);
-  const oilIdx = getOilIndex();
-  const seasonalityIdx = getSeasonalityIndex(countryCode, month, seasonality);
+  const oilIdx = getOilIndex(liveData);
+  const seasonalityIdx = getSeasonalityIndex(countryCode, month, seasonality, liveData);
   const ipcIdx = getIPCIndex(countryCode);
   const riskIdx = getRiskIndex(countryCode);
 
@@ -221,7 +235,7 @@ export function calculateTCI(
     seasonalityIdx: Math.round(seasonalityIdx * 10) / 10,
     ipcIdx: Math.round(ipcIdx * 10) / 10,
     riskIdx: Math.round(riskIdx * 10) / 10,
-    oilPrice: OIL_BRENT_HISTORY[OIL_BRENT_HISTORY.length - 1].price,
+    oilPrice: (liveData?.oilPrice || liveData?.oilHistory?.[liveData.oilHistory.length - 1]?.price || OIL_BRENT_HISTORY[OIL_BRENT_HISTORY.length - 1].price),
     factors,
   };
 }
@@ -366,6 +380,7 @@ export function getConflictImpact(
   countryCode: string,
   liveClosures?: AirspaceClosure[],
   liveRoutes?: AffectedRoute[],
+  liveData?: TCILiveData,
 ): {
   isAffected: boolean;
   surchargePct: number;
@@ -374,8 +389,8 @@ export function getConflictImpact(
   reason: string;
   alternativeRoute: string;
 } {
-  const closures = liveClosures || AIRSPACE_CLOSURES_FALLBACK;
-  const routes = liveRoutes || AFFECTED_ROUTES_FALLBACK;
+  const closures = liveClosures || liveData?.airspaceClosures || AIRSPACE_CLOSURES_FALLBACK;
+  const routes = liveRoutes || liveData?.affectedRoutes || AFFECTED_ROUTES_FALLBACK;
 
   const matchedRoutes = routes.filter(r => r.countryCode === countryCode.toLowerCase() && r.isActive);
   if (matchedRoutes.length === 0) {

@@ -106,6 +106,30 @@ export default function MetodologiaPage() {
           </div>
         </div>
 
+        {/* US State Dept */}
+        <div className="bg-slate-800/60 rounded-xl border border-slate-700/50 p-6 mb-8">
+          <div className="flex items-center gap-3 mb-4">
+            <Globe className="w-6 h-6 text-blue-400" />
+            <h2 className="text-xl font-bold text-white">Fuente secundaria: US State Department</h2>
+          </div>
+          <p className="text-slate-300 leading-relaxed">
+            Complementamos los datos del MAEC con los <strong>Travel Advisories</strong> del Departamento de Estado de EE.UU. 
+            Esta fuente asigna niveles de riesgo del 1 al 4 a cada país desde la perspectiva estadounidense, 
+            permitiendo una <strong>doble validación</strong> del nivel de riesgo.
+          </p>
+          <div className="mt-4">
+            <a
+              href="https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories.html"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 text-sm"
+            >
+              <Globe className="w-4 h-4" />
+              Ver Travel Advisories oficiales →
+            </a>
+          </div>
+        </div>
+
         {/* Risk Levels */}
         <h2 className="text-2xl font-bold text-white mb-6">Niveles de riesgo</h2>
         <div className="space-y-4 mb-10">

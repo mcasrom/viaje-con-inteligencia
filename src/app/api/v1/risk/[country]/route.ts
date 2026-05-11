@@ -40,6 +40,14 @@ export async function GET(
       .order('predicted_at', { ascending: false })
       .limit(1);
 
+    // Get US State Dept risk
+    const { data: usRisk } = await supabaseAdmin
+      .from('external_risk')
+      .select('risk_level, risk_label, fetched_at')
+      .eq('source', 'us_state_dept')
+      .eq('country_code', codigo)
+      .maybeSingle();
+
     return NextResponse.json({
       country: {
         code: codigo,
@@ -72,6 +80,11 @@ export async function GET(
         probabilityUp30d: predictions[0].probability_up_30d,
         topFactors: predictions[0].top_factors,
         predictedAt: predictions[0].predicted_at,
+      } : null,
+      usRisk: usRisk ? {
+        level: usRisk.risk_level,
+        label: usRisk.risk_label,
+        updatedAt: usRisk.fetched_at,
       } : null,
       source: 'Ministerio de Asuntos Exteriores (MAEC) - Gobierno de España',
       documentation: 'https://www.viajeinteligencia.com/api-endpoints',

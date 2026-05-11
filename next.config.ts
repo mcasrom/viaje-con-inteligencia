@@ -6,7 +6,7 @@ const CSP = [
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com",
   "img-src 'self' data: blob: https://images.unsplash.com https://flagcdn.com https://*.tile.openstreetmap.org https://*.basemaps.cartocdn.com https://cartocdn.com https://unpkg.com https://vercel.live",
   "font-src 'self' https://fonts.gstatic.com",
-  "connect-src 'self' https://nczkvsnuafkwtmgokiuo.supabase.co https://api.groq.com https://api.resend.com https://api.stripe.com https://va.vercel-scripts.com https://vercel.live https://earthquake.usgs.gov wss://ws-us*.pusher.com wss://ws-eu*.pusher.com",
+  "connect-src 'self' https://nczkvsnuafkwtmgokiuo.supabase.co https://api.groq.com https://api.resend.com https://api.stripe.com https://va.vercel-scripts.com https://vercel.live https://earthquake.usgs.gov https://api.open-meteo.com wss://ws-us*.pusher.com wss://ws-eu*.pusher.com",
   "frame-src 'self' https://challenges.cloudflare.com https://stripe.com https://js.stripe.com",
   "frame-ancestors 'none'",
   "base-uri 'self'",

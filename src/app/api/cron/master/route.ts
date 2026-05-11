@@ -48,8 +48,17 @@ async function runMaecScrape(): Promise<any> {
 async function runUSStateDept(): Promise<any> {
   try {
     const result = await scrapeUSAdvisories();
+    await supabase.from('scraper_logs').insert({
+      source: 'us_state_dept', status: result.errors > 0 ? 'partial' : 'success',
+      items_scraped: result.stored, items_failed: result.errors,
+      completed_at: new Date().toISOString(),
+    });
     return { status: 'ok', stored: result.stored, errors: result.errors, total: result.total };
   } catch (e: any) {
+    await supabase.from('scraper_logs').insert({
+      source: 'us_state_dept', status: 'error', error_message: e.message,
+      completed_at: new Date().toISOString(),
+    });
     return { status: 'error', error: e.message };
   }
 }
@@ -128,12 +137,42 @@ async function runFlightCosts(): Promise<any> {
       }, { onConflict: 'date' });
     }
 
+    const [{ data: oilHistory }, { data: seasonalityRows }, { data: closures }, { data: routes }] = await Promise.all([
+      supabase.from('oil_price_history').select('date, price_usd').order('date', { ascending: true }),
+      supabase.from('seasonality').select('country_code, month, index_value'),
+      supabase.from('airspace_closures').select('*').eq('is_active', true),
+      supabase.from('affected_routes').select('*').eq('is_active', true),
+    ]);
+
+    const liveOilHistory = (oilHistory || []).map(o => ({ month: o.date.slice(0, 7), price: Number(o.price_usd) }));
+    const liveSeasonality: Record<string, Record<string, number>> = {};
+    for (const row of (seasonalityRows || [])) {
+      if (!liveSeasonality[row.country_code]) liveSeasonality[row.country_code] = {};
+      liveSeasonality[row.country_code][String(row.month)] = Number(row.index_value);
+    }
+    const liveClosures = (closures || []).map((c: any) => ({
+      code: c.code, name: c.name, closureDate: c.closure_date, reason: c.reason, severity: c.severity,
+      isActive: c.is_active, notes: c.notes || '',
+    }));
+    const liveRoutes = (routes || []).map((r: any) => ({
+      destination: r.destination, countryCode: r.country_code, closedAirspace: r.closed_airspace,
+      detourKm: r.detour_km, fuelSurchargePct: Number(r.fuel_surcharge_pct),
+      timeExtraHours: Number(r.time_extra_hours), alternativeRoute: r.alternative_route, isActive: r.is_active,
+    }));
+    const liveData = {
+      seasonality: Object.keys(liveSeasonality).length > 0 ? liveSeasonality : undefined,
+      oilHistory: liveOilHistory.length > 0 ? liveOilHistory : undefined,
+      oilPrice: oilPrice ?? undefined,
+      airspaceClosures: liveClosures.length > 0 ? liveClosures : undefined,
+      affectedRoutes: liveRoutes.length > 0 ? liveRoutes : undefined,
+    };
+
     const today = new Date().toISOString().split('T')[0];
     let calculated = 0;
     const countries = Object.values(paisesData).filter(p => p.visible !== false);
 
     for (const pais of countries) {
-      const tci = calculateTCI(pais.codigo);
+      const tci = calculateTCI(pais.codigo, liveData.seasonality, liveData);
       await supabase.from('flight_tci_cache').upsert({
         country_code: pais.codigo, tci_value: tci.tci, tci_trend: tci.trend,
         demand_idx: tci.demandIdx, oil_idx: tci.oilIdx, seasonality_idx: tci.seasonalityIdx,
