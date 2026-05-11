@@ -288,7 +288,7 @@ export default function RoutePlannerClient() {
                       </summary>
                       {polyline && polyline.length > 1 && (
                         <div className="mt-2 mb-2">
-                          <RouteMap polyline={polyline} />
+                          <RouteMap polyline={polyline} mode={route.mode} />
                         </div>
                       )}
                       {steps && steps.length > 0 && (
