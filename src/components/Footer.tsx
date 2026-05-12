@@ -42,6 +42,7 @@ export default function Footer() {
             <h4 className="font-semibold text-white mb-3">Herramientas</h4>
             <ul className="space-y-2 text-sm">
               <li><Link href="/dashboard" className="text-slate-400 hover:text-white transition-colors">Mi Dashboard</Link></li>
+              <li><Link href="/dashboard/radar" className="text-slate-400 hover:text-white transition-colors">Mi Radar</Link></li>
               <li><Link href="/" className="text-slate-400 hover:text-white transition-colors">KPIs Global</Link></li>
               <li><Link href="/documentos" className="text-slate-400 hover:text-white transition-colors">Mis Documentos</Link></li>
               <li><Link href="/viajes" className="text-slate-400 hover:text-white transition-colors">Mis Viajes</Link></li>

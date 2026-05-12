@@ -126,18 +126,96 @@ Trigger (GitHub Actions / Anomaly) → Data (MAEC+USGS+GDACS) → LLM Groq (cont
 - **Soporte multiplataforma**: Probado en Chromium, Firefox, ventana normal e incógnito.
 - **Limpieza**: `supabase/.temp/` añadido a `.gitignore`.
 
-## Post sugerido para redes (X / Twitter / Telegram / Mastodon)
-> 🧭 Viaje Inteligente — Tu Radar de Viaje ahora con proyección de riesgo.
->
-> Añade los países que tienes en mente y ve cómo evoluciona su nivel de riesgo mes a mes. ¿Planeas viajar en agosto? El gráfico te dice si ese mes sube o baja la alerta respecto a la media.
->
-> ✅ País añadido → se ve al instante
-> 📈 12 meses de proyección por estacionalidad
-> ✈️ Tus fechas de viaje marcadas en el gráfico
->
-> Pruébalo en viajeinteligencia.com/dashboard/radar
->
-> #ViajeInteligente #traveltech #travelrisk #viajarseguro
+## Referencia Completa del Radar
+
+### Propósito
+Permitir al usuario monitorizar de un vistazo el riesgo de sus próximos destinos, con proyección temporal y alertas contextuales.
+
+### Arquitectura
+| Componente | Archivo | Rol |
+|---|---|---|
+| API CRUD | `src/app/api/user/watchlist/route.ts` | GET/POST/DELETE watchlist |
+| API Timeline | `src/app/api/user/watchlist/timeline/route.ts` | Proyección riesgo 12 meses |
+| API Search | `src/app/api/v1/countries/search/route.ts` | Búsqueda de países |
+| Página Radar | `src/app/dashboard/radar/page.tsx` | Server wrapper + metadata |
+| Cliente Radar | `src/components/RadarClient.tsx` | UI completa (lista, add form, delete) |
+| Gráfico Timeline | `src/components/RadarTimelineChart.tsx` | Recharts line chart |
+| Botón Añadir | `src/components/AddToRadarButton.tsx` | Botón en ficha de país |
+| BD | `supabase/user_watchlist.sql` | Tabla user_watchlist (sin FK) |
+
+### UX Flow
+1. Usuario navega a `/dashboard/radar` o hace clic en "Radar" desde TopBar/Footer/ficha de país
+2. Si no está logueado → CTA "Inicia Sesión"
+3. Si está logueado → ve sus países o empty state "Tu radar está vacío"
+4. "Añadir País" → formulario con buscador (mín 2 chars, debounce 300ms), fechas opcionales, notas
+5. Al guardar → optimistic update (aparece al instante) + refetch en background
+6. Cada card muestra: bandera, nombre, región, nivel riesgo, fechas viaje, notas
+7. Gráfico debajo: líneas por país con proyección 12 meses ajustada por estacionalidad
+8. En `/pais/[codigo]`: botón "Mi Radar"/"En tu Radar" en header
+
+### Modelo de Proyección
+```
+riesgo_score = riesgo_base + ((estacionalidad - 100) / 100 × 0.5)
+```
+- riesgo_base: 1 (sin-riesgo) a 5 (muy-alto) desde MAEC + US State Dept
+- estacionalidad: índice 0-150 desde SEASONALITY_MAP (hardcode + Supabase)
+- El score se redondea al entero más cercano para el label
+
+### API Endpoints
+| Método | Ruta | Auth | Descripción |
+|---|---|---|---|
+| GET | `/api/user/watchlist` | Sesión | Lista países + enrich con paisesData |
+| POST | `/api/user/watchlist` | Sesión | Añade/actualiza país (límite 20) |
+| DELETE | `/api/user/watchlist?id=X` | Sesión | Elimina por id o country |
+| GET | `/api/user/watchlist/timeline` | Sesión | Proyección 12 meses por país |
+| GET | `/api/v1/countries/search?q=...` | No | Busca países (min 2 chars) |
+
+### Puntos de Entrada (Navegación)
+- TopBar: link "Radar" (visible siempre, redirige a login si no autenticado)
+- Footer > Herramientas: "Mi Radar"
+- Dashboard: card "Mi Radar" en grid de acceso rápido
+- Ficha de país: botón "Mi Radar" / "En tu Radar" en header
+- URL directa: `/dashboard/radar`
+
+### Métricas Sugeridas (para implementar con analytics)
+| Métrica | Evento | Dónde |
+|---|---|---|
+| Páginas vistas radar | page_view | `/dashboard/radar` |
+| País añadido | radar_add | POST watchlist |
+| País eliminado | radar_remove | DELETE watchlist |
+| Gráfico visto | chart_view | TimelineChart mount |
+| Click en card país | radar_country_click | Card → `/pais/[codigo]` |
+| Add desde ficha país | radar_add_from_country | AddToRadarButton click |
+
+### Promoción (Redes Sociales)
+**Público objetivo:** Viajeros frecuentes, mochileros, expats, nómadas digitales.
+**Canales:** X, Telegram (@ViajeConInteligenciaBot canal), Mastodon.
+**Tono:** Práctico, data-driven, útil para decidir destinos.
+**Post base** (copiar-pegar):
+```
+🧭 Viaje Inteligente — Tu Radar de Viaje ahora con proyección de riesgo.
+
+Añade los países que tienes en mente y ve cómo evoluciona su nivel de riesgo mes a mes. ¿Planeas viajar en agosto? El gráfico te dice si ese mes sube o baja la alerta respecto a la media.
+
+✅ País añadido → se ve al instante
+📈 12 meses de proyección por estacionalidad
+✈️ Tus fechas de viaje marcadas en el gráfico
+
+Pruébalo en viajeinteligencia.com/dashboard/radar
+
+#ViajeInteligente #traveltech #travelrisk #viajarseguro
+```
+**Variantes:**
+- Telegram: mismo texto, sin hashtags
+- Mastodon: mismo texto, con #ViajeInteligente
+- X: acortado a 280 chars si es necesario
+
+### Tests (smoke)
+```
+curl -s "https://www.viajeinteligencia.com/api/v1/countries/search?q=es"
+# → 200, array con países
+```
+Para probar authenticated endpoints se necesita sesión válida (vía browser).
 
 ## Recent Work (07 May 2026)
 - Created master cron consolidating 7 jobs into 1 (`src/app/api/cron/master/route.ts`)

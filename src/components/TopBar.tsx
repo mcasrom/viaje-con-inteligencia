@@ -25,6 +25,9 @@ export default function TopBar() {
           <Link href="/premium" className="text-slate-400 hover:text-white transition-colors text-xs" title="Premium">
             ⭐
           </Link>
+          <Link href="/dashboard/radar" className="text-slate-400 hover:text-blue-400 transition-colors text-xs font-medium" title="Mi Radar de Viaje">
+            Radar
+          </Link>
           <LanguageSelector />
         </div>
       </div>
