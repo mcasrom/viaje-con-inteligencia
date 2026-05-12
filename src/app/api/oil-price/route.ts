@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase-admin';
-import { getCurrentOilPrice, getOilImpactAnalysis, getGlobalConflictImpact, getDemandShiftAnalysis, getOilHistory } from '@/data/tci-engine';
+import { getCurrentOilPrice, getOilImpactAnalysis, getGlobalConflictImpact, getDemandShiftAnalysis } from '@/data/tci-engine';
 import { getAirspaceClosuresLive, getAffectedRoutesLive, getDemandShiftsLive, getSeasonalityLive } from '@/lib/airspace';
 
 async function getEurUsd(): Promise<number> {
@@ -96,7 +96,6 @@ export async function GET(request: NextRequest) {
   const avg = oil.price - oil.vsAvg;
   const impact = getOilImpactAnalysis();
   const conflict = getGlobalConflictImpact(liveClosures, liveRoutes);
-  const history = getOilHistory();
   const eurUsd = await getEurUsd();
 
   return NextResponse.json({
@@ -105,7 +104,7 @@ export async function GET(request: NextRequest) {
     changePct: oil.vsAvg,
     trend: oil.trend,
     eurUsd,
-    history: history.slice(-12),
+    history: impact.months.slice(-12),
     avgSurcharge: conflict.avgSurcharge,
     tciImpact: impact.months[impact.months.length - 1]?.tciImpact ?? 0,
   });

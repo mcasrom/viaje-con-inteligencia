@@ -5,7 +5,6 @@ import {
   monthlyTCIPattern,
   getTCIForAllCountries,
   getConflictImpact,
-  getOilHistory,
   getOilImpactAnalysis,
   getGlobalConflictImpact,
   getDemandShiftAnalysis,
@@ -114,9 +113,9 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    const hardcoded = getOilHistory();
+    const fallback = getOilImpactAnalysis();
     return NextResponse.json({
-      oil: hardcoded,
+      oil: fallback.months,
       source: 'hardcoded',
       dynamic: false,
     });

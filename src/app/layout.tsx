@@ -15,6 +15,8 @@ import { initPaisesData } from "@/lib/paises-init";
 import { initRutasData } from "@/lib/rutas-init";
 import { initClusteringData } from "@/lib/clustering-init";
 import { initIndicesData } from "@/lib/indices-init";
+import { initSeasonalityData } from "@/lib/seasonality-init";
+import { initSegurosData } from "@/lib/seguros-init";
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -86,7 +88,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  await Promise.all([initPaisesData(), initRutasData(), initClusteringData(), initIndicesData()]);
+  await Promise.all([initPaisesData(), initRutasData(), initClusteringData(), initIndicesData(), initSeasonalityData(), initSegurosData()]);
   return (
     <html lang="es">
       <head>

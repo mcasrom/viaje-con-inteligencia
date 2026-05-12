@@ -14,7 +14,7 @@ export interface TCILiveData {
 
 // Estacionalidad turística por mes (índice base 100)
 // Fuente: patrones históricos de turismo en España
-const SEASONALITY_MAP: Record<string, Record<string, number>> = {
+export const SEASONALITY_MAP: Record<string, Record<string, number>> = {
   es: { '1': 40, '2': 45, '3': 65, '4': 85, '5': 100, '6': 120, '7': 140, '8': 145, '9': 110, '10': 80, '11': 55, '12': 50 },
   fr: { '1': 50, '2': 55, '3': 70, '4': 85, '5': 95, '6': 110, '7': 130, '8': 135, '9': 100, '10': 75, '11': 55, '12': 55 },
   it: { '1': 45, '2': 50, '3': 70, '4': 90, '5': 105, '6': 120, '7': 135, '8': 140, '9': 105, '10': 80, '11': 55, '12': 50 },
@@ -290,10 +290,6 @@ export function getCheapestDestinations(limit: number = 10): any[] {
 
 export function getMostExpensiveDestinations(limit: number = 10): any[] {
   return getTCIForAllCountries().slice(-limit).reverse();
-}
-
-export function getOilHistory(): { month: string; price: number }[] {
-  return OIL_BRENT_HISTORY;
 }
 
 // ─────────────────────────────────────────────

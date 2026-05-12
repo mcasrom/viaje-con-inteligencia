@@ -1,4 +1,4 @@
-import segurosData from '@/data/seguros.json';
+import { catalog } from '@/lib/seguros-data';
 import { paisesData, type NivelRiesgo } from '@/data/paises';
 
 export interface SeguroInput {
@@ -135,7 +135,7 @@ export function scoreSeguros(input: SeguroInput): {
     alertaOsint = (alertaOsint ? alertaOsint + ' ' : '') + `Viaje largo (${duracionEstimada}d). Verifica cobertura para estancias prolongadas.`;
   }
 
-  const resultados: SeguroScore[] = (segurosData.productos as any[]).map(p => {
+  const resultados: SeguroScore[] = catalog.map(p => {
     const c = p.coberturas;
     let score = 0;
     const maxScore = 100;
