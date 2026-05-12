@@ -1,5 +1,11 @@
 # AGENTS.md — Viaje con Inteligencia
 
+## PAUSED STATE (12 May 2026 — Resumed 13 May)
+- **RandomForest ML models trained + deployed** (b1f32cc): 4 regression models (risk_score, prob_up_7d/14d/30d) with 50 trees, maxDepth=8, R²=0.967-0.995 on 109 country samples.
+- **Training decoupled from master cron**: `/api/cron/train-models` runs standalone with 300s budget. Master cron fires it asynchronously (completes in ~129s).
+- **Optimized data pipeline**: `buildTrainingRow()` builds features + heuristic targets in one pass per country (4 parallel Supabase queries instead of ~10).
+- **Next**: Monitor prediction accuracy vs heuristic baseline; retrain periodically; potentially increase nEstimators if more data available.
+
 ## PAUSED STATE (07 May 2026 — Resumed 07 May)
 - **Master cron v2** (58bf127): Deployed, runs in ~89s. MAEC 26 countries, OSINT 7 signals inserted, newsletter weekly digest ready for Monday test.
 - **Sentiment analysis** (5c5500a): GDELT tone adjusts urgency (<-5 → up 1 level, <-10 → up 2). 3 new RSS feeds (AP, BBC Breaking, Sky News). Sentiment badges in OSINT dashboard.
