@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
   if (verifyAdminPassword(password)) {
     const ip = request.headers.get('x-forwarded-for') || 'unknown';
     logAuditEvent({ action: 'admin_login', entityType: 'admin', ip });
-    const response = NextResponse.json({ success: true });
+    const response = NextResponse.json({ success: true, redirect: '/admin/dashboard' });
     response.cookies.set(COOKIE_NAME, getAdminPassword()!, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',

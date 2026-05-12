@@ -12,9 +12,11 @@ export default async function AdminLoginPage({
   const IS_DEV = process.env.NODE_ENV !== 'production';
   const from = params.from || '/admin/dashboard';
 
-  if (IS_DEV) {
+  const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
+
+  if (IS_DEV && ADMIN_PASSWORD) {
     const cookieStore = await cookies();
-    cookieStore.set('admin_session', 'dev', {
+    cookieStore.set('admin_session', ADMIN_PASSWORD, {
       httpOnly: true,
       secure: false,
       sameSite: 'lax',
