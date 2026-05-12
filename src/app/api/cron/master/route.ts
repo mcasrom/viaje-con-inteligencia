@@ -672,19 +672,21 @@ export async function GET(request: Request) {
   log.info('Starting...');
 
   // Phase 1: Independent tasks (run in parallel)
-  // MAEC scrape (90s), US State Dept (20s), Airspace OSINT (30s), Oil Price (15s), Events (120s)
-  const [maecRes, usStateDeptRes, airspaceRes, oilRes, eventsRes] = await Promise.all([
+  // MAEC scrape (90s), US State Dept (20s), Airspace OSINT (30s), Oil Price (15s), Events (90s), Model Training (90s)
+  const [maecRes, usStateDeptRes, airspaceRes, oilRes, eventsRes, modelTrainingRes] = await Promise.all([
     withTimeout(() => runMaecScrape(), 90000, '1/8 MAEC scrape'),
     withTimeout(() => runUSStateDept(), 20000, '1b/8 US State Dept'),
     withTimeout(() => runAirspaceOsint(), 30000, '4/8 Airspace OSINT'),
     withTimeout(() => runOilPrice(), 15000, '6/8 Oil price'),
-    withTimeout(() => runEventsFetch(), 120000, '6c/8 Events intelligence'),
+    withTimeout(() => runEventsFetch(), 90000, '6c/8 Events intelligence'),
+    withTimeout(() => runModelTraining(), 90000, '6/8 Model training'),
   ]);
   results.maec = maecRes;
   results.us_state_dept = usStateDeptRes;
   results.airspace = airspaceRes;
   results.oil = oilRes;
   results.events = eventsRes;
+  results.model_training = modelTrainingRes;
 
   // Phase 2: Depends on Phase 1 results
   // Risk check (needs MAEC data), Flight costs (needs oil price)
@@ -705,14 +707,6 @@ export async function GET(request: Request) {
     async () => detectAndCreateIncidents(),
     15000,
     '5b/8 Incident detection'
-  );
-
-  // Phase 3c: Offline ML model training (features + predictions + RF)
-  log.info('6/8 Model training...');
-  results.model_training = await withTimeout(
-    async () => runModelTraining(),
-    180000,
-    '6/8 Model training'
   );
 
   // Phase 4: Digests and notifications (always run last)

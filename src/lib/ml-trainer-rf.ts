@@ -2,12 +2,17 @@ import { supabaseAdmin } from './supabase-admin';
 import { paisesData } from '@/data/paises';
 import { getFeaturesByCountry } from './ml-features';
 import {
-  predictCountry, buildFeatureVector, getSignalStats, getIncidentStats,
-  getRecentRiskChanges, getAirspaceClosures, getTransitionMatrix,
+  getSignalStats, getIncidentStats, getRecentRiskChanges, getTransitionMatrix,
+  getUpProbability, computeRiskScore, computeProbability, getSeasonalRiskMultiplier,
+  RISK_NUM,
 } from './ml-risk-predictor';
+import type { RiskNum } from './ml-risk-predictor';
 import { createLogger } from './logger';
 
 const log = createLogger('RFTrainer');
+
+const N_ESTIMATORS = 50;
+const MAX_DEPTH = 8;
 
 export const FEATURE_NAMES = [
   'riskNum', 'signalCriticalCount', 'signalHighCount', 'signalMediumCount',
@@ -16,6 +21,46 @@ export const FEATURE_NAMES = [
   'ipc_score', 'tci_score', 'events30d', 'highImpactEvents30d',
   'usRiskScore', 'trend7d', 'trend30d',
 ];
+
+async function buildTrainingRow(
+  code: string, matrix: Awaited<ReturnType<typeof getTransitionMatrix>>,
+): Promise<{
+  features: number[]; riskScore: number; probUp7d: number; probUp14d: number; probUp30d: number;
+} | null> {
+  const pais = paisesData[code.toLowerCase()];
+  if (!pais) return null;
+  const riskNum: RiskNum = (RISK_NUM[pais.nivelRiesgo] || 1) as RiskNum;
+
+  const [signals, incidents, changes30d, features] = await Promise.all([
+    getSignalStats(code),
+    getIncidentStats(code),
+    getRecentRiskChanges(code),
+    getFeaturesByCountry(code.toLowerCase()).catch(() => null),
+  ]);
+
+  const seasonalMult = getSeasonalRiskMultiplier(code);
+  const riskScore = computeRiskScore(riskNum, signals, incidents, features);
+  const transitionProb = getUpProbability(matrix, riskNum);
+  const prob = computeProbability(riskNum, riskScore, signals, incidents, changes30d, seasonalMult, transitionProb, features);
+
+  return {
+    features: [
+      riskNum,
+      signals.criticalCount, signals.highCount, signals.mediumCount, signals.count,
+      incidents.bySeverity['high'] || 0, incidents.bySeverity['medium'] || 0, incidents.count,
+      changes30d, seasonalMult,
+      features?.gpi_score ?? 0, features?.gti_score ?? 0, features?.hdi_score ?? 0,
+      features?.ipc_score ?? 0, features?.tci_score ?? 0,
+      features?.events_30d ?? 0, features?.high_impact_events_30d ?? 0,
+      features?.us_risk_score ?? 0,
+      features?.risk_trend_7d ?? 0, features?.risk_trend_30d ?? 0,
+    ],
+    riskScore,
+    probUp7d: prob.up7d,
+    probUp14d: prob.up14d,
+    probUp30d: prob.up30d,
+  };
+}
 
 export async function trainRandomForest(): Promise<{
   success: boolean; models: number; nSamples: number; error?: string;
@@ -29,16 +74,16 @@ export async function trainRandomForest(): Promise<{
     const yProb14d: number[] = [];
     const yProb30d: number[] = [];
 
+    const matrix = await getTransitionMatrix();
+
     for (const code of countries) {
-      const pred = await predictCountry(code);
-      if (!pred) continue;
-      const features = await buildFeatureVector(code);
-      if (!features) continue;
-      X.push(features);
-      yScore.push(pred.riskScore);
-      yProb7d.push(pred.probabilityUp7d);
-      yProb14d.push(pred.probabilityUp14d);
-      yProb30d.push(pred.probabilityUp30d);
+      const row = await buildTrainingRow(code, matrix);
+      if (!row) continue;
+      X.push(row.features);
+      yScore.push(row.riskScore);
+      yProb7d.push(row.probUp7d);
+      yProb14d.push(row.probUp14d);
+      yProb30d.push(row.probUp30d);
     }
 
     if (X.length < 10) {
@@ -48,17 +93,17 @@ export async function trainRandomForest(): Promise<{
     const nSamples = X.length;
 
     const models = [
-      { type: 'risk_score_rf', y: yScore, regression: true },
-      { type: 'prob_up_7d_rf', y: yProb7d, regression: true },
-      { type: 'prob_up_14d_rf', y: yProb14d, regression: true },
-      { type: 'prob_up_30d_rf', y: yProb30d, regression: true },
+      { type: 'risk_score_rf', y: yScore },
+      { type: 'prob_up_7d_rf', y: yProb7d },
+      { type: 'prob_up_14d_rf', y: yProb14d },
+      { type: 'prob_up_30d_rf', y: yProb30d },
     ];
 
     let trained = 0;
     for (const model of models) {
       const rf = new RF.RandomForestRegression({
-        nEstimators: 100,
-        treeOptions: { maxDepth: 10 },
+        nEstimators: N_ESTIMATORS,
+        treeOptions: { maxDepth: MAX_DEPTH },
         noOOB: true,
         seed: 42,
       });
@@ -76,7 +121,8 @@ export async function trainRandomForest(): Promise<{
         model_data: modelJson,
         feature_names: FEATURE_NAMES,
         trained_at: new Date().toISOString(),
-        n_estimators: 100,
+        n_estimators: N_ESTIMATORS,
+        max_depth: MAX_DEPTH,
         n_samples: nSamples,
         mse: Math.round(mse * 10000) / 10000,
         r2: Math.round(r2 * 1000) / 1000,
