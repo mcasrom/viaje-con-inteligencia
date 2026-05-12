@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase-server';
+import { generateTripSlug } from '@/lib/slug';
 
 export async function GET(request: NextRequest) {
   const supabase = await createSupabaseServerClient();
@@ -22,15 +23,27 @@ export async function POST(request: NextRequest) {
   if (!user) return NextResponse.json({ error: 'No autenticado' }, { status: 401 });
 
   const body = await request.json();
-  const { name, destination, country_code, start_date, end_date, days, budget, interests, itinerary_raw, status, notes } = body;
+  const { name, destination, country_code, start_date, end_date, days, budget, interests, itinerary_raw, status, notes, is_public } = body;
 
   if (!name || !destination) {
     return NextResponse.json({ error: 'Nombre y destino son requeridos' }, { status: 400 });
   }
 
+  let slug: string | undefined;
+  if (is_public) {
+    slug = generateTripSlug(name, destination);
+    let attempts = 0;
+    while (attempts < 10) {
+      const { data: existing } = await supabase.from('trips').select('id').eq('slug', slug).maybeSingle();
+      if (!existing) break;
+      attempts++;
+      slug = `${generateTripSlug(name, destination)}-${attempts}`;
+    }
+  }
+
   const { data, error } = await supabase
     .from('trips')
-    .insert([{ user_id: user.id, name, destination, country_code, start_date, end_date, days: days || 7, budget: budget || 'moderate', interests: interests || [], itinerary_raw, status: status || 'draft', notes }])
+    .insert([{ user_id: user.id, name, destination, country_code, start_date, end_date, days: days || 7, budget: budget || 'moderate', interests: interests || [], itinerary_raw, status: status || 'draft', notes, is_public: is_public || false, slug }])
     .select()
     .single();
 

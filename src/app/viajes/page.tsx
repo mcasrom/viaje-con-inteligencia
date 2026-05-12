@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Plus, MapPin, Calendar, Plane, Clock, ChevronRight, Trash2, Loader2, Lock, Mail, Send, CheckCircle, Download, Share2 } from 'lucide-react';
+import { Plus, MapPin, Calendar, Plane, Clock, ChevronRight, Trash2, Loader2, Lock, Mail, Send, CheckCircle, Download, Share2, Sparkles } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import type { Trip } from '@/lib/supabase';
 import { generateIcs } from '@/lib/ics';
@@ -220,6 +220,15 @@ export default function ViajesPage() {
       </header>
 
       <main className="max-w-4xl mx-auto px-6 py-8">
+        <div className="mb-6">
+          <Link
+            href="/viajes/destacados"
+            className="inline-flex items-center gap-2 text-sm text-purple-400 hover:text-purple-300 transition-colors"
+          >
+            <Sparkles className="w-4 h-4" />
+            Ver itinerarios destacados →
+          </Link>
+        </div>
         {trips.length === 0 ? (
           <div className="text-center py-16">
             <Plane className="w-16 h-16 mx-auto text-slate-600 mb-4" />

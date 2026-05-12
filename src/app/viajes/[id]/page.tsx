@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter, useParams } from 'next/navigation';
-import { ArrowLeft, MapPin, Calendar, DollarSign, Sparkles, Loader2, Send, Plane, Clock, Pencil, X, Check, FileDown, Download } from 'lucide-react';
+import { ArrowLeft, MapPin, Calendar, DollarSign, Sparkles, Loader2, Send, Plane, Clock, Pencil, X, Check, FileDown, Download, Globe, GlobeOff } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import type { Trip } from '@/lib/supabase';
 import PDFExportButton from '@/components/PDFExportButton';
@@ -35,6 +35,7 @@ export default function ViajeDetallePage() {
   const [editing, setEditing] = useState(false);
   const [regenerating, setRegenerating] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [publishing, setPublishing] = useState(false);
   const [error, setError] = useState('');
 
   const [editName, setEditName] = useState('');
@@ -145,6 +146,28 @@ export default function ViajeDetallePage() {
     }
   };
 
+  const handlePublishToggle = async () => {
+    if (!trip) return;
+    setPublishing(true);
+    const newValue = !trip.is_public;
+
+    try {
+      const res = await fetch(`/api/trips/${tripId}`, {
+        method: 'PATCH',
+        body: JSON.stringify({ is_public: newValue }),
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        setTrip(data.trip);
+      }
+    } catch {
+      setError('Error al cambiar visibilidad');
+    } finally {
+      setPublishing(false);
+    }
+  };
+
   const handleExportIcs = () => {
     if (!trip) return;
     const startDate = trip.start_date || trip.created_at;
@@ -194,6 +217,25 @@ export default function ViajeDetallePage() {
             <span>Mis Viajes</span>
           </Link>
           <div className="flex items-center gap-3">
+            <button
+              onClick={handlePublishToggle}
+              disabled={publishing}
+              className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm transition-colors ${
+                trip?.is_public
+                  ? 'bg-emerald-600/20 text-emerald-400 hover:bg-emerald-600/30'
+                  : 'bg-slate-700 text-slate-400 hover:text-white hover:bg-slate-600'
+              }`}
+              title={trip?.is_public ? 'Público' : 'Publicar itinerario'}
+            >
+              {publishing ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : trip?.is_public ? (
+                <Globe className="w-4 h-4" />
+              ) : (
+                <GlobeOff className="w-4 h-4" />
+              )}
+              <span className="hidden sm:inline">{trip?.is_public ? 'Público' : 'Publicar'}</span>
+            </button>
             <button
               onClick={handleExportIcs}
               className="flex items-center gap-1.5 bg-slate-700 hover:bg-slate-600 text-slate-200 px-3 py-2 rounded-lg text-sm transition-colors"
@@ -316,6 +358,23 @@ export default function ViajeDetallePage() {
                       </span>
                     ))}
                   </div>
+                </div>
+              )}
+
+              {trip.is_public && trip.slug && (
+                <div className="mt-4 pt-4 border-t border-slate-700">
+                  <p className="text-slate-400 text-sm flex items-center gap-1">
+                    <Globe className="w-3.5 h-3.5 text-emerald-400" />
+                    Enlace público
+                  </p>
+                  <a
+                    href={`${typeof window !== 'undefined' ? window.location.origin : ''}/viajes/destacados/${trip.slug}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-emerald-400 hover:text-emerald-300 text-sm mt-1 block truncate"
+                  >
+                    {typeof window !== 'undefined' ? window.location.origin : ''}/viajes/destacados/{trip.slug}
+                  </a>
                 </div>
               )}
             </div>

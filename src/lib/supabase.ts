@@ -135,6 +135,8 @@ export interface Trip {
   interests: string[];
   itinerary_raw?: string;
   status: 'draft' | 'planned' | 'completed' | 'cancelled';
+  is_public?: boolean;
+  slug?: string;
   notes?: string;
   created_at: string;
   updated_at: string;

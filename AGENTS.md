@@ -234,6 +234,24 @@ Para probar authenticated endpoints se necesita sesión válida (vía browser).
   - Classifies signals with Groq (category, urgency, first-person detection)
   - Saves to `osint_signals` table in Supabase
 
+## 13 May 2026 — Itinerarios públicos (destacados)
+- **Feature**: Sistema completo de itinerarios públicos. Cualquier viaje con itinerario IA se puede marcar como público con 1 clic.
+- **Arquitectura**:
+  - Columna `is_public` (boolean) + `slug` (text UNIQUE) en tabla `trips`
+  - PATCH `/api/trips/[id]` auto-genera slug al marcar `is_public: true`
+  - GET `/api/trips/public` — lista pública (sin auth)
+  - `/viajes/destacados` — grid público con extractos
+  - `/viajes/destacados/[slug]` — página completa con OG tags para redes
+  - Toggle "Publicar" en detalle del viaje (`/viajes/[id]`)
+  - Enlace en footer + enlace "Ver itinerarios destacados" en Mis Viajes
+- **Pendiente**: Ejecutar `supabase/trips_public.sql` en Supabase SQL Editor para crear las columnas.
+
+## Recurring Tasks
+- **Daily (post-deploy)**: Verify `/api/cron/train-models` completes successfully (R² > 0.95, < 300s).
+- **Daily (post-deploy)**: Verify `/api/cron/compare-models` — check no new countries with large RF vs heuristic deviation (>5 points riskScore, >5% probUp).
+- **Weekly**: Review `maec_risk_history` data accumulation. Once 30+ days of history exist, run temporal CV on `/api/cron/validate-models` and compare RF predictions against actual risk changes.
+- **Weekly**: Update AGENTS.md ML summary with latest comparison/validation metrics.
+
 ## False Positives (Audit Tools)
 - `@mybloggingnotes` links — old cached content, removed from live site
 - WhatsApp number — not present in current codebase

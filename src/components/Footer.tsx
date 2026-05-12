@@ -46,6 +46,7 @@ export default function Footer() {
               <li><Link href="/" className="text-slate-400 hover:text-white transition-colors">KPIs Global</Link></li>
               <li><Link href="/documentos" className="text-slate-400 hover:text-white transition-colors">Mis Documentos</Link></li>
               <li><Link href="/viajes" className="text-slate-400 hover:text-white transition-colors">Mis Viajes</Link></li>
+              <li><Link href="/viajes/destacados" className="text-slate-400 hover:text-white transition-colors">Itinerarios destacados</Link></li>
               <li><Link href="/lead-magnet" className="text-slate-400 hover:text-white transition-colors">Checklist Premium</Link></li>
               <li><Link href="/premium" className="text-slate-400 hover:text-white transition-colors">Premium</Link></li>
               <li><Link href="/api-endpoints" className="text-slate-400 hover:text-white transition-colors">API Pública</Link></li>
