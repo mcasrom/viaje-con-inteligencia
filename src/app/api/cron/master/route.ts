@@ -635,7 +635,6 @@ async function runModelTraining(): Promise<any> {
     const baseUrl = process.env.APP_BASE_URL || 'https://www.viajeinteligencia.com';
     fetch(`${baseUrl}/api/cron/train-models`, {
       headers: { 'Authorization': `Bearer ${cronSecret}` },
-      signal: AbortSignal.timeout(100),
     }).catch(() => {});
     return { status: 'fired', note: 'Training started asynchronously' };
   } catch {
