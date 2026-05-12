@@ -36,10 +36,14 @@ const RIESGO_LABELS: Record<string, string> = {
 
 async function searchCountries(query: string): Promise<{ codigo: string; nombre: string; bandera: string }[]> {
   if (query.length < 2) return [];
-  const res = await fetch(`/api/v1/countries/search?q=${encodeURIComponent(query)}`);
-  if (!res.ok) return [];
-  const data = await res.json();
-  return data.countries || [];
+  try {
+    const res = await fetch(`/api/v1/countries/search?q=${encodeURIComponent(query)}`);
+    if (!res.ok) return [];
+    const data = await res.json();
+    return data.countries || [];
+  } catch {
+    return [];
+  }
 }
 
 export default function RadarClient() {
@@ -50,7 +54,7 @@ export default function RadarClient() {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<{ codigo: string; nombre: string; bandera: string }[]>([]);
   const [searching, setSearching] = useState(false);
-  const [newEntry, setNewEntry] = useState({ country_code: '', country_name: '', trip_start: '', trip_end: '', notes: '' });
+  const [newEntry, setNewEntry] = useState({ country_code: '', country_name: '', bandera: '', trip_start: '', trip_end: '', notes: '' });
   const [saving, setSaving] = useState(false);
 
   const fetchWatchlist = useCallback(async () => {
@@ -97,16 +101,38 @@ export default function RadarClient() {
         }),
       });
       if (res.ok) {
-        await fetchWatchlist();
+        const optimistic: WatchlistEntry = {
+          id: Date.now(),
+          country_code: newEntry.country_code,
+          country_name: newEntry.country_name,
+          bandera: newEntry.bandera || '',
+          region: '',
+          nivel_riesgo: '',
+          trip_start_date: newEntry.trip_start || null,
+          trip_end_date: newEntry.trip_end || null,
+          notes: newEntry.notes || null,
+          created_at: new Date().toISOString(),
+        };
+        setWatchlist(prev => [optimistic, ...prev]);
         setShowAddForm(false);
-        setNewEntry({ country_code: '', country_name: '', trip_start: '', trip_end: '', notes: '' });
+        setNewEntry({ country_code: '', country_name: '', bandera: '', trip_start: '', trip_end: '', notes: '' });
         setSearchQuery('');
+        (async () => {
+          try {
+            const r = await fetch('/api/user/watchlist');
+            if (r.ok) {
+              const d = await r.json();
+              if (d.watchlist?.length) setWatchlist(d.watchlist);
+            }
+          } catch {}
+        })();
       } else {
-        const err = await res.json();
-        alert(err.error || 'Error al añadir país');
+        const data = await res.json().catch(() => ({}));
+        alert(data.error || 'Error al añadir país');
       }
     } catch (e) {
       console.error('Error adding:', e);
+      alert('Error de red al añadir país');
     } finally {
       setSaving(false);
     }
@@ -156,6 +182,7 @@ export default function RadarClient() {
           <p className="text-slate-400 mt-1">Monitoriza tus próximos destinos de un vistazo</p>
         </div>
         <button
+          type="button"
           onClick={() => setShowAddForm(true)}
           className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg font-medium transition-colors"
         >
@@ -168,7 +195,7 @@ export default function RadarClient() {
         <div className="bg-slate-800 border border-slate-700 rounded-xl p-6 mb-8">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold text-white">Añadir a tu radar</h3>
-            <button onClick={() => { setShowAddForm(false); setNewEntry({ country_code: '', country_name: '', trip_start: '', trip_end: '', notes: '' }); setSearchQuery(''); }} className="text-slate-400 hover:text-white">
+            <button type="button" onClick={() => { setShowAddForm(false); setNewEntry({ country_code: '', country_name: '', bandera: '', trip_start: '', trip_end: '', notes: '' }); setSearchQuery(''); }} className="text-slate-400 hover:text-white">
               <X className="w-5 h-5" />
             </button>
           </div>
@@ -182,6 +209,7 @@ export default function RadarClient() {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Buscar país..."
+                  autoComplete="off"
                   className="w-full pl-10 pr-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-blue-500"
                 />
                 {searching && <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 animate-spin" />}
@@ -190,8 +218,9 @@ export default function RadarClient() {
                 <div className="mt-2 bg-slate-700 border border-slate-600 rounded-lg max-h-48 overflow-y-auto">
                   {searchResults.map(c => (
                     <button
+                      type="button"
                       key={c.codigo}
-                      onClick={() => { setNewEntry(prev => ({ ...prev, country_code: c.codigo, country_name: c.nombre })); setSearchQuery(''); setSearchResults([]); }}
+                      onClick={() => { setNewEntry(prev => ({ ...prev, country_code: c.codigo, country_name: c.nombre, bandera: c.bandera })); setSearchQuery(''); setSearchResults([]); }}
                       className="w-full flex items-center gap-3 px-4 py-2 hover:bg-slate-600 text-left transition-colors"
                     >
                       <span className="text-xl">{c.bandera}</span>
@@ -204,7 +233,7 @@ export default function RadarClient() {
                 <div className="mt-2 flex items-center gap-2 px-3 py-2 bg-blue-600/20 border border-blue-500/30 rounded-lg">
                   <span className="text-lg">{watchlist.find(w => w.country_code === newEntry.country_code)?.bandera || '🌍'}</span>
                   <span className="text-blue-300 font-medium">{newEntry.country_name}</span>
-                  <button onClick={() => setNewEntry(prev => ({ ...prev, country_code: '', country_name: '' }))} className="ml-auto text-slate-400 hover:text-white">
+                  <button onClick={() => setNewEntry(prev => ({ ...prev, country_code: '', country_name: '', bandera: '' }))} className="ml-auto text-slate-400 hover:text-white">
                     <X className="w-4 h-4" />
                   </button>
                 </div>
