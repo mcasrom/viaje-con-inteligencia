@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 import { getAllPosts } from '@/lib/posts';
 import { publishToMastodon } from '@/lib/mastodon';
+import { publishToBluesky } from '@/lib/bluesky';
 import { sendTelegramMessage } from '@/lib/telegram-channel';
 import { getAdminPassword, verifyAdminPassword } from '@/lib/admin-auth';
 
@@ -18,7 +19,7 @@ function requireAuth(request: NextRequest) {
 
 const BLOG_URL = 'https://www.viajeinteligencia.com/blog';
 
-async function publishPostToSocial(post: any): Promise<{ telegram: boolean; mastodon: boolean; mastodonUrl: string | null }> {
+async function publishPostToSocial(post: any): Promise<{ telegram: boolean; mastodon: boolean; bluesky: boolean; mastodonUrl: string | null }> {
   const telegramMsg = `📝 *${post.title}*\n\n${post.excerpt || ''}\n\n🔗 ${BLOG_URL}/${post.slug}\n\n#${(post.tags || []).map((t: string) => t.replace(/\s+/g, '')).join(' #')}`;
   
   const tgRes = await sendTelegramMessage(telegramMsg).catch(() => false);
@@ -28,7 +29,10 @@ async function publishPostToSocial(post: any): Promise<{ telegram: boolean; mast
     mastodonUrl = (mastodonRes as any).url;
   }
   
-  return { telegram: !!tgRes, mastodon: !!mastodonUrl, mastodonUrl };
+  const bsText = `${post.title}\n\n${post.excerpt || ''}\n\n🔗 ${BLOG_URL}/${post.slug} ${(post.tags || []).map((t: string) => `#${t.replace(/\s+/g, '')}`).join(' ')}`;
+  const bsRes = await publishToBluesky(bsText).catch(() => ({ success: false }));
+  
+  return { telegram: !!tgRes, mastodon: !!mastodonUrl, bluesky: !!bsRes.success, mastodonUrl };
 }
 
 async function getPublishedPostsLog(): Promise<Set<string>> {
@@ -82,6 +86,7 @@ export async function POST(request: NextRequest) {
         results.push({ slug: post.slug, title: post.title, ...res });
         if (res.telegram) await logPublishedPost(post.slug, 'telegram', null);
         if (res.mastodon && res.mastodonUrl) await logPublishedPost(post.slug, 'mastodon', res.mastodonUrl);
+        if (res.bluesky) await logPublishedPost(post.slug, 'bluesky', null);
       } catch (e: any) {
         results.push({ slug: post.slug, title: post.title, error: e.message });
       }
