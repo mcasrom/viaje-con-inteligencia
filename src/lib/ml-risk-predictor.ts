@@ -3,9 +3,9 @@ import { paisesData, type NivelRiesgo } from '@/data/paises';
 import { getFeaturesByCountry } from './ml-features';
 import type { MlFeatures } from './ml-features';
 
-type RiskNum = 1 | 2 | 3 | 4 | 5;
+export type RiskNum = 1 | 2 | 3 | 4 | 5;
 
-const RISK_NUM: Record<string, RiskNum> = {
+export const RISK_NUM: Record<string, RiskNum> = {
   'sin-riesgo': 1,
   'bajo': 2,
   'medio': 3,
@@ -42,7 +42,7 @@ let cachedMatrix: TransitionMatrix | null = null;
 let matrixComputedAt = 0;
 const MATRIX_TTL = 3600000;
 
-async function getTransitionMatrix(): Promise<TransitionMatrix> {
+export async function getTransitionMatrix(): Promise<TransitionMatrix> {
   if (cachedMatrix && Date.now() - matrixComputedAt < MATRIX_TTL) {
     return cachedMatrix;
   }
@@ -83,7 +83,7 @@ async function getTransitionMatrix(): Promise<TransitionMatrix> {
   return matrix;
 }
 
-function getUpProbability(matrix: TransitionMatrix, currentRiskNum: RiskNum): number {
+export function getUpProbability(matrix: TransitionMatrix, currentRiskNum: RiskNum): number {
   const idx = currentRiskNum - 1;
   const row = matrix.probs[idx];
   if (!row) return 0.2;
@@ -101,7 +101,7 @@ interface SignalStats {
   avgConfidence: number;
 }
 
-async function getSignalStats(countryCode: string): Promise<SignalStats> {
+export async function getSignalStats(countryCode: string): Promise<SignalStats> {
   const sevenDaysAgo = new Date(Date.now() - 7 * 86400000).toISOString();
   const { data } = await supabaseAdmin
     .from('osint_signals')
@@ -127,7 +127,7 @@ interface IncidentStats {
   bySeverity: Record<string, number>;
 }
 
-async function getIncidentStats(countryCode: string): Promise<IncidentStats> {
+export async function getIncidentStats(countryCode: string): Promise<IncidentStats> {
   const { data } = await supabaseAdmin
     .from('incidents')
     .select('severity')
@@ -144,7 +144,7 @@ async function getIncidentStats(countryCode: string): Promise<IncidentStats> {
   return { count: data.length, bySeverity };
 }
 
-async function getRecentRiskChanges(countryCode: string): Promise<number> {
+export async function getRecentRiskChanges(countryCode: string): Promise<number> {
   const thirtyDaysAgo = new Date(Date.now() - 30 * 86400000).toISOString();
   const { data } = await supabaseAdmin
     .from('risk_alerts')
@@ -155,7 +155,7 @@ async function getRecentRiskChanges(countryCode: string): Promise<number> {
   return data?.length || 0;
 }
 
-async function getAirspaceClosures(): Promise<Set<string>> {
+export async function getAirspaceClosures(): Promise<Set<string>> {
   const { data } = await supabaseAdmin
     .from('airspace_closures')
     .select('country_code')
@@ -164,7 +164,7 @@ async function getAirspaceClosures(): Promise<Set<string>> {
   return new Set((data || []).map(c => c.country_code.toUpperCase()));
 }
 
-function getSeasonalRiskMultiplier(countryCode: string): number {
+export function getSeasonalRiskMultiplier(countryCode: string): number {
   const month = new Date().getMonth();
   const highRiskMonths: Record<string, number[]> = {
     th: [3, 4, 5],
@@ -181,7 +181,7 @@ function getSeasonalRiskMultiplier(countryCode: string): number {
   return (highRiskMonths[countryCode.toLowerCase()] || []).includes(month) ? 1.3 : 1.0;
 }
 
-function computeRiskScore(
+export function computeRiskScore(
   riskNum: RiskNum,
   signals: SignalStats,
   incidents: IncidentStats,
@@ -219,7 +219,7 @@ function computeRiskScore(
   return Math.min(Math.max(score, 1), 100);
 }
 
-function computeProbability(
+export function computeProbability(
   riskNum: RiskNum,
   riskScore: number,
   signals: SignalStats,
@@ -303,7 +303,7 @@ function getTopFactors(
   return factors.slice(0, 5);
 }
 
-function getHistoricalTrend(trend7d: number, trend30d: number): string {
+export function getHistoricalTrend(trend7d: number, trend30d: number): string {
   if (trend7d > 0.3) return 'subiendo rápido';
   if (trend7d > 0.1) return 'subiendo';
   if (trend7d < -0.3) return 'bajando rápido';
@@ -311,6 +311,64 @@ function getHistoricalTrend(trend7d: number, trend30d: number): string {
   if (trend30d > 0.1) return 'subiendo lentamente';
   if (trend30d < -0.1) return 'bajando lentamente';
   return 'estable';
+}
+
+export async function buildFeatureVector(code: string): Promise<number[] | null> {
+  const pais = paisesData[code.toLowerCase()];
+  if (!pais) return null;
+
+  const riskNum: number = { 'sin-riesgo': 1, 'bajo': 2, 'medio': 3, 'alto': 4, 'muy-alto': 5 }[pais.nivelRiesgo] || 1;
+  const signals = await getSignalStats(code);
+  const incidents = await getIncidentStats(code);
+  const changes30d = await getRecentRiskChanges(code);
+  const seasonalMult = getSeasonalRiskMultiplier(code);
+  const features = await getFeaturesByCountry(code.toLowerCase()).catch(() => null);
+
+  return [
+    riskNum,
+    signals.criticalCount,
+    signals.highCount,
+    signals.mediumCount,
+    signals.count,
+    incidents.bySeverity['high'] || 0,
+    incidents.bySeverity['medium'] || 0,
+    incidents.count,
+    changes30d,
+    seasonalMult,
+    features?.gpi_score ?? 0,
+    features?.gti_score ?? 0,
+    features?.hdi_score ?? 0,
+    features?.ipc_score ?? 0,
+    features?.tci_score ?? 0,
+    features?.events_30d ?? 0,
+    features?.high_impact_events_30d ?? 0,
+    features?.us_risk_score ?? 0,
+    features?.risk_trend_7d ?? 0,
+    features?.risk_trend_30d ?? 0,
+  ];
+}
+
+async function predictWithRF(
+  countryCode: string,
+  modelType: 'risk_score_rf' | 'prob_up_7d_rf' | 'prob_up_14d_rf' | 'prob_up_30d_rf',
+): Promise<number | null> {
+  try {
+    const RF = await import('ml-random-forest');
+    const { data } = await supabaseAdmin
+      .from('ml_models')
+      .select('model_data, feature_names')
+      .eq('model_type', modelType)
+      .eq('model_version', 'v1')
+      .order('trained_at', { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    if (!data) return null;
+    const features = await buildFeatureVector(countryCode);
+    if (!features) return null;
+    const model = RF.RandomForestRegression.load(data.model_data as any);
+    const prediction = model.predict([features]);
+    return prediction[0] as number;
+  } catch { return null; }
 }
 
 export async function predictCountry(countryCode: string): Promise<RiskPrediction | null> {
@@ -330,8 +388,25 @@ export async function predictCountry(countryCode: string): Promise<RiskPredictio
 
   const seasonalMult = getSeasonalRiskMultiplier(countryCode);
   const transitionProb = getUpProbability(matrix, riskNum);
-  const riskScore = computeRiskScore(riskNum, signals, incidents, features);
-  const probability = computeProbability(riskNum, riskScore, signals, incidents, changes30d, seasonalMult, transitionProb, features);
+
+  // Try RandomForest predictions if available
+  const [rfScore, rfProb7d, rfProb14d, rfProb30d] = await Promise.all([
+    predictWithRF(countryCode, 'risk_score_rf'),
+    predictWithRF(countryCode, 'prob_up_7d_rf'),
+    predictWithRF(countryCode, 'prob_up_14d_rf'),
+    predictWithRF(countryCode, 'prob_up_30d_rf'),
+  ]);
+
+  const riskScore = rfScore !== null
+    ? Math.round(Math.min(Math.max(rfScore, 1), 100))
+    : computeRiskScore(riskNum, signals, incidents, features);
+
+  const heuristicProb = computeProbability(riskNum, riskScore, signals, incidents, changes30d, seasonalMult, transitionProb, features);
+  const probability = {
+    up7d: rfProb7d !== null ? Math.min(Math.max(rfProb7d, 0.001), 0.95) : heuristicProb.up7d,
+    up14d: rfProb14d !== null ? Math.min(Math.max(rfProb14d, 0.001), 0.95) : heuristicProb.up14d,
+    up30d: rfProb30d !== null ? Math.min(Math.max(rfProb30d, 0.001), 0.95) : heuristicProb.up30d,
+  };
   const historicalTrend = getHistoricalTrend(features?.risk_trend_7d ?? 0, features?.risk_trend_30d ?? 0);
 
   return {
