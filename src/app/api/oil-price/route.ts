@@ -47,16 +47,17 @@ export async function GET(request: NextRequest) {
   if (action === 'impact') {
     const real = await getRealOilData();
     if (real) {
+      const meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
       return NextResponse.json({
         currentPrice: real.price,
         avgPrice: real.avg,
         changePct: real.changePct,
         trend: real.trend,
-        months: real.history.slice(-12).map(o => ({
-          month: o.month.slice(5) + '/' + o.month.slice(2, 4),
-          price: o.price,
-          tciImpact: 0,
-        })),
+        months: real.history.slice(-12).map(o => {
+          const tciImpact = Math.round(((o.price / real.avg) * 100 - 100) * 10) / 10;
+          const m = parseInt(o.month.slice(5));
+          return { month: (meses[m - 1] || o.month.slice(5)) + '/' + o.month.slice(2, 4), price: o.price, tciImpact };
+        }),
       });
     }
     return NextResponse.json(getOilImpactAnalysis());
