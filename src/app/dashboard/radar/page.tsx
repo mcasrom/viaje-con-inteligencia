@@ -1,0 +1,10 @@
+import RadarClient from '@/components/RadarClient';
+
+export const metadata = {
+  title: 'Mi Radar de Viaje | Viaje Inteligente',
+  description: 'Monitoriza tus próximos destinos de un vistazo',
+};
+
+export default function RadarPage() {
+  return <RadarClient />;
+}

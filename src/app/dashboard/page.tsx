@@ -959,6 +959,11 @@ export default function DashboardPage() {
         </div>
 
         <div className="mt-8 grid md:grid-cols-4 gap-4">
+          <Link href="/dashboard/radar" className="bg-gradient-to-br from-violet-600 to-blue-600 rounded-xl p-6 text-center hover:opacity-90 transition-opacity">
+            <MapPin className="w-8 h-8 text-white mx-auto mb-2" />
+            <h3 className="font-bold text-white">Mi Radar</h3>
+            <p className="text-white/70 text-sm">Monitor de destinos</p>
+          </Link>
           <Link href="/dashboard/seguros" className="bg-gradient-to-br from-indigo-600 to-purple-600 rounded-xl p-6 text-center hover:opacity-90 transition-opacity">
             <Shield className="w-8 h-8 text-white mx-auto mb-2" />
             <h3 className="font-bold text-white">Monitor Seguros</h3>
