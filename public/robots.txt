@@ -3,14 +3,12 @@
 
 User-agent: *
 Allow: /
+Allow: /_next/static/
 Disallow: /api/
-Disallow: /_next/
 Disallow: /dashboard/
 Disallow: /viajes/
 
-# Evitar que bots específicos de IA (opcional) consuman ancho de banda masivo
 User-agent: GPTBot
 Disallow: /
 
-# Ruta al índice de tu sitio
 Sitemap: https://www.viajeinteligencia.com/sitemap.xml
