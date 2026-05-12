@@ -166,7 +166,7 @@ function getHardcodedDataWarnings() {
       severity: 'high',
     },
     {
-      file: 'src/app/api/cron/check-alerts/route.ts',
+      file: 'src/app/api/cron/master/route.ts (runRiskCheck)',
       issue: 'Change detection uses in-memory lastKnownRisks (lost on restart)',
       value: 'volatile',
       severity: 'high',
