@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { ArrowLeft, MapPin, Calendar, DollarSign, Sparkles, Loader2, Send, Plane } from 'lucide-react';
+import { useRouter, useParams } from 'next/navigation';
+import { ArrowLeft, MapPin, Calendar, DollarSign, Sparkles, Loader2, Send, Plane, Plus, X } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { getTodosLosPaises } from '@/data/paises';
 
@@ -33,6 +33,7 @@ export default function NuevoViajePage() {
   const [days, setDays] = useState(7);
   const [budget, setBudget] = useState('moderate');
   const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
+  const [customInterest, setCustomInterest] = useState('');
   const [itineraryLoading, setItineraryLoading] = useState(false);
   const [itinerary, setItinerary] = useState('');
   const [saving, setSaving] = useState(false);
@@ -57,6 +58,14 @@ export default function NuevoViajePage() {
     setSelectedInterests(prev =>
       prev.includes(interest) ? prev.filter(i => i !== interest) : [...prev, interest]
     );
+  };
+
+  const addCustomInterest = () => {
+    const trimmed = customInterest.trim();
+    if (trimmed && !selectedInterests.includes(trimmed)) {
+      setSelectedInterests(prev => [...prev, trimmed]);
+    }
+    setCustomInterest('');
   };
 
   const handleGenerateItinerary = async () => {
@@ -253,7 +262,7 @@ export default function NuevoViajePage() {
 
               <div>
                 <label className="block text-white font-medium mb-2">Intereses</label>
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-2 mb-3">
                   {interestsList.map(interest => (
                     <button
                       key={interest}
@@ -269,6 +278,36 @@ export default function NuevoViajePage() {
                     </button>
                   ))}
                 </div>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={customInterest}
+                    onChange={e => setCustomInterest(e.target.value)}
+                    onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addCustomInterest(); } }}
+                    placeholder="Añade intereses personalizados (ej: Buceo, Queensland)..."
+                    className="flex-1 bg-slate-700 text-white rounded-xl px-4 py-2.5 text-sm border border-slate-600 focus:border-purple-500 focus:outline-none placeholder-slate-500"
+                  />
+                  <button
+                    type="button"
+                    onClick={addCustomInterest}
+                    disabled={!customInterest.trim()}
+                    className="px-3 py-2.5 bg-purple-600 hover:bg-purple-700 disabled:bg-slate-700 text-white rounded-xl transition-colors"
+                  >
+                    <Plus className="w-5 h-5" />
+                  </button>
+                </div>
+                {selectedInterests.filter(i => !interestsList.includes(i)).length > 0 && (
+                  <div className="flex flex-wrap gap-1.5 mt-2">
+                    {selectedInterests.filter(i => !interestsList.includes(i)).map(i => (
+                      <span key={i} className="flex items-center gap-1 bg-purple-600/20 text-purple-300 px-2 py-0.5 rounded-full text-xs">
+                        {i}
+                        <button onClick={() => setSelectedInterests(prev => prev.filter(x => x !== i))}>
+                          <X className="w-3 h-3" />
+                        </button>
+                      </span>
+                    ))}
+                  </div>
+                )}
               </div>
 
               <div>
