@@ -61,8 +61,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Servicio no disponible' }, { status: 503 });
     }
 
-    const { country_code, trip_start_date, trip_end_date, notes } = await request.json();
-
+    const body = await request.json();
+    const country_code = body?.country_code;
     if (!country_code || typeof country_code !== 'string') {
       return NextResponse.json({ error: 'country_code requerido' }, { status: 400 });
     }
@@ -76,24 +76,43 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: `Máximo ${ALLOWED_COUNTRIES} países en tu radar` }, { status: 400 });
     }
 
-    const { data, error } = await supabaseAdmin
+    const { data: existing } = await supabaseAdmin
       .from('user_watchlist')
-      .upsert({
-        user_id: user.id,
-        country_code: country_code.toLowerCase(),
-        trip_start_date: trip_start_date || null,
-        trip_end_date: trip_end_date || null,
-        notes: notes || null,
-      })
-      .select()
-      .single();
+      .select('id')
+      .eq('user_id', user.id)
+      .eq('country_code', country_code.toLowerCase())
+      .maybeSingle();
 
-    if (error) throw error;
+    const payload = {
+      user_id: user.id,
+      country_code: country_code.toLowerCase(),
+      trip_start_date: body.trip_start_date || null,
+      trip_end_date: body.trip_end_date || null,
+      notes: body.notes || null,
+    };
 
-    return NextResponse.json({ success: true, entry: data });
-  } catch (error) {
-    console.error('Watchlist POST error:', error);
-    return NextResponse.json({ error: 'Error al guardar' }, { status: 500 });
+    let result;
+    if (existing) {
+      result = await supabaseAdmin
+        .from('user_watchlist')
+        .update(payload)
+        .eq('id', existing.id)
+        .select()
+        .single();
+    } else {
+      result = await supabaseAdmin
+        .from('user_watchlist')
+        .insert(payload)
+        .select()
+        .single();
+    }
+
+    if (result.error) throw result.error;
+
+    return NextResponse.json({ success: true, entry: result.data });
+  } catch (error: any) {
+    console.error('Watchlist POST error:', error?.message || error);
+    return NextResponse.json({ error: `Error al guardar: ${error?.message || 'desconocido'}` }, { status: 500 });
   }
 }
 
@@ -126,8 +145,8 @@ export async function DELETE(request: NextRequest) {
     if (error) throw error;
 
     return NextResponse.json({ success: true });
-  } catch (error) {
-    console.error('Watchlist DELETE error:', error);
-    return NextResponse.json({ error: 'Error al eliminar' }, { status: 500 });
+  } catch (error: any) {
+    console.error('Watchlist DELETE error:', error?.message || error);
+    return NextResponse.json({ error: `Error al eliminar: ${error?.message || 'desconocido'}` }, { status: 500 });
   }
 }
