@@ -20,6 +20,7 @@ import OsintAlertsBanner from '@/components/OsintAlertsBanner';
 import EventTimeline from '@/components/EventTimeline';
 import { useAuth } from '@/contexts/AuthContext';
 import ShareButtons from '@/components/ShareButtons';
+import AddToRadarButton from '@/components/AddToRadarButton';
 
 interface DetallePaisClientProps {
   pais: DatoPais;
@@ -222,6 +223,7 @@ export default function DetallePaisClient({ pais, relatedPosts = [] }: DetallePa
                 </>
               )}
             </button>
+            <AddToRadarButton countryCode={pais.codigo} countryName={pais.nombre} />
           </div>
         </div>
       </header>
