@@ -56,7 +56,7 @@ async function getNewsletterStatus() {
 
   const [subsRes, histRes] = await Promise.all([
     supabase.from('newsletter_subscribers').select('id, email, subscribed_at').order('subscribed_at', { ascending: false }).limit(10),
-    supabase.from('newsletter_history').select('subject, content, recipient_count, created_at').order('created_at', { ascending: false }).limit(5),
+    supabase.from('newsletter_history').select('subject, content, recipients_count, sent_at').order('sent_at', { ascending: false }).limit(5),
   ]);
 
   const countRes = await supabase.from('newsletter_subscribers').select('id', { count: 'exact', head: true });

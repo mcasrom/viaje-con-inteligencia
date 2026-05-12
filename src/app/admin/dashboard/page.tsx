@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Shield, Clock, Mail, Globe, Users, AlertTriangle, CheckCircle, XCircle, FileText, Database, MessageSquare, ExternalLink, RefreshCw, Play, Send, Radio, Bot, LogOut, DollarSign, Key } from 'lucide-react';
+import { Shield, Clock, Mail, Globe, Users, AlertTriangle, CheckCircle, XCircle, FileText, Database, MessageSquare, ExternalLink, RefreshCw, Play, Send, Radio, Bot, LogOut, DollarSign, Key, Download } from 'lucide-react';
 
 export default function AdminDashboard() {
   const router = useRouter();
@@ -292,6 +292,17 @@ export default function AdminDashboard() {
             <Mail className="w-5 h-5 text-blue-400" />
             Newsletter
           </h2>
+          {data?.newsletter.history?.length > 0 && (
+            <a
+              href="/api/newsletter/latest"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-3 py-1.5 bg-blue-600/20 border border-blue-500/30 text-blue-400 rounded-lg hover:bg-blue-600/30 transition-colors text-xs font-medium mb-4"
+            >
+              <Download className="w-3.5 h-3.5" />
+              Descargar último newsletter
+            </a>
+          )}
           <div className="grid grid-cols-2 gap-4 mb-6">
             <div className="bg-slate-700 rounded-xl p-4">
               <p className="text-slate-400 text-xs">Suscriptores</p>
@@ -305,7 +316,7 @@ export default function AdminDashboard() {
                 <div key={i} className="bg-slate-700 rounded-xl p-3 flex items-center justify-between">
                   <div>
                     <p className="text-white text-sm">{h.subject || '(sin asunto)'}</p>
-                    <p className="text-slate-400 text-xs">{formatTime(h.created_at)}</p>
+                    <p className="text-slate-400 text-xs">{formatTime(h.sent_at)}</p>
                   </div>
                   <CheckCircle className="w-4 h-4 text-green-400" />
                 </div>
