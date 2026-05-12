@@ -131,6 +131,24 @@ export default function RadarTimelineChart() {
           ))}
         </LineChart>
       </ResponsiveContainer>
+
+      <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-3 text-xs text-slate-400">
+        <div className="flex items-start gap-2">
+          <span className="text-blue-400 mt-0.5 shrink-0">①</span>
+          <span><strong className="text-slate-300">Cada línea</strong> es un pa&iacute;s de tu radar. Su posici&oacute;n vertical muestra el nivel de riesgo estimado mes a mes.</span>
+        </div>
+        <div className="flex items-start gap-2">
+          <span className="text-blue-400 mt-0.5 shrink-0">②</span>
+          <span><strong className="text-slate-300">Sube en temporada alta</strong> (m&aacute;s turistas = m&aacute;s robos menores, aglomeraciones). Baja en temporada baja.</span>
+        </div>
+        <div className="flex items-start gap-2">
+          <span className="text-blue-400 mt-0.5 shrink-0">③</span>
+          <span><strong className="text-slate-300">L&iacute;nea discontinua ✈</strong> = has planeado un viaje. Mira si el riesgo de ese mes es mayor o menor que la tendencia general.</span>
+        </div>
+      </div>
+      <p className="mt-3 text-xs text-slate-500">
+        Los valores se aproximan al nivel entero m&aacute;s cercano. La estacionalidad puede variar por a&ntilde;o y eventos imprevistos.
+      </p>
     </div>
   );
 }
