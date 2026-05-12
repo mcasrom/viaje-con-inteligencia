@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS user_watchlist (
   id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-  user_id UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
+  user_id UUID NOT NULL,
   country_code TEXT NOT NULL,
   trip_start_date DATE,
   trip_end_date DATE,
