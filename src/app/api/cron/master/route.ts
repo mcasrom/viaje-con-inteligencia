@@ -9,7 +9,6 @@ import { generateRiskChangeAlert } from '@/lib/alerts-system';
 import { fetchAllPosts, classifySignal, detectFirstPerson, type ClassifiedSignal, type SignalCategory } from '@/lib/osint-sensor';
 import { Resend } from 'resend';
 import { detectAndCreateIncidents } from '@/lib/incident-detector';
-import { trainModel } from '@/lib/model-trainer';
 import { fetchAndStoreEvents } from '@/lib/events-fetch';
 import { runMonitorForUser } from '@/lib/seguros/monitor';
 import { createLogger } from '@/lib/logger';
@@ -628,22 +627,19 @@ async function runEventsFetch(): Promise<any> {
   }
 }
 
-// ===== MODEL TRAINING =====
+// ===== MODEL TRAINING (fire-and-forget to dedicated endpoint) =====
 async function runModelTraining(): Promise<any> {
-  log.info('Running offline ML model training...');
   try {
-    const result = await trainModel();
-    return {
-      status: result.success ? 'ok' : 'error',
-      features_computed: result.metrics.featuresComputed,
-      features_errors: result.metrics.featuresErrors,
-      predictions_made: result.metrics.predictionsMade,
-      predictions_errors: result.metrics.predictionsErrors,
-      total_countries: result.metrics.totalCountries,
-      duration_ms: result.metrics.durationMs,
-    };
-  } catch (e: any) {
-    return { status: 'error', error: e.message };
+    const cronSecret = process.env.CRON_SECRET;
+    if (!cronSecret) return { status: 'skipped', reason: 'No CRON_SECRET' };
+    const baseUrl = process.env.APP_BASE_URL || 'https://www.viajeinteligencia.com';
+    fetch(`${baseUrl}/api/cron/train-models`, {
+      headers: { 'Authorization': `Bearer ${cronSecret}` },
+      signal: AbortSignal.timeout(100),
+    }).catch(() => {});
+    return { status: 'fired', note: 'Training started asynchronously' };
+  } catch {
+    return { status: 'fired', note: 'Training triggered' };
   }
 }
 
@@ -672,14 +668,14 @@ export async function GET(request: Request) {
   log.info('Starting...');
 
   // Phase 1: Independent tasks (run in parallel)
-  // MAEC scrape (90s), US State Dept (20s), Airspace OSINT (30s), Oil Price (15s), Events (90s), Model Training (90s)
+  // MAEC scrape (90s), US State Dept (20s), Airspace OSINT (30s), Oil Price (15s), Events (90s)
   const [maecRes, usStateDeptRes, airspaceRes, oilRes, eventsRes, modelTrainingRes] = await Promise.all([
     withTimeout(() => runMaecScrape(), 90000, '1/8 MAEC scrape'),
     withTimeout(() => runUSStateDept(), 20000, '1b/8 US State Dept'),
     withTimeout(() => runAirspaceOsint(), 30000, '4/8 Airspace OSINT'),
     withTimeout(() => runOilPrice(), 15000, '6/8 Oil price'),
     withTimeout(() => runEventsFetch(), 90000, '6c/8 Events intelligence'),
-    withTimeout(() => runModelTraining(), 120000, '6/8 Model training'),
+    withTimeout(() => runModelTraining(), 5000, '6/8 Model training'),
   ]);
   results.maec = maecRes;
   results.us_state_dept = usStateDeptRes;
