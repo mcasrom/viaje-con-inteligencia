@@ -118,6 +118,27 @@ Trigger (GitHub Actions / Anomaly) → Data (MAEC+USGS+GDACS) → LLM Groq (cont
   8. Weekly digest (Mondays only, newsletter subscribers)
 - **Rule**: NEVER create new cron endpoints. Add tasks to `master/route.ts` instead.
 
+## Logros 12 May 2026 — Radar de Viaje
+- **Fix visual**: Al añadir un país al radar, aparece al instante (optimistic update) sin esperar al servidor. Antes se quedaba la pantalla vacía aunque el guardado funcionaba.
+- **Gráfico de proyección de riesgo**: Nuevo timeline interactivo (Recharts) que muestra 12 meses de evolución del riesgo para cada país del radar, ajustado por estacionalidad turística.
+- **Marcadores de viaje**: Si el usuario asigna fechas a un país, aparece una línea vertical ✈ en el mes del viaje para comparar el riesgo proyectado.
+- **Leyenda narrativa**: Explicación de 3 puntos para que cualquier usuario entienda el gráfico sin tecnicismos.
+- **Soporte multiplataforma**: Probado en Chromium, Firefox, ventana normal e incógnito.
+- **Limpieza**: `supabase/.temp/` añadido a `.gitignore`.
+
+## Post sugerido para redes (X / Twitter / Telegram / Mastodon)
+> 🧭 Viaje Inteligente — Tu Radar de Viaje ahora con proyección de riesgo.
+>
+> Añade los países que tienes en mente y ve cómo evoluciona su nivel de riesgo mes a mes. ¿Planeas viajar en agosto? El gráfico te dice si ese mes sube o baja la alerta respecto a la media.
+>
+> ✅ País añadido → se ve al instante
+> 📈 12 meses de proyección por estacionalidad
+> ✈️ Tus fechas de viaje marcadas en el gráfico
+>
+> Pruébalo en viajeinteligencia.com/dashboard/radar
+>
+> #ViajeInteligente #traveltech #travelrisk #viajarseguro
+
 ## Recent Work (07 May 2026)
 - Created master cron consolidating 7 jobs into 1 (`src/app/api/cron/master/route.ts`)
 - Newsletter: double opt-in flow restored, RESEND_API_KEY saved in `.env.local` + Vercel
