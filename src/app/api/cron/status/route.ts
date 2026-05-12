@@ -68,7 +68,7 @@ async function getLastCronRun(table: string, column: string): Promise<string | n
 export async function GET() {
   const now = new Date();
   
-  const lastScrapeMaec = await getLastCronRun('scraper_logs', 'created_at');
+  const lastScrapeMaec = await getLastCronRun('scraper_logs', 'started_at');
   const lastCheckAlerts = await getLastCronRun('risk_alerts', 'created_at');
   const lastWeeklyDigest = null;
   
