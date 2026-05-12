@@ -96,31 +96,3 @@ export const VIP_ACCESS = {
     }
   ]
 };
-
-export const FAST_ACCESS_FEATURES = {
-  quick_search: {
-    name: 'Búsqueda exprés',
-    shortcut: '/?q=',
-    description: 'Busca cualquier país en 3 segundos'
-  },
-  random_destination: {
-    name: 'Destino aleatorio',
-    shortcut: '/?random=1',
-    description: 'Inspiración instantánea'
-  },
-  cheapest_flights: {
-    name: 'Vuelos baratos',
-    shortcut: '/?flights=cheap',
-    description: 'Compara precios rápido'
-  },
-  visa_check: {
-    name: 'Check visa',
-    shortcut: '/?visa=ES',
-    description: 'Verifica requisitos visa'
-  },
-  now_going: {
-    name: 'Me voy ahora',
-    shortcut: '/?leaving=1',
-    description: 'Lista emergencia para viaje inmediato'
-  }
-};

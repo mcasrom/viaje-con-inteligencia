@@ -1,5 +1,5 @@
 export const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.viajeinteligencia.com'
+  process.env.NEXT_PUBLIC_SITE_URL || 'https://www.viajeinteligencia.com'
 
 export const SITE_NAME = 'Viaje con Inteligencia'
 export const SITE_DESCRIPTION =
