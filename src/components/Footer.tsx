@@ -110,6 +110,12 @@ export default function Footer() {
                 </a>
               </li>
               <li>
+                <a href="https://bsky.app/profile/viajeinteligencia.bsky.social" target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-white transition-colors flex items-center gap-1">
+                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 600 600" aria-hidden="true"><path d="M135.72 44.03C202.216 93.951 273.74 195.17 300 249.49c26.26-54.32 97.784-155.54 164.28-205.46C512.26 4.5 555.04-6.48 574.73 13.21c22.57 22.57 19.8 57.2 12.57 88.22-13.95 59.96-67.4 248.2-89.35 329.9-11.06 41.1-41.1 51.37-83.49 32.16-59.78-27.09-112.7-68.01-121.08-73.25-3.74-2.34-5.37-1.53-5.19 2.87 3.82 91.3 21.75 175.6 53.84 226.97 19.33 30.96 28.92 55.82 15.83 90.17-22.9 60.25-104.17 143.3-188.16 143.3-47.66 0-64.52-29.52-66.26-63.27-3.27-63.97-1.63-247.2 4.34-320.75 1.2-14.78 1-22.45-13.09-35.97-35.18-33.73-97.06-94.4-123.18-118.83C29.87 216.3-2.08 144.97 10.36 110.49 21.16 80.72 75.81 49.21 135.72 44.03z"/></svg>
+                  Bluesky
+                </a>
+              </li>
+              <li>
                 <a href="https://x.com/ViajeIntel2026" target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-white transition-colors flex items-center gap-1">
                   𝕏 Twitter / X
                 </a>
