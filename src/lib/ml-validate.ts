@@ -1,6 +1,7 @@
 import { supabaseAdmin } from './supabase-admin';
 import { paisesData } from '@/data/paises';
 import { createLogger } from './logger';
+import { getFeaturesByCountry } from './ml-features';
 import {
   buildFeatureVector, getSignalStats, getIncidentStats, getRecentRiskChanges,
   getTransitionMatrix, getUpProbability, computeRiskScore, computeProbability,
@@ -87,7 +88,7 @@ export async function validateModels(): Promise<ValidationSummary> {
       const [signals, incidents, changes30d, mlFeatures] = await Promise.all([
         getSignalStats(code), getIncidentStats(code),
         getRecentRiskChanges(code),
-        import('./ml-features').then(m => m.getFeaturesByCountry(code.toLowerCase())).catch(() => null),
+        getFeaturesByCountry(code.toLowerCase()).catch(() => null),
       ]);
       const seasonalMult = getSeasonalRiskMultiplier(code);
       const transitionProb = getUpProbability(matrix, riskNum);
