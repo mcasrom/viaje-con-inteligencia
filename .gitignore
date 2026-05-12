@@ -57,3 +57,4 @@ temp_scraper_tables.sql
 .aider*
 scripts/
 supabase/.temp/
+train-rf*

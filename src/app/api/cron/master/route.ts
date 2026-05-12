@@ -679,7 +679,7 @@ export async function GET(request: Request) {
     withTimeout(() => runAirspaceOsint(), 30000, '4/8 Airspace OSINT'),
     withTimeout(() => runOilPrice(), 15000, '6/8 Oil price'),
     withTimeout(() => runEventsFetch(), 90000, '6c/8 Events intelligence'),
-    withTimeout(() => runModelTraining(), 90000, '6/8 Model training'),
+    withTimeout(() => runModelTraining(), 120000, '6/8 Model training'),
   ]);
   results.maec = maecRes;
   results.us_state_dept = usStateDeptRes;
