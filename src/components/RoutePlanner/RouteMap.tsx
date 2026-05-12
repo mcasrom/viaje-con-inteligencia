@@ -80,7 +80,7 @@ export default function RouteMap({ polyline, mode = 'driving', className = '' }:
   return (
     <div
       ref={mapRef}
-      className={`rounded-lg overflow-hidden border border-slate-200 dark:border-slate-700 ${className}`}
+      className={`rounded-lg overflow-hidden border border-slate-700 ${className}`}
       style={{ height: 200 }}
     />
   )
