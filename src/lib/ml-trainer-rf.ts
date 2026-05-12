@@ -122,17 +122,22 @@ export async function trainRandomForest(): Promise<{
         feature_names: FEATURE_NAMES,
         trained_at: new Date().toISOString(),
         n_estimators: N_ESTIMATORS,
-        max_depth: MAX_DEPTH,
         n_samples: nSamples,
         mse: Math.round(mse * 10000) / 10000,
         r2: Math.round(r2 * 1000) / 1000,
       }, { onConflict: 'model_type,model_version' });
 
       if (!error) trained++;
-      else log.error(`Failed to save model ${model.type}:`, error.message);
+      else {
+        const msg = `${model.type}: ${error.message}${error.details ? ` (${error.details})` : ''}${error.hint ? ` [${error.hint}]` : ''}`;
+        log.error(`Failed to save model:`, msg);
+      }
     }
 
-    return { success: trained > 0, models: trained, nSamples };
+    if (trained === 0) {
+      return { success: false, models: 0, nSamples, error: 'All 4 model upserts failed' };
+    }
+    return { success: true, models: trained, nSamples };
   } catch (e: any) {
     return { success: false, models: 0, nSamples: 0, error: e.message };
   }
