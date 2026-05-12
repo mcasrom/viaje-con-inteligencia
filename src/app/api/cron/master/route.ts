@@ -707,11 +707,11 @@ export async function GET(request: Request) {
     '5b/8 Incident detection'
   );
 
-  // Phase 3c: Offline ML model training (features + predictions)
+  // Phase 3c: Offline ML model training (features + predictions + RF)
   log.info('6/8 Model training...');
   results.model_training = await withTimeout(
     async () => runModelTraining(),
-    90000,
+    180000,
     '6/8 Model training'
   );
 
