@@ -52,8 +52,9 @@ export const GPI_DATA: GPICountry[] = [
   { rank: 42, country: 'Turquía', code: 'TR', score: 2.425, change: 0, region: 'Europa' },
   { rank: 43, country: 'Egipto', code: 'EG', score: 2.445, change: 0, region: 'África' },
   { rank: 44, country: 'Tailandia', code: 'TH', score: 2.468, change: 0, region: 'Asia' },
-  { rank: 45, country: 'Rusia', code: 'RU', score: 3.441, change: -2, region: 'Europa' },
-  { rank: 46, country: 'Afganistán', code: 'AF', score: 3.929, change: 0, region: 'Asia' },
+  { rank: 46, country: 'Irán', code: 'IR', score: 2.750, change: -4, region: 'Oriente Medio' },
+  { rank: 47, country: 'Rusia', code: 'RU', score: 3.441, change: -2, region: 'Europa' },
+  { rank: 48, country: 'Afganistán', code: 'AF', score: 3.929, change: 0, region: 'Asia' },
 ];
 
 export const GTI_DATA = [
@@ -99,7 +100,8 @@ export const GTI_DATA = [
   { rank: 40, country: 'Rusia', code: 'RU', score: 5.2, change: 0, region: 'Europa' },
   { rank: 41, country: 'EE.UU.', code: 'US', score: 5.3, change: 0, region: 'Norteamérica' },
   { rank: 42, country: 'Pakistán', code: 'PK', score: 5.5, change: 0, region: 'Asia' },
-  { rank: 43, country: 'Irak', code: 'IQ', score: 5.8, change: 0, region: 'Oriente Medio' },
+  { rank: 44, country: 'Irak', code: 'IQ', score: 5.8, change: 0, region: 'Oriente Medio' },
+  { rank: 45, country: 'Irán', code: 'IR', score: 5.48, change: 7, region: 'Oriente Medio' },
   { rank: 44, country: 'Siria', code: 'SY', score: 6.1, change: 0, region: 'Oriente Medio' },
   { rank: 45, country: 'Yemen', code: 'YE', score: 6.3, change: 0, region: 'Oriente Medio' },
   { rank: 46, country: 'Afganistán', code: 'AF', score: 6.5, change: 0, region: 'Asia' },
@@ -149,8 +151,9 @@ export const HDI_DATA = [
   { rank: 39, country: 'Rusia', code: 'RU', score: 0.822, change: 0, region: 'Europa' },
   { rank: 40, country: 'Turquía', code: 'TR', score: 0.836, change: 0, region: 'Europa' },
   { rank: 41, country: 'Tailandia', code: 'TH', score: 0.830, change: 0, region: 'Asia' },
-  { rank: 42, country: 'Egipto', code: 'EG', score: 0.731, change: 0, region: 'África' },
-  { rank: 43, country: 'India', code: 'IN', score: 0.645, change: 0, region: 'Asia' },
+  { rank: 42, country: 'Irán', code: 'IR', score: 0.799, change: -1, region: 'Asia' },
+  { rank: 43, country: 'Egipto', code: 'EG', score: 0.731, change: 0, region: 'África' },
+  { rank: 44, country: 'India', code: 'IN', score: 0.645, change: 0, region: 'Asia' },
   { rank: 44, country: 'Japón', code: 'JP', score: 0.925, change: 0, region: 'Asia' },
   { rank: 45, country: 'Australia', code: 'AU', score: 0.939, change: 0, region: 'Oceanía' },
 ];
@@ -189,6 +192,7 @@ export const IPC_DATA = [
   { country: 'Chile', code: 'CL', ipc: '4.2%', nivel: 'Alto', region: 'Latinoamérica' },
   { country: 'Colombia', code: 'CO', ipc: '5.8%', nivel: 'Muy Alto', region: 'Latinoamérica' },
   { country: 'Perú', code: 'PE', ipc: '3.0%', nivel: 'Medio', region: 'Latinoamérica' },
+  { country: 'Irán', code: 'IR', ipc: '40%', nivel: 'Extremo', region: 'Oriente Medio' },
   { country: 'Egipto', code: 'EG', ipc: '33%', nivel: 'Extremo', region: 'África' },
   { country: 'Marruecos', code: 'MA', ipc: '2.5%', nivel: 'Medio', region: 'África' },
   { country: 'Tailandia', code: 'TH', ipc: '0.8%', nivel: 'Muy Bajo', region: 'Asia' },
