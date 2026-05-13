@@ -5,7 +5,7 @@ export interface AirspaceStatus {
   isActive: boolean;
 }
 
-const COUNTRY_BOUNDS: Record<string, { lamin: number; lamax: number; lomin: number; lomax: number }> = {
+export const COUNTRY_BOUNDS: Record<string, { lamin: number; lamax: number; lomin: number; lomax: number }> = {
   ru: { lamin: 41.2, lamax: 81.9, lomin: 19.6, lomax: 190.0 },
   ua: { lamin: 44.4, lamax: 52.4, lomin: 22.1, lomax: 40.2 },
   sy: { lamin: 32.3, lamax: 37.3, lomin: 35.6, lomax: 42.4 },

@@ -1,6 +1,7 @@
 import { supabaseAdmin } from '@/lib/supabase-admin';
 import { MAIN_AIRPORTS } from '@/data/airports';
 import { EVENTS_FALLBACK } from '@/lib/events-fallback';
+import { travelAttributes } from '@/data/clustering';
 import { createLogger } from '@/lib/logger';
 
 const log = createLogger('DataSync');
@@ -56,4 +57,86 @@ export async function syncEventsFallbackToSupabase(): Promise<number> {
   }
   log.info(`Events fallback sync: ${rows.length} inserted`);
   return rows.length;
+}
+
+export async function syncTravelAttributesToSupabase(): Promise<number> {
+  const admin = supabaseAdmin;
+  if (!admin) return 0;
+
+  let synced = 0;
+  for (const [code, attrs] of Object.entries(travelAttributes)) {
+    const { error } = await admin.from('travel_attributes').upsert({
+      codigo_pais: code,
+      playa: attrs.playa,
+      cultural: attrs.cultural,
+      naturaleza: attrs.naturaleza,
+      familiar: attrs.familiar,
+      mejor_epoca: attrs.mejorEpoca,
+      duracion_optima: attrs.duracionOptima,
+      actualizado_en: new Date().toISOString(),
+    }, { onConflict: 'codigo_pais' });
+    if (!error) synced++;
+  }
+  log.info(`Travel attributes sync: ${synced}/${Object.keys(travelAttributes).length}`);
+  return synced;
+}
+
+export async function syncCountryNameMapToSupabase(): Promise<number> {
+  const admin = supabaseAdmin;
+  if (!admin) return 0;
+
+  const { COUNTRY_NAME_TO_CODE } = await import('@/lib/scraper/us-state-dept');
+  let synced = 0;
+
+  for (const [name, code] of Object.entries(COUNTRY_NAME_TO_CODE)) {
+    const { error } = await admin.from('country_name_map').upsert({
+      name_lower: name,
+      country_code: code,
+    }, { onConflict: 'name_lower' });
+    if (!error) synced++;
+  }
+
+  log.info(`Country name map sync: ${synced}/${Object.keys(COUNTRY_NAME_TO_CODE).length}`);
+  return synced;
+}
+
+export async function syncOpenSkyBoundsToSupabase(): Promise<number> {
+  const admin = supabaseAdmin;
+  if (!admin) return 0;
+
+  const { COUNTRY_BOUNDS } = await import('@/lib/opensky');
+  const entryCount = Object.keys(COUNTRY_BOUNDS).length;
+  let synced = 0;
+
+  for (const [code, b] of Object.entries(COUNTRY_BOUNDS)) {
+    const { error } = await admin.from('opensky_bounds').upsert({
+      country_code: code,
+      lat_min: b.lamin,
+      lat_max: b.lamax,
+      lon_min: b.lomin,
+      lon_max: b.lomax,
+    }, { onConflict: 'country_code' });
+    if (!error) synced++;
+  }
+
+  log.info(`OpenSky bounds sync: ${synced}/${entryCount}`);
+  return synced;
+}
+
+export async function syncDisposableEmailsToSupabase(): Promise<number> {
+  const admin = supabaseAdmin;
+  if (!admin) return 0;
+
+  const { DISPOSABLE_DOMAINS } = await import('@/lib/disposable-emails');
+  let synced = 0;
+
+  for (const domain of DISPOSABLE_DOMAINS) {
+    const { error } = await admin.from('disposable_email_domains').upsert({
+      domain,
+    }, { onConflict: 'domain' });
+    if (!error) synced++;
+  }
+
+  log.info(`Disposable emails sync: ${synced}/${DISPOSABLE_DOMAINS.size}`);
+  return synced;
 }

@@ -15,7 +15,7 @@ const US_LEVEL_LABELS: Record<number, string> = {
   4: 'Do Not Travel',
 };
 
-const COUNTRY_NAME_TO_CODE: Record<string, string> = {
+export const COUNTRY_NAME_TO_CODE: Record<string, string> = {
   'afghanistan': 'af', 'albania': 'al', 'algeria': 'dz', 'andorra': 'ad',
   'angola': 'ao', 'antigua and barbuda': 'ag', 'argentina': 'ar', 'armenia': 'am',
   'australia': 'au', 'austria': 'at', 'azerbaijan': 'az', 'bahrain': 'bh',

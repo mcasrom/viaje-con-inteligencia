@@ -1,0 +1,11 @@
+CREATE TABLE IF NOT EXISTS opensky_bounds (
+  country_code TEXT PRIMARY KEY,
+  lat_min DOUBLE PRECISION NOT NULL,
+  lat_max DOUBLE PRECISION NOT NULL,
+  lon_min DOUBLE PRECISION NOT NULL,
+  lon_max DOUBLE PRECISION NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS disposable_email_domains (
+  domain TEXT PRIMARY KEY
+);

@@ -1,4 +1,4 @@
-const DISPOSABLE_DOMAINS = new Set([
+export const DISPOSABLE_DOMAINS = new Set([
   'mailinator.com', 'guerrillamail.com', '10minutemail.com', 'tempmail.com',
   'throwaway.email', 'yopmail.com', 'getairmail.com', 'trashmail.com',
   'maildrop.cc', 'jetable.org', 'spamgourmet.com', 'dispostable.com',

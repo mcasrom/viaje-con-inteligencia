@@ -139,12 +139,16 @@ async function runFlightCosts(): Promise<any> {
 
     const { syncIPCToSupabase } = await import('@/lib/ipc-db');
     const { syncAllIndicesToSupabase } = await import('@/lib/indices-db');
-    const { syncAirportsToSupabase, syncEventsFallbackToSupabase } = await import('@/lib/data-sync');
+    const { syncAirportsToSupabase, syncEventsFallbackToSupabase, syncTravelAttributesToSupabase, syncCountryNameMapToSupabase, syncOpenSkyBoundsToSupabase, syncDisposableEmailsToSupabase } = await import('@/lib/data-sync');
     await Promise.all([
       syncIPCToSupabase(),
       syncAllIndicesToSupabase(),
       syncAirportsToSupabase(),
       syncEventsFallbackToSupabase(),
+      syncTravelAttributesToSupabase(),
+      syncCountryNameMapToSupabase(),
+      syncOpenSkyBoundsToSupabase(),
+      syncDisposableEmailsToSupabase(),
     ]);
 
     const [{ data: oilHistory }, { data: seasonalityRows }, { data: closures }, { data: routes }, { data: usRiskRows }, { data: demandShiftRows }] = await Promise.all([
