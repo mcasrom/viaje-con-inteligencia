@@ -46,12 +46,19 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Faltan userId o countryCode' }, { status: 400 });
     }
 
-    const { error } = await supabase!.from('alert_preferences').upsert({
+    // Delete existing preference for this user+country if any, then insert
+    await supabase!.from('alert_preferences')
+      .delete()
+      .eq('user_id', userId)
+      .eq('country_code', countryCode.toUpperCase());
+
+    const { error } = await supabase!.from('alert_preferences').insert({
       user_id: userId,
       country_code: countryCode.toUpperCase(),
-      alert_types: method || ['riesgo', 'clima'],
+      alert_types: method || ['riesgo', 'clima', 'geopolitico', 'seguridad', 'salud', 'logistico'],
+      severity_min: 'medium',
       frequency: 'inmediato'
-    }, { onConflict: 'user_id,country_code' });
+    });
 
     if (error) {
       console.error('Subscribe error:', error);

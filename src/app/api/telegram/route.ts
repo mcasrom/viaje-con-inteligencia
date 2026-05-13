@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createLogger } from '@/lib/logger';
 import { supabase, isSupabaseConfigured } from '@/lib/supabase';
+import { paisesData } from '@/data/paises';
 import {
   getUserState,
   setUserState,
@@ -19,8 +20,16 @@ import {
   formatTravelAlertsShort,
   formatTravelAlertsDetailed,
   getAlertsKeyboard,
-  getAlertsFullKeyboard
+  getAlertsFullKeyboard,
+  getSubscriptionKeyboard,
+  formatSubscriptionsList,
 } from '@/lib/telegram-bot';
+import {
+  subscribeToCountry,
+  unsubscribeFromCountry,
+  unsubscribeAll,
+  getMySubscriptions,
+} from '@/lib/telegram-channel';
 
 const log = createLogger('Telegram');
 
@@ -70,7 +79,8 @@ const translations = {
         [{ text: '🌍 Buscar país' }],
         [{ text: '🌤️ Clima' }, { text: '🤖 Chat IA' }],
         [{ text: '⚠️ Alertas de riesgo' }, { text: '✈️🛤️ Alertas viaje' }],
-        [{ text: '📋 Checklist viaje' }, { text: '⭐ Premium' }],
+        [{ text: '🔔 Alertas personalizadas' }, { text: '📋 Checklist viaje' }],
+        [{ text: '⭐ Premium' }],
       ],
     }),
     selectCountry: () => '🔍 *Selecciona un país*\n\n_Escribe el código (ej: ES, FR, DE) o elige de los ejemplos abajo._',
@@ -106,8 +116,8 @@ const translations = {
       keyboard: [
         [{ text: '🌍 Search country' }],
         [{ text: '🤖 AI Chat' }],
-        [{ text: '⚠️ Risk alerts' }, { text: '🏦 Exchange rate' }],
-        [{ text: '📋 Travel checklist' }],
+        [{ text: '⚠️ Risk alerts' }, { text: '✈️🛤️ Travel alerts' }],
+        [{ text: '🔔 Custom alerts' }, { text: '📋 Travel checklist' }],
         [{ text: '⭐ Premium' }],
       ],
     }),
@@ -410,6 +420,73 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ ok: true });
     }
     
+    // Subscription handlers
+    if (text === '🔔 Alertas personalizadas' || text === '🔔 Custom alerts') {
+      await sendMessage(chatId,
+        `🔔 *Alertas personalizadas*\n\n` +
+        `Recibe notificaciones cuando se detecten incidentes en los países que te interesan.\n\n` +
+        `• Pulsa "Suscribirse" para elegir país\n` +
+        `• Recibirás alertas en tiempo real\n` +
+        `• Puedes cancelar en cualquier momento`,
+        getSubscriptionKeyboard()
+      );
+      return NextResponse.json({ ok: true });
+    }
+
+    if (text === '➕ Suscribirse a país' || text === '/suscribir' || text === '/subscribe') {
+      setUserState(chatId, { step: 'subscribing_country' });
+      const paisesModule = await import('@/data/paises');
+      const countries = Object.values(paisesModule.paisesData);
+      const list = countries.slice(0, 30).map(c => `${c.bandera} ${c.codigo.toUpperCase()} - ${c.nombre}`).join('\n');
+      await sendMessage(chatId,
+        `🌍 *Suscribirse a alertas*\n\n` +
+        `Escribe el código del país (ej: ES, FR, TH) o su nombre.\n\n` +
+        `*Países disponibles:*\n${list}\n\n` +
+        `_o escribe /cancelar para salir_`,
+        { reply_markup: { keyboard: [[{ text: '« Volver' }]], resize_keyboard: true } }
+      );
+      return NextResponse.json({ ok: true });
+    }
+
+    if (text === '📋 Mis alertas' || text === '/mis-alertas' || text === '/myalerts') {
+      const { subscriptions, error } = await getMySubscriptions(chatId);
+      const message = error
+        ? `❌ Error: ${error}`
+        : formatSubscriptionsList(subscriptions);
+      await sendMessage(chatId, message, getSubscriptionKeyboard());
+      return NextResponse.json({ ok: true });
+    }
+
+    if (text === '❌ Cancelar suscripción') {
+      setUserState(chatId, { step: 'unsubscribing_country' });
+      const { subscriptions } = await getMySubscriptions(chatId);
+      if (!subscriptions || subscriptions.length === 0) {
+        await sendMessage(chatId, '🔔 No tienes suscripciones activas.', getSubscriptionKeyboard());
+        return NextResponse.json({ ok: true });
+      }
+      const list = subscriptions.map(s => {
+        const country = paisesData[s.country_code];
+        return `${country?.bandera || '🌍'} ${s.country_code} - ${country?.nombre || s.country_code}`;
+      }).join('\n');
+      await sendMessage(chatId,
+        `❌ *Cancelar suscripción*\n\n` +
+        `Escribe el código del país para cancelar:\n\n${list}\n\n` +
+        `_o escribe /cancelar para salir_`,
+        { reply_markup: { keyboard: [[{ text: '« Volver' }]], resize_keyboard: true } }
+      );
+      return NextResponse.json({ ok: true });
+    }
+
+    if (text === '🗑️ Cancelar todas') {
+      const { success, error } = await unsubscribeAll(chatId);
+      if (success) {
+        await sendMessage(chatId, '✅ Canceladas todas tus suscripciones.', getSubscriptionKeyboard());
+      } else {
+        await sendMessage(chatId, `❌ Error: ${error}`, getSubscriptionKeyboard());
+      }
+      return NextResponse.json({ ok: true });
+    }
+
     if (text === '✈️ Ver aeropuertos' || text === '✈️ Airports') {
       const alerts = await getTravelAlertsAll();
       const airports = (alerts.allAlerts || []).filter((a: any) => a.type === 'airport');
@@ -522,6 +599,77 @@ export async function POST(request: NextRequest) {
           resize_keyboard: true,
         },
       });
+      return NextResponse.json({ ok: true });
+    }
+
+    if (state.step === 'subscribing_country' && text) {
+      if (text === '/cancelar' || text === '« Volver') {
+        resetUserState(chatId);
+        await sendMessage(chatId, 'Cancelado.', getSubscriptionKeyboard());
+        return NextResponse.json({ ok: true });
+      }
+      const paisesModule = await import('@/data/paises');
+      const allCountries = Object.values(paisesModule.paisesData);
+      const searchText = text.toLowerCase().trim();
+      let country = allCountries.find(p =>
+        p.codigo.toLowerCase() === searchText ||
+        p.nombre.toLowerCase().includes(searchText) ||
+        p.capital.toLowerCase().includes(searchText)
+      );
+      if (!country) {
+        await sendMessage(chatId, `❌ No encontré "${text}". Prueba con código (ES, FR) o nombre.`, {
+          reply_markup: { keyboard: [[{ text: '« Volver' }]], resize_keyboard: true }
+        });
+        return NextResponse.json({ ok: true });
+      }
+      const result = await subscribeToCountry({
+        chatId,
+        username: username || undefined,
+        countryCode: country.codigo,
+      });
+      if (result.success) {
+        await sendMessage(chatId,
+          `✅ *Suscrito a ${country.bandera} ${country.nombre}*\n\n` +
+          `Recibirás alertas de incidentes en este país.\n` +
+          `Usa /mis-alertas para ver tus suscripciones.`,
+          getSubscriptionKeyboard()
+        );
+      } else {
+        await sendMessage(chatId, `❌ Error: ${result.error}`, getSubscriptionKeyboard());
+      }
+      resetUserState(chatId);
+      return NextResponse.json({ ok: true });
+    }
+
+    if (state.step === 'unsubscribing_country' && text) {
+      if (text === '/cancelar' || text === '« Volver') {
+        resetUserState(chatId);
+        await sendMessage(chatId, 'Cancelado.', getSubscriptionKeyboard());
+        return NextResponse.json({ ok: true });
+      }
+      const paisesModule = await import('@/data/paises');
+      const allCountries = Object.values(paisesModule.paisesData);
+      const searchText = text.toLowerCase().trim();
+      let country = allCountries.find(p =>
+        p.codigo.toLowerCase() === searchText ||
+        p.nombre.toLowerCase().includes(searchText)
+      );
+      if (!country) {
+        await sendMessage(chatId, `❌ No encontré "${text}". Prueba con código (ES, FR) o nombre.`, {
+          reply_markup: { keyboard: [[{ text: '« Volver' }]], resize_keyboard: true }
+        });
+        return NextResponse.json({ ok: true });
+      }
+      const result = await unsubscribeFromCountry(chatId, country.codigo);
+      if (result.success) {
+        await sendMessage(chatId,
+          `✅ Cancelada suscripción a ${country.bandera} ${country.nombre}`,
+          getSubscriptionKeyboard()
+        );
+      } else {
+        await sendMessage(chatId, `❌ Error: ${result.error}`, getSubscriptionKeyboard());
+      }
+      resetUserState(chatId);
       return NextResponse.json({ ok: true });
     }
     

@@ -10,7 +10,7 @@ const OPEN_METEO_API = 'https://api.open-meteo.com/v1/forecast';
 ========================= */
 
 interface UserState {
-  step: 'initial' | 'selecting_country' | 'viewing_country' | 'ai_chat';
+  step: 'initial' | 'selecting_country' | 'viewing_country' | 'ai_chat' | 'subscribing_country' | 'unsubscribing_country';
   selectedCountry?: string;
   chatHistory?: { role: 'user' | 'assistant'; content: string }[];
 }
@@ -518,4 +518,50 @@ export function getAlertsKeyboard() {
       resize_keyboard: true,
     },
   };
+}
+
+/* =========================
+   SUBSCRIPTION HELPERS
+========================= */
+
+export function getSubscriptionKeyboard() {
+  return {
+    reply_markup: {
+      keyboard: [
+        [{ text: '➕ Suscribirse a país' }],
+        [{ text: '📋 Mis alertas' }],
+        [{ text: '❌ Cancelar suscripción' }],
+        [{ text: '🗑️ Cancelar todas' }],
+        [{ text: '« Volver' }],
+      ],
+      resize_keyboard: true,
+    },
+  };
+}
+
+export function formatSubscriptionsList(subscriptions: any[]): string {
+  if (!subscriptions || subscriptions.length === 0) {
+    return '🔔 *No tienes alertas activas*\n\nUsa /suscribir para añadir alertas por país.';
+  }
+
+  let msg = `🔔 *Tus Alertas (${subscriptions.length})*\n`;
+  msg += `━━━━━━━━━━━━━━━━━━━━\n\n`;
+
+  for (const sub of subscriptions) {
+    const country = getPaisPorCodigo(sub.country_code);
+    const flag = country?.bandera || '🌍';
+    const name = country?.nombre || sub.country_code.toUpperCase();
+    const types = sub.alert_types || [];
+    const severity = sub.severity_min || 'medium';
+    const sevEmoji = severity === 'critical' ? '🔴' : severity === 'high' ? '🟠' : severity === 'medium' ? '🟡' : '🟢';
+
+    msg += `${flag} *${name}* (${sub.country_code})\n`;
+    msg += `${sevEmoji} Severidad mín: ${severity}\n`;
+    msg += `📂 Tipos: ${types.join(', ')}\n\n`;
+  }
+
+  msg += `━━━━━━━━━━━━━━━━━━━━\n`;
+  msg += `💡 Recibirás alertas cuando se detecten incidentes que coincidan con tus suscripciones.`;
+
+  return msg;
 }

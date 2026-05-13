@@ -9,6 +9,7 @@ import { generateRiskChangeAlert } from '@/lib/alerts-system';
 import { fetchAllPosts, classifySignal, detectFirstPerson, type ClassifiedSignal, type SignalCategory } from '@/lib/osint-sensor';
 import { Resend } from 'resend';
 import { detectAndCreateIncidents } from '@/lib/incident-detector';
+import { notifySubscribers } from '@/lib/incident-notifier';
 import { fetchAndStoreEvents } from '@/lib/events-fetch';
 import { runMonitorForUser } from '@/lib/seguros/monitor';
 import { createLogger } from '@/lib/logger';
@@ -323,8 +324,8 @@ async function runNewsSentiment(): Promise<any> {
     const processedUrls = new Set(processedData?.map(d => d.source_url) || []);
     const newPosts = recentPosts.filter(p => !processedUrls.has(p.sourceUrl));
 
-    // Cap at 20 to prevent timeout
-    const toProcess = newPosts.slice(0, 20);
+    // Cap at 30 to prevent timeout
+    const toProcess = newPosts.slice(0, 30);
 
     const signals: any[] = [];
     for (const post of toProcess) {
@@ -717,10 +718,21 @@ export async function GET(request: Request) {
 
   // Phase 3b: Incident detection (clusters signals → actionable incidents)
   log.info('5b/8 Incident detection...');
-  results.incidents = await withTimeout(
+  const incResult = await withTimeout(
     async () => detectAndCreateIncidents(),
     30000,
     '5b/8 Incident detection'
+  );
+  results.incidents = incResult;
+
+  // Phase 3c: Notify subscribers of new incidents
+  log.info('5c/8 Incident notifications...');
+  const createdCount = incResult && 'created' in incResult ? incResult.created : 0;
+  const updatedCount = incResult && 'updated' in incResult ? incResult.updated : 0;
+  results.incident_notifications = await withTimeout(
+    async () => notifySubscribers(createdCount, updatedCount),
+    20000,
+    '5c/8 Incident notifications'
   );
 
   // Phase 4: Digests and notifications (always run last)

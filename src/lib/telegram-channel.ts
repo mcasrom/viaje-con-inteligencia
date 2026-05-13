@@ -1,5 +1,6 @@
 import { createLogger } from '@/lib/logger';
 import { paisesData } from '@/data/paises';
+import { supabase, isSupabaseConfigured } from '@/lib/supabase';
 
 const log = createLogger('TelegramChannel');
 
@@ -133,17 +134,120 @@ export async function sendCountryAlert(countryCode: string): Promise<boolean> {
 }
 
 /* =========================
-   SUBSCRIPTIONS (placeholder)
+   SUBSCRIPTIONS (DB-backed)
 ========================= */
 
-export async function subscribeUser(chatId: number, username?: string): Promise<boolean> {
-  log.info(`Subscription: ${chatId} (@${username || 'unknown'})`);
-  return true;
+interface SubscriptionParams {
+  chatId: number;
+  username?: string;
+  countryCode: string;
+  alertTypes?: string[];
+  severityMin?: string;
 }
 
-export async function unsubscribeUser(chatId: number): Promise<boolean> {
-  log.info(`Unsubscribe: ${chatId}`);
-  return true;
+export async function subscribeToCountry(params: SubscriptionParams): Promise<{ success: boolean; error?: string }> {
+  const { chatId, username, countryCode, alertTypes, severityMin } = params;
+
+  if (!isSupabaseConfigured()) {
+    return { success: false, error: 'Supabase no configurado' };
+  }
+
+  const country = countryCode.toUpperCase();
+
+  try {
+    const { error } = await supabase!.from('alert_preferences').upsert({
+      telegram_chat_id: chatId,
+      telegram_username: username || null,
+      country_code: country,
+      alert_types: alertTypes || ['riesgo', 'clima', 'geopolitico', 'seguridad', 'salud', 'logistico'],
+      severity_min: severityMin || 'medium',
+      frequency: 'inmediato',
+    }, { onConflict: 'telegram_chat_id,country_code', ignoreDuplicates: false });
+
+    if (error) {
+      log.error('Subscribe error', error);
+      return { success: false, error: error.message };
+    }
+
+    log.info(`Subscribed ${chatId} (@${username || 'unknown'}) to ${country}`);
+    return { success: true };
+  } catch (e: any) {
+    log.error('Subscribe exception', e);
+    return { success: false, error: e.message };
+  }
+}
+
+export async function unsubscribeFromCountry(
+  chatId: number,
+  countryCode: string
+): Promise<{ success: boolean; error?: string }> {
+  if (!isSupabaseConfigured()) {
+    return { success: false, error: 'Supabase no configurado' };
+  }
+
+  try {
+    const { error } = await supabase!
+      .from('alert_preferences')
+      .delete()
+      .eq('telegram_chat_id', chatId)
+      .eq('country_code', countryCode.toUpperCase());
+
+    if (error) {
+      return { success: false, error: error.message };
+    }
+
+    log.info(`Unsubscribed ${chatId} from ${countryCode}`);
+    return { success: true };
+  } catch (e: any) {
+    return { success: false, error: e.message };
+  }
+}
+
+export async function unsubscribeAll(chatId: number): Promise<{ success: boolean; error?: string }> {
+  if (!isSupabaseConfigured()) {
+    return { success: false, error: 'Supabase no configurado' };
+  }
+
+  try {
+    const { error } = await supabase!
+      .from('alert_preferences')
+      .delete()
+      .eq('telegram_chat_id', chatId);
+
+    if (error) {
+      return { success: false, error: error.message };
+    }
+
+    log.info(`Unsubscribed ${chatId} from all`);
+    return { success: true };
+  } catch (e: any) {
+    return { success: false, error: e.message };
+  }
+}
+
+export async function getMySubscriptions(chatId: number): Promise<{
+  subscriptions: any[];
+  error?: string;
+}> {
+  if (!isSupabaseConfigured()) {
+    return { subscriptions: [], error: 'Supabase no configurado' };
+  }
+
+  try {
+    const { data, error } = await supabase!
+      .from('alert_preferences')
+      .select('*')
+      .eq('telegram_chat_id', chatId)
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      return { subscriptions: [], error: error.message };
+    }
+
+    return { subscriptions: data || [] };
+  } catch (e: any) {
+    return { subscriptions: [], error: e.message };
+  }
 }
 
 /* =========================

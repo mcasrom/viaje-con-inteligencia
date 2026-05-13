@@ -1,11 +1,26 @@
 # AGENTS.md — Viaje con Inteligencia
 
-## PAUSED STATE (13 May 2026)
-- **Itinerarios públicos (destacados)** (43d4309): Sistema completo con columna `is_public` + `slug` en trips. Página `/viajes/destacados` con grid + OG tags. Toggle Publicar en detalle del viaje.
-- **Newsletter environment** (cc55527 + 0d96286 + 4f9b464): Suscripción doble opt-in ✅, generación semanal con Groq + template profesional ✅, batch send a suscriptores vía Resend ✅, descarga HTML ✅, botón "Enviar ahora" en admin ✅. Fix: columna `verified` (no `confirmed`) en master cron. Fix: `/api/newsletter/announcement` ahora envía a todos los suscriptores verificados (ya no solo Telegram).
-- **Intereses personalizados** (9b1ec0c): Input libre + "Add" en creación de viaje además de tags predefinidos.
-- **RandomForest ML**: 4 modelos (risk_score, prob_up_7d/14d/30d), R²=0.967-0.995. Comparación diaria vía cron. MAE: riskScore=0.94, probUp7d=0.5%.
-- **Deviaciones grandes actuales**: Camboya (+9 riskScore, RF más alto), Afganistán (+8.5pp probUp7d, RF cree que riesgo máximo aún puede escalar), Venezuela (-6 riskScore), Colombia (+5 riskScore).
+## PAUSED STATE (13 May 2026 — Sprint 13 May PM)
+- **Alertas personalizadas vía Telegram**: Nuevo sistema completo:
+  - Tabla `alert_preferences` en Supabase con soporte user_id + telegram_chat_id
+  - `subscribeToCountry()`, `unsubscribeFromCountry()`, `unsubscribeAll()`, `getMySubscriptions()` en `telegram-channel.ts` con persistencia real en DB
+  - Botón "🔔 Alertas personalizadas" en menú principal del bot
+  - Comandos `/suscribir`, `/mis-alertas`, `/cancelar-alerta` + menú de gestión
+  - Flujo: seleccionar país → suscribirse → recibe notificaciones cuando se detectan incidentes
+- **Incident notifier** (`incident-notifier.ts`): Nueva función `notifySubscribers()` ejecutada tras `detectAndCreateIncidents()` en master cron (fase 5c/8). Busca incidentes recientes (5min), los matchea con suscripciones por país + severidad mínima + tipo de alerta, envía mensajes Telegram a cada suscriptor.
+- **Thresholds ajustados**: protest expiry 12→24h, añadidas recomendaciones para travel_advisory y security_threat, expandido mapa de extracción de países (30+ países añadidos), signal cap 20→30.
+- **Build fixes**: imports rotos en telegram route restaurados, type error de withTimeout manejado con type guard.
+
+## PAUSED STATE (13 May 2026 — Sprint 13 May AM)
+- **Admin premium bypass**: `checkPremium()` + `/api/subscription/check` devuelven `isPremium: true, status: 'admin'` si `user.email === ADMIN_EMAIL`. Env vars `ADMIN_EMAIL=mcasrom@gmail.com` en `.env.local` y `.env.vercel`.
+- **Newsletter preview/tracking**: Endpoint `/api/newsletter/preview` + botón Vista Previa (Eye icon) en admin dashboard. Envío batch con `open_tracking: true` + `click_tracking: true` vía Resend API directa.
+- **Blog post author**: Footer `*M. Castillo — ViajeInteligencia*` añadido a `content/posts/como-usar-ia-planificar-viajes-2026.md`.
+- **GitHub Actions cron**: Workflow `.github/workflows/cron.yml` diario 06:00 UTC. Reemplaza Vercel cron (eliminado `crons` de `vercel.json`).
+- **Cron fixes**: events fire-and-forget (29→17 países), us_state_dept timeout 20→30s, model_training/incidents Telegram summary trata resultados sin `status` como OK. Error detail en resumen Telegram. Duración 161s→~97s.
+- **Compartir desde Chat IA**: Botón + formulario inline en `ChatClient.tsx`. Crea trip público via `POST /api/trips` con `is_public: true`. Link copiable.
+- **Admin ML page**: `/admin/ml` con métricas último entrenamiento + tabla histórica 30 registros + narrativa explicativa. Link en admin dashboard.
+- **Build fix**: `premium-check.ts` type error (`user.email ?? null`).
+- **Deviaciones ML**: MAE riskScore=0.82, probUp7d=0.53%, desviación máx=7.28, 4 países con desviación.
 
 ## PAUSED STATE (07 May 2026 — Resumed 07 May)
 - **Master cron v2** (58bf127): Deployed, runs in ~89s. MAEC 26 countries, OSINT 7 signals inserted, newsletter weekly digest ready for Monday test.
@@ -266,6 +281,11 @@ Para probar authenticated endpoints se necesita sesión válida (vía browser).
 6. **Tracking aperturas/clics**: Resend soporta tracking nativo. Activar flag y guardar métricas en `newsletter_history`.
 7. **Landing page CTA**: Verificar que el CTA sigue visible tras carga del mapa (fix previo con z-index). Pendiente de confirmación visual.
 8. **Vercel Hobby limit**: Solo 1 cron schedule. Master cron ejecuta todo secuencialmente. Si algún sub-task empieza a fallar por timeout, considerar migrar a plan Pro o GitHub Actions.
+
+## Next Sprint — Alertas & Bot de Suscripción
+1. **Sistema de alertas**: Revisar y ajustar el sistema actual de detección de incidentes (`detectAndCreateIncidents`) — umbrales, fuentes, severidad.
+2. **Bot de suscripción a alertas personalizadas**: Implementar un bot (Telegram) donde usuarios puedan suscribirse a alertas por país/tipo de riesgo/severidad. Envío de notificaciones push vía bot cuando se detecten incidentes que matcheen sus preferencias.
+3. **Posible**: Vincular alertas personalizadas con los intereses del viaje (tags de la trip) para sugerir suscripciones automáticas.
 
 ## Recurring Tasks
 - **Daily (post-deploy)**: Verify `/api/cron/train-models` completes successfully (R² > 0.95, < 300s).
