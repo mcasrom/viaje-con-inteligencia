@@ -99,7 +99,7 @@ npm run start        # production server
 - **Server pages**: `page.tsx` exports metadata, wraps Client component
 - **Client components**: `*Client.tsx` — `'use client'` directive
 - **AI routes**: `/api/ai/chat`, `/api/ai/itinerary`, `/api/ai/risk`, `/api/ai/compare`, etc.
-- **Data**: `src/data/paises.ts` — 107 países con riesgo MAEC
+- **Data**: `src/data/paises.ts` — 110 países con riesgo MAEC
 - **Z-index**: TopBar `z-[1010]`, SidePanel `z-[1005]`, Leaflet `z-[400-1000]`
 
 ## Newsletter Architecture Design (Pending Discussion)

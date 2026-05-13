@@ -19,6 +19,14 @@ const riskLevelNum: Record<string, number> = {
   'sin-riesgo': 1, 'bajo': 2, 'medio': 3, 'alto': 4, 'muy-alto': 5,
 };
 
+export interface RecentIncident {
+  country_code: string;
+  type: string;
+  severity: string;
+  title: string;
+  detected_at: string;
+}
+
 export interface NewsletterIssue {
   edition: number;
   weekDate: string;
@@ -34,6 +42,8 @@ export interface NewsletterIssue {
   destinationSpotlight: DestinationSpotlight | null;
   // Weekly Q&A
   weeklyQuestion: WeeklyQA | null;
+  // Telegram alerts
+  recentIncidents: RecentIncident[];
 }
 
 export interface CountryAlert {
@@ -113,6 +123,25 @@ export async function collectNewsletterData(): Promise<NewsletterIssue> {
   // Weekly Q&A
   const weeklyQuestion = await generateWeeklyQA(countryAlerts);
 
+  // Recent incidents for Telegram alerts section
+  const { data: recentIncidentsRaw } = await supabaseAdmin
+    .from('incidents')
+    .select('country_code, type, severity, title, detected_at')
+    .gte('detected_at', weekAgo)
+    .eq('is_active', true)
+    .order('detected_at', { ascending: false })
+    .limit(5);
+
+  const recentIncidents: RecentIncident[] = (recentIncidentsRaw || [])
+    .filter((i: any) => i.country_code && paisesData[i.country_code])
+    .map((i: any) => ({
+      country_code: i.country_code,
+      type: i.type,
+      severity: i.severity,
+      title: i.title || i.type,
+      detected_at: i.detected_at,
+    }));
+
   const totalCountries = Object.keys(paisesData).length;
   const countriesWithAlerts = new Set(countryAlerts.map(a => a.country_code)).size;
 
@@ -126,6 +155,7 @@ export async function collectNewsletterData(): Promise<NewsletterIssue> {
     practicalSignal,
     destinationSpotlight,
     weeklyQuestion,
+    recentIncidents,
   };
 }
 
@@ -496,6 +526,37 @@ export async function buildWeeklyEmailHtml(issue: NewsletterIssue): Promise<stri
         ${issue.weeklyQuestion ? `<tr><td style="background:#ffffff;padding:16px 24px 8px;border-top:1px solid #e2e8f0;">
           <h2 style="font-size:13px;font-weight:bold;color:#64748b;text-transform:uppercase;letter-spacing:0.05em;margin:0;">Pregunta de la semana · respondida con datos</h2>
         </td></tr>${qaHtml}` : ''}
+
+        <!-- Section: Telegram alerts -->
+        ${issue.recentIncidents.length > 0 ? `
+        <tr><td style="background:#ffffff;padding:16px 24px 8px;border-top:1px solid #e2e8f0;">
+          <h2 style="font-size:13px;font-weight:bold;color:#64748b;text-transform:uppercase;letter-spacing:0.05em;margin:0;">📱 Alertas activas · Telegram</h2>
+        </td></tr>
+        <tr><td style="background:#ffffff;padding:8px 24px 6px;">
+          <p style="font-size:13px;color:#475569;line-height:1.5;margin:0 0 10px;">Incidentes detectados esta semana. Recibe notificaciones en tiempo real desde <strong>@ViajeConInteligenciaBot</strong>.</p>
+          ${issue.recentIncidents.map((inc: RecentIncident) => {
+            const iconMap: Record<string, string> = {
+              terrorism: '⚠️', airspace_closure: '✈️', conflict: '💥', natural_disaster: '🌍',
+              flight_disruption: '🛫', health_outbreak: '🏥', protest: '📢', travel_advisory: '📋',
+              security_threat: '🔒', infrastructure: '🏗️',
+            };
+            const sevColor = inc.severity === 'critical' ? '#dc2626' : inc.severity === 'high' ? '#ea580c' : inc.severity === 'medium' ? '#ca8a04' : '#64748b';
+            const pais = paisesData[inc.country_code];
+            return `
+            <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:#f8fafc;border-radius:6px;margin-bottom:6px;border-left:3px solid ${sevColor};">
+              <span style="font-size:16px;">${iconMap[inc.type] || '📌'}</span>
+              <div style="flex:1;">
+                <div style="font-size:13px;font-weight:600;color:#0f172a;">${pais?.nombre || inc.country_code} · ${inc.type.replace(/_/g, ' ')}</div>
+                <div style="font-size:12px;color:#64748b;">${inc.title.length > 60 ? inc.title.substring(0, 60) + '…' : inc.title}</div>
+              </div>
+              <span style="font-size:10px;font-weight:bold;color:#fff;background:${sevColor};padding:2px 8px;border-radius:4px;text-transform:uppercase;">${inc.severity}</span>
+            </div>`;
+          }).join('')}
+          <div style="text-align:center;margin:12px 0 4px;">
+            <a href="https://t.me/ViajeConInteligenciaBot?start=subscribe" style="display:inline-block;font-size:13px;font-weight:bold;color:#ffffff;background:#2563eb;padding:8px 20px;border-radius:6px;text-decoration:none;">🔔 Suscribirme a alertas en Telegram</a>
+          </div>
+          <p style="font-size:11px;color:#94a3b8;text-align:center;margin:4px 0 0;">Usa /suscribir ES desde el bot para elegir países</p>
+        </td></tr>` : ''}
 
         <!-- Footer -->
         <tr><td style="background:#f1f5f9;padding:20px;text-align:center;border-top:1px solid #e2e8f0;">

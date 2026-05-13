@@ -8,7 +8,7 @@
 
 | # | Funcionalidad | Estado | Notas |
 |---|---------------|--------|-------|
-| 1 | Mapa de riesgo interactivo | ✅ | Leaflet + MAEC 107 países |
+| 1 | Mapa de riesgo interactivo | ✅ | Leaflet + MAEC 110 países |
 | 2 | Calculadora de costes TCI | ✅ | Ajustado a petróleo + conflictos |
 | 3 | Blog con 61 artículos | ✅ | Paginación, búsqueda, categorías, grid/list |
 | 4 | Chat IA de viajes | ✅ | Groq dual (8b free / 70b premium) |

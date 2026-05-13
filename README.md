@@ -8,7 +8,7 @@ Tu asistente de viajes seguros. Mapa interactivo de riesgos por país según MAE
 
 ## 🚀 Características
 
-- **🗺️ Mapa de Riesgos**: 106+ países con niveles de riesgo según MAEC
+- **🗺️ Mapa de Riesgos**: 108+ países con niveles de riesgo según MAEC
 - **🤖 Clustering ML**: Algoritmo K-Means personalizado en TypeScript que agrupa destinos por riesgo, turismo, IPC y distancia a España
 - **📋 Checklist Imprimible**: +80 items organizados por categorías
 - **🤖 Bot Telegram**: @ViajeConInteligenciaBot para alertas en tiempo real
@@ -84,7 +84,7 @@ viaje-con-inteligencia/
 │   │   ├── MapaInteractivo.tsx        # Leaflet map
 │   │   └── NewsletterSignup.tsx       # Formulario newsletter
 │   ├── data/
-│   │   ├── paises.ts                  # Datos países (106+ países)
+│   │   ├── paises.ts                  # Datos países (108+ países)
 │   │   └── clustering.ts              # K-Means + features turismo
 │   └── lib/
 │       ├── supabase-browser.ts        # Supabase cliente (singleton)
@@ -200,7 +200,7 @@ curl -F "url=https://tu-dominio.com/api/telegram" \
 curl https://api.telegram.org/bot<TOKEN>/getWebhookInfo
 ```
 
-## 🌍 Países Disponibles (106+)
+## 🌍 Países Disponibles (108+)
 
 **Europa (44)**: España, Francia, Alemania, Italia, Portugal, Reino Unido, Países Bajos, Suiza, Grecia, Turquía, y más...
 
@@ -226,7 +226,7 @@ curl https://api.telegram.org/bot<TOKEN>/getWebhookInfo
 ## 📄 Roadmap
 
 ### Completado ✅
-- [x] Mapa de riesgos con 106+ países
+- [x] Mapa de riesgos con 108+ países
 - [x] Clustering ML K-Means personalizado
 - [x] Integración IA (GPT) para recomendaciones
 - [x] RSS feed del MAEC para alertas automáticas

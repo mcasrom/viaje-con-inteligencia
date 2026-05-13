@@ -481,32 +481,56 @@ async function runWeeklyDigest(): Promise<any> {
   try {
     const { collectNewsletterData, buildWeeklyEmailHtml } = await import('@/lib/newsletter-generator');
 
-    if (!resend) return { status: 'skipped', reason: 'No resend API key' };
-
-    const subscribers = await getSubscribers();
-    if (subscribers.length === 0) return { status: 'skipped', reason: 'No subscribers' };
-
     const issue = await collectNewsletterData();
     const baseHtml = await buildWeeklyEmailHtml(issue);
 
-    let sent = 0, errors = 0;
-    for (const sub of subscribers) {
-      try {
-        const html = baseHtml.replace('{{EMAIL}}', encodeURIComponent(sub.email));
-        await resend.emails.send({
-          from: 'Viaje con Inteligencia <newsletter@viajeinteligencia.com>',
-          to: sub.email,
-          subject: `Briefing Semanal #${issue.edition} — ${issue.weekDate}`,
-          html,
-        });
-        sent++;
-        await new Promise(r => setTimeout(r, 300));
-      } catch {
-        errors++;
+    const results: any = { edition: issue.edition };
+
+    // 1. Email via Resend
+    if (resend) {
+      const subscribers = await getSubscribers();
+      if (subscribers.length > 0) {
+        let sent = 0, errors = 0;
+        for (const sub of subscribers) {
+          try {
+            const html = baseHtml.replace('{{EMAIL}}', encodeURIComponent(sub.email));
+            await resend.emails.send({
+              from: 'Viaje con Inteligencia <newsletter@viajeinteligencia.com>',
+              to: sub.email,
+              subject: `Briefing Semanal #${issue.edition} — ${issue.weekDate}`,
+              html,
+            });
+            sent++;
+            await new Promise(r => setTimeout(r, 300));
+          } catch {
+            errors++;
+          }
+        }
+        results.email = { sent, errors };
+      } else {
+        results.email = { skipped: 'No subscribers' };
       }
+    } else {
+      results.email = { skipped: 'No resend API key' };
     }
 
-    return { status: 'ok', sent, errors, edition: issue.edition };
+    // 2. Social channels
+    const { buildNewsletterSummary, publishToTelegramChannel, publishToMastodon, publishToBlueSky, publishToTelegramSubscribers } = await import('@/lib/social-publisher');
+    const { full, short, mastodonThread } = buildNewsletterSummary(issue);
+
+    results.telegram_channel = await publishToTelegramChannel(full);
+    results.mastodon = { posted: false, threads: 0 };
+    for (const toot of mastodonThread) {
+      const ok = await publishToMastodon(toot);
+      if (ok) {
+        results.mastodon.posted = true;
+        results.mastodon.threads++;
+      }
+    }
+    results.bluesky = await publishToBlueSky(short);
+    results.telegram_subscribers = await publishToTelegramSubscribers(full);
+
+    return { status: 'ok', ...results };
   } catch (e: any) {
     return { status: 'error', error: e.message };
   }

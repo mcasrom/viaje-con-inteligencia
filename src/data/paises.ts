@@ -196,6 +196,7 @@ export const emergenciasData: Record<string, EmergenciasPais> = {
 
   et: { general: '911', policia: '911', bomberos: '939', ambulancia: '907' },
   mz: { general: '112', policia: '112', bomberos: '112', ambulancia: '112' },
+  ir: { general: '112', policia: '110', bomberos: '125', ambulancia: '115' },
 };
 
 const EMERGENCIA_FALLBACK: Record<string, EmergenciasPais> = {
@@ -6181,6 +6182,67 @@ si: {
     ],
     bandera: '🇺🇦',
     mapaCoordenadas: [48.3794, 31.1656]
+  },
+  ir: {
+    codigo: 'ir',
+    nombre: 'Irán',
+    capital: 'Teherán',
+    continente: 'Asia',
+    idioma: 'Persa (farsi)',
+    moneda: 'Rial iraní (IRR)',
+    tipoCambio: '1 EUR ≈ 450,000 IRR',
+    zonaHoraria: 'UTC+3:30',
+    conduccion: 'derecha',
+    poblacion: '87 millones',
+    pib: '360 mil millones USD',
+    indicadores: { ipc: '40%', indicePrecios: 'Muy alto' },
+    voltaje: '230V / 50Hz',
+    prefijoTelefono: '+98',
+    nivelRiesgo: 'muy-alto',
+    ultimoInforme: 'Enero 2026',
+    contactos: [
+      {
+        tipo: 'Embajada',
+        nombre: 'Embajada de España en Teherán',
+        direccion: 'Darrous, Sharzad Blvd., Shadi St., Abbas Asadi St., nª 10, Teherán',
+        telefono: '+98 21 225 68 015',
+        email: 'emb.teheran@maec.es',
+        horario: 'Lunes a viernes 9:00-17:00'
+      }
+    ],
+    requerimientos: [
+      { categoria: 'Documentación', icon: '📄', items: ['Pasaporte válido 6 meses', 'Visa obligatoria (VOA disponible en aeropuertos)', 'Notificación de Concesión de Visa (7-10 días hábiles)', 'Registro en consulados recomendado'] },
+      { categoria: 'Sanitario', icon: '🏥', items: ['Seguro médico con repatriación imprescindible', 'Vacunas: ninguna obligatoria', 'Agua embotellada imprescindible'] },
+      { categoria: 'Seguridad', icon: '⚠️', items: ['NO VIAJAR por situación de conflicto regional', 'Abandonar el país si es posible', 'Evitar manifestaciones y aglomeraciones', 'No fotografiar instalaciones gubernamentales'] }
+    ],
+    queHacer: [
+      'Visitar las ruinas de Persépolis en Shiraz',
+      'Recorrer la Plaza Naqsh-e Jahan en Isfahán',
+      'Explorar el Palacio Golestán en Teherán',
+      'Visitar la Mezquita del Viernes de Isfahán',
+      'Pasear por el Jardín de Eram en Shiraz',
+      'Recorrer el Gran Bazar de Teherán',
+      'Visitar la tumba del poeta Hafez en Shiraz',
+    ],
+    queNoHacer: [
+      'No fotografiar instalaciones militares o gubernamentales',
+      'No participar en manifestaciones políticas',
+      'No hacer comentarios políticos o religiosos en público',
+      'No llevar drones sin permiso',
+      'No viajar a zonas fronterizas con Irak, Afganistán o Pakistán',
+      'No consumir alcohol (prohibido por ley islámica)',
+    ],
+    diarios: [
+      { nombre: 'Tehran Times', url: 'https://www.tehrantimes.com' },
+      { nombre: 'Press TV', url: 'https://www.presstv.ir' },
+      { nombre: 'Mehr News', url: 'https://en.mehrnews.com' }
+    ],
+    urlsUtiles: [
+      { nombre: 'Embajada España Teherán', url: 'https://www.exteriores.gob.es/Embajadas/teheran' },
+      { nombre: 'MAEC - Irán', url: 'https://www.exteriores.gob.es/Embajadas/teheran/es/ViajarA/Paginas/Recomendaciones-de-viaje.aspx' }
+    ],
+    bandera: '🇮🇷',
+    mapaCoordenadas: [32.4279, 53.6880]
   }
 };
 

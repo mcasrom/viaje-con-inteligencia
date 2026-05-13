@@ -5,7 +5,7 @@ import { ArrowLeft, Search, Shield, TrendingDown, TrendingUp, Minus, MapPin } fr
 
 export const metadata = {
   title: 'Todos los Países — Riesgo MAEC, Coste TCI y Consejos de Viaje',
-  description: 'Directorio completo de 100+ países con nivel de riesgo, índice de coste y recomendaciones de viaje.',
+  description: 'Directorio completo de 108+ países con nivel de riesgo, índice de coste y recomendaciones de viaje.',
   alternates: {
     canonical: 'https://www.viajeinteligencia.com/paises',
   },
