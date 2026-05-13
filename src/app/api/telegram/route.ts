@@ -282,8 +282,9 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ ok: true });
     }
     
-// FIRST: Check for country code (works from ANY state)
-    const codeMatch = text.match(/^([A-Za-z]{2})$/i);
+// FIRST: Check for country code (works from ANY state except subscription flows)
+    const subStates = ['subscribing_country', 'unsubscribing_country'];
+    const codeMatch = !subStates.includes(getUserState(chatId).step) && text.match(/^([A-Za-z]{2})$/i);
     if (codeMatch) {
       const upperCode = codeMatch[1].toUpperCase();
       const paisesModule = await import('@/data/paises');
@@ -339,8 +340,8 @@ export async function POST(request: NextRequest) {
       }
     }
     
-    // Also check by name
-    if (text && !text.startsWith('/')) {
+    // Also check by name (skip during subscription flows)
+    if (text && !text.startsWith('/') && !subStates.includes(getUserState(chatId).step)) {
       const paisesModule = await import('@/data/paises');
       const country = Object.values(paisesModule.paisesData).find(
         p => p.nombre.toLowerCase().includes(text.toLowerCase()) ||
