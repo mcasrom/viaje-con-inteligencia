@@ -66,17 +66,17 @@ function QuickAccessInner() {
   return (
     <div className="fixed bottom-4 right-4 z-50 flex items-end gap-3">
       <div className="bg-slate-800 rounded-xl p-4 shadow-xl border border-slate-700 w-72 mb-16 mr-2" style={{ display: showPanel ? 'block' : 'none' }}>
-        <h3 className="text-white font-bold mb-3">⚡ Acceso Rápido</h3>
+        <h3 className="text-white font-bold mb-3">⚡ Viajero Smart</h3>
         <div className="space-y-2">
+          <Link href="/" className="block p-2 bg-emerald-600/20 text-emerald-400 rounded-lg hover:bg-emerald-600/30">🗺️ Mapa de Riesgos</Link>
           <Link href="/comparar" className="block p-2 bg-orange-600/20 text-orange-400 rounded-lg hover:bg-orange-600/30">⚖️ Comparar países</Link>
-          <Link href="/checklist" className="block p-2 bg-blue-600/20 text-blue-400 rounded-lg hover:bg-blue-600/30">📋 Checklist viaje</Link>
-          <Link href="/relojes" className="block p-2 bg-purple-600/20 text-purple-400 rounded-lg hover:bg-purple-600/30">🌍 Horario Global</Link>
-          <Link href="/blog" className="block p-2 bg-green-600/20 text-green-400 rounded-lg hover:bg-green-600/30">📖 Blog recomendaciones</Link>
-          <Link href="https://t.me/ViajeConInteligenciaBot" target="_blank" rel="noopener noreferrer" className="block p-2 bg-cyan-600/20 text-cyan-400 rounded-lg hover:bg-cyan-600/30">🤖 Bot Telegram</Link>
+          <Link href="/dashboard/radar" className="block p-2 bg-violet-600/20 text-violet-400 rounded-lg hover:bg-violet-600/30">📈 Radar de Viaje</Link>
           <Link href="/chat" className="block p-2 bg-purple-600/20 text-purple-400 rounded-lg hover:bg-purple-600/30">💬 Chat IA</Link>
-          <Link href="/rutas?route=vino" className="block p-2 bg-red-600/20 text-red-400 rounded-lg hover:bg-red-600/30">🍷 Rutas del Vino</Link>
-          <Link href="/dashboard" className="block p-2 bg-red-600/20 text-red-400 rounded-lg hover:bg-red-600/30">📊 Mi Dashboard</Link>
-          <Link href="/reclamaciones" className="block p-2 bg-red-600/20 text-red-400 rounded-lg hover:bg-red-600/30">📝 Reclamaciones</Link>
+          <Link href="/alertas" className="block p-2 bg-rose-600/20 text-rose-400 rounded-lg hover:bg-rose-600/30">🔔 Alertas</Link>
+          <Link href="/dashboard" className="block p-2 bg-blue-600/20 text-blue-400 rounded-lg hover:bg-blue-600/30">📊 Dashboard</Link>
+          <Link href="https://t.me/ViajeConInteligenciaBot" target="_blank" rel="noopener noreferrer" className="block p-2 bg-cyan-600/20 text-cyan-400 rounded-lg hover:bg-cyan-600/30">🤖 Bot Telegram</Link>
+          <Link href="/checklist" className="block p-2 bg-sky-600/20 text-sky-400 rounded-lg hover:bg-sky-600/30">📋 Checklist</Link>
+          <Link href="/blog" className="block p-2 bg-green-600/20 text-green-400 rounded-lg hover:bg-green-600/30">📖 Blog</Link>
         </div>
       </div>
       <div className="flex flex-col gap-2">
