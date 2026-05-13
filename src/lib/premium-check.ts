@@ -19,7 +19,7 @@ export async function checkPremium(): Promise<PremiumCheck> {
 
     const isAdmin = user.email === process.env.ADMIN_EMAIL;
     if (isAdmin) {
-      return { isPremium: true, status: 'admin', userId: user.id, email: user.email };
+      return { isPremium: true, status: 'admin', userId: user.id, email: user.email ?? null };
     }
 
     const { data: profile } = await supabaseAdmin

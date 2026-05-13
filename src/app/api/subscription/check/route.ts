@@ -14,7 +14,7 @@ export async function GET() {
     }
 
     if (user.email === process.env.ADMIN_EMAIL) {
-      return NextResponse.json({ premium: true, status: 'admin', trialEnd: null, email: user.email });
+      return NextResponse.json({ premium: true, status: 'admin', trialEnd: null, email: user.email ?? null });
     }
 
     const { data: profile } = await supabaseAdmin

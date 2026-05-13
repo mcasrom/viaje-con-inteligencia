@@ -1,0 +1,34 @@
+name: Daily Cron
+
+on:
+  schedule:
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+jobs:
+  master-cron:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run master cron
+        run: |
+          curl -sSf -o /dev/null -w "%{http_code}" \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            "https://www.viajeinteligencia.com/api/cron/master"
+
+      - name: Run OSINT sensor
+        run: |
+          curl -sSf -o /dev/null -w "%{http_code}" \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            "https://www.viajeinteligencia.com/api/cron/osint-sensor"
+
+      - name: Run ML training
+        run: |
+          curl -sSf -o /dev/null -w "%{http_code}" \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            "https://www.viajeinteligencia.com/api/cron/train-models"
+
+      - name: Run ML comparison
+        run: |
+          curl -sSf -o /dev/null -w "%{http_code}" \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            "https://www.viajeinteligencia.com/api/cron/compare-models"
