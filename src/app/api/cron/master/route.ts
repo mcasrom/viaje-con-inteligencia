@@ -424,7 +424,7 @@ async function runDailyDigest(results: any): Promise<any> {
 📡 RESULTADOS HOY:
 ${Object.entries(results).filter(([k, v]) => v && (v as any).status !== 'skipped').map(([k, v]) => {
   const s = v as any;
-  const ok = s.status === 'ok' || s.status === 'fired';
+  const ok = s.status === 'ok' || s.status === 'fired' || (!s.status && !s.error);
   return `├── ${k}: ${ok ? 'OK' : 'ERROR'}${!ok && s.error ? ' (' + s.error.slice(0, 60) + ')' : ''}`;
 }).join('\n')}
 
