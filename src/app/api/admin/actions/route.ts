@@ -29,7 +29,8 @@ async function publishPostToSocial(post: any): Promise<{ telegram: boolean; mast
     mastodonUrl = (mastodonRes as any).url;
   }
   
-  const bsText = `${post.title}\n\n${post.excerpt || ''}\n\n🔗 ${BLOG_URL}/${post.slug} ${(post.tags || []).map((t: string) => `#${t.replace(/\s+/g, '')}`).join(' ')}`;
+  const shortTitle = post.title.length > 80 ? post.title.slice(0, 77) + '...' : post.title;
+  const bsText = `${shortTitle}\n\n${(post.excerpt || '').slice(0, 100)}...\n\n🔗 ${BLOG_URL}/${post.slug}`;
   const bsRes = await publishToBluesky(bsText).catch(() => ({ success: false }));
   
   return { telegram: !!tgRes, mastodon: !!mastodonUrl, bluesky: !!bsRes.success, mastodonUrl };
