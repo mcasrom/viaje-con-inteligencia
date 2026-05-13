@@ -13,6 +13,7 @@ import { notifySubscribers } from '@/lib/incident-notifier';
 import { fetchAndStoreEvents } from '@/lib/events-fetch';
 import { runMonitorForUser } from '@/lib/seguros/monitor';
 import { createLogger } from '@/lib/logger';
+import { getAirspaceStatuses } from '@/lib/opensky';
 const log = createLogger('Master');
 
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
@@ -245,12 +246,28 @@ async function runAirspaceOsint(): Promise<any> {
       }
     }
 
+    // OpenSky — real-time flight count in conflict zone airspaces
+    const anomalyCodes = ['RU', 'UA', 'SY', 'LY', 'YE', 'AF', 'IQ', 'SO', 'SD', 'IR', 'IL', 'LB'];
+    const openskyStatuses = await getAirspaceStatuses(anomalyCodes);
+    const anomalies = openskyStatuses.filter(s => !s.isActive && s.flightCount >= 0);
+    if (anomalies.length > 0) {
+      log.info('OpenSky airspace anomalies', anomalies.map(a => `${a.countryCode}:${a.flightCount}`));
+      for (const a of anomalies) {
+        await supabase.from('opensky_logs').insert({
+          country_code: a.countryCode.toLowerCase(),
+          flight_count: a.flightCount,
+          is_active: a.isActive,
+          checked_at: a.lastChecked,
+        });
+      }
+    }
+
     await supabase.from('scraper_logs').insert({
       source: 'osint_airspace', status: 'success', items_scraped: closures.length,
       duration_ms: 0, completed_at: new Date().toISOString(),
     });
 
-    return { status: 'ok', closures_checked: closures.length, changes };
+    return { status: 'ok', closures_checked: closures.length, changes, opensky_flights: openskyStatuses.length };
   } catch (e: any) {
     return { status: 'error', error: e.message };
   }

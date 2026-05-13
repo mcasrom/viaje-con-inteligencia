@@ -1,6 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { paisesData } from '@/data/paises';
 import { travelAttributes, ineTourismData } from '@/data/clustering';
+import { getAirportCoordinates } from '@/data/airports';
+import { getCurrentOilPrice, SEASONALITY_MAP } from '@/data/tci-engine';
+
+const EARTH_RADIUS_KM = 6371;
+
+function haversineKm(lat1: number, lon1: number, lat2: number, lon2: number): number {
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLon = (lon2 - lon1) * Math.PI / 180;
+  const a = Math.sin(dLat / 2) ** 2 +
+    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon / 2) ** 2;
+  return EARTH_RADIUS_KM * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
 
 interface CostEstimateRequest {
   destinationCode: string;
@@ -70,21 +82,47 @@ function getCurrency(code: string): string {
 }
 
 function estimateFlightCost(from: string, to: string, budget: string): number {
+  const destAirport = getAirportCoordinates(to);
+  const originAirport = getAirportCoordinates(from);
+  
+  if (!destAirport || !originAirport) {
+    const pais = paisesData[to];
+    if (!pais) return 300;
+    const continent = paisesData[to]?.continente;
+    const continentBases: Record<string, number> = { Europa: 100, Américas: 500, Asia: 600, África: 350, Oceanía: 800 };
+    const fallback = continentBases[continent || ''] || 300;
+    const mult = budget === 'bajo' ? 0.7 : budget === 'alto' ? 1.5 : budget === 'luxury' ? 2.5 : 1;
+    return Math.round(fallback * mult);
+  }
+
+  const distanceKm = haversineKm(originAirport[0], originAirport[1], destAirport[0], destAirport[1]);
+
+  const oil = getCurrentOilPrice();
+  const oilFactor = oil.price / 78;
+
+  const now = new Date();
+  const seasonKey = String(now.getMonth() + 1);
+  let seasonFactor = 1;
+
   const pais = paisesData[to];
-  if (!pais) return 300;
-  
-  const continent = pais.continente;
-  let baseCost = 200;
-  
-  if (continent === 'Europa') baseCost = 100;
-  else if (continent === 'Américas') baseCost = 500;
-  else if (continent === 'Asia') baseCost = 600;
-  else if (continent === 'África') baseCost = 350;
-  else if (continent === 'Oceanía') baseCost = 800;
-  
-  const budgetMultiplier = budget === 'bajo' ? 0.7 : budget === 'alto' ? 1.5 : budget === 'luxury' ? 2.5 : 1;
-  
-  return Math.round(baseCost * budgetMultiplier);
+  if (pais) {
+    const seasonData = SEASONALITY_MAP[pais.codigo];
+    if (seasonData?.[seasonKey]) {
+      seasonFactor = seasonData[seasonKey] / 100;
+    }
+  }
+
+  const costPerKm = 0.12 * oilFactor * seasonFactor;
+  const directCost = Math.round(distanceKm * costPerKm);
+
+  const premiumKm = budget === 'luxury' ? 0.35 : budget === 'alto' ? 0.22 : budget === 'bajo' ? 0.08 : 0.15;
+  const baseCost = Math.round(distanceKm * premiumKm);
+
+  const finalCost = Math.round((directCost + baseCost) / 2);
+  const minCost = Math.max(29, finalCost);
+
+  const maxCost = Math.round(minCost * (budget === 'bajo' ? 1.3 : budget === 'alto' ? 1.8 : budget === 'luxury' ? 2.2 : 1.5));
+  return Math.round((minCost + maxCost) / 2);
 }
 
 export async function POST(request: NextRequest) {
