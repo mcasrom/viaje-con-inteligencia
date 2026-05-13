@@ -679,7 +679,7 @@ export async function GET(request: Request) {
   // MAEC scrape (90s), US State Dept (20s), Airspace OSINT (30s), Oil Price (15s), Events (90s)
   const [maecRes, usStateDeptRes, airspaceRes, oilRes, eventsRes, modelTrainingRes] = await Promise.all([
     withTimeout(() => runMaecScrape(), 90000, '1/8 MAEC scrape'),
-    withTimeout(() => runUSStateDept(), 20000, '1b/8 US State Dept'),
+    withTimeout(() => runUSStateDept(), 30000, '1b/8 US State Dept'),
     withTimeout(() => runAirspaceOsint(), 30000, '4/8 Airspace OSINT'),
     withTimeout(() => runOilPrice(), 15000, '6/8 Oil price'),
     withTimeout(() => runEventsFetch(), 120000, '6c/8 Events intelligence'),
