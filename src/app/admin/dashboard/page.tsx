@@ -240,25 +240,6 @@ export default function AdminDashboard() {
             </div>
             <div className="bg-slate-700 rounded-xl p-4">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-white font-medium">INE Tourism Scrape</span>
-                <span className="text-slate-400 text-sm">{timeAgo(data?.cron.ineScrape)}</span>
-              </div>
-            </div>
-            <div className="bg-slate-700 rounded-xl p-4">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-white font-medium">ML Clustering</span>
-                <span className="text-slate-400 text-sm">{timeAgo(data?.cron.mlClustering?.created_at)}</span>
-              </div>
-              {data?.cron.mlClustering && (
-                <div className="flex gap-4 text-sm">
-                  <span className="text-slate-400">Status: {data.cron.mlClustering.status}</span>
-                  <span className="text-slate-400">Segmentos: {data.cron.mlClustering.items_scraped}</span>
-                  <span className="text-slate-400">Duración: {Math.round(data.cron.mlClustering.duration_ms / 1000)}s</span>
-                </div>
-              )}
-            </div>
-            <div className="bg-slate-700 rounded-xl p-4">
-              <div className="flex items-center justify-between mb-2">
                 <span className="text-white font-medium">Flight Costs TCI</span>
                 <span className="text-slate-400 text-sm">{timeAgo(data?.cron.flightCosts?.created_at)}</span>
               </div>
