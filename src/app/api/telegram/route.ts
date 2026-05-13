@@ -295,7 +295,6 @@ export async function POST(request: NextRequest) {
         p.codigo.toLowerCase() === query ||
         p.nombre.toLowerCase().includes(query)
       );
-      await sendMessage(chatId, `📝 Debug: text="${text}" query="${query}" country=${country?.codigo || 'null'}`);
       if (country) {
         const result = await subscribeToCountry({ chatId, username: username || undefined, countryCode: country.codigo });
         if (result.success) {

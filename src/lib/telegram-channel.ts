@@ -1,6 +1,7 @@
 import { createLogger } from '@/lib/logger';
 import { paisesData } from '@/data/paises';
 import { supabase, isSupabaseConfigured } from '@/lib/supabase';
+import { supabaseAdmin, isSupabaseAdminConfigured } from './supabase-admin';
 
 const log = createLogger('TelegramChannel');
 
@@ -148,20 +149,19 @@ interface SubscriptionParams {
 export async function subscribeToCountry(params: SubscriptionParams): Promise<{ success: boolean; error?: string }> {
   const { chatId, username, countryCode, alertTypes, severityMin } = params;
 
-  if (!isSupabaseConfigured()) {
+  if (!isSupabaseAdminConfigured()) {
     return { success: false, error: 'Supabase no configurado' };
   }
 
   const country = countryCode.toUpperCase();
 
   try {
-    // Delete existing then insert (partial unique index doesn't support upsert ON CONFLICT)
-    await supabase!.from('alert_preferences')
+    await supabaseAdmin.from('alert_preferences')
       .delete()
       .eq('telegram_chat_id', chatId)
       .eq('country_code', country);
 
-    const { error } = await supabase!.from('alert_preferences').insert({
+    const { error } = await supabaseAdmin.from('alert_preferences').insert({
       telegram_chat_id: chatId,
       telegram_username: username || null,
       country_code: country,
@@ -187,12 +187,12 @@ export async function unsubscribeFromCountry(
   chatId: number,
   countryCode: string
 ): Promise<{ success: boolean; error?: string }> {
-  if (!isSupabaseConfigured()) {
+  if (!isSupabaseAdminConfigured()) {
     return { success: false, error: 'Supabase no configurado' };
   }
 
   try {
-    const { error } = await supabase!
+    const { error } = await supabaseAdmin
       .from('alert_preferences')
       .delete()
       .eq('telegram_chat_id', chatId)
@@ -210,12 +210,12 @@ export async function unsubscribeFromCountry(
 }
 
 export async function unsubscribeAll(chatId: number): Promise<{ success: boolean; error?: string }> {
-  if (!isSupabaseConfigured()) {
+  if (!isSupabaseAdminConfigured()) {
     return { success: false, error: 'Supabase no configurado' };
   }
 
   try {
-    const { error } = await supabase!
+    const { error } = await supabaseAdmin
       .from('alert_preferences')
       .delete()
       .eq('telegram_chat_id', chatId);
@@ -235,12 +235,12 @@ export async function getMySubscriptions(chatId: number): Promise<{
   subscriptions: any[];
   error?: string;
 }> {
-  if (!isSupabaseConfigured()) {
+  if (!isSupabaseAdminConfigured()) {
     return { subscriptions: [], error: 'Supabase no configurado' };
   }
 
   try {
-    const { data, error } = await supabase!
+    const { data, error } = await supabaseAdmin
       .from('alert_preferences')
       .select('*')
       .eq('telegram_chat_id', chatId)
