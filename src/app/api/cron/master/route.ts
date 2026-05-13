@@ -422,7 +422,11 @@ async function runDailyDigest(results: any): Promise<any> {
 🕐 ${new Date().toISOString().split('T')[0]}
 
 📡 RESULTADOS HOY:
-${Object.entries(results).filter(([k, v]) => v && (v as any).status !== 'skipped').map(([k, v]) => `├── ${k}: ${(v as any).status === 'ok' || (v as any).status === 'fired' ? 'OK' : 'ERROR'}`).join('\n')}
+${Object.entries(results).filter(([k, v]) => v && (v as any).status !== 'skipped').map(([k, v]) => {
+  const s = v as any;
+  const ok = s.status === 'ok' || s.status === 'fired';
+  return `├── ${k}: ${ok ? 'OK' : 'ERROR'}${!ok && s.error ? ' (' + s.error.slice(0, 60) + ')' : ''}`;
+}).join('\n')}
 
 👤 USUARIOS: ${totalUsers || 0}
 📧 NEWSLETTER: ${totalSubs || 0}
@@ -715,7 +719,7 @@ export async function GET(request: Request) {
   log.info('5b/8 Incident detection...');
   results.incidents = await withTimeout(
     async () => detectAndCreateIncidents(),
-    15000,
+    30000,
     '5b/8 Incident detection'
   );
 
