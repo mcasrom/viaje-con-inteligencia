@@ -50,6 +50,7 @@ export default function PremiumClient() {
   const [isAnnual, setIsAnnual] = useState(true);
   const [loading, setLoading] = useState(false);
   const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [priceIds, setPriceIds] = useState<{ monthly: string; yearly: string } | null>(null);
   const router = useRouter();
   useEffect(() => {
     const client = getBrowserClient();
@@ -57,14 +58,22 @@ export default function PremiumClient() {
     client.auth.getSession().then(({ data }) => {
       if (data.session?.user?.email) setUserEmail(data.session.user.email);
     });
+    fetch('/api/subscription').then(r => r.json()).then(data => {
+      if (data.plans) {
+        setPriceIds({ monthly: data.plans.monthly.priceId, yearly: data.plans.yearly.priceId });
+      }
+    }).catch(() => {});
   }, []);
 
   const handleSubscribe = async () => {
     setLoading(true);
     try {
-      const priceId = isAnnual
-        ? 'price_1TQ0Ng1yXjIoL1LjZTzKEfOF'
-        : 'price_1TNvdo1yXjIoL1LjxAec6d2C';
+      const priceId = priceIds?.[isAnnual ? 'yearly' : 'monthly'];
+      if (!priceId) {
+        alert('Error: no se pudieron cargar los planes. Recarga la página.');
+        setLoading(false);
+        return;
+      }
 
       const body: Record<string, unknown> = { priceId, trialDays: 7 };
       if (userEmail) body.email = userEmail;

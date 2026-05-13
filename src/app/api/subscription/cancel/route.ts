@@ -28,25 +28,17 @@ export async function POST() {
       return NextResponse.json({ error: 'No tienes suscripción activa' }, { status: 404 });
     }
 
-    const subscription = await stripe.subscriptions.cancel(profile.stripe_subscription_id, {
-      invoice_now: false,
+    const subscription = await stripe.subscriptions.update(profile.stripe_subscription_id, {
+      cancel_at_period_end: true,
     }) as any;
-
-    await supabaseAdmin
-      .from('profiles')
-      .update({
-        subscription_status: 'canceled',
-        is_premium: false,
-        updated_at: new Date().toISOString(),
-      })
-      .eq('id', user.id);
 
     return NextResponse.json({
       success: true,
-      message: 'Suscripción cancelada',
+      message: 'Suscripción cancelada — seguirás teniendo acceso hasta el final del periodo de facturación',
       endsAt: subscription.current_period_end
         ? new Date(subscription.current_period_end * 1000).toISOString()
         : null,
+      cancel_at_period_end: true,
     });
   } catch (err: any) {
     console.error('Cancel subscription error:', err);

@@ -198,8 +198,17 @@ async function runFlightCosts(): Promise<any> {
       calculated++;
     }
 
+    await supabase.from('scraper_logs').insert({
+      source: 'flight_costs', status: calculated > 0 ? 'success' : 'partial',
+      items_scraped: calculated, errors: 0, completed_at: new Date().toISOString(),
+    });
+
     return { status: 'ok', countries_calculated: calculated, oil_price: oilPrice };
   } catch (e: any) {
+    await supabase.from('scraper_logs').insert({
+      source: 'flight_costs', status: 'error', error_message: e.message,
+      completed_at: new Date().toISOString(),
+    });
     return { status: 'error', error: e.message };
   }
 }
@@ -538,7 +547,7 @@ async function runTrialNotifications(): Promise<any> {
     const { data: profiles, error } = await supabaseAdmin
       .from('profiles')
       .select('id, email, trial_end, is_premium, username')
-      .eq('is_premium', false)
+      .eq('is_premium', true)
       .not('trial_end', 'is', null)
       .filter('trial_end', 'gte', now.toISOString())
       .filter('trial_end', 'lte', twoDaysFromNow.toISOString());
