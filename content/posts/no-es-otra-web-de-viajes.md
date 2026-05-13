@@ -1,5 +1,6 @@
 title: "Viaje con Inteligencia NO es otra web de viajes"
 date: 2026-05-13
+category: "Estrategia"
 author: "M. Castillo"
 description: "Por qué Viaje con Inteligencia no compite con Booking ni TripAdvisor y cómo pretende redefinir el concepto de Travel Intelligence usando IA, OSINT y análisis geopolítico."
 keywords:
