@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Send, Loader2, Bot, Sparkles, Crown, Zap, AlertTriangle, Lock, Plus, MessageSquare, Trash2, History } from 'lucide-react';
+import { ArrowLeft, Send, Loader2, Bot, Sparkles, Crown, Zap, AlertTriangle, Lock, Plus, MessageSquare, Trash2, History, Share2, Check, Copy, Globe } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { useSubscription } from '@/hooks/useSubscription';
@@ -37,6 +37,11 @@ export default function ChatClient() {
   const [activeConversationId, setActiveConversationId] = useState<number | null>(null);
   const [showSidebar, setShowSidebar] = useState(false);
   const [dailyCount, setDailyCount] = useState(0);
+  const [sharingMsg, setSharingMsg] = useState<number | null>(null);
+  const [shareForm, setShareForm] = useState({ name: '', destination: '', days: '7' });
+  const [shareLoading, setShareLoading] = useState(false);
+  const [shareResult, setShareResult] = useState<string | null>(null);
+  const [shareCopied, setShareCopied] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const canUsePremium = sub.premium;
@@ -128,6 +133,37 @@ export default function ChatClient() {
       setLoading(false);
     }
   }, [input, loading, messages, model, canUsePremium, activeConversationId]);
+
+  const handleShare = async (msgIndex: number, content: string) => {
+    setShareLoading(true);
+    setShareResult(null);
+    try {
+      const res = await fetch('/api/trips', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: shareForm.name,
+          destination: shareForm.destination,
+          days: parseInt(shareForm.days) || 7,
+          itinerary_raw: content,
+          is_public: true,
+          status: 'draft',
+        }),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        setShareResult(`error:${err.error || 'Error al guardar'}`);
+        return;
+      }
+      const data = await res.json();
+      const link = `${window.location.origin}/viajes/destacados/${data.trip.slug}`;
+      setShareResult(link);
+    } catch {
+      setShareResult('error:Error de conexión');
+    } finally {
+      setShareLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-slate-900 flex flex-col">
@@ -287,10 +323,88 @@ export default function ChatClient() {
                       : 'bg-slate-800 text-slate-200 border border-slate-700 rounded-bl-sm'
                   }`}>
                     {msg.role === 'assistant' ? (
-                      <div className="prose prose-sm prose-invert max-w-none">
-                        <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                          {msg.content}
-                        </ReactMarkdown>
+                      <div>
+                        <div className="prose prose-sm prose-invert max-w-none">
+                          <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                            {msg.content}
+                          </ReactMarkdown>
+                        </div>
+                        {msg.role === 'assistant' && (
+                          <div className="mt-3 pt-3 border-t border-slate-700/50">
+                            {sharingMsg === i ? (
+                              shareResult ? (
+                                shareResult.startsWith('error:') ? (
+                                  <div className="flex items-center gap-2 text-xs text-red-400">
+                                    <AlertTriangle className="w-3.5 h-3.5" />
+                                    <span>{shareResult.replace('error:', '')}</span>
+                                    <button onClick={() => { setSharingMsg(null); setShareResult(null); }} className="ml-auto text-slate-400 hover:text-white">Cerrar</button>
+                                  </div>
+                                ) : (
+                                <div className="flex items-center gap-2 text-xs">
+                                  <Globe className="w-3.5 h-3.5 text-green-400" />
+                                  <a href={shareResult} target="_blank" rel="noopener noreferrer" className="text-green-400 hover:text-green-300 underline truncate max-w-[200px]">
+                                    {shareResult.replace('https://', '')}
+                                  </a>
+                                  <button
+                                    onClick={() => { navigator.clipboard.writeText(shareResult); setShareCopied(true); setTimeout(() => setShareCopied(false), 2000); }}
+                                    className="p-1 hover:bg-slate-700 rounded transition-colors"
+                                  >
+                                    {shareCopied ? <Check className="w-3.5 h-3.5 text-green-400" /> : <Copy className="w-3.5 h-3.5 text-slate-400" />}
+                                  </button>
+                                </div>
+                                )
+                              ) : (
+                                <div className="flex flex-col gap-2">
+                                  <div className="flex gap-2">
+                                    <input
+                                      value={shareForm.name}
+                                      onChange={e => setShareForm(f => ({ ...f, name: e.target.value }))}
+                                      placeholder="Nombre del viaje"
+                                      className="flex-1 px-2 py-1 text-xs bg-slate-700 rounded border border-slate-600 text-white placeholder-slate-500 focus:border-purple-500 focus:outline-none"
+                                    />
+                                    <input
+                                      value={shareForm.destination}
+                                      onChange={e => setShareForm(f => ({ ...f, destination: e.target.value }))}
+                                      placeholder="Destino"
+                                      className="w-24 px-2 py-1 text-xs bg-slate-700 rounded border border-slate-600 text-white placeholder-slate-500 focus:border-purple-500 focus:outline-none"
+                                    />
+                                    <input
+                                      type="number"
+                                      value={shareForm.days}
+                                      onChange={e => setShareForm(f => ({ ...f, days: e.target.value }))}
+                                      placeholder="Días"
+                                      className="w-14 px-2 py-1 text-xs bg-slate-700 rounded border border-slate-600 text-white placeholder-slate-500 focus:border-purple-500 focus:outline-none"
+                                    />
+                                  </div>
+                                  <div className="flex gap-2">
+                                    <button
+                                      onClick={() => handleShare(i, msg.content)}
+                                      disabled={shareLoading || !shareForm.name || !shareForm.destination}
+                                      className="flex-1 px-2 py-1 text-xs bg-purple-600 hover:bg-purple-700 disabled:bg-purple-800 text-white rounded transition-colors flex items-center justify-center gap-1"
+                                    >
+                                      {shareLoading ? <Loader2 className="w-3 h-3 animate-spin" /> : <Globe className="w-3 h-3" />}
+                                      {shareLoading ? 'Guardando...' : 'Publicar'}
+                                    </button>
+                                    <button
+                                      onClick={() => setSharingMsg(null)}
+                                      className="px-2 py-1 text-xs text-slate-400 hover:text-white transition-colors"
+                                    >
+                                      Cancelar
+                                    </button>
+                                  </div>
+                                </div>
+                              )
+                            ) : (
+                              <button
+                                onClick={() => { setSharingMsg(i); setShareResult(null); setShareForm(f => ({ ...f, name: '', destination: '', days: '7' })); }}
+                                className="flex items-center gap-1 text-xs text-purple-400 hover:text-purple-300 transition-colors"
+                              >
+                                <Share2 className="w-3 h-3" />
+                                Compartir como viaje público
+                              </button>
+                            )}
+                          </div>
+                        )}
                       </div>
                     ) : (
                       <p className="whitespace-pre-wrap">{msg.content}</p>
