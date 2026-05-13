@@ -303,6 +303,14 @@ export default function AdminDashboard() {
               Descargar último newsletter
             </a>
           )}
+          <button
+            onClick={() => runAction('send-newsletter')}
+            disabled={actionLoading !== null}
+            className="inline-flex items-center gap-2 px-3 py-1.5 bg-green-600/20 border border-green-500/30 text-green-400 rounded-lg hover:bg-green-600/30 transition-colors text-xs font-medium mb-4 ml-2 disabled:opacity-50"
+          >
+            <Send className="w-3.5 h-3.5" />
+            {actionLoading === 'send-newsletter' ? 'Enviando...' : 'Enviar newsletter ahora'}
+          </button>
           <div className="grid grid-cols-2 gap-4 mb-6">
             <div className="bg-slate-700 rounded-xl p-4">
               <p className="text-slate-400 text-xs">Suscriptores</p>

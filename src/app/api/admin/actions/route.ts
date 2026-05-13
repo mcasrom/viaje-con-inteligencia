@@ -69,6 +69,24 @@ export async function POST(request: NextRequest) {
     }
   }
 
+  // Send newsletter to all verified subscribers
+  if (action === 'send-newsletter') {
+    const cronUrl = `${process.env.NEXT_PUBLIC_SITE_URL || 'https://www.viajeinteligencia.com'}/api/newsletter/announcement`;
+    try {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 120000);
+      const res = await fetch(cronUrl, {
+        headers: { 'Authorization': `Bearer ${process.env.CRON_SECRET}` },
+        signal: controller.signal,
+      });
+      clearTimeout(timer);
+      const data = await res.json().catch(() => ({}));
+      return NextResponse.json({ success: true, result: data });
+    } catch (e: any) {
+      return NextResponse.json({ success: false, error: e.message }, { status: 500 });
+    }
+  }
+
   // Publish unpublished blog posts to social media
   if (action === 'publish-posts') {
     const allPosts = getAllPosts({ sort: 'recent' });

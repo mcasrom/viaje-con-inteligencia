@@ -454,7 +454,7 @@ async function getSubscribers(): Promise<Array<{ email: string; name: string }>>
   const { data } = await supabaseAdmin
     .from('newsletter_subscribers')
     .select('email, name')
-    .eq('confirmed', true)
+    .eq('verified', true)
     .order('created_at', { ascending: true });
   return (data || []).map((d: any) => ({ email: d.email, name: d.name || 'Usuario' }));
 }
