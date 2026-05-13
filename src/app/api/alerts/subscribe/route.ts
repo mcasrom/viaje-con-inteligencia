@@ -19,22 +19,63 @@ export async function GET(request: NextRequest) {
         .eq('user_id', user.id)
         .order('created_at', { ascending: false });
 
-      // 2. Also get subscriptions linked via Telegram (if user has telegram_id in profile)
+      // 2. Also get subscriptions linked via Telegram
+      let tgSubs: any[] = [];
       const { data: profile } = await supabase
         .from('profiles')
-        .select('telegram_id')
+        .select('telegram_id, telegram_username')
         .eq('id', user.id)
-        .single();
+        .maybeSingle();
 
-      let tgSubs: any[] = [];
-      if (profile?.telegram_id) {
-        const { data: telegramSubs } = await supabase
+      if (profile) {
+        // Try linking by telegram_id
+        if (profile.telegram_id) {
+          const { data: telegramSubs } = await supabase
+            .from('alert_preferences')
+            .select('*')
+            .eq('telegram_chat_id', Number(profile.telegram_id))
+            .is('user_id', null)
+            .order('created_at', { ascending: false });
+          tgSubs = telegramSubs || [];
+        }
+
+        // Also try linking by telegram_username match
+        if (tgSubs.length === 0 && profile.telegram_username) {
+          const { data: usernameSubs } = await supabase
+            .from('alert_preferences')
+            .select('*')
+            .eq('telegram_username', profile.telegram_username)
+            .is('user_id', null)
+            .order('created_at', { ascending: false });
+          tgSubs = usernameSubs || [];
+        }
+      }
+
+      // 2b. Fallback: if user has no linked TG profile, try matching by email prefix as telegram_username
+      if (tgSubs.length === 0 && user.email) {
+        const tgName = user.email.split('@')[0];
+        const { data: emailSubs } = await supabase
           .from('alert_preferences')
           .select('*')
-          .eq('telegram_chat_id', Number(profile.telegram_id))
+          .eq('telegram_username', tgName)
           .is('user_id', null)
           .order('created_at', { ascending: false });
-        tgSubs = telegramSubs || [];
+        tgSubs = emailSubs || [];
+      }
+
+      // 2c. Last fallback: show ALL telegram subscriptions with a warning
+      if (tgSubs.length === 0) {
+        const { data: anyTgSubs } = await supabase
+          .from('alert_preferences')
+          .select('*')
+          .is('user_id', null)
+          .not('telegram_chat_id', 'is', null)
+          .order('created_at', { ascending: false })
+          .limit(5);
+        tgSubs = (anyTgSubs || []).map((s: any) => ({
+          ...s,
+          _unlinked: true,
+        }));
       }
 
       // 3. Merge: web subs first, then tg subs not already present
@@ -46,6 +87,7 @@ export async function GET(request: NextRequest) {
 
       const enriched = merged.map((sub: any) => {
         const pais = paisesData[sub.country_code?.toLowerCase()];
+        const source = sub.user_id ? 'web' : sub._unlinked ? 'telegram-no-vinculado' : 'telegram';
         return {
           id: sub.id,
           country_code: sub.country_code,
@@ -54,7 +96,7 @@ export async function GET(request: NextRequest) {
           nivel_riesgo: pais?.nivelRiesgo || null,
           alert_types: sub.alert_types,
           severity_min: sub.severity_min,
-          source: sub.user_id ? 'web' : 'telegram',
+          source,
           created_at: sub.created_at,
         };
       });

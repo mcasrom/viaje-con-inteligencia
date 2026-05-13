@@ -84,7 +84,7 @@ export default function AlertasDashboard() {
           <h3 className="font-bold text-white">Alertas personalizadas</h3>
         </div>
         <p className="text-slate-400 text-sm mb-4">
-          No tienes alertas activas. Suscríbete desde Telegram.
+          No tienes alertas activas. Suscríbete desde Telegram con <code className="text-blue-300">/suscribir AU</code>.
         </p>
         <a
           href="https://t.me/ViajeConInteligenciaBot"
@@ -132,16 +132,31 @@ export default function AlertasDashboard() {
                     {sub.source === 'telegram' && (
                       <span className="text-[10px] bg-blue-500/20 text-blue-400 px-1.5 py-0.5 rounded">Telegram</span>
                     )}
+                    {sub.source === 'telegram-no-vinculado' && (
+                      <span className="text-[10px] bg-amber-500/20 text-amber-400 px-1.5 py-0.5 rounded">Telegram ⚠️</span>
+                    )}
                   </div>
                 </div>
               </div>
-              <button
-                onClick={() => handleUnsubscribe(sub.country_code)}
-                className="p-2 text-slate-400 hover:text-red-400 hover:bg-slate-600 rounded-lg transition-colors"
-                title="Cancelar alerta"
-              >
-                <XCircle className="w-4 h-4" />
-              </button>
+              {sub.source !== 'telegram-no-vinculado' ? (
+                <button
+                  onClick={() => handleUnsubscribe(sub.country_code)}
+                  className="p-2 text-slate-400 hover:text-red-400 hover:bg-slate-600 rounded-lg transition-colors"
+                  title="Cancelar alerta"
+                >
+                  <XCircle className="w-4 h-4" />
+                </button>
+              ) : (
+                <a
+                  href="https://t.me/ViajeConInteligenciaBot"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[10px] text-amber-400 hover:text-amber-300 underline"
+                  title="Gestionar desde Telegram"
+                >
+                  Gestionar en TG
+                </a>
+              )}
             </div>
           );
         })}
