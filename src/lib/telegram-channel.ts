@@ -155,14 +155,20 @@ export async function subscribeToCountry(params: SubscriptionParams): Promise<{ 
   const country = countryCode.toUpperCase();
 
   try {
-    const { error } = await supabase!.from('alert_preferences').upsert({
+    // Delete existing then insert (partial unique index doesn't support upsert ON CONFLICT)
+    await supabase!.from('alert_preferences')
+      .delete()
+      .eq('telegram_chat_id', chatId)
+      .eq('country_code', country);
+
+    const { error } = await supabase!.from('alert_preferences').insert({
       telegram_chat_id: chatId,
       telegram_username: username || null,
       country_code: country,
       alert_types: alertTypes || ['riesgo', 'clima', 'geopolitico', 'seguridad', 'salud', 'logistico'],
       severity_min: severityMin || 'medium',
       frequency: 'inmediato',
-    }, { onConflict: 'telegram_chat_id,country_code', ignoreDuplicates: false });
+    });
 
     if (error) {
       log.error('Subscribe error', error);
