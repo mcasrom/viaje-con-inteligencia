@@ -22,11 +22,5 @@
       "destination": "https://www.viajeinteligencia.com/:path*",
       "permanent": true
     }
-  ],
-  "crons": [
-    {
-      "path": "/api/cron/master",
-      "schedule": "0 6 * * *"
-    }
   ]
 }
