@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Shield, Clock, Mail, Globe, Users, AlertTriangle, CheckCircle, XCircle, FileText, Database, MessageSquare, ExternalLink, RefreshCw, Play, Send, Radio, Bot, LogOut, DollarSign, Key, Download } from 'lucide-react';
+import { Shield, Clock, Mail, Globe, Users, AlertTriangle, CheckCircle, XCircle, FileText, Database, MessageSquare, ExternalLink, RefreshCw, Play, Send, Radio, Bot, LogOut, DollarSign, Key, Download, Eye } from 'lucide-react';
 
 export default function AdminDashboard() {
   const router = useRouter();
@@ -281,6 +281,15 @@ export default function AdminDashboard() {
           >
             <Download className="w-3.5 h-3.5" />
             Descargar último newsletter
+          </a>
+          <a
+            href="/api/newsletter/preview"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 px-3 py-1.5 bg-purple-600/20 border border-purple-500/30 text-purple-400 rounded-lg hover:bg-purple-600/30 transition-colors text-xs font-medium mb-4 ml-2"
+          >
+            <Eye className="w-3.5 h-3.5" />
+            Vista previa
           </a>
           <button
             onClick={() => runAction('send-newsletter')}

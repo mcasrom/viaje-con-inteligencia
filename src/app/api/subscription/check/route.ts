@@ -13,6 +13,10 @@ export async function GET() {
       return NextResponse.json({ premium: false, status: 'no_session' });
     }
 
+    if (user.email === process.env.ADMIN_EMAIL) {
+      return NextResponse.json({ premium: true, status: 'admin', trialEnd: null, email: user.email });
+    }
+
     const { data: profile } = await supabaseAdmin
       .from('profiles')
       .select('*')

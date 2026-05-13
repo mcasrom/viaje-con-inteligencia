@@ -483,6 +483,9 @@ Sigue Viaje Inteligencia y empieza a viajar usando datos, contexto e inteligenci
 
 ---
 
-# Hashtags SEO
+*M. Castillo — ViajeInteligencia*
+---
+
+# Hashtags
 
 #InteligenciaArtificial #ViajesSeguros #TravelIntelligence #TurismoInteligente #IA #Viajes2026 #SeguridadViajeros #OSINT #Geopolitica #TurismoDigital #ViajeInteligencia #SmartTravel #IAViajes #TravelTech #RiesgoGeopolitico

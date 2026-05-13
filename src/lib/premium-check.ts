@@ -17,6 +17,11 @@ export async function checkPremium(): Promise<PremiumCheck> {
       return { isPremium: false, status: 'no_session', userId: null, email: null };
     }
 
+    const isAdmin = user.email === process.env.ADMIN_EMAIL;
+    if (isAdmin) {
+      return { isPremium: true, status: 'admin', userId: user.id, email: user.email };
+    }
+
     const { data: profile } = await supabaseAdmin
       .from('profiles')
       .select('is_premium, subscription_status, trial_end')
@@ -25,7 +30,6 @@ export async function checkPremium(): Promise<PremiumCheck> {
 
     const isPremium = profile?.is_premium || profile?.subscription_status === 'active';
 
-    // Check trial
     if (!isPremium && profile?.trial_end) {
       const trialActive = new Date(profile.trial_end) > new Date();
       if (trialActive) {

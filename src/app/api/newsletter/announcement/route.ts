@@ -52,11 +52,20 @@ export async function GET(request: NextRequest) {
     for (const sub of subscribers) {
       try {
         const personalizedHtml = html.replace('{{EMAIL}}', encodeURIComponent(sub.email));
-        await resend.emails.send({
-          from: 'Viaje con Inteligencia <newsletter@viajeinteligencia.com>',
-          to: sub.email,
-          subject,
-          html: personalizedHtml,
+        await fetch('https://api.resend.com/emails', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${process.env.RESEND_API_KEY}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            from: 'Viaje con Inteligencia <newsletter@viajeinteligencia.com>',
+            to: sub.email,
+            subject,
+            html: personalizedHtml,
+            open_tracking: true,
+            click_tracking: true,
+          }),
         });
         sent++;
         await new Promise(r => setTimeout(r, 300));
