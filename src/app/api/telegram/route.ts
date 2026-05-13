@@ -284,8 +284,44 @@ export async function POST(request: NextRequest) {
     if (!chatId) {
       return NextResponse.json({ ok: true });
     }
+
+// FIRST: Handle /suscribir [pais] — subscribe without state
+    if (text.startsWith('/suscribir ') || text.startsWith('/subscribe ')) {
+      const query = text.replace(/^\/(suscribir|subscribe)\s+/i, '').trim().toLowerCase();
+      const paisesModule = await import('@/data/paises');
+      const allPaises = Object.values(paisesModule.paisesData);
+      let country = allPaises.find(p =>
+        p.codigo.toLowerCase() === query ||
+        p.nombre.toLowerCase().includes(query)
+      );
+      if (country) {
+        const result = await subscribeToCountry({ chatId, username: username || undefined, countryCode: country.codigo });
+        if (result.success) {
+          await sendMessage(chatId, `✅ *Suscrito a ${country.bandera} ${country.nombre}*\n\nRecibirás alertas de incidentes en este país.\nUsa /mis-alertas para ver tus suscripciones.`, getSubscriptionKeyboard());
+        } else {
+          await sendMessage(chatId, `❌ Error: ${result.error}`, getSubscriptionKeyboard());
+        }
+      } else {
+        await sendMessage(chatId, `❌ No encontré "${query}". Prueba: /suscribir ES, /suscribir Francia`, getSubscriptionKeyboard());
+      }
+      return NextResponse.json({ ok: true });
+    }
+
+    if (text.startsWith('/cancelar-alerta ') || text.startsWith('/unsubscribe ')) {
+      const query = text.replace(/^\/(cancelar-alerta|unsubscribe)\s+/i, '').trim().toLowerCase();
+      const paisesModule = await import('@/data/paises');
+      const allPaises = Object.values(paisesModule.paisesData);
+      let country = allPaises.find(p => p.codigo.toLowerCase() === query || p.nombre.toLowerCase().includes(query));
+      if (country) {
+        const result = await unsubscribeFromCountry(chatId, country.codigo);
+        await sendMessage(chatId, result.success ? `✅ Cancelada suscripción a ${country.bandera} ${country.nombre}` : `❌ Error: ${result.error}`, getSubscriptionKeyboard());
+      } else {
+        await sendMessage(chatId, `❌ No encontré "${query}". Prueba: /cancelar-alerta ES`, getSubscriptionKeyboard());
+      }
+      return NextResponse.json({ ok: true });
+    }
     
-// FIRST: Check for country code (works from ANY state except subscription flows)
+// SECOND: Check for country code (works from ANY state except subscription flows)
     const subStates = ['subscribing_country', 'unsubscribing_country'];
     const codeMatch = !subStates.includes(getUserState(chatId).step) && text.match(/^([A-Za-z]{2})$/i);
     if (codeMatch) {
@@ -343,64 +379,6 @@ export async function POST(request: NextRequest) {
       }
     }
     
-    // Handle /suscribir [pais] — subscribe without state
-    const subMatch = text.match(/^\/(suscribir|subscribe)\s+(.+)/i);
-    if (text.startsWith('/suscribir ') || text.startsWith('/subscribe ') || subMatch) {
-      const query = subMatch ? subMatch[2].trim().toLowerCase() : text.replace(/^\/(suscribir|subscribe)\s+/i, '').trim().toLowerCase();
-      const paisesModule = await import('@/data/paises');
-      const allPaises = Object.values(paisesModule.paisesData);
-      let country = allPaises.find(p =>
-        p.codigo.toLowerCase() === query ||
-        p.nombre.toLowerCase().includes(query)
-      );
-      if (country) {
-        const result = await subscribeToCountry({
-          chatId,
-          username: username || undefined,
-          countryCode: country.codigo,
-        });
-        if (result.success) {
-          await sendMessage(chatId,
-            `✅ *Suscrito a ${country.bandera} ${country.nombre}*\n\n` +
-            `Recibirás alertas de incidentes en este país.\n` +
-            `Usa /mis-alertas para ver tus suscripciones.`,
-            getSubscriptionKeyboard()
-          );
-        } else {
-          await sendMessage(chatId, `❌ Error: ${result.error}`, getSubscriptionKeyboard());
-        }
-      } else {
-        await sendMessage(chatId, `❌ No encontré "${query}". Prueba: /suscribir ES, /suscribir Francia`, getSubscriptionKeyboard());
-      }
-      return NextResponse.json({ ok: true });
-    }
-
-    // Handle /cancelar-alerta [pais] — unsubscribe without state
-    const cancelMatch = text.match(/^\/(cancelar-alerta|unsubscribe)\s+(.+)/i);
-    if (text.startsWith('/cancelar-alerta ') || text.startsWith('/unsubscribe ') || cancelMatch) {
-      const query = cancelMatch ? cancelMatch[2].trim().toLowerCase() : text.replace(/^\/(cancelar-alerta|unsubscribe)\s+/i, '').trim().toLowerCase();
-      const paisesModule = await import('@/data/paises');
-      const allPaises = Object.values(paisesModule.paisesData);
-      let country = allPaises.find(p =>
-        p.codigo.toLowerCase() === query ||
-        p.nombre.toLowerCase().includes(query)
-      );
-      if (country) {
-        const result = await unsubscribeFromCountry(chatId, country.codigo);
-        if (result.success) {
-          await sendMessage(chatId,
-            `✅ Cancelada suscripción a ${country.bandera} ${country.nombre}`,
-            getSubscriptionKeyboard()
-          );
-        } else {
-          await sendMessage(chatId, `❌ Error: ${result.error}`, getSubscriptionKeyboard());
-        }
-      } else {
-        await sendMessage(chatId, `❌ No encontré "${query}". Prueba: /cancelar-alerta ES`, getSubscriptionKeyboard());
-      }
-      return NextResponse.json({ ok: true });
-    }
-
     // Also check by name (skip during subscription flows)
     if (text && !text.startsWith('/') && !subStates.includes(getUserState(chatId).step)) {
       const paisesModule = await import('@/data/paises');
