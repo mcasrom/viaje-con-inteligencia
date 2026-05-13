@@ -677,19 +677,25 @@ export async function GET(request: Request) {
 
   // Phase 1: Independent tasks (run in parallel)
   // MAEC scrape (90s), US State Dept (20s), Airspace OSINT (30s), Oil Price (15s), Events (90s)
-  const [maecRes, usStateDeptRes, airspaceRes, oilRes, eventsRes, modelTrainingRes] = await Promise.all([
+  // Events fetch is fire-and-forget (too slow to block the cron)
+  runEventsFetch().then(result => {
+    results.events = result;
+  }).catch(() => {
+    results.events = { status: 'error', error: 'Async fetch failed' };
+  });
+  results.events = { status: 'fired', note: 'Events started asynchronously' };
+
+  const [maecRes, usStateDeptRes, airspaceRes, oilRes, modelTrainingRes] = await Promise.all([
     withTimeout(() => runMaecScrape(), 90000, '1/8 MAEC scrape'),
     withTimeout(() => runUSStateDept(), 30000, '1b/8 US State Dept'),
     withTimeout(() => runAirspaceOsint(), 30000, '4/8 Airspace OSINT'),
     withTimeout(() => runOilPrice(), 15000, '6/8 Oil price'),
-    withTimeout(() => runEventsFetch(), 120000, '6c/8 Events intelligence'),
     withTimeout(() => runModelTraining(), 5000, '6/8 Model training'),
   ]);
   results.maec = maecRes;
   results.us_state_dept = usStateDeptRes;
   results.airspace = airspaceRes;
   results.oil = oilRes;
-  results.events = eventsRes;
   results.model_training = modelTrainingRes;
 
   // Phase 2: Depends on Phase 1 results
