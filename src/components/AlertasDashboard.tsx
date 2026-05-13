@@ -11,6 +11,7 @@ interface AlertSub {
   nivel_riesgo: string | null;
   alert_types: string[];
   severity_min: string;
+  source?: string;
   created_at: string;
 }
 
@@ -120,7 +121,7 @@ export default function AlertasDashboard() {
                       </span>
                     )}
                   </div>
-                  <div className="flex items-center gap-2 mt-1">
+                    <div className="flex items-center gap-2 mt-1">
                     <span className="text-xs text-slate-400">
                       Min: {SEVERITY_LABEL[sub.severity_min] || sub.severity_min}
                     </span>
@@ -128,6 +129,9 @@ export default function AlertasDashboard() {
                     <span className="text-xs text-slate-400">
                       {sub.alert_types?.join(', ') || 'todos'}
                     </span>
+                    {sub.source === 'telegram' && (
+                      <span className="text-[10px] bg-blue-500/20 text-blue-400 px-1.5 py-0.5 rounded">Telegram</span>
+                    )}
                   </div>
                 </div>
               </div>

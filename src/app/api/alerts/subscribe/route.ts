@@ -12,13 +12,39 @@ export async function GET(request: NextRequest) {
   if (!country) {
     const { data: { user } } = await supabase.auth.getUser();
     if (user) {
-      const { data: subscriptions } = await supabase
+      // 1. Get subscriptions linked to web user_id
+      const { data: webSubs } = await supabase
         .from('alert_preferences')
         .select('*')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false });
 
-      const enriched = (subscriptions || []).map((sub: any) => {
+      // 2. Also get subscriptions linked via Telegram (if user has telegram_id in profile)
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('telegram_id')
+        .eq('id', user.id)
+        .single();
+
+      let tgSubs: any[] = [];
+      if (profile?.telegram_id) {
+        const { data: telegramSubs } = await supabase
+          .from('alert_preferences')
+          .select('*')
+          .eq('telegram_chat_id', Number(profile.telegram_id))
+          .is('user_id', null)
+          .order('created_at', { ascending: false });
+        tgSubs = telegramSubs || [];
+      }
+
+      // 3. Merge: web subs first, then tg subs not already present
+      const seen = new Set((webSubs || []).map(s => s.country_code));
+      const merged = [
+        ...(webSubs || []),
+        ...tgSubs.filter(s => !seen.has(s.country_code)),
+      ];
+
+      const enriched = merged.map((sub: any) => {
         const pais = paisesData[sub.country_code?.toLowerCase()];
         return {
           id: sub.id,
@@ -28,7 +54,7 @@ export async function GET(request: NextRequest) {
           nivel_riesgo: pais?.nivelRiesgo || null,
           alert_types: sub.alert_types,
           severity_min: sub.severity_min,
-          frequency: sub.frequency,
+          source: sub.user_id ? 'web' : 'telegram',
           created_at: sub.created_at,
         };
       });
@@ -126,13 +152,23 @@ export async function DELETE(request: NextRequest) {
       return NextResponse.json({ error: 'No autenticado' }, { status: 401 });
     }
 
-    const { error } = await supabase!.from('alert_preferences')
+    // Delete both web and Telegram-linked subscriptions for this country
+    await supabase!.from('alert_preferences')
       .delete()
       .eq('user_id', user.id)
       .eq('country_code', countryCode.toUpperCase());
 
-    if (error) {
-      return NextResponse.json({ error: error.message }, { status: 400 });
+    const { data: profile } = await supabase!
+      .from('profiles')
+      .select('telegram_id')
+      .eq('id', user.id)
+      .single();
+
+    if (profile?.telegram_id) {
+      await supabase!.from('alert_preferences')
+        .delete()
+        .eq('telegram_chat_id', Number(profile.telegram_id))
+        .eq('country_code', countryCode.toUpperCase());
     }
 
     return NextResponse.json({ success: true });
