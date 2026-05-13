@@ -29,12 +29,18 @@ export async function GET(request: NextRequest) {
   const html = await buildWeeklyEmailHtml(issue);
   const subject = `Briefing Semanal #${issue.edition} — ${issue.weekDate}`;
 
+  // ===== FETCH verified subscribers =====
+  const { data: subscribers } = isSupabaseAdminConfigured()
+    ? await supabaseAdmin!.from('newsletter_subscribers').select('email, name').eq('verified', true).order('subscribed_at', { ascending: true })
+    : { data: null };
+  const totalRecipients = subscribers?.length || 0;
+
   // ===== SAVE to history =====
   if (supabase) {
     await supabase.from('newsletter_history').insert({
       subject,
       content: html,
-      recipients_count: 0,
+      recipients_count: totalRecipients,
     });
   }
 
@@ -42,28 +48,20 @@ export async function GET(request: NextRequest) {
   let sent = 0;
   let errors = 0;
 
-  if (resend && isSupabaseAdminConfigured()) {
-    const { data: subscribers } = await supabaseAdmin!
-      .from('newsletter_subscribers')
-      .select('email, name')
-      .eq('verified', true)
-      .order('subscribed_at', { ascending: true });
-
-    if (subscribers && subscribers.length > 0) {
-      for (const sub of subscribers) {
-        try {
-          const personalizedHtml = html.replace('{{EMAIL}}', encodeURIComponent(sub.email));
-          await resend.emails.send({
-            from: 'Viaje con Inteligencia <newsletter@viajeinteligencia.com>',
-            to: sub.email,
-            subject,
-            html: personalizedHtml,
-          });
-          sent++;
-          await new Promise(r => setTimeout(r, 300));
-        } catch {
-          errors++;
-        }
+  if (resend && subscribers && subscribers.length > 0) {
+    for (const sub of subscribers) {
+      try {
+        const personalizedHtml = html.replace('{{EMAIL}}', encodeURIComponent(sub.email));
+        await resend.emails.send({
+          from: 'Viaje con Inteligencia <newsletter@viajeinteligencia.com>',
+          to: sub.email,
+          subject,
+          html: personalizedHtml,
+        });
+        sent++;
+        await new Promise(r => setTimeout(r, 300));
+      } catch {
+        errors++;
       }
     }
   }
