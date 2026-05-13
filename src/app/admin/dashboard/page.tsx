@@ -605,6 +605,9 @@ export default function AdminDashboard() {
                     <span className={`text-xs ${r.mastodon ? 'text-green-400' : 'text-red-400'}`}>
                       {r.mastodon ? `✅ Mastodon → ${r.mastodonUrl}` : '❌ Mastodon'}
                     </span>
+                    <span className={`text-xs ${r.bluesky ? 'text-green-400' : 'text-red-400'}`}>
+                      {r.bluesky ? '✅ Bluesky' : '❌ Bluesky'}
+                    </span>
                   </div>
                 </div>
               ))}

@@ -25,6 +25,11 @@ export async function publishToBluesky(
     return { success: false, error: 'Bluesky credentials not configured' };
   }
 
+  // Bluesky limit: 300 graphemes
+  if (text.length > 300) {
+    text = text.slice(0, 297) + '...';
+  }
+
   try {
     const jwt = await createSession();
     if (!jwt) return { success: false, error: 'Failed to authenticate with Bluesky' };
