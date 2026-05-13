@@ -24,3 +24,4 @@ CREATE INDEX IF NOT EXISTS idx_events_country ON events(country);
 CREATE INDEX IF NOT EXISTS idx_events_category ON events(category);
 CREATE INDEX IF NOT EXISTS idx_events_dates ON events(start_date, end_date);
 CREATE INDEX IF NOT EXISTS idx_events_source ON events(source);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_events_source_id ON events(source_id);
