@@ -1,11 +1,11 @@
 # AGENTS.md — Viaje con Inteligencia
 
-## PAUSED STATE (12 May 2026 — Resumed 13 May)
-- **RandomForest ML models trained + deployed** (b1f32cc): 4 regression models (risk_score, prob_up_7d/14d/30d) with 50 trees, maxDepth=8, R²=0.967-0.995 on 109 country samples.
-- **Training decoupled from master cron**: `/api/cron/train-models` runs standalone with 300s budget. Master cron fires it asynchronously (completes in ~129s).
-- **Optimized data pipeline**: `buildTrainingRow()` builds features + heuristic targets in one pass per country (4 parallel Supabase queries instead of ~10).
-- **Comparison monitoring** (496dd53): `/api/cron/compare-models` endpoint + Phase 4 in training pipeline. MAE: riskScore=0.9, probUp7d=0.5%. 4 countries with large deviations: Camboya (+9.1 RF), Colombia, Venezuela, Afganistán (8.6% probUp7d vs 0.1% heuristic — RF learned even max risk can escalate).
-- **Next**: Investigate large deviation countries; expand features (visas, climate, exchange rate); potentially increase nEstimators.
+## PAUSED STATE (13 May 2026)
+- **Itinerarios públicos (destacados)** (43d4309): Sistema completo con columna `is_public` + `slug` en trips. Página `/viajes/destacados` con grid + OG tags. Toggle Publicar en detalle del viaje.
+- **Newsletter environment** (cc55527 + 0d96286 + 4f9b464): Suscripción doble opt-in ✅, generación semanal con Groq + template profesional ✅, batch send a suscriptores vía Resend ✅, descarga HTML ✅, botón "Enviar ahora" en admin ✅. Fix: columna `verified` (no `confirmed`) en master cron. Fix: `/api/newsletter/announcement` ahora envía a todos los suscriptores verificados (ya no solo Telegram).
+- **Intereses personalizados** (9b1ec0c): Input libre + "Add" en creación de viaje además de tags predefinidos.
+- **RandomForest ML**: 4 modelos (risk_score, prob_up_7d/14d/30d), R²=0.967-0.995. Comparación diaria vía cron. MAE: riskScore=0.94, probUp7d=0.5%.
+- **Deviaciones grandes actuales**: Camboya (+9 riskScore, RF más alto), Afganistán (+8.5pp probUp7d, RF cree que riesgo máximo aún puede escalar), Venezuela (-6 riskScore), Colombia (+5 riskScore).
 
 ## PAUSED STATE (07 May 2026 — Resumed 07 May)
 - **Master cron v2** (58bf127): Deployed, runs in ~89s. MAEC 26 countries, OSINT 7 signals inserted, newsletter weekly digest ready for Monday test.
@@ -234,7 +234,8 @@ Para probar authenticated endpoints se necesita sesión válida (vía browser).
   - Classifies signals with Groq (category, urgency, first-person detection)
   - Saves to `osint_signals` table in Supabase
 
-## 13 May 2026 — Itinerarios públicos (destacados)
+## 13 May 2026 — Itinerarios públicos + Newsletter download
+### Itinerarios públicos (destacados)
 - **Feature**: Sistema completo de itinerarios públicos. Cualquier viaje con itinerario IA se puede marcar como público con 1 clic.
 - **Arquitectura**:
   - Columna `is_public` (boolean) + `slug` (text UNIQUE) en tabla `trips`
@@ -245,6 +246,26 @@ Para probar authenticated endpoints se necesita sesión válida (vía browser).
   - Toggle "Publicar" en detalle del viaje (`/viajes/[id]`)
   - Enlace en footer + enlace "Ver itinerarios destacados" en Mis Viajes
 - **Pendiente**: Ejecutar `supabase/trips_public.sql` en Supabase SQL Editor para crear las columnas.
+
+### Newsletter — envío real a suscriptores (13 May fixes)
+- **Bug fix**: `getSubscribers()` en master cron consultaba columna `confirmed` (inexistente) → ahora usa `verified` (0d96286). Sin esto el digest semanal nunca encontraba suscriptores.
+- **Anuncio reescrito**: `/api/newsletter/announcement` ahora:
+  - Usa `collectNewsletterData()` + `buildWeeklyEmailHtml()` de `newsletter-generator.ts` para template profesional con stats, alertas, destino destacado, Q&A
+  - Obtiene suscriptores verificados y envía batch vía Resend con 300ms de separación
+  - Guarda en `newsletter_history` con `recipients_count` real
+  - Sigue enviando posts a Telegram
+- **Admin**: Botón "Enviar newsletter ahora" en dashboard que dispara `/api/newsletter/announcement` con loading state y resultado JSON.
+- **Commits**: `0d96286`, `4f9b464`
+
+## Way Ahead (próximos pasos)
+1. **Esperar data histórica**: MAEC risk history necesita 7/14/30 días acumulados para validar predicciones RF contra cambios reales de riesgo. Sin data, no hay validación posible.
+2. **Monitorear deviations**: La comparación RF vs heurístico corre cada día vía cron. Verificar que no aparezcan nuevos países con deviation grande. Los 4 actuales están documentados — no requieren acción inmediata.
+3. **Expandir features RF**: Tasas de cambio, clima/estacionalidad, datos de visados — mejorarían precisión pero requieren nuevas fuentes de datos.
+4. **Probar envío newsletter manual**: Desde admin dashboard, botón "Enviar newsletter ahora". Verificar que llega a los 16 suscriptores. Después, esperar al lunes para confirmar el trigger automático del cron.
+5. **Newsletter visor en admin**: Ver HTML del newsletter generado antes de enviar (vista previa).
+6. **Tracking aperturas/clics**: Resend soporta tracking nativo. Activar flag y guardar métricas en `newsletter_history`.
+7. **Landing page CTA**: Verificar que el CTA sigue visible tras carga del mapa (fix previo con z-index). Pendiente de confirmación visual.
+8. **Vercel Hobby limit**: Solo 1 cron schedule. Master cron ejecuta todo secuencialmente. Si algún sub-task empieza a fallar por timeout, considerar migrar a plan Pro o GitHub Actions.
 
 ## Recurring Tasks
 - **Daily (post-deploy)**: Verify `/api/cron/train-models` completes successfully (R² > 0.95, < 300s).
