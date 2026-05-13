@@ -5,9 +5,10 @@ import { enrichMany } from '@/lib/events-groq';
 import { getFallbackEvents, getUpcomingFallbackEvents } from '@/lib/events-fallback';
 
 const PRIORITY_COUNTRIES = [
-  'ES', 'FR', 'IT', 'DE', 'GB', 'PT', 'GR', 'HR', 'MX', 'AR', 'CO', 'PE',
-  'CL', 'BR', 'US', 'CA', 'JP', 'TH', 'VN', 'ID', 'MY', 'PH', 'IN', 'TR',
-  'MA', 'TN', 'EG', 'AE', 'ZA',
+  'ES', 'FR', 'IT', 'DE', 'GB', 'PT', 'GR',
+  'MX', 'AR', 'CO', 'BR', 'US',
+  'JP', 'TH', 'TR',
+  'MA', 'EG',
 ];
 
 interface StoredEvent {
