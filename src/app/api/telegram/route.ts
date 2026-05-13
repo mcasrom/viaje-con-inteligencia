@@ -345,8 +345,8 @@ export async function POST(request: NextRequest) {
     
     // Handle /suscribir [pais] — subscribe without state
     const subMatch = text.match(/^\/(suscribir|subscribe)\s+(.+)/i);
-    if (subMatch) {
-      const query = subMatch[2].trim().toLowerCase();
+    if (text.startsWith('/suscribir ') || text.startsWith('/subscribe ') || subMatch) {
+      const query = subMatch ? subMatch[2].trim().toLowerCase() : text.replace(/^\/(suscribir|subscribe)\s+/i, '').trim().toLowerCase();
       const paisesModule = await import('@/data/paises');
       const allPaises = Object.values(paisesModule.paisesData);
       let country = allPaises.find(p =>
@@ -377,8 +377,8 @@ export async function POST(request: NextRequest) {
 
     // Handle /cancelar-alerta [pais] — unsubscribe without state
     const cancelMatch = text.match(/^\/(cancelar-alerta|unsubscribe)\s+(.+)/i);
-    if (cancelMatch) {
-      const query = cancelMatch[2].trim().toLowerCase();
+    if (text.startsWith('/cancelar-alerta ') || text.startsWith('/unsubscribe ') || cancelMatch) {
+      const query = cancelMatch ? cancelMatch[2].trim().toLowerCase() : text.replace(/^\/(cancelar-alerta|unsubscribe)\s+/i, '').trim().toLowerCase();
       const paisesModule = await import('@/data/paises');
       const allPaises = Object.values(paisesModule.paisesData);
       let country = allPaises.find(p =>
