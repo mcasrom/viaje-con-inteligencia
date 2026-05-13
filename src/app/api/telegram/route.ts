@@ -286,14 +286,16 @@ export async function POST(request: NextRequest) {
     }
 
 // FIRST: Handle /suscribir [pais] — subscribe without state
-    if (text.startsWith('/suscribir ') || text.startsWith('/subscribe ')) {
-      const query = text.replace(/^\/(suscribir|subscribe)\s+/i, '').trim().toLowerCase();
+    const textLower = text.toLowerCase();
+    if (textLower.startsWith('/suscribir ') || textLower.startsWith('/subscribe ')) {
+      const query = textLower.replace(/^\/(suscribir|subscribe)\s+/i, '').trim();
       const paisesModule = await import('@/data/paises');
       const allPaises = Object.values(paisesModule.paisesData);
       let country = allPaises.find(p =>
         p.codigo.toLowerCase() === query ||
         p.nombre.toLowerCase().includes(query)
       );
+      await sendMessage(chatId, `📝 Debug: text="${text}" query="${query}" country=${country?.codigo || 'null'}`);
       if (country) {
         const result = await subscribeToCountry({ chatId, username: username || undefined, countryCode: country.codigo });
         if (result.success) {
@@ -307,8 +309,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ ok: true });
     }
 
-    if (text.startsWith('/cancelar-alerta ') || text.startsWith('/unsubscribe ')) {
-      const query = text.replace(/^\/(cancelar-alerta|unsubscribe)\s+/i, '').trim().toLowerCase();
+    if (textLower.startsWith('/cancelar-alerta ') || textLower.startsWith('/unsubscribe ')) {
+      const query = textLower.replace(/^\/(cancelar-alerta|unsubscribe)\s+/i, '').trim();
       const paisesModule = await import('@/data/paises');
       const allPaises = Object.values(paisesModule.paisesData);
       let country = allPaises.find(p => p.codigo.toLowerCase() === query || p.nombre.toLowerCase().includes(query));
