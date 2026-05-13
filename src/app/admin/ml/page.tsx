@@ -97,6 +97,18 @@ export default function AdminMLPage() {
           </section>
         )}
 
+        {/* Leyenda */}
+        <section className="bg-slate-800 rounded-xl border border-slate-700 p-6">
+          <h2 className="text-sm font-semibold text-white mb-3">Qué significan estas métricas</h2>
+          <div className="space-y-2 text-xs text-slate-400">
+            <p><strong className="text-slate-300">MAE (Mean Absolute Error):</strong> Diferencia media entre la predicción RF y el valor heurístico. <strong className="text-slate-300">A menor MAE, mejor.</strong> Un MAE de 0.82 en riskScore significa que el modelo se equivoca en promedio ~0.8 puntos sobre una escala de ~20.</p>
+            <p><strong className="text-slate-300">probUp 7d / 14d / 30d:</strong> Probabilidad de que el riesgo de un país suba en los próximos 7, 14 o 30 días. MAE se muestra en porcentaje (ej. 0.53% = error medio de medio punto porcentual).</p>
+            <p><strong className="text-slate-300">Desviación máxima:</strong> El país donde RF y heurístico más difieren. Un valor &gt;5 indica que el modelo ve algo que el heurístico no captura.</p>
+            <p><strong className="text-slate-300">Países c/desviación:</strong> Cuántos países superan el umbral de desviación (riskScore &gt;5 o probUp &gt;5%). Idealmente 0 — si sube, hay países donde el modelo no se alinea con el heurístico.</p>
+            <p className="text-slate-500 mt-2">Los modelos RF se entrenan contra heurísticos (no contra datos reales). La validación real requiere ≥30 días de <em>maec_risk_history</em> para comparar predicciones vs cambios reales de riesgo.</p>
+          </div>
+        </section>
+
         <section className="bg-slate-800 rounded-xl border border-slate-700 p-6">
           <h2 className="text-lg font-semibold text-white mb-4">Historial de entrenamientos</h2>
           <div className="overflow-x-auto">

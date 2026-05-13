@@ -104,7 +104,7 @@ function getBlogPostsInfo() {
   return {
     total: posts.length,
     slugs,
-    recent: posts.slice(0, 5).map(p => ({ slug: p.slug, title: p.title, date: p.date, category: p.category })),
+    recent: posts.slice(0, 10).map(p => ({ slug: p.slug, title: p.title, date: p.date, category: p.category })),
     issues: {
       noCategory: noCategory.map(p => p.slug),
       noImage: noImage.map(p => p.slug),
