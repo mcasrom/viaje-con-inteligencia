@@ -1,5 +1,12 @@
 # AGENTS.md — Viaje con Inteligencia
 
+## PAUSED STATE (13 May 2026 — Sprint 13 May PM — Irán + Newsletter multicanal + Alertas web)
+- **Irán añadido a paises.ts**: Entrada completa con embajada en Teherán, visa VOA, riesgo muy-alto, emergencias. Añadido a GPI, GTI, HDI, IPC indices — ya visible en mapa de KPIs. Referencias hardcode actualizadas (106+ → 108+).
+- **Newsletter multicanal**: Nueva `social-publisher.ts` con `buildNewsletterSummary()` + publicación automática a Telegram canal, Mastodon, BlueSky y suscriptores Telegram. Integrado en `runWeeklyDigest()` del master cron. Sección "📱 Alertas activas" incluida en el HTML del newsletter.
+- **Alertas web en dashboard**: Nueva sección "Alertas activas" en `/dashboard` que muestra suscripciones unificadas (web + Telegram). Cancelación desde la web elimina ambas. GET/DELETE `/api/alerts/subscribe` ahora usa sesión auth.
+- **Alertas activas unificadas**: GET api mergea `user_id` + `telegram_chat_id` subscriptions cuando el perfil tiene `telegram_id` vinculado. Badge "Telegram" en las que vienen del bot.
+- **Newsletter test enviado**: Edición #37 enviado a info@viajeinteligencia.com vía Resend (ID: 27af5e31). Sección Telegram visible en el HTML.
+
 ## PAUSED STATE (13 May 2026 — Sprint 13 May PM)
 - **Alertas personalizadas vía Telegram**: Nuevo sistema completo:
   - Tabla `alert_preferences` en Supabase con soporte user_id + telegram_chat_id
@@ -99,7 +106,7 @@ npm run start        # production server
 - **Server pages**: `page.tsx` exports metadata, wraps Client component
 - **Client components**: `*Client.tsx` — `'use client'` directive
 - **AI routes**: `/api/ai/chat`, `/api/ai/itinerary`, `/api/ai/risk`, `/api/ai/compare`, etc.
-- **Data**: `src/data/paises.ts` — 110 países con riesgo MAEC
+- **Data**: `src/data/paises.ts` — 111 países (110 visibles + 1 oculta: Cuba) con riesgo MAEC
 - **Z-index**: TopBar `z-[1010]`, SidePanel `z-[1005]`, Leaflet `z-[400-1000]`
 
 ## Newsletter Architecture Design (Pending Discussion)
@@ -282,10 +289,12 @@ Para probar authenticated endpoints se necesita sesión válida (vía browser).
 7. **Landing page CTA**: Verificar que el CTA sigue visible tras carga del mapa (fix previo con z-index). Pendiente de confirmación visual.
 8. **Vercel Hobby limit**: Solo 1 cron schedule. Master cron ejecuta todo secuencialmente. Si algún sub-task empieza a fallar por timeout, considerar migrar a plan Pro o GitHub Actions.
 
-## Next Sprint — Alertas & Bot de Suscripción
-1. **Sistema de alertas**: Revisar y ajustar el sistema actual de detección de incidentes (`detectAndCreateIncidents`) — umbrales, fuentes, severidad.
-2. **Bot de suscripción a alertas personalizadas**: Implementar un bot (Telegram) donde usuarios puedan suscribirse a alertas por país/tipo de riesgo/severidad. Envío de notificaciones push vía bot cuando se detecten incidentes que matcheen sus preferencias.
-3. **Posible**: Vincular alertas personalizadas con los intereses del viaje (tags de la trip) para sugerir suscripciones automáticas.
+## Próximo Día (14 May) — Blog post + Flash Access + Outreach
+1. **Blog post**: Revisar y publicar post de `content/` al blog. Luego distribuirlo a todos los canales: Telegram canal, Mastodon, BlueSky, newsletter.
+2. **Flash Access button**: Optimizar botón de acceso rápido — posiblemente añadirlo a TopBar o como CTA flotante. Evaluar qué funcionalidad debe tener (acceso directo a Radar, alertas, búsqueda de países).
+3. **Outreach**: Identificar a quién enviar esta solución — comunidades de viajeros (foros, subreddits r/travel, r/digitalnomad), travel bloggers, agencias de viajes, expats. Preparar email de outreach / post promocional.
+4. **Eliminar hardcoding**: Identificar datos hardcodeados en `src/data/` (índices, eventos, recomendaciones) y migrarlos a Supabase + APIs externas. Priorizar: datos de visados, precios de vuelos reales (Skyscanner/Google Flights), clima histórico.
+5. **ML priorities**: Expandir features del RF (tasas de cambio, estacionalidad, datos de visados). Una vez 30+ días de `maec_risk_history`, ejecutar validación temporal CV.
 
 ## Recurring Tasks
 - **Daily (post-deploy)**: Verify `/api/cron/train-models` completes successfully (R² > 0.95, < 300s).
