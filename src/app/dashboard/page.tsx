@@ -16,6 +16,7 @@ import RecommendationsList from '@/components/RecommendationsList';
 import SmartFeed from '@/components/SmartFeed';
 import OneClickRecommendations from '@/components/OneClickRecommendations';
 import TripTracker from '@/components/TripTracker';
+import AlertasDashboard from '@/components/AlertasDashboard';
 import { UserLevelBadge, trackActivity } from '@/components/UserLevel';
 import { paisesData, getLabelRiesgo } from '@/data/paises';
 import { calculateTCI } from '@/data/tci-engine';
@@ -956,6 +957,10 @@ export default function DashboardPage() {
 
         <div className="mt-8">
           <TripTracker />
+        </div>
+
+        <div className="mt-8">
+          <AlertasDashboard />
         </div>
 
         <div className="mt-8 grid md:grid-cols-4 gap-4">
