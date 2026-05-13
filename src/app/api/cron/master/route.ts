@@ -422,7 +422,7 @@ async function runDailyDigest(results: any): Promise<any> {
 🕐 ${new Date().toISOString().split('T')[0]}
 
 📡 RESULTADOS HOY:
-${Object.entries(results).filter(([k, v]) => v && (v as any).status !== 'skipped').map(([k, v]) => `├── ${k}: ${(v as any).status === 'ok' ? 'OK' : 'ERROR'}`).join('\n')}
+${Object.entries(results).filter(([k, v]) => v && (v as any).status !== 'skipped').map(([k, v]) => `├── ${k}: ${(v as any).status === 'ok' || (v as any).status === 'fired' ? 'OK' : 'ERROR'}`).join('\n')}
 
 👤 USUARIOS: ${totalUsers || 0}
 📧 NEWSLETTER: ${totalSubs || 0}
@@ -682,7 +682,7 @@ export async function GET(request: Request) {
     withTimeout(() => runUSStateDept(), 20000, '1b/8 US State Dept'),
     withTimeout(() => runAirspaceOsint(), 30000, '4/8 Airspace OSINT'),
     withTimeout(() => runOilPrice(), 15000, '6/8 Oil price'),
-    withTimeout(() => runEventsFetch(), 90000, '6c/8 Events intelligence'),
+    withTimeout(() => runEventsFetch(), 120000, '6c/8 Events intelligence'),
     withTimeout(() => runModelTraining(), 5000, '6/8 Model training'),
   ]);
   results.maec = maecRes;
