@@ -138,7 +138,8 @@ async function runFlightCosts(): Promise<any> {
     }
 
     const { syncIPCToSupabase } = await import('@/lib/ipc-db');
-    await syncIPCToSupabase();
+    const { syncAllIndicesToSupabase } = await import('@/lib/indices-db');
+    await Promise.all([syncIPCToSupabase(), syncAllIndicesToSupabase()]);
 
     const [{ data: oilHistory }, { data: seasonalityRows }, { data: closures }, { data: routes }, { data: usRiskRows }, { data: demandShiftRows }] = await Promise.all([
       supabase.from('oil_prices_history').select('date, price_usd').order('date', { ascending: true }),
