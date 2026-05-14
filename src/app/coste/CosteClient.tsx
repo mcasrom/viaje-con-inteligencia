@@ -2,7 +2,8 @@
 
 import { useState, useMemo } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Search, TrendingUp, TrendingDown, Minus, BarChart3, ChevronDown, ChevronUp, Filter, ExternalLink, Calculator, Plane, Calendar, User } from 'lucide-react';
+import { ArrowLeft, Search, TrendingUp, TrendingDown, Minus, BarChart3, ChevronDown, ChevronUp, Filter, ExternalLink, Calculator, Plane, Calendar, User, Loader2 } from 'lucide-react';
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 import { getTodosLosPaises } from '@/data/paises';
 import { calculateTCI } from '@/data/tci-engine';
 
@@ -32,6 +33,14 @@ interface OilData {
   avg: number;
   changePct: number;
 }
+
+const TCI_LEVELS = [
+  { key: 'Muy barato', min: 0, max: 84, color: '#22c55e', bg: 'from-green-500/20 to-green-600/10 border-green-500/30' },
+  { key: 'Económico', min: 85, max: 94, color: '#86efac', bg: 'from-emerald-500/20 to-emerald-600/10 border-emerald-500/30' },
+  { key: 'Medio', min: 95, max: 104, color: '#eab308', bg: 'from-yellow-500/20 to-yellow-600/10 border-yellow-500/30' },
+  { key: 'Caro', min: 105, max: 114, color: '#f97316', bg: 'from-orange-500/20 to-orange-600/10 border-orange-500/30' },
+  { key: 'Muy caro', min: 115, max: 999, color: '#dc2626', bg: 'from-red-500/20 to-red-600/10 border-red-500/30' },
+];
 
 function getTCIColor(tci: number): string {
   if (tci < 85) return '#22c55e';
@@ -106,6 +115,8 @@ export default function CosteClient({ initialCountries, initialOilData, regions 
   const [regionFilter, setRegionFilter] = useState('all');
   const [sortAsc, setSortAsc] = useState(true);
   const [oilData] = useState<OilData>(initialOilData);
+  const [tciLevelFilter, setTciLevelFilter] = useState<string | null>(null);
+  const [showAll, setShowAll] = useState(false);
 
   const [selectedCountry, setSelectedCountry] = useState('');
   const [days, setDays] = useState(7);
@@ -128,9 +139,23 @@ export default function CosteClient({ initialCountries, initialOilData, regions 
     if (regionFilter !== 'all') {
       result = result.filter(c => c.region === regionFilter);
     }
+    if (tciLevelFilter) {
+      const level = TCI_LEVELS.find(l => l.key === tciLevelFilter);
+      if (level) result = result.filter(c => c.tci >= level.min && c.tci <= level.max);
+    }
     result.sort((a, b) => sortAsc ? a.tci - b.tci : b.tci - a.tci);
     return result;
-  }, [initialCountries, search, regionFilter, sortAsc]);
+  }, [initialCountries, search, regionFilter, sortAsc, tciLevelFilter]);
+
+  const levelDistribution = useMemo(() => {
+    return TCI_LEVELS.map(l => ({
+      ...l,
+      count: initialCountries.filter(c => c.tci >= l.min && c.tci <= l.max).length,
+    }));
+  }, [initialCountries]);
+
+  const hasActiveFilter = !!search || regionFilter !== 'all' || !!tciLevelFilter;
+  const showTable = showAll || hasActiveFilter;
 
   const paises = getTodosLosPaises();
 
@@ -313,100 +338,185 @@ export default function CosteClient({ initialCountries, initialOilData, regions 
           </div>
         </div>
 
-        <div className="flex flex-wrap gap-3 mb-6">
-          <div className="relative flex-1 min-w-[200px]">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
-            <input
-              type="text"
-              placeholder="Buscar país..."
-              value={search}
-              onChange={e => setSearch(e.target.value)}
-              className="w-full bg-slate-800 border border-slate-700 rounded-xl pl-10 pr-4 py-2.5 text-white text-sm placeholder:text-slate-500 focus:outline-none focus:border-blue-500/50"
-            />
-          </div>
-          <div className="relative">
-            <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
-            <select
-              value={regionFilter}
-              onChange={e => setRegionFilter(e.target.value)}
-              className="bg-slate-800 border border-slate-700 rounded-xl pl-10 pr-8 py-2.5 text-white text-sm appearance-none focus:outline-none focus:border-blue-500/50"
-            >
-              {regions.map(r => (
-                <option key={r} value={r}>{r === 'all' ? 'Todas las regiones' : r}</option>
+        {/* TCI Level Distribution — Pie + Cards */}
+        <div className="mb-8">
+          <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+            <span className="text-2xl">🥧</span>
+            Distribución por nivel de coste
+          </h2>
+          <div className="grid md:grid-cols-2 gap-6">
+            {/* Pie Chart */}
+            <div className="bg-slate-800/60 rounded-xl border border-slate-700/50 p-4">
+              <ResponsiveContainer width="100%" height={260}>
+                <PieChart>
+                  <Pie
+                    data={levelDistribution}
+                    dataKey="count"
+                    nameKey="key"
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={60}
+                    outerRadius={100}
+                    paddingAngle={2}
+                    cursor="pointer"
+                    onClick={(_: any, index: number) => setTciLevelFilter(prev => prev === levelDistribution[index].key ? null : levelDistribution[index].key)}
+                  >
+                    {levelDistribution.map((entry) => (
+                      <Cell
+                        key={entry.key}
+                        fill={entry.color}
+                        stroke={tciLevelFilter === entry.key ? '#fff' : 'transparent'}
+                        strokeWidth={tciLevelFilter === entry.key ? 3 : 0}
+                      />
+                    ))}
+                  </Pie>
+                  <Tooltip
+                    contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #334155', borderRadius: '8px' }}
+                    itemStyle={{ color: '#e2e8f0' }}
+                  />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+
+            {/* Level Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {levelDistribution.map(l => (
+                <button
+                  key={l.key}
+                  onClick={() => setTciLevelFilter(prev => prev === l.key ? null : prev)}
+                  className={`bg-gradient-to-br ${l.bg} rounded-xl border p-4 text-left hover:scale-[1.02] transition-all duration-200 ${
+                    tciLevelFilter === l.key ? 'ring-2 ring-white shadow-lg' : ''
+                  }`}
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-white font-bold text-lg">{l.key}</span>
+                    <span className="text-3xl font-bold" style={{ color: l.color }}>{l.count}</span>
+                  </div>
+                  <div className="w-full bg-slate-700/50 rounded-full h-2 overflow-hidden">
+                    <div
+                      className="h-full rounded-full transition-all duration-500"
+                      style={{ width: `${(l.count / initialCountries.length) * 100}%`, backgroundColor: l.color }}
+                    />
+                  </div>
+                  <div className="text-slate-400 text-xs mt-1">
+                    {Math.round((l.count / initialCountries.length) * 100)}% de países
+                  </div>
+                </button>
               ))}
-            </select>
-            <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 pointer-events-none" />
+            </div>
           </div>
-          <button
-            onClick={() => setSortAsc(!sortAsc)}
-            className="flex items-center gap-2 bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 text-white text-sm hover:bg-slate-700 transition-colors"
-          >
-            {sortAsc ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-            {sortAsc ? 'Más baratos' : 'Más caros'}
-          </button>
         </div>
 
-        <div className="bg-slate-800/60 rounded-xl border border-slate-700/50 overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-slate-700/50">
-                  <th className="text-left px-4 py-3 text-slate-500 font-medium text-xs uppercase tracking-wider">#</th>
-                  <th className="text-left px-4 py-3 text-slate-500 font-medium text-xs uppercase tracking-wider">País</th>
-                  <th className="text-left px-4 py-3 text-slate-500 font-medium text-xs uppercase tracking-wider hidden md:table-cell">Región</th>
-                  <th className="text-center px-4 py-3 text-slate-500 font-medium text-xs uppercase tracking-wider">TCI</th>
-                  <th className="text-center px-4 py-3 text-slate-500 font-medium text-xs uppercase tracking-wider hidden sm:table-cell">Nivel</th>
-                  <th className="text-center px-4 py-3 text-slate-500 font-medium text-xs uppercase tracking-wider hidden sm:table-cell">Tendencia</th>
-                  <th className="text-center px-4 py-3 text-slate-500 font-medium text-xs uppercase tracking-wider"></th>
-                </tr>
-              </thead>
-              <tbody>
-                {filtered.map((c, i) => (
-                  <tr
-                    key={c.code}
-                    className="border-b border-slate-700/30 hover:bg-slate-700/30 transition-colors"
-                  >
-                    <td className="px-4 py-3 text-slate-500 font-mono text-xs">{i + 1}</td>
-                    <td className="px-4 py-3">
-                      <Link href={`/coste/${c.code}`} className="flex items-center gap-2 group">
-                        <span className="text-lg">{c.bandera}</span>
-                        <span className="text-white font-medium group-hover:text-blue-400 transition-colors">{c.name}</span>
-                        <span className="text-slate-500 text-xs hidden sm:inline">({c.code})</span>
-                      </Link>
-                    </td>
-                    <td className="px-4 py-3 text-slate-400 hidden md:table-cell">{c.region}</td>
-                    <td className="px-4 py-3 text-center">
-                      <span className="font-bold text-lg" style={{ color: getTCIColor(c.tci) }}>{c.tci}</span>
-                    </td>
-                    <td className="px-4 py-3 text-center hidden sm:table-cell">
-                      <span
-                        className="px-2 py-0.5 rounded-full text-xs font-medium"
-                        style={{ backgroundColor: getTCIColor(c.tci) + '20', color: getTCIColor(c.tci) }}
-                      >
-                        {getTCILabel(c.tci)}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3 text-center hidden sm:table-cell">
-                      <div className="flex items-center justify-center gap-1">
-                        {getTrendIcon(c.trend)}
-                        <span className="text-slate-300 text-xs">{c.trend}</span>
-                      </div>
-                    </td>
-                    <td className="px-4 py-3 text-center">
-                      <Link
-                        href={`/coste/${c.code}`}
-                        className="inline-flex items-center gap-1 text-blue-400 hover:text-blue-300 text-xs font-medium transition-colors"
-                      >
-                        Ver análisis
-                        <ExternalLink className="w-3 h-3" />
-                      </Link>
-                    </td>
-                  </tr>
+        {/* Search & Filters — hidden until expanded */}
+        {showTable && (
+          <div className="flex flex-wrap gap-3 mb-6">
+            <div className="relative flex-1 min-w-[200px]">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+              <input
+                type="text"
+                placeholder="Buscar país..."
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+                className="w-full bg-slate-800 border border-slate-700 rounded-xl pl-10 pr-4 py-2.5 text-white text-sm placeholder:text-slate-500 focus:outline-none focus:border-blue-500/50"
+              />
+            </div>
+            <div className="relative">
+              <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+              <select
+                value={regionFilter}
+                onChange={e => setRegionFilter(e.target.value)}
+                className="bg-slate-800 border border-slate-700 rounded-xl pl-10 pr-8 py-2.5 text-white text-sm appearance-none focus:outline-none focus:border-blue-500/50"
+              >
+                {regions.map(r => (
+                  <option key={r} value={r}>{r === 'all' ? 'Todas las regiones' : r}</option>
                 ))}
-              </tbody>
-            </table>
+              </select>
+              <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 pointer-events-none" />
+            </div>
+            <button
+              onClick={() => setSortAsc(!sortAsc)}
+              className="flex items-center gap-2 bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 text-white text-sm hover:bg-slate-700 transition-colors"
+            >
+              {sortAsc ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+              {sortAsc ? 'Más baratos' : 'Más caros'}
+            </button>
           </div>
-        </div>
+        )}
+
+        {/* Table — collapsed by default */}
+        {showTable ? (
+          <div className="bg-slate-800/60 rounded-xl border border-slate-700/50 overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-slate-700/50">
+                    <th className="text-left px-4 py-3 text-slate-500 font-medium text-xs uppercase tracking-wider">#</th>
+                    <th className="text-left px-4 py-3 text-slate-500 font-medium text-xs uppercase tracking-wider">País</th>
+                    <th className="text-left px-4 py-3 text-slate-500 font-medium text-xs uppercase tracking-wider hidden md:table-cell">Región</th>
+                    <th className="text-center px-4 py-3 text-slate-500 font-medium text-xs uppercase tracking-wider">TCI</th>
+                    <th className="text-center px-4 py-3 text-slate-500 font-medium text-xs uppercase tracking-wider hidden sm:table-cell">Nivel</th>
+                    <th className="text-center px-4 py-3 text-slate-500 font-medium text-xs uppercase tracking-wider hidden sm:table-cell">Tendencia</th>
+                    <th className="text-center px-4 py-3 text-slate-500 font-medium text-xs uppercase tracking-wider"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filtered.map((c, i) => (
+                    <tr
+                      key={c.code}
+                      className="border-b border-slate-700/30 hover:bg-slate-700/30 transition-colors"
+                    >
+                      <td className="px-4 py-3 text-slate-500 font-mono text-xs">{i + 1}</td>
+                      <td className="px-4 py-3">
+                        <Link href={`/coste/${c.code}`} className="flex items-center gap-2 group">
+                          <span className="text-lg">{c.bandera}</span>
+                          <span className="text-white font-medium group-hover:text-blue-400 transition-colors">{c.name}</span>
+                          <span className="text-slate-500 text-xs hidden sm:inline">({c.code})</span>
+                        </Link>
+                      </td>
+                      <td className="px-4 py-3 text-slate-400 hidden md:table-cell">{c.region}</td>
+                      <td className="px-4 py-3 text-center">
+                        <span className="font-bold text-lg" style={{ color: getTCIColor(c.tci) }}>{c.tci}</span>
+                      </td>
+                      <td className="px-4 py-3 text-center hidden sm:table-cell">
+                        <span
+                          className="px-2 py-0.5 rounded-full text-xs font-medium"
+                          style={{ backgroundColor: getTCIColor(c.tci) + '20', color: getTCIColor(c.tci) }}
+                        >
+                          {getTCILabel(c.tci)}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3 text-center hidden sm:table-cell">
+                        <div className="flex items-center justify-center gap-1">
+                          {getTrendIcon(c.trend)}
+                          <span className="text-slate-300 text-xs">{c.trend}</span>
+                        </div>
+                      </td>
+                      <td className="px-4 py-3 text-center">
+                        <Link
+                          href={`/coste/${c.code}`}
+                          className="inline-flex items-center gap-1 text-blue-400 hover:text-blue-300 text-xs font-medium transition-colors"
+                        >
+                          Ver análisis
+                          <ExternalLink className="w-3 h-3" />
+                        </Link>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        ) : (
+          <div className="text-center py-8">
+            <button
+              onClick={() => setShowAll(true)}
+              className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white font-medium rounded-xl transition-colors"
+            >
+              <ChevronDown className="w-5 h-5" />
+              Mostrar todos ({initialCountries.length} países)
+            </button>
+          </div>
+        )}
       </main>
     </div>
   );
