@@ -1,5 +1,10 @@
 # AGENTS.md — Viaje con Inteligencia
 
+## ⚠️ Observaciones Permanentes SEO / Indexado
+- **robots.txt**: Actualmente permite crawling de páginas principales pero deshabilita `/api/`, `/dashboard/`, `/viajes/`. Revisar periódicamente que no haya bloqueos no intencionados. Si se añaden secciones públicas nuevas, verificar que no estén incluidas en `Disallow`.
+- **`/en` noindex**: Verificar siempre que `index: true` se mantenga en `/en/page.tsx` si se quiere tráfico internacional. Las páginas `en` solo cubren homepage — el resto del site (blog, países) no tiene versión inglesa.
+- **Slugs de blog**: Deben ser siempre lowercase. Tras renombrar `Como-encontrar-vuelos-baratos` y `Que-es-viaje-inteligencia`, verificar que new posts no tengan mayúsculas en el filename.
+
 ## PAUSED STATE (13 May 2026 — Sprint 13 May PM — Irán + Newsletter multicanal + Alertas web)
 - **Irán añadido a paises.ts**: Entrada completa con embajada en Teherán, visa VOA, riesgo muy-alto, emergencias. Añadido a GPI, GTI, HDI, IPC indices — ya visible en mapa de KPIs. Referencias hardcode actualizadas (106+ → 108+).
 - **Newsletter multicanal**: Nueva `social-publisher.ts` con `buildNewsletterSummary()` + publicación automática a Telegram canal, Mastodon, BlueSky y suscriptores Telegram. Integrado en `runWeeklyDigest()` del master cron. Sección "📱 Alertas activas" incluida en el HTML del newsletter.

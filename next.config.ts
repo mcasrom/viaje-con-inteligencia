@@ -32,6 +32,16 @@ const nextConfig: NextConfig = {
         destination: 'https://www.viajeinteligencia.com/:path*',
         permanent: true,
       },
+      {
+        source: '/blog/Como-encontrar-vuelos-baratos',
+        destination: '/blog/como-encontrar-vuelos-baratos',
+        permanent: true,
+      },
+      {
+        source: '/blog/Que-es-viaje-inteligencia',
+        destination: '/blog/que-es-viaje-inteligencia',
+        permanent: true,
+      },
     ];
   },
   async headers() {
