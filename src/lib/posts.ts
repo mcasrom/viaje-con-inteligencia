@@ -110,11 +110,11 @@ export function getAllPosts(filter?: PostsFilter): PostMeta[] {
     .map((slug) => getPostBySlug(slug))
     .filter((post): post is Post => post !== null)
     .sort((a, b) => {
-      // featured:true siempre primero, luego por fecha descendente
+      const dateCmp = a.date < b.date ? 1 : a.date > b.date ? -1 : 0;
+      if (dateCmp !== 0) return dateCmp;
       const aFeatured = (a as any).featured ? 1 : 0;
       const bFeatured = (b as any).featured ? 1 : 0;
-      if (bFeatured !== aFeatured) return bFeatured - aFeatured;
-      return a.date < b.date ? 1 : -1;
+      return bFeatured - aFeatured;
     })
     .map(({ slug, title, date, author, category, readTime, image, keywords, excerpt, description, tags }) => ({
       slug,
