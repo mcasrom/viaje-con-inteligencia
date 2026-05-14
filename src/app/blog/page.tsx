@@ -293,10 +293,11 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
               const isActive = category === name;
               const color = CATEGORY_COLORS[name] || 'from-slate-500/20 to-slate-600/10 border-slate-500/30';
               const icon = CATEGORY_ICONS[name] || '📌';
+              const isOther = name === 'Otros';
               return (
                 <Link
                   key={name}
-                  href={isActive ? allLink : `/blog?category=${encodeURIComponent(name)}`}
+                  href={isActive ? allLink : isOther ? '/blog?show=all' : `/blog?category=${encodeURIComponent(name)}`}
                   className={`bg-gradient-to-br ${color} rounded-xl border p-4 hover:scale-[1.02] transition-all duration-200 ${
                     isActive ? 'ring-2 ring-blue-500 shadow-lg shadow-blue-500/10' : ''
                   }`}
