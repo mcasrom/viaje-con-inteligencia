@@ -217,7 +217,7 @@ Si quieres ir un paso más allá:
 
 ---
 
-# 🧭 10. Qué hacer si te pones malo
+# 🧭 10. Qué hacer si enfermas
 
 ## 🚨 síntomas comunes:
 
