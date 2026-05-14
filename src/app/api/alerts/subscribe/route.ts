@@ -12,6 +12,10 @@ export async function GET(request: NextRequest) {
 
   // If userId is provided explicitly (from client), use admin client
   if (userId) {
+    const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (!UUID_REGEX.test(userId)) {
+      return NextResponse.json({ alerts: [], ok: true });
+    }
     if (!isSupabaseAdminConfigured()) {
       return NextResponse.json({ error: 'Servicio no disponible' }, { status: 500 });
     }

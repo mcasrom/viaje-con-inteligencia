@@ -171,10 +171,10 @@ export default function AlertasClient({ initialAlerts, initialCounts }: AlertasC
   const loadAlerts = async () => {
     setLoading(true);
     try {
-      const res = await fetch('/api/alerts/subscribe?userId=demo');
+      const res = await fetch('/api/alerts/subscribe');
       if (res.ok) {
         const data = await res.json();
-        setAlerts(data.alerts || []);
+        setAlerts(data.alerts || data.subscriptions || []);
       }
     } catch (e) {
       console.error(e);
