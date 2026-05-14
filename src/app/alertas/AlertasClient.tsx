@@ -202,14 +202,12 @@ export default function AlertasClient({ initialAlerts, initialCounts }: AlertasC
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ countryCode: country.code, method: 'telegram' }),
       });
-      if (res.status === 401) {
-        setAlerts(alerts);
-        setNotification({ type: 'error', message: 'Debes iniciar sesión para añadir alertas' });
-      } else if (!res.ok) {
-        setAlerts(alerts);
-        setNotification({ type: 'error', message: 'Error al guardar la alerta' });
-      } else {
+      const resData = await res.json().catch(() => ({}));
+      if (res.ok) {
         setNotification({ type: 'success', message: `Alerta añadida para ${country.name}` });
+      } else {
+        setAlerts(alerts);
+        setNotification({ type: 'error', message: resData.error || `Error ${res.status}` });
       }
     } catch {
       setAlerts(alerts);
@@ -225,11 +223,12 @@ export default function AlertasClient({ initialAlerts, initialCounts }: AlertasC
     setAlerts(alerts.filter(a => a.country_code !== code));
     try {
       const res = await fetch(`/api/alerts/subscribe?countryCode=${code}`, { ...fetchOpts, method: 'DELETE' });
-      if (!res.ok) {
-        setAlerts(previous);
-        setNotification({ type: 'error', message: res.status === 401 ? 'Debes iniciar sesión' : 'Error al eliminar' });
-      } else {
+      const resData = await res.json().catch(() => ({}));
+      if (res.ok) {
         setNotification({ type: 'success', message: 'Alerta eliminada' });
+      } else {
+        setAlerts(previous);
+        setNotification({ type: 'error', message: resData.error || `Error ${res.status}` });
       }
     } catch {
       setAlerts(previous);
