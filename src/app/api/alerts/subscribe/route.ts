@@ -1,16 +1,30 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createSupabaseServerClient } from '@/lib/supabase-server';
+import { createServerClient } from '@supabase/ssr';
 import { supabaseAdmin, isSupabaseAdminConfigured } from '@/lib/supabase-admin';
 import { paisesData } from '@/data/paises';
 
 export const dynamic = 'force-dynamic';
+
+function createClientFromRequest(request: NextRequest) {
+  return createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() { return request.cookies.getAll(); },
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
+        },
+      },
+    }
+  );
+}
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const country = searchParams.get('country');
   const userId = searchParams.get('userId');
 
-  // If userId is provided explicitly (from client), use admin client
   if (userId) {
     const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
     if (!UUID_REGEX.test(userId)) {
@@ -47,9 +61,8 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ alerts: enriched, ok: true });
   }
 
-  // If no country filter, return authenticated user's subscriptions
   if (!country) {
-    const supabase = await createSupabaseServerClient();
+    const supabase = createClientFromRequest(request);
     const { data: { user } } = await supabase.auth.getUser();
     if (user) {
       const { data: webSubs } = await supabase
@@ -58,7 +71,6 @@ export async function GET(request: NextRequest) {
         .eq('user_id', user.id)
         .order('created_at', { ascending: false });
 
-      // Also get Telegram-linked subscriptions via profile
       let tgSubs: any[] = [];
       const { data: profile } = await supabase
         .from('profiles')
@@ -131,7 +143,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Falta countryCode' }, { status: 400 });
     }
 
-    const supabase = await createSupabaseServerClient();
+    const supabase = createClientFromRequest(request);
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
       return NextResponse.json({ error: 'No autenticado' }, { status: 401 });
@@ -170,7 +182,7 @@ export async function DELETE(request: NextRequest) {
       return NextResponse.json({ error: 'Falta countryCode' }, { status: 400 });
     }
 
-    const supabase = await createSupabaseServerClient();
+    const supabase = createClientFromRequest(request);
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
       return NextResponse.json({ error: 'No autenticado' }, { status: 401 });

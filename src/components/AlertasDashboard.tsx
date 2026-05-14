@@ -32,10 +32,12 @@ export default function AlertasDashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
+  const fetchOpts: RequestInit = { credentials: 'include' };
+
   const fetchSubscriptions = async () => {
     try {
       setLoading(true);
-      const res = await fetch('/api/alerts/subscribe');
+      const res = await fetch('/api/alerts/subscribe', fetchOpts);
       const data = await res.json();
       if (data.subscriptions) {
         setSubscriptions(data.subscriptions);
@@ -54,6 +56,7 @@ export default function AlertasDashboard() {
   const handleUnsubscribe = async (countryCode: string) => {
     try {
       const res = await fetch(`/api/alerts/subscribe?countryCode=${countryCode}`, {
+        ...fetchOpts,
         method: 'DELETE',
       });
       const data = await res.json();

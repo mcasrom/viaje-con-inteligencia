@@ -168,10 +168,12 @@ export default function AlertasClient({ initialAlerts, initialCounts }: AlertasC
     }));
   };
 
+  const fetchOpts: RequestInit = { credentials: 'include' };
+
   const loadAlerts = async () => {
     setLoading(true);
     try {
-      const res = await fetch('/api/alerts/subscribe');
+      const res = await fetch('/api/alerts/subscribe', fetchOpts);
       if (res.ok) {
         const data = await res.json();
         setAlerts(data.alerts || data.subscriptions || []);
@@ -195,6 +197,7 @@ export default function AlertasClient({ initialAlerts, initialCounts }: AlertasC
     setSelectedCountry('');
     try {
       const res = await fetch('/api/alerts/subscribe', {
+        ...fetchOpts,
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ countryCode: country.code, method: 'telegram' }),
@@ -221,7 +224,7 @@ export default function AlertasClient({ initialAlerts, initialCounts }: AlertasC
     const previous = [...alerts];
     setAlerts(alerts.filter(a => a.country_code !== code));
     try {
-      const res = await fetch(`/api/alerts/subscribe?countryCode=${code}`, { method: 'DELETE' });
+      const res = await fetch(`/api/alerts/subscribe?countryCode=${code}`, { ...fetchOpts, method: 'DELETE' });
       if (!res.ok) {
         setAlerts(previous);
         setNotification({ type: 'error', message: res.status === 401 ? 'Debes iniciar sesión' : 'Error al eliminar' });
