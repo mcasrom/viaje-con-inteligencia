@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { paisesData } from '@/data/paises';
 import { travelAttributes, ineTourismData } from '@/data/clustering';
-import { getAirportCoordinates, getMainAirport } from '@/data/airports';
+import { getAirportCoordinates, getMainAirport } from '@/lib/airports-db';
 import { getCurrentOilPrice, SEASONALITY_MAP } from '@/data/tci-engine';
 import { createLogger } from '@/lib/logger';
 
@@ -119,8 +119,8 @@ function getCurrency(code: string): string {
 }
 
 async function estimateFlightCost(from: string, to: string, budget: string): Promise<number> {
-  const fromAirport = getMainAirport(from);
-  const toAirport = getMainAirport(to);
+  const fromAirport = await getMainAirport(from);
+  const toAirport = await getMainAirport(to);
 
   if (fromAirport && toAirport) {
     const serpPrice = await getSerpapiFlightPrice(fromAirport.iata, toAirport.iata);
@@ -130,8 +130,8 @@ async function estimateFlightCost(from: string, to: string, budget: string): Pro
     }
   }
 
-  const destAirport = getAirportCoordinates(to);
-  const originAirport = getAirportCoordinates(from);
+  const destAirport = await getAirportCoordinates(to);
+  const originAirport = await getAirportCoordinates(from);
   
   if (!destAirport || !originAirport) {
     const pais = paisesData[to];

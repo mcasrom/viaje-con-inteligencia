@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, Search, Filter, TrendingUp, TrendingDown, Minus, Globe, Shield, Plane, Award, Map, Info, Lock } from 'lucide-react';
-import { GPI_DATA } from '@/data/indices';
+import { GPI_DATA as GPI_FALLBACK } from '@/data/indices';
 
 const REGIONS = ['Todas', 'Europa', 'Asia', 'Norteamérica', 'Latinoamérica', 'África', 'Oceanía', 'Oriente Medio'];
 
@@ -35,10 +35,30 @@ function PeaceBar({ score }: { score: number }) {
 export default function KPIPage() {
   const [search, setSearch] = useState('');
   const [region, setRegion] = useState('Todas');
-  const [filteredData, setFilteredData] = useState(GPI_DATA);
+  const [gpiData, setGpiData] = useState(GPI_FALLBACK);
+  const [filteredData, setFilteredData] = useState(GPI_FALLBACK);
 
   useEffect(() => {
-    let data = GPI_DATA;
+    fetch('/api/indices?tipo=gpi')
+      .then(r => r.json())
+      .then(data => {
+        if (Array.isArray(data) && data.length > 0) {
+          const mapped = data.map((d: any) => ({
+            rank: d.rank ?? 0,
+            country: d.nombre_pais,
+            code: d.codigo_pais?.toUpperCase(),
+            score: d.valor,
+            change: d.cambio ?? 0,
+            region: d.region,
+          }));
+          setGpiData(mapped);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    let data = gpiData;
     if (search) {
       data = data.filter(p => 
         p.country.toLowerCase().includes(search.toLowerCase()) ||
@@ -51,8 +71,8 @@ export default function KPIPage() {
     setFilteredData(data);
   }, [search, region]);
 
-  const top5 = GPI_DATA.slice(0, 5);
-  const bottom5 = GPI_DATA.slice(-5);
+  const top5 = gpiData.slice(0, 5);
+  const bottom5 = gpiData.slice(-5);
 
   return (
     <div className="min-h-screen bg-slate-900 text-white">
@@ -82,12 +102,12 @@ export default function KPIPage() {
           </div>
           <div className="bg-slate-800 rounded-xl p-4 border border-slate-700">
             <div className="text-slate-400 text-sm mb-1">España</div>
-            <div className="text-2xl font-bold text-green-300">#{GPI_DATA.find(p => p.code === 'ES')?.rank}</div>
-            <div className="text-sm text-slate-500">Score: {GPI_DATA.find(p => p.code === 'ES')?.score}</div>
+             <div className="text-2xl font-bold text-green-300">#{gpiData.find(p => p.code === 'ES')?.rank}</div>
+            <div className="text-sm text-slate-500">Score: {gpiData.find(p => p.code === 'ES')?.score}</div>
           </div>
           <div className="bg-slate-800 rounded-xl p-4 border border-slate-700">
             <div className="text-slate-400 text-sm mb-1">Países GPI</div>
-            <div className="text-2xl font-bold text-blue-400">{GPI_DATA.length}</div>
+            <div className="text-2xl font-bold text-blue-400">{gpiData.length}</div>
             <div className="text-sm text-slate-500">Global Peace Index 2025</div>
           </div>
         </div>

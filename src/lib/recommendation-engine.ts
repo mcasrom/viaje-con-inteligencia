@@ -1,5 +1,5 @@
 import { paisesData, getLabelRiesgo, NivelRiesgo } from '@/data/paises';
-import { GPI_DATA, GTI_DATA, HDI_DATA, IPC_DATA } from '@/data/indices';
+import { getGPI, getGTI, getHDI, getIPC } from '@/lib/indices';
 import { calculateTCI } from '@/data/tci-engine';
 import { createLogger } from '@/lib/logger';
 import { groqClient } from '@/lib/groq-ai';
@@ -105,14 +105,18 @@ interface AssembledCountry {
   riskLevel: number;
 }
 
-function assembleCountryData(code: string): AssembledCountry | null {
+async function assembleCountryData(code: string): Promise<AssembledCountry | null> {
   const pais = paisesData[code];
   if (!pais) return null;
 
-  const gpi = GPI_DATA.find(d => d.code.toUpperCase() === code.toUpperCase());
-  const gti = GTI_DATA.find(d => d.code.toUpperCase() === code.toUpperCase());
-  const hdi = HDI_DATA.find(d => d.code.toUpperCase() === code.toUpperCase());
-  const ipc = IPC_DATA.find(d => d.code.toUpperCase() === code.toUpperCase());
+  const [gpiData, gtiData, hdiData, ipcData] = await Promise.all([
+    getGPI(), getGTI(), getHDI(), getIPC(),
+  ]);
+
+  const gpi = gpiData.find(d => d.code.toUpperCase() === code.toUpperCase());
+  const gti = gtiData.find(d => d.code.toUpperCase() === code.toUpperCase());
+  const hdi = hdiData.find(d => d.code.toUpperCase() === code.toUpperCase());
+  const ipc = ipcData.find(d => d.code.toUpperCase() === code.toUpperCase());
 
   const tci = calculateTCI(code);
   const tciScore = tci ? Math.round(tci.tci * 10) / 10 : null;
@@ -328,9 +332,9 @@ export async function getRecommendations(req: RecomendarRequest): Promise<Recome
     return cached.data;
   }
 
-  const assembled = countries
-    .map(code => assembleCountryData(code))
-    .filter((c): c is AssembledCountry => c !== null);
+  const assembled = (await Promise.all(
+    countries.map(code => assembleCountryData(code))
+  )).filter((c): c is AssembledCountry => c !== null);
 
   if (assembled.length < 2) {
     return {
