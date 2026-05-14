@@ -11,6 +11,8 @@ export default function AdminDashboard() {
   const [error, setError] = useState('');
   const [actionResult, setActionResult] = useState<any>(null);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
+  const [trackingStats, setTrackingStats] = useState<any[] | null>(null);
+  const [trackingLoading, setTrackingLoading] = useState(false);
 
   useEffect(() => {
     fetchStats();
@@ -54,6 +56,19 @@ export default function AdminDashboard() {
       setError(e.message);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchTrackingStats = async () => {
+    setTrackingLoading(true);
+    try {
+      const res = await fetch('/api/newsletter/stats');
+      const data = await res.json();
+      setTrackingStats(data.history || []);
+    } catch {
+      setTrackingStats([]);
+    } finally {
+      setTrackingLoading(false);
     }
   };
 
@@ -304,22 +319,71 @@ export default function AdminDashboard() {
               <p className="text-slate-400 text-xs">Suscriptores</p>
               <p className="text-2xl font-bold text-white">{data?.newsletter.subscribers}</p>
             </div>
+            <div className="bg-slate-700 rounded-xl p-4">
+              <p className="text-slate-400 text-xs">Tracking</p>
+              <p className="text-xs text-slate-400 mt-1">
+                Open/click tracking activo vía Resend
+              </p>
+              <p className="text-[10px] text-slate-500 mt-0.5">
+                Pulsa "Tracking" para ver stats por envío
+              </p>
+            </div>
           </div>
-          <h3 className="text-sm font-medium text-slate-300 mb-3">Últimos envíos</h3>
-          {data?.newsletter.history?.length > 0 ? (
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-sm font-medium text-slate-300">Últimos envíos</h3>
+            <button
+              onClick={() => { fetchTrackingStats(); }}
+              disabled={trackingLoading}
+              className="flex items-center gap-1 px-2 py-1 text-xs text-slate-400 hover:text-white hover:bg-slate-700 rounded-lg transition-colors disabled:opacity-50"
+            >
+              <RefreshCw className={`w-3 h-3 ${trackingLoading ? 'animate-spin' : ''}`} />
+              Tracking
+            </button>
+          </div>
+          {trackingStats && trackingStats.length > 0 ? (
             <div className="space-y-2">
-              {data.newsletter.history.map((h: any, i: number) => (
-                <div key={i} className="bg-slate-700 rounded-xl p-3 flex items-center justify-between">
-                  <div>
-                    <p className="text-white text-sm">{h.subject || '(sin asunto)'}</p>
-                    <p className="text-slate-400 text-xs">{formatTime(h.sent_at)}</p>
+              {trackingStats.map((h: any, i: number) => (
+                <div key={i} className="bg-slate-700 rounded-xl p-3">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex-1 min-w-0">
+                      <p className="text-white text-sm truncate">{h.subject || '(sin asunto)'}</p>
+                      <p className="text-slate-400 text-xs">{formatTime(h.sent_at)}</p>
+                    </div>
+                    <div className="flex items-center gap-3 ml-3 text-xs">
+                      <span className="text-slate-400" title="Enviados">{h.recipients_count || '?'} 📨</span>
+                      <span className="text-blue-400" title="Aperturas">{h.opens || 0} 👁️</span>
+                      <span className="text-green-400" title="Clics">{h.clicks || 0} 🔗</span>
+                    </div>
                   </div>
-                  <CheckCircle className="w-4 h-4 text-green-400" />
+                  {(h.recipients_count > 0) && (
+                    <div className="w-full bg-slate-600 rounded-full h-1.5">
+                      <div
+                        className="bg-blue-500 h-1.5 rounded-full transition-all"
+                        style={{ width: `${Math.min(100, ((h.opens || 0) / h.recipients_count) * 100)}%` }}
+                      />
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
           ) : (
-            <p className="text-slate-500 text-sm">No hay historial de envíos</p>
+            <div>
+              {data?.newsletter.history?.length > 0 ? (
+                <div className="space-y-2">
+                  {data.newsletter.history.map((h: any, i: number) => (
+                    <div key={i} className="bg-slate-700 rounded-xl p-3 flex items-center justify-between">
+                      <div>
+                        <p className="text-white text-sm">{h.subject || '(sin asunto)'}</p>
+                        <p className="text-slate-400 text-xs">{formatTime(h.sent_at)}</p>
+                      </div>
+                      <CheckCircle className="w-4 h-4 text-green-400" />
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-slate-500 text-sm">No hay historial de envíos</p>
+              )}
+            </div>
           )}
         </section>
 

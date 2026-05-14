@@ -2,10 +2,12 @@ import { NextRequest, NextResponse } from 'next/server';
 import { Resend } from 'resend';
 import { supabase } from '@/lib/supabase';
 import { supabaseAdmin, isSupabaseAdminConfigured } from '@/lib/supabase-admin';
+import { createLogger } from '@/lib/logger';
 import { getAllPosts } from '@/lib/posts';
 import { sendTelegramMessage } from '@/lib/telegram-channel';
 import { collectNewsletterData, buildWeeklyEmailHtml } from '@/lib/newsletter-generator';
 
+const log = createLogger('Newsletter');
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 
 export async function GET(request: NextRequest) {
@@ -35,24 +37,16 @@ export async function GET(request: NextRequest) {
     : { data: null };
   const totalRecipients = subscribers?.length || 0;
 
-  // ===== SAVE to history =====
-  if (supabase) {
-    await supabase.from('newsletter_history').insert({
-      subject,
-      content: html,
-      recipients_count: totalRecipients,
-    });
-  }
-
   // ===== BATCH SEND to verified subscribers =====
   let sent = 0;
   let errors = 0;
+  const resendIds: string[] = [];
 
   if (resend && subscribers && subscribers.length > 0) {
     for (const sub of subscribers) {
       try {
         const personalizedHtml = html.replace('{{EMAIL}}', encodeURIComponent(sub.email));
-        await fetch('https://api.resend.com/emails', {
+        const res = await fetch('https://api.resend.com/emails', {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${process.env.RESEND_API_KEY}`,
@@ -67,6 +61,8 @@ export async function GET(request: NextRequest) {
             click_tracking: true,
           }),
         });
+        const resData = await res.json();
+        if (resData.id) resendIds.push(resData.id);
         sent++;
         await new Promise(r => setTimeout(r, 300));
       } catch {
@@ -74,6 +70,20 @@ export async function GET(request: NextRequest) {
       }
     }
   }
+
+  // ===== SAVE to history (with tracking IDs) =====
+  let historyId: number | null = null;
+  if (supabase) {
+    const { data: histData } = await supabase.from('newsletter_history').insert({
+      subject,
+      content: html,
+      recipients_count: totalRecipients,
+      resend_ids: resendIds,
+    }).select('id').single();
+    historyId = histData?.id || null;
+  }
+
+  log.info(`Newsletter #${issue.edition} enviado a ${sent} suscriptores, ${errors} errores, ${resendIds.length} IDs tracking`);
 
   return NextResponse.json({
     subject,
