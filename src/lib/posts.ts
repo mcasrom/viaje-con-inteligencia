@@ -82,7 +82,7 @@ export function getPostBySlug(slug: string): Post | null {
       slug,
       content,
       title: data.title || data.description || '',
-      date: data.date || '',
+      date: data.date ? new Date(data.date).toISOString().split('T')[0] : '',
       author: data.author || '',
       category: data.category || data.categories?.[0] || '',
       readTime: data.readTime || data.readingTime || '',
