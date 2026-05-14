@@ -1,5 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createSupabaseServerClient } from '@/lib/supabase-server';
+import { createServerClient } from '@supabase/ssr';
+
+function createClientFromRequest(request: NextRequest) {
+  return createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() { return request.cookies.getAll(); },
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
+        },
+      },
+    }
+  );
+}
 
 export async function GET(request: NextRequest) {
   const { searchParams, origin } = new URL(request.url);
@@ -9,30 +24,23 @@ export async function GET(request: NextRequest) {
   const next = searchParams.get('next') ?? '/dashboard';
   const reset = searchParams.get('reset');
 
-  console.log('[callback] params:', { code: !!code, token_hash: !!token_hash, type, reset });
-
-  // Flujo PKCE con code
   if (code) {
-    const supabase = await createSupabaseServerClient();
+    const supabase = createClientFromRequest(request);
     const { error } = await supabase.auth.exchangeCodeForSession(code);
-    console.log('[callback] exchangeCode error:', error?.message);
     if (!error) {
       const redirectUrl = reset ? `${next}?reset=true` : next;
       return NextResponse.redirect(`${origin}${redirectUrl}`);
     }
   }
 
-  // Flujo con token_hash (magic link directo)
   if (token_hash && type) {
-    const supabase = await createSupabaseServerClient();
+    const supabase = createClientFromRequest(request);
     const { error } = await supabase.auth.verifyOtp({ token_hash, type: type as any });
-    console.log('[callback] verifyOtp error:', error?.message);
     if (!error) {
       const redirectUrl = reset ? `${next}?reset=true` : next;
       return NextResponse.redirect(`${origin}${redirectUrl}`);
     }
   }
 
-  console.log('[callback] all params:', Object.fromEntries(searchParams));
-  return NextResponse.redirect(`${origin}/dashboard?error=auth&debug=${encodeURIComponent(JSON.stringify(Object.fromEntries(searchParams)))}`);
+  return NextResponse.redirect(`${origin}/dashboard?error=auth`);
 }

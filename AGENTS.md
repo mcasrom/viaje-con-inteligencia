@@ -20,8 +20,8 @@
 - **Subscribe route fix**: `createSupabaseServerClient()` + `supabaseAdmin` para auth por cookies (commit `322ff27`). Validación UUID para `?userId=demo` (commit `4649b0f`). Desplegado.
 - **addAlert/removeAlert**: Ahora persisten vía POST/DELETE con optimistic UI + rollback en error (commit `4599eba`). Desplegado.
 
-### 🔴 Plan para mañana (15 May)
-1. **Debug alertas**: Las alertas configuradas desde la web no se ven en el perfil del usuario autenticado. El GET de suscripciones con `createSupabaseServerClient()` no encuentra las del usuario. Sospecha: la sesión no se está transmitiendo correctamente desde el client component al API route. Verificar cookies y flujo auth.
+### 🔴 Plan para mañana (15 May, continuar)
+1. **Debug alertas** (continuar): Ruta `subscribe/route.ts` reescrita para usar `request.cookies` directamente (patrón Supabase SSR docs) + `credentials: 'include'` en fetch del cliente (commit `7c4d7dd`). Desplegado. **Pendiente**: Verificar si ahora el GET detecta la sesión del usuario autenticado.
 2. **Vinculación Telegram**: Verificar que `/vincular` + verify funcionan. Probar flujo completo bot→web.
 3. **Popup homepage**: Decidir viabilidad de popup con slogan al llegar a la página principal.
 4. **Infografía semanal riesgos**: Evaluar crear infografía semanal de riesgos para premium (domingos). Fuentes: MAEC alerts + OSINT signals + ML predictions.

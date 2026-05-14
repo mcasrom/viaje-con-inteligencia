@@ -1,14 +1,29 @@
-import { NextResponse } from 'next/server';
-import { createSupabaseServerClient } from '@/lib/supabase-server';
+import { NextRequest, NextResponse } from 'next/server';
+import { createServerClient } from '@supabase/ssr';
 import { logAuditEvent } from '@/lib/audit-log';
 import { isDisposableEmail } from '@/lib/disposable-emails';
 import { createLogger } from '@/lib/logger';
 
 const log = createLogger('Auth');
 
+function createClientFromRequest(request: NextRequest) {
+  return createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() { return request.cookies.getAll(); },
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
+        },
+      },
+    }
+  );
+}
+
 async function verifyTurnstile(token: string): Promise<boolean> {
   const secret = process.env.TURNSTILE_SECRET_KEY;
-  if (!secret) return true; // skip if not configured
+  if (!secret) return true;
   try {
     const res = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
       method: 'POST',
@@ -22,8 +37,8 @@ async function verifyTurnstile(token: string): Promise<boolean> {
   }
 }
 
-const RATE_LIMIT_WINDOW = 60 * 1000; // 1 minute
-const RATE_LIMIT_MAX = 10; // max attempts per window
+const RATE_LIMIT_WINDOW = 60 * 1000;
+const RATE_LIMIT_MAX = 10;
 const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
 
 function checkRateLimit(ip: string): boolean {
@@ -38,8 +53,9 @@ function checkRateLimit(ip: string): boolean {
   return true;
 }
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
+    const supabase = createClientFromRequest(request);
     const ip = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown';
     if (!checkRateLimit(ip)) {
       return NextResponse.json({ error: 'Demasiados intentos. Espera un minuto.' }, { status: 429 });
@@ -51,8 +67,6 @@ export async function POST(request: Request) {
     if (!email) {
       return NextResponse.json({ error: 'Email requerido' }, { status: 400 });
     }
-
-    const supabase = await createSupabaseServerClient();
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.viajeinteligencia.com';
 
     // Password reset
