@@ -63,9 +63,9 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  // Protect admin routes (skip in dev)
+  // Protect admin page routes (skip in dev, skip API routes — they handle auth themselves)
   const IS_DEV = process.env.NODE_ENV !== 'production';
-  if (!IS_DEV && pathname.startsWith('/admin') && pathname !== '/admin/login') {
+  if (!IS_DEV && pathname.startsWith('/admin') && !pathname.startsWith('/api/admin') && pathname !== '/admin/login') {
     const cookie = request.cookies.get('admin_session')?.value;
     if (!cookie) {
       const loginUrl = new URL('/admin/login', request.url);

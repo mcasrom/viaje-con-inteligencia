@@ -64,6 +64,13 @@ export async function syncPaisesToSupabase(): Promise<{ inserted: number; errors
       .from('paises')
       .upsert({
         codigo: codigo.toLowerCase(),
+        nombre: data.nombre,
+        capital: data.capital,
+        continente: data.continente,
+        nivel_riesgo: data.nivelRiesgo,
+        ultimo_informe: data.ultimoInforme,
+        bandera: data.bandera,
+        visible: data.visible !== false,
         data,
         updated_at: new Date().toISOString(),
       }, { onConflict: 'codigo' });
