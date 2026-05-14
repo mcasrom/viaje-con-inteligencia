@@ -15,18 +15,23 @@
 - **`/en` noindex**: Verificar siempre que `index: true` se mantenga en `/en/page.tsx` si se quiere tráfico internacional. Las páginas `en` solo cubren homepage — el resto del site (blog, países) no tiene versión inglesa.
 - **Slugs de blog**: Deben ser siempre lowercase. Tras renombrar `Como-encontrar-vuelos-baratos` y `Que-es-viaje-inteligencia`, verificar que new posts no tengan mayúsculas en el filename.
 
-## PAUSED STATE (14 May 2026 — Sprint Alertas fix + Deploy)
-- **Alertas MAEC fix**: `getAllMAECAlerts()` reescrita para usar `paisesData` en vez del scraper (commit `4649b0f`). Ahora devuelve 10 alertas reales. Antes devolvía `[]` porque el scraper fallaba.
-- **Subscribe route fix**: `createSupabaseServerClient()` + `supabaseAdmin` para auth por cookies (commit `322ff27`). Validación UUID para `?userId=demo` (commit `4649b0f`). Desplegado.
-- **addAlert/removeAlert**: Ahora persisten vía POST/DELETE con optimistic UI + rollback en error (commit `4599eba`). Desplegado.
+## PAUSED STATE (15 May 2026 — Sprint Migraciones + Alertas fixes)
+### Logros
+- **Login fix + Alertas persistence**: Toast notification invisible (nunca se renderizaba). POST subscribe devolvía 400 por `alert_types` mal formado (string vs array). Dashboard no mostraba suscripciones (faltaba fallback `data.alerts`). Todo corregido y verificado.
+- **Migración airports**: Creado `src/lib/airports-db.ts` con `getMainAirport()` y `getAirportCoordinates()` DB-first + fallback. `cost-estimate/route.ts` actualizado.
+- **Migración indices**: `recommendation-engine.ts` usa `getGPI/getGTI/getHDI/getIPC` de `@/lib/indices`. `kpi/page.tsx` fetch desde `/api/indices`. Ya había API + tabla `indices` poblada.
+- **Migración paises**: Datos extraídos de `paises.ts` (6360→245 líneas) a `paises-data.json` (111 países, 87 emergencies). DB warm-up asíncrono al arrancar. 42 consumidores siguen igual — cero cambios.
+- **Speed Insights**: Desactivado (excedía límite 23K/10K).
 
-### 🔴 Plan para mañana (15 May, continuar)
-1. **Debug alertas** (continuar): Ruta `subscribe/route.ts` reescrita para usar `request.cookies` directamente (patrón Supabase SSR docs) + `credentials: 'include'` en fetch del cliente (commit `7c4d7dd`). Desplegado. **Pendiente**: Verificar si ahora el GET detecta la sesión del usuario autenticado.
-2. **Vinculación Telegram**: Verificar que `/vincular` + verify funcionan. Probar flujo completo bot→web.
-3. **Popup homepage**: Decidir viabilidad de popup con slogan al llegar a la página principal.
-4. **Infografía semanal riesgos**: Evaluar crear infografía semanal de riesgos para premium (domingos). Fuentes: MAEC alerts + OSINT signals + ML predictions.
-5. **Valoración posts desaparecida**: La sección de valoración/rating de los posts del blog ya no se muestra. Revisar si se rompió con algún cambio reciente en el layout o componente de blog.
-6. **Outreach**: Mantener pendiente X/Twitter, Reddit, LinkedIn.
+### Pendientes para próximo sprint
+1. **Migrar**: `tci-engine.ts` (675), `clustering.ts` (560), `seguros.json` (275), `rutas-espanas.ts` (791), `mochilero-premium.ts` (98), `ine-data.ts` (180), `tourism.ts` (64)
+2. **ML**: Esperar ~25 días para validación temporal CV. Mejorar features RF.
+3. **Vinculación Telegram**: Probar flujo completo `/vincular` → bot confirma.
+4. **Popup homepage**: Slogan al llegar a la página principal.
+5. **Infografía semanal riesgos** para premium.
+6. **Blog rating**: Sección de valoración desaparecida.
+7. **Outreach**: X/Twitter, Reddit, foros de viajeros.
+8. **Admin UI para paises**: Editar datos sin redeploy.
 
 ## PAUSED STATE (13 May 2026 — Sprint 13 May PM — Irán + Newsletter multicanal + Alertas web)
 - **Irán añadido a paises.ts**: Entrada completa con embajada en Teherán, visa VOA, riesgo muy-alto, emergencias. Añadido a GPI, GTI, HDI, IPC indices — ya visible en mapa de KPIs. Referencias hardcode actualizadas (106+ → 108+).
