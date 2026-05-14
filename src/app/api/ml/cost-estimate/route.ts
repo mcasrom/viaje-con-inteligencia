@@ -1,8 +1,45 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { paisesData } from '@/data/paises';
 import { travelAttributes, ineTourismData } from '@/data/clustering';
-import { getAirportCoordinates } from '@/data/airports';
+import { getAirportCoordinates, getMainAirport } from '@/data/airports';
 import { getCurrentOilPrice, SEASONALITY_MAP } from '@/data/tci-engine';
+import { createLogger } from '@/lib/logger';
+
+const log = createLogger('CostEstimate');
+
+const SERPAPI_KEY = process.env.SERPAPI_API_KEY;
+
+async function getSerpapiFlightPrice(fromIata: string, toIata: string): Promise<number | null> {
+  if (!SERPAPI_KEY) return null;
+
+  const outboundDate = new Date();
+  outboundDate.setDate(outboundDate.getDate() + 45);
+  const dateStr = outboundDate.toISOString().split('T')[0];
+
+  try {
+    const res = await fetch(
+      `https://serpapi.com/search?engine=google_flights&` +
+      `departure_id=${fromIata}&arrival_id=${toIata}&` +
+      `outbound_date=${dateStr}&currency=EUR&hl=es&` +
+      `api_key=${SERPAPI_KEY}`,
+      { signal: AbortSignal.timeout(8000) }
+    );
+    if (!res.ok) return null;
+
+    const data = await res.json();
+    const bestFlights = data.best_flights || [];
+    if (bestFlights.length === 0) return null;
+
+    const prices = bestFlights
+      .map((f: any) => f.price)
+      .filter((p: number) => p > 0);
+    if (prices.length === 0) return null;
+
+    return Math.min(...prices);
+  } catch {
+    return null;
+  }
+}
 
 const EARTH_RADIUS_KM = 6371;
 
@@ -81,7 +118,18 @@ function getCurrency(code: string): string {
   return 'EUR';
 }
 
-function estimateFlightCost(from: string, to: string, budget: string): number {
+async function estimateFlightCost(from: string, to: string, budget: string): Promise<number> {
+  const fromAirport = getMainAirport(from);
+  const toAirport = getMainAirport(to);
+
+  if (fromAirport && toAirport) {
+    const serpPrice = await getSerpapiFlightPrice(fromAirport.iata, toAirport.iata);
+    if (serpPrice !== null && serpPrice > 0) {
+      const mult = budget === 'bajo' ? 0.7 : budget === 'alto' ? 1.5 : budget === 'luxury' ? 2.5 : 1;
+      return Math.round(serpPrice * mult);
+    }
+  }
+
   const destAirport = getAirportCoordinates(to);
   const originAirport = getAirportCoordinates(from);
   
@@ -195,7 +243,7 @@ export async function POST(request: NextRequest) {
     
     let flightCost = 0;
     if (includeFlights && departureFrom) {
-      flightCost = estimateFlightCost(departureFrom, destinationCode, budget);
+      flightCost = await estimateFlightCost(departureFrom, destinationCode, budget);
       breakdown.flights = {
         total: flightCost * travelers,
         note: `Estimacion por persona desde ${departureFrom.toUpperCase()}`,
