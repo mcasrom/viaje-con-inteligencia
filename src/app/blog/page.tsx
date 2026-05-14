@@ -1,11 +1,29 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Calendar, Clock, Tag, Search, ChevronLeft, ChevronRight, List, Grid } from 'lucide-react';
+import { Calendar, Clock, Tag, Search, ChevronLeft, ChevronRight, ChevronDown, List, Grid } from 'lucide-react';
 import { getAllPosts, getCategories, getPostsPagination, PostMeta } from '@/lib/posts';
 import BlogSearch from './BlogSearch';
 
 const POSTS_PER_PAGE = 10;
+const CATEGORY_ICONS: Record<string, string> = {
+  Destinos: '🗺️',
+  Tecnología: '💻',
+  Estrategia: '♟️',
+  Seguridad: '🛡️',
+  Recursos: '🧰',
+  Consejos: '💡',
+  Básicos: '📖',
+};
+const CATEGORY_COLORS: Record<string, string> = {
+  Destinos: 'from-emerald-500/20 to-emerald-600/10 border-emerald-500/30',
+  Tecnología: 'from-blue-500/20 to-blue-600/10 border-blue-500/30',
+  Estrategia: 'from-purple-500/20 to-purple-600/10 border-purple-500/30',
+  Seguridad: 'from-rose-500/20 to-rose-600/10 border-rose-500/30',
+  Recursos: 'from-amber-500/20 to-amber-600/10 border-amber-500/30',
+  Consejos: 'from-cyan-500/20 to-cyan-600/10 border-cyan-500/30',
+  Básicos: 'from-sky-500/20 to-sky-600/10 border-sky-500/30',
+};
 
 export const revalidate = 300;
 
@@ -125,7 +143,7 @@ function PostListItem({ post }: { post: PostMeta }) {
 }
 
 interface BlogPageProps {
-  searchParams: Promise<{ category?: string; search?: string; page?: string; view?: string }>;
+  searchParams: Promise<{ category?: string; search?: string; page?: string; view?: string; show?: string }>;
 }
 
 export default async function BlogPage({ searchParams }: BlogPageProps) {
@@ -134,6 +152,7 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
   const search = params.search;
   const page = parseInt(params.page || '1') || 1;
   const view = params.view || 'list';
+  const showAll = params.show === 'all' || !!search || !!category;
   
   const allPosts = getAllPosts({
     category: category,
@@ -147,6 +166,21 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
     search: search,
     skip: 0,
   });
+
+  const categoryCounts = new Map<string, number>();
+  const allPostsUnfiltered = getAllPosts();
+  allPostsUnfiltered.forEach(p => {
+    categoryCounts.set(p.category, (categoryCounts.get(p.category) || 0) + 1);
+  });
+  const smallCats: { name: string; count: number }[] = [];
+  const mainCats: { name: string; count: number }[] = [];
+  categoryCounts.forEach((count, name) => {
+    const entry = { name, count };
+    if (count >= 2 || CATEGORY_ICONS[name]) mainCats.push(entry);
+    else smallCats.push(entry);
+  });
+  mainCats.sort((a, b) => b.count - a.count);
+  if (smallCats.length > 0) mainCats.push({ name: 'Otros', count: smallCats.reduce((s, c) => s + c.count, 0) });
 
   const paginationLinks = (p: number, opts?: { resetCategory?: boolean; resetSearch?: boolean }) => {
     const qs = new URLSearchParams();
@@ -248,12 +282,40 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
       </header>
 
       <main className="max-w-5xl mx-auto px-6 py-10">
+        {/* Category Cards */}
+        <div className="mb-8">
+          <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+            <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
+            Categorías
+          </h2>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+            {mainCats.map(({ name, count }) => {
+              const isActive = category === name;
+              const color = CATEGORY_COLORS[name] || 'from-slate-500/20 to-slate-600/10 border-slate-500/30';
+              const icon = CATEGORY_ICONS[name] || '📌';
+              return (
+                <Link
+                  key={name}
+                  href={isActive ? allLink : `/blog?category=${encodeURIComponent(name)}`}
+                  className={`bg-gradient-to-br ${color} rounded-xl border p-4 hover:scale-[1.02] transition-all duration-200 ${
+                    isActive ? 'ring-2 ring-blue-500 shadow-lg shadow-blue-500/10' : ''
+                  }`}
+                >
+                  <div className="text-2xl mb-2">{icon}</div>
+                  <div className="text-white text-sm font-medium truncate">{name}</div>
+                  <div className="text-slate-400 text-xs mt-0.5">{count} artículo{count !== 1 ? 's' : ''}</div>
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-lg font-semibold text-white flex items-center gap-2">
             <span className="w-2 h-2 bg-emerald-500 rounded-full"></span>
             {search ? `Resultados para "${search}"` : category ? category : 'Todos los artículos'}
             <span className="text-slate-500 text-sm font-normal">
-              ({allPosts.length} artículos)
+              ({allPosts.length} artículo{allPosts.length !== 1 ? 's' : ''})
             </span>
           </h2>
           <span className="text-slate-500 text-sm">
@@ -263,53 +325,74 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
         
         {posts.length > 0 ? (
           <>
-            {view === 'grid' ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {posts.map((post) => (
-                  <PostCard key={post.slug} post={post} />
-                ))}
-              </div>
-            ) : (
-              <div className="flex flex-col gap-3">
-                {posts.map((post) => (
+            {!showAll && posts.length > 3 && (
+              <div className="flex flex-col gap-3 mb-3">
+                {posts.slice(0, 3).map((post) => (
                   <PostListItem key={post.slug} post={post} />
                 ))}
               </div>
             )}
-
-            {/* Pagination */}
-            {totalPages > 1 && (
-              <div className="flex items-center justify-center gap-2 mt-10">
-                {page > 1 && (
-                  <Link
-                    href={paginationLinks(page - 1)}
-                    className="px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-slate-400 hover:text-white hover:border-blue-500/30 transition-colors"
-                  >
-                    <ChevronLeft className="w-4 h-4" />
-                  </Link>
-                )}
-                {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
-                  <Link
-                    key={p}
-                    href={paginationLinks(p)}
-                    className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
-                      p === page
-                        ? 'bg-blue-500 text-white'
-                        : 'bg-slate-800 border border-slate-700 text-slate-400 hover:text-white hover:border-blue-500/30'
-                    }`}
-                  >
-                    {p}
-                  </Link>
-                ))}
-                {page < totalPages && (
-                  <Link
-                    href={paginationLinks(page + 1)}
-                    className="px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-slate-400 hover:text-white hover:border-blue-500/30 transition-colors"
-                  >
-                    <ChevronRight className="w-4 h-4" />
-                  </Link>
-                )}
+            {!showAll && posts.length > 3 ? (
+              <div className="text-center py-8">
+                <Link
+                  href="/blog?show=all"
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white font-medium rounded-xl transition-colors"
+                >
+                  <ChevronDown className="w-5 h-5" />
+                  Mostrar todos ({allPosts.length} artículos)
+                </Link>
               </div>
+            ) : (
+              <>
+                {view === 'grid' ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {posts.map((post) => (
+                      <PostCard key={post.slug} post={post} />
+                    ))}
+                  </div>
+                ) : (
+                  <div className="flex flex-col gap-3">
+                    {posts.map((post) => (
+                      <PostListItem key={post.slug} post={post} />
+                    ))}
+                  </div>
+                )}
+
+                {/* Pagination */}
+                {totalPages > 1 && (
+                  <div className="flex items-center justify-center gap-2 mt-10">
+                    {page > 1 && (
+                      <Link
+                        href={paginationLinks(page - 1)}
+                        className="px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-slate-400 hover:text-white hover:border-blue-500/30 transition-colors"
+                      >
+                        <ChevronLeft className="w-4 h-4" />
+                      </Link>
+                    )}
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+                      <Link
+                        key={p}
+                        href={paginationLinks(p)}
+                        className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                          p === page
+                            ? 'bg-blue-500 text-white'
+                            : 'bg-slate-800 border border-slate-700 text-slate-400 hover:text-white hover:border-blue-500/30'
+                        }`}
+                      >
+                        {p}
+                      </Link>
+                    ))}
+                    {page < totalPages && (
+                      <Link
+                        href={paginationLinks(page + 1)}
+                        className="px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-slate-400 hover:text-white hover:border-blue-500/30 transition-colors"
+                      >
+                        <ChevronRight className="w-4 h-4" />
+                      </Link>
+                    )}
+                  </div>
+                )}
+              </>
             )}
           </>
         ) : (
