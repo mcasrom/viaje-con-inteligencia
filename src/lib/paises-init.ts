@@ -5,24 +5,21 @@ export async function initPaisesData(): Promise<void> {
   initialized = true;
 
   try {
-    const { loadAllPaisesToCache } = await import('@/lib/paises-db');
-    const cache = await loadAllPaisesToCache();
-    if (!cache?.data || cache.data.size === 0) return;
+    const { getPaisesData } = await import('@/lib/paises-db');
+    const paises = await getPaisesData();
+    if (!paises || Object.keys(paises).length === 0) return;
 
     const { paisesData } = await import('@/data/paises');
-    const { emergenciasData } = await import('@/data/paises');
 
     let updated = 0;
-    for (const [code, pais] of cache.data) {
-      paisesData[code] = pais;
-      updated++;
-    }
-
-    const emCache = cache.emergencias;
-    if (emCache && emCache.size > 0) {
-      for (const [code, em] of emCache) {
-        (emergenciasData as any)[code] = em;
+    for (const [code, pais] of Object.entries(paises)) {
+      const existing = paisesData[code];
+      if (existing) {
+        paisesData[code] = { ...existing, ...pais };
+      } else {
+        paisesData[code] = pais;
       }
+      updated++;
     }
 
     console.log(`[paises-init] ${updated} countries loaded from Supabase`);

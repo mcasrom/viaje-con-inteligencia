@@ -28,7 +28,7 @@ export async function getPaisesData(): Promise<Record<string, DatoPais>> {
 
     const paises: Record<string, DatoPais> = {};
     for (const row of data) {
-      paises[row.codigo] = row.data as DatoPais;
+      paises[row.codigo] = { ...(row.data as DatoPais), codigo: row.codigo };
     }
 
     cachedPaises = paises;

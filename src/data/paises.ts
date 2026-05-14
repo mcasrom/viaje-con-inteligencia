@@ -6319,9 +6319,9 @@ export function getEmergenciasPorPais(codigo: string): EmergenciasPais | null {
 
 async function loadPaisesFromDB(): Promise<Map<string, DatoPais> | null> {
   try {
-    const { loadAllPaisesToCache } = await import('@/lib/paises-db');
-    const cache = await loadAllPaisesToCache();
-    return cache?.data ?? null;
+    const { getPaisesData } = await import('@/lib/paises-db');
+    const paises = await getPaisesData();
+    return new Map(Object.entries(paises));
   } catch {
     return null;
   }
@@ -6356,10 +6356,5 @@ export async function getPaisesPorContinenteAsync(continente: string): Promise<D
 }
 
 export async function getEmergenciasPorPaisAsync(codigo: string): Promise<EmergenciasPais | null> {
-  try {
-    const { getEmergenciasFromDB } = await import('@/lib/paises-db');
-    const em = await getEmergenciasFromDB(codigo);
-    if (em) return em;
-  } catch {}
   return getEmergenciasPorPais(codigo);
 }
