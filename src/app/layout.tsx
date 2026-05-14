@@ -8,6 +8,7 @@ import TopBar from "@/components/TopBar";
 import Footer from "@/components/Footer";
 import QuickAccess from "@/components/QuickAccess";
 import AITravelAssistant from "@/components/AITravelAssistant";
+import SOSButton from "@/components/SOSButton";
 import ServiceWorkerRegistration from "@/components/ServiceWorkerRegistration";
 import InstallPWA from "@/components/InstallPWA";
 import Onboarding from "@/components/Onboarding";
@@ -120,6 +121,7 @@ export default async function RootLayout({
           <div className="pt-12">{children}</div>
           <InstallPWA />
           <QuickAccess />
+          <SOSButton />
           <AITravelAssistant />
           <Footer />
           </Providers>
