@@ -147,6 +147,20 @@ Trigger (GitHub Actions / Anomaly) → Data (MAEC+USGS+GDACS) → LLM Groq (cont
   8. Weekly digest (Mondays only, newsletter subscribers)
 - **Rule**: NEVER create new cron endpoints. Add tasks to `master/route.ts` instead.
 
+## Aviation OSINT Sprint (14 May 2026)
+- **`src/data/airports.ts`**: Nueva base de datos OSINT con 90+ aeropuertos principales por país (IATA, coordenadas, ciudad). Fuente: OpenFlights/OurAirports (datos públicos). Incluye `getMainAirport()` y `getAirportCoordinates()`.
+- **`src/app/api/ml/cost-estimate/route.ts`**: `estimateFlightCost()` reescrita. Ya NO usa valores hardcode por continente (Europa=100€, Asia=600€...). Ahora calcula con:
+  - Distancia haversine real entre aeropuertos de origen y destino
+  - Precio actual del petróleo Brent (factor de ajuste)
+  - Estacionalidad turística del país destino
+  - Multiplicador por presupuesto (bajo/medio/alto/luxury)
+  - Coste mínimo de 29€
+  - Fallback: continentes si faltan coordenadas de aeropuerto
+- **`src/lib/opensky.ts`**: Nueva integración OpenSky Network (gratis, sin API key). Obtiene recuento de vuelos activos en el espacio aéreo de 20+ países en zonas de conflicto. Incluye `getAirspaceStatuses()`, `detectAnomalousAirspace()` con bounding boxes por país.
+- **`src/app/api/cron/master/route.ts`**: `runAirspaceOsint()` ahora consulta OpenSky para países en conflicto (RU, UA, SY, LY, YE, AF, IQ, SO, SD, IR, IL, LB). Logea anomalías (espacio aéreo con 0 vuelos) en tabla `opensky_logs`.
+- **`src/app/api/aviation/airspace/route.ts`**: Nuevo endpoint GET. Modos: `?mode=status` (vuelos activos por país), `?mode=anomalies` (solo países con 0 vuelos), `?codes=RU,UA,IR` (filtrar).
+- **`supabase/opensky_logs.sql`**: Tabla para persistir datos OpenSky con índices por país y timestamp.
+
 ## Logros 12 May 2026 — Radar de Viaje
 - **Fix visual**: Al añadir un país al radar, aparece al instante (optimistic update) sin esperar al servidor. Antes se quedaba la pantalla vacía aunque el guardado funcionaba.
 - **Gráfico de proyección de riesgo**: Nuevo timeline interactivo (Recharts) que muestra 12 meses de evolución del riesgo para cada país del radar, ajustado por estacionalidad turística.
@@ -279,8 +293,27 @@ Para probar authenticated endpoints se necesita sesión válida (vía browser).
 - **Admin**: Botón "Enviar newsletter ahora" en dashboard que dispara `/api/newsletter/announcement` con loading state y resultado JSON.
 - **Commits**: `0d96286`, `4f9b464`
 
-## Way Ahead (próximos pasos)
-1. **Esperar data histórica**: MAEC risk history necesita 7/14/30 días acumulados para validar predicciones RF contra cambios reales de riesgo. Sin data, no hay validación posible.
+## Outreach Calendar
+
+| Día | Plataforma | Acción | Estado |
+|-----|-----------|--------|--------|
+| Día 1 | Telegram canal | Versión larga | ✅ #74 |
+| Día 1 | BlueSky | Versión corta | ✅ 3mlrcpyn5dy22 |
+| Día 1 | Mastodon | Versión media | ✅ 116569531941028335 |
+| Día 1 | X/Twitter | Versión corta | ⏳ manual (OAuth) |
+| Día 2 | Reddit r/SideProject | Versión inglés | ⏳ (pendiente crear cuenta) |
+| Día 2 | Reddit r/digitalnomad | Participar megathread | ⏳ (pendiente crear cuenta) |
+| Día 3 | LosViajeros | Post foro + firma | ⏳ |
+| Día 3 | Foro de Viajeros | Post foro + firma | ⏳ |
+| Día 4 | Facebook grupos (Gurú de Viaje, Comunidad Viajeros) | Versión media | ⏳ |
+| Día 5 | Email bloggers/agencias | Outreach 5-10 | ⏳ |
+
+## Next Steps
+
+1. **📢 Outreach** — seguir calendario (hoy: X/Twitter manual). Mañana: Reddit.
+2. **✈️ APIs de aviación** — integrar AviationStack / Google Flights para flight costs reales.
+3. **🗄️ Migrar hardcoding** — visados, índices, eventos → Supabase.
+4. **🤖 ML** — esperar ≥30 días historial para validación temporal CV.
 2. **Monitorear deviations**: La comparación RF vs heurístico corre cada día vía cron. Verificar que no aparezcan nuevos países con deviation grande. Los 4 actuales están documentados — no requieren acción inmediata.
 3. **Expandir features RF**: Tasas de cambio, clima/estacionalidad, datos de visados — mejorarían precisión pero requieren nuevas fuentes de datos.
 4. **Probar envío newsletter manual**: Desde admin dashboard, botón "Enviar newsletter ahora". Verificar que llega a los 16 suscriptores. Después, esperar al lunes para confirmar el trigger automático del cron.

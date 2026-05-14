@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Bell, BellOff, Plus, Trash2, Globe, AlertTriangle, CheckCircle, Loader2, Plane, ExternalLink, ChevronDown, Shield, MapPin, Clock } from 'lucide-react';
+import { Bell, BellOff, Plus, Trash2, Globe, AlertTriangle, CheckCircle, Loader2, Plane, ExternalLink, ChevronDown, Shield, MapPin, Clock, Link as LinkIcon, Check } from 'lucide-react';
 
 interface MAECAlert {
   pais: string;
@@ -103,6 +103,10 @@ export default function AlertasClient({ initialAlerts, initialCounts }: AlertasC
   const [selectedCountry, setSelectedCountry] = useState('');
   const [notification, setNotification] = useState<{type: 'success' | 'error'; message: string} | null>(null);
   const [filter, setFilter] = useState<'todas' | 'medio' | 'alto'>('alto');
+  const [vincularCode, setVincularCode] = useState('');
+  const [vincularLoading, setVincularLoading] = useState(false);
+  const [vincularStatus, setVincularStatus] = useState<{type: 'success' | 'error'; message: string} | null>(null);
+  const [vinculado, setVinculado] = useState(false);
 
   const [alertCount, setAlertCount] = useState(initialCounts);
 
@@ -201,6 +205,34 @@ export default function AlertasClient({ initialAlerts, initialCounts }: AlertasC
     setAlerts(alerts.filter(a => a.country_code !== code));
     setNotification({ type: 'success', message: 'Alerta eliminada' });
     setTimeout(() => setNotification(null), 3000);
+  };
+
+  const handleVerifyCode = async () => {
+    if (vincularCode.length < 4) return;
+    setVincularLoading(true);
+    setVincularStatus(null);
+    try {
+      const res = await fetch('/api/user/verify-vincular', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code: vincularCode }),
+      });
+      const data = await res.json();
+      if (data.ok) {
+        setVinculado(true);
+        setVincularStatus({ type: 'success', message: '✅ Cuenta vinculada correctamente. Tus alertas de Telegram ya aparecen en el dashboard.' });
+        setVincularCode('');
+      } else if (res.status === 401) {
+        setVincularStatus({ type: 'error', message: 'Debes iniciar sesión primero.' });
+      } else {
+        setVincularStatus({ type: 'error', message: data.error || 'Error al vincular' });
+      }
+    } catch {
+      setVincularStatus({ type: 'error', message: 'Error de conexión. Intenta de nuevo.' });
+    } finally {
+      setVincularLoading(false);
+      setTimeout(() => setVincularStatus(null), 8000);
+    }
   };
 
   const filteredAlerts = filter === 'todas'
@@ -360,6 +392,72 @@ export default function AlertasClient({ initialAlerts, initialCounts }: AlertasC
                     <p className="text-slate-500 text-xs">Resumen diario</p>
                   </div>
                 </a>
+              </div>
+
+              {/* Vincular sección */}
+              <div className="bg-slate-700/30 rounded-lg p-4 border border-blue-600/30">
+                <h3 className="text-white font-medium mb-3 flex items-center gap-2">
+                  <LinkIcon className="w-4 h-4 text-blue-400" />Vincular cuenta web
+                </h3>
+                {vinculado ? (
+                  <div className="flex items-center gap-2 text-green-400 text-sm">
+                    <Check className="w-4 h-4" />Cuenta vinculada correctamente
+                  </div>
+                ) : (
+                  <>
+                    <p className="text-slate-400 text-sm mb-4">
+                      Conecta tu cuenta web con el bot de Telegram para gestionar tus alertas desde cualquier lugar. Así tus suscripciones del bot aparecerán en el dashboard y podrás cancelarlas desde la web.
+                    </p>
+                    <div className="space-y-3 mb-4">
+                      <div className="flex gap-3">
+                        <span className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold">1</span>
+                        <div>
+                          <p className="text-white text-sm font-medium">Abre el bot</p>
+                          <p className="text-slate-400 text-xs">
+                            Abre <a href="https://t.me/ViajeConInteligenciaBot" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">@ViajeConInteligenciaBot</a> en Telegram
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex gap-3">
+                        <span className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold">2</span>
+                        <div>
+                          <p className="text-white text-sm font-medium">Envia <code className="text-blue-300">/vincular</code></p>
+                          <p className="text-slate-400 text-xs">Escribe el comando <code className="text-blue-300">/vincular</code> en el chat. El bot te responderá con un código de 6 caracteres.</p>
+                        </div>
+                      </div>
+                      <div className="flex gap-3">
+                        <span className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold">3</span>
+                        <div>
+                          <p className="text-white text-sm font-medium">Introduce el código</p>
+                          <p className="text-slate-400 text-xs">Pega aquí el código que te dio el bot para vincular tu cuenta web con Telegram.</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        value={vincularCode}
+                        onChange={(e) => setVincularCode(e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, ''))}
+                        placeholder="Ej: A3B2C1"
+                        className="flex-1 px-3 py-2.5 bg-slate-700 border border-slate-600 rounded-lg text-white text-sm font-mono text-center tracking-widest uppercase focus:outline-none focus:border-blue-500"
+                        maxLength={6}
+                      />
+                      <button
+                        onClick={handleVerifyCode}
+                        disabled={vincularCode.length < 4 || vincularLoading}
+                        className="px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium flex items-center gap-2"
+                      >
+                        {vincularLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <LinkIcon className="w-4 h-4" />}
+                        Vincular
+                      </button>
+                    </div>
+                    {vincularStatus && (
+                      <p className={`mt-2 text-xs ${vincularStatus.type === 'success' ? 'text-green-400' : 'text-red-400'}`}>
+                        {vincularStatus.message}
+                      </p>
+                    )}
+                  </>
+                )}
               </div>
 
               {/* Add Alert Form */}

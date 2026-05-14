@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createLogger } from '@/lib/logger';
 import { supabase, isSupabaseConfigured } from '@/lib/supabase';
+import { supabaseAdmin, isSupabaseAdminConfigured } from '@/lib/supabase-admin';
 import { paisesData } from '@/data/paises';
 import {
   getUserState,
@@ -103,7 +104,7 @@ const translations = {
 /cambio - Tipos de cambio
 /checklist - Preview checklist
 /premium - Info premium
-/lang - Cambiar idioma (EN/ES)
+/vincular - Vincular con tu cuenta web
 /help - Esta ayuda
 
 💡 *Ejemplos:* /suscribir ES, /cancelar-alerta FR`,
@@ -322,6 +323,37 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ ok: true });
     }
     
+// Handle /vincular — generate linking code
+    if (textLower === '/vincular' || textLower === '/link') {
+      if (!isSupabaseAdminConfigured()) {
+        await sendMessage(chatId, '❌ Sistema de vinculación no disponible. Intenta más tarde.');
+        return NextResponse.json({ ok: true });
+      }
+      const code = Math.random().toString(36).substring(2, 8).toUpperCase();
+      const { error: insertError } = await supabaseAdmin
+        .from('vincular_codes')
+        .insert({
+          code,
+          telegram_chat_id: chatId,
+          telegram_username: username || null,
+        });
+      if (insertError) {
+        log.error('Error al crear código de vinculación', insertError);
+        await sendMessage(chatId, '❌ Error al generar código. Intenta de nuevo.');
+        return NextResponse.json({ ok: true });
+      }
+      await sendMessage(chatId,
+        `🔗 *Vincula tu cuenta web*\n\n` +
+        `1. Abre viajeinteligencia.com/alertas\n` +
+        `2. Inicia sesión\n` +
+        `3. Introduce este código:\n\n` +
+        `🔑 *${code}*\n\n` +
+        `⏳ Válido por 5 minutos.\n\n` +
+        `Una vez vinculado, tus alertas del bot aparecerán en el dashboard y podrás gestionarlas desde la web.`
+      );
+      return NextResponse.json({ ok: true });
+    }
+
 // SECOND: Check for country code (works from ANY state except subscription flows)
     const subStates = ['subscribing_country', 'unsubscribing_country'];
     const codeMatch = !subStates.includes(getUserState(chatId).step) && text.match(/^([A-Za-z]{2})$/i);
