@@ -65,20 +65,23 @@ export async function GET(request: NextRequest) {
     const supabase = createClientFromRequest(request);
     const { data: { user } } = await supabase.auth.getUser();
     if (user) {
-      const { data: webSubs } = await supabase
+      if (!isSupabaseAdminConfigured()) {
+        return NextResponse.json({ error: 'Servicio no disponible' }, { status: 500 });
+      }
+      const { data: webSubs } = await supabaseAdmin!
         .from('alert_preferences')
         .select('*')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false });
 
       let tgSubs: any[] = [];
-      const { data: profile } = await supabase
+      const { data: profile } = await supabaseAdmin!
         .from('profiles')
         .select('telegram_id, telegram_username')
         .eq('id', user.id)
         .maybeSingle();
 
-      if (profile?.telegram_id && isSupabaseAdminConfigured()) {
+      if (profile?.telegram_id) {
         const { data: telegramSubs } = await supabaseAdmin!
           .from('alert_preferences')
           .select('*')
@@ -148,14 +151,17 @@ export async function POST(request: NextRequest) {
     if (!user) {
       return NextResponse.json({ error: 'No autenticado' }, { status: 401 });
     }
+    if (!isSupabaseAdminConfigured()) {
+      return NextResponse.json({ error: 'Servicio no disponible' }, { status: 500 });
+    }
 
-    await supabase
+    await supabaseAdmin!
       .from('alert_preferences')
       .delete()
       .eq('user_id', user.id)
       .eq('country_code', countryCode.toUpperCase());
 
-    const { error } = await supabase.from('alert_preferences').insert({
+    const { error } = await supabaseAdmin!.from('alert_preferences').insert({
       user_id: user.id,
       country_code: countryCode.toUpperCase(),
       alert_types: method || ['riesgo', 'clima', 'geopolitico', 'seguridad', 'salud', 'logistico'],
@@ -187,20 +193,23 @@ export async function DELETE(request: NextRequest) {
     if (!user) {
       return NextResponse.json({ error: 'No autenticado' }, { status: 401 });
     }
+    if (!isSupabaseAdminConfigured()) {
+      return NextResponse.json({ error: 'Servicio no disponible' }, { status: 500 });
+    }
 
-    await supabase
+    await supabaseAdmin!
       .from('alert_preferences')
       .delete()
       .eq('user_id', user.id)
       .eq('country_code', countryCode.toUpperCase());
 
-    const { data: profile } = await supabase
+    const { data: profile } = await supabaseAdmin!
       .from('profiles')
       .select('telegram_id')
       .eq('id', user.id)
       .single();
 
-    if (profile?.telegram_id && isSupabaseAdminConfigured()) {
+    if (profile?.telegram_id) {
       await supabaseAdmin!
         .from('alert_preferences')
         .delete()
