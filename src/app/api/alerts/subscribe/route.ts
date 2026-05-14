@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabase, isSupabaseConfigured } from '@/lib/supabase';
+import { createSupabaseServerClient } from '@/lib/supabase-server';
+import { supabaseAdmin, isSupabaseAdminConfigured } from '@/lib/supabase-admin';
 import { paisesData } from '@/data/paises';
 
 export const dynamic = 'force-dynamic';
@@ -7,19 +8,53 @@ export const dynamic = 'force-dynamic';
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const country = searchParams.get('country');
+  const userId = searchParams.get('userId');
 
-  // If user is authenticated and no country filter, return their subscriptions
+  // If userId is provided explicitly (from client), use admin client
+  if (userId) {
+    if (!isSupabaseAdminConfigured()) {
+      return NextResponse.json({ error: 'Servicio no disponible' }, { status: 500 });
+    }
+    const { data: subs, error } = await supabaseAdmin!
+      .from('alert_preferences')
+      .select('*')
+      .eq('user_id', userId)
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+
+    const enriched = (subs || []).map((sub: any) => {
+      const pais = paisesData[sub.country_code?.toLowerCase()];
+      return {
+        id: sub.id,
+        country_code: sub.country_code,
+        country_name: pais?.nombre || sub.country_code,
+        country_emoji: pais?.bandera || '',
+        nivel_riesgo: pais?.nivelRiesgo || null,
+        alert_types: sub.alert_types,
+        severity_min: sub.severity_min,
+        source: 'web',
+        created_at: sub.created_at,
+      };
+    });
+
+    return NextResponse.json({ alerts: enriched, ok: true });
+  }
+
+  // If no country filter, return authenticated user's subscriptions
   if (!country) {
+    const supabase = await createSupabaseServerClient();
     const { data: { user } } = await supabase.auth.getUser();
     if (user) {
-      // 1. Get subscriptions linked to web user_id
       const { data: webSubs } = await supabase
         .from('alert_preferences')
         .select('*')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false });
 
-      // 2. Also get subscriptions linked via Telegram
+      // Also get Telegram-linked subscriptions via profile
       let tgSubs: any[] = [];
       const { data: profile } = await supabase
         .from('profiles')
@@ -27,58 +62,16 @@ export async function GET(request: NextRequest) {
         .eq('id', user.id)
         .maybeSingle();
 
-      if (profile) {
-        // Try linking by telegram_id
-        if (profile.telegram_id) {
-          const { data: telegramSubs } = await supabase
-            .from('alert_preferences')
-            .select('*')
-            .eq('telegram_chat_id', Number(profile.telegram_id))
-            .is('user_id', null)
-            .order('created_at', { ascending: false });
-          tgSubs = telegramSubs || [];
-        }
-
-        // Also try linking by telegram_username match
-        if (tgSubs.length === 0 && profile.telegram_username) {
-          const { data: usernameSubs } = await supabase
-            .from('alert_preferences')
-            .select('*')
-            .eq('telegram_username', profile.telegram_username)
-            .is('user_id', null)
-            .order('created_at', { ascending: false });
-          tgSubs = usernameSubs || [];
-        }
-      }
-
-      // 2b. Fallback: if user has no linked TG profile, try matching by email prefix as telegram_username
-      if (tgSubs.length === 0 && user.email) {
-        const tgName = user.email.split('@')[0];
-        const { data: emailSubs } = await supabase
+      if (profile?.telegram_id && isSupabaseAdminConfigured()) {
+        const { data: telegramSubs } = await supabaseAdmin!
           .from('alert_preferences')
           .select('*')
-          .eq('telegram_username', tgName)
+          .eq('telegram_chat_id', Number(profile.telegram_id))
           .is('user_id', null)
           .order('created_at', { ascending: false });
-        tgSubs = emailSubs || [];
+        tgSubs = telegramSubs || [];
       }
 
-      // 2c. Last fallback: show ALL telegram subscriptions with a warning
-      if (tgSubs.length === 0) {
-        const { data: anyTgSubs } = await supabase
-          .from('alert_preferences')
-          .select('*')
-          .is('user_id', null)
-          .not('telegram_chat_id', 'is', null)
-          .order('created_at', { ascending: false })
-          .limit(5);
-        tgSubs = (anyTgSubs || []).map((s: any) => ({
-          ...s,
-          _unlinked: true,
-        }));
-      }
-
-      // 3. Merge: web subs first, then tg subs not already present
       const seen = new Set((webSubs || []).map(s => s.country_code));
       const merged = [
         ...(webSubs || []),
@@ -87,7 +80,7 @@ export async function GET(request: NextRequest) {
 
       const enriched = merged.map((sub: any) => {
         const pais = paisesData[sub.country_code?.toLowerCase()];
-        const source = sub.user_id ? 'web' : sub._unlinked ? 'telegram-no-vinculado' : 'telegram';
+        const source = sub.user_id ? 'web' : 'telegram';
         return {
           id: sub.id,
           country_code: sub.country_code,
@@ -101,7 +94,7 @@ export async function GET(request: NextRequest) {
         };
       });
 
-      return NextResponse.json({ subscriptions: enriched });
+      return NextResponse.json({ subscriptions: enriched, ok: true });
     }
 
     return NextResponse.json({
@@ -111,7 +104,7 @@ export async function GET(request: NextRequest) {
   }
 
   const pais = Object.values(paisesData).find(p => p.codigo === country.toLowerCase());
-  
+
   if (!pais) {
     return NextResponse.json({ error: 'País no encontrado' }, { status: 404 });
   }
@@ -126,35 +119,28 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  if (!isSupabaseConfigured()) {
-    return NextResponse.json({ 
-      error: 'Supabase no configurado',
-      setup_needed: true 
-    }, { status: 500 });
-  }
-
   try {
     const body = await request.json();
-    const { countryCode, method, telegramId } = body;
+    const { countryCode, method } = body;
 
     if (!countryCode) {
       return NextResponse.json({ error: 'Falta countryCode' }, { status: 400 });
     }
 
-    const { data: { user } } = await supabase!.auth.getUser();
-    const userId = user?.id || body.userId;
-    if (!userId) {
-      return NextResponse.json({ error: 'Falta userId o sesión' }, { status: 400 });
+    const supabase = await createSupabaseServerClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      return NextResponse.json({ error: 'No autenticado' }, { status: 401 });
     }
 
-    // Delete existing preference for this user+country if any, then insert
-    await supabase!.from('alert_preferences')
+    await supabase
+      .from('alert_preferences')
       .delete()
-      .eq('user_id', userId)
+      .eq('user_id', user.id)
       .eq('country_code', countryCode.toUpperCase());
 
-    const { error } = await supabase!.from('alert_preferences').insert({
-      user_id: userId,
+    const { error } = await supabase.from('alert_preferences').insert({
+      user_id: user.id,
       country_code: countryCode.toUpperCase(),
       alert_types: method || ['riesgo', 'clima', 'geopolitico', 'seguridad', 'salud', 'logistico'],
       severity_min: 'medium',
@@ -162,25 +148,16 @@ export async function POST(request: NextRequest) {
     });
 
     if (error) {
-      console.error('Subscribe error:', error);
       return NextResponse.json({ error: error.message }, { status: 400 });
     }
 
-    return NextResponse.json({
-      success: true,
-      message: `Suscrito a alertas de ${countryCode}`
-    });
+    return NextResponse.json({ success: true, message: `Suscrito a alertas de ${countryCode}` });
   } catch (error) {
-    console.error('Alerts subscribe error:', error);
     return NextResponse.json({ error: 'Error interno' }, { status: 500 });
   }
 }
 
 export async function DELETE(request: NextRequest) {
-  if (!isSupabaseConfigured()) {
-    return NextResponse.json({ error: 'Supabase no configurado' }, { status: 500 });
-  }
-
   try {
     const searchParams = request.nextUrl.searchParams;
     const countryCode = searchParams.get('countryCode');
@@ -189,25 +166,27 @@ export async function DELETE(request: NextRequest) {
       return NextResponse.json({ error: 'Falta countryCode' }, { status: 400 });
     }
 
-    const { data: { user } } = await supabase!.auth.getUser();
+    const supabase = await createSupabaseServerClient();
+    const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
       return NextResponse.json({ error: 'No autenticado' }, { status: 401 });
     }
 
-    // Delete both web and Telegram-linked subscriptions for this country
-    await supabase!.from('alert_preferences')
+    await supabase
+      .from('alert_preferences')
       .delete()
       .eq('user_id', user.id)
       .eq('country_code', countryCode.toUpperCase());
 
-    const { data: profile } = await supabase!
+    const { data: profile } = await supabase
       .from('profiles')
       .select('telegram_id')
       .eq('id', user.id)
       .single();
 
-    if (profile?.telegram_id) {
-      await supabase!.from('alert_preferences')
+    if (profile?.telegram_id && isSupabaseAdminConfigured()) {
+      await supabaseAdmin!
+        .from('alert_preferences')
         .delete()
         .eq('telegram_chat_id', Number(profile.telegram_id))
         .eq('country_code', countryCode.toUpperCase());
