@@ -1,4 +1,5 @@
 ---
+featured: true
 title: "Viaje con Inteligencia NO es otra web de viajes"
 date: 2026-05-13
 category: "Estrategia"

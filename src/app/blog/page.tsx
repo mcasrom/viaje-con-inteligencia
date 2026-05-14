@@ -7,7 +7,7 @@ import BlogSearch from './BlogSearch';
 
 const POSTS_PER_PAGE = 10;
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 300;
 
 export const metadata: Metadata = {
   title: 'Blog OSINT | Análisis de Viajes y Seguridad - Viaje con Inteligencia',
