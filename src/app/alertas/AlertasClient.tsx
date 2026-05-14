@@ -157,6 +157,7 @@ export default function AlertasClient({ initialAlerts, initialCounts }: AlertasC
       { pais: 'Venezuela', codigo: 've', nivelRiesgo: 'alto', url: 'https://www.exteriores.gob.es' },
       { pais: 'Myanmar', codigo: 'mm', nivelRiesgo: 'alto', url: 'https://www.exteriores.gob.es' },
       { pais: 'Haití', codigo: 'ht', nivelRiesgo: 'alto', url: 'https://www.exteriores.gob.es' },
+      { pais: 'Irán', codigo: 'ir', nivelRiesgo: 'muy-alto', url: 'https://www.exteriores.gob.es' },
     ];
     return knownAlerts.map(a => ({
       ...a,

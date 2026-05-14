@@ -78,6 +78,7 @@ const countryNameMapping: Record<string, string> = {
   'pe': 'Perú',
   've': 'Venezuela',
   'in': 'India',
+  'ir': 'Irán',
   'ru': 'Rusia',
   'ua': 'Ucranía',
   'eg': 'Egipto',

@@ -22,7 +22,7 @@ async function fetchMAECAlerts(): Promise<MAECAlert[]> {
 
     const flagMap: Record<string, string> = {
       ua: '🇺🇦', ru: '🇷🇺', il: '🇮🇱', af: '🇦🇫', sy: '🇸🇾', ye: '🇾🇪',
-      iq: '🇮🇶', so: '🇸🇴', ly: '🇱🇾', ve: '🇻🇪', ht: '🇭🇹', mm: '🇲🇲',
+      iq: '🇮🇶', so: '🇸🇴', ly: '🇱🇾', ve: '🇻🇪', ht: '🇭🇹', mm: '🇲🇲', ir: '🇮🇷',
     };
 
     return data.alerts.map((a: any) => ({
@@ -50,6 +50,7 @@ const FALLBACK_ALERTS: MAECAlert[] = [
   { pais: 'Venezuela', codigo: 've', nivelRiesgo: 'alto', url: MAEC_URL, bandera: '🇻🇪' },
   { pais: 'Myanmar', codigo: 'mm', nivelRiesgo: 'alto', url: MAEC_URL, bandera: '🇲🇲' },
   { pais: 'Haití', codigo: 'ht', nivelRiesgo: 'alto', url: MAEC_URL, bandera: '🇭🇹' },
+  { pais: 'Irán', codigo: 'ir', nivelRiesgo: 'muy-alto', url: MAEC_URL, bandera: '🇮🇷' },
 ];
 
 export const metadata: Metadata = {
