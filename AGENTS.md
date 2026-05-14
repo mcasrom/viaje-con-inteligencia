@@ -1,5 +1,10 @@
 # AGENTS.md — Viaje con Inteligencia
 
+## SOS Botón Emergencia — Marketing & Presencia
+- **Footer**: Añadir enlace al Modo Emergencia en el footer del site (sección Herramientas o Comunidad). El botón flotante está implementado (`src/components/SOSButton.tsx`), pero no hay enlace de texto en el footer para usuarios que no quieren interactuar con el botón flotante. Pendiente.
+- **Newsletter**: Incluir el Modo Emergencia en todas las newsletters dentro de la sección de contactos/emergencias. Texto sugerido: "🆘 ¿Emergencia en tu destino? Usa nuestro Modo Emergencia con geolocalización, teléfonos locales y contacto consular — botón rojo ⚠️ abajo a la izquierda en viajeinteligencia.com"
+- **Marketing / Outreach**: El Modo Emergencia es un diferenciador real frente a webs de viaje genéricas. Destacar en: landing page, lead magnet, posts de redes sociales. Tema: "seguridad inmediata sin apps, sin registro, sin API keys".
+
 ## ⚠️ Observaciones Permanentes SEO / Indexado
 - **robots.txt**: Actualmente permite crawling de páginas principales pero deshabilita `/api/`, `/dashboard/`, `/viajes/`. Revisar periódicamente que no haya bloqueos no intencionados. Si se añaden secciones públicas nuevas, verificar que no estén incluidas en `Disallow`.
 - **`/en` noindex**: Verificar siempre que `index: true` se mantenga en `/en/page.tsx` si se quiere tráfico internacional. Las páginas `en` solo cubren homepage — el resto del site (blog, países) no tiene versión inglesa.

@@ -51,6 +51,7 @@ export default function Footer() {
               <li><Link href="/premium" className="text-slate-400 hover:text-white transition-colors">Premium</Link></li>
               <li><Link href="/api-endpoints" className="text-slate-400 hover:text-white transition-colors">API Pública</Link></li>
               <li><Link href="/coste/seguros" className="text-slate-400 hover:text-white transition-colors">Seguro Viaje</Link></li>
+              <li><span className="text-slate-400 text-sm flex items-center gap-1.5 cursor-default" title="Botón rojo ⚠️ flotante en todas las páginas">🆘 Modo Emergencia <span className="text-xs text-red-500">nuevo</span></span></li>
               <li><a href="/api/manual" target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-white transition-colors">Manual PDF (ES)</a></li>
               <li><a href="/api/manual?lang=en" target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-white transition-colors">PDF Manual (EN)</a></li>
             </ul>
