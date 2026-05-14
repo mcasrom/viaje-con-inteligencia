@@ -39,8 +39,11 @@ export default function AlertasDashboard() {
       setLoading(true);
       const res = await fetch('/api/alerts/subscribe', fetchOpts);
       const data = await res.json();
+      console.log('AlertasDashboard GET response:', data);
       if (data.subscriptions) {
         setSubscriptions(data.subscriptions);
+      } else if (data.alerts) {
+        setSubscriptions(data.alerts);
       }
     } catch {
       setError('Error al cargar');
