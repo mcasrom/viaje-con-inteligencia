@@ -1,7 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Geist } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
-import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
 import Providers from "@/components/Providers";
 import TopBar from "@/components/TopBar";
@@ -113,7 +112,6 @@ export default async function RootLayout({
       </head>
       <body className={`${geistSans.variable} antialiased`}>
 <Analytics />
-        <SpeedInsights />
 <Providers>
           <TopBar />
           <ServiceWorkerRegistration />
