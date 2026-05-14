@@ -1,5 +1,10 @@
 # AGENTS.md — Viaje con Inteligencia
 
+## ⚙️ Observaciones Técnicas
+- **Speed Insights (Vercel)**: Desactivado por consumo excesivo de recursos. Esto NO afecta a los despliegues — los builds y deployments son independientes de Speed Insights. Si un deploy no se refleja, el problema es de build failure o cache de ISR, no de Speed Insights.
+- **Blog sort**: Actualizado a fecha-primero (featured solo como tiebreaker en misma fecha). Commit `91a5b6a`. Ya no necesita `featured: true` en posts nuevos — el más reciente aparece primero automáticamente.
+- **Blog UX**: Category cards visuales (como sección de metodología en `/coste`) + lista colapsada por defecto (solo 3 posts). "Mostrar todos" expande con búsqueda + paginación. Commit `f359da3`.
+
 ## SOS Botón Emergencia — Marketing & Presencia
 - **Footer**: Añadir enlace al Modo Emergencia en el footer del site (sección Herramientas o Comunidad). El botón flotante está implementado (`src/components/SOSButton.tsx`), pero no hay enlace de texto en el footer para usuarios que no quieren interactuar con el botón flotante. Pendiente.
 - **Newsletter**: Incluir el Modo Emergencia en todas las newsletters dentro de la sección de contactos/emergencias. Texto sugerido: "🆘 ¿Emergencia en tu destino? Usa nuestro Modo Emergencia con geolocalización, teléfonos locales y contacto consular — botón rojo ⚠️ abajo a la izquierda en viajeinteligencia.com"
