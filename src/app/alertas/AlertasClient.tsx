@@ -373,6 +373,17 @@ export default function AlertasClient({ initialAlerts, initialCounts }: AlertasC
           </div>
         )}
 
+        {/* Notification Toast */}
+        {notification && (
+          <div className={`mb-4 px-4 py-3 rounded-xl text-sm font-medium text-center border transition-all ${
+            notification.type === 'success'
+              ? 'bg-green-900/40 border-green-700/50 text-green-300'
+              : 'bg-red-900/40 border-red-700/50 text-red-300'
+          }`}>
+            {notification.message}
+          </div>
+        )}
+
         {/* Personal Alerts Section */}
         <div className="bg-slate-800/40 border border-slate-700/50 rounded-xl overflow-hidden">
           <button
