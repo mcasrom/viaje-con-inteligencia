@@ -70,8 +70,28 @@ export default function SOSButton() {
   const [isOpen, setIsOpen] = useState(false);
   const [step, setStep] = useState<'idle' | 'locating' | 'manual' | 'ready'>('idle');
   const [data, setData] = useState<SOSData | null>(null);
+  const [hospitalsLoading, setHospitalsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [manualCode, setManualCode] = useState('');
+
+  const loadHospitals = async (code: string) => {
+    setHospitalsLoading(true);
+    try {
+      const res = await fetch(`/api/pois?country=${code}&type=hospital&limit=5`);
+      const poiData = await res.json();
+      if (poiData?.pois?.length) {
+        setData(prev => prev ? {
+          ...prev,
+          hospitals: poiData.pois.slice(0, 3).map((p: any) => ({
+            nombre: p.nombre || p.name || 'Hospital',
+            telefono: p.telefono || p.phone,
+            direccion: p.direccion || p.address,
+          })),
+        } : prev);
+      }
+    } catch {}
+    setHospitalsLoading(false);
+  };
 
   const handleOpen = () => {
     setIsOpen(true);
@@ -130,29 +150,18 @@ export default function SOSButton() {
     const emergencies = getEmergenciasPorPais(code);
     const embassy = pais.contactos?.find(c => c.tipo === 'Embajada') || null;
 
-    let hospitals: SOSData['hospitals'] = [];
-    try {
-      const res = await fetch(`/api/pois?country=${code}&type=hospital&limit=5`);
-      const poiData = await res.json();
-      if (poiData?.pois?.length) {
-        hospitals = poiData.pois.slice(0, 3).map((p: any) => ({
-          nombre: p.nombre || p.name || 'Hospital',
-          telefono: p.telefono || p.phone,
-          direccion: p.direccion || p.address,
-        }));
-      }
-    } catch {}
-
     setData({
       countryCode: code,
       countryName: pais.nombre,
       risk: pais.nivelRiesgo,
       embassy,
       emergencies,
-      hospitals,
+      hospitals: [],
       emoji: FLAG_EMOJI[code] || pais.bandera || '🌍',
     });
     setStep('ready');
+
+    loadHospitals(code);
   };
 
   const handleManualSubmit = () => {
@@ -310,24 +319,31 @@ export default function SOSButton() {
                   )}
 
                   {/* Hospitals */}
-                  {data.hospitals.length > 0 && (
+                  {(data.hospitals.length > 0 || hospitalsLoading) && (
                     <div className="bg-green-900/20 border border-green-800/30 rounded-xl p-4">
                       <h4 className="text-white font-bold flex items-center gap-2 mb-3">
                         <MapPin className="w-4 h-4 text-green-400" /> Hospitales cercanos
                       </h4>
-                      <div className="space-y-2">
-                        {data.hospitals.map((h, i) => (
-                          <div key={i} className="bg-slate-800/60 rounded-lg p-3">
-                            <p className="text-white font-medium text-sm">{h.nombre}</p>
-                            {h.direccion && <p className="text-slate-400 text-xs mt-0.5">{h.direccion}</p>}
-                            {h.telefono && (
-                              <a href={`tel:${h.telefono.replace(/[^+\d]/g, '')}`} className="text-green-400 text-xs hover:underline mt-1 inline-block">
-                                {h.telefono}
-                              </a>
-                            )}
-                          </div>
-                        ))}
-                      </div>
+                      {hospitalsLoading && data.hospitals.length === 0 ? (
+                        <div className="flex items-center gap-2 text-slate-400 text-sm">
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                          Cargando hospitales...
+                        </div>
+                      ) : (
+                        <div className="space-y-2">
+                          {data.hospitals.map((h, i) => (
+                            <div key={i} className="bg-slate-800/60 rounded-lg p-3">
+                              <p className="text-white font-medium text-sm">{h.nombre}</p>
+                              {h.direccion && <p className="text-slate-400 text-xs mt-0.5">{h.direccion}</p>}
+                              {h.telefono && (
+                                <a href={`tel:${h.telefono.replace(/[^+\d]/g, '')}`} className="text-green-400 text-xs hover:underline mt-1 inline-block">
+                                  {h.telefono}
+                                </a>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   )}
 
