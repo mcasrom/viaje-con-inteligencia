@@ -6311,10 +6311,27 @@ export function getEmergenciasPorPais(codigo: string): EmergenciasPais | null {
 }
 
 // ──────────────────────────────────────────────
+// DB warm-up: carga datos desde Supabase en segundo
+// plano al arrancar el servidor y fusiona en
+// paisesData. No bloquea el módulo ni el build.
+// ──────────────────────────────────────────────
+
+if (typeof process !== 'undefined' && process.env.NEXT_PUBLIC_SUPABASE_URL) {
+  setTimeout(async () => {
+    try {
+      const { getPaisesData } = await import('@/lib/paises-db');
+      const data = await getPaisesData();
+      if (data && Object.keys(data).length > 0) {
+        Object.assign(paisesData, data);
+      }
+    } catch { /* fallback to hardcoded */ }
+  }, 0);
+}
+
+// ──────────────────────────────────────────────
 // Async DB-first wrappers (2.1 migration)
 // Usan Supabase como fuente primaria con fallback
-// a datos hardcodeados. Importar desde paises-db
-// para acceso directo sin fallback.
+// a datos hardcodeados.
 // ──────────────────────────────────────────────
 
 async function loadPaisesFromDB(): Promise<Map<string, DatoPais> | null> {
