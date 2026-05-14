@@ -185,29 +185,53 @@ export default function AlertasClient({ initialAlerts, initialCounts }: AlertasC
 
   const addAlert = async () => {
     if (!selectedCountry) return;
+    setAdding(true);
+    const country = ALL_COUNTRIES.find(c => c.code === selectedCountry);
+    if (!country) { setAdding(false); return; }
+    const optimistic = [...alerts, {
+      country_code: country.code, country_name: country.name, nivel_riesgo: 'bajo' as const, methods: ['telegram'] as string[]
+    }];
+    setAlerts(optimistic);
+    setSelectedCountry('');
     try {
-      setAdding(true);
-      const country = ALL_COUNTRIES.find(c => c.code === selectedCountry);
-      const newAlert: AlertPreference = {
-        country_code: country!.code,
-        country_name: country!.name,
-        nivel_riesgo: 'bajo',
-        methods: ['telegram']
-      };
-      setAlerts([...alerts, newAlert]);
-      setSelectedCountry('');
-      setNotification({ type: 'success', message: `Alerta añadida para ${country!.name}` });
-      setTimeout(() => setNotification(null), 3000);
+      const res = await fetch('/api/alerts/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ countryCode: country.code, method: 'telegram' }),
+      });
+      if (res.status === 401) {
+        setAlerts(alerts);
+        setNotification({ type: 'error', message: 'Debes iniciar sesión para añadir alertas' });
+      } else if (!res.ok) {
+        setAlerts(alerts);
+        setNotification({ type: 'error', message: 'Error al guardar la alerta' });
+      } else {
+        setNotification({ type: 'success', message: `Alerta añadida para ${country.name}` });
+      }
     } catch {
-      setNotification({ type: 'error', message: 'Error al añadir alerta' });
+      setAlerts(alerts);
+      setNotification({ type: 'error', message: 'Error de conexión' });
     } finally {
       setAdding(false);
+      setTimeout(() => setNotification(null), 3000);
     }
   };
 
-  const removeAlert = (code: string) => {
+  const removeAlert = async (code: string) => {
+    const previous = [...alerts];
     setAlerts(alerts.filter(a => a.country_code !== code));
-    setNotification({ type: 'success', message: 'Alerta eliminada' });
+    try {
+      const res = await fetch(`/api/alerts/subscribe?countryCode=${code}`, { method: 'DELETE' });
+      if (!res.ok) {
+        setAlerts(previous);
+        setNotification({ type: 'error', message: res.status === 401 ? 'Debes iniciar sesión' : 'Error al eliminar' });
+      } else {
+        setNotification({ type: 'success', message: 'Alerta eliminada' });
+      }
+    } catch {
+      setAlerts(previous);
+      setNotification({ type: 'error', message: 'Error de conexión' });
+    }
     setTimeout(() => setNotification(null), 3000);
   };
 
