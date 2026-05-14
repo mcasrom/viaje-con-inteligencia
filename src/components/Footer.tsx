@@ -72,13 +72,14 @@ export default function Footer() {
           <div>
             <h4 className="font-semibold text-white mb-3">Legal + Info</h4>
             <ul className="space-y-2 text-sm">
+              <li><Link href="/legal" className="text-slate-400 hover:text-white transition-colors">Aviso Legal</Link></li>
+              <li><Link href="/reclamaciones" className="text-slate-400 hover:text-white transition-colors">Reclamaciones</Link></li>
               <li><Link href="/metodologia" className="text-slate-400 hover:text-white transition-colors">Metodología MAEC</Link></li>
               <li><Link href="/fuentes-osint" className="text-slate-400 hover:text-white transition-colors">Fuentes OSINT</Link></li>
-              <li><Link href="/legal" className="text-slate-400 hover:text-white transition-colors">Aviso Legal</Link></li>
-              <li><Link href="/kpi" className="text-slate-400 hover:text-white transition-colors">Índice de Paz</Link></li>
-              <li><Link href="/stats" className="text-slate-400 hover:text-white transition-colors">Estadísticas</Link></li>
-              <li><Link href="/indices" className="text-slate-400 hover:text-white transition-colors">Índices y Métricas</Link></li>
               <li><Link href="/transparencia" className="text-slate-400 hover:text-white transition-colors">Transparencia</Link></li>
+              <li><Link href="/kpi" className="text-slate-400 hover:text-white transition-colors">Índice de Paz</Link></li>
+              <li><Link href="/indices" className="text-slate-400 hover:text-white transition-colors">Índices y Métricas</Link></li>
+              <li><Link href="/stats" className="text-slate-400 hover:text-white transition-colors">Estadísticas</Link></li>
             </ul>
           </div>
           <div>
