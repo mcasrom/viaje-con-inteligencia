@@ -16,25 +16,27 @@ async function fetchMAECAlerts(): Promise<MAECAlert[]> {
     const res = await fetch(`${process.env.NEXT_PUBLIC_URL || 'https://www.viajeinteligencia.com'}/api/maec?alerts=true`, {
       next: { revalidate: 600 },
     });
-    if (!res.ok) return [];
     const data = await res.json();
-    if (data.error || !data.alerts?.length) return [];
-
-    const flagMap: Record<string, string> = {
-      ua: '🇺🇦', ru: '🇷🇺', il: '🇮🇱', af: '🇦🇫', sy: '🇸🇾', ye: '🇾🇪',
-      iq: '🇮🇶', so: '🇸🇴', ly: '🇱🇾', ve: '🇻🇪', ht: '🇭🇹', mm: '🇲🇲', ir: '🇮🇷',
-    };
-
-    return data.alerts.map((a: any) => ({
-      pais: a.pais,
-      codigo: a.codigo || '',
-      nivelRiesgo: a.nivelRiesgo,
-      url: a.url || MAEC_URL,
-      bandera: flagMap[a.codigo] || flagMap[a.codigo?.toLowerCase()] || '🌍',
-    }));
+    const rawAlerts: any[] = data.alerts || [];
+    if (res.ok && rawAlerts.length > 0 && !data.error) {
+      const flagMap: Record<string, string> = {
+        ua: '🇺🇦', ru: '🇷🇺', il: '🇮🇱', af: '🇦🇫', sy: '🇸🇾', ye: '🇾🇪',
+        iq: '🇮🇶', so: '🇸🇴', ly: '🇱🇾', ve: '🇻🇪', ht: '🇭🇹', mm: '🇲🇲', ir: '🇮🇷',
+      };
+      const apiAlerts = rawAlerts.map((a: any) => ({
+        pais: a.pais,
+        codigo: a.codigo || '',
+        nivelRiesgo: a.nivelRiesgo,
+        url: a.url || MAEC_URL,
+        bandera: flagMap[a.codigo] || flagMap[a.codigo?.toLowerCase()] || '🌍',
+      }));
+      const apiCodes = new Set(apiAlerts.map(a => a.codigo));
+      return [...apiAlerts, ...FALLBACK_ALERTS.filter(f => !apiCodes.has(f.codigo))];
+    }
   } catch {
-    return [];
+    /* fallback */
   }
+  return [];
 }
 
 const FALLBACK_ALERTS: MAECAlert[] = [

@@ -30,13 +30,14 @@ function requireAuth(request: NextRequest) {
 }
 
 async function getCronStatus() {
-  if (!supabase) return { scrapeMaec: null, checkAlerts: null, flightCosts: null, osintAirspace: null };
+  if (!supabase) return { scrapeMaec: null, checkAlerts: null, flightCosts: null, osintAirspace: null, riskCheck: null };
 
-  const [scrapeRes, alertsRes, fcRes, osintRes] = await Promise.all([
+  const [scrapeRes, alertsRes, fcRes, osintRes, riskCheckRes] = await Promise.all([
     supabase.from('scraper_logs').select('source, status, items_scraped, errors, duration_ms, started_at').order('started_at', { ascending: false }).limit(5),
     supabase.from('risk_alerts').select('country_code, old_risk, new_risk, created_at').order('created_at', { ascending: false }).limit(5),
     supabase.from('scraper_logs').select('source, status, items_scraped, errors, duration_ms, started_at').eq('source', 'flight_costs').order('started_at', { ascending: false }).limit(1),
     supabase.from('scraper_logs').select('source, status, items_scraped, errors, duration_ms, started_at').eq('source', 'osint_airspace').order('started_at', { ascending: false }).limit(1),
+    supabase.from('scraper_logs').select('source, status, items_scraped, errors, duration_ms, started_at').eq('source', 'maec_risk_check').order('started_at', { ascending: false }).limit(1),
   ]);
 
   return {
@@ -44,6 +45,7 @@ async function getCronStatus() {
     checkAlerts: alertsRes.data || [],
     flightCosts: fcRes.data?.[0] ? { ...fcRes.data[0], created_at: fcRes.data[0].started_at } : null,
     osintAirspace: osintRes.data?.[0] ? { ...osintRes.data[0], created_at: osintRes.data[0].started_at } : null,
+    riskCheck: riskCheckRes.data?.[0] ? { ...riskCheckRes.data[0], created_at: riskCheckRes.data[0].started_at } : null,
   };
 }
 

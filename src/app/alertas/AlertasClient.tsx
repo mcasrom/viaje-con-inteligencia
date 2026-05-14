@@ -116,25 +116,28 @@ export default function AlertasClient({ initialAlerts, initialCounts }: AlertasC
 
   const fetchGlobalAlerts = async () => {
     try {
+      const fallback = buildFallbackAlerts();
       const res = await fetch('/api/maec?alerts=true');
       const data = await res.json();
       const rawAlerts = data.alerts || [];
       if (res.ok && rawAlerts.length > 0 && !data.error) {
-        const alerts: MAECAlert[] = rawAlerts.map((a: any) => ({
+        const apiAlerts: MAECAlert[] = rawAlerts.map((a: any) => ({
           pais: a.pais,
           codigo: a.codigo || '',
           nivelRiesgo: a.nivelRiesgo,
           url: a.url,
           bandera: getFlag(a.codigo || a.pais.substring(0, 2).toLowerCase()),
         }));
-        setGlobalAlerts(alerts);
+        const apiCodes = new Set(apiAlerts.map(a => a.codigo));
+        const merged = [...apiAlerts, ...fallback.filter(f => !apiCodes.has(f.codigo))];
+        setGlobalAlerts(merged);
         setAlertCount({
-          muyAlto: alerts.filter(a => a.nivelRiesgo === 'muy-alto').length,
-          alto: alerts.filter(a => a.nivelRiesgo === 'alto').length,
-          medio: alerts.filter(a => a.nivelRiesgo === 'medio').length,
+          muyAlto: merged.filter(a => a.nivelRiesgo === 'muy-alto').length,
+          alto: merged.filter(a => a.nivelRiesgo === 'alto').length,
+          medio: merged.filter(a => a.nivelRiesgo === 'medio').length,
         });
       } else {
-        setGlobalAlerts(buildFallbackAlerts());
+        setGlobalAlerts(fallback);
       }
     } catch {
       setGlobalAlerts(buildFallbackAlerts());
@@ -238,7 +241,9 @@ export default function AlertasClient({ initialAlerts, initialCounts }: AlertasC
 
   const filteredAlerts = filter === 'todas'
     ? globalAlerts
-    : globalAlerts.filter(a => a.nivelRiesgo === filter);
+    : filter === 'alto'
+      ? globalAlerts.filter(a => a.nivelRiesgo === 'muy-alto' || a.nivelRiesgo === 'alto')
+      : globalAlerts.filter(a => a.nivelRiesgo === filter);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800">
