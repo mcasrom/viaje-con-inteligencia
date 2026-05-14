@@ -164,7 +164,7 @@ export async function POST(request: NextRequest) {
     const { error } = await supabaseAdmin!.from('alert_preferences').insert({
       user_id: user.id,
       country_code: countryCode.toUpperCase(),
-      alert_types: method || ['riesgo', 'clima', 'geopolitico', 'seguridad', 'salud', 'logistico'],
+      alert_types: ['riesgo', 'clima', 'geopolitico', 'seguridad', 'salud', 'logistico'],
       severity_min: 'medium',
       frequency: 'inmediato'
     });
