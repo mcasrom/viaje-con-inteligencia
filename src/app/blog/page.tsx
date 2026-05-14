@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Calendar, Clock, Tag, Search, ChevronLeft, ChevronRight, ChevronDown, List, Grid } from 'lucide-react';
-import { getAllPosts, getCategories, getPostsPagination, PostMeta } from '@/lib/posts';
+import { Calendar, Clock, Tag, Search, ChevronLeft, ChevronRight, ChevronDown } from 'lucide-react';
+import { getAllPosts, getPostsPagination, PostMeta } from '@/lib/posts';
 import BlogSearch from './BlogSearch';
 
 const POSTS_PER_PAGE = 10;
@@ -158,9 +158,7 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
     category: category,
     search: search,
   });
-  
-  const categories = getCategories();
-  
+
   const { posts, totalPages } = getPostsPagination(page, POSTS_PER_PAGE, {
     category: category,
     search: search,
@@ -210,73 +208,9 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
             </p>
           </div>
 
-          {/* Search and Filters */}
-          <div className="flex flex-col md:flex-row gap-3 max-w-3xl mx-auto">
+          {/* Search */}
+          <div className="flex max-w-xl mx-auto">
             <BlogSearch initialSearch={search || ''} category={category} view={view} />
-            <div className="flex flex-wrap items-center gap-2">
-              <Link
-                href={allLink}
-                className={`px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-                  !category && !search
-                    ? 'bg-blue-500 text-white'
-                    : 'bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700'
-                }`}
-              >
-                Todos
-              </Link>
-              {categories.map((cat) => (
-                <Link
-                  key={cat}
-                  href={`/blog?category=${encodeURIComponent(cat)}${search ? `&search=${encodeURIComponent(search)}` : ''}${view === 'grid' ? '&view=grid' : ''}`}
-                  className={`px-4 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-                    category === cat
-                      ? 'bg-blue-500 text-white'
-                      : 'bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700'
-                  }`}
-                >
-                  {cat}
-                </Link>
-              ))}
-            </div>
-          </div>
-
-          {/* View Toggle */}
-          <div className="flex justify-center mt-4">
-            <div className="inline-flex bg-slate-800 rounded-lg p-1 border border-slate-700">
-              <Link
-                href={(() => {
-                  const qs = new URLSearchParams();
-                  if (category) qs.set('category', category);
-                  if (search) qs.set('search', search);
-                  return `/blog${qs.toString() ? '?' + qs.toString() : ''}`;
-                })()}
-                className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors flex items-center gap-1.5 ${
-                  view === 'list'
-                    ? 'bg-blue-500 text-white'
-                    : 'text-slate-400 hover:text-white'
-                }`}
-              >
-                <List className="w-3.5 h-3.5" />
-                Lista
-              </Link>
-              <Link
-                href={(() => {
-                  const qs = new URLSearchParams();
-                  if (category) qs.set('category', category);
-                  if (search) qs.set('search', search);
-                  qs.set('view', 'grid');
-                  return `/blog?${qs.toString()}`;
-                })()}
-                className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors flex items-center gap-1.5 ${
-                  view === 'grid'
-                    ? 'bg-blue-500 text-white'
-                    : 'text-slate-400 hover:text-white'
-                }`}
-              >
-                <Grid className="w-3.5 h-3.5" />
-                Grid
-              </Link>
-            </div>
           </div>
         </div>
       </header>
