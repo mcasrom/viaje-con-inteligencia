@@ -1,111 +1,81 @@
-import { supabaseAdmin } from '@/lib/supabase-admin';
-import type { DatoPais, NivelRiesgo, EmergenciasPais } from '@/data/paises';
+import { supabaseAdmin, isSupabaseAdminConfigured } from './supabase-admin';
+import { paisesData as paisesFallback, DatoPais } from '@/data/paises';
+import { createLogger } from './logger';
 
-const CACHE_TTL = 5 * 60 * 1000; // 5 minutos
-let cache: { data: Map<string, DatoPais>; emergencias: Map<string, EmergenciasPais>; ts: number } | null = null;
+const log = createLogger('PaisesDB');
 
-function getAdmin() {
-  try { return supabaseAdmin; } catch { return null; }
-}
+let cachedPaises: Record<string, DatoPais> | null = null;
+let lastFetch = 0;
+const CACHE_TTL = 5 * 60 * 1000;
 
-function mapRowToDatoPais(row: any): DatoPais {
-  return {
-    codigo: row.codigo,
-    nombre: row.nombre,
-    capital: row.capital || '',
-    continente: row.continente || '',
-    idioma: row.data?.idioma || '',
-    moneda: row.data?.moneda || '',
-    tipoCambio: row.data?.tipoCambio || '',
-    zonaHoraria: row.data?.zonaHoraria || '',
-    conduccion: row.data?.conduccion || 'derecha',
-    poblacion: row.data?.poblacion || '',
-    pib: row.data?.pib || '',
-    indicadores: row.data?.indicadores || { ipc: '', indicePrecios: '' },
-    voltaje: row.data?.voltaje || '',
-    prefijoTelefono: row.data?.prefijoTelefono || '',
-    nivelRiesgo: row.nivel_riesgo as NivelRiesgo,
-    ultimoInforme: row.ultimo_informe || '',
-    contactos: row.data?.contactos || [],
-    requerimientos: row.data?.requerimientos || [],
-    queHacer: row.data?.queHacer || [],
-    queNoHacer: row.data?.queNoHacer || [],
-    diarios: row.data?.diarios || [],
-    urlsUtiles: row.data?.urlsUtiles || [],
-    bandera: row.bandera || '',
-    mapaCoordenadas: row.data?.mapaCoordenadas || [0, 0],
-    transporte: row.data?.transporte,
-    turisticos: row.data?.turisticos,
-    economicos: row.data?.economicos,
-    visible: row.visible !== false,
-  };
-}
-
-export async function getAllPaisesFromDB(): Promise<DatoPais[]> {
-  const admin = getAdmin();
-  if (!admin) return [];
-  const { data } = await admin.from('paises').select('*').eq('visible', true).order('nombre');
-  return (data || []).map(mapRowToDatoPais);
-}
-
-export async function getPaisFromDB(codigo: string): Promise<DatoPais | null> {
-  const admin = getAdmin();
-  if (!admin) return null;
-  const { data } = await admin.from('paises').select('*').eq('codigo', codigo.toLowerCase()).single();
-  if (!data) return null;
-  const pais = mapRowToDatoPais(data);
-  return pais.visible !== false ? pais : null;
-}
-
-export async function getPaisesPorRiesgoFromDB(nivel: NivelRiesgo): Promise<DatoPais[]> {
-  const admin = getAdmin();
-  if (!admin) return [];
-  const { data } = await admin.from('paises').select('*').eq('nivel_riesgo', nivel).eq('visible', true);
-  return (data || []).map(mapRowToDatoPais);
-}
-
-export async function getPaisesPorContinenteFromDB(continente: string): Promise<DatoPais[]> {
-  const admin = getAdmin();
-  if (!admin) return [];
-  const { data } = await admin.from('paises').select('*').eq('continente', continente).eq('visible', true);
-  return (data || []).map(mapRowToDatoPais);
-}
-
-export async function getEmergenciasFromDB(codigo: string): Promise<EmergenciasPais | null> {
-  const admin = getAdmin();
-  if (!admin) return null;
-  const { data } = await admin.from('emergencias').select('*').eq('codigo', codigo.toLowerCase()).single();
-  if (!data) return null;
-  return { general: data.general, policia: data.policia, bomberos: data.bomberos, ambulancia: data.ambulancia };
-}
-
-// In-memory cache with TTL
-export async function loadAllPaisesToCache(): Promise<{ data: Map<string, DatoPais>; emergencias: Map<string, EmergenciasPais> } | null> {
-  const admin = getAdmin();
-  if (!admin) return null;
-
-  if (cache && Date.now() - cache.ts < CACHE_TTL) return cache;
-
-  const [paisesRes, emergenciasRes] = await Promise.all([
-    admin.from('paises').select('*'),
-    admin.from('emergencias').select('*'),
-  ]);
-
-  const paisesMap = new Map<string, DatoPais>();
-  for (const row of (paisesRes.data || [])) {
-    const pais = mapRowToDatoPais(row);
-    paisesMap.set(row.codigo, pais);
+export async function getPaisesData(): Promise<Record<string, DatoPais>> {
+  if (cachedPaises && Date.now() - lastFetch < CACHE_TTL) {
+    return cachedPaises;
   }
 
-  const emergenciasMap = new Map<string, EmergenciasPais>();
-  for (const row of (emergenciasRes.data || [])) {
-    emergenciasMap.set(row.codigo, { general: row.general, policia: row.policia, bomberos: row.bomberos, ambulancia: row.ambulancia });
+  if (!isSupabaseAdminConfigured()) {
+    return paisesFallback;
   }
 
-  cache = { data: paisesMap, emergencias: emergenciasMap, ts: Date.now() };
-  return cache;
+  try {
+    const { data, error } = await supabaseAdmin
+      .from('paises')
+      .select('codigo, data');
+
+    if (error || !data || data.length === 0) {
+      return paisesFallback;
+    }
+
+    const paises: Record<string, DatoPais> = {};
+    for (const row of data) {
+      paises[row.codigo] = row.data as DatoPais;
+    }
+
+    cachedPaises = paises;
+    lastFetch = Date.now();
+    return paises;
+  } catch {
+    return paisesFallback;
+  }
 }
 
-export function invalidateCache() {
-  cache = null;
+export async function getPaisData(codigo: string): Promise<DatoPais | undefined> {
+  const all = await getPaisesData();
+  return all[codigo.toLowerCase()];
+}
+
+export function invalidateCache(): void {
+  cachedPaises = null;
+  lastFetch = 0;
+}
+
+export async function syncPaisesToSupabase(): Promise<{ inserted: number; errors: number }> {
+  if (!isSupabaseAdminConfigured()) {
+    log.warn('Supabase admin no configurado, saltando sync paises');
+    return { inserted: 0, errors: 0 };
+  }
+
+  const entries = Object.entries(paisesFallback);
+  let inserted = 0;
+  let errors = 0;
+
+  for (const [codigo, data] of entries) {
+    const { error } = await supabaseAdmin
+      .from('paises')
+      .upsert({
+        codigo: codigo.toLowerCase(),
+        data,
+        updated_at: new Date().toISOString(),
+      }, { onConflict: 'codigo' });
+
+    if (error) {
+      errors++;
+    } else {
+      inserted++;
+    }
+  }
+
+  invalidateCache();
+  log.info(`Sync paises: ${inserted} insertados, ${errors} errores`);
+  return { inserted, errors };
 }
