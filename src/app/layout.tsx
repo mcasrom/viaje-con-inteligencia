@@ -39,7 +39,7 @@ const geistSans = Geist({
 export const metadata: Metadata = {
   metadataBase: new URL("https://www.viajeinteligencia.com"),
   title: "Viaje con Inteligencia | Mapa de Riesgos de Viaje MAEC - Riesgo Zero",
-  description: "Tu guía completa de viajes seguros. Mapa interactivo de riesgos por país según MAEC español. Embajadas, requisitos, consejos, qué hacer y qué no hacer en cada destino. Viaja con inteligencia, viaja seguro.",
+  description: "Mapa interactivo de riesgos de viaje según MAEC. Consulta embajadas, requisitos y consejos de seguridad para viajar seguro a cualquier destino.",
   authors: [{ name: "M.Castillo" }],
   creator: "M.Castillo",
   publisher: "Viaje con Inteligencia",
