@@ -497,6 +497,7 @@ export async function buildWeeklyEmailHtml(issue: NewsletterIssue): Promise<stri
         <tr><td style="background:${headerBg};padding:24px;">
           <div style="font-size:12px;color:#60a5fa;font-weight:600;margin-bottom:4px;">Viaje con Inteligencia · ${issue.weekDate} · edición #${issue.edition}</div>
           <h1 style="color:#ffffff;font-size:22px;margin:8px 0 4px;">Briefing semanal de inteligencia de viaje</h1>
+          <p style="color:#60a5fa;font-size:12px;font-weight:600;letter-spacing:0.02em;margin:0 0 4px;">Tu radar de seguridad global impulsado por IA</p>
           <p style="color:#94a3b8;font-size:14px;margin:0;">Lo que necesitas saber esta semana antes de decidir a dónde viajar</p>
         </td></tr>
 

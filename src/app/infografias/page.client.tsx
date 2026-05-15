@@ -77,7 +77,8 @@ export default function InfografiasClient() {
             <BarChart3 className="w-6 h-6 text-blue-400" />
             <span className="text-blue-400 text-sm font-mono tracking-widest">INTELLIGENCE BRIEFING</span>
           </div>
-          <h1 className="text-4xl font-bold text-white mb-3">Infografías de Riesgo Global</h1>
+          <h1 className="text-4xl font-bold text-white mb-1">Infografías de Riesgo Global</h1>
+          <p className="text-blue-400/70 text-sm font-medium tracking-wide mb-3">Tu radar de seguridad global impulsado por IA</p>
           <p className="text-slate-400 text-lg max-w-2xl">
             Análisis visual semanal con datos OSINT, MAEC, GPI, GTI y fuentes abiertas. El <strong className="text-amber-400">Global Weekly Index (GWI)</strong> mide la tensión global en viajes.
           </p>
