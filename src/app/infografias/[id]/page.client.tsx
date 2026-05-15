@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { ArrowLeft, Download, Crown, Share2, FileText, Map, Brain, TrendingUp, Calendar, AlertTriangle, Shield } from 'lucide-react';
 import { useState } from 'react';
+import PremiumRiskMap from '@/components/PremiumRiskMap';
 
 interface InfografiaData {
   id: string;
@@ -253,9 +254,10 @@ export default function InfografiaDetailClient({ infografia }: { infografia: Inf
                       <FileText className="w-4 h-4 text-amber-400/70" />
                       PDF descargable
                     </div>
-                    <div className="flex items-center gap-3 text-sm text-slate-300">
-                      <Map className="w-4 h-4 text-amber-400/70" />
-                      Mapa interactivo de riesgos
+                    <div className="flex items-center gap-3 text-sm text-amber-300">
+                      <Map className="w-4 h-4 text-amber-400" />
+                      <a href="#risk-map" className="hover:underline">Mapa interactivo de riesgos</a>
+                      <span className="text-[10px] text-amber-500/70 font-mono">DISPONIBLE</span>
                     </div>
                     <div className="flex items-center gap-3 text-sm text-slate-300">
                       <Brain className="w-4 h-4 text-amber-400/70" />
@@ -281,6 +283,11 @@ export default function InfografiaDetailClient({ infografia }: { infografia: Inf
               )}
             </div>
           </div>
+        </div>
+
+        {/* Interactive risk map - full width */}
+        <div id="risk-map" className="mt-8">
+          <PremiumRiskMap infografiaId={infografia.id} />
         </div>
       </div>
     </div>
