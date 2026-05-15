@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Send, Loader2, Bot, Sparkles, Crown, Zap, AlertTriangle, Lock, Plus, MessageSquare, Trash2, History, Share2, Check, Copy, Globe } from 'lucide-react';
+import { ArrowLeft, Send, Loader2, Bot, Sparkles, Crown, Zap, AlertTriangle, Lock, Plus, MessageSquare, Trash2, History, Share2, Check, Copy, Globe, Download } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { useSubscription } from '@/hooks/useSubscription';
@@ -211,6 +211,20 @@ export default function ChatClient() {
     }
   };
 
+  const handleExport = () => {
+    if (messages.length === 0) return;
+    const text = messages.map(m =>
+      `**${m.role === 'user' ? 'Tú' : 'ViajeIA'}**\n${m.content}\n`
+    ).join('\n---\n\n');
+    const blob = new Blob([text], { type: 'text/markdown' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `viajeia-chat-${new Date().toISOString().slice(0, 10)}.md`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <div className="min-h-screen bg-slate-900 flex flex-col">
       {/* Header */}
@@ -230,6 +244,11 @@ export default function ChatClient() {
             </Link>
           </div>
           <div className="flex items-center gap-3">
+            {messages.length > 0 && (
+              <button onClick={handleExport} className="p-2 text-slate-400 hover:text-white hover:bg-slate-700 rounded-lg transition-colors" title="Exportar conversación">
+                <Download className="w-4 h-4" />
+              </button>
+            )}
             <div className="flex items-center bg-slate-700 rounded-lg p-0.5">
               <button
                 onClick={() => setModel('free')}

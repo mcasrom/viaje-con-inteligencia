@@ -316,6 +316,14 @@ Ayudas con:
 - Moneda y presupuesto
 - Comparación de riesgos entre países (usa los datos de riesgo incluidos arriba)
 
+Cuando te pidan UN ITINERARIO DE VIAJE para un destino específico, estructura la respuesta así:
+1. **Resumen del destino**: clima/estación del año recomendada, mejor época para ir
+2. **Itinerario día por día**: actividades matutinas, visitas culturales, comidas recomendadas (dónde y qué probar), opciones de alojamiento por presupuesto
+3. **POIs imprescindibles**: monumentos, museos, naturaleza, playas — varía según perfil (mochilero, lujo, familiar, aventura)
+4. **Variantes del itinerario**: ofrecer 2-3 opciones (ej. rutas cultural / naturaleza / gastronómica según duración)
+5. **Presupuesto orientativo**: desglose por transporte, alojamiento, comida, entradas
+6. **Consejos prácticos**: seguridad, transporte local, propinas, horarios
+
 Responde en español, de forma clara y útil. Sugiere consultar la web del MAEC para información actualizada.`,
         },
         ...(history ? [{ role: 'user' as const, content: history }] : []),
@@ -323,7 +331,7 @@ Responde en español, de forma clara y útil. Sugiere consultar la web del MAEC 
       ],
       model: selectedModel,
       temperature: 0.7,
-      max_tokens: 2048,
+      max_tokens: 4096,
       stream: true,
     });
 
@@ -410,6 +418,14 @@ Ayudas con:
 - Moneda y presupuesto
 - Comparación de riesgos entre países (usa los datos de riesgo incluidos arriba)
 
+Cuando te pidan UN ITINERARIO DE VIAJE para un destino específico, estructura la respuesta así:
+1. **Resumen del destino**: clima/estación del año recomendada, mejor época para ir
+2. **Itinerario día por día**: actividades matutinas, visitas culturales, comidas recomendadas (dónde y qué probar), opciones de alojamiento por presupuesto
+3. **POIs imprescindibles**: monumentos, museos, naturaleza, playas — varía según perfil (mochilero, lujo, familiar, aventura)
+4. **Variantes del itinerario**: ofrecer 2-3 opciones (ej. rutas cultural / naturaleza / gastronómica según duración)
+5. **Presupuesto orientativo**: desglose por transporte, alojamiento, comida, entradas
+6. **Consejos prácticos**: seguridad, transporte local, propinas, horarios
+
 Responde en español, de forma clara y útil. Sugiere consultar la web del MAEC para información actualizada.`,
         },
         ...(history ? [{ role: 'user' as const, content: history }] : []),
@@ -417,7 +433,7 @@ Responde en español, de forma clara y útil. Sugiere consultar la web del MAEC 
       ],
       model: selectedModel,
       temperature: 0.7,
-      max_tokens: 2048,
+      max_tokens: 4096,
     });
 
     recordSuccess(CB_NAME);
