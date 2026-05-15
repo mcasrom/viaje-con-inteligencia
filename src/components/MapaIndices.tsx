@@ -92,6 +92,13 @@ export default function MapaIndices() {
         shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
       });
     });
+    const observer = new MutationObserver(() => {
+      document.querySelectorAll('.leaflet-tile').forEach(el => {
+        if (!el.hasAttribute('role')) el.setAttribute('role', 'presentation');
+      });
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+    return () => observer.disconnect();
   }, []);
 
   const buildCountries = useCallback(() => {

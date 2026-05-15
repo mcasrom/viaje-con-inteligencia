@@ -31,6 +31,16 @@ interface RadiusMapProps {
 }
 
 export default function RadiusMap({ center, radius, zoom, places, onPlaceClick }: RadiusMapProps) {
+  useEffect(() => {
+    const observer = new MutationObserver(() => {
+      document.querySelectorAll('.leaflet-tile').forEach(el => {
+        if (!el.hasAttribute('role')) el.setAttribute('role', 'presentation');
+      });
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <MapContainer
       center={center}

@@ -108,6 +108,13 @@ export default function MapaInteractivo({ fullScreen = false }: { fullScreen?: b
         // Leaflet icon initialization is optional
       }
     });
+    const observer = new MutationObserver(() => {
+      document.querySelectorAll('.leaflet-tile').forEach(el => {
+        if (!el.hasAttribute('role')) el.setAttribute('role', 'presentation');
+      });
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+    return () => observer.disconnect();
   }, []);
 
   const loadLayerData = useCallback(async (layerType: string) => {
