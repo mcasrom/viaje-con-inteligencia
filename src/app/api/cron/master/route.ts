@@ -698,6 +698,30 @@ async function runEventsFetch(): Promise<any> {
   }
 }
 
+// ===== INFOGRAFIA SEMANAL (only on Sundays) =====
+async function runInfografiaGenerator(): Promise<any> {
+  const day = new Date().getDay();
+  if (day !== 0) return { status: 'skipped', reason: 'Not Sunday' };
+
+  try {
+    const baseUrl = process.env.APP_BASE_URL || 'https://www.viajeinteligencia.com';
+    const cronSecret = process.env.CRON_SECRET;
+    if (!cronSecret) return { status: 'skipped', reason: 'No CRON_SECRET' };
+
+    const res = await fetch(`${baseUrl}/api/infografias`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${cronSecret}`,
+        'Content-Type': 'application/json',
+      },
+    });
+    const result = await res.json();
+    return { status: res.ok ? 'ok' : 'error', ...result };
+  } catch (e: any) {
+    return { status: 'error', error: e.message };
+  }
+}
+
 // ===== MODEL TRAINING (fire-and-forget to dedicated endpoint) =====
 async function runModelTraining(): Promise<any> {
   try {
@@ -804,6 +828,9 @@ export async function GET(request: Request) {
 
   log.info('8/8 Weekly digest...');
   results.weekly = await withTimeout(() => runWeeklyDigest(), 30000, '8/8 Weekly digest');
+
+  log.info('8a/8 Infografia semanal...');
+  results.infografia = await withTimeout(() => runInfografiaGenerator(), 120000, '8a/8 Infografia semanal');
 
   log.info('8b/8 Insurance monitor...');
   results.insurance_monitor = await withTimeout(() => runInsuranceMonitor(), 30000, '8b/8 Insurance monitor');

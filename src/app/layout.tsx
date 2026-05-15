@@ -11,6 +11,7 @@ import SOSButton from "@/components/SOSButton";
 import ServiceWorkerRegistration from "@/components/ServiceWorkerRegistration";
 import InstallPWA from "@/components/InstallPWA";
 import Onboarding from "@/components/Onboarding";
+import InfografiaPopup from "@/components/InfografiaPopup";
 import { initPaisesData } from "@/lib/paises-init";
 import { initRutasData } from "@/lib/rutas-init";
 import { initClusteringData } from "@/lib/clustering-init";
@@ -120,6 +121,7 @@ export default async function RootLayout({
           <InstallPWA />
           <QuickAccess />
           <SOSButton />
+          <InfografiaPopup />
           <AITravelAssistant />
           <Footer />
           </Providers>

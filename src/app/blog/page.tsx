@@ -1,8 +1,9 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Calendar, Clock, Tag, Search, ChevronLeft, ChevronRight, ChevronDown } from 'lucide-react';
+import { Calendar, Clock, Tag, Search, ChevronLeft, ChevronRight, ChevronDown, BarChart3 } from 'lucide-react';
 import { getAllPosts, getPostsPagination, PostMeta } from '@/lib/posts';
+import { supabase } from '@/lib/supabase';
 import BlogSearch from './BlogSearch';
 
 const POSTS_PER_PAGE = 10;
@@ -14,6 +15,7 @@ const CATEGORY_ICONS: Record<string, string> = {
   Recursos: '🧰',
   Consejos: '💡',
   Básicos: '📖',
+  'Infografía': '📊',
 };
 const CATEGORY_COLORS: Record<string, string> = {
   Destinos: 'from-emerald-500/20 to-emerald-600/10 border-emerald-500/30',
@@ -23,6 +25,7 @@ const CATEGORY_COLORS: Record<string, string> = {
   Recursos: 'from-amber-500/20 to-amber-600/10 border-amber-500/30',
   Consejos: 'from-cyan-500/20 to-cyan-600/10 border-cyan-500/30',
   Básicos: 'from-sky-500/20 to-sky-600/10 border-sky-500/30',
+  'Infografía': 'from-blue-500/20 to-indigo-600/10 border-blue-500/30',
 };
 
 export const revalidate = 300;
@@ -47,11 +50,19 @@ export const metadata: Metadata = {
   },
 };
 
-function PostCard({ post }: { post: PostMeta }) {
+function PostCard({ post }: { post: PostMeta & { isInfografia?: boolean; infografiaId?: string } }) {
+  const href = post.isInfografia ? `/infografias/${post.infografiaId}` : `/blog/${post.slug}`;
   return (
-    <Link href={`/blog/${post.slug}`} className="group bg-slate-800/50 border border-slate-700/50 rounded-xl overflow-hidden hover:border-blue-500/30 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/5">
+    <Link href={href} className="group bg-slate-800/50 border border-slate-700/50 rounded-xl overflow-hidden hover:border-blue-500/30 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/5">
       <div className="relative w-full h-48 bg-slate-700">
-        {post.image && post.image.trim() !== '' ? (
+        {post.isInfografia && post.image ? (
+          <img
+            src={post.image}
+            alt={post.title}
+            className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-300"
+            loading="lazy"
+          />
+        ) : post.image && post.image.trim() !== '' ? (
           <Image
             src={post.image}
             alt={post.title}
@@ -85,7 +96,7 @@ function PostCard({ post }: { post: PostMeta }) {
           </span>
           <span className="flex items-center gap-1">
             <Clock className="w-3 h-3" />
-            {post.readTime}
+            {post.isInfografia ? '3 min' : post.readTime}
           </span>
         </div>
       </div>
@@ -93,11 +104,19 @@ function PostCard({ post }: { post: PostMeta }) {
   );
 }
 
-function PostListItem({ post }: { post: PostMeta }) {
+function PostListItem({ post }: { post: PostMeta & { isInfografia?: boolean; infografiaId?: string } }) {
+  const href = post.isInfografia ? `/infografias/${post.infografiaId}` : `/blog/${post.slug}`;
   return (
-    <Link href={`/blog/${post.slug}`} className="group flex gap-4 p-4 bg-slate-800/50 border border-slate-700/50 rounded-xl hover:border-blue-500/30 transition-all duration-300 hover:bg-slate-800/80">
+    <Link href={href} className="group flex gap-4 p-4 bg-slate-800/50 border border-slate-700/50 rounded-xl hover:border-blue-500/30 transition-all duration-300 hover:bg-slate-800/80">
       <div className="relative w-32 h-24 flex-shrink-0 bg-slate-700 rounded-lg overflow-hidden">
-        {post.image && post.image.trim() !== '' ? (
+        {post.isInfografia && post.image ? (
+          <img
+            src={post.image}
+            alt={post.title}
+            className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-all duration-300"
+            loading="lazy"
+          />
+        ) : post.image && post.image.trim() !== '' ? (
           <Image
             src={post.image}
             alt={post.title}
@@ -134,7 +153,7 @@ function PostListItem({ post }: { post: PostMeta }) {
           </span>
           <span className="flex items-center gap-1">
             <Clock className="w-3 h-3" />
-            {post.readTime}
+            {post.isInfografia ? '3 min' : post.readTime}
           </span>
         </div>
       </div>
@@ -146,6 +165,36 @@ interface BlogPageProps {
   searchParams: Promise<{ category?: string; search?: string; page?: string; view?: string; show?: string }>;
 }
 
+async function fetchInfografiasAsPosts(): Promise<(PostMeta & { isInfografia: boolean; infografiaId: string })[]> {
+  try {
+    const { data } = await supabase
+      .from('infografias')
+      .select('id, edition, title, week_start, image_url, gwi_score, country_count, top_risk_countries')
+      .eq('is_published', true)
+      .order('week_start', { ascending: false })
+      .limit(8);
+
+    return (data || []).map((inf: any) => ({
+      slug: `infografia-${inf.id}`,
+      title: inf.title,
+      date: inf.week_start,
+      author: 'Viaje con Inteligencia',
+      category: 'Infografía',
+      readTime: '3 min',
+      image: inf.image_url || '',
+      keywords: [...(inf.top_risk_countries || []).slice(0, 3).map((c: string) => c.toLowerCase()), 'infografía semanal', 'riesgo global'],
+      excerpt: `GWI: ${inf.gwi_score?.toFixed(1) || '—'} · ${inf.country_count || 111} países · Edición #${inf.edition}`,
+      description: `Infografía semanal de riesgos globales. Edición #${inf.edition}.`,
+      tags: ['infografía', 'riesgo global', `edición-${inf.edition}`],
+      featured: false,
+      isInfografia: true,
+      infografiaId: inf.id,
+    }));
+  } catch {
+    return [];
+  }
+}
+
 export default async function BlogPage({ searchParams }: BlogPageProps) {
   const params = await searchParams;
   const category = params.category;
@@ -153,23 +202,39 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
   const page = parseInt(params.page || '1') || 1;
   const view = params.view || 'list';
   const showAll = params.show === 'all' || !!search || !!category;
-  
-  const allPosts = getAllPosts({
-    category: category,
+
+  // Fetch infografias from Supabase
+  const infografias = await fetchInfografiasAsPosts();
+
+  // Merge infografias when viewing "all" or "Infografía"
+  const includeInfografias = !category || category === 'all' || category === 'Infografía';
+
+  const allPostsRaw = getAllPosts({
+    category: category && category !== 'Infografía' ? category : undefined,
     search: search,
   });
+  const allPosts = includeInfografias ? [...infografias, ...allPostsRaw] : allPostsRaw;
 
-  const { posts, totalPages } = getPostsPagination(page, POSTS_PER_PAGE, {
-    category: category,
+  const { posts: fsPosts, totalPages } = getPostsPagination(page, POSTS_PER_PAGE, {
+    category: category && category !== 'Infografía' ? category : undefined,
     search: search,
     skip: 0,
   });
+  const posts = includeInfografias && page === 1
+    ? [...infografias, ...fsPosts].slice(0, POSTS_PER_PAGE)
+    : includeInfografias && page > 1
+      ? fsPosts
+      : fsPosts;
 
+  // Category counts (include infografias count)
   const categoryCounts = new Map<string, number>();
   const allPostsUnfiltered = getAllPosts();
   allPostsUnfiltered.forEach(p => {
     categoryCounts.set(p.category, (categoryCounts.get(p.category) || 0) + 1);
   });
+  if (infografias.length > 0) {
+    categoryCounts.set('Infografía', infografias.length);
+  }
   const smallCats: { name: string; count: number }[] = [];
   const mainCats: { name: string; count: number }[] = [];
   categoryCounts.forEach((count, name) => {
@@ -204,7 +269,7 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
               Análisis de Viajes y Seguridad
             </h1>
             <p className="text-slate-400 max-w-2xl mx-auto">
-              Guías prácticas, análisis geopolíticos y tendencias basadas en datos OSINT para viajeros inteligentes.
+              Guías prácticas, análisis geopolíticos, infografías semanales y tendencias basadas en datos OSINT para viajeros inteligentes.
             </p>
           </div>
 

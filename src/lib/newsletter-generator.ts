@@ -558,6 +558,31 @@ export async function buildWeeklyEmailHtml(issue: NewsletterIssue): Promise<stri
           <p style="font-size:11px;color:#94a3b8;text-align:center;margin:4px 0 0;">Usa /suscribir ES desde el bot para elegir países</p>
         </td></tr>` : ''}
 
+        <!-- Section: SOS Emergency Mode -->
+        <tr><td style="background:#ffffff;padding:20px 24px;border-top:1px solid #e2e8f0;">
+          <table width="100%"><tr>
+            <td style="width:40px;vertical-align:top;padding-top:2px;">
+              <div style="width:36px;height:36px;background:#dc2626;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;">⚠️</div>
+            </td>
+            <td style="padding-left:12px;">
+              <h2 style="font-size:14px;font-weight:bold;color:#0f172a;margin:0 0 4px;">🆘 Modo Emergencia — ayuda inmediata en tu destino</h2>
+              <p style="font-size:13px;color:#334155;line-height:1.5;margin:0 0 8px;">
+                ¿Emergencia en tu destino? Accede al <strong>Modo Emergencia</strong> desde cualquier página de viajeinteligencia.com: haz clic en el botón rojo ⚠️ abajo a la izquierda.
+              </p>
+              <ul style="font-size:12px;color:#475569;line-height:1.6;margin:0 0 10px;padding-left:18px;">
+                <li>📍 Detecta automáticamente tu país por geolocalización</li>
+                <li>📞 Teléfonos de emergencia: policía, bomberos, ambulancia</li>
+                <li>🏛️ Contacto de la embajada/consulado español más cercano</li>
+                <li>🏥 Hospitales cercanos (vía OpenStreetMap)</li>
+                <li>🌐 Sin registro, sin app, sin API keys — funciona al instante</li>
+              </ul>
+              <div style="margin-top:8px;">
+                <a href="https://www.viajeinteligencia.com" style="display:inline-block;background:#dc2626;color:#ffffff;padding:8px 18px;border-radius:6px;text-decoration:none;font-weight:600;font-size:12px;">Abrir Modo Emergencia</a>
+              </div>
+            </td>
+          </tr></table>
+        </td></tr>
+
         <!-- Footer -->
         <tr><td style="background:#f1f5f9;padding:20px;text-align:center;border-top:1px solid #e2e8f0;">
           <p style="color:#64748b;font-size:12px;margin:0 0 8px;">Viaje con Inteligencia · datos OSINT · ${TOTAL_PAISES} países · actualización semanal</p>

@@ -176,6 +176,11 @@ export default function AdminDashboard() {
               </div>
             ))}
           </div>
+          <div className="mt-4">
+            <a href="/admin/paises" className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600/20 border border-blue-500/30 text-blue-400 rounded-lg hover:bg-blue-600/30 transition-colors text-sm font-medium">
+              Gestionar Países <ExternalLink className="w-4 h-4" />
+            </a>
+          </div>
         </section>
 
         {/* Users */}

@@ -15,6 +15,7 @@ import OilPriceWidget from '@/components/OilPriceWidget';
 import AirportDelaysWidget from '@/components/AirportDelaysWidget';
 import PreferencesSelector from '@/components/PreferencesSelector';
 import NewsletterPopup from '@/components/NewsletterPopup';
+import InfografiaHomeCard from '@/components/InfografiaHomeCard';
 
 const MapaInteractivo = dynamic(
   () => import('@/components/MapaInteractivo'),
@@ -543,6 +544,8 @@ export default function HomeClient() {
           <OilPriceWidget />
           <AirportDelaysWidget />
         </div>
+
+        <InfografiaHomeCard />
 
         <div className="max-w-3xl mx-auto mt-6">
           <p className="text-slate-400 text-sm text-center bg-slate-800/30 rounded-xl px-4 py-3 border border-slate-700/30">

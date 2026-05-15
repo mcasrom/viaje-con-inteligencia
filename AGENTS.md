@@ -1,5 +1,9 @@
 # AGENTS.md — Viaje con Inteligencia
 
+## Slogans / Taglines (SEO)
+- **ES**: "Viaje con Inteligencia: Tu radar de seguridad global impulsado por IA."
+- **EN**: "Smart Traveler: AI-Driven Global Risk Radar for the Conscious Explorer."
+
 ## ⚙️ Observaciones Técnicas
 - **Speed Insights (Vercel)**: Desactivado por consumo excesivo de recursos. Esto NO afecta a los despliegues — los builds y deployments son independientes de Speed Insights. Si un deploy no se refleja, el problema es de build failure o cache de ISR, no de Speed Insights.
 - **Blog sort**: Actualizado a fecha-primero (featured solo como tiebreaker en misma fecha). Commit `91a5b6a`. Ya no necesita `featured: true` en posts nuevos — el más reciente aparece primero automáticamente.
@@ -21,17 +25,28 @@
 - **Migración airports**: Creado `src/lib/airports-db.ts` con `getMainAirport()` y `getAirportCoordinates()` DB-first + fallback. `cost-estimate/route.ts` actualizado.
 - **Migración indices**: `recommendation-engine.ts` usa `getGPI/getGTI/getHDI/getIPC` de `@/lib/indices`. `kpi/page.tsx` fetch desde `/api/indices`. Ya había API + tabla `indices` poblada.
 - **Migración paises**: Datos extraídos de `paises.ts` (6360→245 líneas) a `paises-data.json` (111 países, 87 emergencies). DB warm-up asíncrono al arrancar. 42 consumidores siguen igual — cero cambios.
+- **Migraciones completadas**: Todos los targets listados ya estaban migrados con init files + DB fallback:
+  - `tci-engine.ts` → `lib/seasonality-init.ts` sobreescribe `SEASONALITY_MAP` desde Supabase. Engine computacional (no datos).
+  - `clustering.ts` → `lib/clustering-init.ts` sobreescribe `travelAttributes` y llama `updateTourismData()` desde Supabase. Engine computacional.
+  - `seguros.json` → `lib/seguros-init.ts` + `lib/seguros-data.ts` + API route `/api/seguros/catalog`. DB-first, JSON como fallback.
+  - `rutas-espanas.ts` → `lib/rutas-init.ts` + `lib/rutas-db.ts` cargan rutas desde Supabase `thematic_routes`.
+  - `mochilero-premium.ts` → API `/api/premium/bundles` y `/api/premium/addons` usan DB-first con fallback.
+  - `ine-data.ts` → Llama directamente a `supabaseAdmin.from('ine_tourism_history')`, fallback hardcode.
+  - `tourism.ts` → `lib/tourism-db.ts` con DB-first + fallback. Consumidores ya importan de `@/lib/tourism-db`.
+- **Blog rating verificado**: `BlogPostRating` SÍ se renderiza en producción HTML (loading skeleton visible en SSR). API `/api/posts/rate` devuelve datos válidos. La "desaparición" era un falso positivo de grep (búsqueda del nombre de función en vez de elementos renderizados).
+- **Footer SOS**: Enlace "Modo Emergencia" ahora dispara evento `open-sos` que abre el panel SOS (`SOSButton.tsx`). Ya no hace scroll-to-top sin sentido.
+- **Newsletter + Modo Emergencia**: Nueva sección "🆘 Modo Emergencia — ayuda inmediata" en el HTML del digest semanal. Incluye 5 bullet points de funcionalidades + CTA rojo.
+- **Admin UI Países**: Nueva página `/admin/paises` con tabla searchable/filtrable, edición inline (nombre, capital, continente, riesgo, visible), API `PUT /api/admin/paises` con validación Zod y auto-invalidate de cache.
 - **Speed Insights**: Desactivado (excedía límite 23K/10K).
 
 ### Pendientes para próximo sprint
-1. **Migrar**: `tci-engine.ts` (675), `clustering.ts` (560), `seguros.json` (275), `rutas-espanas.ts` (791), `mochilero-premium.ts` (98), `ine-data.ts` (180), `tourism.ts` (64)
-2. **ML**: Esperar ~25 días para validación temporal CV. Mejorar features RF.
-3. **Vinculación Telegram**: Probar flujo completo `/vincular` → bot confirma.
-4. **Popup homepage**: Slogan al llegar a la página principal.
-5. **Infografía semanal riesgos** para premium.
-6. **Blog rating**: Sección de valoración desaparecida.
-7. **Outreach**: X/Twitter, Reddit, foros de viajeros.
-8. **Admin UI para paises**: Editar datos sin redeploy.
+1. **ML**: Esperar ~25 días para validación temporal CV. Mejorar features RF.
+2. **Vinculación Telegram**: Probar flujo completo `/vincular` → bot confirma.
+3. **Popup homepage**: Slogan al llegar a la página principal.
+4. **Infografía semanal riesgos** para premium.
+5. **Outreach**: X/Twitter, Reddit, foros de viajeros.
+6. **Footer SOS**: Añadir enlace "Modo Emergencia" en footer (sección Herramientas o Comunidad).
+7. **Newsletter**: Incluir Modo Emergencia en todas las newsletters.
 
 ## PAUSED STATE (13 May 2026 — Sprint 13 May PM — Irán + Newsletter multicanal + Alertas web)
 - **Irán añadido a paises.ts**: Entrada completa con embajada en Teherán, visa VOA, riesgo muy-alto, emergencias. Añadido a GPI, GTI, HDI, IPC indices — ya visible en mapa de KPIs. Referencias hardcode actualizadas (106+ → 108+).

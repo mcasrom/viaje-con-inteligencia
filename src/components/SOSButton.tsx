@@ -1,5 +1,5 @@
 'use client';
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { AlertTriangle, X, MapPin, Phone, Shield, ExternalLink, Loader2, ChevronDown } from 'lucide-react';
 import { paisesData, getEmergenciasPorPais, getTodosLosPaises, type NivelRiesgo } from '@/data/paises';
 
@@ -73,6 +73,14 @@ export default function SOSButton() {
   const [hospitalsLoading, setHospitalsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [manualCode, setManualCode] = useState('');
+
+  useEffect(() => {
+    const handler = () => {
+      if (!isOpen) handleOpen();
+    };
+    globalThis.addEventListener?.('open-sos', handler);
+    return () => globalThis.removeEventListener?.('open-sos', handler);
+  }, [isOpen]);
 
   const loadHospitals = async (code: string) => {
     setHospitalsLoading(true);

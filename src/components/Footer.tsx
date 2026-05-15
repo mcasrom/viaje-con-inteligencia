@@ -49,9 +49,10 @@ export default function Footer() {
               <li><Link href="/viajes/destacados" className="text-slate-400 hover:text-white transition-colors">Itinerarios destacados</Link></li>
               <li><Link href="/lead-magnet" className="text-slate-400 hover:text-white transition-colors">Checklist Premium</Link></li>
               <li><Link href="/premium" className="text-slate-400 hover:text-white transition-colors">Premium</Link></li>
+              <li><Link href="/infografias" className="text-slate-400 hover:text-white transition-colors">Infografías Semanales</Link></li>
               <li><Link href="/api-endpoints" className="text-slate-400 hover:text-white transition-colors">API Pública</Link></li>
               <li><Link href="/coste/seguros" className="text-slate-400 hover:text-white transition-colors">Seguro Viaje</Link></li>
-              <li><button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="text-slate-400 hover:text-white transition-colors text-sm flex items-center gap-1.5 cursor-pointer" title="Botón rojo ⚠️ flotante abajo a la izquierda">🆘 Modo Emergencia <span className="text-xs text-red-500">nuevo</span></button></li>
+              <li><button onClick={() => window.dispatchEvent(new CustomEvent('open-sos'))} className="text-slate-400 hover:text-white transition-colors text-sm flex items-center gap-1.5 cursor-pointer" title="Abrir Modo Emergencia — geolocalización, teléfonos locales, contacto consular">🆘 Modo Emergencia <span className="text-xs text-red-500">nuevo</span></button></li>
               <li><a href="/api/manual" target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-white transition-colors">Manual PDF (ES)</a></li>
               <li><a href="/api/manual?lang=en" target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-white transition-colors">PDF Manual (EN)</a></li>
             </ul>
