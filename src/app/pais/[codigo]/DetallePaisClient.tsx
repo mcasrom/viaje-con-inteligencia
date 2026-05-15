@@ -21,6 +21,7 @@ import EventTimeline from '@/components/EventTimeline';
 import { useAuth } from '@/contexts/AuthContext';
 import ShareButtons from '@/components/ShareButtons';
 import AddToRadarButton from '@/components/AddToRadarButton';
+import RiskTrendIndicator from '@/components/RiskTrendIndicator';
 
 interface DetallePaisClientProps {
   pais: DatoPais;
@@ -514,6 +515,7 @@ export default function DetallePaisClient({ pais, relatedPosts = [] }: DetallePa
                      maecData.nivelRiesgo === 'sin-riesgo' ? '🟢 Sin riesgo' :
                      '⚠️ Sin datos MAEC'}
                   </span>
+                  <RiskTrendIndicator countryCode={codigo} />
                 </div>
                 
                 {maecData.fechaActualizacion && (
@@ -578,6 +580,7 @@ export default function DetallePaisClient({ pais, relatedPosts = [] }: DetallePa
                      '🟢 Sin riesgo'}
                     <span className="ml-1 text-xs opacity-70">(fuente MAEC)</span>
                   </span>
+                  <RiskTrendIndicator countryCode={codigo} />
                 </div>
 
                 <div className="flex items-center gap-2 text-slate-400 text-sm">
