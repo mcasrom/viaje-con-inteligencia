@@ -47,11 +47,25 @@
 ### Pendientes para próximo sprint
 1. **ML**: Esperar ~25 días para validación temporal CV. Mejorar features RF.
 2. **Vinculación Telegram**: Probar flujo completo `/vincular` → bot confirma.
-3. **Popup homepage**: Slogan al llegar a la página principal.
-4. **Infografía semanal riesgos** para premium.
+3. **SloganPopup homepage** ✅ — Implementado.
+4. **Infografía semanal riesgos** ✅ — Se genera los domingos vía master cron. Página `/infografias` con listado, detalle, GWI, popup en homepage. Slogans ES/EN bajo cabecera.
 5. **Outreach**: X/Twitter, Reddit, foros de viajeros.
-6. **Footer SOS**: Añadir enlace "Modo Emergencia" en footer (sección Herramientas o Comunidad).
-7. **Newsletter**: Incluir Modo Emergencia en todas las newsletters.
+6. **Footer SOS** ✅ — Ya existe en Footer.tsx.
+7. **Newsletter Modo Emergencia** ✅ — Ya incluido en newsletter-generator.ts.
+8. **API retrasos vuelos en Reclamaciones**: Integrar FlightLabs (RapidAPI) en formulario de reclamaciones para verificar retraso real por nº vuelo + fecha. Pendiente: registrar cuenta en RapidAPI + FlightLabs, obtener `X-RapidAPI-Key`. Una vez lista, integrar endpoint `/api/flights/verify-delay` y autocompletar campo retraso en ReclamacionesClient.
+9. **Score personalizado por país (ML)** ✅ — API `/api/ml/score` + componente `ScoreBadge` + selectores visuales de perfil y presupuesto en cabecera de ficha de país. Guarda a localStorage y `/api/user/preferences`. Pendiente: afinar pesos con datos reales.
+10. **Sentimiento GDELT público** ✅ — Badge de tone_score visible en `/osint` (sección "Sentimiento GDELT") y en `OsintAlertsBanner` de fichas de país. Nueva API pública `/api/osint/signals`. Schema SQL actualizado.
+11. **Admin calendario** ✅ — Página `/admin/calendario` con calendario mensual + notas del editor + timeline. API CRUD `/api/admin/editor-notes`.
+12. **Publicado RRSS 15 May**: Bluesky ✅, Mastodon ✅, Telegram ❌ (fallo local, funciona en Vercel), X ✅ (manual). Revisar resultados.
+
+### Tareas a observar / backlog
+1. **Groq para GDELT/RSS** — Clasificación semántica con Groq en vez de solo keywords para mejorar precisión de urgencia en señales OSINT
+2. **Widget "Clima de viaje" en ficha de país** — Badge emocional (😊/😐/😟) basado en media de `tone_score` últimos 7 días para ese país
+3. **Newsletter con sentimiento** — Incluir "🇪🇬 Egipto: sentimiento negativo esta semana (-6.2)" en el digest semanal
+4. **Tendencias semanales de sentimiento** — Página o widget en admin con "países con mayor caída de sentimiento" (delta semanal de tone_score)
+5. **Alertas de sentimiento** — Notificar cuando un país cruza umbral de negatividad (ej. tone_score < -7)
+6. **Persistir tone_score en incidents** — Al clusterizar señales → incidentes, conservar el tone_score medio para mostrarlo en tarjetas de incidente
+7. **Resultados RRSS 15 May** — Analizar engagement de Bluesky/Mastodon/X/Telegram
 
 ## PAUSED STATE (13 May 2026 — Sprint 13 May PM — Irán + Newsletter multicanal + Alertas web)
 - **Irán añadido a paises.ts**: Entrada completa con embajada en Teherán, visa VOA, riesgo muy-alto, emergencias. Añadido a GPI, GTI, HDI, IPC indices — ya visible en mapa de KPIs. Referencias hardcode actualizadas (106+ → 108+).
@@ -363,24 +377,12 @@ Para probar authenticated endpoints se necesita sesión válida (vía browser).
 
 ## Next Steps
 
-1. **📢 Outreach** — seguir calendario (hoy: X/Twitter manual). Mañana: Reddit.
-2. **✈️ APIs de aviación** — integrar AviationStack / Google Flights para flight costs reales.
-3. **🗄️ Migrar hardcoding** — visados, índices, eventos → Supabase.
-4. **🤖 ML** — esperar ≥30 días historial para validación temporal CV.
-2. **Monitorear deviations**: La comparación RF vs heurístico corre cada día vía cron. Verificar que no aparezcan nuevos países con deviation grande. Los 4 actuales están documentados — no requieren acción inmediata.
-3. **Expandir features RF**: Tasas de cambio, clima/estacionalidad, datos de visados — mejorarían precisión pero requieren nuevas fuentes de datos.
-4. **Probar envío newsletter manual**: Desde admin dashboard, botón "Enviar newsletter ahora". Verificar que llega a los 16 suscriptores. Después, esperar al lunes para confirmar el trigger automático del cron.
-5. **Newsletter visor en admin**: Ver HTML del newsletter generado antes de enviar (vista previa).
-6. **Tracking aperturas/clics**: Resend soporta tracking nativo. Activar flag y guardar métricas en `newsletter_history`.
-7. **Landing page CTA**: Verificar que el CTA sigue visible tras carga del mapa (fix previo con z-index). Pendiente de confirmación visual.
-8. **Vercel Hobby limit**: Solo 1 cron schedule. Master cron ejecuta todo secuencialmente. Si algún sub-task empieza a fallar por timeout, considerar migrar a plan Pro o GitHub Actions.
-
-## Próximo Día (14 May) — Blog post + Flash Access + Outreach
-1. **Blog post**: Revisar y publicar post de `content/` al blog. Luego distribuirlo a todos los canales: Telegram canal, Mastodon, BlueSky, newsletter.
-2. **Flash Access button**: Optimizar botón de acceso rápido — posiblemente añadirlo a TopBar o como CTA flotante. Evaluar qué funcionalidad debe tener (acceso directo a Radar, alertas, búsqueda de países).
-3. **Outreach**: Identificar a quién enviar esta solución — comunidades de viajeros (foros, subreddits r/travel, r/digitalnomad), travel bloggers, agencias de viajes, expats. Preparar email de outreach / post promocional.
-4. **Eliminar hardcoding**: Identificar datos hardcodeados en `src/data/` (índices, eventos, recomendaciones) y migrarlos a Supabase + APIs externas. Priorizar: datos de visados, precios de vuelos reales (Skyscanner/Google Flights), clima histórico.
-5. **ML priorities**: Expandir features del RF (tasas de cambio, estacionalidad, datos de visados). Una vez 30+ días de `maec_risk_history`, ejecutar validación temporal CV.
+1. **📢 Outreach** — Reddit (r/SideProject, r/digitalnomad), foros de viajeros (LosViajeros, Foro de Viajeros), Facebook grupos
+2. **✈️ FlightLabs en Reclamaciones** — Registrar RapidAPI + FlightLabs, crear endpoint `/api/flights/verify-delay`
+3. **🤖 ML temporal** — Esperar ~22 días para validación temporal CV. Expandir features RF (tasas de cambio, clima, visados)
+4. **🎯 Afinar pesos ScoreBadge** — Ajustar pesos de riesgo/season/coste/perfil con datos reales de uso
+5. **🔗 Vinculación Telegram** — Probar flujo completo `/vincular` → bot confirma
+6. **📊 Resultados RRSS 15 May** — Analizar engagement de Bluesky/Mastodon/X/Telegram
 
 ## Recurring Tasks
 - **Daily (post-deploy)**: Verify `/api/cron/train-models` completes successfully (R² > 0.95, < 300s).

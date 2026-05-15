@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, RefreshCw, AlertTriangle, Shield, Cloud, HeartPulse, Truck, Globe, MapPin, Clock } from 'lucide-react';
+import { ArrowLeft, RefreshCw, AlertTriangle, Shield, Cloud, HeartPulse, Truck, Globe, MapPin, Clock, Sparkles } from 'lucide-react';
 import DataRating from '@/components/DataRating';
 import AirportDelaysWidget from '@/components/AirportDelaysWidget';
 
@@ -49,6 +49,17 @@ interface Incident {
   ratingCount: number;
 }
 
+interface Signal {
+  id: string;
+  source: string;
+  title: string;
+  summary: string | null;
+  location_name: string | null;
+  tone_score: number;
+  urgency: string;
+  created_at: string;
+}
+
 function timeAgo(dateStr: string): string {
   const diff = Date.now() - new Date(dateStr).getTime();
   const mins = Math.floor(diff / 60000);
@@ -74,6 +85,7 @@ function getCountryFlag(code: string | null): string {
 
 export default function OsintFeed() {
   const [incidents, setIncidents] = useState<Incident[]>([]);
+  const [signals, setSignals] = useState<Signal[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<string>('all');
   const [lastUpdate, setLastUpdate] = useState<string | null>(null);
@@ -81,9 +93,14 @@ export default function OsintFeed() {
   const fetchIncidents = async () => {
     setLoading(true);
     try {
-      const res = await fetch('/api/incidents');
-      const data = await res.json();
-      setIncidents(data.incidents || []);
+      const [incRes, sigRes] = await Promise.all([
+        fetch('/api/incidents'),
+        fetch('/api/osint/signals?limit=15'),
+      ]);
+      const incData = await incRes.json();
+      const sigData = await sigRes.json();
+      setIncidents(incData.incidents || []);
+      setSignals(sigData.signals || []);
       setLastUpdate(new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }));
     } catch (e) {
       console.error('[OSINT] Fetch error:', e);
@@ -169,6 +186,45 @@ export default function OsintFeed() {
       </header>
 
       <main className="max-w-4xl mx-auto px-6 py-8">
+        {/* Sentimiento GDELT */}
+        {signals.length > 0 && (
+          <div className="mb-6 bg-slate-900 rounded-xl border border-slate-800 p-4">
+            <div className="flex items-center gap-2 mb-3">
+              <Sparkles className="w-4 h-4 text-purple-400" />
+              <h2 className="text-sm font-semibold text-white">Sentimiento GDELT</h2>
+              <span className="text-[10px] text-slate-500">últimas señales con análisis de tono</span>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {signals.map(s => {
+                const toneColor = s.tone_score < -5 ? 'bg-red-500/20 text-red-400 border-red-500/30' :
+                  s.tone_score < 0 ? 'bg-orange-500/20 text-orange-400 border-orange-500/30' :
+                  s.tone_score > 5 ? 'bg-green-500/20 text-green-400 border-green-500/30' :
+                  'bg-slate-500/20 text-slate-400 border-slate-500/30';
+                return (
+                  <div
+                    key={s.id}
+                    className="bg-slate-800/50 rounded-lg px-3 py-2 border border-slate-700/50 max-w-xs"
+                  >
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className={`px-1.5 py-0.5 rounded text-[10px] font-bold border ${toneColor}`}>
+                        {s.tone_score > 0 ? '+' : ''}{Math.round(s.tone_score)}
+                      </span>
+                      <span className="text-[10px] text-slate-500 uppercase">{s.source}</span>
+                      <span className="text-[10px] text-slate-600">
+                        {new Date(s.created_at).toLocaleDateString('es-ES', { day: '2-digit', month: 'short' })}
+                      </span>
+                    </div>
+                    <p className="text-xs text-slate-300 line-clamp-2">{s.summary || s.title}</p>
+                    {s.location_name && (
+                      <p className="text-[10px] text-slate-500 mt-1">📍 {s.location_name}</p>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
         {/* Airport Delays Widget */}
         <div className="mb-8">
           <AirportDelaysWidget />

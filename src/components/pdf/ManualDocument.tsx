@@ -278,7 +278,7 @@ export default function ManualDocument({
   const todayStr = today.toLocaleDateString(lang === 'en' ? 'en-US' : 'es-ES', { year: 'numeric', month: 'long', day: 'numeric' });
   const validUntil = new Date(today.getTime() + 90 * 86400000);
   const validUntilStr = validUntil.toLocaleDateString(lang === 'en' ? 'en-US' : 'es-ES', { year: 'numeric', month: 'long', day: 'numeric' });
-  const version = process.env.NEXT_PUBLIC_APP_VERSION || '1.0.0';
+  const version = process.env.NEXT_PUBLIC_APP_VERSION || '2.0.0';
   const copyrightYear = today.getFullYear();
 
   const riesgoCount: Record<NivelRiesgo, number> = { 'sin-riesgo': 0, 'bajo': 0, 'medio': 0, 'alto': 0, 'muy-alto': 0 };
@@ -314,8 +314,8 @@ export default function ManualDocument({
             <Text style={styles.updateTitle}>{t('Acerca de esta guía', 'About this guide')}</Text>
             <Text style={styles.updateText}>
               {t(
-                `Este manual se generó el ${todayStr} con datos actualizados del Ministerio de Asuntos Exteriores (MAEC), fuentes OSINT y calendario de eventos globales. Los niveles de riesgo pueden cambiar. Descarga una nueva versión en cualquier momento desde viajeinteligencia.com/dashboard o fuerza la actualización con ?auth=false en la URL.`,
-                `This manual was generated on ${todayStr} with updated data from the Ministry of Foreign Affairs (MAEC), OSINT sources and global events calendar. Risk levels may change. Download a new version anytime at viajeinteligencia.com/en/dashboard or force refresh with ?auth=false in the URL.`
+                `Este manual se generó el ${todayStr} con datos actualizados del Ministerio de Asuntos Exteriores (MAEC), US State Dept, GDELT, USGS, GDACS y calendario de eventos. Incluye 19 herramientas: mapa interactivo, chat IA, radar de viaje con proyección 12 meses, score ML personalizado por perfil viajero, infografías semanales, newsletter IA, alertas OSINT con sentimiento GDELT, clustering ML, comparador de seguros, y más. Los niveles de riesgo pueden cambiar. Descarga una nueva versión desde viajeinteligencia.com/dashboard o forza actualización con ?auth=false.`,
+                `This manual was generated on ${todayStr} with updated data from the Ministry of Foreign Affairs (MAEC), US State Dept, GDELT, USGS, GDACS and events calendar. Includes 19 tools: interactive map, AI chat, travel radar with 12-month projection, personalized ML score by traveler profile, weekly infographics, AI newsletter, OSINT alerts with GDELT sentiment, ML clustering, insurance comparison, and more. Risk levels may change. Download a new version at viajeinteligencia.com/en/dashboard or force refresh with ?auth=false.`
               )}
             </Text>
           </View>
@@ -511,6 +511,36 @@ export default function ManualDocument({
               <Text style={[styles.featureName, { fontSize: 14 }]}>[BLOG]</Text>
               <Text style={styles.featureName}>Blog</Text>
               <Text style={styles.featureDesc}>{t('Artículos, análisis y consejos sobre destinos.', 'Articles, analysis and tips.')}</Text>
+            </View>
+            <View style={styles.featureCard}>
+              <Text style={[styles.featureName, { fontSize: 14 }]}>[RDR]</Text>
+              <Text style={styles.featureName}>{t('Radar de Viaje', 'Travel Radar')}</Text>
+              <Text style={styles.featureDesc}>{t('Proyección de riesgo 12 meses, watchlist, ajuste por estacionalidad.', '12-month risk projection, watchlist, seasonal adjustment.')}</Text>
+            </View>
+            <View style={styles.featureCard}>
+              <Text style={[styles.featureName, { fontSize: 14 }]}>[SCR]</Text>
+              <Text style={styles.featureName}>{t('Score Personalizado', 'Personalized Score')}</Text>
+              <Text style={styles.featureDesc}>{t('Puntuación ML 0-100 combinando riesgo, temporada, coste y perfil viajero.', 'ML score 0-100 combining risk, season, cost and traveler profile.')}</Text>
+            </View>
+            <View style={styles.featureCard}>
+              <Text style={[styles.featureName, { fontSize: 14 }]}>[INF]</Text>
+              <Text style={styles.featureName}>{t('Infografías', 'Infographics')}</Text>
+              <Text style={styles.featureDesc}>{t('Briefing visual semanal con GWI, top riesgos y distribución.', 'Weekly visual briefing with GWI, top risks and distribution.')}</Text>
+            </View>
+            <View style={styles.featureCard}>
+              <Text style={[styles.featureName, { fontSize: 14 }]}>[NWS]</Text>
+              <Text style={styles.featureName}>{t('Newsletter IA', 'AI Newsletter')}</Text>
+              <Text style={styles.featureDesc}>{t('Digest semanal IA con alertas, destino destacado y modo emergencia.', 'AI weekly digest with alerts, destination spotlight and emergency mode.')}</Text>
+            </View>
+            <View style={styles.featureCard}>
+              <Text style={[styles.featureName, { fontSize: 14 }]}>[SENT]</Text>
+              <Text style={styles.featureName}>{t('Sentimiento GDELT', 'GDELT Sentiment')}</Text>
+              <Text style={styles.featureDesc}>{t('Análisis de tono en tiempo real desde GDELT, RSS y Reddit.', 'Real-time tone analysis from GDELT, RSS and Reddit.')}</Text>
+            </View>
+            <View style={styles.featureCard}>
+              <Text style={[styles.featureName, { fontSize: 14 }]}>[CAL]</Text>
+              <Text style={styles.featureName}>{t('Calendario Editorial', 'Editorial Calendar')}</Text>
+              <Text style={styles.featureDesc}>{t('Seguimiento de infografías, newsletters y notas del editor.', 'Track infographics, newsletters and editor notes.')}</Text>
             </View>
           </View>
 

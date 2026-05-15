@@ -58,14 +58,28 @@ export default function OsintAlertsBanner({ countryName }: OsintAlertsBannerProp
                 Hemos detectado {signals.length} señal(es) reciente(s) relacionadas con <strong>{countryName}</strong> desde redes sociales.
               </p>
               <div className="space-y-2">
-                {signals.slice(0, 3).map((s, i) => (
-                  <div key={i} className="text-sm bg-black/20 p-2 rounded">
-                    <span className="opacity-75 font-medium uppercase text-xs mr-2">
-                      [{s.urgency}]
+                {signals.slice(0, 3).map((s, i) => {
+                  const toneScore = s.tone_score;
+                  const toneBadge = toneScore !== null && toneScore !== undefined ? (
+                    <span className={`ml-1 px-1 py-0.5 rounded text-[10px] font-bold ${
+                      toneScore < -5 ? 'bg-red-500/30 text-red-300' :
+                      toneScore < 0 ? 'bg-orange-500/30 text-orange-300' :
+                      toneScore > 5 ? 'bg-green-500/30 text-green-300' :
+                      'bg-slate-500/30 text-slate-300'
+                    }`}>
+                      {toneScore > 0 ? '+' : ''}{Math.round(toneScore)}
                     </span>
-                    {s.summary}
-                  </div>
-                ))}
+                  ) : null;
+                  return (
+                    <div key={i} className="text-sm bg-black/20 p-2 rounded">
+                      <span className="opacity-75 font-medium uppercase text-xs mr-1">
+                        [{s.urgency}]
+                      </span>
+                      {toneBadge}
+                      <span className="ml-1">{s.summary}</span>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </div>

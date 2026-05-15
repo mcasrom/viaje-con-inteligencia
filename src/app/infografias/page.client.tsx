@@ -82,6 +82,10 @@ export default function InfografiasClient() {
           <p className="text-slate-400 text-lg max-w-2xl">
             Análisis visual semanal con datos OSINT, MAEC, GPI, GTI y fuentes abiertas. El <strong className="text-amber-400">Global Weekly Index (GWI)</strong> mide la tensión global en viajes.
           </p>
+          <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-1 text-xs text-slate-600">
+            <span>ES: <span className="text-slate-500">Viaje con Inteligencia: Tu radar de seguridad global impulsado por IA.</span></span>
+            <span>EN: <span className="text-slate-500">Smart Traveler: AI-Driven Global Risk Radar for the Conscious Explorer.</span></span>
+          </div>
         </div>
       </div>
 

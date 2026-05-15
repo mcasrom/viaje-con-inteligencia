@@ -22,6 +22,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import ShareButtons from '@/components/ShareButtons';
 import AddToRadarButton from '@/components/AddToRadarButton';
 import RiskTrendIndicator from '@/components/RiskTrendIndicator';
+import ScoreBadge from '@/components/ScoreBadge';
 
 interface DetallePaisClientProps {
   pais: DatoPais;
@@ -48,6 +49,7 @@ export default function DetallePaisClient({ pais, relatedPosts = [] }: DetallePa
   const [poisType, setPoisType] = useState<string>('tourist');
   const [poisError, setPoisError] = useState<string | null>(null);
   const [travelerProfile, setTravelerProfile] = useState<string>('mochilero');
+  const [travelerBudget, setTravelerBudget] = useState<string>('medio');
   const [profileOpen, setProfileOpen] = useState(false);
   const [alternatives, setAlternatives] = useState<any[] | null>(null);
   const [altLoading, setAltLoading] = useState(false);
@@ -122,22 +124,36 @@ export default function DetallePaisClient({ pais, relatedPosts = [] }: DetallePa
           if (data.preferences?.traveler_type) {
             setTravelerProfile(data.preferences.traveler_type);
           }
+          if (data.preferences?.budget_range) {
+            setTravelerBudget(data.preferences.budget_range);
+          }
         })
         .catch(() => {});
     }
   }, [user, authLoading]);
 
-  const saveProfile = async (profile: string) => {
+  useEffect(() => {
+    const saved = typeof window !== 'undefined' ? localStorage.getItem('viajeia_preferences') : null;
+    if (saved) {
+      try {
+        const prefs = JSON.parse(saved);
+        if (prefs.profile) setTravelerProfile(prefs.profile);
+        if (prefs.budget) setTravelerBudget(prefs.budget);
+      } catch {}
+    }
+  }, []);
+
+  const savePreferences = (profile: string, budget: string) => {
     setTravelerProfile(profile);
+    setTravelerBudget(budget);
+    localStorage.setItem('viajeia_preferences', JSON.stringify({ profile, budget }));
     setPoisData([]);
     if (user) {
-      try {
-        await fetch('/api/user/preferences', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ traveler_type: profile }),
-        });
-      } catch {}
+      fetch('/api/user/preferences', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ traveler_type: profile, budget_range: budget }),
+      }).catch(() => {});
     }
   };
 
@@ -246,6 +262,53 @@ export default function DetallePaisClient({ pais, relatedPosts = [] }: DetallePa
               <div className="flex items-center gap-2">
                 <AlertTriangle className="w-6 h-6" />
                 <span>{config.label}</span>
+              </div>
+            </div>
+            <div className="flex flex-col items-end gap-2">
+              <ScoreBadge countryCode={codigo} profile={travelerProfile} budget={travelerBudget} />
+              <div className="flex flex-wrap items-center justify-end gap-1">
+                <span className="text-[10px] text-slate-500 mr-0.5">Perfil:</span>
+                {[
+                  { id: 'mochilero', label: '🎒' },
+                  { id: 'lujo', label: '💎' },
+                  { id: 'familiar', label: '👨‍👩‍👧‍👦' },
+                  { id: 'aventura', label: '🏔️' },
+                  { id: 'negocios', label: '💼' },
+                ].map(p => (
+                  <button
+                    key={p.id}
+                    onClick={() => savePreferences(p.id, travelerBudget)}
+                    className={`px-1.5 py-0.5 rounded text-[10px] font-medium transition-colors ${
+                      travelerProfile === p.id
+                        ? 'bg-amber-600/30 text-amber-300 border border-amber-500/40'
+                        : 'bg-slate-700/50 text-slate-500 hover:text-slate-300 border border-transparent'
+                    }`}
+                    title={p.id}
+                  >
+                    {p.label}
+                  </button>
+                ))}
+              </div>
+              <div className="flex flex-wrap items-center justify-end gap-1">
+                <span className="text-[10px] text-slate-500 mr-0.5">Presupuesto:</span>
+                {[
+                  { id: 'bajo', label: 'Bajo' },
+                  { id: 'medio', label: 'Medio' },
+                  { id: 'alto', label: 'Alto' },
+                  { id: 'lujo', label: 'Lujo' },
+                ].map(b => (
+                  <button
+                    key={b.id}
+                    onClick={() => savePreferences(travelerProfile, b.id)}
+                    className={`px-1.5 py-0.5 rounded text-[10px] font-medium transition-colors ${
+                      travelerBudget === b.id
+                        ? 'bg-emerald-600/30 text-emerald-300 border border-emerald-500/40'
+                        : 'bg-slate-700/50 text-slate-500 hover:text-slate-300 border border-transparent'
+                    }`}
+                  >
+                    {b.label}
+                  </button>
+                ))}
               </div>
             </div>
           </div>
@@ -710,7 +773,7 @@ export default function DetallePaisClient({ pais, relatedPosts = [] }: DetallePa
               ].map(p => (
                 <button
                   key={p.id}
-                  onClick={() => saveProfile(p.id)}
+                  onClick={() => savePreferences(p.id, travelerBudget)}
                   className={`px-2 py-1 rounded-lg text-[10px] font-medium transition-colors ${
                     travelerProfile === p.id
                       ? 'bg-blue-600 text-white'

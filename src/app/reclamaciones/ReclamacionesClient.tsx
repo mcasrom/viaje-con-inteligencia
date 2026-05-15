@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, FileText, Crown, Download, Share2, Plane, Building, Hotel, Car, Bus, AlertTriangle, Clock, Check, Sparkles, Copy, ExternalLink } from 'lucide-react';
+import { ArrowLeft, FileText, Crown, Download, Share2, Plane, Building, Hotel, Car, Bus, AlertTriangle, Clock, Check, Sparkles, Copy, ExternalLink, Loader2, Search } from 'lucide-react';
 import { useSubscription } from '@/hooks/useSubscription';
 
 const CLAIM_TYPES = [
@@ -150,10 +150,54 @@ export default function ReclamacionesClient() {
     descripcion: '',
   });
 
+  const [verifyLoading, setVerifyLoading] = useState(false);
+  const [verifyError, setVerifyError] = useState('');
+
   const legal = claimType ? LEGAL_REFERENCES[claimType as keyof typeof LEGAL_REFERENCES] : null;
 
   const handleChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const verifyDelay = async () => {
+    if (!formData.vuelo || !formData.fecha) {
+      setVerifyError('Introduce nº de vuelo y fecha primero');
+      return;
+    }
+    setVerifyLoading(true);
+    setVerifyError('');
+    try {
+      const res = await fetch(`/api/flights/verify-delay?flight=${encodeURIComponent(formData.vuelo)}&date=${encodeURIComponent(formData.fecha)}`);
+      const data = await res.json();
+      if (!data.success || !data.found) {
+        setVerifyError('Vuelo no encontrado. Verifica el nº y la fecha.');
+        return;
+      }
+      const delay = data.delayMinutes;
+      if (delay != null && delay > 0) {
+        const hours = Math.floor(delay / 60);
+        const mins = delay % 60;
+        const text = hours > 0 ? `${hours}h ${mins}min (${delay} min)` : `${delay} min`;
+        setFormData(prev => ({ ...prev, retraso: text }));
+      } else {
+        setVerifyError('Vuelo encontrado pero sin retraso registrado (0 min).');
+      }
+      if (data.departure?.scheduled) {
+        const d = new Date(data.departure.scheduled);
+        setFormData(prev => ({ ...prev, horaSalida: d.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }) }));
+      }
+      if (data.arrival?.actual) {
+        const d = new Date(data.arrival.actual);
+        setFormData(prev => ({ ...prev, horaLlegada: d.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }) }));
+      }
+      if (data.airline) {
+        setFormData(prev => ({ ...prev, aerolinea: data.airline }));
+      }
+    } catch {
+      setVerifyError('Error de conexión al verificar vuelo.');
+    } finally {
+      setVerifyLoading(false);
+    }
   };
 
   const generateBasicText = () => {
@@ -441,7 +485,18 @@ abogado especializado en derecho aeronáutico.
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <input value={formData.aerolinea} onChange={e => handleChange('aerolinea', e.target.value)} placeholder={claimType === 'hotel' ? 'Nombre del hotel' : claimType === 'alquiler' ? 'Empresa de alquiler' : 'Aerolínea / Empresa'} className="px-4 py-3 bg-slate-900 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:border-blue-500 focus:outline-none text-sm" />
                 {claimType !== 'hotel' && claimType !== 'agencia' && claimType !== 'alquiler' && (
-                  <input value={formData.vuelo} onChange={e => handleChange('vuelo', e.target.value)} placeholder="Nº vuelo (ej: IB3456)" className="px-4 py-3 bg-slate-900 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:border-blue-500 focus:outline-none text-sm" />
+                  <div className="flex gap-2">
+                    <input value={formData.vuelo} onChange={e => handleChange('vuelo', e.target.value)} placeholder="Nº vuelo (ej: IB3456)" className="flex-1 px-4 py-3 bg-slate-900 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:border-blue-500 focus:outline-none text-sm" />
+                    <button
+                      onClick={verifyDelay}
+                      disabled={verifyLoading || !formData.vuelo || !formData.fecha}
+                      className="flex items-center gap-1 px-3 py-3 bg-blue-600/20 border border-blue-500/30 text-blue-400 rounded-lg hover:bg-blue-600/30 transition-colors text-xs font-medium disabled:opacity-40 shrink-0"
+                      title="Verificar retraso real"
+                    >
+                      {verifyLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
+                      <span className="hidden sm:inline">Verificar</span>
+                    </button>
+                  </div>
                 )}
                 <input type="date" value={formData.fecha} onChange={e => handleChange('fecha', e.target.value)} className="px-4 py-3 bg-slate-900 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:border-blue-500 focus:outline-none text-sm" />
                 <input value={formData.reserva} onChange={e => handleChange('reserva', e.target.value)} placeholder="Nº reserva / Localizador" className="px-4 py-3 bg-slate-900 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:border-blue-500 focus:outline-none text-sm" />
@@ -455,7 +510,12 @@ abogado especializado en derecho aeronáutico.
                   <>
                     <input value={formData.horaSalida} onChange={e => handleChange('horaSalida', e.target.value)} placeholder="Hora salida prevista" className="px-4 py-3 bg-slate-900 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:border-blue-500 focus:outline-none text-sm" />
                     <input value={formData.horaLlegada} onChange={e => handleChange('horaLlegada', e.target.value)} placeholder="Hora llegada real" className="px-4 py-3 bg-slate-900 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:border-blue-500 focus:outline-none text-sm" />
-                    <input value={formData.retraso} onChange={e => handleChange('retraso', e.target.value)} placeholder="Retraso (ej: 4 horas)" className="px-4 py-3 bg-slate-900 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:border-blue-500 focus:outline-none text-sm" />
+                    <div>
+                      <input value={formData.retraso} onChange={e => handleChange('retraso', e.target.value)} placeholder="Retraso (ej: 4 horas)" className="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:border-blue-500 focus:outline-none text-sm" />
+                      {verifyError && (
+                        <p className="text-red-400 text-[10px] mt-1">{verifyError}</p>
+                      )}
+                    </div>
                   </>
                 )}
                 <input type="number" step="0.01" value={formData.importe} onChange={e => handleChange('importe', e.target.value)} placeholder="Importe pagado (€)" className="px-4 py-3 bg-slate-900 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:border-blue-500 focus:outline-none text-sm" />
@@ -477,6 +537,21 @@ abogado especializado en derecho aeronáutico.
                     </li>
                   ))}
                 </ul>
+              </div>
+            )}
+
+            {/* Verify delay hint */}
+            {(claimType === 'retraso' || claimType === 'cancelacion' || claimType === 'overbooking') && (
+              <div className="bg-blue-900/20 rounded-xl p-4 border border-blue-700/30">
+                <div className="flex items-start gap-3">
+                  <Search className="w-4 h-4 text-blue-400 shrink-0 mt-0.5" />
+                  <div>
+                    <p className="text-blue-300 text-xs font-medium mb-1">Verificar retraso real del vuelo</p>
+                    <p className="text-blue-400/70 text-[10px] leading-relaxed">
+                      Introduce el nº de vuelo (ej: IB3456) y la fecha, luego pulsa <strong>Verificar</strong> para consultar el retraso real registrado. Los datos se rellenan automáticamente. Si no encuentra el vuelo, puedes introducir los datos manualmente.
+                    </p>
+                  </div>
+                </div>
               </div>
             )}
 

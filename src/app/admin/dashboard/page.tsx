@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Shield, Clock, Mail, Globe, Users, AlertTriangle, CheckCircle, XCircle, FileText, Database, MessageSquare, ExternalLink, RefreshCw, Play, Send, Radio, Bot, LogOut, DollarSign, Key, Download, Eye } from 'lucide-react';
+import { Shield, Clock, Mail, Globe, Users, AlertTriangle, CheckCircle, XCircle, FileText, Database, MessageSquare, ExternalLink, RefreshCw, Play, Send, Radio, Bot, LogOut, DollarSign, Key, Download, Eye, Calendar as CalendarIcon } from 'lucide-react';
 
 export default function AdminDashboard() {
   const router = useRouter();
@@ -442,6 +442,20 @@ export default function AdminDashboard() {
             </a>
             <a href="/api-endpoints" target="_blank" className="inline-flex items-center gap-2 px-4 py-2 bg-slate-700 border border-slate-600 text-slate-300 rounded-lg hover:bg-slate-600 transition-colors text-sm font-medium">
               Documentación <ExternalLink className="w-4 h-4" />
+            </a>
+          </div>
+        </section>
+
+        {/* Calendario Editorial */}
+        <section className="bg-slate-800 rounded-2xl border border-slate-700 p-6">
+          <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+            <CalendarIcon className="w-5 h-5 text-emerald-400" />
+            Calendario Editorial
+          </h2>
+          <p className="text-slate-400 text-sm mb-4">Seguimiento de Infografías, Newsletters y Notas del Editor.</p>
+          <div className="flex gap-3">
+            <a href="/admin/calendario" className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600/20 border border-emerald-500/30 text-emerald-400 rounded-lg hover:bg-emerald-600/30 transition-colors text-sm font-medium">
+              Ver calendario <CalendarIcon className="w-4 h-4" />
             </a>
           </div>
         </section>

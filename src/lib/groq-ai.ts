@@ -4,6 +4,8 @@ import { createLogger } from '@/lib/logger';
 import { isCircuitOpen, recordSuccess, recordFailure } from '@/lib/circuit-breaker';
 import { trackFailure, trackSuccess } from '@/lib/alert-webhook';
 import { checkGlobalGroqRateLimit } from '@/lib/rate-limit-server';
+import { SEASONALITY_MAP } from '@/data/tci-engine';
+import { travelAttributes } from '@/data/clustering';
 
 const log = createLogger('GroqAI');
 const CB_NAME = 'groq-api';
@@ -42,6 +44,42 @@ DATOS DEL PAÍS (actualizados):
 - Moneda: ${pais.moneda}
 - Idioma: ${pais.idioma}
 - Último informe: ${pais.ultimoInforme}
+`.trim();
+}
+
+function getCountryEnrichedData(countryCode: string): string {
+  const pais = paisesData[countryCode];
+  if (!pais) return '';
+
+  const now = new Date();
+  const monthKey = String(now.getMonth() + 1);
+  const monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+  const currentMonth = monthNames[now.getMonth()];
+
+  const seasonData = SEASONALITY_MAP[countryCode];
+  const seasonIndex = seasonData?.[monthKey];
+  const seasonLabel = seasonIndex
+    ? (seasonIndex < 60 ? 'temporada baja' : seasonIndex < 90 ? 'temporada media' : 'temporada alta')
+    : 'desconocida';
+
+  const attrs = travelAttributes[countryCode];
+  const bestMonths = attrs?.mejorEpoca?.join(', ') || 'N/A';
+
+  const continentCosts: Record<string, string> = {
+    'Europa': '60-120€/día',
+    'Américas': '40-100€/día',
+    'Asia': '25-80€/día',
+    'África': '30-70€/día',
+    'Oceanía': '70-150€/día',
+  };
+  const costRange = continentCosts[pais.continente] || '40-100€/día';
+
+  return `
+DATOS ENRIQUECIDOS DEL PAÍS:
+- Temporada actual (${currentMonth}): ${seasonLabel} (índice: ${seasonIndex || 'N/A'})
+- Mejores meses para viajar: ${bestMonths}
+- Coste diario estimado: ${costRange}
+- Cluster turístico: ${attrs ? Object.entries(attrs).filter(([k]) => ['playa', 'cultural', 'naturaleza', 'familiar'].includes(k)).filter(([, v]) => v && v > 0).map(([k, v]) => `${k}: ${v}/10`).join(', ') || 'N/A' : 'N/A'}
 `.trim();
 }
 
@@ -257,9 +295,11 @@ export async function* chatWithAIStream(
   context: { country?: string; previousMessages?: string[]; model?: string }
 ): AsyncGenerator<string, string, unknown> {
   const countryCode = context.country?.toLowerCase();
-  const countryData = countryCode ? getCountryRiskInfo(countryCode) : '';
-  const countryContext = countryData
-    ? `El usuario pregunta sobre ${context.country}.\n${countryData}`
+  const countryRisk = countryCode ? getCountryRiskInfo(countryCode) : '';
+  const countryEnriched = countryCode ? getCountryEnrichedData(countryCode) : '';
+  const enrichedBlock = countryEnriched ? `\n${countryEnriched}` : '';
+  const countryContext = countryRisk
+    ? `El usuario pregunta sobre ${context.country}.\n${countryRisk}${enrichedBlock}`
     : context.country
     ? `El usuario está preguntando sobre viajes a/desde ${context.country}. (Datos no disponibles en cache)`
     : '';
@@ -362,9 +402,11 @@ export async function chatWithAI(
   context: { country?: string; previousMessages?: string[]; model?: string }
 ): Promise<string> {
   const countryCode = context.country?.toLowerCase();
-  const countryData = countryCode ? getCountryRiskInfo(countryCode) : '';
-  const countryContext = countryData
-    ? `El usuario pregunta sobre ${context.country}.\n${countryData}`
+  const countryRisk = countryCode ? getCountryRiskInfo(countryCode) : '';
+  const countryEnriched = countryCode ? getCountryEnrichedData(countryCode) : '';
+  const enrichedBlock = countryEnriched ? `\n${countryEnriched}` : '';
+  const countryContext = countryRisk
+    ? `El usuario pregunta sobre ${context.country}.\n${countryRisk}${enrichedBlock}`
     : context.country
     ? `El usuario está preguntando sobre viajes a/desde ${context.country}. (Datos no disponibles en cache)`
     : '';
