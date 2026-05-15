@@ -343,12 +343,17 @@ abogado especializado en derecho aeronáutico.
           </div>
 
           {/* Free vs Premium comparison */}
-          <div className="grid md:grid-cols-2 gap-4 mt-12">
+          <div className="text-center mb-6 mt-12">
+            <p className="text-blue-400/70 text-xs font-medium tracking-wide mb-1">Tu radar de seguridad global impulsado por IA.</p>
+            <p className="text-slate-500 text-xs">Selecciona un tipo de reclamación para empezar. Gratuito o Premium.</p>
+          </div>
+          <div className="grid md:grid-cols-2 gap-4">
             <div className="bg-slate-800/60 rounded-xl p-5 border border-slate-700/50">
               <h3 className="text-white font-bold text-sm mb-3 flex items-center gap-2">
                 <FileText className="w-4 h-4 text-blue-400" />
                 Gratuito
               </h3>
+              <p className="text-slate-500 text-[10px] mb-3">Para reclamaciones simples sin necesidad de fundamentos legales.</p>
               <ul className="space-y-2 text-xs text-slate-400">
                 <li className="flex items-start gap-2"><Check className="w-3 h-3 text-blue-400 mt-0.5 shrink-0" /> Plantilla genérica</li>
                 <li className="flex items-start gap-2"><Check className="w-3 h-3 text-blue-400 mt-0.5 shrink-0" /> Datos básicos del incidente</li>
@@ -362,6 +367,7 @@ abogado especializado en derecho aeronáutico.
                 <Crown className="w-4 h-4 text-amber-400" />
                 Premium
               </h3>
+              <p className="text-amber-400/60 text-[10px] mb-3">Documento formal con base jurídica sólida para presentar ante la empresa o AESA.</p>
               <ul className="space-y-2 text-xs text-slate-300">
                 <li className="flex items-start gap-2"><Check className="w-3 h-3 text-amber-400 mt-0.5 shrink-0" /> Documento completo y formal</li>
                 <li className="flex items-start gap-2"><Check className="w-3 h-3 text-amber-400 mt-0.5 shrink-0" /> Referencias legales específicas</li>
@@ -579,9 +585,9 @@ abogado especializado en derecho aeronáutico.
         {!isPremium && (
           <div className="mt-6 bg-gradient-to-r from-amber-500/10 to-orange-500/10 rounded-xl p-5 border border-amber-500/30 text-center">
             <Crown className="w-6 h-6 text-amber-400 mx-auto mb-2" />
-            <h3 className="text-white font-bold mb-1">¿Quieres la versión completa?</h3>
+            <h3 className="text-white font-bold mb-1">Documento con base legal sólida</h3>
             <p className="text-slate-400 text-xs mb-3">
-              Documento con datos personales, referencias legales específicas y descarga PDF.
+              Con Premium obtienes referencias a los reglamentos europeos aplicables, tus datos personales incluidos y descarga en PDF listo para presentar.
             </p>
             <Link href="/free-trial" className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-amber-500 to-orange-500 text-slate-900 font-bold rounded-xl text-sm hover:from-amber-400 hover:to-orange-400 transition-all">
               Probar 7 días gratis

@@ -208,6 +208,20 @@ const translations: Translation = {
     es: 'Miles de viajeros confían en Viaje con Inteligencia',
     en: 'Thousands of travelers trust Travel with Intelligence',
   },
+
+  // Slogans
+  'slogan.tagline': {
+    es: 'Tu radar de seguridad global impulsado por IA.',
+    en: 'Your AI-powered global travel safety radar.',
+  },
+  'slogan.full': {
+    es: 'Viaje con Inteligencia: Tu radar de seguridad global impulsado por IA.',
+    en: 'Smart Traveler: AI-Driven Global Risk Radar for the Conscious Explorer.',
+  },
+  'premium.upsell': {
+    es: 'Desbloquea análisis ML, alertas en tiempo real, chat IA ilimitado y herramientas exclusivas.',
+    en: 'Unlock ML analysis, real-time alerts, unlimited AI chat and exclusive tools.',
+  },
 };
 
 interface I18nContextType {

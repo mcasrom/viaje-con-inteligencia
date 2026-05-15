@@ -33,9 +33,10 @@ export default function Footer() {
 
         <div className="grid md:grid-cols-5 gap-8 mb-8">
           <div>
-            <h3 className="text-lg font-bold text-white mb-3">Viaje con Inteligencia</h3>
+            <h3 className="text-lg font-bold text-white mb-1">Viaje con Inteligencia</h3>
+            <p className="text-blue-400/70 text-xs font-medium tracking-wide mb-2">{t('slogan.tagline')}</p>
             <p className="text-slate-400 text-sm">
-              Tu guía de viajes inteligentes. {stats.totalPaises} países con riesgo MAEC, Chat IA, comparador, KPIs y herramientas Premium.
+              {stats.totalPaises} países con riesgo MAEC, Chat IA, comparador, KPIs y herramientas Premium.
             </p>
           </div>
           <div>
