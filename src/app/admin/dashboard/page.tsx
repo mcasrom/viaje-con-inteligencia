@@ -479,6 +479,29 @@ export default function AdminDashboard() {
               Ver perfil <ExternalLink className="w-3 h-3" />
             </a>
           </div>
+          <div className="mt-4 bg-slate-700/50 rounded-xl p-4">
+            <p className="text-slate-300 text-sm font-medium mb-2 flex items-center gap-2">
+              <Bot className="w-4 h-4 text-cyan-400" />
+              Telegram Webhook
+            </p>
+            <p className="text-slate-400 text-xs mb-3">Registra o renueva la URL del webhook del bot en Telegram.</p>
+            <button
+              onClick={async () => {
+                setActionLoading('telegram-webhook');
+                try {
+                  const res = await fetch('/api/admin/set-telegram-webhook', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' });
+                  const data = await res.json();
+                  setActionResult({ action: 'telegram-webhook', success: data.ok, result: data });
+                  fetchStats();
+                } catch { setActionResult({ action: 'telegram-webhook', success: false, result: { error: 'Error de conexión' } }); }
+                setActionLoading(null);
+              }}
+              disabled={actionLoading === 'telegram-webhook'}
+              className="w-full flex items-center justify-center gap-2 px-3 py-2 bg-cyan-600 hover:bg-cyan-500 disabled:opacity-50 text-white text-sm font-medium rounded-lg transition-colors"
+            >
+              {actionLoading === 'telegram-webhook' ? 'Configurando...' : 'Configurar Webhook'}
+            </button>
+          </div>
         </section>
 
         {/* Blog Posts */}

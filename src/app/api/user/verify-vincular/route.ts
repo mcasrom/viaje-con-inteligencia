@@ -5,6 +5,22 @@ import { createLogger } from '@/lib/logger';
 
 const log = createLogger('VerifyVincular');
 
+const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || '';
+const TELEGRAM_API = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}`;
+
+async function sendTelegramMessage(chatId: number, text: string) {
+  if (!TELEGRAM_BOT_TOKEN) return;
+  try {
+    await fetch(`${TELEGRAM_API}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ chat_id: chatId, text, parse_mode: 'Markdown' }),
+    });
+  } catch (e) {
+    log.error('Error sending Telegram confirmation', e);
+  }
+}
+
 export async function POST(request: NextRequest) {
   try {
     const supabase = await createSupabaseServerClient();
@@ -52,6 +68,12 @@ export async function POST(request: NextRequest) {
       .eq('id', vincular.id);
 
     log.info(`Usuario ${user.id} vinculado con Telegram ${vincular.telegram_chat_id}`);
+
+    // Notificar al usuario en Telegram que la vinculación fue exitosa
+    await sendTelegramMessage(
+      vincular.telegram_chat_id,
+      `✅ *Cuenta vinculada correctamente*\n\nTu cuenta web now está conectada con Telegram. Tus alertas de viaje se sincronizarán automáticamente entre la web y el bot.\n\nPuedes gestionar tus suscripciones desde viajeinteligencia.com/alertas o usando /mis-alertas aquí en el chat.`
+    );
 
     return NextResponse.json({ ok: true, linked: true });
   } catch (error) {
