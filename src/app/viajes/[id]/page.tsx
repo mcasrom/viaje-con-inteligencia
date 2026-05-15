@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter, useParams } from 'next/navigation';
-import { ArrowLeft, MapPin, Calendar, DollarSign, Sparkles, Loader2, Send, Plane, Clock, Pencil, X, Check, FileDown, Download, Globe, GlobeOff } from 'lucide-react';
+import { ArrowLeft, MapPin, Calendar, DollarSign, Sparkles, Loader2, Send, Plane, Clock, Pencil, X, Check, FileDown, Download, Globe, GlobeOff, Shield, Info } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import type { Trip } from '@/lib/supabase';
 import PDFExportButton from '@/components/PDFExportButton';
@@ -41,6 +41,16 @@ export default function ViajeDetallePage() {
   const [editName, setEditName] = useState('');
   const [editStatus, setEditStatus] = useState<Trip['status']>('draft');
 
+  const [riskScore, setRiskScore] = useState<{
+    score: number;
+    label: string;
+    breakdown: Record<string, number>;
+    labels: Record<string, string>;
+    country_name?: string;
+    flag?: string;
+  } | null>(null);
+  const [riskLoading, setRiskLoading] = useState(false);
+
   useEffect(() => {
     if (!authLoading && !user) {
       router.push('/');
@@ -75,6 +85,15 @@ export default function ViajeDetallePage() {
 
     fetchTrip();
   }, [user, tripId, router]);
+
+  useEffect(() => {
+    if (!trip || !trip.country_code) return;
+    setRiskLoading(true);
+    fetch(`/api/trips/${tripId}/risk-score`)
+      .then(r => r.ok ? r.json() : null)
+      .then(data => setRiskScore(data))
+      .finally(() => setRiskLoading(false));
+  }, [trip, tripId]);
 
   const handleRegenerateItinerary = async () => {
     if (!trip) return;
@@ -386,6 +405,107 @@ export default function ViajeDetallePage() {
             {error}
           </div>
         )}
+
+        <div className="bg-slate-800 rounded-2xl p-6 mb-6">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-bold text-white flex items-center gap-2">
+              <Shield className="w-5 h-5 text-emerald-400" />
+              Análisis de seguridad
+            </h2>
+          </div>
+          {riskLoading ? (
+            <div className="flex items-center justify-center py-8">
+              <Loader2 className="w-6 h-6 animate-spin text-slate-400" />
+            </div>
+          ) : riskScore ? (
+            <div>
+              <div className="flex items-center gap-3 mb-4">
+                <span className="text-3xl">{riskScore.flag}</span>
+                <div>
+                  <p className="text-sm text-slate-400">{riskScore.country_name}</p>
+                  <span className={`inline-block text-lg font-bold px-3 py-1 rounded-lg ${
+                    riskScore.score >= 80 ? 'bg-emerald-600/20 text-emerald-400' :
+                    riskScore.score >= 60 ? 'bg-green-600/20 text-green-400' :
+                    riskScore.score >= 40 ? 'bg-yellow-600/20 text-yellow-400' :
+                    riskScore.score >= 20 ? 'bg-orange-600/20 text-orange-400' :
+                    'bg-red-600/20 text-red-400'
+                  }`}>
+                    {riskScore.score}/100 · {riskScore.label}
+                  </span>
+                </div>
+              </div>
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-slate-700">
+                      <th className="text-left text-slate-400 py-2 pr-4">Dimensión</th>
+                      <th className="text-left text-slate-400 py-2 pr-4">Puntuación</th>
+                      <th className="text-left text-slate-400 py-2">Detalle</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr className="border-b border-slate-700/50">
+                      <td className="py-2 pr-4 text-slate-300">Riesgo</td>
+                      <td className="py-2 pr-4">
+                        <span className={`font-medium ${
+                          riskScore.breakdown.riesgo >= 75 ? 'text-emerald-400' :
+                          riskScore.breakdown.riesgo >= 50 ? 'text-yellow-400' : 'text-red-400'
+                        }`}>
+                          {riskScore.breakdown.riesgo}/100
+                        </span>
+                      </td>
+                      <td className="py-2 text-slate-400 capitalize">{riskScore.labels.riesgo}</td>
+                    </tr>
+                    <tr className="border-b border-slate-700/50">
+                      <td className="py-2 pr-4 text-slate-300">Temporada</td>
+                      <td className="py-2 pr-4">
+                        <span className={`font-medium ${
+                          riskScore.breakdown.season >= 75 ? 'text-emerald-400' :
+                          riskScore.breakdown.season >= 50 ? 'text-yellow-400' : 'text-red-400'
+                        }`}>
+                          {riskScore.breakdown.season}/100
+                        </span>
+                      </td>
+                      <td className="py-2 text-slate-400">{riskScore.labels.season}</td>
+                    </tr>
+                    <tr className="border-b border-slate-700/50">
+                      <td className="py-2 pr-4 text-slate-300">Coste</td>
+                      <td className="py-2 pr-4">
+                        <span className={`font-medium ${
+                          riskScore.breakdown.coste >= 75 ? 'text-emerald-400' :
+                          riskScore.breakdown.coste >= 50 ? 'text-yellow-400' : 'text-red-400'
+                        }`}>
+                          {riskScore.breakdown.coste}/100
+                        </span>
+                      </td>
+                      <td className="py-2 text-slate-400 capitalize">{riskScore.labels.coste}</td>
+                    </tr>
+                    <tr className="border-b border-slate-700/50">
+                      <td className="py-2 pr-4 text-slate-300">Perfil</td>
+                      <td className="py-2 pr-4">
+                        <span className={`font-medium ${
+                          riskScore.breakdown.perfil >= 75 ? 'text-emerald-400' :
+                          riskScore.breakdown.perfil >= 50 ? 'text-yellow-400' : 'text-red-400'
+                        }`}>
+                          {riskScore.breakdown.perfil}/100
+                        </span>
+                      </td>
+                      <td className="py-2 text-slate-400 capitalize">{riskScore.labels.perfil}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <p className="text-xs text-slate-500 flex items-center gap-1 mt-3">
+                <Info className="w-3 h-3" />
+                Basado en datos MAEC, estacionalidad turística y perfil del viajero
+              </p>
+            </div>
+          ) : (
+            <p className="text-slate-500 text-sm py-4">
+              {trip.country_code ? 'No disponible para este destino' : 'Añade un código de país al viaje para ver el análisis'}
+            </p>
+          )}
+        </div>
 
         <div className="bg-slate-800 rounded-2xl p-6">
           <div className="flex items-center justify-between mb-4">
