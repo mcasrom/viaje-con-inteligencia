@@ -67,6 +67,7 @@ export const metadata: Metadata = {
     title: "Viaje con Inteligencia | Riesgo Zero",
     description: "Mapa interactivo de riesgos de viaje por país según MAEC.",
     creator: "@ViajeIntel2026",
+    images: ["/preview_favicon.jpg"],
   },
   robots: {
     index: true,
@@ -89,7 +90,15 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  await Promise.all([initPaisesData(), initRutasData(), initClusteringData(), initIndicesData(), initSeasonalityData(), initSegurosData()]);
+  await Promise.all([
+    initPaisesData(), 
+    initRutasData(), 
+    initClusteringData(), 
+    initIndicesData(), 
+    initSeasonalityData(), 
+    initSegurosData()
+  ]);
+  
   return (
     <html lang="es">
       <head>
@@ -112,8 +121,8 @@ export default async function RootLayout({
         <meta name="thumbnail" content="/preview_favicon.jpg" />
       </head>
       <body className={`${geistSans.variable} antialiased`}>
-<Analytics />
-<Providers>
+        <Analytics />
+        <Providers>
           <TopBar />
           <ServiceWorkerRegistration />
           <Onboarding />
@@ -124,7 +133,7 @@ export default async function RootLayout({
           <InfografiaPopup />
           <AITravelAssistant />
           <Footer />
-          </Providers>
+        </Providers>
       </body>
     </html>
   );
