@@ -1,5 +1,6 @@
 ---
 title: "Índice de Saturación Turística (IST): cómo medir cuándo un destino está demasiado lleno"
+description: "Descubre cómo el Índice de Saturación Turística (IST) identifica cuándo un destino está masificado usando datos OSINT, inteligencia artificial y señales en tiempo real."
 slug: "indice-saturacion-turistica-ist"
 date: "2026-04-21"
 author: "M. Castillo"

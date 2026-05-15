@@ -1,5 +1,6 @@
 ---
 title: "¿Es SEGURO viajar a SRI LANKA en 2026? | Guía COMPLETA"
+description: "Análisis completo de seguridad en Sri Lanka 2026. Nivel de riesgo real, zonas seguras y consejos prácticos para viajar seguro a la perla del Índico."
 slug: "es-seguro-viajar-sri-lanka"
 date: "2026-04-21"
 author: "M. Castillo"

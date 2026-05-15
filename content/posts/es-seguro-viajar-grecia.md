@@ -1,5 +1,6 @@
 ---
 title: "¿Es SEGURO viajar a GRECIA en 2026? | Guía COMPLETA"
+description: "Análisis completo de seguridad en Grecia 2026. Nivel de riesgo real, zonas seguras y consejos prácticos para viajar seguro a Grecia y sus islas."
 slug: "es-seguro-viajar-grecia"
 date: "2026-04-21"
 author: "M. Castillo"

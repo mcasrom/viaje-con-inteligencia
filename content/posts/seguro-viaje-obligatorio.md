@@ -1,6 +1,7 @@
 ---
 tags: [equipaje, avion, maleta]
 title: "¿Por qué un seguro de viaje es obligatorio?"
+description: "Casos reales donde un seguro de viaje marcó la diferencia entre un susto y una tragedia. Descubre por qué no deberías viajar sin seguro al extranjero."
 slug: "seguro-viaje-obligatorio"
 date: "2026-04-08"
 author: "M. Castillo"

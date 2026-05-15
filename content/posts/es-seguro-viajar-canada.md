@@ -1,5 +1,6 @@
 ---
 title: "¿Es SEGURO viajar a CANADÁ en 2026? | Guía COMPLETA"
+description: "Análisis completo de seguridad en Canadá 2026. Conoce el nivel de riesgo real MAEC, zonas seguras y consejos prácticos para viajar seguro a Canadá."
 slug: "es-seguro-viajar-canada"
 date: "2026-04-21"
 author: "M. Castillo"

@@ -1,6 +1,7 @@
 ---
 tags: [aduana, aeropuerto, fronteras]
 title: "Pasar la aduana en el aeropuerto sin problemas: guía completa para viajeros jóvenes"
+description: "Guía completa para pasar la aduana del aeropuerto sin problemas. Consejos, errores comunes y recomendaciones prácticas para viajeros que cruzan fronteras."
 slug: "aduanas-aeropuerto"
 date: "2026-04-17"
 author: "M. Castillo"

@@ -1,5 +1,6 @@
 ---
 title: "¿Es SEGURO viajar a MÉXICO en 2026? | Guía COMPLETA"
+description: "Análisis completo de seguridad en México 2026. Nivel de riesgo real MAEC, zonas turísticas seguras y consejos prácticos para viajar seguro a México."
 slug: "es-seguro-viajar-mexico"
 date: "2026-04-21"
 author: "M. Castillo"

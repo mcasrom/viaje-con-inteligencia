@@ -207,24 +207,41 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
   const infografias = await fetchInfografiasAsPosts();
 
   // Merge infografias when viewing "all" or "Infografía"
-  const includeInfografias = !category || category === 'all' || category === 'Infografía';
+  const isInfografiaCategory = category === 'Infografía';
+  const includeInfografias = !category || category === 'all' || isInfografiaCategory;
 
-  const allPostsRaw = getAllPosts({
+  // When filtering by Infografía, only show infografias (no filesystem posts)
+  const allPostsRaw = isInfografiaCategory ? [] : getAllPosts({
     category: category && category !== 'Infografía' ? category : undefined,
     search: search,
   });
   const allPosts = includeInfografias ? [...infografias, ...allPostsRaw] : allPostsRaw;
 
-  const { posts: fsPosts, totalPages } = getPostsPagination(page, POSTS_PER_PAGE, {
-    category: category && category !== 'Infografía' ? category : undefined,
-    search: search,
-    skip: 0,
-  });
-  const posts = includeInfografias && page === 1
-    ? [...infografias, ...fsPosts].slice(0, POSTS_PER_PAGE)
-    : includeInfografias && page > 1
-      ? fsPosts
-      : fsPosts;
+  const fsPagination = isInfografiaCategory
+    ? { posts: [], totalPages: 1 }
+    : getPostsPagination(page, POSTS_PER_PAGE, {
+        category: category && category !== 'Infografía' ? category : undefined,
+        search: search,
+        skip: 0,
+      });
+  const fsPosts = fsPagination.posts;
+  let totalPages = fsPagination.totalPages;
+
+  // Paginate infografias separately when filtering by category
+  if (isInfografiaCategory) {
+    totalPages = Math.max(1, Math.ceil(infografias.length / POSTS_PER_PAGE));
+  }
+  const paginatedInfografias = isInfografiaCategory
+    ? infografias.slice((page - 1) * POSTS_PER_PAGE, page * POSTS_PER_PAGE)
+    : infografias;
+
+  const posts = isInfografiaCategory
+    ? paginatedInfografias
+    : includeInfografias && page === 1
+      ? [...infografias, ...fsPosts].slice(0, POSTS_PER_PAGE)
+      : includeInfografias && page > 1
+        ? fsPosts
+        : fsPosts;
 
   // Category counts (include infografias count)
   const categoryCounts = new Map<string, number>();

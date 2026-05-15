@@ -1,5 +1,6 @@
 ---
 title: "Viaje con Inteligencia: El Canal de Telegram que Usa IA y ML para Transformar Cómo Planificas tus Viajes"
+description: "Canal de Telegram con IA y machine learning que integra datos del MAEC, INE y fuentes en tiempo real para recomendaciones personalizadas de viaje."
 date: "2026-04-27"
 excerpt: "Descubrimiento único: Nuestro canal de Telegram combina inteligencia artificial y machine learning con datos oficiales del MAEC, INE y fuentes en tiempo real para ofrecerte recomendaciones personalizadas y alertas que ningún otro servicio proporciona."
 image: "https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=800&q=80"

@@ -1,5 +1,6 @@
 ---
 title: "¿Es SEGURO viajar a BÉLGICA en 2026? | Guía COMPLETA"
+description: "Análisis completo de seguridad en Bélgica 2026. Nivel de riesgo real, zonas seguras y consejos prácticos para viajar seguro a Bélgica."
 slug: "es-seguro-viajar-belgica"
 date: "2026-04-21"
 author: "M. Castillo"

@@ -1,6 +1,7 @@
 ---
 tags: [inteligencia artificial viajes, viajes seguros, IA turismo, planificación inteligente, seguridad viajeros, OSINT turismo, travel intelligence, viajes 2026, turismo inteligente, riesgo geopolítico, alertas viaje, datos viajeros]
 title: "Cómo usar IA para planificar viajes más seguros en 2026: la nueva inteligencia turística basada en datos reales"
+description: "La inteligencia artificial está transformando los viajes. Descubre cómo usar IA, análisis de riesgo y datos en tiempo real para planificar viajes seguros."
 slug: "como-usar-ia-planificar-viajes-seguros-2026"
 date: "2026-05-12"
 author: "M. Castillo"

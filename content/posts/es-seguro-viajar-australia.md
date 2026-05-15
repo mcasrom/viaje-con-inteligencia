@@ -1,5 +1,6 @@
 ---
 title: "¿Es SEGURO viajar a AUSTRALIA en 2026? | Guía COMPLETA"
+description: "Análisis completo de seguridad en Australia 2026. Nivel de riesgo real, zonas seguras y consejos prácticos para viajar seguro al continente australiano."
 slug: "es-seguro-viajar-australia"
 date: "2026-04-21"
 author: "M. Castillo"

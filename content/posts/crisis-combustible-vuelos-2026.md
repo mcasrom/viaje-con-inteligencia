@@ -1,6 +1,7 @@
 ---
 tags: [crisis combustible, vuelos cancelados, derechos pasajeros, indemnizacion vuelo, retrasos aeropuerto, UE261, aerolineas, queroseno, reembolso vuelo]
 title: "Crisis de Combustible Aéreo 2026: vuelos cancelados, derechos del pasajero e indemnizaciones reales"
+description: "¿Tu vuelo ha sido cancelado por la crisis de combustible? Descubre cuándo tienes derecho a indemnización, cómo reclamar y qué hacer para no perder dinero."
 slug: "crisis-combustible-aereo-vuelos-cancelados-derechos"
 date: "2026-04-23"
 author: "M. Castillo"

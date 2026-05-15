@@ -1,6 +1,7 @@
 ---
 tags: [osint, inteligencia turística, viaje seguro, IA turismo, seguridad internacional]
 title: "De plataformas turísticas a inteligencia de viaje OSINT: el nuevo paradigma del turismo digital"
+description: "Comparativa entre plataformas turísticas tradicionales y sistemas de inteligencia OSINT basados en IA para análisis de riesgo y viajes más seguros."
 slug: "inteligencia-turistica-osint-vs-plataformas"
 date: "2026-04-21"
 author: "M. Castillo"

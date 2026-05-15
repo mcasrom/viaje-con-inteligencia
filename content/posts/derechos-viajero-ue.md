@@ -1,5 +1,6 @@
 ---
 title: "Derechos del viajero en la UE: guía completa de compensaciones y protecciones"
+description: "Conoce tus derechos como viajero en la Unión Europea. Compensaciones por retrasos, cancelaciones, pérdida de equipaje. Guía para reclamar lo que te corresponde."
 slug: "derechos-viajero-ue"
 date: "2026-04-17"
 author: "Viaje con Inteligencia"

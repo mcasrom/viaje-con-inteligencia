@@ -1,6 +1,7 @@
 ---
 tags: [seguro, viaje, obligatorio]
 title: "Documentos esenciales para viajes internacionales"
+description: "Pasaporte, visados, seguros y más: guía completa de documentos esenciales para viajes internacionales. Todo lo que necesitas tener en regla antes de partir."
 slug: "documentos-viaje-internacional"
 date: "2026-04-01"
 author: "M. Castillo"

@@ -1,5 +1,6 @@
 ---
 title: "¿Es SEGURO viajar a CHILE en 2026? | Guía COMPLETA"
+description: "Análisis completo de seguridad en Chile 2026. Nivel de riesgo real, zonas seguras y consejos prácticos para viajar seguro al destino más estable de Sudamérica."
 slug: "es-seguro-viajar-chile"
 date: "2026-04-21"
 author: "M. Castillo"

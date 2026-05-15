@@ -1,6 +1,7 @@
 ---
 tags: [equipaje, avion, maleta]
 title: "Checklist de viaje: Los 10 errores que debes evitar"
+description: "Los 10 errores más comunes que cometen los viajeros y cómo evitarlos. Checklist imprescindible para preparar tu viaje sin contratiempos."
 slug: "checklist-viaje-imprescindible"
 date: "2026-04-12"
 author: "M. Castillo"

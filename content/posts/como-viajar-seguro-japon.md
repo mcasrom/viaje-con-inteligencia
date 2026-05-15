@@ -1,6 +1,7 @@
 ---
 tags: [seguro, viaje, obligatorio]
 title: "Guía completa para viajar seguro a Japón"
+description: "Guía completa para viajar seguro a Japón. Todo sobre seguridad, cultura, precauciones y consejos prácticos para disfrutar de uno de los países más seguros del mundo."
 slug: "como-viajar-seguro-japon"
 date: "2026-04-15"
 author: "M. Castillo"

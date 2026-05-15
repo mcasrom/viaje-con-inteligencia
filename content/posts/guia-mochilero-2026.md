@@ -1,5 +1,6 @@
 ---
 title: "Guía Completa: Qué Llevar en la Mochila para Viajar - Essentials 2026"
+description: "La lista definitiva de objetos esenciales para mochileros en 2026. Optimiza tu equipaje, presupuesto y experiencia de viaje con esta guía práctica."
 excerpt: "La lista definitiva de objetos esenciales para mochileros. Optimiza tu espalda, tu presupuesto y tu experiencia de viaje con esta guía práctica."
 image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=1200&h=630&fit=crop"
 date: "2026-04-18"

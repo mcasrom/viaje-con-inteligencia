@@ -1,5 +1,6 @@
 ---
 title: "¿Es SEGURO viajar a SUIZA en 2026? | Guía COMPLETA"
+description: "Análisis completo de seguridad en Suiza 2026. Nivel de riesgo real, zonas seguras y consejos prácticos para viajar seguro a los Alpes suizos."
 slug: "es-seguro-viajar-suiza"
 date: "2026-04-21"
 author: "M. Castillo"

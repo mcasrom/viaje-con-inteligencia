@@ -1,5 +1,6 @@
 ---
 title: "¿Es SEGURO viajar a FRANCIA en 2026? | Guía COMPLETA"
+description: "Análisis completo de seguridad en Francia 2026. Nivel de riesgo real MAEC, zonas seguras y consejos prácticos para viajar seguro a Francia."
 slug: "es-seguro-viajar-francia"
 date: "2026-04-21"
 author: "M. Castillo"

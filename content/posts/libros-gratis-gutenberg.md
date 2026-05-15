@@ -1,5 +1,6 @@
 ---
 title: "Clásicos de viajes y aventura: descarga gratis desde Project Gutenberg"
+description: "Descarga gratis clásicos de literatura de viajes y aventura desde Project Gutenberg. Miles de libros de dominio público para leer en cualquier dispositivo."
 slug: "libros-gratis-gutenberg"
 date: "2026-04-20"
 author: "Viaje con Inteligencia"

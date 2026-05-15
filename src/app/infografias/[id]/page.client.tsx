@@ -1,8 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import { ArrowLeft, Download, Crown, Share2, FileText, Map, Brain, TrendingUp, Calendar, AlertTriangle, Shield } from 'lucide-react';
-import { useState } from 'react';
+import { ArrowLeft, Download, Crown, Share2, FileText, Map, Brain, TrendingUp, Calendar, AlertTriangle, Shield, Check } from 'lucide-react';
+import { useState, useCallback } from 'react';
 import PremiumRiskMap from '@/components/PremiumRiskMap';
 
 interface InfografiaData {
@@ -44,6 +44,19 @@ export default function InfografiaDetailClient({ infografia }: { infografia: Inf
     pdf_url: infografia?.pdf_url || undefined,
     ai_analysis: infografia?.ai_analysis || undefined,
   });
+  const [copied, setCopied] = useState(false);
+
+  const handleShare = useCallback(() => {
+    const url = window.location.href;
+    if (navigator.share) {
+      navigator.share({ title: infografia?.title || 'Infografía', url }).catch(() => {});
+    } else {
+      navigator.clipboard.writeText(url).then(() => {
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      }).catch(() => {});
+    }
+  }, [infografia]);
 
   if (!infografia) {
     return (
@@ -93,9 +106,9 @@ export default function InfografiaDetailClient({ infografia }: { infografia: Inf
             Archivo de infografías
           </Link>
           <div className="flex items-center gap-3">
-            <button className="flex items-center gap-2 px-3 py-1.5 bg-slate-800 rounded-lg text-slate-300 hover:bg-slate-700 text-sm transition-colors">
-              <Share2 className="w-4 h-4" />
-              Compartir
+            <button onClick={handleShare} className="flex items-center gap-2 px-3 py-1.5 bg-slate-800 rounded-lg text-slate-300 hover:bg-slate-700 text-sm transition-colors">
+              {copied ? <Check className="w-4 h-4 text-green-400" /> : <Share2 className="w-4 h-4" />}
+              {copied ? 'Copiado' : 'Compartir'}
             </button>
           </div>
         </div>

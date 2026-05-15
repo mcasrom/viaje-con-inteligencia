@@ -1,5 +1,6 @@
 ---
 title: "Los Mejores Libros para Viajar: Lecturas Imprescindibles para Todo Tipo de Viajero"
+description: "Descubre los mejores libros de viajes, aventura y exploración. Desde clásicos hasta guías modernas, encuentra tu próxima lectura esencial para viajeros."
 slug: "libros-viajeros"
 date: "2026-04-19"
 author: "Viaje con Inteligencia"

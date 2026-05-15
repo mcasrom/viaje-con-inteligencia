@@ -1,6 +1,7 @@
 ---
 featured: true
 title: "Por qué creé Viaje con Inteligencia"
+description: "Me cansé de consultar diez webs distintas antes de cada viaje. Construí un sistema que reúne alertas MAEC, precios y datos en tiempo real en un solo lugar."
 slug: "por-que-creo-viaje-con-inteligencia"
 date: "2026-05-07"
 author: "Miguel Castillo"

@@ -1,5 +1,6 @@
 ---
 title: "¿Es SEGURO viajar a ALEMANIA en 2026? | Guía COMPLETA"
+description: "Análisis completo de seguridad en Alemania 2026. Conoce el nivel de riesgo real del MAEC, zonas seguras y consejos prácticos para viajar a Alemania."
 slug: "es-seguro-viajar-alemania"
 date: "2026-04-21"
 author: "M. Castillo"

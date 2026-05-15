@@ -1,5 +1,6 @@
 ---
 title: "México: Cómo identificar zonas de riesgo"
+description: "Guía completa para identificar y evitar zonas de riesgo en México. Información actualizada sobre áreas seguras para turistas y consejos prácticos de seguridad."
 slug: "zonas-riesgo-mexico"
 date: "2026-04-05"
 author: "Viaje con Inteligencia"

@@ -1,6 +1,7 @@
 ---
 tags: [vuelos, derechos, cancelar, oriente medio, compensacion, seguro, reembolso, reclamacion, aerolineas]
 title: "Cancelación de vuelos por el conflicto en Oriente Medio: derechos del pasajero, reembolsos e indemnizaciones"
+description: "Qué hacer si cancelan tu vuelo por el conflicto en Oriente Medio. Derechos del pasajero, reembolsos, reclamaciones e indemnizaciones explicadas paso a paso."
 slug: "cancelacion-vuelos-oriente-medio-derechos-pasajero"
 date: "2026-04-20"
 author: "M. Castillo"

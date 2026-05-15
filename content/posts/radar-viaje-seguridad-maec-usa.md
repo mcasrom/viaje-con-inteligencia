@@ -1,5 +1,6 @@
 ---
 title: "Viaje con Inteligencia: Tu radar de seguridad con datos MAEC y USA en un solo lugar"
+description: "Primera plataforma en español que cruza datos del MAEC y del Departamento de Estado de USA para darte una visión completa del riesgo en tus destinos de viaje."
 slug: "radar-viaje-seguridad-maec-usa"
 date: "2026-05-12"
 author: "M. Castillo"

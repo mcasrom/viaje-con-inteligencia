@@ -1,5 +1,6 @@
 ---
 title: "¿Es SEGURO viajar a JAPÓN en 2026? | Guía COMPLETA"
+description: "Análisis completo de seguridad en Japón 2026. Nivel de riesgo real, zonas seguras y consejos prácticos para viajar seguro a uno de los países más seguros del mundo."
 slug: "es-seguro-viajar-japon"
 date: "2026-04-21"
 author: "M. Castillo"

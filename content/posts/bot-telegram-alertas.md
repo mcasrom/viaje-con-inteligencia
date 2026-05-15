@@ -1,6 +1,7 @@
 ---
 tags: [seguro, viaje, obligatorio]
 title: "Cómo el bot de Telegram puede salvarte en el extranjero"
+description: "Descubre las funciones secretas del bot de Telegram de Viaje con Inteligencia: alertas en tiempo real sobre riesgos de viaje que pueden salvarte en emergencias."
 slug: "bot-telegram-alertas"
 date: "2026-03-28"
 author: "M. Castillo"

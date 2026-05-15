@@ -1,5 +1,6 @@
 ---
 title: "Medicamentos en viajes internacionales: guía completa 2026"
+description: "Guía completa sobre cómo llevar medicamentos en viajes internacionales. Conoce normativas, declaraciones aduaneras y consejos esenciales para viajar con medicamentos."
 slug: "medicamentos-viaje-internacional"
 date: "2026-04-18"
 author: "Viaje con Inteligencia"

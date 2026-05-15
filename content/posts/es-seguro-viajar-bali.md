@@ -1,5 +1,6 @@
 ---
 title: "¿Es SEGURO viajar a BALI e INDONESIA en 2026? | Guía COMPLETA"
+description: "Análisis completo de seguridad en Bali e Indonesia 2026. Nivel de riesgo real MAEC, zonas seguras y consejos para viajar a este paraíso tropical."
 slug: "es-seguro-viajar-bali"
 date: "2026-04-21"
 author: "M. Castillo"

@@ -1,5 +1,6 @@
 ---
 title: "¿Es SEGURO viajar a TAILANDIA en 2026? | Guía COMPLETA"
+description: "Análisis completo de seguridad en Tailandia 2026. Nivel de riesgo real MAEC, zonas a evitar y consejos prácticos para viajar seguro al Sudeste Asiático."
 slug: "es-seguro-viajar-tailandia"
 date: "2026-04-21"
 author: "M. Castillo"
