@@ -22,6 +22,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Infografías Semanales — Riesgo Global',
     description: 'Análisis visual semanal de riesgos de viaje en todo el mundo.',
+    creator: '@ViajeIntel2026',
   },
 };
 

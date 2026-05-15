@@ -11,6 +11,12 @@ export const metadata: Metadata = {
   alternates: {
     canonical: 'https://www.viajeinteligencia.com/decidir',
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Decidir Destino | Viaje con Inteligencia',
+    description: 'Encuentra tu destino ideal con IA.',
+    creator: '@ViajeIntel2026',
+  },
 };
 
 export default function DecidirLayout({ children }: { children: React.ReactNode }) {

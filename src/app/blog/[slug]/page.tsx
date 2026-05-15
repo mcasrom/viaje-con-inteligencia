@@ -49,6 +49,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       card: 'summary_large_image',
       title: post.title,
       description: post.excerpt || post.description || '',
+      creator: '@ViajeIntel2026',
       ...(post.image ? { images: [post.image] } : {}),
     },
   };

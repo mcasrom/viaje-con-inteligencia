@@ -47,6 +47,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Blog OSINT | Análisis de Viajes y Seguridad - Viaje con Inteligencia',
     description: 'Análisis geopolíticos, guías de seguridad y tendencias de viaje basadas en datos OSINT.',
+    creator: '@ViajeIntel2026',
   },
 };
 

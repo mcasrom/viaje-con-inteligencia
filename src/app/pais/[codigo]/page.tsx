@@ -29,6 +29,7 @@ export async function generateMetadata({ params }: { params: Promise<{ codigo: s
       card: 'summary_large_image',
       title: `${pais?.nombre} — Riesgo, Visado y Consejos | Viaje Inteligencia`,
       description: `Ficha completa de ${pais?.nombre}: nivel de riesgo MAEC, visado, clima y recomendaciones.`,
+      creator: '@ViajeIntel2026',
     },
   };
 }

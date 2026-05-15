@@ -39,6 +39,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       card: 'summary_large_image',
       title: infografia.title,
       description: `GWI: ${gwi} | ${countries}`,
+      creator: '@ViajeIntel2026',
       images: infografia.image_url ? [infografia.image_url] : [],
     },
   };

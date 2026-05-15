@@ -20,6 +20,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Decide tu Destino en 30 Seg | IA Viaje Seguro - Viaje con Inteligencia',
     description: '¿No sabes a dónde viajar? Elige tus intereses y te sugerimos los mejores destinos seguros.',
+    creator: '@ViajeIntel2026',
   },
 };
 

@@ -72,6 +72,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Alertas MAEC en Vivo | Riesgos de Viaje - Viaje con Inteligencia',
     description: 'Alertas de riesgo en tiempo real del MAEC. Conflictos, desastres naturales y recomendaciones de viaje.',
+    creator: '@ViajeIntel2026',
   },
 };
 

@@ -11,6 +11,12 @@ export const metadata: Metadata = {
   alternates: {
     canonical: 'https://www.viajeinteligencia.com/premium',
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Plan Premium | Viaje con Inteligencia',
+    description: 'Prueba gratuita de 7 días. Alertas IA, chat, sismos y más.',
+    creator: '@ViajeIntel2026',
+  },
 };
 
 export default function PremiumLayout({ children }: { children: React.ReactNode }) {

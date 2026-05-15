@@ -17,6 +17,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Premium | Viaje con Inteligencia — Chat IA, Alertas, ML y más',
     description: 'Desbloquea Chat IA ilimitado, alertas en tiempo real, ML clustering y más. 7 días gratis.',
+    creator: '@ViajeIntel2026',
   },
 };
 
