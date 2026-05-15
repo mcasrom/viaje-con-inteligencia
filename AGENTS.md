@@ -66,6 +66,8 @@
 5. **Alertas de sentimiento** — Notificar cuando un país cruza umbral de negatividad (ej. tone_score < -7)
 6. **Persistir tone_score en incidents** — Al clusterizar señales → incidentes, conservar el tone_score medio para mostrarlo en tarjetas de incidente
 7. **Resultados RRSS 15 May** — Analizar engagement de Bluesky/Mastodon/X/Telegram
+8. **Análisis frecuencia de palabras** — Tabla `osint_word_trends` para detectar spikes anómalos de términos (hantavirus, brotes, etc.) por comparación con media de 7 días
+9. **Groq para toda señal OSINT** — Aplicar `classifySignal()` también a GDELT y RSS (hoy solo Reddit usa Groq; el resto usa keywords)
 
 ## PAUSED STATE (13 May 2026 — Sprint 13 May PM — Irán + Newsletter multicanal + Alertas web)
 - **Irán añadido a paises.ts**: Entrada completa con embajada en Teherán, visa VOA, riesgo muy-alto, emergencias. Añadido a GPI, GTI, HDI, IPC indices — ya visible en mapa de KPIs. Referencias hardcode actualizadas (106+ → 108+).

@@ -67,6 +67,11 @@ const NEWS_RSS_FEEDS = [
   { name: 'France24 EN', url: 'https://www.france24.com/en/rss' },
   { name: 'The Guardian World', url: 'https://www.theguardian.com/world/rss' },
   { name: 'CNN World', url: 'http://rss.cnn.com/rss/edition_world.rss' },
+  { name: 'WHO Outbreaks', url: 'https://www.who.int/feeds/entity/csr/don/en/rss.xml' },
+  { name: 'ECDC Threats', url: 'https://ecdc.europa.eu/en/rss' },
+  { name: 'CDC Travel', url: 'https://wwwnc.cdc.gov/travel/notices/rss' },
+  { name: 'Aviation Herald', url: 'http://avherald.com/rss.xml' },
+  { name: 'Cruise Law', url: 'https://www.cruiselawnews.com/feed/' },
 ];
 
 const NEWS_KEYWORDS = [
@@ -78,6 +83,15 @@ const NEWS_KEYWORDS = [
   'brotes', 'enfermedad', 'fallecido', 'herido', 'incendio',
   'inundación', 'terremoto', 'huelga', 'protesta', 'cierre',
   'aeropuerto', 'vuelo cancelado', 'frontera',
+  'hantavirus', 'norovirus', 'dengue', 'mpox', 'quarantine',
+  'containment', 'sanitary', 'biohazard', 'health notice',
+  'travel advisory', 'disease outbreak', 'virus', 'infection',
+  'contagio', 'brote', 'aislamiento', 'cuarentena', 'sanitario',
+  'aviation accident', 'plane crash', 'runway', 'aircraft',
+  'turbulence', 'emergency landing', 'bird strike', 'engine failure',
+  'overbooked', 'tarmac delay', 'stranded passengers',
+  'norovirus cruise', 'cruise ship sick', 'Princess Cruises',
+  'Carnival', 'Royal Caribbean', 'MSC Cruises', 'Costa',
 ];
 
 export async function fetchNewsRSS(limit = 50): Promise<RawPost[]> {
@@ -257,6 +271,9 @@ export async function fetchGdeltEvents(limit = 30): Promise<RawPost[]> {
     'cyclone', 'tsunami', 'volcano', 'outbreak', 'epidemic', 'bomb',
     'terrorist', 'attack', 'shooting', 'assassination', 'kidnap',
     'evacuation', 'border closure', 'airport closure', 'travel ban',
+    'hantavirus', 'norovirus', 'dengue', 'mpox', 'quarantine',
+    'containment', 'sanitary', 'biohazard', 'cruise outbreak',
+    'norovirus cruise', 'containment zone', 'health emergency',
   ];
 
   const query = TRAVEL_KEYWORDS.join(' OR ');
