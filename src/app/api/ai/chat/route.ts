@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { chatWithAI } from '@/lib/groq-ai';
+import { chatWithAI, chatWithAIStream } from '@/lib/groq-ai';
 import { checkPremium } from '@/lib/premium-check';
 import { supabaseAdmin } from '@/lib/supabase-admin';
 import { createSupabaseServerClient } from '@/lib/supabase-server';
 import { checkIpRateLimit, checkBurstRateLimit } from '@/lib/rate-limit-server';
+import { getGlobalStats } from '@/lib/global-stats';
 
 const PREMIUM_MODEL = 'llama-3.3-70b-versatile';
 const FREE_MODEL = 'llama-3.1-8b-instant';
@@ -117,6 +118,46 @@ async function getUserContext(userId: string): Promise<string[]> {
   return contexts;
 }
 
+async function fetchLiveContext(): Promise<string> {
+  const parts: string[] = [];
+  try {
+    const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+
+    const { data: incidents } = await supabaseAdmin
+      .from('incidents')
+      .select('country_code, type, severity, title')
+      .gte('detected_at', weekAgo)
+      .eq('is_active', true)
+      .order('detected_at', { ascending: false })
+      .limit(5);
+
+    if (incidents && incidents.length > 0) {
+      parts.push('INCIDENTES ACTIVOS (últimos 7 días):');
+      for (const inc of incidents) {
+        parts.push(`- ${inc.country_code?.toUpperCase()}: ${inc.type} (${inc.severity}) — ${inc.title?.substring(0, 80)}`);
+      }
+    }
+
+    const { data: alerts } = await supabaseAdmin
+      .from('risk_alerts')
+      .select('country_code, old_risk, new_risk')
+      .gte('created_at', weekAgo)
+      .order('created_at', { ascending: false })
+      .limit(5);
+
+    if (alerts && alerts.length > 0) {
+      parts.push('CAMBIOS DE RIESGO MAEC (últimos 7 días):');
+      for (const a of alerts) {
+        parts.push(`- ${a.country_code?.toUpperCase()}: ${a.old_risk} → ${a.new_risk}`);
+      }
+    }
+
+    const stats = getGlobalStats();
+    parts.push(`\nESTADÍSTICAS GLOBALES:\n- Total países: ${stats.totalPaises}\n- Alto/muy alto riesgo: ${stats.altoOMuyAlto}\n- Seguro/bajo: ${stats.seguroOBajo}`);
+  } catch {}
+  return parts.length > 0 ? `\n\nDATOS EN VIVO:\n${parts.join('\n')}` : '';
+}
+
 export async function POST(request: NextRequest) {
   try {
     const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim()
@@ -146,7 +187,7 @@ export async function POST(request: NextRequest) {
       }, { status: 429, headers: { 'Retry-After': String(Math.ceil((burstLimit.resetAt - Date.now()) / 1000)) } });
     }
 
-    const { message, country, conversationId, model } = await request.json();
+    const { message, country, conversationId, model, stream } = await request.json();
 
     if (!message || typeof message !== 'string') {
       return NextResponse.json({ error: 'Message is required' }, { status: 400 });
@@ -198,11 +239,61 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    const fullMessage = systemContext ? `${sanitized}\n\n[Contexto del usuario: ${systemContext}]` : sanitized;
+    // Live OSINT context
+    const liveContext = await fetchLiveContext();
 
+    const fullMessage = `${sanitized}${systemContext ? `\n\n[Contexto del usuario: ${systemContext}]` : ''}${liveContext}`;
+
+    // === STREAMING PATH ===
+    if (stream) {
+      const encoder = new TextEncoder();
+      let fullResponse = '';
+
+      const streamIterator = chatWithAIStream(fullMessage, {
+        country,
+        previousMessages: history.map(m => m.content).slice(-20),
+        model: requestedModel,
+      });
+
+      const readable = new ReadableStream({
+        async pull(controller) {
+          const { value, done } = await streamIterator.next();
+          if (done) {
+            // Save to DB after stream completes
+            if (userId && fullResponse) {
+              try {
+                let newConvId = conversationId;
+                newConvId = await saveConversation(conversationId, userId, 'user', sanitized, requestedModel);
+                await saveConversation(newConvId, userId, 'assistant', fullResponse, requestedModel);
+                if (!isPremiumModel) {
+                  await incrementDailyUsage(userId, requestedModel);
+                }
+                const metadata = JSON.stringify({ conversationId: newConvId, model: requestedModel });
+                controller.enqueue(encoder.encode(`\n__META__:${metadata}\n`));
+              } catch {}
+            }
+            controller.close();
+            return;
+          }
+          if (value) {
+            fullResponse += value;
+            controller.enqueue(encoder.encode(value));
+          }
+        },
+      });
+
+      return new Response(readable, {
+        headers: {
+          'Content-Type': 'text/plain; charset=utf-8',
+          'Cache-Control': 'no-cache',
+        },
+      });
+    }
+
+    // === NON-STREAMING PATH ===
     const response = await chatWithAI(fullMessage, {
       country,
-      previousMessages: history.map(m => m.content).slice(-10),
+      previousMessages: history.map(m => m.content).slice(-20),
       model: requestedModel,
     });
 

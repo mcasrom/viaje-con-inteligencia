@@ -110,21 +110,67 @@ export default function ChatClient() {
           message: messageText,
           model: model === 'premium' && canUsePremium ? PREMIUM_MODEL : FREE_MODEL,
           conversationId: activeConversationId,
+          stream: true,
         }),
       });
 
-      const data = await response.json();
+      // Handle streaming response
+      const contentType = response.headers.get('content-type') || '';
+      if (contentType.includes('text/plain') && response.body) {
+        // Streaming
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let accumulated = '';
+        let newConvId: number | null = null;
 
-      if (response.status === 403 && data.requires === 'premium') {
-        setPremiumBlocked(true);
-        setMessages(prev => [...prev, { role: 'assistant', content: `🔒 **${data.message}**` }]);
-      } else if (response.status === 429) {
-        setMessages(prev => [...prev, { role: 'assistant', content: `⚠️ **${data.message}**` }]);
-      } else {
-        setMessages(prev => [...prev, { role: 'assistant', content: data.response || 'Lo siento, no pude procesar tu solicitud.' }]);
-        if (data.conversationId && data.conversationId !== activeConversationId) {
-          setActiveConversationId(data.conversationId);
+        // Add placeholder assistant message
+        setMessages(prev => [...prev, { role: 'assistant', content: '' }]);
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+
+          const chunk = decoder.decode(value, { stream: true });
+          const metaMatch = chunk.match(/__META__:({.*})/);
+          if (metaMatch) {
+            try {
+              const meta = JSON.parse(metaMatch[1]);
+              newConvId = meta.conversationId;
+            } catch {}
+            continue;
+          }
+
+          accumulated += chunk;
+          // Update the last message progressively
+          setMessages(prev => {
+            const updated = [...prev];
+            const lastIdx = updated.length - 1;
+            if (lastIdx >= 0 && updated[lastIdx].role === 'assistant') {
+              updated[lastIdx] = { ...updated[lastIdx], content: accumulated };
+            }
+            return updated;
+          });
+        }
+
+        if (newConvId && newConvId !== activeConversationId) {
+          setActiveConversationId(newConvId);
           loadConversations();
+        }
+      } else {
+        // Non-streaming fallback
+        const data = await response.json();
+
+        if (response.status === 403 && data.requires === 'premium') {
+          setPremiumBlocked(true);
+          setMessages(prev => [...prev, { role: 'assistant', content: `🔒 **${data.message}**` }]);
+        } else if (response.status === 429) {
+          setMessages(prev => [...prev, { role: 'assistant', content: `⚠️ **${data.message}**` }]);
+        } else {
+          setMessages(prev => [...prev, { role: 'assistant', content: data.response || 'Lo siento, no pude procesar tu solicitud.' }]);
+          if (data.conversationId && data.conversationId !== activeConversationId) {
+            setActiveConversationId(data.conversationId);
+            loadConversations();
+          }
         }
       }
     } catch {
