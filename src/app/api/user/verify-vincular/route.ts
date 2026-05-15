@@ -63,6 +63,12 @@ export async function POST(request: NextRequest) {
       }, { onConflict: 'id' });
 
     await supabaseAdmin
+      .from('alert_preferences')
+      .update({ user_id: user.id })
+      .eq('telegram_chat_id', vincular.telegram_chat_id)
+      .is('user_id', null);
+
+    await supabaseAdmin
       .from('vincular_codes')
       .update({ used: true })
       .eq('id', vincular.id);

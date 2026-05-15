@@ -161,14 +161,25 @@ export async function subscribeToCountry(params: SubscriptionParams): Promise<{ 
       .eq('telegram_chat_id', chatId)
       .eq('country_code', country);
 
-    const { error } = await supabaseAdmin.from('alert_preferences').insert({
+    const { data: linkedProfile } = await supabaseAdmin!
+      .from('profiles')
+      .select('id')
+      .eq('telegram_id', chatId)
+      .maybeSingle();
+
+    const insertData: Record<string, any> = {
       telegram_chat_id: chatId,
       telegram_username: username || null,
       country_code: country,
       alert_types: alertTypes || ['riesgo', 'clima', 'geopolitico', 'seguridad', 'salud', 'logistico'],
       severity_min: severityMin || 'medium',
       frequency: 'inmediato',
-    });
+    };
+    if (linkedProfile) {
+      insertData.user_id = linkedProfile.id;
+    }
+
+    const { error } = await supabaseAdmin.from('alert_preferences').insert(insertData);
 
     if (error) {
       log.error('Subscribe error', error);

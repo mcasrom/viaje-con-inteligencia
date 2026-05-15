@@ -155,19 +155,39 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Servicio no disponible' }, { status: 500 });
     }
 
+    const { data: profile } = await supabaseAdmin!
+      .from('profiles')
+      .select('telegram_id')
+      .eq('id', user.id)
+      .maybeSingle();
+
     await supabaseAdmin!
       .from('alert_preferences')
       .delete()
       .eq('user_id', user.id)
       .eq('country_code', countryCode.toUpperCase());
 
-    const { error } = await supabaseAdmin!.from('alert_preferences').insert({
+    if (profile?.telegram_id) {
+      await supabaseAdmin!
+        .from('alert_preferences')
+        .delete()
+        .eq('telegram_chat_id', Number(profile.telegram_id))
+        .eq('country_code', countryCode.toUpperCase())
+        .is('user_id', null);
+    }
+
+    const insertData: Record<string, any> = {
       user_id: user.id,
       country_code: countryCode.toUpperCase(),
       alert_types: ['riesgo', 'clima', 'geopolitico', 'seguridad', 'salud', 'logistico'],
       severity_min: 'medium',
-      frequency: 'inmediato'
-    });
+      frequency: 'inmediato',
+    };
+    if (profile?.telegram_id) {
+      insertData.telegram_chat_id = Number(profile.telegram_id);
+    }
+
+    const { error } = await supabaseAdmin!.from('alert_preferences').insert(insertData);
 
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 400 });
