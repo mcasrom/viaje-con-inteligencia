@@ -50,7 +50,7 @@ export default function LoginButton({ variant = 'button', size = 'md', showEmail
   if (loading) {
     return (
       <div className={`flex items-center justify-center ${size === 'sm' ? 'w-8 h-8' : size === 'lg' ? 'w-12 h-12' : 'w-10 h-10'} bg-slate-700 rounded-lg`}>
-        <Loader2 className="w-4 h-4 animate-spin text-slate-400" />
+        <User className="w-4 h-4 text-slate-400" />
       </div>
     );
   }
