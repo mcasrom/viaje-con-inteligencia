@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, FileText, Crown, Download, Share2, Plane, Building, Hotel, Car, Bus, AlertTriangle, Clock, Check, Sparkles, Copy, ExternalLink, Lock } from 'lucide-react';
+import { ArrowLeft, FileText, Crown, Download, Share2, Plane, Building, Hotel, Car, Bus, AlertTriangle, Clock, Check, Sparkles, Copy, ExternalLink } from 'lucide-react';
 import { useSubscription } from '@/hooks/useSubscription';
 
 const CLAIM_TYPES = [
@@ -15,6 +15,63 @@ const CLAIM_TYPES = [
   { value: 'alquiler', label: 'Alquiler de coche', icon: <Car className="w-4 h-4" />, desc: 'Problemas con reserva' },
   { value: 'otro', label: 'Otro', icon: <Bus className="w-4 h-4" />, desc: 'Cualquier incidencia' },
 ];
+
+const ESTIMATED_COMPENSATION: Record<string, { range: string; cond: string }> = {
+  retraso: { range: '250€ – 600€', cond: 'según distancia + duración retraso' },
+  cancelacion: { range: '250€ – 600€', cond: 'según distancia y preaviso' },
+  overbooking: { range: '250€ – 600€', cond: 'según distancia del vuelo' },
+  equipaje: { range: 'hasta ~1.600€', cond: 'según Convenio Montreal' },
+  hotel: { range: '50% – 100%', cond: 'según noche/no conforme' },
+  agencia: { range: 'variable', cond: 'según incumplimiento + daños' },
+  alquiler: { range: '50% – 100%', cond: 'según días afectados' },
+  otro: { range: 'variable', cond: 'según normativa aplicable' },
+};
+
+const DOCUMENT_CHECKLIST: Record<string, string[]> = {
+  retraso: ['Tarjeta de embarque', 'Confirmación de reserva', 'Factura/justificante de pago', 'Comunicación con aerolínea', 'Foto pantalla estado vuelo'],
+  cancelacion: ['Confirmación de cancelación (email/SMS)', 'Reserva original', 'Factura', 'Comunicación con aerolínea/agencia', 'Gastos incurridos (hotel, taxi...)'],
+  overbooking: ['Tarjeta de embarque', 'Confirmación de reserva con asiento', 'Documento denegación embarque', 'Oferta de compensación (si aplica)', 'Nuevo billete/factura'],
+  equipaje: ['PIR (Property Irregularity Report)', 'Tarjeta de embarque', 'Etiqueta equipaje', 'Factura contenido perdido', 'Fotos daños'],
+  hotel: ['Confirmación reserva', 'Factura', 'Fotos incidencia', 'Email comunicación con hotel', 'Gastos alternativos'],
+  agencia: ['Contrato/servicio contratado', 'Factura', 'Email reclamación previa', 'Fotos/evidencias', 'Comunicaciones con agencia'],
+  alquiler: ['Reserva alquiler', 'Contrato firmado', 'Fotos daños', 'Factura', 'Acta entrega vehículo'],
+  otro: ['Toda documentación relacionada', 'Facturas y justificantes', 'Comunicaciones con la empresa'],
+};
+
+const NEXT_STEPS: Record<string, { label: string; url: string }[]> = {
+  retraso: [
+    { label: 'Reclamación AESA (Agencia Estatal de Seguridad Aérea)', url: 'https://sede.aesa.gob.es/sede/' },
+    { label: 'Centro Europeo del Consumidor (CEC)', url: 'https://cec.consumo.gob.es/' },
+  ],
+  cancelacion: [
+    { label: 'Reclamación AESA', url: 'https://sede.aesa.gob.es/sede/' },
+    { label: 'OMIC (Oficina Municipal de Información al Consumidor)', url: 'https://www.consumo.gob.es/' },
+  ],
+  overbooking: [
+    { label: 'Reclamación AESA', url: 'https://sede.aesa.gob.es/sede/' },
+    { label: 'Centro Europeo del Consumidor', url: 'https://cec.consumo.gob.es/' },
+  ],
+  equipaje: [
+    { label: 'Reclamación AESA', url: 'https://sede.aesa.gob.es/sede/' },
+    { label: 'Convenio Montreal — modelo reclamación', url: 'https://www.mundojuridico.com/' },
+  ],
+  hotel: [
+    { label: 'OMIC / Junta Arbitral de Consumo', url: 'https://www.consumo.gob.es/' },
+    { label: 'Dirección General de Turismo (CCAA)', url: 'https://www.turismo.gob.es/' },
+  ],
+  agencia: [
+    { label: 'OMIC / Junta Arbitral de Consumo', url: 'https://www.consumo.gob.es/' },
+    { label: 'Dirección General de Consumo', url: 'https://www.consumo.gob.es/' },
+  ],
+  alquiler: [
+    { label: 'OMIC / Junta Arbitral de Consumo', url: 'https://www.consumo.gob.es/' },
+    { label: 'Asociación de Consumidores (OCU, FACUA)', url: 'https://www.ocu.org/' },
+  ],
+  otro: [
+    { label: 'OMIC más cercana', url: 'https://www.consumo.gob.es/' },
+    { label: 'Junta Arbitral de Consumo', url: 'https://www.consumo.gob.es/' },
+  ],
+};
 
 const LEGAL_REFERENCES = {
   retraso: {
@@ -264,19 +321,25 @@ abogado especializado en derecho aeronáutico.
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
-            {CLAIM_TYPES.map(t => (
-              <button
-                key={t.value}
-                onClick={() => { setClaimType(t.value); setStep('form'); }}
-                className="flex flex-col items-center gap-2 p-4 bg-slate-800 hover:bg-slate-700 rounded-xl border border-slate-700 hover:border-red-500/50 transition-all text-center group"
-              >
-                <div className="text-red-400 group-hover:scale-110 transition-transform">
-                  {t.icon}
-                </div>
-                <span className="text-white text-xs font-medium">{t.label}</span>
-                <span className="text-slate-500 text-[10px]">{t.desc}</span>
-              </button>
-            ))}
+            {CLAIM_TYPES.map(t => {
+              const comp = ESTIMATED_COMPENSATION[t.value];
+              return (
+                <button
+                  key={t.value}
+                  onClick={() => { setClaimType(t.value); setStep('form'); }}
+                  className="flex flex-col items-center gap-1 p-4 bg-slate-800 hover:bg-slate-700 rounded-xl border border-slate-700 hover:border-red-500/50 transition-all text-center group"
+                >
+                  <div className="text-red-400 group-hover:scale-110 transition-transform">
+                    {t.icon}
+                  </div>
+                  <span className="text-white text-xs font-medium">{t.label}</span>
+                  <span className="text-slate-500 text-[10px]">{t.desc}</span>
+                  {comp && (
+                    <span className="text-amber-400 text-[10px] font-semibold mt-0.5">{comp.range}</span>
+                  )}
+                </button>
+              );
+            })}
           </div>
 
           {/* Free vs Premium comparison */}
@@ -322,8 +385,11 @@ abogado especializado en derecho aeronáutico.
               <ArrowLeft className="w-4 h-4" />
               Cambiar tipo
             </button>
-            <span className="text-red-400 text-sm font-medium">
-              Reclamación: {CLAIM_TYPES.find(t => t.value === claimType)?.label}
+            <span className="flex items-center gap-2">
+              <span className="text-slate-500 text-xs font-medium">2/3</span>
+              <span className="text-red-400 text-sm font-medium">
+                {CLAIM_TYPES.find(t => t.value === claimType)?.label}
+              </span>
             </span>
           </div>
         </header>
@@ -390,6 +456,24 @@ abogado especializado en derecho aeronáutico.
               </div>
             </div>
 
+            {/* Document checklist */}
+            {claimType && DOCUMENT_CHECKLIST[claimType] && (
+              <div className="bg-slate-800/60 rounded-xl p-5 border border-slate-700/50">
+                <h3 className="text-white font-bold text-sm mb-4 flex items-center gap-2">
+                  <Check className="w-4 h-4 text-green-400" />
+                  Documentación recomendada
+                </h3>
+                <ul className="space-y-1.5">
+                  {DOCUMENT_CHECKLIST[claimType].map((doc, i) => (
+                    <li key={i} className="flex items-start gap-2 text-xs text-slate-300">
+                      <Check className="w-3 h-3 text-green-500 mt-0.5 shrink-0" />
+                      {doc}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
             {/* Description */}
             <div className="bg-slate-800/60 rounded-xl p-5 border border-slate-700/50">
               <h3 className="text-white font-bold text-sm mb-4">Descripción de los hechos</h3>
@@ -440,6 +524,7 @@ abogado especializado en derecho aeronáutico.
             Editar
           </button>
           <div className="flex items-center gap-3">
+            <span className="text-slate-500 text-xs font-medium">3/3</span>
             <span className={`px-3 py-1 rounded-full text-xs font-medium ${isPremium ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30' : 'bg-blue-500/20 text-blue-400 border border-blue-500/30'}`}>
               {isPremium ? 'Premium' : 'Gratuito'}
             </span>
@@ -471,6 +556,24 @@ abogado especializado en derecho aeronáutico.
         <div className="bg-white text-slate-900 rounded-xl p-8 font-mono text-xs leading-relaxed whitespace-pre-wrap max-h-[70vh] overflow-y-auto shadow-xl">
           {previewText}
         </div>
+
+        {/* Next steps */}
+        {claimType && NEXT_STEPS[claimType] && (
+          <div className="mt-6 bg-slate-800/60 rounded-xl p-5 border border-slate-700/50">
+            <h3 className="text-white font-bold text-sm mb-3 flex items-center gap-2">
+              <ExternalLink className="w-4 h-4 text-blue-400" />
+              Próximos pasos — ¿dónde reclamar?
+            </h3>
+            <div className="space-y-2">
+              {NEXT_STEPS[claimType].map((s, i) => (
+                <a key={i} href={s.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-xs text-blue-400 hover:text-blue-300 transition-colors">
+                  <ExternalLink className="w-3 h-3 shrink-0" />
+                  {s.label}
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Not premium CTA */}
         {!isPremium && (

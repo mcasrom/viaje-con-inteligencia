@@ -3,6 +3,7 @@ import { paisesData } from '@/data/paises';
 import { travelAttributes, ineTourismData } from '@/data/clustering';
 import { getAirportCoordinates, getMainAirport } from '@/lib/airports-db';
 import { getCurrentOilPrice, SEASONALITY_MAP } from '@/data/tci-engine';
+import { supabaseAdmin } from '@/lib/supabase-admin';
 import { createLogger } from '@/lib/logger';
 
 const log = createLogger('CostEstimate');
@@ -15,12 +16,31 @@ async function getSerpapiFlightPrice(fromIata: string, toIata: string): Promise<
   const outboundDate = new Date();
   outboundDate.setDate(outboundDate.getDate() + 45);
   const dateStr = outboundDate.toISOString().split('T')[0];
+  const routeKey = `${fromIata}:${toIata}:${dateStr}`.toUpperCase();
+
+  const cached = await (async () => {
+    try {
+      const { data } = await supabaseAdmin
+        .from('serpapi_cache')
+        .select('data, updated_at')
+        .eq('route_key', routeKey)
+        .maybeSingle();
+      if (!data) return null;
+      const age = (Date.now() - new Date(data.updated_at).getTime()) / 1000 / 3600;
+      if (age > 24) return null;
+      const cachedPrices = ((data.data as any).best_flights || [])
+        .map((f: any) => f.price)
+        .filter((p: number) => p > 0);
+      return cachedPrices.length > 0 ? Math.min(...cachedPrices) : null;
+    } catch { return null; }
+  })();
+  if (cached !== null) return cached;
 
   try {
     const res = await fetch(
       `https://serpapi.com/search?engine=google_flights&` +
       `departure_id=${fromIata}&arrival_id=${toIata}&` +
-      `outbound_date=${dateStr}&currency=EUR&hl=es&` +
+      `outbound_date=${dateStr}&currency=EUR&hl=es&type=2&` +
       `api_key=${SERPAPI_KEY}`,
       { signal: AbortSignal.timeout(8000) }
     );
@@ -35,7 +55,15 @@ async function getSerpapiFlightPrice(fromIata: string, toIata: string): Promise<
       .filter((p: number) => p > 0);
     if (prices.length === 0) return null;
 
-    return Math.min(...prices);
+    const minPrice = Math.min(...prices);
+
+    try {
+      await supabaseAdmin
+        .from('serpapi_cache')
+        .upsert({ route_key: routeKey, data, updated_at: new Date().toISOString() });
+    } catch { /* non-critical */ }
+
+    return minPrice;
   } catch {
     return null;
   }

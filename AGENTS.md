@@ -4,6 +4,11 @@
 - **ES**: "Viaje con Inteligencia: Tu radar de seguridad global impulsado por IA."
 - **EN**: "Smart Traveler: AI-Driven Global Risk Radar for the Conscious Explorer."
 
+## Hashtags (posts + redes)
+- `#TurismoSeguro` `#IATravel` `#RiesgoGeopolitico` `#ViajeroSmart`
+- Tradicionales: `#ViajeInteligencia` `#SmartTravel` `#TravelTech` `#IAViajes`
+- Usar 1-2 de la primera línea + 2-3 de la segunda por post
+
 ## ⚙️ Observaciones Técnicas
 - **Speed Insights (Vercel)**: Desactivado por consumo excesivo de recursos. Esto NO afecta a los despliegues — los builds y deployments son independientes de Speed Insights. Si un deploy no se refleja, el problema es de build failure o cache de ISR, no de Speed Insights.
 - **Blog sort**: Actualizado a fecha-primero (featured solo como tiebreaker en misma fecha). Commit `91a5b6a`. Ya no necesita `featured: true` en posts nuevos — el más reciente aparece primero automáticamente.

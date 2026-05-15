@@ -229,9 +229,10 @@ export default function Reviews({ countryCode, countryName }: ReviewsProps) {
                     <button
                       type="button"
                       onClick={removeImage}
-                      className="absolute top-1 right-1 p-1 bg-red-600/90 hover:bg-red-500 rounded-lg transition-colors"
+                      className="absolute top-1 right-1 p-2 bg-red-600/90 hover:bg-red-500 rounded-lg transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center"
+                      aria-label="Eliminar foto"
                     >
-                      <Trash2 className="w-3 h-3 text-white" />
+                      <Trash2 className="w-4 h-4 text-white" />
                     </button>
                   </div>
                 ) : (

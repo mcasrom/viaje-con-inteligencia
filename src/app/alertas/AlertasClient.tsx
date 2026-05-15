@@ -177,6 +177,7 @@ export default function AlertasClient({ initialAlerts, initialCounts }: AlertasC
       if (res.ok) {
         const data = await res.json();
         setAlerts(data.alerts || data.subscriptions || []);
+        if (data.telegram_linked) setVinculado(true);
       }
     } catch (e) {
       console.error(e);

@@ -113,7 +113,12 @@ export async function GET(request: NextRequest) {
         };
       });
 
-      return NextResponse.json({ subscriptions: enriched, ok: true });
+      return NextResponse.json({
+        subscriptions: enriched,
+        ok: true,
+        telegram_linked: !!profile?.telegram_id,
+        telegram_username: profile?.telegram_username || null,
+      });
     }
 
     return NextResponse.json({

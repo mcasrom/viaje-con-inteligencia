@@ -15,6 +15,7 @@ import OilPriceWidget from '@/components/OilPriceWidget';
 import AirportDelaysWidget from '@/components/AirportDelaysWidget';
 import PreferencesSelector from '@/components/PreferencesSelector';
 import NewsletterPopup from '@/components/NewsletterPopup';
+import SloganPopup from '@/components/SloganPopup';
 import InfografiaHomeCard from '@/components/InfografiaHomeCard';
 
 const MapaInteractivo = dynamic(
@@ -96,7 +97,7 @@ function TopBar() {
     <header className="fixed top-16 left-0 right-0 z-[1010] pointer-events-none">
       <div className="max-w-7xl mx-auto px-4 flex items-start justify-between gap-4 pointer-events-auto">
         <div className="bg-slate-900/90 backdrop-blur-md rounded-xl border border-slate-700/50 px-4 py-2 flex items-center gap-3 shadow-xl">
-          <img src="/logo.png" alt="Viaje con Inteligencia" className="w-8 h-8 object-contain" />
+          <img src="/logo.webp" alt="Viaje con Inteligencia" width="32" height="32" className="w-8 h-8 object-contain" />
           <div className="flex items-center gap-2">
             <div>
               <h1 className="text-white font-bold text-sm leading-tight">Viaje con Inteligencia</h1>
@@ -164,7 +165,8 @@ function TopBar() {
 
         <button 
           onClick={() => setMenuOpen(!menuOpen)}
-          className="md:hidden bg-slate-900/90 backdrop-blur-md rounded-xl border border-slate-700/50 p-3 shadow-xl text-white"
+          className="md:hidden bg-slate-900/90 backdrop-blur-md rounded-xl border border-slate-700/50 p-3 shadow-xl text-white min-h-[44px] min-w-[44px] flex items-center justify-center"
+          aria-label={menuOpen ? 'Cerrar menú' : 'Abrir menú'}
         >
           {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
         </button>
@@ -333,7 +335,8 @@ function SidePanel() {
       <div className="bg-slate-900/90 backdrop-blur-md rounded-xl border border-slate-700/50 shadow-xl overflow-hidden">
         <button 
           onClick={() => setOpen(!open)}
-          className="w-full flex items-center justify-between p-3 border-b border-slate-700/50 text-white hover:bg-slate-800"
+          className="w-full flex items-center justify-between p-3 border-b border-slate-700/50 text-white hover:bg-slate-800 min-h-[44px]"
+          aria-label={open ? 'Cerrar panel' : 'Abrir panel explorar'}
         >
           <div className="flex items-center gap-2">
             <Filter className="w-4 h-4 text-blue-400" />
@@ -566,6 +569,7 @@ export default function HomeClient() {
           </p>
         </div>
       </section>
+      <SloganPopup />
       <NewsletterPopup />
     </div>
   );
