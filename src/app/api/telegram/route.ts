@@ -336,6 +336,7 @@ export async function POST(request: NextRequest) {
           code,
           telegram_chat_id: chatId,
           telegram_username: username || null,
+          expires_at: new Date(Date.now() + 5 * 60 * 1000).toISOString(),
         });
       if (insertError) {
         log.error('Error al crear código de vinculación', insertError);

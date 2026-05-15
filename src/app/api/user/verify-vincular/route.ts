@@ -50,7 +50,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Código ya usado' }, { status: 400 });
     }
 
-    if (new Date(vincular.expires_at) < new Date()) {
+    if (vincular.expires_at && new Date(vincular.expires_at) < new Date()) {
       return NextResponse.json({ error: 'Código expirado. Solicita uno nuevo en @ViajeConInteligenciaBot' }, { status: 400 });
     }
 
@@ -72,7 +72,7 @@ export async function POST(request: NextRequest) {
     // Notificar al usuario en Telegram que la vinculación fue exitosa
     await sendTelegramMessage(
       vincular.telegram_chat_id,
-      `✅ *Cuenta vinculada correctamente*\n\nTu cuenta web now está conectada con Telegram. Tus alertas de viaje se sincronizarán automáticamente entre la web y el bot.\n\nPuedes gestionar tus suscripciones desde viajeinteligencia.com/alertas o usando /mis-alertas aquí en el chat.`
+      `✅ *Cuenta vinculada correctamente*\n\nTu cuenta web ahora está conectada con Telegram. Tus alertas de viaje se sincronizarán automáticamente entre la web y el bot.\n\nPuedes gestionar tus suscripciones desde viajeinteligencia.com/alertas o usando /mis-alertas aquí en el chat.`
     );
 
     return NextResponse.json({ ok: true, linked: true });
