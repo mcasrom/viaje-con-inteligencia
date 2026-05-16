@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import { MapContainer, TileLayer, Circle, Marker, Popup, CircleMarker, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import TileAltFixer from '@/components/TileAltFixer';
 import type { PlaceResult } from './RadiusExplorer';
 
 // Fix Leaflet default icon issue - only runs on client
@@ -94,6 +95,7 @@ export default function RadiusMap({ center, radius, zoom, places, pois = [], onP
         url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/attributions">CARTO</a>'
       />
+      <TileAltFixer />
       <Circle
         center={center}
         radius={radius * 1000}

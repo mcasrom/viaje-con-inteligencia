@@ -41,6 +41,15 @@ export default function RouteMap({ polyline, mode = 'driving', className = '' }:
       attribution: '&copy; <a href="https://openstreetmap.org">OSM</a>',
     }).addTo(map)
 
+    // Fix alt text on tile images for SEO
+    const fixTileAlt = () => {
+      mapRef.current?.querySelectorAll<HTMLImageElement>('.leaflet-tile').forEach(img => {
+        if (img.alt === '') img.alt = 'Mapa OpenStreetMap';
+      });
+    };
+    map.on('tileload', fixTileAlt);
+    fixTileAlt();
+
     return () => {
       map.remove()
       instanceRef.current = null

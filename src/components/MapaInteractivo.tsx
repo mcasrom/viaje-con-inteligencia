@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from 'react';
 import dynamic from 'next/dynamic';
 import { getTodosLosPaises, NivelRiesgo } from '@/data/paises';
 import { useI18n } from '@/lib/i18n';
+import TileAltFixer from '@/components/TileAltFixer';
 
 const riskColors: Record<NivelRiesgo, string> = {
   'sin-riesgo': '#22c55e',
@@ -194,6 +195,7 @@ export default function MapaInteractivo({ fullScreen = false }: { fullScreen?: b
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
+        <TileAltFixer />
 
         {/* Layer: Risk MAEC */}
         {layer === 'riesgo' && paises.map((pais) => (

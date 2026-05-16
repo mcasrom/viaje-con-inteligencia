@@ -7,6 +7,7 @@ import { getTodosLosPaises } from '@/data/paises';
 import { calculateTCI } from '@/data/tci-engine';
 
 import { Shield, DollarSign, Globe, Loader2 } from 'lucide-react';
+import TileAltFixer from '@/components/TileAltFixer';
 
 type MapLayer = 'maec' | 'gpi' | 'tci';
 
@@ -239,6 +240,7 @@ export default function MapaIndices() {
           attribution='&copy; OpenStreetMap'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
+        <TileAltFixer />
 
         {(layer === 'maec' || layer === 'gpi' || layer === 'tci') && countries.map(c => (
           <CircleMarker

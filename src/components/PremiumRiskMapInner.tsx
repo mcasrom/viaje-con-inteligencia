@@ -86,6 +86,15 @@ export default function PremiumRiskMapInner({
       minZoom: 1,
     }).addTo(map);
 
+    // Fix alt text on tile images for SEO
+    const fixTileAlt = () => {
+      mapRef.current?.querySelectorAll<HTMLImageElement>('.leaflet-tile').forEach(img => {
+        if (img.alt === '') img.alt = 'Mapa de riesgos';
+      });
+    };
+    map.on('tileload', fixTileAlt);
+    fixTileAlt();
+
     const markers = L.layerGroup().addTo(map);
     const compareMarkers = L.layerGroup().addTo(map);
     markersRef.current = markers;
