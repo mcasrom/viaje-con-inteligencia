@@ -2,8 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createLogger } from '@/lib/logger';
 
 const log = createLogger('VerifyDelay');
-const AVIATIONSTACK_KEY = process.env.AVIATIONSTACK_API_KEY;
-const AVIATIONSTACK_URL = 'http://api.aviationstack.com/v1/flights';
+const FLIGHTLABS_API_KEY = process.env.FLIGHTLABS_API_KEY || '';
+const AERODATABOX_URL = 'https://aerodatabox.p.rapidapi.com';
 
 export const dynamic = 'force-dynamic';
 
@@ -17,6 +17,29 @@ interface VerifyResult {
   airline: string | null;
   flight: string | null;
   source: string;
+}
+
+function parseFlightNumber(raw: string): string {
+  const m = raw.toUpperCase().trim().match(/^([A-Z]{2,3})\s*(\d+)$/);
+  if (m) return `${m[1]} ${m[2]}`;
+  return raw.toUpperCase().trim();
+}
+
+function parseDelayMinutes(scheduledUtc: string | undefined, revisedUtc: string | undefined): number | null {
+  if (!scheduledUtc || !revisedUtc) return null;
+  const scheduled = new Date(scheduledUtc).getTime();
+  const revised = new Date(revisedUtc).getTime();
+  if (isNaN(scheduled) || isNaN(revised)) return null;
+  return Math.round((revised - scheduled) / 60000);
+}
+
+function formatUtc(utcStr: string | undefined): string | null {
+  if (!utcStr) return null;
+  try {
+    return new Date(utcStr).toISOString();
+  } catch {
+    return null;
+  }
 }
 
 export async function GET(request: NextRequest) {
@@ -36,55 +59,66 @@ export async function GET(request: NextRequest) {
     arrival: { scheduled: null, actual: null, delay: null, airport: null },
     airline: null,
     flight: null,
-    source: 'AviationStack',
+    source: 'AeroDataBox',
   };
 
-  if (!AVIATIONSTACK_KEY) {
-    log.warn('AVIATIONSTACK_API_KEY not configured');
+  if (!FLIGHTLABS_API_KEY) {
+    log.warn('FLIGHTLABS_API_KEY not configured');
     return NextResponse.json({ ...result, error: 'API key not configured' }, { status: 503 });
   }
 
   try {
-    const params = new URLSearchParams({
-      access_key: AVIATIONSTACK_KEY,
-      flight_iata: flight.toUpperCase(),
-      date,
-      limit: '5',
+    const flightNumber = parseFlightNumber(flight);
+    const url = `${AERODATABOX_URL}/flights/Number/${encodeURIComponent(flightNumber)}/${date}?dateLocalRole=Departure`;
+
+    const res = await fetch(url, {
+      headers: {
+        'x-rapidapi-key': FLIGHTLABS_API_KEY,
+        'x-rapidapi-host': 'aerodatabox.p.rapidapi.com',
+      },
     });
 
-    const res = await fetch(`${AVIATIONSTACK_URL}?${params}`, {
-      headers: { 'Content-Type': 'application/json' },
-    });
-
-    if (!res.ok) {
-      throw new Error(`AviationStack error: ${res.status}`);
-    }
-
-    const data = await res.json();
-    const flights = data?.data?.flights || [];
-
-    if (flights.length === 0) {
+    if (res.status === 204) {
       return NextResponse.json({ ...result, found: false, success: true });
     }
 
-    const f = flights[0];
+    if (!res.ok) {
+      throw new Error(`AeroDataBox error: ${res.status}`);
+    }
+
+    const data: any[] = await res.json();
+
+    if (!data || data.length === 0) {
+      return NextResponse.json({ ...result, found: false, success: true });
+    }
+
+    const f = data[0];
     result.success = true;
     result.found = true;
-    result.flight = f.flight?.iataNumber || f.flight?.icaoNumber || flight;
+    result.flight = f.number || flight;
     result.airline = f.airline?.name || null;
-    result.status = f.flight_status || 'unknown';
+    result.status = f.status || 'unknown';
+
+    const depScheduled = f.departure?.scheduledTime?.utc;
+    const depRevised = f.departure?.revisedTime?.utc;
+    const depActual = f.departure?.actualTime?.utc || depRevised;
     result.departure = {
-      scheduled: f.departure?.scheduledTime || null,
-      actual: f.departure?.actualTime || null,
-      delay: f.departure?.delay != null ? f.departure.delay : null,
-      airport: f.departure?.iataCode || f.departure?.icaoCode || null,
+      scheduled: formatUtc(depScheduled),
+      actual: formatUtc(depActual),
+      delay: parseDelayMinutes(depScheduled, depActual),
+      airport: f.departure?.airport?.iata || f.departure?.airport?.icao || null,
     };
+
+    const arrScheduled = f.arrival?.scheduledTime?.utc;
+    const arrRevised = f.arrival?.revisedTime?.utc;
+    const arrActual = f.arrival?.actualTime?.utc || arrRevised;
     result.arrival = {
-      scheduled: f.arrival?.scheduledTime || null,
-      actual: f.arrival?.actualTime || null,
-      delay: f.arrival?.delay != null ? f.arrival.delay : null,
-      airport: f.arrival?.iataCode || f.arrival?.icaoCode || null,
+      scheduled: formatUtc(arrScheduled),
+      actual: formatUtc(arrActual),
+      delay: parseDelayMinutes(arrScheduled, arrActual),
+      airport: f.arrival?.airport?.iata || f.arrival?.airport?.icao || null,
     };
+
     result.delayMinutes = result.departure.delay ?? result.arrival.delay ?? null;
 
     return NextResponse.json(result);
