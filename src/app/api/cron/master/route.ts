@@ -878,6 +878,9 @@ export async function GET(request: Request) {
   log.info('8c/8 Bing IndexNow...');
   results.bing_indexnow = await withTimeout(() => runBingPing(), 30000, '8c/8 Bing IndexNow');
 
+  log.info('8d/8 Health checks...');
+  results.health = await withTimeout(() => runSystemHealth(), 60000, '8d/8 Health checks');
+
   const elapsed = Date.now() - startTime;
 
   return NextResponse.json({
@@ -886,6 +889,27 @@ export async function GET(request: Request) {
     steps: results,
     timestamp: new Date().toISOString(),
   });
+}
+
+// ===== HEALTH CHECKS =====
+async function runSystemHealth() {
+  try {
+    const { runHealthChecks, getHealthSummary } = await import('@/lib/health-check');
+    const results = await runHealthChecks();
+    const summary = getHealthSummary(results);
+
+    if (summary.fail > 0) {
+      const failedList = summary.failed.map(f => `  ❌ ${f.service} (${f.error || 'timeout'})`).join('\n');
+      const msg = `🔴 Health Check — ${summary.fail}/${summary.total} fallos\n\n${failedList}`;
+
+      const { publishToTelegramChannel } = await import('@/lib/social-publisher');
+      await publishToTelegramChannel(msg);
+    }
+
+    return { ok: summary.ok, fail: summary.fail, total: summary.total, failures: summary.failed.map(f => f.service) };
+  } catch (e: any) {
+    return { error: e.message };
+  }
 }
 
 // ===== BING INDEXNOW =====
