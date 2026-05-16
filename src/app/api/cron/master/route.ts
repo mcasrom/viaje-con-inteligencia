@@ -881,6 +881,9 @@ export async function GET(request: Request) {
   log.info('8d/8 Health checks...');
   results.health = await withTimeout(() => runSystemHealth(), 60000, '8d/8 Health checks');
 
+  log.info('8e/8 Heatmap detector...');
+  results.heatmap = await withTimeout(() => runHeatmapDetection(), 30000, '8e/8 Heatmap detector');
+
   const elapsed = Date.now() - startTime;
 
   return NextResponse.json({
@@ -889,6 +892,35 @@ export async function GET(request: Request) {
     steps: results,
     timestamp: new Date().toISOString(),
   });
+}
+
+// ===== HEATMAP DETECTOR =====
+async function runHeatmapDetection() {
+  try {
+    const { detectHeatmap } = await import('@/lib/trend-detector');
+    const heatmap = await detectHeatmap();
+    const critical = heatmap.filter(h => h.level === 3);
+    const warning = heatmap.filter(h => h.level === 2);
+
+    if (critical.length > 0) {
+      const msg = `🔴 Mapa de Calor — ${critical.length} alertas tempranas\n\n` +
+        critical.map(h =>
+          `  ${h.country}: ${h.reasons.join('; ')}`
+        ).join('\n');
+
+      const { publishToTelegramChannel } = await import('@/lib/social-publisher');
+      await publishToTelegramChannel(msg);
+    }
+
+    return {
+      total: heatmap.length,
+      critical: critical.length,
+      warning: warning.length,
+      critical_countries: critical.map(h => h.country),
+    };
+  } catch (e: any) {
+    return { error: e.message };
+  }
 }
 
 // ===== HEALTH CHECKS =====
