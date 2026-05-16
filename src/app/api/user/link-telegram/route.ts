@@ -19,7 +19,6 @@ export async function POST(request: NextRequest) {
     await supabase.from('profiles').upsert({
       id: user.id,
       telegram_id: Number(telegramId),
-      telegram_username: telegramUsername || null,
     }, { onConflict: 'id' });
 
     return NextResponse.json({ ok: true, linked: true });

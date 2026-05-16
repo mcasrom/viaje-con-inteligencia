@@ -59,7 +59,6 @@ export async function POST(request: NextRequest) {
       .upsert({
         id: user.id,
         telegram_id: vincular.telegram_chat_id,
-        telegram_username: vincular.telegram_username || null,
       }, { onConflict: 'id' });
 
     await supabaseAdmin

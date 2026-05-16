@@ -77,7 +77,7 @@ export async function GET(request: NextRequest) {
       let tgSubs: any[] = [];
       const { data: profile } = await supabaseAdmin!
         .from('profiles')
-        .select('telegram_id, telegram_username')
+        .select('telegram_id')
         .eq('id', user.id)
         .maybeSingle();
 
@@ -117,7 +117,6 @@ export async function GET(request: NextRequest) {
         subscriptions: enriched,
         ok: true,
         telegram_linked: !!profile?.telegram_id,
-        telegram_username: profile?.telegram_username || null,
       });
     }
 
