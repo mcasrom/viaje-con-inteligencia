@@ -617,6 +617,7 @@ export default function AdminDashboard() {
               { label: 'Análisis Petróleo ML', desc: 'Predicciones de crudo', href: '/petroleo', icon: '🛢️', status: 'existe' },
               { label: 'Eventos Globales', desc: 'Calendario mundial', href: '/eventos', icon: '📅', status: 'existe' },
               { label: 'Relojes Mundiales', desc: '18 ciudades en vivo', href: '/relojes', icon: '🕐', status: 'existe' },
+              { label: 'Analytics Redes', desc: 'Métricas Bluesky, Mastodon, Telegram, X', href: '/admin/social', icon: '📊', status: 'existe' },
               { label: 'Radio Inteligente', desc: 'Destinos con scoring', href: '/radius', icon: '📡', status: 'existe' },
             ].map((feature) => (
               <a
