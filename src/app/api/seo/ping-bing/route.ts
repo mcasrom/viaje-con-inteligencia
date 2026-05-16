@@ -1,20 +1,36 @@
 import { NextResponse } from 'next/server';
 import { SITE_URL } from '@/lib/config';
 
-const BING_PING = 'https://www.bing.com/ping';
 const INDEXNOW_URL = 'https://www.bing.com/indexnow';
 
 export async function GET() {
   const results: Record<string, any> = {};
 
   try {
-    const sitemapUrl = `${SITE_URL}/sitemap.xml`;
-    const pingRes = await fetch(`${BING_PING}?sitemap=${encodeURIComponent(sitemapUrl)}`, {
+    const urls = [
+      `${SITE_URL}/`,
+      `${SITE_URL}/blog/ecosistema-osint-viajero-moderno`,
+    ];
+
+    const body = {
+      host: new URL(SITE_URL).hostname,
+      urlList: urls,
+    };
+
+    const res = await fetch(INDEXNOW_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
       signal: AbortSignal.timeout(15000),
     });
-    results.ping = { status: pingRes.status, ok: pingRes.ok };
+
+    results.indexnow = {
+      status: res.status,
+      ok: res.ok,
+      body: res.ok ? null : await res.text().catch(() => null),
+    };
   } catch (e: any) {
-    results.ping = { error: e.message };
+    results.indexnow = { error: e.message };
   }
 
   return NextResponse.json(results);
