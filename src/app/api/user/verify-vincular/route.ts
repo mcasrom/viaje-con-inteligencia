@@ -54,18 +54,39 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Código expirado. Solicita uno nuevo en @ViajeConInteligenciaBot' }, { status: 400 });
     }
 
+    const { data: existingWebSubs } = await supabaseAdmin
+      .from('alert_preferences')
+      .select('country_code')
+      .eq('user_id', user.id);
+
+    const existingCountries = new Set((existingWebSubs || []).map(s => s.country_code));
+
+    const { data: tgSubs } = await supabaseAdmin
+      .from('alert_preferences')
+      .select('id, country_code')
+      .eq('telegram_chat_id', vincular.telegram_chat_id)
+      .is('user_id', null);
+
+    for (const sub of tgSubs || []) {
+      if (existingCountries.has(sub.country_code)) {
+        await supabaseAdmin
+          .from('alert_preferences')
+          .delete()
+          .eq('id', sub.id);
+      } else {
+        await supabaseAdmin
+          .from('alert_preferences')
+          .update({ user_id: user.id })
+          .eq('id', sub.id);
+      }
+    }
+
     await supabaseAdmin
       .from('profiles')
       .upsert({
         id: user.id,
         telegram_id: vincular.telegram_chat_id,
       }, { onConflict: 'id' });
-
-    await supabaseAdmin
-      .from('alert_preferences')
-      .update({ user_id: user.id })
-      .eq('telegram_chat_id', vincular.telegram_chat_id)
-      .is('user_id', null);
 
     await supabaseAdmin
       .from('vincular_codes')
