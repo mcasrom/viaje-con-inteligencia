@@ -3,14 +3,24 @@ import { supabase } from '@/lib/supabase';
 import { createLogger } from '@/lib/logger';
 import { detectHeatmap } from '@/lib/trend-detector';
 import { extractCountryCodes, getCountryName } from '@/lib/country-name-map';
+import rawData from '@/data/paises-data.json';
 
 export const dynamic = 'force-dynamic';
 
 const log = createLogger('PulsoGlobal');
 
+const paises = (rawData as any).paisesData as Record<string, any>;
+const coordCache = new Map<string, [number, number]>();
+for (const [code, info] of Object.entries(paises)) {
+  if (info.mapaCoordenadas) {
+    coordCache.set(code, info.mapaCoordenadas as [number, number]);
+  }
+}
+
 interface CountrySentiment {
   countryCode: string;
   countryName: string;
+  coordinates: [number, number] | null;
   avgTone: number | null;
   signals: number;
   positive: number;
@@ -91,6 +101,7 @@ export async function GET() {
     sentimentRanking.push({
       countryCode: code,
       countryName: getCountryName(code) || code.toUpperCase(),
+      coordinates: coordCache.get(code) ?? null,
       avgTone, signals: data.signals,
       positive: data.positive, negative: data.negative, neutral: data.neutral,
       mood,
@@ -99,7 +110,7 @@ export async function GET() {
 
   sentimentRanking.sort((a, b) => (b.avgTone ?? -999) - (a.avgTone ?? -999));
 
-  const topDrops: Array<{ countryCode: string; countryName: string; drop: number; recentAvg: number; olderAvg: number }> = [];
+  const topDrops: Array<{ countryCode: string; countryName: string; coordinates: [number, number] | null; drop: number; recentAvg: number; olderAvg: number }> = [];
   for (const [code, data] of countryData) {
     if (data.recentTones.length < 2 || data.olderTones.length < 2) continue;
     const recentAvg = data.recentTones.reduce((a, b) => a + b, 0) / data.recentTones.length;
@@ -109,6 +120,7 @@ export async function GET() {
       topDrops.push({
         countryCode: code,
         countryName: getCountryName(code) || code.toUpperCase(),
+        coordinates: coordCache.get(code) ?? null,
         drop,
         recentAvg: Math.round(recentAvg * 10) / 10,
         olderAvg: Math.round(olderAvg * 10) / 10,
@@ -119,15 +131,21 @@ export async function GET() {
 
   let heatmapAlerts: any[] = [];
   try {
-    heatmapAlerts = (await detectHeatmap()).map(h => ({
-      country: h.country,
-      level: h.level,
-      label: h.label,
-      signals24h: h.signals24h,
-      spike: h.spike,
-      reasons: h.reasons,
-      keywords: h.keywords,
-    }));
+    const { getCountryCode: nameToCode } = await import('@/lib/country-name-map');
+    heatmapAlerts = (await detectHeatmap()).map(h => {
+      const code = nameToCode(h.country);
+      return {
+        country: h.country,
+        countryCode: code ?? undefined,
+        coordinates: code ? (coordCache.get(code) ?? null) : null,
+        level: h.level,
+        label: h.label,
+        signals24h: h.signals24h,
+        spike: h.spike,
+        reasons: h.reasons,
+        keywords: h.keywords,
+      };
+    });
   } catch (e) {
     log.error('Heatmap error', e);
   }
