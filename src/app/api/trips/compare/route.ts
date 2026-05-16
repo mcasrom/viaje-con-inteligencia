@@ -33,7 +33,7 @@ export async function POST(request: NextRequest) {
 
     const profile = 'mochilero';
     const budget = trip.budget || 'medio';
-    const result = calcularScore(countryCode, profile, budget, month);
+    const result = calcularScore(countryCode, profile, budget, month, trip.days, trip.interests);
     const pais = paisesData[countryCode];
 
     return {

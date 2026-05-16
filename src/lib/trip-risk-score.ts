@@ -30,16 +30,28 @@ export function getScoreLabel(score: number): string {
   return 'no recomendado';
 }
 
+const INTEREST_MAP: Record<string, string[]> = {
+  Historia: ['cultural'], Cultura: ['cultural'], Arte: ['cultural'],
+  Naturaleza: ['naturaleza'], Playa: ['playa'], Aventura: ['naturaleza', 'cultural'],
+  Buceo: ['naturaleza'], Senderismo: ['naturaleza'], Gastronomía: ['cultural'],
+  Familia: ['familiar'], Negocios: ['cultural'], Fiesta: ['playa', 'cultural'],
+  Museos: ['cultural'], Deportes: ['naturaleza'], Relax: ['playa'],
+  Ciudad: ['cultural'], Nieve: ['naturaleza'], Montaña: ['naturaleza'], Lujo: ['playa', 'cultural'],
+};
+
 export function calcularScore(
   countryCode: string,
   profile: string,
   budget: string,
-  month: number
+  month: number,
+  days?: number,
+  interests?: string[]
 ): { score: number; breakdown: Record<string, number>; labels: Record<string, string> } {
   const pais = paisesData[countryCode];
   const attrs = travelAttributes[countryCode];
 
-  const riesgoBase = RIESGO_SCORE[pais?.nivelRiesgo] ?? 50;
+  const durationFactor = days ? 1 + Math.max(-0.15, Math.min(0.25, (days - 7) * 0.003)) : 1;
+  const riesgoBase = Math.round(RIESGO_SCORE[pais?.nivelRiesgo] ?? 50 * durationFactor);
 
   const seasonData = SEASONALITY_MAP[countryCode];
   const seasonIndex = seasonData?.[String(month)] ?? 100;
@@ -60,7 +72,19 @@ export function calcularScore(
     };
     const relevantKeys = profileWeights[profile] || ['playa', 'cultural', 'naturaleza', 'familiar'];
     const vals = relevantKeys.map(k => attrs[k as keyof typeof attrs]).filter((v): v is number => typeof v === 'number' && v > 0);
-    perfilScore = vals.length > 0 ? Math.round(vals.reduce((a, b) => a + b, 0) / vals.length * 10) : 50;
+    let profileBase = vals.length > 0 ? Math.round(vals.reduce((a, b) => a + b, 0) / vals.length * 10) : 50;
+
+    let interestScore = 50;
+    if (interests && interests.length > 0) {
+      const interestAttrs = interests.flatMap(i => INTEREST_MAP[i] || []);
+      const uniqueAttrs = [...new Set(interestAttrs)];
+      const interestVals = uniqueAttrs.map(k => attrs[k as keyof typeof attrs]).filter((v): v is number => typeof v === 'number' && v > 0);
+      if (interestVals.length > 0) {
+        interestScore = Math.round(interestVals.reduce((a, b) => a + b, 0) / interestVals.length * 10);
+      }
+    }
+
+    perfilScore = interests?.length ? Math.round(profileBase * 0.6 + interestScore * 0.4) : profileBase;
   }
 
   const pesosPorPerfil: Record<string, { riesgo: number; season: number; coste: number; perfil: number }> = {
