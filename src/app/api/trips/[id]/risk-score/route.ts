@@ -36,7 +36,7 @@ export async function GET(
   const profile = 'mochilero';
   const budget = trip.budget || 'medio';
 
-  const result = calcularScore(countryCode, profile, budget, month, trip.days, trip.interests);
+  const result = await calcularScore(countryCode, profile, budget, month, trip.days, trip.interests);
   const pais = paisesData[countryCode];
 
   return NextResponse.json({

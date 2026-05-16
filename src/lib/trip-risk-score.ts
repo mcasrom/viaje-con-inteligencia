@@ -1,6 +1,42 @@
 import { paisesData, type NivelRiesgo } from '@/data/paises';
 import { SEASONALITY_MAP } from '@/data/tci-engine';
 import { travelAttributes } from '@/data/clustering';
+import { supabaseAdmin } from '@/lib/supabase-admin';
+
+const DEFAULT_PESOS: Record<string, { riesgo: number; season: number; coste: number; perfil: number }> = {
+  mochilero: { riesgo: 0.20, season: 0.15, coste: 0.40, perfil: 0.25 },
+  familiar: { riesgo: 0.40, season: 0.20, coste: 0.25, perfil: 0.15 },
+  lujo: { riesgo: 0.20, season: 0.20, coste: 0.20, perfil: 0.40 },
+  aventura: { riesgo: 0.25, season: 0.15, coste: 0.30, perfil: 0.30 },
+  negocios: { riesgo: 0.30, season: 0.20, coste: 0.35, perfil: 0.15 },
+  default: { riesgo: 0.30, season: 0.20, coste: 0.25, perfil: 0.25 },
+};
+
+let pesosCache: typeof DEFAULT_PESOS | null = null;
+let pesosCacheTime = 0;
+const CACHE_TTL = 5 * 60 * 1000;
+
+async function loadPesosFromDB(): Promise<typeof DEFAULT_PESOS> {
+  if (pesosCache && Date.now() - pesosCacheTime < CACHE_TTL) return pesosCache;
+  try {
+    const admin = supabaseAdmin;
+    if (!admin) return DEFAULT_PESOS;
+    const { data } = await admin.from('score_weights').select('*');
+    if (!data || data.length === 0) return DEFAULT_PESOS;
+    const pesos: typeof DEFAULT_PESOS = { ...DEFAULT_PESOS };
+    for (const row of data) {
+      const p = row.profile === 'default' ? 'default' : row.profile;
+      if (p in pesos) {
+        pesos[p] = { riesgo: row.riesgo, season: row.season, coste: row.coste, perfil: row.perfil };
+      }
+    }
+    pesosCache = pesos;
+    pesosCacheTime = Date.now();
+    return pesos;
+  } catch {
+    return DEFAULT_PESOS;
+  }
+}
 
 export const RIESGO_SCORE: Record<NivelRiesgo, number> = {
   'sin-riesgo': 100,
@@ -39,14 +75,14 @@ const INTEREST_MAP: Record<string, string[]> = {
   Ciudad: ['cultural'], Nieve: ['naturaleza'], Montaña: ['naturaleza'], Lujo: ['playa', 'cultural'],
 };
 
-export function calcularScore(
+export async function calcularScore(
   countryCode: string,
   profile: string,
   budget: string,
   month: number,
   days?: number,
   interests?: string[]
-): { score: number; breakdown: Record<string, number>; labels: Record<string, string> } {
+): Promise<{ score: number; breakdown: Record<string, number>; labels: Record<string, string> }> {
   const pais = paisesData[countryCode];
   const attrs = travelAttributes[countryCode];
 
@@ -87,14 +123,7 @@ export function calcularScore(
     perfilScore = interests?.length ? Math.round(profileBase * 0.6 + interestScore * 0.4) : profileBase;
   }
 
-  const pesosPorPerfil: Record<string, { riesgo: number; season: number; coste: number; perfil: number }> = {
-    mochilero: { riesgo: 0.20, season: 0.15, coste: 0.40, perfil: 0.25 },
-    familiar: { riesgo: 0.40, season: 0.20, coste: 0.25, perfil: 0.15 },
-    lujo: { riesgo: 0.20, season: 0.20, coste: 0.20, perfil: 0.40 },
-    aventura: { riesgo: 0.25, season: 0.15, coste: 0.30, perfil: 0.30 },
-    negocios: { riesgo: 0.30, season: 0.20, coste: 0.35, perfil: 0.15 },
-  };
-  const pesos = pesosPorPerfil[profile] || { riesgo: 0.30, season: 0.20, coste: 0.25, perfil: 0.25 };
+  const pesos = (await loadPesosFromDB())[profile] || (await loadPesosFromDB()).default;
 
   const rawScore = riesgoBase * pesos.riesgo + seasonScore * pesos.season + costeScore * pesos.coste + perfilScore * pesos.perfil;
   const score = Math.round(Math.max(0, Math.min(100, rawScore)));

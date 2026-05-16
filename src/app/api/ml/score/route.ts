@@ -31,7 +31,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: 'Month must be 1-12' }, { status: 400 });
   }
 
-  const result = calcularScore(country, profile, budget, month);
+  const result = await calcularScore(country, profile, budget, month);
   const pais = paisesData[country];
 
   return NextResponse.json({

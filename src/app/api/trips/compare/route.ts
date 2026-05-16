@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Viajes no encontrados' }, { status: 404 });
   }
 
-  const results = trips.map(trip => {
+  const results = (await Promise.all(trips.map(async (trip) => {
     const countryCode = trip.country_code?.toLowerCase();
     if (!countryCode || !paisesData[countryCode]) return null;
 
@@ -33,7 +33,7 @@ export async function POST(request: NextRequest) {
 
     const profile = 'mochilero';
     const budget = trip.budget || 'medio';
-    const result = calcularScore(countryCode, profile, budget, month, trip.days, trip.interests);
+    const result = await calcularScore(countryCode, profile, budget, month, trip.days, trip.interests);
     const pais = paisesData[countryCode];
 
     return {
@@ -50,7 +50,7 @@ export async function POST(request: NextRequest) {
       breakdown: result.breakdown,
       labels: result.labels,
     };
-  }).filter(Boolean);
+  }))).filter(Boolean);
 
   return NextResponse.json({ results });
 }
