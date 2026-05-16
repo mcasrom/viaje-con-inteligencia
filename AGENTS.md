@@ -58,7 +58,7 @@
 10. **Sentimiento GDELT público** ✅ — Badge de tone_score visible en `/osint` (sección "Sentimiento GDELT") y en `OsintAlertsBanner` de fichas de país. Nueva API pública `/api/osint/signals`. Schema SQL actualizado.
 11. **Admin calendario** ✅ — Página `/admin/calendario` con calendario mensual + notas del editor + timeline. API CRUD `/api/admin/editor-notes`.
 12. **Publicado RRSS 15 May**: Bluesky ✅, Mastodon ✅, Telegram ❌ (fallo local, funciona en Vercel), X ✅ (manual). Revisar resultados.
-13. **Trip Risk Score en viajes** ✅ — API `/api/trips/[id]/risk-score` con scoring por país+mes+perfil. Tabla visual en detalle de viaje con 4 dimensiones y score global. Lógica compartida en `src/lib/trip-risk-score.ts`. Pendiente: comparador de itinerarios (side-by-side Florencia vs Génova).
+13. **Trip Risk Score en viajes** ✅ — API `/api/trips/[id]/risk-score` con scoring por país+mes+perfil. Tabla visual en detalle de viaje con 4 dimensiones y score global. Lógica compartida en `src/lib/trip-risk-score.ts`. Comparador `/viajes/comparar` con tabla side-by-side y recomendación. Scoring mejorado: factor duración (viajes largos = más exposición) + intereses del viajero personalizan perfil. Pesos ajustados por perfil (mochilero → coste 40%, familiar → riesgo 40%, etc.). Country codes corregidos en viajes existentes.
 
 ### Tareas a observar / backlog
 1. **Groq para GDELT/RSS** — Clasificación semántica con Groq en vez de solo keywords para mejorar precisión de urgencia en señales OSINT
