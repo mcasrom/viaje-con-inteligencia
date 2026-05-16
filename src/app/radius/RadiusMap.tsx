@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
-import { MapContainer, TileLayer, Circle, Marker, Popup, useMap } from 'react-leaflet';
+import { MapContainer, TileLayer, Circle, Marker, Popup, CircleMarker, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import type { PlaceResult } from './RadiusExplorer';
@@ -14,6 +14,38 @@ L.Icon.Default.mergeOptions({
   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
 });
 
+const POI_MARKER_COLORS: Record<string, string> = {
+  museum: '#8b5cf6',
+  attraction: '#f59e0b',
+  viewpoint: '#06b6d4',
+  artwork: '#ec4899',
+  castle: '#ef4444',
+  monument: '#6366f1',
+  archaeological: '#14b8a6',
+  beach: '#22c55e',
+  park: '#22c55e',
+  library: '#a855f7',
+};
+
+function PoiMarker({ poi }: { poi: any }) {
+  const color = POI_MARKER_COLORS[poi.category] || '#94a3b8';
+  return (
+    <CircleMarker
+      center={[poi.lat, poi.lon]}
+      radius={5}
+      pathOptions={{ color, fillColor: color, fillOpacity: 0.8, weight: 1.5 }}
+    >
+      <Popup>
+        <div className="text-xs">
+          <strong>{poi.name}</strong>
+          <br />
+          <span className="text-slate-500">{poi.category} · {poi.distance} km</span>
+        </div>
+      </Popup>
+    </CircleMarker>
+  );
+}
+
 function MapController({ center, zoom }: { center: [number, number]; zoom: number }) {
   const map = useMap();
   useEffect(() => {
@@ -22,15 +54,25 @@ function MapController({ center, zoom }: { center: [number, number]; zoom: numbe
   return null;
 }
 
+interface POIDisplay {
+  id: string;
+  name: string;
+  category: string;
+  lat: number;
+  lon: number;
+  distance: number;
+}
+
 interface RadiusMapProps {
   center: [number, number];
   radius: number;
   zoom: number;
   places: PlaceResult[];
+  pois?: POIDisplay[];
   onPlaceClick: (place: PlaceResult) => void;
 }
 
-export default function RadiusMap({ center, radius, zoom, places, onPlaceClick }: RadiusMapProps) {
+export default function RadiusMap({ center, radius, zoom, places, pois = [], onPlaceClick }: RadiusMapProps) {
   useEffect(() => {
     const observer = new MutationObserver(() => {
       document.querySelectorAll('.leaflet-tile').forEach(el => {
@@ -59,6 +101,9 @@ export default function RadiusMap({ center, radius, zoom, places, onPlaceClick }
       />
       <MapController center={center} zoom={zoom} />
 
+      {pois.map((poi) => (
+        <PoiMarker key={poi.id} poi={poi} />
+      ))}
       {places.map((place) => (
         <Marker
           key={place.id}

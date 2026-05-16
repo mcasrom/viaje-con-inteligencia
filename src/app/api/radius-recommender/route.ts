@@ -9,6 +9,29 @@ const RISK_SCORES: Record<string, number> = {
   'muy-alto': 10,
 };
 
+interface POIResult {
+  id: string;
+  name: string;
+  type: string;
+  category: string;
+  lat: number;
+  lon: number;
+  distance: number;
+}
+
+const POI_CATEGORIES: Record<string, { osm: string; icon: string; label: string }> = {
+  museum: { osm: 'tourism=museum', icon: '🏛️', label: 'Museo' },
+  attraction: { osm: 'tourism=attraction', icon: '🌟', label: 'Atracción' },
+  viewpoint: { osm: 'tourism=viewpoint', icon: '👁️', label: 'Mirador' },
+  artwork: { osm: 'tourism=artwork', icon: '🎨', label: 'Arte' },
+  castle: { osm: 'historic=castle', icon: '🏰', label: 'Castillo' },
+  monument: { osm: 'historic=monument', icon: '🗿', label: 'Monumento' },
+  archaeological: { osm: 'historic=archaeological_site', icon: '🏺', label: 'Yacimiento' },
+  beach: { osm: 'natural=beach', icon: '🏖️', label: 'Playa' },
+  park: { osm: 'leisure=park', icon: '🌳', label: 'Parque' },
+  library: { osm: 'amenity=library', icon: '📚', label: 'Biblioteca' },
+};
+
 async function getWeather(lat: number, lon: number) {
   const apiKey = process.env.OPENWEATHER_API_KEY;
   if (!apiKey) return null;
@@ -74,6 +97,55 @@ function countryCodeToWikidata(code: string): string {
     au: 'wd:Q408', nz: 'wd:Q664', fj: 'wd:Q712', lb: 'wd:Q822',
   };
   return mapping[code.toLowerCase()] || 'wd:Q1';
+}
+
+async function getPOIsForArea(lat: number, lon: number, radiusKm: number): Promise<POIResult[]> {
+  try {
+    const radiusMeters = radiusKm * 1000;
+    const queries = Object.entries(POI_CATEGORIES)
+      .map(([key, cfg]) => `  node(around:${radiusMeters},${lat},${lon})[${cfg.osm}];`).join('\n');
+
+    const overpassQuery = `[out:json][timeout:10];(\n${queries}\n);out center 50;`;
+
+    const res = await fetch('https://overpass-api.de/api/interpreter', {
+      method: 'POST',
+      body: overpassQuery,
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      signal: AbortSignal.timeout(12000),
+    });
+
+    if (!res.ok) return [];
+
+    const data = await res.json();
+    const elements = data.elements || [];
+
+    return elements
+      .map((el: any) => {
+        const tags = el.tags || {};
+        const name = tags.name || tags['name:es'] || tags.short_name || '';
+        if (!name) return null;
+        const elLat = el.lat ?? el.center?.lat;
+        const elLon = el.lon ?? el.center?.lon;
+        if (elLat == null || elLon == null) return null;
+
+        const catEntry = Object.entries(POI_CATEGORIES).find(([_, cfg]) => {
+          const [k, v] = cfg.osm.split('=');
+          return tags[k] === v;
+        });
+        const category = catEntry?.[0] || 'attraction';
+        const id = el.type === 'node' ? `n${el.id}` : `w${el.id}`;
+
+        const dLat = elLat - lat;
+        const dLon = elLon - lon;
+        const distance = Math.round(Math.sqrt(dLat * dLat + dLon * dLon) * 111.32 * 10) / 10;
+
+        return { id, name, type: el.type, category, lat: elLat, lon: elLon, distance };
+      })
+      .filter((p: POIResult | null): p is POIResult => p !== null)
+      .slice(0, 50);
+  } catch {
+    return [];
+  }
 }
 
 function calculateScore(place: any, weather: any, poiCount: number, distanceKm: number): number {
@@ -154,11 +226,14 @@ export async function POST(request: NextRequest) {
 
     const validPlaces = scoredPlaces.filter(Boolean).sort((a, b) => b!.score - a!.score);
 
+    const pois = await getPOIsForArea(lat, lon, radius);
+
     return NextResponse.json({
       center: { lat, lon },
       radius,
       count: validPlaces.length,
       places: validPlaces,
+      pois,
       timestamp: new Date().toISOString(),
     });
   } catch (err) {

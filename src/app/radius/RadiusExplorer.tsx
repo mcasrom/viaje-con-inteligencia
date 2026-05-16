@@ -24,6 +24,29 @@ export interface PlaceResult {
   score: number;
 }
 
+interface POIResult {
+  id: string;
+  name: string;
+  type: string;
+  category: string;
+  lat: number;
+  lon: number;
+  distance: number;
+}
+
+const POI_CATEGORY_INFO: Record<string, { icon: string; label: string }> = {
+  museum: { icon: '🏛️', label: 'Museo' },
+  attraction: { icon: '🌟', label: 'Atracción' },
+  viewpoint: { icon: '👁️', label: 'Mirador' },
+  artwork: { icon: '🎨', label: 'Arte' },
+  castle: { icon: '🏰', label: 'Castillo' },
+  monument: { icon: '🗿', label: 'Monumento' },
+  archaeological: { icon: '🏺', label: 'Yacimiento' },
+  beach: { icon: '🏖️', label: 'Playa' },
+  park: { icon: '🌳', label: 'Parque' },
+  library: { icon: '📚', label: 'Biblioteca' },
+};
+
 const RISK_COLORS: Record<string, string> = {
   'sin-riesgo': '#22c55e',
   'bajo': '#eab308',
@@ -134,6 +157,8 @@ export default function RadiusExplorer() {
   const [radius, setRadius] = useState<number>(100);
   const [searchQuery, setSearchQuery] = useState('');
   const [places, setPlaces] = useState<PlaceResult[]>([]);
+  const [pois, setPois] = useState<POIResult[]>([]);
+  const [poisLoading, setPoisLoading] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedPlace, setSelectedPlace] = useState<PlaceResult | null>(null);
@@ -145,6 +170,7 @@ export default function RadiusExplorer() {
     setLoading(true);
     setError(null);
     setPlaces([]);
+    setPois([]);
 
     try {
       const res = await fetch('/api/radius-recommender', {
@@ -158,6 +184,7 @@ export default function RadiusExplorer() {
         setError(data.error);
       } else {
         setPlaces(data.places || []);
+        setPois(data.pois || []);
       }
     } catch (err) {
       setError('Error conectando con el servidor');
@@ -308,6 +335,7 @@ export default function RadiusExplorer() {
             radius={radius}
             zoom={mapZoom}
             places={places}
+            pois={pois}
             onPlaceClick={handleSelectPlace}
           />
         </div>
@@ -414,6 +442,29 @@ export default function RadiusExplorer() {
             <div className="mt-3 text-xs text-slate-500">
               {selectedPlace.poiCount} puntos de interés en la zona
             </div>
+
+            {pois.length > 0 && (
+              <div className="mt-3">
+                <div className="text-xs text-slate-400 font-medium mb-2">POIs cerca del centro:</div>
+                <div className="space-y-1.5 max-h-40 overflow-y-auto">
+                  {pois.slice(0, 15).map((poi) => {
+                    const cat = POI_CATEGORY_INFO[poi.category] || { icon: '📍', label: poi.category };
+                    return (
+                      <div key={poi.id} className="flex items-center gap-2 text-xs bg-slate-800/80 rounded-lg px-2 py-1.5">
+                        <span>{cat.icon}</span>
+                        <span className="text-slate-300 truncate flex-1">{poi.name}</span>
+                        <span className="text-slate-500 flex-shrink-0">{poi.distance} km</span>
+                      </div>
+                    );
+                  })}
+                  {pois.length > 15 && (
+                    <div className="text-slate-500 text-xs text-center pt-1">
+                      +{pois.length - 15} POIs más
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         )}
 
@@ -429,6 +480,34 @@ export default function RadiusExplorer() {
             loading={loading}
           />
         </div>
+
+        {/* POI List */}
+        {pois.length > 0 && (
+          <div className="bg-slate-800/30 rounded-xl p-4 border border-slate-700">
+            <h3 className="text-white font-semibold mb-3 flex items-center gap-2">
+              <MapPin className="w-4 h-4 text-purple-400" />
+              POIs en el área
+              <span className="text-purple-400 text-sm font-medium ml-auto">{pois.length}</span>
+            </h3>
+            <div className="space-y-1 max-h-60 overflow-y-auto pr-1">
+              {pois.slice(0, 30).map((poi) => {
+                const cat = POI_CATEGORY_INFO[poi.category] || { icon: '📍', label: poi.category };
+                return (
+                  <div key={poi.id} className="flex items-center gap-2 text-xs bg-slate-800/50 rounded-lg px-2 py-1.5 hover:bg-slate-700/50 transition-colors">
+                    <span>{cat.icon}</span>
+                    <span className="text-slate-300 truncate flex-1">{poi.name}</span>
+                    <span className="text-slate-500 flex-shrink-0">{poi.distance} km</span>
+                  </div>
+                );
+              })}
+              {pois.length > 30 && (
+                <div className="text-slate-500 text-xs text-center pt-2">
+                  +{pois.length - 30} POIs más
+                </div>
+              )}
+            </div>
+          </div>
+        )}
 
         {/* Methodology */}
         <div className="bg-slate-800/30 rounded-xl p-4 border border-slate-700 text-xs text-slate-500">
