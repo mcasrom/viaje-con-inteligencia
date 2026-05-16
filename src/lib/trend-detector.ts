@@ -3,6 +3,40 @@ import { createLogger } from '@/lib/logger';
 
 const log = createLogger('TrendDetector');
 
+const FALLBACK_ALERT_KEYWORDS = [
+  'huelga', 'protesta', 'golpe', 'crisis', 'aeropuerto',
+  'hospital', 'saturado', 'colapsado', 'emergencia', 'conflicto',
+  'manifestación', 'paro', 'bloqueo', 'disturbio',
+  'strike', 'protest', 'coup', 'riot', 'collapse',
+];
+
+let cachedKeywords: string[] | null = null;
+let lastFetch = 0;
+const CACHE_TTL = 5 * 60 * 1000;
+
+async function getAlertKeywords(): Promise<string[]> {
+  if (cachedKeywords && Date.now() - lastFetch < CACHE_TTL) return cachedKeywords;
+  if (!supabase) return FALLBACK_ALERT_KEYWORDS;
+  try {
+    const { data } = await supabase
+      .from('pulso_keywords')
+      .select('keyword_es, keyword_en')
+      .eq('active', true)
+      .eq('used_in_detection', true);
+    if (data && data.length > 0) {
+      const combined = new Set<string>();
+      for (const kw of data) {
+        if (kw.keyword_es) combined.add(kw.keyword_es.toLowerCase());
+        if (kw.keyword_en) combined.add(kw.keyword_en.toLowerCase());
+      }
+      cachedKeywords = Array.from(combined);
+      lastFetch = Date.now();
+      return cachedKeywords;
+    }
+  } catch { /* fallback */ }
+  return FALLBACK_ALERT_KEYWORDS;
+}
+
 export interface CountryHeat {
   country: string;
   level: 0 | 1 | 2 | 3;
@@ -133,10 +167,7 @@ export async function detectHeatmap(): Promise<CountryHeat[]> {
       reasons.push(`Sentimiento cayó ${toneDrop}pts`);
     }
 
-    const alertKeywords = ['huelga', 'protesta', 'golpe', 'crisis', 'aeropuerto',
-      'hospital', 'saturado', 'colapsado', 'emergencia', 'conflicto',
-      'manifestación', 'paro', 'bloqueo', 'huelga', 'disturbio',
-      'strike', 'protest', 'coup', 'riot', 'collapse'];
+    const alertKeywords = await getAlertKeywords();
     const foundAlerts = keywords.filter(k => alertKeywords.includes(k));
     if (foundAlerts.length > 0) {
       level = Math.max(level, 2) as 0|1|2|3;

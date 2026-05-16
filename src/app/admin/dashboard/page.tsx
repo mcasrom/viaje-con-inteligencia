@@ -460,6 +460,20 @@ export default function AdminDashboard() {
           </div>
         </section>
 
+        {/* Pulso Keywords */}
+        <section className="bg-slate-800 rounded-2xl border border-slate-700 p-6">
+          <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+            <AlertTriangle className="w-5 h-5 text-purple-400" />
+            Keywords del Pulso Global
+          </h2>
+          <p className="text-slate-400 text-sm mb-4">Gestiona palabras clave para detección de alertas y visualización en /pulso-global.</p>
+          <div className="flex gap-3">
+            <a href="/admin/pulso-keywords" className="inline-flex items-center gap-2 px-4 py-2 bg-purple-600/20 border border-purple-500/30 text-purple-400 rounded-lg hover:bg-purple-600/30 transition-colors text-sm font-medium">
+              Gestionar keywords <AlertTriangle className="w-4 h-4" />
+            </a>
+          </div>
+        </section>
+
         {/* Social Media */}
         <section className="bg-slate-800 rounded-2xl border border-slate-700 p-6">
           <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">

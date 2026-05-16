@@ -70,20 +70,11 @@ const LEVEL_CONFIG: Record<number, { color: string; bg: string; border: string }
   3: { color: '#f87171', bg: 'bg-red-500/10', border: 'border-red-500/30' },
 };
 
-const ALERT_KEYWORDS_DISPLAY = [
-  { kw: 'huelga / strike', icon: '⚡', cat: 'Transporte' },
-  { kw: 'protesta / protest', icon: '✊', cat: 'Social' },
-  { kw: 'inundación / flood', icon: '🌊', cat: 'Clima' },
-  { kw: 'terremoto / earthquake', icon: '🌍', cat: 'Desastre' },
-  { kw: 'incendio / fire', icon: '🔥', cat: 'Clima' },
-  { kw: 'huracán / hurricane', icon: '🌀', cat: 'Clima' },
-  { kw: 'brote / outbreak', icon: '🦠', cat: 'Salud' },
-  { kw: 'cancelado / cancelled', icon: '✈️', cat: 'Transporte' },
-  { kw: 'atentado / attack', icon: '💥', cat: 'Seguridad' },
-  { kw: 'cierre / closure', icon: '🚧', cat: 'Logística' },
-  { kw: 'estafa / scam', icon: '⚠️', cat: 'Seguridad' },
-  { kw: 'evacuación', icon: '🏃', cat: 'Emergencia' },
-];
+interface KeywordDisplay {
+  kw: string;
+  icon: string;
+  cat: string;
+}
 
 function CollapsibleSection({
   title, icon, count, countColor, defaultOpen, children,
@@ -118,15 +109,27 @@ export default function PulsoGlobalClient() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [mapMode, setMapMode] = useState<'sentiment' | 'heatmap'>('sentiment');
+  const [keywords, setKeywords] = useState<KeywordDisplay[]>([]);
 
   const fetchData = async () => {
     setLoading(true);
     setError('');
     try {
-      const res = await fetch('/api/pulso-global');
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const json = await res.json();
-      setData(json);
+      const [globalRes, kwRes] = await Promise.all([
+        fetch('/api/pulso-global'),
+        fetch('/api/pulso-keywords'),
+      ]);
+      if (!globalRes.ok) throw new Error(`HTTP ${globalRes.status}`);
+      const globalJson = await globalRes.json();
+      setData(globalJson);
+      if (kwRes.ok) {
+        const kwJson = await kwRes.json();
+        setKeywords((kwJson.keywords || []).filter((k: any) => k.used_in_display).map((k: any) => ({
+          kw: k.keyword_en ? `${k.keyword_es} / ${k.keyword_en}` : k.keyword_es,
+          icon: k.icon || '⚠️',
+          cat: k.category,
+        })));
+      }
     } catch (e: any) {
       setError(e.message);
     } finally {
@@ -449,7 +452,7 @@ export default function PulsoGlobalClient() {
           defaultOpen={false}
         >
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
-            {ALERT_KEYWORDS_DISPLAY.map(k => (
+            {keywords.map(k => (
               <div key={k.kw} className="bg-slate-700/50 rounded-xl px-3 py-2 border border-slate-600/50 flex items-center gap-2">
                 <span>{k.icon}</span>
                 <div>
@@ -460,7 +463,7 @@ export default function PulsoGlobalClient() {
             ))}
           </div>
           <p className="text-slate-500 text-xs mt-3">
-            + detección de países por nombre en español e inglés en todas las señales. Más de 12 categorías de alerta.
+            + detección de países por nombre en español e inglés en todas las señales. {keywords.length} keywords activas.
           </p>
         </CollapsibleSection>
 
