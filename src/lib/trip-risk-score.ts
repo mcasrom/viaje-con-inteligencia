@@ -63,11 +63,16 @@ export function calcularScore(
     perfilScore = vals.length > 0 ? Math.round(vals.reduce((a, b) => a + b, 0) / vals.length * 10) : 50;
   }
 
-  const profilePeso = profile === 'mochilero' || profile === 'aventura' ? 0.3 : profile === 'negocios' ? 0.15 : 0.25;
-  const pesos = { riesgo: 0.3, season: 0.2, coste: 0.25, perfil: profilePeso };
-  const totalPeso = Object.values(pesos).reduce((a, b) => a + b, 0);
+  const pesosPorPerfil: Record<string, { riesgo: number; season: number; coste: number; perfil: number }> = {
+    mochilero: { riesgo: 0.20, season: 0.15, coste: 0.40, perfil: 0.25 },
+    familiar: { riesgo: 0.40, season: 0.20, coste: 0.25, perfil: 0.15 },
+    lujo: { riesgo: 0.20, season: 0.20, coste: 0.20, perfil: 0.40 },
+    aventura: { riesgo: 0.25, season: 0.15, coste: 0.30, perfil: 0.30 },
+    negocios: { riesgo: 0.30, season: 0.20, coste: 0.35, perfil: 0.15 },
+  };
+  const pesos = pesosPorPerfil[profile] || { riesgo: 0.30, season: 0.20, coste: 0.25, perfil: 0.25 };
 
-  const rawScore = (riesgoBase * pesos.riesgo + seasonScore * pesos.season + costeScore * pesos.coste + perfilScore * pesos.perfil) / totalPeso;
+  const rawScore = riesgoBase * pesos.riesgo + seasonScore * pesos.season + costeScore * pesos.coste + perfilScore * pesos.perfil;
   const score = Math.round(Math.max(0, Math.min(100, rawScore)));
 
   return {
