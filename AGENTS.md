@@ -24,7 +24,7 @@
 - **`/en` noindex**: Verificar siempre que `index: true` se mantenga en `/en/page.tsx` si se quiere tráfico internacional. Las páginas `en` solo cubren homepage — el resto del site (blog, países) no tiene versión inglesa.
 - **Slugs de blog**: Deben ser siempre lowercase. Tras renombrar `Como-encontrar-vuelos-baratos` y `Que-es-viaje-inteligencia`, verificar que new posts no tengan mayúsculas en el filename.
 
-## PAUSED STATE (15 May 2026 — Sprint Migraciones + Alertas fixes)
+## PAUSED STATE (16 May 2026 — Sprint Migraciones + Trip Risk Score)
 ### Logros
 - **Login fix + Alertas persistence**: Toast notification invisible (nunca se renderizaba). POST subscribe devolvía 400 por `alert_types` mal formado (string vs array). Dashboard no mostraba suscripciones (faltaba fallback `data.alerts`). Todo corregido y verificado.
 - **Migración airports**: Creado `src/lib/airports-db.ts` con `getMainAirport()` y `getAirportCoordinates()` DB-first + fallback. `cost-estimate/route.ts` actualizado.
@@ -43,6 +43,7 @@
 - **Newsletter + Modo Emergencia**: Nueva sección "🆘 Modo Emergencia — ayuda inmediata" en el HTML del digest semanal. Incluye 5 bullet points de funcionalidades + CTA rojo.
 - **Admin UI Países**: Nueva página `/admin/paises` con tabla searchable/filtrable, edición inline (nombre, capital, continente, riesgo, visible), API `PUT /api/admin/paises` con validación Zod y auto-invalidate de cache.
 - **Speed Insights**: Desactivado (excedía límite 23K/10K).
+- **Trip Risk Score**: Nueva tabla "Análisis de seguridad" en detalle de viaje (`/viajes/[id]`). API `GET /api/trips/[id]/risk-score` con scoring ponderado por país + mes + perfil. Tabla visual con 4 dimensiones (riesgo, temporada, coste, perfil) y score global. Lógica extraída a `src/lib/trip-risk-score.ts` y compartida con `/api/ml/score`.
 
 ### Pendientes para próximo sprint
 1. **ML**: Esperar ~25 días para validación temporal CV. Mejorar features RF.
@@ -57,6 +58,7 @@
 10. **Sentimiento GDELT público** ✅ — Badge de tone_score visible en `/osint` (sección "Sentimiento GDELT") y en `OsintAlertsBanner` de fichas de país. Nueva API pública `/api/osint/signals`. Schema SQL actualizado.
 11. **Admin calendario** ✅ — Página `/admin/calendario` con calendario mensual + notas del editor + timeline. API CRUD `/api/admin/editor-notes`.
 12. **Publicado RRSS 15 May**: Bluesky ✅, Mastodon ✅, Telegram ❌ (fallo local, funciona en Vercel), X ✅ (manual). Revisar resultados.
+13. **Trip Risk Score en viajes** ✅ — API `/api/trips/[id]/risk-score` con scoring por país+mes+perfil. Tabla visual en detalle de viaje con 4 dimensiones y score global. Lógica compartida en `src/lib/trip-risk-score.ts`. Pendiente: comparador de itinerarios (side-by-side Florencia vs Génova).
 
 ### Tareas a observar / backlog
 1. **Groq para GDELT/RSS** — Clasificación semántica con Groq en vez de solo keywords para mejorar precisión de urgencia en señales OSINT
@@ -385,6 +387,7 @@ Para probar authenticated endpoints se necesita sesión válida (vía browser).
 4. **🎯 Afinar pesos ScoreBadge** — Ajustar pesos de riesgo/season/coste/perfil con datos reales de uso
 5. **🔗 Vinculación Telegram** — Probar flujo completo `/vincular` → bot confirma
 6. **📊 Resultados RRSS 15 May** — Analizar engagement de Bluesky/Mastodon/X/Telegram
+7. **🧭 Comparador de itinerarios** — Página o modal para comparar 2+ viajes lado a lado con tabla de scores (riesgo, temporada, coste, perfil). Ej: "5 días Florencia vs 5 días Génova". Usar `/api/trips/[id]/risk-score` por cada viaje.
 
 ## Recurring Tasks
 - **Daily (post-deploy)**: Verify `/api/cron/train-models` completes successfully (R² > 0.95, < 300s).
