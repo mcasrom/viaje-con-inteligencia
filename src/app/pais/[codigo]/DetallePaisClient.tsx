@@ -17,6 +17,7 @@ import WeatherWidget from '@/components/WeatherWidget';
 import TravelCostIndex from '@/components/TravelCostIndex';
 import LoginButton from '@/components/LoginButton';
 import OsintAlertsBanner from '@/components/OsintAlertsBanner';
+import SentimentClimate from '@/components/SentimentClimate';
 import EventTimeline from '@/components/EventTimeline';
 import { useAuth } from '@/contexts/AuthContext';
 import ShareButtons from '@/components/ShareButtons';
@@ -353,6 +354,10 @@ export default function DetallePaisClient({ pais, relatedPosts = [] }: DetallePa
         )}
 
         <OsintAlertsBanner countryName={pais.nombre} />
+
+        <div className="mb-4">
+          <SentimentClimate countryName={pais.nombre} countryCode={pais.codigo} />
+        </div>
 
         <div className="mb-8">
           <EventTimeline country={pais.codigo} days={60} limit={8} title="Próximos eventos" />
