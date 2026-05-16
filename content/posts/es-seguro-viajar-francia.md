@@ -7,7 +7,7 @@ author: "M. Castillo"
 category: "Destinos"
 readTime: "12 min"
 image: https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=800
-tags: ["Análisis"]
+tags: ["Análisis", "pais:fr"]
 keywords: "francia seguridad viaje, riesgo francia 2026, es seguro francia, alertas francia"
 excerpt: "Análisis completo de seguridad en Francia 2026. Nivel de riesgo, zonas seguras y consejos para viajar."
 ---

@@ -8,7 +8,7 @@ category: "Destinos"
 readTime: "11 min"
 image: https://images.unsplash.com/photo-1518638150340-f706e86654de?w=800
 keywords: "colombia seguridad viaje, riesgo colombia 2026, es seguro colombia, alertas colombia, viaje colombia peligroso, turismo colombia, consejos colombia, bogota safety"
-tags: ["Análisis"]
+tags: ["Análisis", "pais:co"]
 excerpt: "Análisis COMPLETO de seguridad en Colombia 2026. Conoce el nivel de riesgo real, zonas seguras, consejos prácticos y todo lo que necesitas para viajar seguro a Colombia."
 ---
 

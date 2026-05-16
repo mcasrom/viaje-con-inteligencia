@@ -7,7 +7,7 @@ author: "M. Castillo"
 category: "Destinos"
 readTime: "11 min"
 image: https://images.unsplash.com/photo-1534351590666-13e3e96b5017?w=800
-tags: ["Análisis"]
+tags: ["Análisis", "pais:nl"]
 keywords: "paises bajos seguridad viaje, riesgo paises bajos 2026, es seguro paises bajos"
 excerpt: "Análisis completo de seguridad en Países Bajos 2026. Nivel de riesgo, zonas seguras y consejos para viajar."
 ---

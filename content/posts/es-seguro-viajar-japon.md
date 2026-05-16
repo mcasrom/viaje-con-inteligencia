@@ -8,7 +8,7 @@ category: "Destinos"
 readTime: "11 min"
 image: https://images.unsplash.com/photo-1545569341-9eb8b30979d9?w=800
 keywords: "japon seguridad viaje, riesgo japon 2026, es seguro japon, alertas japon, viaje japon peligroso, turismo japon, consejos japon, tokio safety"
-tags: ["Análisis"]
+tags: ["Análisis", "pais:jp"]
 excerpt: "Análisis COMPLETO de seguridad en Japón 2026. Conoce el nivel de riesgo real, zonas seguras, consejos prácticos y todo lo que necesitas para viajar seguro a Japón."
 ---
 

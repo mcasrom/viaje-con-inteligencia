@@ -8,7 +8,7 @@ category: "Destinos"
 readTime: "11 min"
 image: https://images.unsplash.com/photo-1523482580672-f109ba8cb9be?w=800
 keywords: "australia seguridad viaje, riesgo australia 2026, es seguro australia, alertas australia, viaje australia peligroso, turismo australia, consejos australia, sydney safety"
-tags: ["Análisis"]
+tags: ["Análisis", "pais:au"]
 excerpt: "Análisis COMPLETO de seguridad en Australia 2026. Conoce el nivel de riesgo real, zonas seguras, consejos prácticos y todo lo que necesitas para viajar seguro a Australia."
 ---
 

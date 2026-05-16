@@ -1,7 +1,7 @@
-import { paisesData } from '@/data/paises';
+import { paisesData as paisesFallback } from '@/data/paises';
+import { getPaisesData } from '@/lib/paises-db';
 import { getGPI, getGTI, getHDI, getIPC } from '@/lib/indices';
 import { supabaseAdmin } from '@/lib/supabase-admin';
-import { getGlobalStats } from '@/lib/global-stats';
 
 export interface RiskCountry {
   code: string;
@@ -36,7 +36,17 @@ export interface InfografiaData {
   edition: number;
   title: string;
   subtitle: string;
-  stats: ReturnType<typeof getGlobalStats>;
+  stats: {
+    totalPaises: number;
+    totalContinentes: number;
+    sinRiesgo: number;
+    riesgoBajo: number;
+    riesgoMedio: number;
+    riesgoAlto: number;
+    riesgoMuyAlto: number;
+    seguroOBajo: number;
+    altoOMuyAlto: number;
+  };
   riskDistribution: RiskDistribution;
   topRiskCountries: RiskCountry[];
   topSafeCountries: RiskCountry[];
@@ -72,26 +82,34 @@ export async function collectInfografiaData(edition?: number): Promise<Infografi
   const weekStart = monday.toISOString().split('T')[0];
   const weekEnd = sunday.toISOString().split('T')[0];
 
-  const stats = getGlobalStats();
+  const dbData = await getPaisesData();
+  const paisesData = dbData && Object.keys(dbData).length > 0 ? dbData : paisesFallback;
+
+  const paises = Object.entries(paisesData).filter(([code]) => code !== 'cu');
+  const totalPaises = paises.length;
+  const totalContinentes = [...new Set(paises.map(([, p]) => p.continente))].length;
+  const sinRiesgo = paises.filter(([, p]) => p.nivelRiesgo === 'sin-riesgo').length;
+  const riesgoBajo = paises.filter(([, p]) => p.nivelRiesgo === 'bajo').length;
+  const riesgoMedio = paises.filter(([, p]) => p.nivelRiesgo === 'medio').length;
+  const riesgoAlto = paises.filter(([, p]) => p.nivelRiesgo === 'alto').length;
+  const riesgoMuyAlto = paises.filter(([, p]) => p.nivelRiesgo === 'muy-alto').length;
 
   const riskDistribution: RiskDistribution = {
-    sinRiesgo: stats.sinRiesgo,
-    bajo: stats.riesgoBajo,
-    medio: stats.riesgoMedio,
-    alto: stats.riesgoAlto,
-    muyAlto: stats.riesgoMuyAlto,
+    sinRiesgo,
+    bajo: riesgoBajo,
+    medio: riesgoMedio,
+    alto: riesgoAlto,
+    muyAlto: riesgoMuyAlto,
   };
 
-  const countries: RiskCountry[] = Object.entries(paisesData)
-    .filter(([code]) => code !== 'cu')
-    .map(([code, p]) => ({
-      code: code.toUpperCase(),
-      name: p.nombre,
-      flag: p.bandera,
-      region: p.continente,
-      riskLevel: p.nivelRiesgo,
-      riskScore: riskLevelToScore(p.nivelRiesgo),
-    }));
+  const countries: RiskCountry[] = paises.map(([code, p]) => ({
+    code: code.toUpperCase(),
+    name: p.nombre,
+    flag: p.bandera,
+    region: p.continente,
+    riskLevel: p.nivelRiesgo,
+    riskScore: riskLevelToScore(p.nivelRiesgo),
+  }));
 
   const topRiskCountries = [...countries]
     .sort((a, b) => b.riskScore - a.riskScore || a.name.localeCompare(b.name))
@@ -118,7 +136,8 @@ export async function collectInfografiaData(edition?: number): Promise<Infografi
   const avgGTI = gtiData.length > 0 ? gtiData.reduce((s, r) => s + r.score, 0) / gtiData.length : 0;
   const avgHDI = hdiData.length > 0 ? hdiData.reduce((s, r) => s + r.score, 0) / hdiData.length : 0;
 
-  const riskScoreNorm = (stats.altoOMuyAlto / Math.max(stats.totalPaises, 1)) * 100;
+  const altoOMuyAlto = riesgoAlto + riesgoMuyAlto;
+  const riskScoreNorm = (altoOMuyAlto / Math.max(totalPaises, 1)) * 100;
   const gpiNorm = Math.min(100, (avgGPI / 5) * 100);
   const gtiNorm = Math.min(100, (avgGTI / 5) * 100);
   const hdiNorm = 100 - Math.min(100, (avgHDI / 1) * 100);
@@ -202,7 +221,17 @@ export async function collectInfografiaData(edition?: number): Promise<Infografi
     edition: actualEdition,
     title: `Informe Semanal de Riesgos Globales #${actualEdition}`,
     subtitle: `${weekStart} — ${weekEnd}`,
-    stats,
+    stats: {
+      totalPaises,
+      totalContinentes,
+      sinRiesgo,
+      riesgoBajo,
+      riesgoMedio,
+      riesgoAlto,
+      riesgoMuyAlto,
+      seguroOBajo: sinRiesgo + riesgoBajo,
+      altoOMuyAlto,
+    },
     riskDistribution,
     topRiskCountries,
     topSafeCountries,

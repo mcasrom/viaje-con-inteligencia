@@ -7,7 +7,7 @@ author: "M. Castillo"
 category: "Destinos"
 readTime: "11 min"
 image: https://images.unsplash.com/photo-1530122037265-a5f1f91d3b99?w=800
-tags: ["Análisis"]
+tags: ["Análisis", "pais:ch"]
 keywords: "suiza seguridad viaje, riesgo suiza 2026, es seguro suiza, alertas suiza"
 excerpt: "Análisis completo de seguridad en Suiza 2026. Nivel de riesgo, zonas seguras y consejos para viajar."
 ---

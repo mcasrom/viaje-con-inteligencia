@@ -8,7 +8,7 @@ category: "Destinos"
 readTime: "11 min"
 image: https://images.unsplash.com/photo-1503152394-c571994fd383?w=800
 keywords: "grecia seguridad viaje, riesgo grecia 2026, es seguro grecia, alertas grecia, viaje grecia peligroso, turismo grecia, consejos grecia, atenas safety"
-tags: ["Análisis"]
+tags: ["Análisis", "pais:gr"]
 excerpt: "Análisis COMPLETO de seguridad en Grecia 2026. Conoce el nivel de riesgo real, zonas seguras, consejos prácticos y todo lo que necesitas para viajar seguro a Grecia."
 ---
 

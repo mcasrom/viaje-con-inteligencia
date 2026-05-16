@@ -1,9 +1,11 @@
 import { NextResponse } from 'next/server';
 import { getAllMAECAlerts, getMAECData } from '@/lib/scraper/maec';
 import { scrapeUSAdvisories } from '@/lib/scraper/us-state-dept';
+import { getCurrentLiveRiskLevels } from '@/lib/scraper/risk-mapper';
 import { supabase } from '@/lib/supabase';
 import { supabaseAdmin, isSupabaseAdminConfigured } from '@/lib/supabase-admin';
 import { paisesData } from '@/data/paises';
+import { invalidateCache as invalidatePaisesCache } from '@/lib/paises-db';
 import { calculateTCI } from '@/data/tci-engine';
 import { generateRiskChangeAlert } from '@/lib/alerts-system';
 import { fetchAllPosts, classifySignal, detectFirstPerson, type ClassifiedSignal, type SignalCategory } from '@/lib/osint-sensor';
@@ -66,15 +68,29 @@ async function runUSStateDept(): Promise<any> {
 // ===== RISK ALERTS CHECK =====
 async function runRiskCheck(): Promise<any> {
   try {
-    // Save daily MAEC risk snapshot for ALL countries
     const today = new Date().toISOString().split('T')[0];
+    const liveLevels = await getCurrentLiveRiskLevels();
+    let updatedCount = 0;
+
     for (const [code, pais] of Object.entries(paisesData)) {
       if (code === 'cu') continue;
+      const nivelRiesgo = liveLevels[code] || pais.nivelRiesgo;
+
       await supabase.from('maec_risk_history').upsert({
         country_code: code,
-        nivel_riesgo: pais.nivelRiesgo,
+        nivel_riesgo: nivelRiesgo,
         date: today,
       }, { onConflict: 'country_code,date' });
+
+      if (liveLevels[code] && liveLevels[code] !== pais.nivelRiesgo) {
+        await supabase.from('paises').update({
+          data: { ...pais, nivelRiesgo },
+          nivel_riesgo: nivelRiesgo,
+          updated_at: new Date().toISOString(),
+        }).eq('codigo', code);
+        invalidatePaisesCache();
+        updatedCount++;
+      }
     }
 
     const { data: latest } = await supabase
@@ -90,9 +106,10 @@ async function runRiskCheck(): Promise<any> {
 
     const changes: any[] = [];
     for (const [code, pais] of Object.entries(paisesData)) {
+      const nivelRiesgo = liveLevels[code] || pais.nivelRiesgo;
       const oldRisk = riskMap[code];
-      if (oldRisk && oldRisk !== pais.nivelRiesgo) {
-        changes.push({ code, oldRisk, newRisk: pais.nivelRiesgo });
+      if (oldRisk && oldRisk !== nivelRiesgo) {
+        changes.push({ code, oldRisk, newRisk: nivelRiesgo });
       }
     }
 
@@ -110,7 +127,7 @@ async function runRiskCheck(): Promise<any> {
       });
     }
 
-    return { status: 'ok', changes: changes.length };
+    return { status: 'ok', changes: changes.length, updated: updatedCount };
   } catch (e: any) {
     return { status: 'error', error: e.message };
   }
@@ -716,7 +733,30 @@ async function runInfografiaGenerator(): Promise<any> {
       },
     });
     const result = await res.json();
-    return { status: res.ok ? 'ok' : 'error', ...result };
+    if (!res.ok) return { status: 'error', ...result };
+
+    const infografiaUrl = `${baseUrl}/infografias`;
+
+    const { publishToTelegramChannel, publishToMastodon, publishToBlueSky } = await import('@/lib/social-publisher');
+
+    const shortText = `📊 Global Travel Risk Index — nuevo informe semanal\n\n🌍 Mapa interactivo + análisis por regiones + Top 5 países en alerta\n\n🔗 ${infografiaUrl}`;
+
+    const longText = `📊 Global Travel Risk Index — nuevo informe semanal\n\nAnálisis completo de riesgo global con mapa interactivo, panorama por regiones, top países en alerta y métricas clave.\n\n🔗 ${infografiaUrl}\n\n#TravelRisk #ViajeInteligente #GlobalSecurity`;
+
+    const [blueskyRes, mastodonRes, telegramRes] = await Promise.allSettled([
+      publishToBlueSky(shortText),
+      publishToMastodon(longText),
+      publishToTelegramChannel(longText),
+    ]);
+
+    return {
+      status: 'ok', ...result,
+      social: {
+        bluesky: blueskyRes.status === 'fulfilled' ? blueskyRes.value : false,
+        mastodon: mastodonRes.status === 'fulfilled' ? mastodonRes.value : false,
+        telegram: telegramRes.status === 'fulfilled' ? telegramRes.value : false,
+      },
+    };
   } catch (e: any) {
     return { status: 'error', error: e.message };
   }

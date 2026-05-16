@@ -7,7 +7,7 @@ author: "M. Castillo"
 category: "Destinos"
 readTime: "12 min"
 image: https://images.unsplash.com/photo-1467269204594-9661b134dd2b?w=800
-tags: ["Análisis"]
+tags: ["Análisis", "pais:de"]
 keywords: "alemania seguridad viaje, riesgo alemania 2026, es seguro alemania, alertas alemania"
 excerpt: "Análisis completo de seguridad en Alemania 2026. Nivel de riesgo, zonas seguras y consejos para viajar."
 ---

@@ -8,7 +8,7 @@ category: "Destinos"
 readTime: "10 min"
 image: https://images.unsplash.com/photo-1514282401047-d79a71a590e8?w=800
 keywords: "maldivas seguridad viaje, riesgo maldivas 2026, es seguro maldivas, alertas maldivas, viaje maldivas peligroso, turismo maldivas, consejos maldivas"
-tags: ["Análisis"]
+tags: ["Análisis", "pais:mv"]
 excerpt: "Análisis COMPLETO de seguridad en Maldivas 2026. Conoce el nivel de riesgo real, zonas seguras, consejos prácticos y todo lo que necesitas para viajar seguro a Maldivas."
 ---
 

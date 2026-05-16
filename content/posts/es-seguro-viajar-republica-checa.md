@@ -7,7 +7,7 @@ author: "M. Castillo"
 category: "Destinos"
 readTime: "11 min"
 image: https://images.unsplash.com/photo-1541849546-216549ae216d?w=800
-tags: ["Análisis"]
+tags: ["Análisis", "pais:cz"]
 keywords: "republica checa seguridad viaje, riesgo republica checa 2026, es seguro republica checa"
 excerpt: "Análisis completo de seguridad en República Checa 2026. Nivel de riesgo, zonas seguras y consejos para viajar."
 ---

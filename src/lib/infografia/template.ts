@@ -31,56 +31,30 @@ function gwiColor(score: number): string {
   return '#991b1b';
 }
 
-// Simplified heatmap dots: approximate lat/lng mapped to SVG coords
-const HEATMAP_DOTS = [
-  { cx: 52, cy: 22, countries: ['RU', 'UA', 'BY'] },
-  { cx: 48, cy: 28, countries: ['DE', 'FR', 'GB', 'ES', 'IT', 'NL', 'BE', 'CH', 'AT', 'PT'] },
-  { cx: 55, cy: 32, countries: ['PL', 'CZ', 'SK', 'HU', 'RO', 'BG', 'GR', 'HR', 'RS', 'AL'] },
-  { cx: 52, cy: 38, countries: ['TR', 'EG', 'IL', 'JO', 'LB', 'CY'] },
-  { cx: 60, cy: 26, countries: ['SE', 'NO', 'FI', 'DK', 'LT', 'LV', 'EE'] },
-  { cx: 60, cy: 42, countries: ['IR', 'IQ', 'SA', 'AE', 'YE', 'OM', 'QA', 'KW', 'BH'] },
-  { cx: 72, cy: 30, countries: ['KZ', 'UZ', 'TM', 'KG', 'TJ'] },
-  { cx: 82, cy: 28, countries: ['CN', 'MN'] },
-  { cx: 88, cy: 30, countries: ['JP', 'KR', 'TW'] },
-  { cx: 78, cy: 36, countries: ['IN', 'NP', 'BD', 'LK', 'PK', 'AF'] },
-  { cx: 88, cy: 40, countries: ['TH', 'VN', 'KH', 'LA', 'MM', 'MY', 'SG', 'ID', 'PH'] },
-  { cx: 22, cy: 30, countries: ['US', 'CA'] },
-  { cx: 20, cy: 42, countries: ['MX', 'GT', 'SV', 'HN', 'NI', 'CR', 'PA'] },
-  { cx: 28, cy: 50, countries: ['CO', 'VE', 'EC', 'PE', 'BR', 'BO', 'CL', 'AR', 'UY', 'PY', 'GY', 'SR'] },
-  { cx: 52, cy: 58, countries: ['ZA', 'NG', 'KE', 'EG', 'MA', 'TN', 'DZ', 'LY', 'SN', 'GH', 'CI', 'ET', 'TZ', 'AO', 'MZ', 'MG', 'ZW', 'CM', 'UG', 'ZM'] },
-  { cx: 18, cy: 58, countries: ['AU', 'NZ'] },
-  { cx: 56, cy: 16, countries: ['IS'] },
-];
+function gwiLabel(score: number): string {
+  if (score < 25) return 'BAJO';
+  if (score < 45) return 'MODERADO';
+  if (score < 60) return 'ELEVADO';
+  if (score < 75) return 'ALTO';
+  return 'CRÍTICO';
+}
 
-// continent risk blobs for heatmap
-const CONTINENTS = [
-  { label: 'EUROPA', cx: 52, cy: 28, w: 18, h: 16 },
-  { label: 'NORTEAMÉRICA', cx: 22, cy: 30, w: 10, h: 10 },
-  { label: 'LATAM', cx: 26, cy: 46, w: 12, h: 16 },
-  { label: 'MENAT', cx: 56, cy: 38, w: 12, h: 14 },
-  { label: 'ASIA', cx: 82, cy: 34, w: 18, h: 18 },
-  { label: 'ÁFRICA', cx: 52, cy: 52, w: 16, h: 18 },
-  { label: 'OCEANÍA', cx: 18, cy: 56, w: 6, h: 6 },
-];
-
-function computeContinentRisk(data: InfografiaData, countryCodes: string[]): string {
-  const riskLevels = countryCodes.map(code => {
-    const p = data.topRiskCountries.find(c => c.code === code)
-      || data.topSafeCountries.find(c => c.code === code);
-    return p ? p.riskLevel : 'bajo';
-  });
-  const scores = riskLevels.map(r => r === 'muy-alto' ? 5 : r === 'alto' ? 4 : r === 'medio' ? 3 : r === 'bajo' ? 2 : 1);
-  const avg = scores.reduce((s, v) => s + v, 0) / scores.length;
-  if (avg >= 4) return ACCENT_RED;
-  if (avg >= 3) return ACCENT_AMBER;
-  if (avg >= 2) return '#84cc16';
-  return ACCENT_GREEN;
+function generateHeadline(data: InfografiaData): string {
+  const { countriesChanged, riskDistribution } = data;
+  const highRisk = riskDistribution.alto + riskDistribution.muyAlto;
+  if (countriesChanged.length > 0) {
+    return `\u26A0 ${countriesChanged.length} PA\u00CDSES CAMBIARON DE NIVEL DE RIESGO ESTA SEMANA`;
+  }
+  if (highRisk >= 5) {
+    return `\u{1F534} ${highRisk} PA\u00CDSES EN ALERTA: RIESGO ALTO O MUY ALTO`;
+  }
+  return '\u{1F30D} PANORAMA GLOBAL DE RIESGO DE VIAJE';
 }
 
 export function generateInfografiaSVG(data: InfografiaData): string {
   const { stats, gwi, topRiskCountries, riskDistribution, edition, weekStart, weekEnd, incidentsThisWeek, countriesChanged, gwiTrend } = data;
   const W = 1200;
-  const H = 1950; // taller for heatmap + CTA
+  const H = 1500;
 
   const trendArrow = gwiTrend !== null
     ? gwiTrend > 0
@@ -116,17 +90,17 @@ export function generateInfografiaSVG(data: InfografiaData): string {
     </filter>
     <style>
       text { font-family: 'Courier New', 'Menlo', monospace; }
-      .title { font-size: 32px; font-weight: bold; fill: ${TEXT_PRIMARY}; }
-      .subtitle { font-size: 14px; fill: ${TEXT_SECONDARY}; }
-      .slogan { font-size: 11px; fill: ${ACCENT_BLUE}; font-style: italic; }
-      .section-title { font-size: 16px; font-weight: bold; fill: ${ACCENT_BLUE}; letter-spacing: 2px; }
+      .title { font-size: 34px; font-weight: bold; fill: ${TEXT_PRIMARY}; }
+      .subtitle { font-size: 15px; fill: ${TEXT_SECONDARY}; }
+      .slogan { font-size: 12px; fill: ${ACCENT_BLUE}; font-style: italic; }
+      .section-title { font-size: 17px; font-weight: bold; fill: ${ACCENT_BLUE}; letter-spacing: 2px; }
       .value-lg { font-size: 48px; font-weight: bold; }
       .value-md { font-size: 28px; font-weight: bold; }
-      .label-sm { font-size: 11px; fill: ${TEXT_SECONDARY}; }
-      .country-name { font-size: 13px; fill: ${TEXT_PRIMARY}; }
-      .risk-tag { font-size: 10px; font-weight: bold; }
-      .cta { font-size: 13px; font-weight: bold; fill: ${ACCENT_BLUE}; }
-      .signature { font-size: 10px; fill: #64748b; }
+      .label-sm { font-size: 12px; fill: ${TEXT_SECONDARY}; }
+      .country-name { font-size: 14px; fill: ${TEXT_PRIMARY}; }
+      .risk-tag { font-size: 11px; font-weight: bold; }
+      .cta { font-size: 15px; font-weight: bold; fill: ${ACCENT_BLUE}; }
+      .signature { font-size: 11px; fill: #64748b; }
     </style>
   </defs>
 
@@ -154,13 +128,18 @@ export function generateInfografiaSVG(data: InfografiaData): string {
   <text x="${W - 40}" y="81" text-anchor="end" font-size="11" fill="${TEXT_SECONDARY}" font-family="monospace">${data.timestamp.split('T')[0]} UTC</text>
   <text x="${W - 40}" y="99" text-anchor="end" font-size="10" fill="${ACCENT_BLUE}" font-family="monospace">Smart Traveler: AI-Driven Global Risk Radar</text>
 
+  <!-- Headline -->
+  <text x="${W / 2}" y="155" text-anchor="middle" font-size="18" font-weight="bold" fill="${ACCENT_AMBER}" font-family="monospace" letter-spacing="1">${generateHeadline(data)}</text>
+
   <!-- GWI - Global Weekly Index (hero card) -->
   <rect x="40" y="165" width="${W - 80}" height="180" rx="8" fill="${CARD_BG}" stroke="${BORDER}" stroke-width="1"/>
   <rect x="40" y="165" width="${W - 80}" height="180" rx="8" fill="url(#gwiGrad)"/>
   <text x="60" y="195" class="section-title">GLOBAL WEEKLY INDEX (GWI)</text>
-  <text x="60" y="215" font-size="11" fill="${TEXT_SECONDARY}" font-family="monospace">Composite travel risk score: 0 (safe) — 100 (critical)</text>
+  <text x="60" y="215" font-size="12" fill="${TEXT_SECONDARY}" font-family="monospace">Composite travel risk score: 0 (safe) — 100 (critical)</text>
 
   <text x="60" y="290" class="value-lg" fill="${gwiColor(gwi.total)}" filter="url(#glow)">${gwi.total.toFixed(1)}</text>
+  <rect x="155" y="272" width="82" height="26" rx="4" fill="${gwiColor(gwi.total)}" opacity="0.15"/>
+  <text x="196" y="290" text-anchor="middle" font-size="13" font-weight="bold" fill="${gwiColor(gwi.total)}" font-family="monospace">${gwiLabel(gwi.total)}</text>
   <text x="60" y="315" class="label-sm">GLOBAL INDEX</text>
 
   <text x="200" y="290" class="value-md" fill="${trendColor}">${trendArrow}</text>
@@ -185,52 +164,58 @@ export function generateInfografiaSVG(data: InfografiaData): string {
   </g>`;
   }).join('')}
 
-  <!-- Simplified Heatmap -->
+  <!-- Regional Risk Breakdown -->
   <rect x="40" y="375" width="${W - 80}" height="230" rx="8" fill="${CARD_BG}" stroke="${BORDER}" stroke-width="1"/>
-  <text x="60" y="405" class="section-title">HEATMAP — RIESGO GLOBAL</text>
-  <text x="60" y="425" font-size="11" fill="${TEXT_SECONDARY}" font-family="monospace">Intensidad de riesgo por región  •  ${stats.totalPaises} países</text>
+  <text x="60" y="405" class="section-title">PANORAMA POR REGIONES</text>
+  <text x="60" y="425" font-size="12" fill="${TEXT_SECONDARY}" font-family="monospace">${stats.totalPaises} países monitoreados  •  ${stats.totalContinentes} continentes</text>
 
-  <!-- Continent blobs with risk coloring -->
-  ${CONTINENTS.map(cont => {
-    const color = computeContinentRisk(data, cont.cx > 50 && cont.cy > 40 ? ['IR','IQ','SA','AE','YE','OM','QA','KW','BH','AF'] : ['']);
+  ${(() => {
+    const regionMap = new Map<string, { count: number; maxScore: number; top: typeof topRiskCountries[0] }>();
+    for (const c of topRiskCountries) {
+      const prev = regionMap.get(c.region);
+      const best = prev && prev.top.riskScore > c.riskScore ? prev.top : c;
+      regionMap.set(c.region, {
+        count: (prev?.count || 0) + 1,
+        maxScore: Math.max(prev?.maxScore || 0, c.riskScore),
+        top: best,
+      });
+    }
+    const rows = Array.from(regionMap.entries())
+      .map(([name, d]) => ({ name, ...d }))
+      .sort((a, b) => b.count - a.count || b.maxScore - a.maxScore)
+      .slice(0, 6);
+    const maxCount = Math.max(...rows.map(r => r.count), 1);
+
     return `
   <g>
-    <rect x="${cont.cx - cont.w / 2}" y="${cont.cy - cont.h / 2}" width="${cont.w}" height="${cont.h}" rx="4" fill="${color}" opacity="0.25"/>
-    <text x="${cont.cx}" y="${cont.cy + 3}" text-anchor="middle" font-size="7" font-weight="bold" fill="${color}" font-family="monospace">${cont.label}</text>
-  </g>`;
-  }).join('')}
-
-  <!-- Risk dots by country cluster -->
-  ${HEATMAP_DOTS.map(d => {
-    const p = topRiskCountries.find(c => d.countries.includes(c.code));
-    const level = p ? p.riskLevel : 'bajo';
-    const color = riskColor(level);
-    const r = level === 'muy-alto' ? 7 : level === 'alto' ? 6 : level === 'medio' ? 5 : 4;
-    return `
-  <g>
-    <circle cx="${d.cx}" cy="${d.cy}" r="${r}" fill="${color}" opacity="0.8"/>
-    <circle cx="${d.cx}" cy="${d.cy}" r="${r + 3}" fill="${color}" opacity="0.15"/>
-  </g>`;
-  }).join('')}
-
-  <!-- Legend -->
-  <g transform="translate(60, 540)">
-    <rect x="0" y="0" width="10" height="10" rx="2" fill="${ACCENT_GREEN}" opacity="0.8"/>
-    <text x="14" y="9" font-size="9" fill="${TEXT_SECONDARY}" font-family="monospace">Seguro</text>
-    <rect x="70" y="0" width="10" height="10" rx="2" fill="#84cc16" opacity="0.8"/>
-    <text x="84" y="9" font-size="9" fill="${TEXT_SECONDARY}" font-family="monospace">Bajo</text>
-    <rect x="130" y="0" width="10" height="10" rx="2" fill="${ACCENT_AMBER}" opacity="0.8"/>
-    <text x="144" y="9" font-size="9" fill="${TEXT_SECONDARY}" font-family="monospace">Medio</text>
-    <rect x="195" y="0" width="10" height="10" rx="2" fill="${ACCENT_RED}" opacity="0.8"/>
-    <text x="209" y="9" font-size="9" fill="${TEXT_SECONDARY}" font-family="monospace">Alto</text>
-    <rect x="250" y="0" width="10" height="10" rx="2" fill="#991b1b" opacity="0.8"/>
-    <text x="264" y="9" font-size="9" fill="${TEXT_SECONDARY}" font-family="monospace">Crítico</text>
+    <text x="60" y="452" class="label-sm">REGIÓN</text>
+    <text x="240" y="452" class="label-sm">RIESGO</text>
+    <text x="420" y="452" class="label-sm">PAÍSES EN ALERTA</text>
+    <text x="950" y="452" class="label-sm">PEOR PAÍS</text>
   </g>
+  <line x1="60" y1="458" x2="${W - 60}" y2="458" stroke="${BORDER}" stroke-width="0.5"/>
+  ${rows.map((r, i) => {
+    const y = 480 + i * 28;
+    const level = r.maxScore >= 5 ? 'muy-alto' : r.maxScore >= 4 ? 'alto' : r.maxScore >= 3 ? 'medio' : 'bajo';
+    const color = riskColor(level);
+    const barW = Math.round((r.count / maxCount) * 300);
+    return `
+  <g>
+    <text x="60" y="${y + 4}" class="country-name">${r.name}</text>
+    <circle cx="245" cy="${y}" r="5" fill="${color}" opacity="0.9"/>
+    <text x="256" y="${y + 4}" font-size="11" font-weight="bold" fill="${color}" font-family="monospace">${level.toUpperCase()}</text>
+    <rect x="420" y="${y - 6}" width="${Math.max(8, barW)}" height="12" rx="3" fill="${color}" opacity="0.7"/>
+    <text x="740" y="${y + 4}" font-size="13" font-weight="bold" fill="${TEXT_PRIMARY}" font-family="monospace">${r.count}</text>
+    <text x="955" y="${y + 4}" font-size="12" fill="${TEXT_SECONDARY}" font-family="monospace">${r.top.flag} ${r.top.name}</text>
+  </g>`;
+  }).join('')}
+  `;
+  })()}
 
   <!-- Risk Distribution -->
   <rect x="40" y="635" width="540" height="200" rx="8" fill="${CARD_BG}" stroke="${BORDER}" stroke-width="1"/>
   <text x="60" y="665" class="section-title">RIESGO GLOBAL — DISTRIBUCIÓN</text>
-  <text x="60" y="685" font-size="11" fill="${TEXT_SECONDARY}" font-family="monospace">${stats.totalPaises} países monitoreados  •  ${stats.totalContinentes} continentes</text>
+  <text x="60" y="685" font-size="12" fill="${TEXT_SECONDARY}" font-family="monospace">${stats.totalPaises} países monitoreados  •  ${stats.totalContinentes} continentes</text>
 
   ${[
     { label: 'Sin riesgo', count: riskDistribution.sinRiesgo, color: ACCENT_GREEN, pct: (riskDistribution.sinRiesgo / stats.totalPaises) * 100 },
@@ -274,58 +259,37 @@ export function generateInfografiaSVG(data: InfografiaData): string {
   ` : ''}
 
   <!-- Top Risk Countries -->
-  <rect x="40" y="865" width="540" height="${40 + topRiskCountries.slice(0, 10).length * 36}" rx="8" fill="${CARD_BG}" stroke="${BORDER}" stroke-width="1"/>
-  <text x="60" y="895" class="section-title">TOP 10 — MAYOR RIESGO</text>
+  <rect x="40" y="865" width="${W - 80}" height="${40 + topRiskCountries.slice(0, 5).length * 36}" rx="8" fill="${CARD_BG}" stroke="${BORDER}" stroke-width="1"/>
+  <text x="${W / 2}" y="895" text-anchor="middle" class="section-title">TOP 5 — MAYOR RIESGO</text>
 
   <g>
     <text x="60" y="915" class="label-sm">#</text>
     <text x="95" y="915" class="label-sm">PAÍS</text>
-    <text x="320" y="915" class="label-sm">REGIÓN</text>
-    <text x="440" y="915" class="label-sm">RIESGO</text>
+    <text x="550" y="915" class="label-sm">REGIÓN</text>
+    <text x="1000" y="915" class="label-sm">RIESGO</text>
   </g>
-  <line x1="60" y1="921" x2="560" y2="921" stroke="${BORDER}" stroke-width="0.5"/>
+  <line x1="60" y1="921" x2="${W - 60}" y2="921" stroke="${BORDER}" stroke-width="0.5"/>
 
-  ${topRiskCountries.slice(0, 10).map((c, i) => `
+  ${topRiskCountries.slice(0, 5).map((c, i) => `
   <g>
     <text x="60" y="${950 + i * 36}" font-size="12" fill="${TEXT_SECONDARY}" font-family="monospace">${String(i + 1).padStart(2, ' ')}</text>
     <text x="95" y="${950 + i * 36}" class="country-name">${c.flag} ${c.name}</text>
-    <text x="320" y="${950 + i * 36}" font-size="11" fill="${TEXT_SECONDARY}" font-family="monospace">${c.region}</text>
-    <rect x="435" y="${940 + i * 36}" width="8" height="8" rx="2" fill="${riskColor(c.riskLevel)}"/>
-    <text x="450" y="${950 + i * 36}" class="risk-tag" fill="${riskColor(c.riskLevel)}">${c.riskLevel.toUpperCase()}</text>
-  </g>`).join('')}
-
-  <!-- Top Safe Countries -->
-  <rect x="610" y="865" width="550" height="${40 + topRiskCountries.slice(0, 10).length * 36}" rx="8" fill="${CARD_BG}" stroke="${BORDER}" stroke-width="1"/>
-  <text x="630" y="895" class="section-title">TOP 10 — MENOR RIESGO</text>
-
-  <g>
-    <text x="630" y="915" class="label-sm">#</text>
-    <text x="665" y="915" class="label-sm">PAÍS</text>
-    <text x="890" y="915" class="label-sm">REGIÓN</text>
-    <text x="1020" y="915" class="label-sm">RIESGO</text>
-  </g>
-  <line x1="630" y1="921" x2="1140" y2="921" stroke="${BORDER}" stroke-width="0.5"/>
-
-  ${topRiskCountries.slice(0, 10).map((c, i) => `
-  <g>
-    <text x="630" y="${950 + i * 36}" font-size="12" fill="${TEXT_SECONDARY}" font-family="monospace">${String(i + 1).padStart(2, ' ')}</text>
-    <text x="665" y="${950 + i * 36}" class="country-name">${c.flag} ${c.name}</text>
-    <text x="890" y="${950 + i * 36}" font-size="11" fill="${TEXT_SECONDARY}" font-family="monospace">${c.region}</text>
-    <rect x="1015" y="${940 + i * 36}" width="8" height="8" rx="2" fill="${riskColor(c.riskLevel)}"/>
-    <text x="1030" y="${950 + i * 36}" class="risk-tag" fill="${riskColor(c.riskLevel)}">${c.riskLevel.toUpperCase()}</text>
+    <text x="550" y="${950 + i * 36}" font-size="12" fill="${TEXT_SECONDARY}" font-family="monospace">${c.region}</text>
+    <rect x="985" y="${940 + i * 36}" width="8" height="8" rx="2" fill="${riskColor(c.riskLevel)}"/>
+    <text x="1005" y="${950 + i * 36}" class="risk-tag" fill="${riskColor(c.riskLevel)}">${c.riskLevel.toUpperCase()}</text>
   </g>`).join('')}
 
   <!-- CTA Banner -->
-  <rect x="40" y="1255" width="${W - 80}" height="50" rx="8" fill="url(#headerGrad)" stroke="${ACCENT_BLUE}" stroke-width="1" opacity="0.8"/>
-  <text x="${W / 2}" y="1287" text-anchor="middle" class="cta" filter="url(#glow)">🌍 Consulta el mapa interactivo completo en viajeinteligencia.com</text>
+  <rect x="40" y="1120" width="${W - 80}" height="60" rx="8" fill="url(#headerGrad)" stroke="${ACCENT_BLUE}" stroke-width="1" opacity="0.9"/>
+  <text x="${W / 2}" y="1157" text-anchor="middle" font-size="16" font-weight="bold" fill="${ACCENT_BLUE}" font-family="monospace" filter="url(#glow)">📊 Más inteligencia semanal: viajeinteligencia.com/infografias</text>
 
   <!-- Footer -->
   <rect x="0" y="${H - 100}" width="${W}" height="100" fill="${CARD_BG}" stroke="${BORDER}" stroke-width="1"/>
-  <text x="40" y="${H - 70}" font-size="10" fill="${TEXT_SECONDARY}" font-family="monospace">Fuentes: MAEC • US State Dept • GPI • GTI • HDI • IPC • GDELT • USGS • GDACS • OpenSky</text>
-  <text x="40" y="${H - 54}" font-size="10" fill="${TEXT_SECONDARY}" font-family="monospace">viajeinteligencia.com/infografias  |  info@viajeinteligencia.com</text>
+  <text x="40" y="${H - 70}" font-size="11" fill="${TEXT_SECONDARY}" font-family="monospace">Fuentes: MAEC • US State Dept • GPI • GTI • HDI • IPC • GDELT • USGS • GDACS • OpenSky</text>
+  <text x="40" y="${H - 54}" font-size="11" fill="${TEXT_SECONDARY}" font-family="monospace">viajeinteligencia.com/infografias  |  info@viajeinteligencia.com</text>
   <text x="40" y="${H - 36}" class="signature" font-family="monospace">M. Castillo — Privacy Tools  •  SME en RRSS, OSINT y Estrategia Digital</text>
-  <text x="40" y="${H - 20}" font-size="9" fill="#475569" font-family="monospace">OSINT • ML • TRAVEL RISK INTELLIGENCE — Edición #${edition}</text>
-  <text x="${W - 40}" y="${H - 20}" text-anchor="end" font-size="9" fill="#475569" font-family="monospace">© 2026 M. Castillo. Todos los derechos reservados.</text>
+  <text x="40" y="${H - 20}" font-size="10" fill="#475569" font-family="monospace">OSINT • ML • TRAVEL RISK INTELLIGENCE — Edición #${edition}</text>
+  <text x="${W - 40}" y="${H - 20}" text-anchor="end" font-size="10" fill="#475569" font-family="monospace">© 2026 M. Castillo. Todos los derechos reservados.</text>
 </svg>`;
 }
 
@@ -378,12 +342,19 @@ export function generateInfografiaHTML(data: InfografiaData): string {
       <div class="meta">${weekStart} — ${weekEnd}  •  ${stats.totalPaises} países monitoreados</div>
     </div>
 
+    <div class="card" style="margin-bottom: 12px; padding: 12px 20px; text-align: center; border-color: #f59e0b;">
+      <div style="color: #f59e0b; font-size: 18px; font-weight: bold; letter-spacing: 1px;">${generateHeadline(data)}</div>
+    </div>
+
     <div class="card" style="margin-bottom: 16px;">
       <h2>GLOBAL WEEKLY INDEX (GWI)</h2>
       <div class="gwi-hero">
         <div>
           <div class="gwi-score" style="color: ${gwiColor(gwi.total)}">${gwi.total.toFixed(1)}</div>
-          <div class="text-slate" style="font-size:12px;text-align:center;">GLOBAL INDEX</div>
+          <div style="display:flex;align-items:center;gap:8px;margin-top:4px;">
+            <span style="background:${gwiColor(gwi.total)}20;color:${gwiColor(gwi.total)};font-size:12px;font-weight:bold;padding:3px 10px;border-radius:4px;">${gwiLabel(gwi.total)}</span>
+            <span class="text-slate" style="font-size:12px;">GLOBAL INDEX</span>
+          </div>
         </div>
         <div class="gwi-bars">
           ${[
@@ -419,19 +390,13 @@ export function generateInfografiaHTML(data: InfografiaData): string {
       </div>
     </div>
 
-    <div class="grid-2">
-      <div class="card">
-        <h2>TOP 10 — MAYOR RIESGO</h2>
-        ${topRiskCountries.slice(0, 10).map((c, i) => `<div class="country-row"><span style="color:#64748b;width:24px;">${String(i + 1).padStart(2, ' ')}</span><span>${c.flag}</span><span style="flex:1;">${c.name}</span><span style="color:#64748b;width:100px;font-size:12px;">${c.region}</span><span class="risk-dot" style="background:${riskColor(c.riskLevel)}"></span><span style="font-size:11px;font-weight:bold;color:${riskColor(c.riskLevel)};width:70px;">${c.riskLevel.toUpperCase()}</span></div>`).join('')}
-      </div>
-      <div class="card">
-        <h2>TOP 10 — MENOR RIESGO</h2>
-        ${topSafeCountries.slice(0, 10).map((c, i) => `<div class="country-row"><span style="color:#64748b;width:24px;">${String(i + 1).padStart(2, ' ')}</span><span>${c.flag}</span><span style="flex:1;">${c.name}</span><span style="color:#64748b;width:100px;font-size:12px;">${c.region}</span><span class="risk-dot" style="background:${riskColor(c.riskLevel)}"></span><span style="font-size:11px;font-weight:bold;color:${riskColor(c.riskLevel)};width:70px;">${c.riskLevel.toUpperCase()}</span></div>`).join('')}
-      </div>
+    <div class="card" style="margin-bottom: 16px;">
+      <h2>TOP 5 — MAYOR RIESGO</h2>
+      ${topRiskCountries.slice(0, 5).map((c, i) => `<div class="country-row"><span style="color:#64748b;width:24px;">${String(i + 1).padStart(2, ' ')}</span><span>${c.flag}</span><span style="flex:1;">${c.name}</span><span style="color:#64748b;width:100px;font-size:12px;">${c.region}</span><span class="risk-dot" style="background:${riskColor(c.riskLevel)}"></span><span style="font-size:11px;font-weight:bold;color:${riskColor(c.riskLevel)};width:70px;">${c.riskLevel.toUpperCase()}</span></div>`).join('')}
     </div>
 
     <div class="cta-banner">
-      🌍 <a href="https://viajeinteligencia.com">Consulta el mapa interactivo completo en viajeinteligencia.com</a>
+      📊 <a href="https://viajeinteligencia.com/infografias">Más inteligencia semanal: viajeinteligencia.com/infografias</a>
     </div>
 
     <div class="footer">

@@ -8,7 +8,7 @@ category: "Destinos"
 readTime: "14 min"
 image: https://images.unsplash.com/photo-1485738422979-f5c462d49f74?w=800
 keywords: "eeuu seguridad viaje, riesgo estados unidos 2026, es seguro estados unidos, alertas eeuu, viaje estados unidos peligroso, turismo eeuu, consejos eeuu"
-tags: ["Análisis"]
+tags: ["Análisis", "pais:us"]
 excerpt: "Análisis COMPLETO de seguridad en Estados Unidos 2026. Conoce el nivel de riesgo real por ciudades, zonas seguras, consejos prácticos y todo lo que necesitas para viajar seguro a USA."
 ---
 

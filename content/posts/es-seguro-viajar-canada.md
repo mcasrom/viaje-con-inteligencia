@@ -8,7 +8,7 @@ category: "Destinos"
 readTime: "10 min"
 image: https://images.unsplash.com/photo-1517935706615-2717063c2225?w=800
 keywords: "canada seguridad viaje, riesgo canada 2026, es seguro canada, alertas canada, viaje canada peligroso, turismo canada, consejos canada, toronto safety"
-tags: ["Análisis"]
+tags: ["Análisis", "pais:ca"]
 excerpt: "Análisis COMPLETO de seguridad en Canadá 2026. Conoce el nivel de riesgo real, zonas seguras, consejos prácticos y todo lo que necesitas para viajar seguro a Canadá."
 ---
 

@@ -8,7 +8,7 @@ category: "Destinos"
 readTime: "14 min"
 image: https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=800
 keywords: "tailandia seguridad viaje, riesgo tailandia 2026, es seguro tailandia, alertas tailandia, Bangkok peligroso, viaje tailandia peligroso, turismo tailandia, consejos tailandia, isla phuket, tailsilandia playa"
-tags: ["Análisis"]
+tags: ["Análisis", "pais:th"]
 excerpt: "Análisis COMPLETO de seguridad en Tailandia 2026. Conoce el nivel de riesgo real, zonas a evitar, consejos prácticos y todo lo que necesitas para viajar seguro a Tailandia."
 ---
 

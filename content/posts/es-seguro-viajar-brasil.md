@@ -8,7 +8,7 @@ category: "Destinos"
 readTime: "13 min"
 image: https://images.unsplash.com/photo-1483729558449-99ef09a8c325?w=800
 keywords: "brasil seguridad viaje, riesgo brasil 2026, es seguro brasil, alertas brasil, viaje brasil peligroso, turismo brasil, consejos brasil, rio de janeiro safety"
-tags: ["Análisis"]
+tags: ["Análisis", "pais:br"]
 excerpt: "Análisis COMPLETO de seguridad en Brasil 2026. Conoce el nivel de riesgo real, zonas seguras, consejos prácticos y todo lo que necesitas para viajar seguro a Brasil."
 ---
 

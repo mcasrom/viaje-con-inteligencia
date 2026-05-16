@@ -8,7 +8,7 @@ category: "Destinos"
 readTime: "12 min"
 image: https://images.unsplash.com/photo-1555881400-74d7acaacd8b?w=800
 keywords: "portugal seguridad viaje, riesgo portugal 2026, es seguro portugal, alertas portugal, viaje portugal peligroso, turismo portugal, consejos portugal, lisboa dangerous, algarve safety"
-tags: ["Análisis"]
+tags: ["Análisis", "pais:pt"]
 excerpt: "Análisis COMPLETO de seguridad en Portugal 2026. Conoce el nivel de riesgo real, zonas seguras, consejos prácticos y todo lo que necesitas para viajar seguro a Portugal."
 ---
 

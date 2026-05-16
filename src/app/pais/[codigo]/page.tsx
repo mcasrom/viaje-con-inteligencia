@@ -49,7 +49,7 @@ export default async function PaisPage({ params }: { params: Promise<{ codigo: s
     );
   }
 
-  const { posts: relatedPosts } = getPostsPagination(1, 3, { category: pais.nombre, sort: 'recent' });
+  const { posts: relatedPosts } = getPostsPagination(1, 3, { search: pais.nombre, sort: 'recent' });
 
   const schema = {
     '@context': 'https://schema.org',

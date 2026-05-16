@@ -7,7 +7,7 @@ author: "M. Castillo"
 category: "Destinos"
 readTime: "11 min"
 image: https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=800
-tags: ["Análisis"]
+tags: ["Análisis", "pais:id"]
 keywords: "bali seguridad viaje, riesgo bali 2026, es seguro bali, indonesia seguridad viaje"
 excerpt: "Análisis completo de seguridad en Bali e Indonesia 2026. Nivel de riesgo, zonas seguras y consejos para viajar."
 ---

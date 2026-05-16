@@ -8,7 +8,7 @@ category: "Destinos"
 readTime: "10 min"
 image: https://images.unsplash.com/photo-1478827536114-da961b7f86d2?w=800
 keywords: "chile seguridad viaje, riesgo chile 2026, es seguro chile, alertas chile, viaje chile peligroso, turismo chile, consejos chile, santiago safety"
-tags: ["Análisis"]
+tags: ["Análisis", "pais:cl"]
 excerpt: "Análisis COMPLETO de seguridad en Chile 2026. Conoce el nivel de riesgo real, zonas seguras, consejos prácticos y todo lo que necesitas para viajar seguro a Chile."
 ---
 

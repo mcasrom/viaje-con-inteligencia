@@ -7,7 +7,7 @@ author: "M. Castillo"
 category: "Destinos"
 readTime: "10 min"
 image: https://images.unsplash.com/photo-1586816001966-79b736744398?w=800
-tags: ["Análisis"]
+tags: ["Análisis", "pais:lk"]
 keywords: "sri lanka seguridad viaje, riesgo sri lanka 2026, es seguro sri lanka, alertas sri lanka, viaje sri lanka peligroso"
 excerpt: "Análisis completo de seguridad en Sri Lanka 2026. Nivel de riesgo, zonas seguras y consejos para viajar."
 ---

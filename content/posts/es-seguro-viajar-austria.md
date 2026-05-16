@@ -8,7 +8,7 @@ category: "Destinos"
 readTime: "10 min"
 image: https://images.unsplash.com/photo-1516417670851-1c74cd46f249?w=800
 keywords: "austria seguridad viaje, riesgo austria 2026, es seguro austria, alertas austria, viaje austria peligroso, turismo austria, consejos austria, viena safety"
-tags: ["Análisis"]
+tags: ["Análisis", "pais:at"]
 excerpt: "Análisis COMPLETO de seguridad en Austria 2026. Conoce el nivel de riesgo real, zonas seguras, consejos prácticos y todo lo que necesitas para viajar seguro a Austria."
 ---
 

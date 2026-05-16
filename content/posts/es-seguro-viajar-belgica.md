@@ -7,7 +7,7 @@ author: "M. Castillo"
 category: "Destinos"
 readTime: "10 min"
 image: https://images.unsplash.com/photo-1491557345352-5929e343eb89?w=800
-tags: ["Análisis"]
+tags: ["Análisis", "pais:be"]
 keywords: "belgica seguridad viaje, riesgo belgica 2026, es seguro belgica, alertas belgica"
 excerpt: "Análisis completo de seguridad en Bélgica 2026. Nivel de riesgo, zonas seguras y consejos para viajar."
 ---

@@ -8,7 +8,7 @@ category: "Destinos"
 readTime: "11 min"
 image: https://images.unsplash.com/photo-1528127269322-539801943592?w=800
 keywords: "vietnam seguridad viaje, riesgo vietnam 2026, es seguro vietnam, alertas vietnam, viaje vietnam peligroso, turismo vietnam, consejos vietnam"
-tags: ["Análisis"]
+tags: ["Análisis", "pais:vn"]
 excerpt: "Análisis COMPLETO de seguridad en Vietnam 2026. Conoce el nivel de riesgo real, zonas seguras, consejos prácticos y todo lo que necesitas para viajar seguro a Vietnam."
 ---
 

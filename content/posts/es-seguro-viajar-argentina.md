@@ -8,7 +8,7 @@ category: "Destinos"
 readTime: "11 min"
 image: https://images.unsplash.com/photo-1589909202802-8f4aadce1849?w=800
 keywords: "argentina seguridad viaje, riesgo argentina 2026, es seguro argentina, alertas argentina, viaje argentina peligroso, turismo argentina, consejos argentina, buenos aires safety"
-tags: ["Análisis"]
+tags: ["Análisis", "pais:ar"]
 excerpt: "Análisis COMPLETO de seguridad en Argentina 2026. Conoce el nivel de riesgo real, zonas seguras, consejos prácticos y todo lo que necesitas para viajar seguro a Argentina."
 ---
 

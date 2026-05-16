@@ -7,7 +7,7 @@ author: "M. Castillo"
 category: "Destinos"
 readTime: "12 min"
 image: https://images.unsplash.com/photo-1529260830199-42c24126f198?w=800
-tags: ["Análisis"]
+tags: ["Análisis", "pais:it"]
 keywords: "italia seguridad viaje, riesgo italia 2026, es seguro italia, alertas italia, viaje italia peligroso"
 excerpt: "Análisis completo de seguridad en Italia 2026. Nivel de riesgo, zonas seguras y consejos para viajar."
 ---
