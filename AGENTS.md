@@ -47,7 +47,7 @@
 
 ### Pendientes para próximo sprint
 1. **ML**: Esperar ~25 días para validación temporal CV. Mejorar features RF.
-2. **Vinculación Telegram**: Probar flujo completo `/vincular` → bot confirma.
+2. **Vinculación Telegram** ✅ — Migración SQL ejecutada (telegram_id en profiles). Fix code: quitado telegram_username de upsert a profiles (columna inexistente). Pendiente: probar flujo completo desde Telegram.
 3. **SloganPopup homepage** ✅ — Implementado.
 4. **Infografía semanal riesgos** ✅ — Se genera los domingos vía master cron. Página `/infografias` con listado, detalle, GWI, popup en homepage. Slogans ES/EN bajo cabecera.
 5. **Outreach**: X/Twitter, Reddit, foros de viajeros.
@@ -385,9 +385,9 @@ Para probar authenticated endpoints se necesita sesión válida (vía browser).
 2. **✈️ FlightLabs en Reclamaciones** — Registrar RapidAPI + FlightLabs, crear endpoint `/api/flights/verify-delay`
 3. **🤖 ML temporal** — Esperar ~22 días para validación temporal CV. Expandir features RF (tasas de cambio, clima, visados)
 4. **🎯 Afinar pesos ScoreBadge** — Ajustar pesos de riesgo/season/coste/perfil con datos reales de uso
-5. **🔗 Vinculación Telegram** — Probar flujo completo `/vincular` → bot confirma
+5. **🔗 Vinculación Telegram** ✅ — SQL ejecutado, fix deployado. Pendiente: probar flujo desde Telegram
 6. **📊 Resultados RRSS 15 May** — Analizar engagement de Bluesky/Mastodon/X/Telegram
-7. **🧭 Comparador de itinerarios** — Página o modal para comparar 2+ viajes lado a lado con tabla de scores (riesgo, temporada, coste, perfil). Ej: "5 días Florencia vs 5 días Génova". Usar `/api/trips/[id]/risk-score` por cada viaje.
+7. **🧭 Comparador de itinerarios** ✅ — Página `/viajes/comparar` con tabla side-by-side, recomendación, enlace desde `/viajes`
 
 ## Recurring Tasks
 - **Daily (post-deploy)**: Verify `/api/cron/train-models` completes successfully (R² > 0.95, < 300s).
