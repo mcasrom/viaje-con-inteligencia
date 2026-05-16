@@ -875,6 +875,9 @@ export async function GET(request: Request) {
   log.info('8b/8 Insurance monitor...');
   results.insurance_monitor = await withTimeout(() => runInsuranceMonitor(), 30000, '8b/8 Insurance monitor');
 
+  log.info('8c/8 Bing IndexNow...');
+  results.bing_indexnow = await withTimeout(() => runBingPing(), 30000, '8c/8 Bing IndexNow');
+
   const elapsed = Date.now() - startTime;
 
   return NextResponse.json({
@@ -883,4 +886,44 @@ export async function GET(request: Request) {
     steps: results,
     timestamp: new Date().toISOString(),
   });
+}
+
+// ===== BING INDEXNOW =====
+const INDEXNOW_URL = 'https://www.bing.com/indexnow';
+const INDEXNOW_KEY = '912cddcf-839d-4bee-a628-4c8cfd81c843';
+
+async function runBingPing() {
+  try {
+    const { getTodosLosPaises } = await import('@/data/paises');
+    const { getPostSlugs } = await import('@/lib/posts');
+
+    const paises = getTodosLosPaises();
+    const blogSlugs = getPostSlugs();
+
+    const urls = [
+      `${BASE_URL}/`,
+      `${BASE_URL}/blog`,
+      `${BASE_URL}/blog/ecosistema-osint-viajero-moderno`,
+      ...paises.slice(0, 10).map(p => `${BASE_URL}/pais/${p.codigo}`),
+      ...blogSlugs.slice(0, 5).map(s => `${BASE_URL}/blog/${s}`),
+    ];
+
+    const body = {
+      host: new URL(BASE_URL).hostname,
+      key: INDEXNOW_KEY,
+      keyLocation: `${BASE_URL}/${INDEXNOW_KEY}.txt`,
+      urlList: urls,
+    };
+
+    const res = await fetch(INDEXNOW_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+      signal: AbortSignal.timeout(20000),
+    });
+
+    return { status: res.status, ok: res.ok, urls: urls.length };
+  } catch (e: any) {
+    return { error: e.message };
+  }
 }
