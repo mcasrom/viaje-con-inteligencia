@@ -142,6 +142,8 @@ ${topAlerts.length > 0 ? topAlerts.map(a => `• ${a.country_name}: ${a.title}`)
   return { full, short, mastodonThread };
 }
 
+const TG_SEPARATOR = '\n━━━━━━━━━━━━━\n\n';
+
 export async function publishToTelegramChannel(text: string): Promise<boolean> {
   if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHANNEL_ID) {
     log.warn('Missing TELEGRAM_BOT_TOKEN or TELEGRAM_CHANNEL_ID — skipping');
@@ -149,11 +151,12 @@ export async function publishToTelegramChannel(text: string): Promise<boolean> {
   }
 
   try {
+    const full = TG_SEPARATOR + text;
     const chunks: string[] = [];
-    if (text.length <= MAX_TG_LENGTH) {
-      chunks.push(text);
+    if (full.length <= MAX_TG_LENGTH) {
+      chunks.push(full);
     } else {
-      const parts = text.split('\n\n');
+      const parts = full.split('\n\n');
       let current = '';
       for (const part of parts) {
         if (current.length + part.length + 2 > MAX_TG_LENGTH) {
@@ -176,7 +179,7 @@ export async function publishToTelegramChannel(text: string): Promise<boolean> {
             chat_id: TELEGRAM_CHANNEL_ID,
             text: escapeMD(chunk),
             parse_mode: 'MarkdownV2',
-            disable_web_page_preview: false,
+            disable_web_page_preview: true,
           }),
         }
       );
