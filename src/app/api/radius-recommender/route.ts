@@ -107,12 +107,16 @@ async function getPOIsForArea(lat: number, lon: number, radiusKm: number): Promi
 
     const overpassQuery = `[out:json][timeout:10];(\n${queries}\n);out center 50;`;
 
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 12000);
+
     const res = await fetch('https://overpass-api.de/api/interpreter', {
       method: 'POST',
       body: overpassQuery,
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      signal: AbortSignal.timeout(12000),
+      headers: { 'Content-Type': 'text/plain', 'User-Agent': 'ViajeConInteligencia/1.0' },
+      signal: controller.signal,
     });
+    clearTimeout(timeoutId);
 
     if (!res.ok) return [];
 
