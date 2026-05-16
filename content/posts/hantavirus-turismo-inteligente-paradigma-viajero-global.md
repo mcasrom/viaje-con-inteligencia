@@ -6,7 +6,7 @@ description: "Posición editorial de ViajeInteligencia.com sobre la crisis del h
 slug: "hantavirus-turismo-inteligente-paradigma-viajero-global"
 date: "2026-05-16"
 author: "M. Castillo"
-category: "Seguridad"
+category: "Nota del Editor"
 readTime: "14 min"
 image: "https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=1200"
 keywords: "hantavirus, turismo inteligente, travel intelligence, OSINT, riesgo sanitario, viajes, geopolítica, seguridad viajera, nota editorial"

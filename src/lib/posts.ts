@@ -100,6 +100,7 @@ export function getPostBySlug(slug: string): Post | null {
 
 export interface PostsFilter {
   category?: string;
+  tag?: string;
   sort?: 'recent' | 'oldest';
   search?: string;
 }
@@ -134,6 +135,11 @@ export function getAllPosts(filter?: PostsFilter): PostMeta[] {
     posts = posts.filter(p => p.category === filter.category);
   }
 
+  if (filter?.tag) {
+    const tagLower = filter.tag.toLowerCase();
+    posts = posts.filter(p => p.tags?.some(t => t.toLowerCase() === tagLower));
+  }
+
   if (filter?.sort === 'oldest') {
     posts = posts.reverse();
   }
@@ -155,6 +161,7 @@ export function getAllPosts(filter?: PostsFilter): PostMeta[] {
 export interface PaginationOptions {
   skip?: number;
   category?: string;
+  tag?: string;
   sort?: 'recent' | 'oldest';
   search?: string;
 }
@@ -167,6 +174,7 @@ export function getPostsPagination(page: number = 1, perPage: number = 10, filte
 } {
   const allPosts = getAllPosts(filter ? {
     category: filter.category,
+    tag: filter.tag,
     sort: filter.sort,
     search: filter.search,
   } : undefined);

@@ -16,6 +16,7 @@ const CATEGORY_ICONS: Record<string, string> = {
   Consejos: '💡',
   Básicos: '📖',
   'Infografía': '📊',
+  'Nota del Editor': '📝',
 };
 const CATEGORY_COLORS: Record<string, string> = {
   Destinos: 'from-emerald-500/20 to-emerald-600/10 border-emerald-500/30',
@@ -26,6 +27,7 @@ const CATEGORY_COLORS: Record<string, string> = {
   Consejos: 'from-cyan-500/20 to-cyan-600/10 border-cyan-500/30',
   Básicos: 'from-sky-500/20 to-sky-600/10 border-sky-500/30',
   'Infografía': 'from-blue-500/20 to-indigo-600/10 border-blue-500/30',
+  'Nota del Editor': 'from-orange-500/20 to-orange-600/10 border-orange-500/30',
 };
 
 export const revalidate = 300;
@@ -163,7 +165,7 @@ function PostListItem({ post }: { post: PostMeta & { isInfografia?: boolean; inf
 }
 
 interface BlogPageProps {
-  searchParams: Promise<{ category?: string; search?: string; page?: string; view?: string; show?: string }>;
+  searchParams: Promise<{ category?: string; tag?: string; search?: string; page?: string; view?: string; show?: string }>;
 }
 
 async function fetchInfografiasAsPosts(): Promise<(PostMeta & { isInfografia: boolean; infografiaId: string })[]> {
@@ -199,10 +201,11 @@ async function fetchInfografiasAsPosts(): Promise<(PostMeta & { isInfografia: bo
 export default async function BlogPage({ searchParams }: BlogPageProps) {
   const params = await searchParams;
   const category = params.category;
+  const tag = params.tag;
   const search = params.search;
   const page = parseInt(params.page || '1') || 1;
   const view = params.view || 'list';
-  const showAll = params.show === 'all' || !!search || !!category;
+  const showAll = params.show === 'all' || !!search || !!category || !!tag;
 
   // Fetch infografias from Supabase
   const infografias = await fetchInfografiasAsPosts();
@@ -214,6 +217,7 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
   // When filtering by Infografía, only show infografias (no filesystem posts)
   const allPostsRaw = isInfografiaCategory ? [] : getAllPosts({
     category: category && category !== 'Infografía' ? category : undefined,
+    tag: tag,
     search: search,
   });
   const allPosts = includeInfografias ? [...infografias, ...allPostsRaw] : allPostsRaw;
@@ -222,6 +226,7 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
     ? { posts: [], totalPages: 1 }
     : getPostsPagination(page, POSTS_PER_PAGE, {
         category: category && category !== 'Infografía' ? category : undefined,
+        tag: tag,
         search: search,
         skip: 0,
       });
@@ -263,16 +268,17 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
   mainCats.sort((a, b) => b.count - a.count);
   if (smallCats.length > 0) mainCats.push({ name: 'Otros', count: smallCats.reduce((s, c) => s + c.count, 0) });
 
-  const paginationLinks = (p: number, opts?: { resetCategory?: boolean; resetSearch?: boolean }) => {
+  const paginationLinks = (p: number, opts?: { resetCategory?: boolean; resetTag?: boolean; resetSearch?: boolean }) => {
     const qs = new URLSearchParams();
     if (category && !opts?.resetCategory) qs.set('category', category);
+    if (tag && !opts?.resetTag) qs.set('tag', tag);
     if (search && !opts?.resetSearch) qs.set('search', search);
     if (view === 'grid') qs.set('view', 'grid');
     if (p > 1) qs.set('page', String(p));
     return `/blog${qs.toString() ? '?' + qs.toString() : ''}`;
   };
 
-  const allLink = paginationLinks(1, { resetCategory: true, resetSearch: true });
+  const allLink = paginationLinks(1, { resetCategory: true, resetTag: true, resetSearch: true });
 
   return (
     <div className="min-h-screen bg-slate-900">
@@ -331,7 +337,7 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-lg font-semibold text-white flex items-center gap-2">
             <span className="w-2 h-2 bg-emerald-500 rounded-full"></span>
-            {search ? `Resultados para "${search}"` : category ? category : 'Todos los artículos'}
+            {search ? `Resultados para "${search}"` : tag ? `#${tag}` : category ? category : 'Todos los artículos'}
             <span className="text-slate-500 text-sm font-normal">
               ({allPosts.length} artículo{allPosts.length !== 1 ? 's' : ''})
             </span>
