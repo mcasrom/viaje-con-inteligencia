@@ -44,6 +44,7 @@ export default function Footer() {
             <ul className="space-y-2 text-sm">
               <li><Link href="/dashboard" className="text-slate-400 hover:text-white transition-colors">Mi Dashboard</Link></li>
               <li><Link href="/dashboard/radar" className="text-slate-400 hover:text-white transition-colors">Mi Radar</Link></li>
+              <li><Link href="/pulso-global" className="text-slate-400 hover:text-white transition-colors">Pulso Global</Link></li>
               <li><Link href="/" className="text-slate-400 hover:text-white transition-colors">KPIs Global</Link></li>
               <li><Link href="/documentos" className="text-slate-400 hover:text-white transition-colors">Mis Documentos</Link></li>
               <li><Link href="/viajes" className="text-slate-400 hover:text-white transition-colors">Mis Viajes</Link></li>
