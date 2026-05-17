@@ -350,17 +350,9 @@ export default function EcosistemaClient() {
           </div>
         </div>
 
-        {/* Legend / maintenance */}
-        <div className="bg-slate-900/60 border border-slate-700/50 rounded-xl p-6 text-sm text-slate-400">
-          <h3 className="text-white font-semibold mb-2">📝 Mantenimiento</h3>
-          <p>
-            Al añadir una nueva funcionalidad, actualiza el documento{' '}
-            <a href="https://github.com/mcasrom/viaje-con-inteligencia/blob/main/ECOSISTEMA.md"
-               target="_blank" rel="noopener noreferrer"
-               className="text-blue-400 hover:underline">ECOSISTEMA.md</a>
-            {' '}(incluye versión Mermaid renderizable en GitHub): añadir fuente/pipeline al diagrama, actualizar tabla de componentes, métricas clave y modelo freemium si cambia.
-          </p>
-          <p className="mt-2 text-slate-500">Versión: Mayo 2026 · 25 features · 14 fuentes · 4 modelos RF · 24 funcionalidades documentadas</p>
+        {/* Version */}
+        <div className="text-center text-sm text-slate-500">
+          Versión: Mayo 2026 · 25 features · 14 fuentes · 4 modelos RF · 24 funcionalidades
         </div>
       </div>
     </div>
