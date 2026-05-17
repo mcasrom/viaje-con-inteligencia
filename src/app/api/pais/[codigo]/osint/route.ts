@@ -1,9 +1,24 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 import { createLogger } from '@/lib/logger';
+import { getCountryName } from '@/lib/country-name-map';
 
 export const dynamic = 'force-dynamic';
 const log = createLogger('PaisOsint');
+
+const EN_NAMES: Record<string, string> = {
+  cn: 'china', es: 'spain', fr: 'france', de: 'germany', it: 'italy', pt: 'portugal',
+  gb: 'uk', ie: 'ireland', nl: 'netherlands', ch: 'switzerland', gr: 'greece',
+  us: 'usa', ca: 'canada', mx: 'mexico', ar: 'argentina', br: 'brazil', co: 'colombia',
+  pe: 'peru', cl: 'chile', ve: 'venezuela', jp: 'japan', kr: 'korea', ru: 'russia',
+  in: 'india', tr: 'turkey', th: 'thailand', vn: 'vietnam', id: 'indonesia',
+  eg: 'egypt', ma: 'morocco', za: 'south africa', ng: 'nigeria', il: 'israel',
+  ae: 'uae', sa: 'saudi arabia', ir: 'iran', iq: 'iraq', sy: 'syria',
+  au: 'australia', nz: 'new zealand', sg: 'singapore', my: 'malaysia',
+  ua: 'ukraine', pl: 'poland', se: 'sweden', no: 'norway', dk: 'denmark',
+  fi: 'finland', cz: 'czech', hu: 'hungary', ro: 'romania', at: 'austria',
+  be: 'belgium', is: 'iceland',
+};
 
 export async function GET(request: NextRequest, { params }: { params: Promise<{ codigo: string }> }) {
   const { codigo } = await params;
@@ -15,11 +30,16 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
   const days = parseInt(searchParams.get('days') || '14');
   const cutoff = new Date(Date.now() - days * 24 * 60 * 60 * 1000).toISOString();
 
+  const name = getCountryName(codigo) || '';
+  const enName = EN_NAMES[codigo] || '';
+  const terms = [codigo, name, enName].filter(Boolean);
+  const filters = terms.map(t => `location_name.ilike.%${t}%,summary.ilike.%${t}%`).join(',');
+
   const { data: signals, error } = await supabase
     .from('osint_signals')
     .select('id, source, source_url, title, content, category, urgency, summary, tone_score, confidence, location_name, created_at, post_timestamp')
     .gte('created_at', cutoff)
-    .or(`location_name.ilike.%${codigo}%,summary.ilike.%${codigo}%`)
+    .or(filters)
     .order('created_at', { ascending: false })
     .limit(limit);
 
