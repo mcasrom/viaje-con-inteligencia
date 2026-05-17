@@ -68,6 +68,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${BASE_URL}/free-trial`, priority: 0.7, changeFrequency: 'monthly' as const, lastModified: new Date() },
     { url: `${BASE_URL}/stats`, priority: 0.7, changeFrequency: 'monthly' as const, lastModified: new Date() },
     { url: `${BASE_URL}/diagnostico`, priority: 0.65, changeFrequency: 'monthly' as const, lastModified: new Date() },
+    { url: `${BASE_URL}/ecosistema`, priority: 0.65, changeFrequency: 'monthly' as const, lastModified: new Date() },
     { url: `${BASE_URL}/transparencia`, priority: 0.6, changeFrequency: 'monthly' as const, lastModified: new Date() },
     { url: `${BASE_URL}/fuentes-osint`, priority: 0.6, changeFrequency: 'monthly' as const, lastModified: new Date() },
     { url: `${BASE_URL}/legal`, priority: 0.5, changeFrequency: 'monthly' as const, lastModified: new Date() },
