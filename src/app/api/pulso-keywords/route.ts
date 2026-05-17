@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
+import { supabaseAdmin } from '@/lib/supabase-admin';
 import { createLogger } from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 const log = createLogger('PulsoKeywords');
 
 export async function GET() {
-  const { data, error } = await supabase
+  const { data, error } = await supabaseAdmin
     .from('pulso_keywords')
     .select('*')
     .eq('active', true)

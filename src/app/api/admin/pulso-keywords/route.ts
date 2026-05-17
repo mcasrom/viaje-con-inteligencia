@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
+import { supabaseAdmin } from '@/lib/supabase-admin';
 import { createLogger } from '@/lib/logger';
 
 export const dynamic = 'force-dynamic';
 const log = createLogger('AdminPulsoKeywords');
 
 export async function GET() {
-  const { data, error } = await supabase
+  const { data, error } = await supabaseAdmin
     .from('pulso_keywords')
     .select('*')
     .order('active', { ascending: false })
@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'keyword_es is required' }, { status: 400 });
     }
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from('pulso_keywords')
       .insert({
         keyword_es,
@@ -72,7 +72,7 @@ export async function PUT(request: NextRequest) {
     if (used_in_display !== undefined) updates.used_in_display = used_in_display;
     if (active !== undefined) updates.active = active;
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from('pulso_keywords')
       .update(updates)
       .eq('id', id)
@@ -96,7 +96,7 @@ export async function DELETE(request: NextRequest) {
     return NextResponse.json({ error: 'id param required' }, { status: 400 });
   }
 
-  const { error } = await supabase
+  const { error } = await supabaseAdmin
     .from('pulso_keywords')
     .delete()
     .eq('id', parseInt(id));
