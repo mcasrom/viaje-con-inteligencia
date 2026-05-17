@@ -386,8 +386,11 @@ Para probar authenticated endpoints se necesita sesión válida (vía browser).
 | Día 1 | BlueSky | Versión corta | ✅ 3mlrcpyn5dy22 |
 | Día 1 | Mastodon | Versión media | ✅ 116569531941028335 |
 | Día 1 | X/Twitter | Versión corta | ⏳ manual (OAuth) |
-| Día 2 | Reddit r/SideProject | Versión inglés | ⏳ (pendiente crear cuenta) |
-| Día 2 | Reddit r/digitalnomad | Participar megathread | ⏳ (pendiente crear cuenta) |
+| Día 2 | Reddit r/SideProject | Versión inglés | ✅ (draft listo en content/reddit-smarttravelhacks.md) |
+| Día 2 | Reddit r/travel | Versión español | ✅ (draft en content/reddit-general-travel.mdx) |
+| Día 2 | Reddit r/osinttools | Versión inglés | ✅ (draft en content/reddit-osint-global.mdx) |
+| Día 2 | Reddit r/RVLiving | Versión inglés | ✅ (draft en content/reddit-rv-living.mdx) |
+| Día 2 | Reddit r/digitalnomad | Participar megathread | ⏳ (pendiente publicar) |
 | Día 3 | LosViajeros | Post foro + firma | ⏳ |
 | Día 3 | Foro de Viajeros | Post foro + firma | ⏳ |
 | Día 4 | Facebook grupos (Gurú de Viaje, Comunidad Viajeros) | Versión media | ⏳ |
@@ -396,7 +399,7 @@ Para probar authenticated endpoints se necesita sesión válida (vía browser).
 ## Next Steps
 
 1. **📢 Outreach** — Reddit (r/SideProject, r/digitalnomad), foros de viajeros (LosViajeros, Foro de Viajeros), Facebook grupos
-2. **✈️ FlightLabs en Reclamaciones** — Registrar RapidAPI + FlightLabs, crear endpoint `/api/flights/verify-delay`
+2. **✈️ FlightLabs en Reclamaciones** ✅ — Ya implementado: API key en `.env.local`, endpoint `/api/flights/verify-delay`, botón "Verificar" en ReclamacionesClient, health check activo
 3. **🤖 ML temporal** — Esperar ~22 días para validación temporal CV. Expandir features RF (tasas de cambio, clima, visados)
 4. **🎯 Afinar pesos ScoreBadge** — Ajustar pesos de riesgo/season/coste/perfil con datos reales de uso
 5. **🔗 Vinculación Telegram** ✅ — SQL ejecutado, fix deployado. Pendiente: probar flujo desde Telegram
