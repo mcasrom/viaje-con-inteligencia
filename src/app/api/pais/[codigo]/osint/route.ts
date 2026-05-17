@@ -33,7 +33,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
   const name = getCountryName(codigo) || '';
   const enName = EN_NAMES[codigo] || '';
   const terms = [codigo, name, enName].filter(Boolean);
-  const filters = terms.map(t => `location_name.ilike.%${t}%,summary.ilike.%${t}%`).join(',');
+  const filters = terms.map(t => `location_name.ilike.%${t}%,summary.ilike.%${t}%,title.ilike.%${t}%,content.ilike.%${t}%`).join(',');
 
   const { data: signals, error } = await supabase
     .from('osint_signals')

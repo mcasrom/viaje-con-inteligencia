@@ -30,21 +30,35 @@ export default function OsintSignalsWidget({ countryCode, countryName }: { count
 
   useEffect(() => {
     fetch(`/api/pais/${countryCode}/osint?limit=15&days=14`)
-      .then(res => res.json())
-      .then(data => {
+      .then(async res => {
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
         if (data.signals) setSignals(data.signals);
-        if (data.error) setError(data.error);
+        if (data.count === 0) setError('No se encontraron señales para este país en los últimos 14 días.');
       })
-      .catch(() => setError('Error al cargar señales'))
+      .catch((e) => setError(e.message))
       .finally(() => setLoading(false));
   }, [countryCode]);
 
-  if (loading && signals.length === 0) {
+  if (loading) {
     return (
       <section className="max-w-7xl mx-auto px-6 mt-8">
         <div className="bg-slate-800 rounded-2xl border border-slate-700 p-6 flex items-center gap-3">
           <Loader2 className="w-5 h-5 text-slate-400 animate-spin" />
           <p className="text-slate-400 text-sm">Cargando señales OSINT para {countryName}...</p>
+        </div>
+      </section>
+    );
+  }
+
+  if (error) {
+    return (
+      <section className="max-w-7xl mx-auto px-6 mt-8">
+        <div className="bg-slate-800 rounded-2xl border border-slate-700 p-6">
+          <p className="text-slate-400 text-sm">{error}</p>
+          <button onClick={() => { setLoading(true); setError(''); fetch(`/api/pais/${countryCode}/osint?limit=15&days=14`).then(r => r.json()).then(d => { if (d.signals) setSignals(d.signals); if (d.error) setError(d.error); }).catch(e => setError(e.message)).finally(() => setLoading(false)); }} className="text-cyan-400 text-xs mt-2 hover:underline">
+            Reintentar
+          </button>
         </div>
       </section>
     );
