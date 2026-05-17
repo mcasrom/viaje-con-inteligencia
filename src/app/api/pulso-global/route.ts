@@ -170,10 +170,36 @@ export async function GET() {
     log.error('Heatmap error', e);
   }
 
+  let sentimentAlerts: any[] = [];
+  try {
+    const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+    const { data: activeAlerts } = await supabase!
+      .from('sentiment_alerts')
+      .select('*')
+      .gte('created_at', sevenDaysAgo.toISOString())
+      .order('created_at', { ascending: false })
+      .limit(20);
+    if (activeAlerts) {
+      sentimentAlerts = activeAlerts.map(a => ({
+        countryCode: a.country_code,
+        countryName: a.country_name,
+        avgTone: Number(a.avg_tone),
+        previousAvgTone: a.previous_avg_tone ? Number(a.previous_avg_tone) : null,
+        signalCount: a.signal_count,
+        severity: a.severity,
+        message: a.message,
+        createdAt: a.created_at,
+      }));
+    }
+  } catch (e) {
+    log.error('Sentiment alerts error', e);
+  }
+
   return NextResponse.json({
     sentimentRanking,
     heatmapAlerts,
     topDrops: topDrops.slice(0, 10),
+    sentimentAlerts,
     summary: {
       totalSignals: signals?.length || 0,
       countriesTracked: sentimentRanking.length,

@@ -12,6 +12,7 @@ import { fetchAllPosts, classifySignal, detectFirstPerson, type ClassifiedSignal
 import { Resend } from 'resend';
 import { detectAndCreateIncidents } from '@/lib/incident-detector';
 import { notifySubscribers } from '@/lib/incident-notifier';
+import { detectSentimentAlerts } from '@/lib/sentiment-alert';
 import { fetchAndStoreEvents } from '@/lib/events-fetch';
 import { runMonitorForUser } from '@/lib/seguros/monitor';
 import { createLogger } from '@/lib/logger';
@@ -854,6 +855,14 @@ export async function GET(request: Request) {
     async () => notifySubscribers(createdCount, updatedCount),
     20000,
     '5c/8 Incident notifications'
+  );
+
+  // Phase 3d: Sentiment alerts (cross-check threshold countries)
+  log.info('5d/8 Sentiment alerts...');
+  results.sentiment_alerts = await withTimeout(
+    () => detectSentimentAlerts(),
+    30000,
+    '5d/8 Sentiment alerts'
   );
 
   // Phase 4: Digests and notifications (always run last)
