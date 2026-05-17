@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { getTodosLosPaises } from '@/data/paises';
 import { getPostsPagination } from '@/lib/posts';
 import DetallePaisClient from './DetallePaisClient';
+import OsintSignalsWidget from '@/components/OsintSignalsWidget';
 
 export const revalidate = 86400;
 
@@ -68,6 +69,7 @@ export default async function PaisPage({ params }: { params: Promise<{ codigo: s
       />
       <h1 className="sr-only">Guía de viaje a {pais.nombre}: riesgo MAEC, visado, seguridad y consejos para viajeros</h1>
       <DetallePaisClient pais={pais} relatedPosts={relatedPosts} />
+      <OsintSignalsWidget countryCode={codigo} countryName={pais.nombre} />
     </>
   );
 }
