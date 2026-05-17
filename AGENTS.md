@@ -386,14 +386,15 @@ Para probar authenticated endpoints se necesita sesión válida (vía browser).
 | Día 1 | BlueSky | Versión corta | ✅ 3mlrcpyn5dy22 |
 | Día 1 | Mastodon | Versión media | ✅ 116569531941028335 |
 | Día 1 | X/Twitter | Versión corta | ⏳ manual (OAuth) |
-| Día 2 | Reddit r/SideProject | Versión inglés | ✅ (draft listo en content/reddit-smarttravelhacks.md) |
+| Día 1 | Reddit cuenta creada | u/OSINTTraveler | ✅ |
 | Día 2 | Reddit r/travel | Versión español | ✅ (draft en content/reddit-general-travel.mdx) |
 | Día 2 | Reddit r/osinttools | Versión inglés | ✅ (draft en content/reddit-osint-global.mdx) |
 | Día 2 | Reddit r/RVLiving | Versión inglés | ✅ (draft en content/reddit-rv-living.mdx) |
 | Día 2 | Reddit r/digitalnomad | Participar megathread | ⏳ (pendiente publicar) |
 | Día 3 | LosViajeros | Post foro + firma | ⏳ |
 | Día 3 | Foro de Viajeros | Post foro + firma | ⏳ |
-| Día 4 | Facebook grupos (Gurú de Viaje, Comunidad Viajeros) | Versión media | ⏳ |
+| Día 4 | Facebook Gurú de Viaje | Versión español | ✅ (draft en content/outreach/facebook-guru-viaje.mdx) |
+| Día 4 | Facebook Comunidad Viajeros | Versión español | ✅ (draft en content/outreach/facebook-comunidad-viajeros.mdx) |
 | Día 5 | Email bloggers/agencias | Outreach 5-10 | ⏳ |
 
 ## Next Steps
