@@ -34,7 +34,6 @@ export default function OsintSignalsWidget({ countryCode, countryName }: { count
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
         if (data.signals) setSignals(data.signals);
-        if (data.count === 0) setError('No se encontraron señales para este país en los últimos 14 días.');
       })
       .catch((e) => setError(e.message))
       .finally(() => setLoading(false));
