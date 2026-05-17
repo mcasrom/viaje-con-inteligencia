@@ -150,8 +150,11 @@ Responde SOLO con JSON:
       max_tokens: 600,
     });
 
-    const raw = response.choices[0]?.message?.content || '{}';
-    const parsed = JSON.parse(raw.replace(/```json|```/g, '').trim());
+    const raw = (response.choices[0]?.message?.content || '{}')
+      .replace(/```json|```/g, '')
+      .replace(/[\u0000-\u001F\u007F-\u009F]/g, '')
+      .trim();
+    const parsed = JSON.parse(raw);
 
     return NextResponse.json({
       title: parsed.title || 'Consejos de seguridad para viajeros',
