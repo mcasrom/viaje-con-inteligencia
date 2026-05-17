@@ -45,10 +45,22 @@ interface TopDrop {
   olderAvg: number;
 }
 
+interface SentimentAlertItem {
+  countryCode: string;
+  countryName: string;
+  avgTone: number;
+  previousAvgTone: number | null;
+  signalCount: number;
+  severity: string;
+  message: string;
+  createdAt: string;
+}
+
 interface GlobalData {
   sentimentRanking: SentimentEntry[];
   heatmapAlerts: HeatmapEntry[];
   topDrops: TopDrop[];
+  sentimentAlerts: SentimentAlertItem[];
   summary: {
     totalSignals: number;
     countriesTracked: number;
@@ -448,6 +460,49 @@ export default function PulsoGlobalClient() {
                 ))}
               </div>
             )}
+          </CollapsibleSection>
+        )}
+
+        {/* Sentiment Alerts */}
+        {data && !loading && data.sentimentAlerts && data.sentimentAlerts.length > 0 && (
+          <CollapsibleSection
+            title="Alertas de sentimiento"
+            icon={<AlertCircle className="w-5 h-5 text-rose-400" />}
+            count={data.sentimentAlerts.length}
+            countColor="bg-rose-500/20 text-rose-400"
+            defaultOpen={true}
+          >
+            <div className="space-y-3">
+              {data.sentimentAlerts.map((alert, i) => {
+                const sv = alert.severity === 'critical' ? '🔴' : alert.severity === 'high' ? '🟠' : alert.severity === 'medium' ? '🟡' : '🔵';
+                const sevColor = alert.severity === 'critical' ? 'text-red-400' : alert.severity === 'high' ? 'text-orange-400' : alert.severity === 'medium' ? 'text-yellow-400' : 'text-blue-400';
+                return (
+                  <div key={i} className="bg-slate-700/50 rounded-xl p-4 border border-slate-600/50">
+                    <div className="flex items-center justify-between">
+                      <Link href={`/pais/${alert.countryCode}`} className="flex items-center gap-3 hover:text-cyan-400 transition-colors">
+                        <span className="text-xl">{sv}</span>
+                        <div>
+                          <h3 className="text-white font-bold">{alert.countryName}</h3>
+                          <p className={`text-xs font-medium ${sevColor}`}>{alert.severity.charAt(0).toUpperCase() + alert.severity.slice(1)}</p>
+                        </div>
+                      </Link>
+                      <div className="text-right">
+                        <p className={`font-mono font-bold text-lg ${sevColor}`}>{alert.avgTone > 0 ? '+' : ''}{alert.avgTone}</p>
+                        <p className="text-slate-500 text-xs">{alert.signalCount} señales</p>
+                      </div>
+                    </div>
+                    {alert.previousAvgTone != null && (
+                      <div className="mt-2 flex items-center gap-2 text-xs text-slate-400">
+                        <span>Anterior: {alert.previousAvgTone > 0 ? '+' : ''}{alert.previousAvgTone}</span>
+                        <TrendingDown className="w-3 h-3 text-red-400" />
+                        <span className="text-red-400">{Math.round((alert.previousAvgTone - alert.avgTone) * 10) / 10} pts</span>
+                      </div>
+                    )}
+                    <p className="text-slate-400 text-xs mt-2">{new Date(alert.createdAt).toLocaleDateString('es-ES', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}</p>
+                  </div>
+                );
+              })}
+            </div>
           </CollapsibleSection>
         )}
 
