@@ -24,7 +24,7 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { keyword_es, keyword_en, icon, category, used_in_detection, used_in_display } = body;
+    const { keyword_es, keyword_en, icon, category, used_in_detection, used_in_display, active } = body;
 
     if (!keyword_es) {
       return NextResponse.json({ error: 'keyword_es is required' }, { status: 400 });
@@ -39,6 +39,7 @@ export async function POST(request: NextRequest) {
         category: category || 'general',
         used_in_detection: used_in_detection ?? true,
         used_in_display: used_in_display ?? true,
+        active: active ?? true,
       })
       .select()
       .single();

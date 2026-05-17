@@ -24,6 +24,7 @@ export default function PulsoKeywordsAdmin() {
   const [creating, setCreating] = useState(false);
   const [form, setForm] = useState({ keyword_es: '', keyword_en: '', icon: '⚠️', category: 'General', used_in_detection: true, used_in_display: true, active: true });
   const [saving, setSaving] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
 
   const fetchKeywords = async () => {
     setLoading(true);
@@ -47,19 +48,17 @@ export default function PulsoKeywordsAdmin() {
   const handleSave = async () => {
     if (!form.keyword_es.trim()) return;
     setSaving(true);
+    setErrorMsg('');
     try {
-      if (editing) {
-        await fetch('/api/admin/pulso-keywords', {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ ...form, id: editing.id }),
-        });
-      } else {
-        await fetch('/api/admin/pulso-keywords', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(form),
-        });
+      const res = await fetch('/api/admin/pulso-keywords', {
+        method: editing ? 'PUT' : 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(editing ? { ...form, id: editing.id } : form),
+      });
+      if (!res.ok) {
+        const err = await res.json();
+        setErrorMsg(err.error || 'Error al guardar');
+        return;
       }
       resetForm();
       await fetchKeywords();
@@ -70,7 +69,13 @@ export default function PulsoKeywordsAdmin() {
 
   const handleDelete = async (id: number) => {
     if (!confirm('¿Eliminar esta keyword?')) return;
-    await fetch(`/api/admin/pulso-keywords?id=${id}`, { method: 'DELETE' });
+    setErrorMsg('');
+    const res = await fetch(`/api/admin/pulso-keywords?id=${id}`, { method: 'DELETE' });
+    if (!res.ok) {
+      const err = await res.json();
+      setErrorMsg(err.error || 'Error al eliminar');
+      return;
+    }
     await fetchKeywords();
   };
 
@@ -102,6 +107,10 @@ export default function PulsoKeywordsAdmin() {
         </div>
 
         {/* Form */}
+        {errorMsg && (
+          <div className="bg-red-900/30 border border-red-700/50 rounded-xl px-4 py-3 text-red-300 text-sm">{errorMsg}</div>
+        )}
+
         {creating && (
           <div className="bg-slate-800 rounded-2xl border border-slate-700 p-6 space-y-4">
             <h2 className="text-white font-bold">{editing ? 'Editar keyword' : 'Nueva keyword'}</h2>
