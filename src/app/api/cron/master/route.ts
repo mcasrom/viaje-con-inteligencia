@@ -307,7 +307,7 @@ async function runAirspaceOsint(): Promise<any> {
   }
 }
 
-// ===== NEWS SENTIMENT (GDELT + RSS: keyword-only, Reddit: Groq) =====
+// ===== NEWS SENTIMENT (GDELT + RSS + Reddit: Groq classification, keyword fallback) =====
 const CATEGORY_KEYWORDS: Record<string, string[]> = {
   salud: ['outbreak', 'disease', 'epidemic', 'sick', 'hospital', 'virus', 'brotes', 'enfermedad', 'fallecido', 'herido', 'intoxicacion'],
   clima: ['earthquake', 'flood', 'hurricane', 'cyclone', 'tsunami', 'volcano', 'storm', 'wildfire', 'terremoto', 'inundacion', 'incendio', 'tormenta'],
@@ -391,11 +391,8 @@ async function runNewsSentiment(): Promise<any> {
           urgency: sev === 'red' ? 'critical' : sev === 'orange' ? 'high' : sev === 'green' ? 'medium' : 'low',
           summary: post.title,
         };
-      } else if (post.source === 'gdelt' || post.source === 'rss') {
-        // News sources: keyword classification + tone adjustment
-        classification = classifyByKeywords(`${post.title} ${post.content}`, post.toneScore);
       } else {
-        // Reddit: use Groq (first-person experience matters)
+        // GDELT, RSS, Reddit: use Groq classification with keyword fallback
         try {
           classification = await classifySignal(post);
           isFirstPerson = classification?.isFirstResponder || detectFirstPerson(`${post.title} ${post.content}`);
