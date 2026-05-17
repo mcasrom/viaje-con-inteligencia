@@ -24,7 +24,7 @@
 - **`/en` noindex**: Verificar siempre que `index: true` se mantenga en `/en/page.tsx` si se quiere tráfico internacional. Las páginas `en` solo cubren homepage — el resto del site (blog, países) no tiene versión inglesa.
 - **Slugs de blog**: Deben ser siempre lowercase. Tras renombrar `Como-encontrar-vuelos-baratos` y `Que-es-viaje-inteligencia`, verificar que new posts no tengan mayúsculas en el filename.
 
-## PAUSED STATE (17 May 2026 — Sentiment ML + Ecosistema)
+## PAUSED STATE (17 May 2026 — Sentiment ML + Ecosistema + Documentos + Outreach)
 ### Logros
 - **5 nuevas features de sentimiento en ML**: avgTone7d, avgTone30d, toneTrend7d, negativeRatio7d, toneVolatility7d consultan `osint_signals.tone_score` en ventanas 7d/30d. 25 features totales (antes 20). Columnas añadidas a `ml_features` vía `supabase/alter_ml_features_add_sentiment.sql`. Feature vector actualizado en `ml-trainer-rf.ts`, `train-rf.ts` y `train-rf-standalone.mjs`. Correlación esperada: sentimiento negativo sostenido precede subidas de riesgo en ~7-14 días.
 - **ECOSISTEMA.md**: Documento canónico del ecosistema con diagrama Mermaid completo (fuentes → pipelines → storage → ML → APIs → frontend → distribución), tablas de componentes, métricas clave (111 países, 14 fuentes, 25 features, 4 modelos RF, 15 health checks) y guía de mantenimiento.
