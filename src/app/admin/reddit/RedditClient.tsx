@@ -1,9 +1,10 @@
 'use client';
 
 import { useState } from 'react';
-import { Sparkles, Copy, Check, RefreshCw, ExternalLink, MessageSquare } from 'lucide-react';
+import { Sparkles, Copy, Check, RefreshCw, MessageSquare, Truck } from 'lucide-react';
 
 export default function RedditClient() {
+  const [mode, setMode] = useState<'general' | 'rv'>('general');
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
   const [loading, setLoading] = useState(false);
@@ -17,7 +18,7 @@ export default function RedditClient() {
     setTitle('');
     setBody('');
     try {
-      const res = await fetch('/api/admin/reddit-generate');
+      const res = await fetch(`/api/admin/reddit-generate?mode=${mode}`);
       if (!res.ok) {
         const err = await res.json();
         throw new Error(err.error || 'Error al generar');
@@ -60,6 +61,18 @@ export default function RedditClient() {
           </button>
         </div>
 
+        {/* Mode selector */}
+        <div className="flex gap-2 bg-slate-800 rounded-xl p-1 border border-slate-700 w-fit">
+          <button onClick={() => setMode('general')} className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${mode === 'general' ? 'bg-orange-600 text-white' : 'text-slate-400 hover:text-white'}`}>
+            <MessageSquare className="w-4 h-4" />
+            General
+          </button>
+          <button onClick={() => setMode('rv')} className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${mode === 'rv' ? 'bg-green-600 text-white' : 'text-slate-400 hover:text-white'}`}>
+            <Truck className="w-4 h-4" />
+            RV Living
+          </button>
+        </div>
+
         {error && (
           <div className="bg-red-900/30 border border-red-700/50 rounded-xl px-4 py-3 text-red-300 text-sm">{error}</div>
         )}
@@ -67,7 +80,7 @@ export default function RedditClient() {
         {loading && (
           <div className="bg-slate-800 rounded-2xl border border-slate-700 p-8 text-center space-y-3">
             <RefreshCw className="w-8 h-8 text-orange-400 animate-spin mx-auto" />
-            <p className="text-slate-300">Generando post con datos actuales...</p>
+            <p className="text-slate-300">Generando post {mode === 'rv' ? 'para RV Living' : 'general'} con datos actuales...</p>
             <p className="text-slate-500 text-sm">Groq analiza alertas, señales y sentimiento para redactar el borrador.</p>
           </div>
         )}
@@ -76,7 +89,7 @@ export default function RedditClient() {
           <>
             <div className="bg-slate-800 rounded-2xl border border-slate-700 p-6 space-y-4">
               <div className="flex items-center justify-between">
-                <h2 className="text-white font-bold">Vista previa</h2>
+                <h2 className="text-white font-bold">Vista previa{mode === 'rv' ? ' — RV Living' : ''}</h2>
                 {generatedAt && (
                   <span className="text-slate-500 text-xs">Generado {new Date(generatedAt).toLocaleTimeString('es-ES')}</span>
                 )}

@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { groqClient } from '@/lib/groq-ai';
 import { createLogger } from '@/lib/logger';
 import { supabase } from '@/lib/supabase';
@@ -7,8 +7,9 @@ import { extractCountryCodes, getCountryName } from '@/lib/country-name-map';
 export const dynamic = 'force-dynamic';
 const log = createLogger('RedditGenerate');
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
+    const mode = request.nextUrl.searchParams.get('mode') || 'general';
     const now = new Date();
     const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
 
@@ -91,11 +92,32 @@ export async function GET() {
       }
     }
 
-    const response = await groqClient.chat.completions.create({
-      messages: [
-        {
-          role: 'system',
-          content: `Eres un viajero experto en seguridad que comparte datos útiles en Reddit.
+    const isRv = mode === 'rv';
+    const systemPrompt = isRv
+      ? `Eres un viajero experto en autocaravanas (RV) que comparte datos útiles en Reddit.
+
+Genera un post para el subreddit r/RVLiving en español o inglés (usa español si predominan países hispanos en los datos, inglés si son mayormente US/Canadá).
+
+ENFOQUE RV:
+- Clima extremo: huracanes, incendios, tormentas, inundaciones que afectan rutas y campamentos
+- Cortes de carretera, cierres de fronteras, protestas que bloquean paso
+- Disponibilidad de combustible, propano, áreas de servicio
+- Seguridad en áreas de boondocking, robos en campamentos
+- Alertas de salud: brotes, calidad del aire, agua potable
+
+REGLAS:
+- Tono natural, como un fellow RVer compartiendo experiencia.
+- NO menciones "Viaje con Inteligencia" ni URLs directas.
+- Máximo 3 párrafos (200-350 palabras).
+- Termina con una pregunta abierta tipo "¿Alguna experiencia similar?".
+- Título atractivo pero realista (máx 120 chars), sin emojis.
+
+Responde SOLO con JSON:
+{
+  "title": "título del post",
+  "body": "cuerpo del post en markdown"
+}`
+      : `Eres un viajero experto en seguridad que comparte datos útiles en Reddit.
 
 Genera un post para Reddit (r/travel o r/digitalnomad) en español.
 
@@ -110,14 +132,18 @@ Responde SOLO con JSON:
 {
   "title": "título del post",
   "body": "cuerpo del post en markdown"
-}`,
-        },
-        {
-          role: 'user',
-          content: contextData
-            ? `Genera un post para Reddit basado en estos datos actuales de seguridad global para viajeros:\n\n${contextData}`
-            : 'Genera un post general sobre cómo mantenerse informado de riesgos al viajar, con consejos prácticos.',
-        },
+}`;
+
+    const userPrompt = contextData
+      ? `Genera un post para Reddit basado en estos datos actuales de seguridad${isRv ? ' para viajeros en autocaravana (RV)' : ' global para viajeros'}:\n\n${contextData}`
+      : isRv
+        ? 'Genera un post sobre cómo mantenerse informado de riesgos climáticos y de seguridad durante un viaje en autocaravana (RV).'
+        : 'Genera un post general sobre cómo mantenerse informado de riesgos al viajar, con consejos prácticos.';
+
+    const response = await groqClient.chat.completions.create({
+      messages: [
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: userPrompt },
       ],
       model: 'llama-3.3-70b-versatile',
       temperature: 0.7,
