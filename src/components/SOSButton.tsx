@@ -117,7 +117,7 @@ export default function SOSButton() {
 
   const getLocation = useCallback(() => {
     if (!navigator.geolocation) {
-      setStep('manual');
+      tryIpGeolocation();
       return;
     }
     navigator.geolocation.getCurrentPosition(
@@ -131,22 +131,35 @@ export default function SOSButton() {
           const cc = (geo.address?.country_code || '').toLowerCase();
           if (!cc || !COUNTRY_BY_NOMINATIM[cc]) {
             setError('No pudimos determinar tu país desde tu ubicación.');
-            setStep('manual');
+            tryIpGeolocation();
             return;
           }
-          const code = COUNTRY_BY_NOMINATIM[cc];
-          buildSOSData(code);
+          buildSOSData(COUNTRY_BY_NOMINATIM[cc]);
         } catch {
-          setError('Error al determinar ubicación. Selecciona manualmente.');
-          setStep('manual');
+          tryIpGeolocation();
         }
       },
-      () => {
-        setStep('manual');
-      },
-      { timeout: 10000, enableHighAccuracy: false }
+      () => { tryIpGeolocation(); },
+      { timeout: 5000, enableHighAccuracy: false }
     );
   }, []);
+
+  const tryIpGeolocation = async () => {
+    setError(null);
+    try {
+      const res = await fetch('https://ip-api.com/json/?fields=countryCode', {
+        headers: { 'User-Agent': 'ViajeInteligencia/1.0' },
+      });
+      const data = await res.json();
+      const cc = (data.countryCode || '').toLowerCase();
+      if (cc && COUNTRY_BY_NOMINATIM[cc]) {
+        buildSOSData(COUNTRY_BY_NOMINATIM[cc]);
+        return;
+      }
+    } catch {}
+    setError('No pudimos obtener tu ubicación por GPS ni IP.');
+    setStep('manual');
+  };
 
   const buildSOSData = async (code: string) => {
     const pais = paisesData[code];
