@@ -2,7 +2,6 @@
 
 import { useEffect, useRef } from 'react'
 import L from 'leaflet'
-import 'leaflet/dist/leaflet.css'
 
 const MODE_COLORS: Record<string, string> = {
   flight: '#0ea5e9',
@@ -86,11 +85,12 @@ export default function RouteMap({ polyline, mode = 'driving', className = '' }:
     }
   }, [polyline, mode])
 
-  return (
+  return <>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <div
       ref={mapRef}
       className={`rounded-lg overflow-hidden border border-slate-700 ${className}`}
       style={{ height: 200 }}
     />
-  )
+  </>
 }

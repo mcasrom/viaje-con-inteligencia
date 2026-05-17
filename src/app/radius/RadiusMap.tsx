@@ -3,7 +3,6 @@
 import { useEffect } from 'react';
 import { MapContainer, TileLayer, Circle, Marker, Popup, CircleMarker, useMap } from 'react-leaflet';
 import L from 'leaflet';
-import 'leaflet/dist/leaflet.css';
 import TileAltFixer from '@/components/TileAltFixer';
 import type { PlaceResult } from './RadiusExplorer';
 
@@ -85,6 +84,8 @@ export default function RadiusMap({ center, radius, zoom, places, pois = [], onP
   }, []);
 
   return (
+    <>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <MapContainer
       center={center}
       zoom={zoom}
@@ -124,5 +125,6 @@ export default function RadiusMap({ center, radius, zoom, places, pois = [], onP
         </Marker>
       ))}
     </MapContainer>
+    </>
   );
 }

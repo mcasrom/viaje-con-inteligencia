@@ -2,7 +2,6 @@
 
 import { useEffect, useRef } from 'react';
 import L from 'leaflet';
-import 'leaflet/dist/leaflet.css';
 
 interface SentimentEntry {
   countryCode: string;
@@ -167,5 +166,8 @@ export default function PulsoGlobalMap({ data, mode }: { data: GlobalData; mode:
     return () => { map.removeLayer(markers); };
   }, [data, mode]);
 
-  return <div ref={mapRef} className="w-full h-full rounded-2xl overflow-hidden" />;
+  return <>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <div ref={mapRef} className="w-full h-full rounded-2xl overflow-hidden" />
+  </>;
 }
