@@ -41,7 +41,7 @@ export async function generateInfografia(edition?: number): Promise<GenResult> {
 
     let quality = 75;
     let webpBuffer = await sharp(svgBuffer, { density: 144 })
-      .resize(1200, 1800, { fit: 'fill' })
+      .resize(1200, 1500, { fit: 'fill' })
       .webp({ quality, effort: 6, alphaQuality: 80 })
       .toBuffer();
 
@@ -49,7 +49,7 @@ export async function generateInfografia(edition?: number): Promise<GenResult> {
     while (webpBuffer.length > MAX_SIZE_BYTES && quality > 20 && attempts < 5) {
       quality = getQualityForTarget(webpBuffer.length);
       webpBuffer = await sharp(svgBuffer, { density: 144 })
-        .resize(1200, 1800, { fit: 'fill' })
+        .resize(1200, 1500, { fit: 'fill' })
         .webp({ quality, effort: 6, alphaQuality: 80 })
         .toBuffer();
       attempts++;
@@ -59,7 +59,7 @@ export async function generateInfografia(edition?: number): Promise<GenResult> {
     if (webpBuffer.length > MAX_SIZE_BYTES) {
       const scale = Math.sqrt(MAX_SIZE_BYTES / webpBuffer.length) * 0.95;
       const w = Math.round(1200 * scale);
-      const h = Math.round(1800 * scale);
+      const h = Math.round(1500 * scale);
       webpBuffer = await sharp(svgBuffer, { density: 120 })
         .resize(w, h, { fit: 'fill' })
         .webp({ quality: 50, effort: 6 })
@@ -99,7 +99,7 @@ export async function generateInfografia(edition?: number): Promise<GenResult> {
       subtitle: data.subtitle,
       image_url: imageUrl,
       image_width: 1200,
-      image_height: Math.round(1800 * (actualSize > MAX_SIZE_BYTES ? Math.sqrt(MAX_SIZE_BYTES / actualSize) * 0.95 : 1)),
+      image_height: Math.round(1500 * (actualSize > MAX_SIZE_BYTES ? Math.sqrt(MAX_SIZE_BYTES / actualSize) * 0.95 : 1)),
       image_size_bytes: actualSize,
       data_snapshot: data,
       gwi_score: data.gwi.total,
