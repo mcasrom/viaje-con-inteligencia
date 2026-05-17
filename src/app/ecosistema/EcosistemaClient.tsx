@@ -261,18 +261,106 @@ export default function EcosistemaClient() {
           </div>
         </div>
 
+        {/* Freemium table */}
+        <div className="mb-12">
+          <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">🆓 vs 💎 Gratuito vs Premium</h2>
+          <div className="bg-slate-900/80 border border-slate-700/50 rounded-xl overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-slate-700 bg-slate-800/50">
+                    <th className="text-left px-4 py-3 font-semibold text-slate-300">Funcionalidad</th>
+                    <th className="text-center px-4 py-3 font-semibold text-emerald-400">Gratuito</th>
+                    <th className="text-center px-4 py-3 font-semibold text-amber-400">Premium</th>
+                    <th className="text-left px-4 py-3 font-semibold text-slate-300">Ruta</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {[
+                    ['Riesgo MAEC 111 países', '✅', '✅', '/pais/[codigo]'],
+                    ['Mapa interactivo KPIs', '✅', '✅', '/'],
+                    ['Blog SEO viajes', '✅', '✅', '/blog'],
+                    ['Pulso Global sentimiento', '✅', '✅', '/pulso-global'],
+                    ['Feed OSINT público', '✅', '✅', '/osint'],
+                    ['Chat IA viajes', '✅ llama-3.1-8b', '✅ llama-3.3-70b', '/chat'],
+                    ['Radar de Viaje', '✅ 10 países', '✅ 20 países', '/dashboard/radar'],
+                    ['ScoreBadge ML', '⚠️ score básico', '✅ score + probs', 'Fichas país'],
+                    ['Infografías semanales', '✅ 7d delay', '✅ tiempo real', '/infografias'],
+                    ['Newsletter semanal', '✅', '✅', 'Footer'],
+                    ['Alertas personalizadas', '✅ web', '✅ web + Telegram', 'Dashboard'],
+                    ['Comparador países', '✅', '✅', '/comparar'],
+                    ['Itinerarios IA', '✅ 1 activo', '✅ ilimitados', '/viajes'],
+                    ['Check-list viaje', '✅ básico', '✅ completo', '/checklist'],
+                    ['Predicciones ML riesgo', '❌', '✅', 'Dashboard premium'],
+                    ['Score por perfil viajero', '❌', '✅', 'Fichas país'],
+                    ['Destinos alternativos ML', '❌', '✅', 'Fichas país'],
+                    ['OSINT avanzado (Groq)', '❌', '✅', '/osint'],
+                    ['API pública', '⚠️ limitada', '✅ completa', '/api-endpoints'],
+                    ['Modo Emergencia', '✅', '✅', 'SOS flotante'],
+                    ['Planificador rutas', '✅', '✅', '/rutas/planificar'],
+                    ['Proyección 12 meses radar', '✅', '✅', '/dashboard/radar'],
+                    ['Catálogo seguros', '✅', '✅', '/coste/seguros'],
+                    ['Análisis temporal CV', '❌', '✅', 'Dashboard premium'],
+                  ].map(([name, free, premium, route]) => (
+                    <tr key={name as string} className="border-b border-slate-800 hover:bg-slate-800/30">
+                      <td className="px-4 py-2.5 text-slate-200">{name}</td>
+                      <td className={`px-4 py-2.5 text-center ${free === '✅' ? 'text-emerald-400' : free === '⚠️' ? 'text-amber-400' : 'text-slate-600'}`}>{free}</td>
+                      <td className={`px-4 py-2.5 text-center ${premium === '✅' ? 'text-emerald-400' : premium === '⚠️' ? 'text-amber-400' : 'text-slate-600'}`}>{premium}</td>
+                      <td className="px-4 py-2.5 text-slate-400 text-xs font-mono">{route}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        {/* Marketing */}
+        <div className="mb-12">
+          <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">📣 Marketing — Claves del Ecosistema</h2>
+          <div className="grid md:grid-cols-2 gap-4">
+            <div className="bg-slate-900/80 border border-slate-700/50 rounded-xl p-5">
+              <h3 className="font-semibold text-white mb-3">🔥 Diferenciadores únicos</h3>
+              <ul className="space-y-2 text-sm text-slate-300">
+                <li className="flex gap-2"><span className="text-blue-400 shrink-0">1.</span> 14 fuentes de datos vivas combinadas — MAEC + US State Dept + GDELT + OSINT en tiempo real</li>
+                <li className="flex gap-2"><span className="text-blue-400 shrink-0">2.</span> ML de riesgo con sentimiento — 25 features, 4 modelos RF, actualización diaria</li>
+                <li className="flex gap-2"><span className="text-blue-400 shrink-0">3.</span> 5 features de sentimiento — tono emocional de noticias como señal temprana</li>
+                <li className="flex gap-2"><span className="text-blue-400 shrink-0">4.</span> Radar de Viaje con timeline — proyección ajustada por estacionalidad</li>
+                <li className="flex gap-2"><span className="text-blue-400 shrink-0">5.</span> 15 health checks diarios — transparencia total del sistema</li>
+                <li className="flex gap-2"><span className="text-blue-400 shrink-0">6.</span> 100% gratuito sostenible — sin anuncios, sin muros de pago agresivos</li>
+              </ul>
+            </div>
+            <div className="bg-slate-900/80 border border-slate-700/50 rounded-xl p-5">
+              <h3 className="font-semibold text-white mb-3">📢 Argumentario outreach</h3>
+              <div className="space-y-3 text-sm">
+                <div className="bg-blue-900/20 border border-blue-700/30 rounded-lg p-3 text-blue-200">
+                  🔍 &ldquo;Detectamos riesgos antes que MAEC usando IA + 14 fuentes OSINT.&rdquo;
+                </div>
+                <div className="bg-emerald-900/20 border border-emerald-700/30 rounded-lg p-3 text-emerald-200">
+                  📊 &ldquo;25 variables por país, 4 modelos ML, actualización diaria.&rdquo;
+                </div>
+                <div className="bg-amber-900/20 border border-amber-700/30 rounded-lg p-3 text-amber-200">
+                  🆓 &ldquo;Todo gratis. Premium solo para ML predictivo avanzado.&rdquo;
+                </div>
+                <div className="bg-violet-900/20 border border-violet-700/30 rounded-lg p-3 text-violet-200">
+                  🔗 &ldquo;viajeinteligencia.com/ecosistema — arquitectura pública y transparente.&rdquo;
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Legend / maintenance */}
         <div className="bg-slate-900/60 border border-slate-700/50 rounded-xl p-6 text-sm text-slate-400">
           <h3 className="text-white font-semibold mb-2">📝 Mantenimiento</h3>
           <p>
-            Al añadir una nueva funcionalidad, actualiza este documento añadiendo la fuente/pipeline a la sección correspondiente.
-            El código fuente del diagrama está en{' '}
+            Al añadir una nueva funcionalidad, actualiza el documento{' '}
             <a href="https://github.com/mcasrom/viaje-con-inteligencia/blob/main/ECOSISTEMA.md"
                target="_blank" rel="noopener noreferrer"
                className="text-blue-400 hover:underline">ECOSISTEMA.md</a>
-            {' '}(incluye versión Mermaid renderizable en GitHub).
+            {' '}(incluye versión Mermaid renderizable en GitHub): añadir fuente/pipeline al diagrama, actualizar tabla de componentes, métricas clave y modelo freemium si cambia.
           </p>
-          <p className="mt-2 text-slate-500">Versión: Mayo 2026 · 25 features · 14 fuentes · 4 modelos RF</p>
+          <p className="mt-2 text-slate-500">Versión: Mayo 2026 · 25 features · 14 fuentes · 4 modelos RF · 24 funcionalidades documentadas</p>
         </div>
       </div>
     </div>

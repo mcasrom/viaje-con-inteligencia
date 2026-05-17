@@ -278,13 +278,68 @@ flowchart TB
 - **15 health checks** ejecutados diariamente
 - **~97s** duración master cron completo
 
+## 🆓 vs 💎 Gratuito vs Premium
+
+| Funcionalidad | Gratuito | Premium | Dónde |
+|---|---|---|---|
+| Riesgo MAEC 111 países | ✅ | ✅ | `/pais/[codigo]` |
+| Mapa interactivo KPIs | ✅ | ✅ | `/` |
+| Blog SEO viajes | ✅ | ✅ | `/blog` |
+| Pulso Global sentimiento | ✅ | ✅ | `/pulso-global` |
+| Feed OSINT público | ✅ | ✅ | `/osint` |
+| Chat IA viajes | ✅ (llama-3.1-8b) | ✅ (llama-3.3-70b) | `/chat` |
+| Radar de Viaje | ✅ (10 países) | ✅ (20 países) | `/dashboard/radar` |
+| ScoreBadge ML | ⚠️ (score básico) | ✅ (score completo + probs) | Fichas país |
+| Infografías semanales | ✅ (7d delay) | ✅ (tiempo real) | `/infografias` |
+| Newsletter semanal | ✅ | ✅ | Footer |
+| Alertas personalizadas | ✅ (web) | ✅ (web + Telegram) | Dashboard |
+| Comparador países | ✅ | ✅ | `/comparar` |
+| Itinerarios IA | ✅ (1 activo) | ✅ (ilimitados) | `/viajes` |
+| Check-list viaje | ✅ (básico) | ✅ (completo) | `/checklist` |
+| Predicciones ML riesgo | ❌ | ✅ | Dashboard premium |
+| Análisis temporal CV | ❌ | ✅ | Dashboard premium |
+| Score por perfil viajero | ❌ | ✅ | Fichas país |
+| OSINT avanzado (Groq) | ❌ | ✅ | `/osint` filtros premium |
+| API pública | ⚠️ (limitada) | ✅ (completa) | `/api-endpoints` |
+| Modo Emergencia | ✅ | ✅ | Footer / SOS flotante |
+| Destinos alternativos ML | ❌ | ✅ | Fichas país |
+| Planificador rutas | ✅ | ✅ | `/rutas/planificar` |
+| Proyección 12 meses radar | ✅ | ✅ | `/dashboard/radar` |
+| Catálogo seguros | ✅ | ✅ | `/coste/seguros` |
+
+## 📣 Marketing — Claves del Ecosistema
+
+### Diferenciadores únicos (ninguna otra web de viajes lo ofrece)
+1. **14 fuentes de datos vivas** combinadas en un solo panel — MAEC + US State Dept + GDELT + OSINT en tiempo real
+2. **ML de riesgo con sentimiento** — 25 features, 4 modelos RF, actualización diaria. La única plataforma que predice *probabilidad de subida de riesgo* a 7/14/30 días
+3. **5 features de sentimiento** — Analizamos el *tono emocional* de las noticias (GDELT tone_score) como señal temprana de deterioro
+4. **Radar de Viaje con timeline** — Proyección de riesgo ajustada por estacionalidad con tus fechas marcadas
+5. **15 health checks diarios** — Transparencia total del sistema. Cada pipeline monitorizado
+6. **100% gratuito sostenible** — Sin anuncios. Sin muros de pago agresivos. Premium es opcional para ML avanzado
+
+### Argumentario para outreach
+```
+🔍 "Detectamos riesgos antes que MAEC usando IA + 14 fuentes OSINT."
+📊 "25 variables por país, 4 modelos ML, actualización diaria."
+🆓 "Todo gratis. Premium solo para ML predictivo avanzado."
+🔗 "viajeinteligencia.com/ecosistema — arquitectura pública y transparente."
+```
+
+### Frases para RRSS / Landing
+- "No esperes a que MAEC actualice. Nosotros detectamos el deterioro antes con IA y 14 fuentes."
+- "25 features de riesgo por país. 4 modelos ML. 0 anuncios."
+- "La única plataforma que te dice la probabilidad de que un país empeore en 7, 14 y 30 días."
+- "Transparencia radical: 15 health checks públicos. Todos los pipelines monitorizados."
+- "Tu radar de viaje con proyección: ¿qué riesgo tendrá Tailandia en agosto?"
+
 ## Cómo mantener este documento
 
 Al añadir una nueva funcionalidad:
 1. Añadir la fuente/pipeline al diagrama Mermaid si aplica
 2. Actualizar la tabla de componentes correspondiente
 3. Actualizar métricas clave si cambia algún número
+4. Actualizar tabla 🆓 vs 💎 si cambia el modelo freemium
 
 ---
 
-> Documento mantenido como parte del repositorio. Versión: Mayo 2026.
+> Documento mantenido como parte del repositorio. Versión: Mayo 2026 · 25 features · 14 fuentes · 4 modelos RF.

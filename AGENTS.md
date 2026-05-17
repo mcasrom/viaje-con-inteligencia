@@ -24,6 +24,19 @@
 - **`/en` noindex**: Verificar siempre que `index: true` se mantenga en `/en/page.tsx` si se quiere tráfico internacional. Las páginas `en` solo cubren homepage — el resto del site (blog, países) no tiene versión inglesa.
 - **Slugs de blog**: Deben ser siempre lowercase. Tras renombrar `Como-encontrar-vuelos-baratos` y `Que-es-viaje-inteligencia`, verificar que new posts no tengan mayúsculas en el filename.
 
+## PAUSED STATE (17 May 2026 — Sentiment ML + Ecosistema)
+### Logros
+- **5 nuevas features de sentimiento en ML**: avgTone7d, avgTone30d, toneTrend7d, negativeRatio7d, toneVolatility7d consultan `osint_signals.tone_score` en ventanas 7d/30d. 25 features totales (antes 20). Columnas añadidas a `ml_features` vía `supabase/alter_ml_features_add_sentiment.sql`. Feature vector actualizado en `ml-trainer-rf.ts`, `train-rf.ts` y `train-rf-standalone.mjs`. Correlación esperada: sentimiento negativo sostenido precede subidas de riesgo en ~7-14 días.
+- **ECOSISTEMA.md**: Documento canónico del ecosistema con diagrama Mermaid completo (fuentes → pipelines → storage → ML → APIs → frontend → distribución), tablas de componentes, métricas clave (111 países, 14 fuentes, 25 features, 4 modelos RF, 15 health checks) y guía de mantenimiento.
+- **Página pública `/ecosistema`**: Diagrama de flujo interactivo con explorador por capas, tarjetas visuales por fuente/componente, métricas destacadas, servicios externos y distribución social. Enlace en Footer → Legal + Info.
+- **Health Check**: OpenSky Network timeout (esperado, servicio público inestable). 14/15 checks verdes. ScraperStatus y /diagnostico reflejan estado actual.
+- **Push + Deploy**: Commit `8efcba9` desplegado en Vercel. Footer actualizado con enlace Ecosistema. Migración SQL pendiente de ejecutar en Supabase.
+
+### Pendientes para próximo sprint
+1. **ML temporal CV**: Esperar ~25 días de datos para validación temporal. Las 5 features de sentimiento necesitan al menos 7 días de tone_score para empezar a tener señal útil. Hasta entonces devuelven 0/null.
+2. **Dashboard Ecosistema**: Añadir /ecosistema a sitemap.xml y considerarlo para indexación SEO (es contenido informativo valioso).
+3. **Marketing freemium**: Usar la página /ecosistema como herramienta de transparencia y diferenciación en outreach. Ver referencias en ECOSISTEMA.md.
+
 ## PAUSED STATE (16 May 2026 — Sprint Migraciones + Trip Risk Score)
 ### Logros
 - **Login fix + Alertas persistence**: Toast notification invisible (nunca se renderizaba). POST subscribe devolvía 400 por `alert_types` mal formado (string vs array). Dashboard no mostraba suscripciones (faltaba fallback `data.alerts`). Todo corregido y verificado.
