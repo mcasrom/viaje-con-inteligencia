@@ -476,8 +476,9 @@ export default function PulsoGlobalClient() {
               {data.sentimentAlerts.map((alert, i) => {
                 const sv = alert.severity === 'critical' ? '🔴' : alert.severity === 'high' ? '🟠' : alert.severity === 'medium' ? '🟡' : '🔵';
                 const sevColor = alert.severity === 'critical' ? 'text-red-400' : alert.severity === 'high' ? 'text-orange-400' : alert.severity === 'medium' ? 'text-yellow-400' : 'text-blue-400';
+                const sevBg = alert.severity === 'critical' ? 'bg-red-900/20 border-red-800/30' : alert.severity === 'high' ? 'bg-orange-900/20 border-orange-800/30' : alert.severity === 'medium' ? 'bg-yellow-900/20 border-yellow-800/30' : 'bg-blue-900/20 border-blue-800/30';
                 return (
-                  <div key={i} className="bg-slate-700/50 rounded-xl p-4 border border-slate-600/50">
+                  <div key={i} className={`rounded-xl p-4 border ${sevBg}`}>
                     <div className="flex items-center justify-between">
                       <Link href={`/pais/${alert.countryCode}`} className="flex items-center gap-3 hover:text-cyan-400 transition-colors">
                         <span className="text-xl">{sv}</span>
@@ -491,6 +492,9 @@ export default function PulsoGlobalClient() {
                         <p className="text-slate-500 text-xs">{alert.signalCount} señales</p>
                       </div>
                     </div>
+                    {alert.message && (
+                      <p className="text-slate-200 text-sm mt-3 leading-relaxed">{alert.message}</p>
+                    )}
                     {alert.previousAvgTone != null && (
                       <div className="mt-2 flex items-center gap-2 text-xs text-slate-400">
                         <span>Anterior: {alert.previousAvgTone > 0 ? '+' : ''}{alert.previousAvgTone}</span>
@@ -498,7 +502,12 @@ export default function PulsoGlobalClient() {
                         <span className="text-red-400">{Math.round((alert.previousAvgTone - alert.avgTone) * 10) / 10} pts</span>
                       </div>
                     )}
-                    <p className="text-slate-400 text-xs mt-2">{new Date(alert.createdAt).toLocaleDateString('es-ES', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}</p>
+                    <div className="flex items-center justify-between mt-2">
+                      <p className="text-slate-500 text-xs">{new Date(alert.createdAt).toLocaleDateString('es-ES', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}</p>
+                      <Link href={`/pais/${alert.countryCode}`} className="text-xs text-cyan-400 hover:text-cyan-300 font-medium transition-colors">
+                        Ver detalle →
+                      </Link>
+                    </div>
                   </div>
                 );
               })}
