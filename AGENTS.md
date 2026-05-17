@@ -33,9 +33,10 @@
 - **Push + Deploy**: Commit `8efcba9` desplegado en Vercel. Footer actualizado con enlace Ecosistema. Migración SQL pendiente de ejecutar en Supabase.
 
 ### Pendientes para próximo sprint
-1. **ML temporal CV**: Esperar ~25 días de datos para validación temporal. Las 5 features de sentimiento necesitan al menos 7 días de tone_score para empezar a tener señal útil. Hasta entonces devuelven 0/null.
-2. **Dashboard Ecosistema**: Añadir /ecosistema a sitemap.xml y considerarlo para indexación SEO (es contenido informativo valioso).
-3. **Marketing freemium**: Usar la página /ecosistema como herramienta de transparencia y diferenciación en outreach. Ver referencias en ECOSISTEMA.md.
+1. **API pública B2B** — Monetizar datos con API keys + rate limiting + Stripe. Tiers: Free (100 req/día, MAEC básico), Starter (9€), Pro (29€), Enterprise. Mercado: agencias viaje, aseguradoras, corporate travel, devs. El 80% de los endpoints ya existen, falta auth + billing + docs.
+2. **ML temporal CV**: Esperar ~25 días de datos para validación temporal. Las 5 features de sentimiento necesitan al menos 7 días de tone_score para empezar a tener señal útil. Hasta entonces devuelven 0/null.
+3. **Añadir /ecosistema a sitemap.xml** para indexación SEO.
+4. **Marketing freemium**: Usar /ecosistema como herramienta de transparencia y diferenciación en outreach. Ver referencias en ECOSISTEMA.md.
 
 ## PAUSED STATE (16 May 2026 — Sprint Migraciones + Trip Risk Score)
 ### Logros
