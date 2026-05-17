@@ -21,6 +21,7 @@ interface SentimentEntry {
   negative: number;
   neutral: number;
   mood: 'positive' | 'negative' | 'neutral' | null;
+  pinned: boolean;
 }
 
 interface HeatmapEntry {
@@ -361,7 +362,7 @@ export default function PulsoGlobalClient() {
                   {data.sentimentRanking.map((entry, i) => {
                     const moodEmoji = entry.mood === 'positive' ? '😊' : entry.mood === 'negative' ? '😟' : '😐';
                     return (
-                      <tr key={entry.countryCode} className="border-b border-slate-700/50 hover:bg-slate-700/30 transition-colors">
+                      <tr key={entry.countryCode} className={`border-b border-slate-700/50 hover:bg-slate-700/30 transition-colors ${entry.pinned && entry.signals === 0 ? 'opacity-60' : ''}`}>
                         <td className="px-3 py-2.5">
                           <Link
                             href={`/pais/${entry.countryCode}`}
@@ -369,17 +370,22 @@ export default function PulsoGlobalClient() {
                           >
                             <span className="text-lg">{flagEmoji(entry.countryCode)}</span>
                             <span className="text-sm">{entry.countryName}</span>
+                            {entry.pinned && <span className="text-[10px] text-slate-500 font-normal">🔍</span>}
                           </Link>
                         </td>
-                        <td className="px-3 py-2.5 text-center text-lg">{moodEmoji}</td>
+                        <td className="px-3 py-2.5 text-center text-lg">{entry.signals === 0 ? '—' : moodEmoji}</td>
                         <td className="px-3 py-2.5 text-center">
-                          <span className={`font-mono font-bold text-sm ${
-                            entry.avgTone == null ? 'text-slate-500' :
-                            entry.avgTone > 3 ? 'text-green-400' :
-                            entry.avgTone < -3 ? 'text-red-400' : 'text-yellow-400'
-                          }`}>
-                            {entry.avgTone != null ? `${entry.avgTone > 0 ? '+' : ''}${entry.avgTone}` : '—'}
-                          </span>
+                          {entry.signals === 0 ? (
+                            <span className="text-[10px] text-slate-500">En observación</span>
+                          ) : (
+                            <span className={`font-mono font-bold text-sm ${
+                              entry.avgTone == null ? 'text-slate-500' :
+                              entry.avgTone > 3 ? 'text-green-400' :
+                              entry.avgTone < -3 ? 'text-red-400' : 'text-yellow-400'
+                            }`}>
+                              {entry.avgTone != null ? `${entry.avgTone > 0 ? '+' : ''}${entry.avgTone}` : '—'}
+                            </span>
+                          )}
                         </td>
                         <td className="px-3 py-2.5 text-center text-slate-300 text-sm">{entry.signals}</td>
                         <td className="px-3 py-2.5 text-center text-green-400 text-sm hidden md:table-cell">{entry.positive}</td>

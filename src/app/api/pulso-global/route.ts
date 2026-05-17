@@ -27,7 +27,10 @@ interface CountrySentiment {
   negative: number;
   neutral: number;
   mood: 'positive' | 'negative' | 'neutral' | null;
+  pinned: boolean;
 }
+
+const PINNED_COUNTRIES = ['ir', 'il', 'ru', 'ua', 've', 'lb', 'mm', 'af', 'sd', 'ye'];
 
 export async function GET() {
   if (!supabase) {
@@ -92,8 +95,10 @@ export async function GET() {
   }
 
   const sentimentRanking: CountrySentiment[] = [];
+  const seenCodes = new Set<string>();
   for (const [code, data] of countryData) {
     if (data.signals < 2) continue;
+    seenCodes.add(code);
     const avgTone = data.tones.length > 0
       ? Math.round((data.tones.reduce((a, b) => a + b, 0) / data.tones.length) * 10) / 10
       : null;
@@ -104,11 +109,26 @@ export async function GET() {
       coordinates: coordCache.get(code) ?? null,
       avgTone, signals: data.signals,
       positive: data.positive, negative: data.negative, neutral: data.neutral,
-      mood,
+      mood, pinned: false,
     });
   }
 
-  sentimentRanking.sort((a, b) => (b.avgTone ?? -999) - (a.avgTone ?? -999));
+  for (const code of PINNED_COUNTRIES) {
+    if (!seenCodes.has(code) && getCountryName(code)) {
+      sentimentRanking.push({
+        countryCode: code,
+        countryName: getCountryName(code) || code.toUpperCase(),
+        coordinates: coordCache.get(code) ?? null,
+        avgTone: null, signals: 0, positive: 0, negative: 0, neutral: 0,
+        mood: null, pinned: true,
+      });
+    }
+  }
+
+  sentimentRanking.sort((a, b) => {
+    if (a.pinned !== b.pinned) return a.pinned ? 1 : -1;
+    return (b.avgTone ?? -999) - (a.avgTone ?? -999);
+  });
 
   const topDrops: Array<{ countryCode: string; countryName: string; coordinates: [number, number] | null; drop: number; recentAvg: number; olderAvg: number }> = [];
   for (const [code, data] of countryData) {

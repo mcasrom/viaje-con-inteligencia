@@ -14,6 +14,7 @@ interface SentimentEntry {
   negative: number;
   neutral: number;
   mood: 'positive' | 'negative' | 'neutral' | null;
+  pinned: boolean;
 }
 
 interface HeatmapEntry {
@@ -88,6 +89,19 @@ export default function PulsoGlobalMap({ data, mode }: { data: GlobalData; mode:
     if (mode === 'sentiment') {
       for (const entry of data.sentimentRanking) {
         if (!entry.coordinates) continue;
+        if (entry.pinned && entry.signals === 0) {
+          const circle = L.circleMarker(entry.coordinates, {
+            radius: 4,
+            fillColor: '#475569',
+            color: '#64748b',
+            weight: 0.5,
+            opacity: 0.4,
+            fillOpacity: 0.4,
+          });
+          circle.bindTooltip(`<div style="font-weight:600;font-size:13px;color:#94a3b8">🔍 ${entry.countryName} — en observación</div>`, { direction: 'top', offset: [0, -8] });
+          markers.addLayer(circle);
+          continue;
+        }
         const color = entry.mood ? SENTIMENT_COLORS[entry.mood] : '#64748b';
         const r = Math.max(6, Math.min(14, Math.sqrt(entry.signals) * 2));
         const circle = L.circleMarker(entry.coordinates, {
