@@ -446,6 +446,20 @@ export default function AdminDashboard() {
           </div>
         </section>
 
+        {/* Reddit Posts */}
+        <section className="bg-slate-800 rounded-2xl border border-slate-700 p-6">
+          <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+            <MessageSquare className="w-5 h-5 text-orange-400" />
+            Posts Reddit
+          </h2>
+          <p className="text-slate-400 text-sm mb-4">Genera borradores para Reddit con datos actuales de alertas, sentimiento y señales OSINT. Revisa y publica manualmente.</p>
+          <div className="flex gap-3">
+            <a href="/admin/reddit" className="inline-flex items-center gap-2 px-4 py-2 bg-orange-600/20 border border-orange-500/30 text-orange-400 rounded-lg hover:bg-orange-600/30 transition-colors text-sm font-medium">
+              Generar post <MessageSquare className="w-4 h-4" />
+            </a>
+          </div>
+        </section>
+
         {/* Calendario Editorial */}
         <section className="bg-slate-800 rounded-2xl border border-slate-700 p-6">
           <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
