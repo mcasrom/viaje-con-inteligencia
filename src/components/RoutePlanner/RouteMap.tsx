@@ -86,7 +86,6 @@ export default function RouteMap({ polyline, mode = 'driving', className = '' }:
   }, [polyline, mode])
 
   return <>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <div
       ref={mapRef}
       className={`rounded-lg overflow-hidden border border-slate-700 ${className}`}

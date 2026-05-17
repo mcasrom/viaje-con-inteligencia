@@ -159,8 +159,6 @@ export default function MapaIndices() {
 
   return (
     <div className="relative">
-      <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-
       {/* Layer selector */}
       <div className="absolute top-4 left-4 z-[1000]">
         <div className="bg-slate-900/95 backdrop-blur-md rounded-xl border border-slate-700/50 p-2 shadow-xl">

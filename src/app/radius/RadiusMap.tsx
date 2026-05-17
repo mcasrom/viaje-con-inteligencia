@@ -84,8 +84,6 @@ export default function RadiusMap({ center, radius, zoom, places, pois = [], onP
   }, []);
 
   return (
-    <>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <MapContainer
       center={center}
       zoom={zoom}
@@ -125,6 +123,5 @@ export default function RadiusMap({ center, radius, zoom, places, pois = [], onP
         </Marker>
       ))}
     </MapContainer>
-    </>
   );
 }

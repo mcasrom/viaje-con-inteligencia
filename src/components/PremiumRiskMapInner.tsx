@@ -218,7 +218,6 @@ export default function PremiumRiskMapInner({
   }
 
   return <>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <div ref={mapRef} className="h-[500px] w-full rounded-none z-0" />
   </>;
 }

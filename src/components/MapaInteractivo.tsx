@@ -182,10 +182,6 @@ export default function MapaInteractivo({ fullScreen = false }: { fullScreen?: b
 
   return (
     <div className={fullScreen ? "w-full h-full" : "relative"}>
-      <link
-        rel="stylesheet"
-        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-      />
       <MapContainer
         center={[20, 0]}
         zoom={2}

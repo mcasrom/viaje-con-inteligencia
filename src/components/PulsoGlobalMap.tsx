@@ -167,7 +167,6 @@ export default function PulsoGlobalMap({ data, mode }: { data: GlobalData; mode:
   }, [data, mode]);
 
   return <>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <div ref={mapRef} className="w-full h-full rounded-2xl overflow-hidden" />
   </>;
 }
