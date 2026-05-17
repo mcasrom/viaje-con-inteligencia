@@ -30,7 +30,7 @@ interface CountrySentiment {
   pinned: boolean;
 }
 
-const PINNED_COUNTRIES = ['ir', 'il', 'ru', 'ua', 've', 'lb', 'mm', 'af', 'sd', 'ye'];
+const PINNED_COUNTRIES = ['ir', 'il', 'ru', 'ua', 've', 'lb', 'mm', 'af', 'sd', 'ye', 'es', 'mx', 'co', 'ar'];
 
 export async function GET() {
   if (!supabase) {
