@@ -119,6 +119,7 @@ export default async function RootLayout({
         <link rel="alternate" hrefLang="x-default" href="https://www.viajeinteligencia.com" />
         <link rel="sitemap" type="application/xml" href="https://www.viajeinteligencia.com/sitemap.xml" />
         <meta name="thumbnail" content="/preview_favicon.jpg" />
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
       </head>
       <body className={`${geistSans.variable} antialiased`}>
         <Analytics />

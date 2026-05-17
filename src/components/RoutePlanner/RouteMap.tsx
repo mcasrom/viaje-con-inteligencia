@@ -36,22 +36,25 @@ export default function RouteMap({ polyline, mode = 'driving', className = '' }:
 
     let cancelled = false
     ensureLeafletCSS().then(() => {
-      if (cancelled || !mapRef.current || instanceRef.current) return
+      requestAnimationFrame(() => {
+        if (cancelled || !mapRef.current || instanceRef.current) return
 
-      const map = L.map(mapRef.current!, { zoomControl: false }).setView([0, 0], 2)
-      instanceRef.current = map
+        const map = L.map(mapRef.current!, { zoomControl: false }).setView([0, 0], 2)
+        map.whenReady(() => setTimeout(() => map.invalidateSize(), 100))
+        instanceRef.current = map
 
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://openstreetmap.org">OSM</a>',
-      }).addTo(map)
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '&copy; <a href="https://openstreetmap.org">OSM</a>',
+        }).addTo(map)
 
-      const fixTileAlt = () => {
-        mapRef.current?.querySelectorAll<HTMLImageElement>('.leaflet-tile').forEach(img => {
-          if (img.alt === '') img.alt = 'Mapa OpenStreetMap';
-        });
-      };
-      map.on('tileload', fixTileAlt);
-      fixTileAlt();
+        const fixTileAlt = () => {
+          mapRef.current?.querySelectorAll<HTMLImageElement>('.leaflet-tile').forEach(img => {
+            if (img.alt === '') img.alt = 'Mapa OpenStreetMap';
+          });
+        };
+        map.on('tileload', fixTileAlt);
+        fixTileAlt();
+      });
     })
 
     return () => {

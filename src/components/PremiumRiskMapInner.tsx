@@ -67,43 +67,47 @@ export default function PremiumRiskMapInner({
 
     let cancelled = false;
     ensureLeafletCSS().then(() => {
-      if (cancelled || !mapRef.current || mapInstanceRef.current) return;
+      requestAnimationFrame(() => {
+        if (cancelled || !mapRef.current || mapInstanceRef.current) return;
 
-      delete (L.Icon.Default.prototype as any)._getIconUrl;
-      L.Icon.Default.mergeOptions({
-        iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png',
-        iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon.png',
-        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
-      });
-
-      const map = L.map(mapRef.current!, {
-        center: [20, 0],
-        zoom: 2,
-        scrollWheelZoom: true,
-        zoomControl: true,
-        attributionControl: true,
-      });
-
-      L.tileLayer(CARTO_DARK, {
-        attribution: CARTO_ATTRIBUTION,
-        maxZoom: 6,
-        minZoom: 1,
-      }).addTo(map);
-
-      const fixTileAlt = () => {
-        mapRef.current?.querySelectorAll<HTMLImageElement>('.leaflet-tile').forEach(img => {
-          if (img.alt === '') img.alt = 'Mapa de riesgos';
+        delete (L.Icon.Default.prototype as any)._getIconUrl;
+        L.Icon.Default.mergeOptions({
+          iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png',
+          iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon.png',
+          shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
         });
-      };
-      map.on('tileload', fixTileAlt);
-      fixTileAlt();
 
-      const markers = L.layerGroup().addTo(map);
-      const compareMarkers = L.layerGroup().addTo(map);
-      markersRef.current = markers;
-      compareMarkersRef.current = compareMarkers;
+        const map = L.map(mapRef.current!, {
+          center: [20, 0],
+          zoom: 2,
+          scrollWheelZoom: true,
+          zoomControl: true,
+          attributionControl: true,
+        });
 
-      mapInstanceRef.current = map;
+        setTimeout(() => map.invalidateSize(), 100);
+
+        L.tileLayer(CARTO_DARK, {
+          attribution: CARTO_ATTRIBUTION,
+          maxZoom: 6,
+          minZoom: 1,
+        }).addTo(map);
+
+        const fixTileAlt = () => {
+          mapRef.current?.querySelectorAll<HTMLImageElement>('.leaflet-tile').forEach(img => {
+            if (img.alt === '') img.alt = 'Mapa de riesgos';
+          });
+        };
+        map.on('tileload', fixTileAlt);
+        fixTileAlt();
+
+        const markers = L.layerGroup().addTo(map);
+        const compareMarkers = L.layerGroup().addTo(map);
+        markersRef.current = markers;
+        compareMarkersRef.current = compareMarkers;
+
+        mapInstanceRef.current = map;
+      });
     });
 
     return () => {

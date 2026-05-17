@@ -62,21 +62,24 @@ export default function PulsoGlobalMap({ data, mode }: { data: GlobalData; mode:
 
     let cancelled = false;
     ensureLeafletCSS().then(() => {
-      if (cancelled || !mapRef.current) return;
+      requestAnimationFrame(() => {
+        if (cancelled || !mapRef.current) return;
 
-      const map = L.map(mapRef.current, {
-        center: [20, 0],
-        zoom: 2,
-        scrollWheelZoom: true,
-        zoomControl: true,
+        const map = L.map(mapRef.current, {
+          center: [20, 0],
+          zoom: 2,
+          scrollWheelZoom: true,
+          zoomControl: true,
+        });
+        setTimeout(() => map.invalidateSize(), 100);
+
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+          attribution: '&copy; <a href="https://carto.com/">CARTO</a>',
+          maxZoom: 18,
+        }).addTo(map);
+
+        mapInstance.current = map;
       });
-
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-        attribution: '&copy; <a href="https://carto.com/">CARTO</a>',
-        maxZoom: 18,
-      }).addTo(map);
-
-      mapInstance.current = map;
     });
 
     return () => {
