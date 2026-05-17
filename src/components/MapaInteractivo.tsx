@@ -75,9 +75,11 @@ const conflictZones = [
   { lat: 33.0, lng: 65.0, radius: 10, label: 'Afganistán - Talibán', severity: 'Alto' },
   { lat: -3.0, lng: 24.0, radius: 10, label: 'RDC Congo - Conflicto armado', severity: 'Alto' },
   { lat: 17.0, lng: 2.0, radius: 8, label: 'Sahel - Terrorismo y golpes', severity: 'Alto' },
+  { lat: 32.4, lng: 53.7, radius: 8, label: 'Irán - Inestabilidad regional y protestas', severity: 'Alto' },
   { lat: 19.0, lng: -72.0, radius: 4, label: 'Haití - Crisis institucional', severity: 'Alto' },
   { lat: 8.0, lng: 38.0, radius: 6, label: 'Etiopía - Tigray / Oromía', severity: 'Medio' },
   { lat: 6.0, lng: 20.0, radius: 5, label: 'RCA - Inestabilidad', severity: 'Medio' },
+  { lat: 7.0, lng: -65.0, radius: 6, label: 'Venezuela - Crisis política', severity: 'Medio' },
 ];
 
 const conflictSeverityColors: Record<string, string> = {
