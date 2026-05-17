@@ -93,56 +93,79 @@ export async function GET(request: NextRequest) {
     }
 
     const isRv = mode === 'rv';
-    const systemPrompt = isRv
-      ? `Eres un viajero experto en autocaravanas (RV) que comparte datos útiles en Reddit.
+    const isOsint = mode === 'osint';
+    const modeKey = isOsint ? 'osint' : isRv ? 'rv' : 'general';
+    const prompts: Record<string, { system: string; userWithData: string; userEmpty: string }> = {
+      rv: {
+        system: `Eres un viajero experto en autocaravanas (RV) que comparte datos útiles en Reddit.
 
-Genera un post para el subreddit r/RVLiving en español o inglés (usa español si predominan países hispanos en los datos, inglés si son mayormente US/Canadá).
+Genera un post para el subreddit r/RVLiving en español o inglés.
 
 ENFOQUE RV:
-- Clima extremo: huracanes, incendios, tormentas, inundaciones que afectan rutas y campamentos
+- Clima extremo: huracanes, incendios, tormentas, inundaciones que afectan rutas
 - Cortes de carretera, cierres de fronteras, protestas que bloquean paso
 - Disponibilidad de combustible, propano, áreas de servicio
-- Seguridad en áreas de boondocking, robos en campamentos
+- Seguridad en boondocking, robos en campamentos
 - Alertas de salud: brotes, calidad del aire, agua potable
 
 REGLAS:
-- Tono natural, como un fellow RVer compartiendo experiencia.
+- Tono natural, como un fellow RVer.
 - NO menciones "Viaje con Inteligencia" ni URLs directas.
 - Máximo 3 párrafos (200-350 palabras).
-- Termina con una pregunta abierta tipo "¿Alguna experiencia similar?".
-- Título atractivo pero realista (máx 120 chars), sin emojis.
+- Termina con pregunta abierta.
+- Título máx 120 chars, sin emojis.
 
-Responde SOLO con JSON:
-{
-  "title": "título del post",
-  "body": "cuerpo del post en markdown"
-}`
-      : `Eres un viajero experto en seguridad que comparte datos útiles en Reddit.
+Responde SOLO con JSON: { "title": "...", "body": "..." }`,
+        userWithData: `Genera un post para r/RVLiving con estos datos:\n\n${contextData}`,
+        userEmpty: 'Genera un post sobre riesgos climáticos y de seguridad en viajes en RV.',
+      },
+      osint: {
+        system: `Eres un analista OSINT que comparte herramientas y técnicas en Reddit.
 
-Genera un post para Reddit (r/travel o r/digitalnomad) en español.
+Genera un post para el subreddit r/osinttools en español o inglés (elige según la audiencia de los datos).
+
+ENFOQUE OSINT:
+- Herramientas de monitorización de seguridad global, mapas de riesgo en vivo
+- Fuentes de datos abiertos: GDELT, GDACS, USGS, RSS feeds
+- Análisis de sentimiento y detección de incidentes con IA
+- APIs públicas para tracking de vuelos, clima, desastres
+- Automatización de alertas y scraping de datos públicos
 
 REGLAS:
-- Tono natural, útil, sin clickbait. Como un consejo de viajero experimentado.
+- Tono técnico pero accesible, como compartiendo un hallazgo útil.
 - NO menciones "Viaje con Inteligencia" ni URLs directas.
 - Máximo 3 párrafos (200-350 palabras).
-- Termina con una pregunta abierta tipo "¿Alguna experiencia similar?".
-- Título atractivo pero realista (máx 120 chars), sin emojis.
+- Termina con pregunta tipo "¿Qué herramientas usáis?".
+- Título máx 120 chars, sin emojis.
 
-Responde SOLO con JSON:
-{
-  "title": "título del post",
-  "body": "cuerpo del post en markdown"
-}`;
+Responde SOLO con JSON: { "title": "...", "body": "..." }`,
+        userWithData: `Genera un post para r/osinttools basado en estos datos de monitorización global:\n\n${contextData}`,
+        userEmpty: 'Genera un post sobre herramientas OSINT para monitorizar seguridad global en tiempo real.',
+      },
+      general: {
+        system: `Eres un viajero experto en seguridad que comparte datos útiles en Reddit.
 
-    const userPrompt = contextData
-      ? `Genera un post para Reddit basado en estos datos actuales de seguridad${isRv ? ' para viajeros en autocaravana (RV)' : ' global para viajeros'}:\n\n${contextData}`
-      : isRv
-        ? 'Genera un post sobre cómo mantenerse informado de riesgos climáticos y de seguridad durante un viaje en autocaravana (RV).'
-        : 'Genera un post general sobre cómo mantenerse informado de riesgos al viajar, con consejos prácticos.';
+Genera un post para r/travel o r/digitalnomad en español.
+
+REGLAS:
+- Tono natural, útil, sin clickbait.
+- NO menciones "Viaje con Inteligencia" ni URLs directas.
+- Máximo 3 párrafos (200-350 palabras).
+- Termina con pregunta abierta.
+- Título máx 120 chars, sin emojis.
+
+Responde SOLO con JSON: { "title": "...", "body": "..." }`,
+        userWithData: `Genera un post basado en estos datos actuales de seguridad global para viajeros:\n\n${contextData}`,
+        userEmpty: 'Genera un post general sobre cómo mantenerse informado de riesgos al viajar.',
+      },
+    };
+
+    const p = prompts[modeKey];
+    const userPrompt = contextData ? p.userWithData : p.userEmpty;
 
     const response = await groqClient.chat.completions.create({
       messages: [
-        { role: 'system', content: systemPrompt },
+        { role: 'system', content: p.system },
         { role: 'user', content: userPrompt },
       ],
       model: 'llama-3.3-70b-versatile',
@@ -150,11 +173,18 @@ Responde SOLO con JSON:
       max_tokens: 600,
     });
 
-    const raw = (response.choices[0]?.message?.content || '{}')
-      .replace(/```json|```/g, '')
-      .replace(/[\u0000-\u001F\u007F-\u009F]/g, '')
-      .trim();
-    const parsed = JSON.parse(raw);
+    const parseGroqJson = (text: string): any => {
+      let cleaned = text.replace(/```json|```/g, '').trim();
+      const jsonMatch = cleaned.match(/\{[\s\S]*\}/);
+      if (jsonMatch) cleaned = jsonMatch[0];
+      cleaned = cleaned
+        .replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F-\u009F]/g, '')
+        .replace(/\n/g, '\\n').replace(/\r/g, '\\r').replace(/\t/g, '\\t');
+      try { return JSON.parse(cleaned); } catch {}
+      try { return JSON.parse(cleaned.replace(/\\(?!["\\\/bfnrtu])/g, '')); } catch {}
+      return { title: 'Consejos de seguridad para viajeros', body: cleaned.substring(0, 500) };
+    };
+    const parsed = parseGroqJson(response.choices[0]?.message?.content || '{}');
 
     return NextResponse.json({
       title: parsed.title || 'Consejos de seguridad para viajeros',

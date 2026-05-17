@@ -1,10 +1,10 @@
 'use client';
 
 import { useState } from 'react';
-import { Sparkles, Copy, Check, RefreshCw, MessageSquare, Truck } from 'lucide-react';
+import { Sparkles, Copy, Check, RefreshCw, MessageSquare, Truck, Globe } from 'lucide-react';
 
 export default function RedditClient() {
-  const [mode, setMode] = useState<'general' | 'rv'>('general');
+  const [mode, setMode] = useState<'general' | 'rv' | 'osint'>('general');
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
   const [loading, setLoading] = useState(false);
@@ -70,6 +70,10 @@ export default function RedditClient() {
           <button onClick={() => setMode('rv')} className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${mode === 'rv' ? 'bg-green-600 text-white' : 'text-slate-400 hover:text-white'}`}>
             <Truck className="w-4 h-4" />
             RV Living
+          </button>
+          <button onClick={() => setMode('osint')} className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${mode === 'osint' ? 'bg-purple-600 text-white' : 'text-slate-400 hover:text-white'}`}>
+            <Globe className="w-4 h-4" />
+            OSINT Tools
           </button>
         </div>
 
