@@ -31,7 +31,7 @@ export default function Footer() {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-5 gap-8 mb-8">
+        <div className="grid md:grid-cols-6 gap-8 mb-8">
           <div>
             <h3 className="text-lg font-bold text-white mb-1">Viaje con Inteligencia</h3>
             <p className="text-blue-400/70 text-xs font-medium tracking-wide mb-2">{t('slogan.tagline')}</p>
@@ -49,6 +49,11 @@ export default function Footer() {
               <li><Link href="/documentos" className="text-slate-400 hover:text-white transition-colors">Mis Documentos</Link></li>
               <li><Link href="/viajes" className="text-slate-400 hover:text-white transition-colors">Mis Viajes</Link></li>
               <li><Link href="/viajes/destacados" className="text-slate-400 hover:text-white transition-colors">Itinerarios destacados</Link></li>
+            </ul>
+          </div>
+          <div>
+            <h4 className="font-semibold text-white mb-3">Recursos</h4>
+            <ul className="space-y-2 text-sm">
               <li><Link href="/lead-magnet" className="text-slate-400 hover:text-white transition-colors">Checklist Premium</Link></li>
               <li><Link href="/premium" className="text-slate-400 hover:text-white transition-colors">Premium</Link></li>
               <li><Link href="/infografias" className="text-slate-400 hover:text-white transition-colors">Infografías Semanales</Link></li>
