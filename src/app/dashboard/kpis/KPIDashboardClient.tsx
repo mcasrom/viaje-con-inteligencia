@@ -128,6 +128,7 @@ export default function KPIDashboard({
             { pais: 'Afganistán', region: 'Asia', tipo: 'Talibán', gravedad: 'Alto', desde: '2021' },
             { pais: 'RDC (Congo)', region: 'África', tipo: 'Conflicto armado', gravedad: 'Alto', desde: '1996' },
             { pais: 'Sahel (Malí, Burkina, Níger)', region: 'África', tipo: 'Terrorismo y golpes', gravedad: 'Alto', desde: '2020' },
+            { pais: 'Irán', region: 'Medio Oriente', tipo: 'Inestabilidad regional y protestas', gravedad: 'Alto', desde: '2022' },
             { pais: 'Venezuela', region: 'América', tipo: 'Crisis política', gravedad: 'Medio', desde: '2019' },
             { pais: 'Haití', region: 'América', tipo: 'Crisis institucional', gravedad: 'Alto', desde: '2021' },
             { pais: 'Etiopía', region: 'África', tipo: 'Tigray / Oromía', gravedad: 'Medio', desde: '2020' },

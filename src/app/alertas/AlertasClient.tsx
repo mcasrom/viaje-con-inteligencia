@@ -109,6 +109,7 @@ export default function AlertasClient({ initialAlerts, initialCounts }: AlertasC
   const [vinculado, setVinculado] = useState(false);
 
   const [alertCount, setAlertCount] = useState(initialCounts);
+  const [lastUpdated, setLastUpdated] = useState<string | null>(null);
 
   useEffect(() => {
     fetchGlobalAlerts();
@@ -120,6 +121,7 @@ export default function AlertasClient({ initialAlerts, initialCounts }: AlertasC
       const res = await fetch('/api/maec?alerts=true');
       const data = await res.json();
       const rawAlerts = data.alerts || [];
+      if (data.fetchedAt) setLastUpdated(data.fetchedAt);
       if (res.ok && rawAlerts.length > 0 && !data.error) {
         const apiAlerts: MAECAlert[] = rawAlerts.map((a: any) => ({
           pais: a.pais,
@@ -286,6 +288,12 @@ export default function AlertasClient({ initialAlerts, initialCounts }: AlertasC
           <p className="text-slate-400 max-w-2xl mx-auto">
             Todas las alertas activas del Ministerio de Asuntos Exteriores. Riesgos por conflicto, inestabilidad política, terrorismo y desastres naturales.
           </p>
+          {lastUpdated && (
+            <p className="text-slate-500 text-xs mt-3 flex items-center justify-center gap-1.5">
+              <Clock className="w-3.5 h-3.5" />
+              Última actualización: {new Date(lastUpdated).toLocaleString('es-ES', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
+            </p>
+          )}
         </div>
 
         {/* KPI Bar */}

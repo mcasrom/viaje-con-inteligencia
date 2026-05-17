@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
   try {
     if (alerts === 'true') {
       const allAlerts = await getAllMAECAlerts();
-      return NextResponse.json({ alerts: allAlerts });
+      return NextResponse.json({ alerts: allAlerts, fetchedAt: new Date().toISOString() });
     }
 
     if (country) {
