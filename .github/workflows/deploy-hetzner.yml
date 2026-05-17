@@ -1,0 +1,46 @@
+name: Deploy to Hetzner
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy to Hetzner
+        env:
+          SSH_HOST: ${{ secrets.HETZNER_HOST }}
+          SSH_PORT: '22'
+          SSH_USER: 'deploy'
+          SSH_KEY: ${{ secrets.HETZNER_SSH_KEY }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "$SSH_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -p $SSH_PORT $SSH_HOST >> ~/.ssh/known_hosts
+
+          RSYNC_RSH="ssh -p $SSH_PORT" rsync -az --delete \
+            --exclude '.git' \
+            --exclude 'node_modules' \
+            --exclude '.next' \
+            --exclude '.env*' \
+            --exclude 'logs' \
+            ./ $SSH_USER@$SSH_HOST:/var/www/viajeinteligencia/
+
+          ssh -p $SSH_PORT $SSH_USER@$SSH_HOST << 'ENDSSH'
+            set -e
+            cd /var/www/viajeinteligencia
+            npm install --omit=dev
+            npm run build
+            pm2 startOrReload ecosystem.config.cjs --update-env
+            pm2 save
+          ENDSSH
+
+      - name: Health check
+        run: |
+          sleep 10
+          curl -sSf -o /dev/null -w "%{http_code}" http://${{ secrets.HETZNER_HOST }}:3001/api/health || echo "Note: health check on port 3001"

@@ -1,50 +1,42 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { apiHandler } from '@/lib/api-v1-auth';
-import { getTodosLosPaises, getLabelRiesgo, type NivelRiesgo } from '@/data/paises';
-import { calculateTCI } from '@/data/tci-engine';
+import { verifyApiKey, logApiUsage } from '@/lib/api-auth';
+import { paisesData } from '@/data/paises';
+import type { DatoPais } from '@/data/paises';
+
+export const dynamic = 'force-dynamic';
 
 export async function GET(request: NextRequest) {
-  return apiHandler(request, async () => {
-    const { searchParams } = new URL(request.url);
-    const risk = searchParams.get('risk');
-    const continent = searchParams.get('continent');
+  const auth = await verifyApiKey(request);
+  if (!auth.valid || !auth.key) {
+    return NextResponse.json({ error: auth.error }, { status: auth.status });
+  }
 
-    let paises = getTodosLosPaises().filter(p => p.codigo !== 'cu');
+  await logApiUsage(auth.key.id, '/api/v1/countries');
 
-    if (risk && risk !== 'all') {
-      paises = paises.filter(p => p.nivelRiesgo === risk);
-    }
-    if (continent && continent !== 'all') {
-      paises = paises.filter(p => p.continente.toLowerCase() === continent.toLowerCase());
-    }
+  const searchParams = request.nextUrl.searchParams;
+  const riskFilter = searchParams.get('risk');
 
-    const riskNum: Record<string, number> = { 'sin-riesgo': 1, 'bajo': 2, 'medio': 3, 'alto': 4, 'muy-alto': 5 };
+  const countries = Object.entries(paisesData)
+    .filter(([code, _p]) => !riskFilter || _p.nivelRiesgo === riskFilter)
+    .map(([code, p]: [string, DatoPais]) => ({
+      code,
+      name: p.nombre,
+      capital: p.capital || null,
+      continent: p.continente || null,
+      flag: p.bandera || null,
+      risk: {
+        level: p.nivelRiesgo,
+        score: p.nivelRiesgo === 'sin-riesgo' ? 1
+          : p.nivelRiesgo === 'bajo' ? 2
+          : p.nivelRiesgo === 'medio' ? 3
+          : p.nivelRiesgo === 'alto' ? 4
+          : 5,
+      },
+      timezone: p.zonaHoraria || null,
+      currency: p.moneda || null,
+      language: p.idioma || null,
+    }))
+    .sort((a, b) => b.risk.score - a.risk.score);
 
-    const countries = paises.map(p => {
-      const tci = calculateTCI(p.codigo);
-      return {
-        code: p.codigo,
-        name: p.nombre,
-        flag: p.bandera,
-        capital: p.capital,
-        continent: p.continente,
-        risk: {
-          level: p.nivelRiesgo,
-          label: getLabelRiesgo(p.nivelRiesgo),
-          score: riskNum[p.nivelRiesgo] || 0,
-        },
-        cost: {
-          tci: Math.round(tci.tci * 100) / 100,
-          trend: tci.trend,
-        },
-        coordinates: p.mapaCoordenadas,
-      };
-    });
-
-    return NextResponse.json({
-      total: countries.length,
-      countries,
-      documentation: 'https://www.viajeinteligencia.com/api-endpoints',
-    });
-  }, '/v1/countries');
+  return NextResponse.json({ countries });
 }

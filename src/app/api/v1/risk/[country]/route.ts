@@ -1,93 +1,63 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { apiHandler } from '@/lib/api-v1-auth';
-import { paisesData, getLabelRiesgo, getColoresRiesgo, type NivelRiesgo } from '@/data/paises';
+import { verifyApiKey, logApiUsage } from '@/lib/api-auth';
 import { supabaseAdmin } from '@/lib/supabase-admin';
+import { paisesData } from '@/data/paises';
+import { getSignalStats, getIncidentStats, getRecentRiskChanges, computeRiskScore, getUpProbability, computeProbability, getSeasonalRiskMultiplier, RISK_NUM } from '@/lib/ml-risk-predictor';
+import { getTransitionMatrix } from '@/lib/ml-risk-predictor';
+import type { RiskNum } from '@/lib/ml-risk-predictor';
+
+export const dynamic = 'force-dynamic';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ country: string }> }
+  { params }: { params: Promise<{ country: string }> },
 ) {
+  const auth = await verifyApiKey(request);
+  if (!auth.valid || !auth.key) {
+    return NextResponse.json({ error: auth.error }, { status: auth.status });
+  }
+
   const { country } = await params;
-  return apiHandler(request, async (_, ip) => {
-    const codigo = country.toLowerCase();
+  const code = country.toLowerCase();
+  const pais = paisesData[code];
+  if (!pais) {
+    return NextResponse.json({ error: 'Country not found' }, { status: 404 });
+  }
 
-    const pais = paisesData[codigo];
-    if (!pais) {
-      return NextResponse.json({
-        error: 'Country not found',
-        code: 'COUNTRY_NOT_FOUND',
-        message: `No data for country code: ${codigo}. Use ISO 3166-1 alpha-2 code (e.g. "es", "fr").`,
-      }, { status: 404 });
-    }
+  await logApiUsage(auth.key.id, `/api/v1/risk/${code}`);
 
-    const colores = getColoresRiesgo(pais.nivelRiesgo);
-    const riskNum: Record<string, number> = { 'sin-riesgo': 1, 'bajo': 2, 'medio': 3, 'alto': 4, 'muy-alto': 5 };
+  const riskNum: RiskNum = (RISK_NUM[pais.nivelRiesgo] || 1) as RiskNum;
 
-    // Get recent incidents for this country
-    const { data: incidents } = await supabaseAdmin
-      .from('incidents')
-      .select('type, title, severity, created_at')
-      .eq('country_code', codigo.toUpperCase())
-      .eq('is_active', true)
-      .order('created_at', { ascending: false })
-      .limit(5);
+  const [signals, incidents, matrix] = await Promise.all([
+    getSignalStats(code),
+    getIncidentStats(code),
+    getTransitionMatrix(),
+  ]);
 
-    // Get latest prediction
-    const { data: predictions } = await supabaseAdmin
-      .from('risk_predictions')
-      .select('*')
-      .eq('country_code', codigo)
-      .order('predicted_at', { ascending: false })
-      .limit(1);
+  const changes30d = await getRecentRiskChanges(code);
+  const seasonalMult = getSeasonalRiskMultiplier(code);
+  const riskScore = computeRiskScore(riskNum, signals, incidents, null);
+  const transitionProb = getUpProbability(matrix, riskNum);
+  const prob = computeProbability(riskNum, riskScore, signals, incidents, changes30d, seasonalMult, transitionProb, null);
 
-    // Get US State Dept risk
-    const { data: usRisk } = await supabaseAdmin
-      .from('external_risk')
-      .select('risk_level, risk_label, fetched_at')
-      .eq('source', 'us_state_dept')
-      .eq('country_code', codigo)
-      .maybeSingle();
-
-    return NextResponse.json({
-      country: {
-        code: codigo,
-        name: pais.nombre,
-        capital: pais.capital,
-        continent: pais.continente,
-        flag: pais.bandera,
-        coordinates: pais.mapaCoordenadas,
-      },
-      risk: {
-        level: pais.nivelRiesgo,
-        label: getLabelRiesgo(pais.nivelRiesgo),
-        score: riskNum[pais.nivelRiesgo] || 0,
-        lastUpdated: pais.ultimoInforme,
-        colors: {
-          bg: colores.bg,
-          text: colores.text,
-        },
-      },
-      activeIncidents: (incidents || []).map(i => ({
-        type: i.type,
-        title: i.title,
-        severity: i.severity,
-        detectedAt: i.created_at,
-      })),
-      prediction: predictions?.[0] ? {
-        riskScore: predictions[0].risk_score,
-        probabilityUp7d: predictions[0].probability_up_7d,
-        probabilityUp14d: predictions[0].probability_up_14d,
-        probabilityUp30d: predictions[0].probability_up_30d,
-        topFactors: predictions[0].top_factors,
-        predictedAt: predictions[0].predicted_at,
-      } : null,
-      usRisk: usRisk ? {
-        level: usRisk.risk_level,
-        label: usRisk.risk_label,
-        updatedAt: usRisk.fetched_at,
-      } : null,
-      source: 'Ministerio de Asuntos Exteriores (MAEC) - Gobierno de España',
-      documentation: 'https://www.viajeinteligencia.com/api-endpoints',
-    });
-  }, `/v1/risk/${country}`);
+  return NextResponse.json({
+    country: {
+      code,
+      name: pais.nombre,
+      flag: pais.bandera,
+    },
+    risk: {
+      level: pais.nivelRiesgo,
+      label: pais.nivelRiesgo.charAt(0).toUpperCase() + pais.nivelRiesgo.slice(1),
+      score: riskNum,
+      lastUpdated: pais.ultimoInforme || 'N/A',
+    },
+    activeIncidents: incidents,
+    prediction: {
+      riskScore,
+      probabilityUp7d: Math.round(prob.up7d * 10000) / 10000,
+      probabilityUp14d: Math.round(prob.up14d * 10000) / 10000,
+      probabilityUp30d: Math.round(prob.up30d * 10000) / 10000,
+    },
+  });
 }

@@ -460,6 +460,20 @@ export default function AdminDashboard() {
           </div>
         </section>
 
+        {/* API Keys B2B */}
+        <section className="bg-slate-800 rounded-2xl border border-slate-700 p-6">
+          <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+            <Key className="w-5 h-5 text-yellow-400" />
+            API B2B
+          </h2>
+          <p className="text-slate-400 text-sm mb-4">Gestiona API keys para integraciones B2B. Los endpoints v1 consumen datos de riesgo, TCI, incidentes y países.</p>
+          <div className="flex gap-3">
+            <a href="/admin/api-keys" className="inline-flex items-center gap-2 px-4 py-2 bg-yellow-600/20 border border-yellow-500/30 text-yellow-400 rounded-lg hover:bg-yellow-600/30 transition-colors text-sm font-medium">
+              Gestionar keys <Key className="w-4 h-4" />
+            </a>
+          </div>
+        </section>
+
         {/* Calendario Editorial */}
         <section className="bg-slate-800 rounded-2xl border border-slate-700 p-6">
           <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">

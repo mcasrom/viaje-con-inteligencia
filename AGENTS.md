@@ -24,19 +24,30 @@
 - **`/en` noindex**: Verificar siempre que `index: true` se mantenga en `/en/page.tsx` si se quiere tráfico internacional. Las páginas `en` solo cubren homepage — el resto del site (blog, países) no tiene versión inglesa.
 - **Slugs de blog**: Deben ser siempre lowercase. Tras renombrar `Como-encontrar-vuelos-baratos` y `Que-es-viaje-inteligencia`, verificar que new posts no tengan mayúsculas en el filename.
 
-## PAUSED STATE (17 May 2026 — Sentiment ML + Ecosistema + Documentos + Outreach)
+## PAUSED STATE (17 May 2026 — Sprint API B2B completado)
 ### Logros
-- **5 nuevas features de sentimiento en ML**: avgTone7d, avgTone30d, toneTrend7d, negativeRatio7d, toneVolatility7d consultan `osint_signals.tone_score` en ventanas 7d/30d. 25 features totales (antes 20). Columnas añadidas a `ml_features` vía `supabase/alter_ml_features_add_sentiment.sql`. Feature vector actualizado en `ml-trainer-rf.ts`, `train-rf.ts` y `train-rf-standalone.mjs`. Correlación esperada: sentimiento negativo sostenido precede subidas de riesgo en ~7-14 días.
-- **ECOSISTEMA.md**: Documento canónico del ecosistema con diagrama Mermaid completo (fuentes → pipelines → storage → ML → APIs → frontend → distribución), tablas de componentes, métricas clave (111 países, 14 fuentes, 25 features, 4 modelos RF, 15 health checks) y guía de mantenimiento.
-- **Página pública `/ecosistema`**: Diagrama de flujo interactivo con explorador por capas, tarjetas visuales por fuente/componente, métricas destacadas, servicios externos y distribución social. Enlace en Footer → Legal + Info.
-- **Health Check**: OpenSky Network timeout (esperado, servicio público inestable). 14/15 checks verdes. ScraperStatus y /diagnostico reflejan estado actual.
-- **Push + Deploy**: Commit `8efcba9` desplegado en Vercel. Footer actualizado con enlace Ecosistema. Migración SQL pendiente de ejecutar en Supabase.
+- **API B2B completa**: Infraestructura de monetización implementada:
+  - SQL `api_keys` + `api_plan_requests` tables en `supabase/api_keys.sql` y `supabase/api_plan_requests.sql`
+  - `src/lib/api-auth.ts` con `verifyApiKey()`, `generateApiKey()`, `hashApiKey()`, `logApiUsage()` + rate limiting por tier
+  - Admin CRUD `/admin/api-keys` con crear/ver/desactivar/eliminar keys, sección en dashboard admin
+  - **4 endpoints públicos v1**: `GET /api/v1/risk/{country}` (riesgo MAEC + predicción ML), `GET /api/v1/tci/{country}` (TCI con factores), `GET /api/v1/incidents` (incidentes activos filtrables), `GET /api/v1/countries` (catálogo 111 países)
+  - Página pública `/precio-api` con 4 tiers (Free/Starter/Pro/Enterprise), features grid, CTA
+  - Modal "Quiero esto para aquí" (`RequestApiPlanModal.tsx`) con captura de leads → Supabase `api_plan_requests` + notificación email a admin vía Resend
+  - Enlace API B2B en Footer → Explorar y en admin dashboard
+- **5 nuevas features de sentimiento en ML**: avgTone7d, avgTone30d, toneTrend7d, negativeRatio7d, toneVolatility7d — 25 features totales. Columnas en `supabase/alter_ml_features_add_sentiment.sql`
+- **ECOSISTEMA.md + página `/ecosistema`**: Diagrama Mermaid, tabla freemium, marketing. Enlace en Footer
+- **Mapa conflictos**: Irán y Venezuela añadidos a conflictZones
+- **Mis Documentos mejorado**: tripId, expiryDate, badges caducidad, alertas
+- **Pulso Global**: ES, MX, CO, AR añadidos a PINNED_COUNTRIES (14 total)
+- **Outreach drafts**: 4 Reddit + 2 Facebook en `content/outreach/`. Cuenta u/OSINTTraveler
 
 ### Pendientes para próximo sprint
-1. **API pública B2B** — Monetizar datos con API keys + rate limiting + Stripe. Tiers: Free (100 req/día, MAEC básico), Starter (9€), Pro (29€), Enterprise. Mercado: agencias viaje, aseguradoras, corporate travel, devs. El 80% de los endpoints ya existen, falta auth + billing + docs.
-2. **ML temporal CV**: Esperar ~25 días de datos para validación temporal. Las 5 features de sentimiento necesitan al menos 7 días de tone_score para empezar a tener señal útil. Hasta entonces devuelven 0/null.
-3. **Añadir /ecosistema a sitemap.xml** para indexación SEO.
-4. **Marketing freemium**: Usar /ecosistema como herramienta de transparencia y diferenciación en outreach. Ver referencias en ECOSISTEMA.md.
+1. **Stripe billing**: Integrar checkout en los tiers Starter/Pro/Enterprise. Webhook para actualizar tier en `api_keys` al confirmar pago
+2. **ML temporal CV**: Esperar ~25 días de datos para validación temporal. Las 5 features de sentimiento necesitan al menos 7 días de tone_score
+3. **Añadir /ecosistema a sitemap.xml** para indexación SEO
+4. **Marketing freemium**: Usar /ecosistema como herramienta de transparencia y diferenciación en outreach
+5. **Publicar Reddit (4 drafts) + Facebook (2 drafts)** desde `content/outreach/`
+6. **Admin API Leads**: Página para gestionar solicitudes entrantes de `api_plan_requests`
 
 ## PAUSED STATE (16 May 2026 — Sprint Migraciones + Trip Risk Score)
 ### Logros

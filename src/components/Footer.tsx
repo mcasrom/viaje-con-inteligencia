@@ -76,6 +76,7 @@ export default function Footer() {
               <li><Link href="/rutas/planificar" className="text-slate-400 hover:text-white transition-colors">Planificar Ruta</Link></li>
               <li><Link href="/relojes" className="text-slate-400 hover:text-white transition-colors">Horario Global</Link></li>
               <li><Link href="/eventos" className="text-slate-400 hover:text-white transition-colors">Eventos</Link></li>
+              <li><Link href="/precio-api" className="text-slate-400 hover:text-white transition-colors">API B2B</Link></li>
             </ul>
           </div>
           <div>

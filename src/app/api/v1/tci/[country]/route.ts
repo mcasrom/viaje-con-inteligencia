@@ -1,60 +1,51 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { apiHandler } from '@/lib/api-v1-auth';
-import { calculateTCI, getConflictImpact } from '@/data/tci-engine';
-import { supabaseAdmin } from '@/lib/supabase-admin';
+import { verifyApiKey, logApiUsage } from '@/lib/api-auth';
 import { paisesData } from '@/data/paises';
+import { calculateTCI } from '@/data/tci-engine';
+import { getLiveSeasonality, getLiveAirspaceClosures } from '@/lib/tci-db';
+
+export const dynamic = 'force-dynamic';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ country: string }> }
+  { params }: { params: Promise<{ country: string }> },
 ) {
+  const auth = await verifyApiKey(request);
+  if (!auth.valid || !auth.key) {
+    return NextResponse.json({ error: auth.error }, { status: auth.status });
+  }
+
   const { country } = await params;
-  return apiHandler(request, async () => {
-    const codigo = country.toLowerCase();
+  const code = country.toLowerCase();
+  const pais = paisesData[code];
+  if (!pais) {
+    return NextResponse.json({ error: 'Country not found' }, { status: 404 });
+  }
 
-    const pais = paisesData[codigo];
-    if (!pais) {
-      return NextResponse.json({
-        error: 'Country not found',
-        code: 'COUNTRY_NOT_FOUND',
-      }, { status: 404 });
-    }
+  const [seasonality, airspace] = await Promise.all([
+    getLiveSeasonality(),
+    getLiveAirspaceClosures(),
+  ]);
 
-    const tci = calculateTCI(codigo);
-    const conflict = getConflictImpact(codigo);
-    const { data: cached } = await supabaseAdmin
-      .from('flight_tci_cache')
-      .select('*')
-      .eq('country_code', codigo)
-      .single();
+  const result = calculateTCI(code, seasonality ?? undefined, {
+    airspaceClosures: airspace ?? [],
+  });
 
-    return NextResponse.json({
-      country: {
-        code: codigo,
-        name: pais.nombre,
-        flag: pais.bandera,
-      },
-      tci: {
-        current: Math.round(tci.tci * 100) / 100,
-        trend: tci.trend,
-        recommendation: tci.recommendation,
-        lastCalculated: cached?.last_calculated || new Date().toISOString(),
-      },
-      components: {
-        demand: Math.round(tci.demandIdx * 100) / 100,
-        oil: Math.round(tci.oilIdx * 100) / 100,
-        seasonality: Math.round(tci.seasonalityIdx * 100) / 100,
-        ipc: Math.round(tci.ipcIdx * 100) / 100,
-        risk: Math.round(tci.riskIdx * 100) / 100,
-      },
-      conflictImpact: {
-        isAffected: conflict.isAffected,
-        surchargePct: conflict.surchargePct,
-        reason: conflict.reason,
-        alternativeRoute: conflict.alternativeRoute,
-      },
-      oilPrice: tci.oilPrice,
-      documentation: 'https://www.viajeinteligencia.com/api-endpoints',
-    });
-  }, `/v1/tci/${country}`);
+  await logApiUsage(auth.key.id, `/api/v1/tci/${code}`);
+
+  return NextResponse.json({
+    country: { code, name: pais.nombre, flag: pais.bandera },
+    tci: {
+      total: result.tci,
+      trend: result.trend,
+      recommendation: result.recommendation,
+      factors: result.factors,
+      demandIdx: result.demandIdx,
+      oilIdx: result.oilIdx,
+      seasonalityIdx: result.seasonalityIdx,
+      ipcIdx: result.ipcIdx,
+      riskIdx: result.riskIdx,
+      oilPrice: result.oilPrice,
+    },
+  });
 }

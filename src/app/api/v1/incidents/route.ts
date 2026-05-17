@@ -1,54 +1,38 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { apiHandler } from '@/lib/api-v1-auth';
+import { verifyApiKey, logApiUsage } from '@/lib/api-auth';
 import { supabaseAdmin } from '@/lib/supabase-admin';
-import { paisesData } from '@/data/paises';
+
+export const dynamic = 'force-dynamic';
 
 export async function GET(request: NextRequest) {
-  return apiHandler(request, async () => {
-    const { searchParams } = new URL(request.url);
-    const type = searchParams.get('type');
-    const country = searchParams.get('country');
-    const severity = searchParams.get('severity');
-    const limit = Math.min(parseInt(searchParams.get('limit') || '20', 10), 100);
+  const auth = await verifyApiKey(request);
+  if (!auth.valid || !auth.key) {
+    return NextResponse.json({ error: auth.error }, { status: auth.status });
+  }
 
-    let query = supabaseAdmin
-      .from('incidents')
-      .select('*')
-      .eq('is_active', true)
-      .order('created_at', { ascending: false })
-      .limit(limit);
+  const searchParams = request.nextUrl.searchParams;
+  const country = searchParams.get('country')?.toLowerCase();
+  const severity = searchParams.get('severity');
+  const days = parseInt(searchParams.get('days') || '7', 10);
+  const limit = parseInt(searchParams.get('limit') || '50', 10);
 
-    if (type) query = query.eq('type', type);
-    if (country) query = query.eq('country_code', country.toUpperCase());
-    if (severity) query = query.eq('severity', severity);
+  await logApiUsage(auth.key.id, '/api/v1/incidents');
 
-    const { data, error } = await query;
+  let query = supabaseAdmin
+    .from('incidents')
+    .select(`
+      id, title, description, type, severity, country_code,
+      coordinates, url, source, created_at
+    `)
+    .gte('created_at', new Date(Date.now() - days * 86400000).toISOString())
+    .order('created_at', { ascending: false })
+    .limit(limit);
 
-    if (error) {
-      return NextResponse.json({ error: error.message, code: 'DB_ERROR' }, { status: 500 });
-    }
+  if (country) query = query.eq('country_code', country);
+  if (severity) query = query.eq('severity', severity);
 
-    const incidents = (data || []).map(inc => ({
-      id: inc.id,
-      type: inc.type,
-      title: inc.title,
-      description: inc.description,
-      country: inc.country_code,
-      countryName: paisesData[inc.country_code?.toLowerCase()]?.nombre || inc.country_code,
-      location: inc.location,
-      severity: inc.severity,
-      action: inc.action_verb,
-      recommendation: inc.recommendation,
-      source: inc.source,
-      signalCount: inc.signal_count,
-      detectedAt: inc.detected_at,
-      expiresAt: inc.expires_at,
-    }));
+  const { data, error } = await query;
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
-    return NextResponse.json({
-      total: incidents.length,
-      incidents,
-      documentation: 'https://www.viajeinteligencia.com/api-endpoints',
-    });
-  }, '/v1/incidents');
+  return NextResponse.json({ incidents: data || [] });
 }
