@@ -20,6 +20,7 @@ export const FEATURE_NAMES = [
   'changes30d', 'seasonalMult', 'gpi_score', 'gti_score', 'hdi_score',
   'ipc_score', 'tci_score', 'events30d', 'highImpactEvents30d',
   'usRiskScore', 'trend7d', 'trend30d',
+  'avgTone7d', 'avgTone30d', 'toneTrend7d', 'negativeRatio7d', 'toneVolatility7d',
 ];
 
 async function buildTrainingRow(
@@ -43,7 +44,7 @@ async function buildTrainingRow(
   const transitionProb = getUpProbability(matrix, riskNum);
   const prob = computeProbability(riskNum, riskScore, signals, incidents, changes30d, seasonalMult, transitionProb, features);
 
-  return {
+    return {
     features: [
       riskNum,
       signals.criticalCount, signals.highCount, signals.mediumCount, signals.count,
@@ -54,6 +55,9 @@ async function buildTrainingRow(
       features?.events_30d ?? 0, features?.high_impact_events_30d ?? 0,
       features?.us_risk_score ?? 0,
       features?.risk_trend_7d ?? 0, features?.risk_trend_30d ?? 0,
+      features?.avg_tone_7d ?? 0, features?.avg_tone_30d ?? 0,
+      features?.tone_trend_7d ?? 0, features?.negative_ratio_7d ?? 0,
+      features?.tone_volatility_7d ?? 0,
     ],
     riskScore,
     probUp7d: prob.up7d,

@@ -1,0 +1,280 @@
+'use client';
+
+import { useState } from 'react';
+
+type LayerKey = 'sources' | 'pipelines' | 'storage' | 'ml' | 'apis' | 'frontend' | 'social' | 'external';
+
+const layers: { key: LayerKey; title: string; emoji: string }[] = [
+  { key: 'sources', title: 'Fuentes de Datos', emoji: '📡' },
+  { key: 'pipelines', title: 'Pipelines (Master Cron)', emoji: '⚙️' },
+  { key: 'storage', title: 'Almacenamiento', emoji: '💾' },
+  { key: 'ml', title: 'ML Pipeline', emoji: '🤖' },
+  { key: 'apis', title: 'APIs REST', emoji: '🔌' },
+  { key: 'frontend', title: 'Frontend', emoji: '🖥️' },
+  { key: 'social', title: 'Distribución', emoji: '📱' },
+  { key: 'external', title: 'Servicios Externos', emoji: '🔧' },
+];
+
+const flowOrder: LayerKey[] = ['sources', 'pipelines', 'storage', 'ml', 'apis', 'frontend', 'social'];
+
+const items: Record<LayerKey, { name: string; desc: string; color: string }[]> = {
+  sources: [
+    { name: 'MAEC', desc: 'Ministerio Exteriores · Riesgo viaje 111 países', color: 'blue' },
+    { name: 'US State Dept', desc: 'Travel Advisories · Nivel numérico riesgo', color: 'indigo' },
+    { name: 'GDELT', desc: 'Sentimiento global · Tone_score cada 15min', color: 'emerald' },
+    { name: 'RSS (AP, BBC, Sky)', desc: 'Noticias breaking en tiempo real', color: 'violet' },
+    { name: 'Reddit', desc: 'r/travel, r/RVLiving, r/osinttools', color: 'orange' },
+    { name: 'USGS', desc: 'Terremotos en tiempo real', color: 'yellow' },
+    { name: 'GDACS', desc: 'Desastres naturales (ONU)', color: 'red' },
+    { name: 'OpenSky', desc: 'Vuelos activos · Espacio aéreo', color: 'cyan' },
+    { name: 'OpenWeather', desc: 'Datos climáticos globales', color: 'sky' },
+    { name: 'Oil Price', desc: 'Precio Brent crudo (Yahoo)', color: 'amber' },
+    { name: 'FlightLabs', desc: 'Retrasos y estado de vuelos', color: 'pink' },
+    { name: 'WHO', desc: 'Salud · Gasto sanitario por país', color: 'rose' },
+    { name: 'Wikidata', desc: 'Puntos de interés mundiales', color: 'teal' },
+    { name: 'OpenStreetMap', desc: 'POIs geolocalizados', color: 'lime' },
+  ],
+  pipelines: [
+    { name: 'MAEC Scraper', desc: 'Scrape maec.es → maec_risk_history', color: 'blue' },
+    { name: 'US State Dept Scraper', desc: 'Scrape travel.state.gov → external_risk', color: 'indigo' },
+    { name: 'OSINT Sensor', desc: 'GDELT + RSS + Reddit → Groq clasifica', color: 'violet' },
+    { name: 'TCI + Oil', desc: 'Índice coste viaje + precio crudo', color: 'amber' },
+    { name: 'Airspace OSINT', desc: 'OpenSky para países en conflicto', color: 'cyan' },
+    { name: 'Feature Store', desc: '25 features por país → ml_features', color: 'emerald' },
+    { name: 'ML Training', desc: 'Random Forest 50 trees · 4 modelos', color: 'rose' },
+    { name: 'Risk Predictions', desc: 'Score + probUp 7/14/30 días', color: 'red' },
+    { name: 'Social Publisher', desc: 'Telegram + Bluesky + Mastodon', color: 'orange' },
+    { name: 'Newsletter', desc: 'Digest semanal vía Resend', color: 'pink' },
+    { name: 'Infografía Semanal', desc: 'Visualización riesgo dominical', color: 'teal' },
+    { name: 'Health Check', desc: '15 endpoints verificados diariamente', color: 'slate' },
+  ],
+  storage: [
+    { name: 'osint_signals', desc: 'Señales OSINT clasificadas por Groq', color: 'violet' },
+    { name: 'incidents', desc: 'Incidentes activos por país', color: 'red' },
+    { name: 'ml_features', desc: '25 features vector por país', color: 'emerald' },
+    { name: 'ml_models', desc: 'Modelos RF serializados (4)', color: 'rose' },
+    { name: 'risk_predictions', desc: 'Predicciones diarias', color: 'orange' },
+    { name: 'maec_risk_history', desc: 'Histórico riesgo MAEC', color: 'blue' },
+    { name: 'external_risk', desc: 'Riesgo US State Dept', color: 'indigo' },
+    { name: 'paises', desc: '111 países con datos completos', color: 'slate' },
+    { name: 'indices', desc: 'GPI, GTI, HDI, IPC', color: 'teal' },
+    { name: 'events', desc: 'Eventos disruptivos', color: 'yellow' },
+    { name: 'trips', desc: 'Itinerarios de viaje', color: 'cyan' },
+    { name: 'profiles', desc: 'Perfiles de usuario', color: 'sky' },
+  ],
+  ml: [
+    { name: '25 Features', desc: '20 base + 5 sentimiento (May 2026)', color: 'emerald' },
+    { name: 'Random Forest', desc: '50 árboles · maxDepth 8 · seed 42', color: 'rose' },
+    { name: 'risk_score_rf', desc: 'Score compuesto 0-100', color: 'orange' },
+    { name: 'prob_up_7d_rf', desc: 'Probabilidad subida 7 días', color: 'amber' },
+    { name: 'prob_up_14d_rf', desc: 'Probabilidad subida 14 días', color: 'yellow' },
+    { name: 'prob_up_30d_rf', desc: 'Probabilidad subida 30 días', color: 'lime' },
+    { name: 'Trip Risk Score', desc: 'Scoring por país + mes + perfil', color: 'teal' },
+    { name: 'ScoreBadge', desc: 'Badge visual de riesgo ML', color: 'indigo' },
+  ],
+  apis: [
+    { name: '/api/maec', desc: 'Riesgo MAEC + timestamp', color: 'blue' },
+    { name: '/api/osint/signals', desc: 'Señales OSINT públicas', color: 'violet' },
+    { name: '/api/pois', desc: 'POIs con scoring por perfil', color: 'teal' },
+    { name: '/api/indices', desc: 'GPI, GTI, HDI, IPC', color: 'indigo' },
+    { name: '/api/ml/score', desc: 'Score ML por país', color: 'rose' },
+    { name: '/api/pais/[codigo]', desc: 'Datos completos país', color: 'slate' },
+    { name: '/api/trips/*', desc: 'CRUD viajes + comparador', color: 'cyan' },
+    { name: '/api/user/*', desc: 'Preferencias + watchlist', color: 'sky' },
+    { name: '/api/ai/*', desc: 'Chat + itinerario + riesgo', color: 'emerald' },
+    { name: '/api/admin/*', desc: 'Health, cron, trends, paises', color: 'orange' },
+    { name: '/api/aviation/*', desc: 'Airspace + estado vuelos', color: 'pink' },
+    { name: '/api/alternatives', desc: 'Destinos alternativos ML', color: 'yellow' },
+  ],
+  frontend: [
+    { name: '/', desc: 'Home · Mapa · KPIs globales', color: 'slate' },
+    { name: '/pais/[codigo]', desc: 'Fichas país (riesgo, clima, POIs, OSINT)', color: 'blue' },
+    { name: '/blog', desc: '112+ artículos SEO países', color: 'emerald' },
+    { name: '/dashboard', desc: 'KPIs · Alertas · ML', color: 'indigo' },
+    { name: '/dashboard/radar', desc: 'Monitor viajes · Timeline proyección', color: 'cyan' },
+    { name: '/pulso-global', desc: 'Sentimiento global tiempo real', color: 'violet' },
+    { name: '/osint', desc: 'Feed OSINT con filtros', color: 'rose' },
+    { name: '/admin/*', desc: 'Panel administración completo', color: 'orange' },
+    { name: '/viajes/*', desc: 'Itinerarios · Comparador · Públicos', color: 'teal' },
+    { name: '/infografias', desc: 'Visualizaciones semanales riesgo', color: 'pink' },
+    { name: '/comparar', desc: 'Comparador países side-by-side', color: 'amber' },
+    { name: '/transparencia', desc: 'Estado fuentes + health', color: 'slate' },
+  ],
+  social: [
+    { name: 'Telegram', desc: '@ViajeConInteligencia · Alertas + Bot', color: 'blue' },
+    { name: 'Bluesky', desc: 'Posts resumen automáticos', color: 'sky' },
+    { name: 'Mastodon', desc: 'Posts resumen automáticos', color: 'violet' },
+    { name: 'Reddit', desc: 'Semi-auto (Groq genera · Admin revisa)', color: 'orange' },
+    { name: 'Email', desc: 'Newsletter semanal vía Resend', color: 'pink' },
+    { name: 'RSS Feed', desc: 'Blog + alertas sindicadas', color: 'amber' },
+    { name: 'Bing IndexNow', desc: 'Indexación inmediata post-deploy', color: 'indigo' },
+  ],
+  external: [
+    { name: 'Groq API', desc: 'LLM llama-3.3-70b · Clasificación + generación', color: 'emerald' },
+    { name: 'Supabase', desc: 'Base de datos + Auth · Hobby (gratis)', color: 'emerald' },
+    { name: 'Resend', desc: 'Email transaccional · 3000/mes gratis', color: 'red' },
+    { name: 'Vercel', desc: 'Hosting + Serverless · Hobby', color: 'slate' },
+    { name: 'GitHub Actions', desc: 'Cron diario 06:00 UTC', color: 'slate' },
+    { name: 'FlightLabs', desc: 'Datos vuelos · RapidAPI', color: 'pink' },
+    { name: 'OpenWeather', desc: 'Clima global · Gratuito', color: 'sky' },
+    { name: 'Bing IndexNow', desc: 'Indexación rápida · Gratuito', color: 'indigo' },
+  ],
+};
+
+const colorClasses: Record<string, { bg: string; text: string; border: string; dot: string }> = {
+  slate:  { bg: 'bg-slate-700/50', text: 'text-slate-200', border: 'border-slate-600/50', dot: 'bg-slate-400' },
+  blue:   { bg: 'bg-blue-900/30', text: 'text-blue-200', border: 'border-blue-700/50', dot: 'bg-blue-400' },
+  indigo: { bg: 'bg-indigo-900/30', text: 'text-indigo-200', border: 'border-indigo-700/50', dot: 'bg-indigo-400' },
+  emerald:{ bg: 'bg-emerald-900/30', text: 'text-emerald-200', border: 'border-emerald-700/50', dot: 'bg-emerald-400' },
+  violet: { bg: 'bg-violet-900/30', text: 'text-violet-200', border: 'border-violet-700/50', dot: 'bg-violet-400' },
+  orange: { bg: 'bg-orange-900/30', text: 'text-orange-200', border: 'border-orange-700/50', dot: 'bg-orange-400' },
+  yellow: { bg: 'bg-yellow-900/30', text: 'text-yellow-200', border: 'border-yellow-700/50', dot: 'bg-yellow-400' },
+  red:    { bg: 'bg-red-900/30', text: 'text-red-200', border: 'border-red-700/50', dot: 'bg-red-400' },
+  cyan:   { bg: 'bg-cyan-900/30', text: 'text-cyan-200', border: 'border-cyan-700/50', dot: 'bg-cyan-400' },
+  sky:    { bg: 'bg-sky-900/30', text: 'text-sky-200', border: 'border-sky-700/50', dot: 'bg-sky-400' },
+  amber:  { bg: 'bg-amber-900/30', text: 'text-amber-200', border: 'border-amber-700/50', dot: 'bg-amber-400' },
+  pink:   { bg: 'bg-pink-900/30', text: 'text-pink-200', border: 'border-pink-700/50', dot: 'bg-pink-400' },
+  rose:   { bg: 'bg-rose-900/30', text: 'text-rose-200', border: 'border-rose-700/50', dot: 'bg-rose-400' },
+  teal:   { bg: 'bg-teal-900/30', text: 'text-teal-200', border: 'border-teal-700/50', dot: 'bg-teal-400' },
+  lime:   { bg: 'bg-lime-900/30', text: 'text-lime-200', border: 'border-lime-700/50', dot: 'bg-lime-400' },
+};
+
+function FlowArrow() {
+  return (
+    <div className="flex justify-center py-1">
+      <svg className="w-6 h-6 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+      </svg>
+    </div>
+  );
+}
+
+function LayerCard({ item: { name, desc, color } }: { item: { name: string; desc: string; color: string } }) {
+  const c = colorClasses[color] || colorClasses.slate;
+  return (
+    <div className={`${c.bg} ${c.border} border rounded-lg px-3 py-2 text-sm hover:brightness-110 transition-all`}>
+      <div className="flex items-center gap-2">
+        <span className={`w-2 h-2 rounded-full ${c.dot} shrink-0`} />
+        <span className={`font-semibold ${c.text}`}>{name}</span>
+      </div>
+      <p className="text-slate-400 text-xs mt-0.5 leading-tight">{desc}</p>
+    </div>
+  );
+}
+
+function MetricCard({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="bg-slate-800/50 border border-slate-700/50 rounded-lg px-4 py-3 text-center">
+      <div className="text-2xl font-bold text-white">{value}</div>
+      <div className="text-xs text-slate-400 mt-1">{label}</div>
+    </div>
+  );
+}
+
+export default function EcosistemaClient() {
+  const [activeLayer, setActiveLayer] = useState<LayerKey | null>(null);
+
+  return (
+    <div className="min-h-screen bg-slate-950 text-white">
+      <div className="max-w-6xl mx-auto px-4 py-12">
+        {/* Header */}
+        <div className="text-center mb-12">
+          <h1 className="text-4xl font-bold mb-3">🌍 Ecosistema</h1>
+          <p className="text-lg text-slate-400 max-w-2xl mx-auto">
+            Arquitectura completa de Viaje con Inteligencia — fuentes, pipelines, ML, APIs, frontend y distribución.
+          </p>
+        </div>
+
+        {/* Metrics */}
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-12">
+          <MetricCard label="Países" value="111" />
+          <MetricCard label="Fuentes activas" value="14" />
+          <MetricCard label="Features ML" value="25" />
+          <MetricCard label="Modelos RF" value="4" />
+          <MetricCard label="Health Checks" value="15" />
+        </div>
+
+        {/* Flow Diagram */}
+        <div className="mb-12">
+          <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">📊 Diagrama de Flujo</h2>
+          <div className="bg-slate-900/80 border border-slate-700/50 rounded-xl p-6">
+            {flowOrder.map((key, i) => (
+              <div key={key}>
+                <div className="flex flex-wrap gap-2">
+                  {items[key].map((item) => (
+                    <LayerCard key={item.name} item={item} />
+                  ))}
+                </div>
+                {i < flowOrder.length - 1 && <FlowArrow />}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Layer explorer */}
+        <div className="mb-12">
+          <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">🔍 Explorador por Capas</h2>
+          <div className="flex flex-wrap gap-2 mb-6">
+            {layers.map((l) => (
+              <button
+                key={l.key}
+                onClick={() => setActiveLayer(activeLayer === l.key ? null : l.key)}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                  activeLayer === l.key
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+                }`}
+              >
+                {l.emoji} {l.title}
+              </button>
+            ))}
+          </div>
+
+          {activeLayer && (
+            <div className="bg-slate-900/80 border border-slate-700/50 rounded-xl p-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                {items[activeLayer].map((item) => (
+                  <LayerCard key={item.name} item={item} />
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Services */}
+        <div className="mb-12">
+          <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">🔧 Servicios Externos</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+            {items.external.map((item) => (
+              <LayerCard key={item.name} item={item} />
+            ))}
+          </div>
+        </div>
+
+        {/* Social */}
+        <div className="mb-12">
+          <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">📱 Distribución Social</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+            {items.social.map((item) => (
+              <LayerCard key={item.name} item={item} />
+            ))}
+          </div>
+        </div>
+
+        {/* Legend / maintenance */}
+        <div className="bg-slate-900/60 border border-slate-700/50 rounded-xl p-6 text-sm text-slate-400">
+          <h3 className="text-white font-semibold mb-2">📝 Mantenimiento</h3>
+          <p>
+            Al añadir una nueva funcionalidad, actualiza este documento añadiendo la fuente/pipeline a la sección correspondiente.
+            El código fuente del diagrama está en{' '}
+            <a href="https://github.com/mcasrom/viaje-con-inteligencia/blob/main/ECOSISTEMA.md"
+               target="_blank" rel="noopener noreferrer"
+               className="text-blue-400 hover:underline">ECOSISTEMA.md</a>
+            {' '}(incluye versión Mermaid renderizable en GitHub).
+          </p>
+          <p className="mt-2 text-slate-500">Versión: Mayo 2026 · 25 features · 14 fuentes · 4 modelos RF</p>
+        </div>
+      </div>
+    </div>
+  );
+}

@@ -26,6 +26,11 @@ export interface MlFeatures {
   cluster_label: string | null;
   model_version: string | null;
   us_risk_score: number | null;
+  avg_tone_7d: number | null;
+  avg_tone_30d: number | null;
+  tone_trend_7d: number;
+  negative_ratio_7d: number;
+  tone_volatility_7d: number;
 }
 
 const RISK_NUM: Record<string, number> = {
@@ -131,6 +136,38 @@ export async function computeAndStoreFeatures(code: string, riskLevel: string): 
   const highImpactEvents30d = highImpactRes.count ?? 0;
   const signalCount7d = signalsRes.count ?? 0;
   const incidentCount7d = incidentsRes.count ?? 0;
+
+  const { data: toneSignals7d } = await admin
+    .from('osint_signals')
+    .select('tone_score')
+    .or(`location_name.ilike.%${code}%,title.ilike.%${code}%,content.ilike.%${code}%`)
+    .gte('post_timestamp', sevenDaysAgo)
+    .not('tone_score', 'is', null);
+
+  const { data: toneSignals30d } = await admin
+    .from('osint_signals')
+    .select('tone_score')
+    .or(`location_name.ilike.%${code}%,title.ilike.%${code}%,content.ilike.%${code}%`)
+    .gte('post_timestamp', thirtyDaysAgo)
+    .not('tone_score', 'is', null);
+
+  const allTone30d = (toneSignals30d || []).map(r => Number(r.tone_score)).filter(v => !isNaN(v));
+  const allTone7d = (toneSignals7d || []).map(r => Number(r.tone_score)).filter(v => !isNaN(v));
+  const avgTone30d = allTone30d.length > 0 ? Math.round((allTone30d.reduce((a, b) => a + b, 0) / allTone30d.length) * 1000) / 1000 : null;
+  const avgTone7d = allTone7d.length > 0 ? Math.round((allTone7d.reduce((a, b) => a + b, 0) / allTone7d.length) * 1000) / 1000 : null;
+  const negativeRatio7d = allTone7d.length > 0 ? Math.round((allTone7d.filter(t => t < -3).length / allTone7d.length) * 1000) / 1000 : 0;
+  const toneVolatility7d = allTone7d.length > 1
+    ? Math.round(Math.sqrt(allTone7d.reduce((sq, t) => sq + (t - (avgTone7d ?? 0)) ** 2, 0) / allTone7d.length) * 1000) / 1000
+    : 0;
+  const toneTrend7d = allTone30d.length > 1
+    ? (() => {
+        const avg7 = allTone7d.length > 0 ? allTone7d.reduce((a, b) => a + b, 0) / allTone7d.length : 0;
+        const prev30 = allTone30d.length > allTone7d.length
+          ? allTone30d.slice(0, allTone30d.length - allTone7d.length).reduce((a, b) => a + b, 0) / (allTone30d.length - allTone7d.length)
+          : (avgTone30d ?? 0);
+        return Math.round((avg7 - prev30) * 1000) / 1000;
+      })()
+    : 0;
   const airspaceActive = (airspaceRes.count ?? 0) > 0;
   const routesDisrupted = (routesRes.count ?? 0) > 0;
 
@@ -164,6 +201,11 @@ export async function computeAndStoreFeatures(code: string, riskLevel: string): 
     airspace_closure_active: airspaceActive,
     route_disruption_active: routesDisrupted,
     us_risk_score: usRiskLevel,
+    avg_tone_7d: avgTone7d,
+    avg_tone_30d: avgTone30d,
+    tone_trend_7d: toneTrend7d,
+    negative_ratio_7d: negativeRatio7d,
+    tone_volatility_7d: toneVolatility7d,
     safety_composite: 100 - (riskScoreMap[riskLevel] || 50),
     cost_composite: Math.min(100, Math.round((tci.tci / 150) * 100)),
     model_version: 'v3',
