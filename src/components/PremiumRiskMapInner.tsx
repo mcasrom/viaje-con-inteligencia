@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 import L from 'leaflet';
+import { ensureLeafletCSS } from '@/lib/leaflet-css-loader';
 
 const CARTO_DARK = 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
 const CARTO_ATTRIBUTION = '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/attributions">CARTO</a>';
@@ -64,46 +65,53 @@ export default function PremiumRiskMapInner({
   useEffect(() => {
     if (!mapRef.current || mapInstanceRef.current) return;
 
-    delete (L.Icon.Default.prototype as any)._getIconUrl;
-    L.Icon.Default.mergeOptions({
-      iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png',
-      iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon.png',
-      shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
-    });
+    let cancelled = false;
+    ensureLeafletCSS().then(() => {
+      if (cancelled || !mapRef.current || mapInstanceRef.current) return;
 
-    const map = L.map(mapRef.current, {
-      center: [20, 0],
-      zoom: 2,
-      scrollWheelZoom: true,
-      zoomControl: true,
-      attributionControl: true,
-    });
-
-    L.tileLayer(CARTO_DARK, {
-      attribution: CARTO_ATTRIBUTION,
-      maxZoom: 6,
-      minZoom: 1,
-    }).addTo(map);
-
-    // Fix alt text on tile images for SEO
-    const fixTileAlt = () => {
-      mapRef.current?.querySelectorAll<HTMLImageElement>('.leaflet-tile').forEach(img => {
-        if (img.alt === '') img.alt = 'Mapa de riesgos';
+      delete (L.Icon.Default.prototype as any)._getIconUrl;
+      L.Icon.Default.mergeOptions({
+        iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png',
+        iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon.png',
+        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
       });
-    };
-    map.on('tileload', fixTileAlt);
-    fixTileAlt();
 
-    const markers = L.layerGroup().addTo(map);
-    const compareMarkers = L.layerGroup().addTo(map);
-    markersRef.current = markers;
-    compareMarkersRef.current = compareMarkers;
+      const map = L.map(mapRef.current!, {
+        center: [20, 0],
+        zoom: 2,
+        scrollWheelZoom: true,
+        zoomControl: true,
+        attributionControl: true,
+      });
 
-    mapInstanceRef.current = map;
+      L.tileLayer(CARTO_DARK, {
+        attribution: CARTO_ATTRIBUTION,
+        maxZoom: 6,
+        minZoom: 1,
+      }).addTo(map);
+
+      const fixTileAlt = () => {
+        mapRef.current?.querySelectorAll<HTMLImageElement>('.leaflet-tile').forEach(img => {
+          if (img.alt === '') img.alt = 'Mapa de riesgos';
+        });
+      };
+      map.on('tileload', fixTileAlt);
+      fixTileAlt();
+
+      const markers = L.layerGroup().addTo(map);
+      const compareMarkers = L.layerGroup().addTo(map);
+      markersRef.current = markers;
+      compareMarkersRef.current = compareMarkers;
+
+      mapInstanceRef.current = map;
+    });
 
     return () => {
-      map.remove();
-      mapInstanceRef.current = null;
+      cancelled = true;
+      if (mapInstanceRef.current) {
+        mapInstanceRef.current.remove();
+        mapInstanceRef.current = null;
+      }
     };
   }, []);
 

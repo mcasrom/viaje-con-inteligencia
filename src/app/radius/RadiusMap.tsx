@@ -1,9 +1,10 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, Circle, Marker, Popup, CircleMarker, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import TileAltFixer from '@/components/TileAltFixer';
+import { ensureLeafletCSS } from '@/lib/leaflet-css-loader';
 import type { PlaceResult } from './RadiusExplorer';
 
 // Fix Leaflet default icon issue - only runs on client
@@ -73,6 +74,12 @@ interface RadiusMapProps {
 }
 
 export default function RadiusMap({ center, radius, zoom, places, pois = [], onPlaceClick }: RadiusMapProps) {
+  const [cssReady, setCssReady] = useState(false);
+
+  useEffect(() => {
+    ensureLeafletCSS().then(() => setCssReady(true));
+  }, []);
+
   useEffect(() => {
     const observer = new MutationObserver(() => {
       document.querySelectorAll('.leaflet-tile').forEach(el => {
@@ -82,6 +89,8 @@ export default function RadiusMap({ center, radius, zoom, places, pois = [], onP
     observer.observe(document.body, { childList: true, subtree: true });
     return () => observer.disconnect();
   }, []);
+
+  if (!cssReady) return <div className="h-full w-full bg-slate-800 rounded-lg" />;
 
   return (
     <MapContainer

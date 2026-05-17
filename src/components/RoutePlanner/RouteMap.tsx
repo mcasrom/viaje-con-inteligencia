@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from 'react'
 import L from 'leaflet'
+import { ensureLeafletCSS } from '@/lib/leaflet-css-loader'
 
 const MODE_COLORS: Record<string, string> = {
   flight: '#0ea5e9',
@@ -33,25 +34,32 @@ export default function RouteMap({ polyline, mode = 'driving', className = '' }:
   useEffect(() => {
     if (!mapRef.current || instanceRef.current) return
 
-    const map = L.map(mapRef.current, { zoomControl: false }).setView([0, 0], 2)
-    instanceRef.current = map
+    let cancelled = false
+    ensureLeafletCSS().then(() => {
+      if (cancelled || !mapRef.current || instanceRef.current) return
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; <a href="https://openstreetmap.org">OSM</a>',
-    }).addTo(map)
+      const map = L.map(mapRef.current!, { zoomControl: false }).setView([0, 0], 2)
+      instanceRef.current = map
 
-    // Fix alt text on tile images for SEO
-    const fixTileAlt = () => {
-      mapRef.current?.querySelectorAll<HTMLImageElement>('.leaflet-tile').forEach(img => {
-        if (img.alt === '') img.alt = 'Mapa OpenStreetMap';
-      });
-    };
-    map.on('tileload', fixTileAlt);
-    fixTileAlt();
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://openstreetmap.org">OSM</a>',
+      }).addTo(map)
+
+      const fixTileAlt = () => {
+        mapRef.current?.querySelectorAll<HTMLImageElement>('.leaflet-tile').forEach(img => {
+          if (img.alt === '') img.alt = 'Mapa OpenStreetMap';
+        });
+      };
+      map.on('tileload', fixTileAlt);
+      fixTileAlt();
+    })
 
     return () => {
-      map.remove()
-      instanceRef.current = null
+      cancelled = true
+      if (instanceRef.current) {
+        instanceRef.current.remove()
+        instanceRef.current = null
+      }
     }
   }, [])
 

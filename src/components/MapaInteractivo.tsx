@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic';
 import { getTodosLosPaises, NivelRiesgo } from '@/data/paises';
 import { useI18n } from '@/lib/i18n';
 import TileAltFixer from '@/components/TileAltFixer';
+import { ensureLeafletCSS } from '@/lib/leaflet-css-loader';
 
 const riskColors: Record<NivelRiesgo, string> = {
   'sin-riesgo': '#22c55e',
@@ -97,7 +98,9 @@ export default function MapaInteractivo({ fullScreen = false }: { fullScreen?: b
   const [loadingLayers, setLoadingLayers] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
+    ensureLeafletCSS().then(() => {
+      setMounted(true);
+    });
     import('leaflet').then((L) => {
       try {
         if ((L as any).Icon?.Default?.prototype) {

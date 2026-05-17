@@ -8,6 +8,7 @@ import { calculateTCI } from '@/data/tci-engine';
 
 import { Shield, DollarSign, Globe, Loader2 } from 'lucide-react';
 import TileAltFixer from '@/components/TileAltFixer';
+import { ensureLeafletCSS } from '@/lib/leaflet-css-loader';
 
 type MapLayer = 'maec' | 'gpi' | 'tci';
 
@@ -84,7 +85,9 @@ export default function MapaIndices() {
   }, []);
 
   useEffect(() => {
-    setMounted(true);
+    ensureLeafletCSS().then(() => {
+      setMounted(true);
+    });
     import('leaflet').then((L) => {
       delete (L as any).Default.prototype._initMapDefaults;
       (L as any).Default.mergeOptions({

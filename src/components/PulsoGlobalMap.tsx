@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 import L from 'leaflet';
+import { ensureLeafletCSS } from '@/lib/leaflet-css-loader';
 
 interface SentimentEntry {
   countryCode: string;
@@ -59,23 +60,31 @@ export default function PulsoGlobalMap({ data, mode }: { data: GlobalData; mode:
   useEffect(() => {
     if (!mapRef.current || mapInstance.current) return;
 
-    const map = L.map(mapRef.current, {
-      center: [20, 0],
-      zoom: 2,
-      scrollWheelZoom: true,
-      zoomControl: true,
+    let cancelled = false;
+    ensureLeafletCSS().then(() => {
+      if (cancelled || !mapRef.current) return;
+
+      const map = L.map(mapRef.current, {
+        center: [20, 0],
+        zoom: 2,
+        scrollWheelZoom: true,
+        zoomControl: true,
+      });
+
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; <a href="https://carto.com/">CARTO</a>',
+        maxZoom: 18,
+      }).addTo(map);
+
+      mapInstance.current = map;
     });
 
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-      attribution: '&copy; <a href="https://carto.com/">CARTO</a>',
-      maxZoom: 18,
-    }).addTo(map);
-
-    mapInstance.current = map;
-
     return () => {
-      map.remove();
-      mapInstance.current = null;
+      cancelled = true;
+      if (mapInstance.current) {
+        mapInstance.current.remove();
+        mapInstance.current = null;
+      }
     };
   }, []);
 
