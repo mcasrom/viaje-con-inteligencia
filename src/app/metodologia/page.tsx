@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { ArrowLeft, Shield, AlertTriangle, BarChart3, FileText, Globe, Database, TrendingUp } from 'lucide-react';
+import { ArrowLeft, Shield, AlertTriangle, BarChart3, FileText, Globe, Database, TrendingUp, Brain, MessageSquare } from 'lucide-react';
 import { TOTAL_PAISES } from '@/lib/constants';
 
 export const metadata: Metadata = {
@@ -204,6 +204,84 @@ export default function MetodologiaPage() {
             <div className="bg-slate-700/30 rounded-lg p-4">
               <h4 className="text-white font-medium text-sm">💰 IPC - Índice de Precios al Consumo</h4>
               <p className="text-slate-400 text-xs mt-1">Inflación y coste de vida por país</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Sentiment Analysis */}
+        <div className="bg-slate-800/60 rounded-xl border border-slate-700/50 p-6 mb-8">
+          <div className="flex items-center gap-3 mb-4">
+            <Brain className="w-6 h-6 text-purple-400" />
+            <h2 className="text-xl font-bold text-white">Análisis de sentimiento OSINT</h2>
+          </div>
+          <p className="text-slate-300 text-sm mb-4">
+            Cada señal de OSINT (redes sociales, RSS, GDELT) lleva un <strong>tone_score</strong> que mide el tono emocional del mensaje. Este valor se conserva al clusterizar señales en incidentes y alimenta nuestro modelo de Machine Learning.
+          </p>
+
+          <div className="space-y-4">
+            <div className="bg-slate-700/30 rounded-lg p-4">
+              <h4 className="text-white font-semibold text-sm mb-2">Escala: −10 a +10</h4>
+              <div className="grid grid-cols-3 gap-3 text-xs">
+                <div className="bg-red-500/10 rounded p-2 border border-red-500/20">
+                  <span className="text-red-400 font-bold">−10 a −5</span>
+                  <p className="text-slate-400 mt-0.5">Muy negativo: pánico, alarma, emergencia confirmada</p>
+                </div>
+                <div className="bg-orange-500/10 rounded p-2 border border-orange-500/20">
+                  <span className="text-orange-400 font-bold">−5 a 0</span>
+                  <p className="text-slate-400 mt-0.5">Negativo: precaución, incidente en desarrollo</p>
+                </div>
+                <div className="bg-green-500/10 rounded p-2 border border-green-500/20">
+                  <span className="text-green-400 font-bold">+5 a +10</span>
+                  <p className="text-slate-400 mt-0.5">Positivo: informativo, resuelto, tranquilidad</p>
+                </div>
+              </div>
+              <p className="text-slate-500 text-xs mt-2">Los valores entre −5 y +5 se consideran neutros o de tono mixto.</p>
+            </div>
+
+            <div className="bg-slate-700/30 rounded-lg p-4">
+              <h4 className="text-white font-semibold text-sm mb-2">Cómo se calcula</h4>
+              <div className="space-y-3">
+                <div className="flex gap-3">
+                  <span className="text-purple-400 font-bold text-sm flex-shrink-0 w-14">GDELT</span>
+                  <p className="text-slate-400 text-xs">El motor GKG de GDELT asigna un <em>tone</em> automático mediante análisis de sentimiento por bolsa de palabras (diccionario emocional) a cada artículo de noticias globales.</p>
+                </div>
+                <div className="flex gap-3">
+                  <span className="text-purple-400 font-bold text-sm flex-shrink-0 w-14">Reddit/RSS</span>
+                  <p className="text-slate-400 text-xs">Usamos Groq (LLaMA 3.1 8B) para clasificar semánticamente cada señal. El prompt pide explícitamente un sentimiento de −10 a +10 basado en el contenido y tono del mensaje. Groq no ve el tone_score de GDELT — su análisis es independiente.</p>
+                </div>
+                <div className="flex gap-3">
+                  <span className="text-purple-400 font-bold text-sm flex-shrink-0 w-14">GDACS/USGS</span>
+                  <p className="text-slate-400 text-xs">Fuentes autoritativas (alertas oficiales de desastres) no llevan análisis de sentimiento. Su tone_score es <code className="text-purple-300">null</code>.</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-slate-700/30 rounded-lg p-4">
+              <h4 className="text-white font-semibold text-sm mb-2">Propagación a incidentes</h4>
+              <p className="text-slate-400 text-xs">
+                Cuando el sistema clusteriza varias señales en un incidente, calcula la <strong>media aritmética</strong> de los tone_score de todas las señales del cluster (ignorando nulls). 
+                Ese valor medio se almacena en el incidente y se muestra como badge de color en la tarjeta del incidente.
+              </p>
+            </div>
+
+            <div className="bg-slate-700/30 rounded-lg p-4">
+              <h4 className="text-white font-semibold text-sm mb-2">Machine Learning</h4>
+              <p className="text-slate-400 text-xs">
+                El tone_score alimenta 5 features de nuestro modelo Random Forest: <strong>avgTone7d</strong>, <strong>avgTone30d</strong>, <strong>toneTrend7d</strong>, <strong>negativeRatio7d</strong> y <strong>toneVolatility7d</strong>. 
+                Estas features permiten al modelo detectar cambios de clima informativo que preceden a cambios de riesgo. 
+                Se necesita al menos 7 días de datos de sentimiento para que estas features sean significativas.
+              </p>
+            </div>
+
+            <div className="bg-slate-700/30 rounded-lg p-4">
+              <h4 className="text-white font-semibold text-sm mb-2">Limitaciones</h4>
+              <ul className="text-slate-400 text-xs space-y-1.5 list-disc list-inside">
+                <li>El sentimiento de Groq es subjetivo y depende del prompt y del modelo. No es un análisis clínico.</li>
+                <li>GDELT usa un diccionario genérico que puede malinterpretar sarcasmo o contexto local.</li>
+                <li>Señales en idiomas distintos al español o inglés pueden tener menor precisión.</li>
+                <li>El tone_score de un incidente refleja el tono de las fuentes, no necesariamente la gravedad objetiva del evento.</li>
+                <li>La ausencia de tone_score (null) en fuentes autoritativas no implica neutralidad — es simplemente que no aplicamos análisis de sentimiento a alertas oficiales.</li>
+              </ul>
             </div>
           </div>
         </div>
