@@ -24,7 +24,7 @@ export async function POST(request: NextRequest) {
   if (!token) {
     return NextResponse.json({ 
       error: 'MASTODON_ACCESS_TOKEN not configured',
-      setup: 'Add MASTODON_ACCESS_TOKEN to Vercel Environment Variables'
+      setup: 'Add MASTODON_ACCESS_TOKEN to environment variables'
     }, { status: 500 });
   }
 

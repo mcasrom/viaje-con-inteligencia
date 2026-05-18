@@ -108,7 +108,7 @@ const translations = {
 /help - Esta ayuda
 
 💡 *Ejemplos:* /suscribir ES, /cancelar-alerta FR`,
-    aiNotAvailable: () => '🤖 IA no disponible. Configure GROQ_API_KEY en Vercel para activar el chat IA.',
+    aiNotAvailable: () => '🤖 IA no disponible. Configure GROQ_API_KEY en las variables de entorno para activar el chat IA.',
     aiError: () => '🤖 Error de IA. Intenta de nuevo.',
     aiConnectionError: () => '🤖 Error de conexión con IA. Intenta de nuevo.',
     langChanged: (lang: string) => `✅ Idioma cambiado a ${lang === 'es' ? 'Español' : 'English'}`,
@@ -132,7 +132,7 @@ const translations = {
     aiExit: () => 'Returning to main menu.',
     notUnderstood: () => '🤖 I didn\'t understand. Use the buttons or try:\n• Type a country (e.g. "Japan")\n• /help for help',
     help: () => `*📚 Available commands:*\n\n/start - Start bot\n/country [name] - Country info\n/chat or /ai - AI chat\n/alerts - View risks\n/subscribe - Custom alerts by country\n/mis-alertas - Your subscriptions\n/cancelar-alerta - Remove subscription\n/cambio - Exchange rates\n/checklist - Preview checklist\n/premium - Premium info\n/lang - Change language (EN/ES)\n/help - This help`,
-    aiNotAvailable: () => '🤖 AI not available. Configure GROQ_API_KEY in Vercel to activate AI chat.',
+    aiNotAvailable: () => '🤖 AI not available. Configure GROQ_API_KEY in environment variables to activate AI chat.',
     aiError: () => '🤖 AI error. Try again.',
     aiConnectionError: () => '🤖 AI connection error. Try again.',
     langChanged: (lang: string) => `✅ Language changed to ${lang === 'es' ? 'Español' : 'English'}`,

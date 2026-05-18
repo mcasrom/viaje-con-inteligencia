@@ -113,7 +113,7 @@ const items: Record<LayerKey, { name: string; desc: string; color: string }[]> =
     { name: 'Groq API', desc: 'LLM llama-3.3-70b · Clasificación + generación', color: 'emerald' },
     { name: 'Supabase', desc: 'Base de datos + Auth · Hobby (gratis)', color: 'emerald' },
     { name: 'Resend', desc: 'Email transaccional · 3000/mes gratis', color: 'red' },
-    { name: 'Vercel', desc: 'Hosting + Serverless · Hobby', color: 'slate' },
+    { name: 'Hetzner', desc: 'Servidor dedicado CX42 · 8 vCPU 16GB RAM', color: 'slate' },
     { name: 'GitHub Actions', desc: 'Cron diario 06:00 UTC', color: 'slate' },
     { name: 'FlightLabs', desc: 'Datos vuelos · RapidAPI', color: 'pink' },
     { name: 'OpenWeather', desc: 'Clima global · Gratuito', color: 'sky' },

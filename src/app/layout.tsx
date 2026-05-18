@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import { Geist } from "next/font/google";
-import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import Providers from "@/components/Providers";
 import TopBar from "@/components/TopBar";
@@ -122,7 +121,6 @@ export default async function RootLayout({
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
       </head>
       <body className={`${geistSans.variable} antialiased`}>
-        <Analytics />
         <Providers>
           <TopBar />
           <ServiceWorkerRegistration />
