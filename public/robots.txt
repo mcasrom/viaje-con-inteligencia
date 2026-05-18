@@ -1,14 +1,40 @@
 # M. Castillo - Privacy Tools | Configuración SEO para Viaje con Inteligencia
 # --------------------------------------------------------------------------
 
+# ----------------------------------------------------
+# General Crawlers
+# ----------------------------------------------------
+
 User-agent: *
 Allow: /
 Allow: /_next/static/
+
 Disallow: /api/
 Disallow: /dashboard/
+
+# Revisar estratégicamente si /viajes/ debe indexarse
 Disallow: /viajes/
+
+# ----------------------------------------------------
+# Major Search Engines
+# ----------------------------------------------------
+
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+# ----------------------------------------------------
+# AI Crawlers
+# ----------------------------------------------------
 
 User-agent: GPTBot
 Disallow: /
 
+# ----------------------------------------------------
+# Sitemap
+# ----------------------------------------------------
+
+Host: https://www.viajeinteligencia.com
 Sitemap: https://www.viajeinteligencia.com/sitemap.xml
