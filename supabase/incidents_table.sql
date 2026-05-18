@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS incidents (
   action_verb text,
   source text DEFAULT 'osint',
   signal_count integer DEFAULT 1,
+  tone_score float,
   is_active boolean DEFAULT true,
   expires_at timestamptz,
   resolved_at timestamptz,

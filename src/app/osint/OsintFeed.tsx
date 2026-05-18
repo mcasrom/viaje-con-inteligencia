@@ -45,6 +45,7 @@ interface Incident {
   signal_count: number;
   detected_at: string;
   resolved_at: string | null;
+  tone_score: number | null;
   rating: number;
   ratingCount: number;
 }
@@ -264,6 +265,16 @@ export default function OsintFeed() {
                             <span className={`px-2 py-0.5 rounded text-[10px] font-bold border ${sevConf.badge}`}>
                               {sevConf.label}
                             </span>
+                            {incident.tone_score != null && (
+                              <span className={`px-1.5 py-0.5 rounded text-[10px] font-bold border ${
+                                incident.tone_score < -5 ? 'bg-red-500/20 text-red-400 border-red-500/30' :
+                                incident.tone_score < 0 ? 'bg-orange-500/20 text-orange-400 border-orange-500/30' :
+                                incident.tone_score > 5 ? 'bg-green-500/20 text-green-400 border-green-500/30' :
+                                'bg-slate-500/20 text-slate-400 border-slate-500/30'
+                              }`}>
+                                {incident.tone_score > 0 ? '+' : ''}{Math.round(incident.tone_score)}
+                              </span>
+                            )}
                             {incident.country_code && (
                               <span className="text-lg" title={incident.country_code}>
                                 {getCountryFlag(incident.country_code)}

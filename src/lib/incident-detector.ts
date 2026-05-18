@@ -265,6 +265,11 @@ export async function detectAndCreateIncidents(): Promise<{ created: number; upd
     const cleanTitle = title.replace(/^📡\s*GDELT:\s*/i, '').replace(/^⚠️\s*GDACS:\s*/i, '').replace(/^🌍\s*/i, '').replace(/^📰\s*/i, '');
     
     const firstPersonCount = clusterSignals.filter(s => s.is_first_person).length;
+    const toneScores = clusterSignals.map(s => s.tone_score).filter((t: any) => t != null);
+    const avgTone = toneScores.length > 0
+      ? Math.round((toneScores.reduce((a: number, b: number) => a + b, 0) / toneScores.length) * 10) / 10
+      : null;
+
     const sources = [...new Set(clusterSignals.map(s => s.source))];
     const source = sources.length > 1 ? 'combined' : (sources[0] || 'osint');
     const description = clusterSignals.slice(0, 3).map(s => s.summary || s.title).filter(Boolean).join('\n');
@@ -282,6 +287,7 @@ export async function detectAndCreateIncidents(): Promise<{ created: number; upd
           recommendation,
           expires_at: expiresAt.toISOString(),
           source,
+          tone_score: avgTone,
         })
         .eq('entity_id', key);
       updated++;
@@ -302,6 +308,7 @@ export async function detectAndCreateIncidents(): Promise<{ created: number; upd
           signal_count: clusterSignals.length,
           expires_at: expiresAt.toISOString(),
           is_active: true,
+          tone_score: avgTone,
         });
       created++;
     }

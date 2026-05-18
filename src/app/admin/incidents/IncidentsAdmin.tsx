@@ -37,6 +37,7 @@ interface Incident {
   analyst_note: string | null;
   analyst_updated_at: string | null;
   detected_at: string;
+  tone_score: number | null;
 }
 
 export default function AdminIncidents() {
