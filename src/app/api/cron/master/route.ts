@@ -770,6 +770,26 @@ async function runInfografiaGenerator(): Promise<any> {
   }
 }
 
+// ===== CLOUDFLARE ANALYTICS (weekly on Sundays) =====
+async function runCloudflareAnalytics(): Promise<any> {
+  const day = new Date().getDay();
+  if (day !== 0) return { status: 'skipped', reason: 'Not Sunday' };
+
+  try {
+    const { runCloudflareAnalytics: cfRun } = await import('@/lib/cloudflare-analytics');
+    const result = await cfRun();
+
+    if (result.stored) {
+      const { publishToTelegramChannel } = await import('@/lib/social-publisher');
+      await publishToTelegramChannel(result.summary);
+    }
+
+    return result;
+  } catch (e: any) {
+    return { status: 'error', error: e.message };
+  }
+}
+
 // ===== MODEL TRAINING (fire-and-forget to dedicated endpoint) =====
 async function runModelTraining(): Promise<any> {
   try {
@@ -903,6 +923,9 @@ export async function GET(request: Request) {
 
   log.info('8b/8 Insurance monitor...');
   results.insurance_monitor = await withTimeout(() => runInsuranceMonitor(), 30000, '8b/8 Insurance monitor');
+
+  log.info('8f/8 Cloudflare Analytics (only on Sundays)...');
+  results.cloudflare_analytics = await withTimeout(() => runCloudflareAnalytics(), 60000, '8f/8 Cloudflare Analytics');
 
   log.info('8c/8 Bing IndexNow...');
   results.bing_indexnow = await withTimeout(() => runBingPing(), 30000, '8c/8 Bing IndexNow');
