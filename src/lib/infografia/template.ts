@@ -36,19 +36,19 @@ function gwiLabel(score: number): string {
   if (score < 45) return 'MODERADO';
   if (score < 60) return 'ELEVADO';
   if (score < 75) return 'ALTO';
-  return 'CRÍTICO';
+  return 'CRITICO';
 }
 
 function generateHeadline(data: InfografiaData): string {
   const { countriesChanged, riskDistribution } = data;
   const highRisk = riskDistribution.alto + riskDistribution.muyAlto;
   if (countriesChanged.length > 0) {
-    return `\u26A0 ${countriesChanged.length} PA\u00CDSES CAMBIARON DE NIVEL DE RIESGO ESTA SEMANA`;
+    return `! ${countriesChanged.length} PAISES CAMBIARON DE NIVEL DE RIESGO ESTA SEMANA`;
   }
   if (highRisk >= 5) {
-    return `\u{1F534} ${highRisk} PA\u00CDSES EN ALERTA: RIESGO ALTO O MUY ALTO`;
+    return `! ${highRisk} PAISES EN ALERTA: RIESGO ALTO O MUY ALTO`;
   }
-  return '\u{1F30D} PANORAMA GLOBAL DE RIESGO DE VIAJE';
+  return '# PANORAMA GLOBAL DE RIESGO DE VIAJE';
 }
 
 export function generateInfografiaSVG(data: InfografiaData): string {
@@ -58,11 +58,11 @@ export function generateInfografiaSVG(data: InfografiaData): string {
 
   const trendArrow = gwiTrend !== null
     ? gwiTrend > 0
-      ? `▲ +${gwiTrend.toFixed(1)}`
+      ? `[+][up] +${gwiTrend.toFixed(1)}`
       : gwiTrend < 0
-        ? `▼ ${gwiTrend.toFixed(1)}`
-        : '— 0.0'
-    : '—';
+        ? `[dn] ${gwiTrend.toFixed(1)}`
+        : '- 0.0'
+    : '-';
 
   const trendColor = gwiTrend !== null
     ? gwiTrend > 0 ? ACCENT_RED : ACCENT_GREEN
@@ -84,10 +84,6 @@ export function generateInfografiaSVG(data: InfografiaData): string {
       <stop offset="0%" stop-color="${gwiColor(gwi.total)}" stop-opacity="0.3"/>
       <stop offset="100%" stop-color="${gwiColor(gwi.total)}" stop-opacity="0.05"/>
     </linearGradient>
-    <filter id="glow">
-      <feGaussianBlur stdDeviation="2" result="blur"/>
-      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-    </filter>
     <style>
       text { font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
       .title { font-size: 34px; font-weight: bold; fill: ${TEXT_PRIMARY}; }
@@ -121,10 +117,10 @@ export function generateInfografiaSVG(data: InfografiaData): string {
   <text x="40" y="45" class="title">VIAJE CON INTELIGENCIA</text>
   <text x="40" y="67" class="slogan">"Tu radar de seguridad global impulsado por IA"</text>
   <text x="40" y="90" class="subtitle">INFORME SEMANAL DE RIESGOS GLOBALES</text>
-  <text x="40" y="114" class="subtitle">Edición #${edition}  •  ${weekStart} — ${weekEnd}</text>
+  <text x="40" y="114" class="subtitle">Edicion #${edition}   |   ${weekStart} - ${weekEnd}</text>
 
   <text x="${W - 40}" y="45" text-anchor="end" font-size="11" fill="${TEXT_SECONDARY}" font-family="system-ui, -apple-system, sans-serif">CLASSIFICATION: UNCLASSIFIED</text>
-  <text x="${W - 40}" y="63" text-anchor="end" font-size="11" fill="${ACCENT_GREEN}" font-family="system-ui, -apple-system, sans-serif">● LIVE DATA</text>
+  <text x="${W - 40}" y="63" text-anchor="end" font-size="11" fill="${ACCENT_GREEN}" font-family="system-ui, -apple-system, sans-serif">[L] LIVE DATA</text>
   <text x="${W - 40}" y="81" text-anchor="end" font-size="11" fill="${TEXT_SECONDARY}" font-family="system-ui, -apple-system, sans-serif">${data.timestamp.split('T')[0]} UTC</text>
   <text x="${W - 40}" y="99" text-anchor="end" font-size="10" fill="${ACCENT_BLUE}" font-family="system-ui, -apple-system, sans-serif">Smart Traveler: AI-Driven Global Risk Radar</text>
 
@@ -135,9 +131,9 @@ export function generateInfografiaSVG(data: InfografiaData): string {
   <rect x="40" y="165" width="${W - 80}" height="180" rx="8" fill="${CARD_BG}" stroke="${BORDER}" stroke-width="1"/>
   <rect x="40" y="165" width="${W - 80}" height="180" rx="8" fill="url(#gwiGrad)"/>
   <text x="60" y="195" class="section-title">GLOBAL WEEKLY INDEX (GWI)</text>
-  <text x="60" y="215" font-size="12" fill="${TEXT_SECONDARY}" font-family="system-ui, -apple-system, sans-serif">Composite travel risk score: 0 (safe) — 100 (critical)</text>
+  <text x="60" y="215" font-size="12" fill="${TEXT_SECONDARY}" font-family="system-ui, -apple-system, sans-serif">Composite travel risk score: 0 (safe) - 100 (critical)</text>
 
-  <text x="60" y="290" class="value-lg" fill="${gwiColor(gwi.total)}" filter="url(#glow)">${gwi.total.toFixed(1)}</text>
+  <text x="60" y="290" class="value-lg" fill="${gwiColor(gwi.total)}">${gwi.total.toFixed(1)}</text>
   <rect x="155" y="272" width="82" height="26" rx="4" fill="${gwiColor(gwi.total)}" opacity="0.15"/>
   <text x="196" y="290" text-anchor="middle" font-size="13" font-weight="bold" fill="${gwiColor(gwi.total)}" font-family="system-ui, -apple-system, sans-serif">${gwiLabel(gwi.total)}</text>
   <text x="60" y="315" class="label-sm">GLOBAL INDEX</text>
@@ -167,7 +163,7 @@ export function generateInfografiaSVG(data: InfografiaData): string {
   <!-- Regional Risk Breakdown -->
   <rect x="40" y="375" width="${W - 80}" height="230" rx="8" fill="${CARD_BG}" stroke="${BORDER}" stroke-width="1"/>
   <text x="60" y="405" class="section-title">PANORAMA POR REGIONES</text>
-  <text x="60" y="425" font-size="12" fill="${TEXT_SECONDARY}" font-family="system-ui, -apple-system, sans-serif">${stats.totalPaises} países monitoreados  •  ${stats.totalContinentes} continentes</text>
+  <text x="60" y="425" font-size="12" fill="${TEXT_SECONDARY}" font-family="system-ui, -apple-system, sans-serif">${stats.totalPaises} paises monitoreados   |   ${stats.totalContinentes} continentes</text>
 
   ${(() => {
     const regionMap = new Map<string, { count: number; maxScore: number; top: typeof topRiskCountries[0] }>();
@@ -188,10 +184,10 @@ export function generateInfografiaSVG(data: InfografiaData): string {
 
     return `
   <g>
-    <text x="60" y="452" class="label-sm">REGIÓN</text>
+    <text x="60" y="452" class="label-sm">REGION</text>
     <text x="240" y="452" class="label-sm">RIESGO</text>
-    <text x="420" y="452" class="label-sm">PAÍSES EN ALERTA</text>
-    <text x="950" y="452" class="label-sm">PEOR PAÍS</text>
+    <text x="420" y="452" class="label-sm">PAISES EN ALERTA</text>
+    <text x="950" y="452" class="label-sm">PEOR PAIS</text>
   </g>
   <line x1="60" y1="458" x2="${W - 60}" y2="458" stroke="${BORDER}" stroke-width="0.5"/>
   ${rows.map((r, i) => {
@@ -206,7 +202,8 @@ export function generateInfografiaSVG(data: InfografiaData): string {
     <text x="256" y="${y + 4}" font-size="11" font-weight="bold" fill="${color}" font-family="system-ui, -apple-system, sans-serif">${level.toUpperCase()}</text>
     <rect x="420" y="${y - 6}" width="${Math.max(8, barW)}" height="12" rx="3" fill="${color}" opacity="0.7"/>
     <text x="740" y="${y + 4}" font-size="13" font-weight="bold" fill="${TEXT_PRIMARY}" font-family="system-ui, -apple-system, sans-serif">${r.count}</text>
-    <text x="955" y="${y + 4}" font-size="12" fill="${TEXT_SECONDARY}" font-family="system-ui, -apple-system, sans-serif">${r.top.flag} ${r.top.name}</text>
+    <circle cx="953" cy="${y - 2}" r="3" fill="${color}" opacity="0.9"/>
+    <text x="960" y="${y + 4}" font-size="12" fill="${TEXT_SECONDARY}" font-family="system-ui, -apple-system, sans-serif">${r.top.name}</text>
   </g>`;
   }).join('')}
   `;
@@ -214,8 +211,8 @@ export function generateInfografiaSVG(data: InfografiaData): string {
 
   <!-- Risk Distribution -->
   <rect x="40" y="635" width="540" height="200" rx="8" fill="${CARD_BG}" stroke="${BORDER}" stroke-width="1"/>
-  <text x="60" y="665" class="section-title">RIESGO GLOBAL — DISTRIBUCIÓN</text>
-  <text x="60" y="685" font-size="12" fill="${TEXT_SECONDARY}" font-family="system-ui, -apple-system, sans-serif">${stats.totalPaises} países monitoreados  •  ${stats.totalContinentes} continentes</text>
+  <text x="60" y="665" class="section-title">RIESGO GLOBAL - DISTRIBUCION</text>
+  <text x="60" y="685" font-size="12" fill="${TEXT_SECONDARY}" font-family="system-ui, -apple-system, sans-serif">${stats.totalPaises} paises monitoreados   |   ${stats.totalContinentes} continentes</text>
 
   ${[
     { label: 'Sin riesgo', count: riskDistribution.sinRiesgo, color: ACCENT_GREEN, pct: (riskDistribution.sinRiesgo / stats.totalPaises) * 100 },
@@ -238,15 +235,15 @@ export function generateInfografiaSVG(data: InfografiaData): string {
 
   <!-- Key metrics -->
   <rect x="610" y="635" width="550" height="200" rx="8" fill="${CARD_BG}" stroke="${BORDER}" stroke-width="1"/>
-  <text x="630" y="665" class="section-title">MÉTRICAS CLAVE</text>
+  <text x="630" y="665" class="section-title">METRICAS CLAVE</text>
 
   <g>
     <text x="630" y="710" class="value-md" fill="${ACCENT_RED}">${stats.altoOMuyAlto}</text>
-    <text x="770" y="710" class="label-sm" dominant-baseline="middle">Países en riesgo alto/muy alto</text>
+    <text x="770" y="710" class="label-sm" dominant-baseline="middle">Paises en riesgo alto/muy alto</text>
   </g>
   <g>
     <text x="630" y="755" class="value-md" fill="${ACCENT_GREEN}">${stats.seguroOBajo}</text>
-    <text x="770" y="755" class="label-sm" dominant-baseline="middle">Países seguros o riesgo bajo</text>
+    <text x="770" y="755" class="label-sm" dominant-baseline="middle">Paises seguros o riesgo bajo</text>
   </g>
   <g>
     <text x="630" y="800" class="value-md" fill="${ACCENT_AMBER}">${incidentsThisWeek}</text>
@@ -255,17 +252,17 @@ export function generateInfografiaSVG(data: InfografiaData): string {
 
   ${countriesChanged.length > 0 ? `
   <rect x="610" y="825" rx="4" fill="${ACCENT_AMBER}" opacity="0.15" width="420" height="20"/>
-  <text x="630" y="839" font-size="11" fill="${ACCENT_AMBER}" font-family="system-ui, -apple-system, sans-serif">⚠ ${countriesChanged.length} países cambiaron de nivel de riesgo</text>
+  <text x="630" y="839" font-size="11" fill="${ACCENT_AMBER}" font-family="system-ui, -apple-system, sans-serif">[!] ${countriesChanged.length} paises cambiaron de nivel de riesgo</text>
   ` : ''}
 
   <!-- Top Risk Countries -->
   <rect x="40" y="865" width="${W - 80}" height="${40 + topRiskCountries.slice(0, 5).length * 36}" rx="8" fill="${CARD_BG}" stroke="${BORDER}" stroke-width="1"/>
-  <text x="${W / 2}" y="895" text-anchor="middle" class="section-title">TOP 5 — MAYOR RIESGO</text>
+  <text x="${W / 2}" y="895" text-anchor="middle" class="section-title">TOP 5 - MAYOR RIESGO</text>
 
   <g>
     <text x="60" y="915" class="label-sm">#</text>
-    <text x="95" y="915" class="label-sm">PAÍS</text>
-    <text x="550" y="915" class="label-sm">REGIÓN</text>
+    <text x="95" y="915" class="label-sm">PAIS</text>
+    <text x="550" y="915" class="label-sm">REGION</text>
     <text x="1000" y="915" class="label-sm">RIESGO</text>
   </g>
   <line x1="60" y1="921" x2="${W - 60}" y2="921" stroke="${BORDER}" stroke-width="0.5"/>
@@ -273,7 +270,9 @@ export function generateInfografiaSVG(data: InfografiaData): string {
   ${topRiskCountries.slice(0, 5).map((c, i) => `
   <g>
     <text x="60" y="${950 + i * 36}" font-size="12" fill="${TEXT_SECONDARY}" font-family="system-ui, -apple-system, sans-serif">${String(i + 1).padStart(2, ' ')}</text>
-    <text x="95" y="${950 + i * 36}" class="country-name">${c.flag} ${c.name}</text>
+    <circle cx="83" cy="${950 + i * 36 - 8}" r="4" fill="${riskColor(c.riskLevel)}"/>
+    <text x="95" y="${950 + i * 36}" class="country-name">${c.name}</text>
+    <text x="350" y="${950 + i * 36}" font-size="11" fill="${TEXT_SECONDARY}" font-family="system-ui, -apple-system, sans-serif">${c.code}</text>
     <text x="550" y="${950 + i * 36}" font-size="12" fill="${TEXT_SECONDARY}" font-family="system-ui, -apple-system, sans-serif">${c.region}</text>
     <rect x="985" y="${940 + i * 36}" width="8" height="8" rx="2" fill="${riskColor(c.riskLevel)}"/>
     <text x="1005" y="${950 + i * 36}" class="risk-tag" fill="${riskColor(c.riskLevel)}">${c.riskLevel.toUpperCase()}</text>
@@ -281,15 +280,15 @@ export function generateInfografiaSVG(data: InfografiaData): string {
 
   <!-- CTA Banner -->
   <rect x="40" y="1120" width="${W - 80}" height="60" rx="8" fill="url(#headerGrad)" stroke="${ACCENT_BLUE}" stroke-width="1" opacity="0.9"/>
-  <text x="${W / 2}" y="1157" text-anchor="middle" font-size="16" font-weight="bold" fill="${ACCENT_BLUE}" font-family="system-ui, -apple-system, sans-serif" filter="url(#glow)">📊 Más inteligencia semanal: viajeinteligencia.com/infografias</text>
+  <text x="${W / 2}" y="1157" text-anchor="middle" font-size="16" font-weight="bold" fill="${ACCENT_BLUE}" font-family="system-ui, -apple-system, sans-serif">>> Mas inteligencia semanal: viajeinteligencia.com/infografias</text>
 
   <!-- Footer -->
   <rect x="0" y="${H - 100}" width="${W}" height="100" fill="${CARD_BG}" stroke="${BORDER}" stroke-width="1"/>
-  <text x="40" y="${H - 70}" font-size="11" fill="${TEXT_SECONDARY}" font-family="system-ui, -apple-system, sans-serif">Fuentes: MAEC • US State Dept • GPI • GTI • HDI • IPC • GDELT • USGS • GDACS • OpenSky</text>
+  <text x="40" y="${H - 70}" font-size="11" fill="${TEXT_SECONDARY}" font-family="system-ui, -apple-system, sans-serif">Fuentes: MAEC | US State Dept | GPI | GTI | HDI | IPC | GDELT | USGS | GDACS | OpenSky</text>
   <text x="40" y="${H - 54}" font-size="11" fill="${TEXT_SECONDARY}" font-family="system-ui, -apple-system, sans-serif">viajeinteligencia.com/infografias  |  info@viajeinteligencia.com</text>
-  <text x="40" y="${H - 36}" class="signature" font-family="system-ui, -apple-system, sans-serif">M. Castillo — Privacy Tools  •  SME en RRSS, OSINT y Estrategia Digital</text>
-  <text x="40" y="${H - 20}" font-size="10" fill="#475569" font-family="system-ui, -apple-system, sans-serif">OSINT • ML • TRAVEL RISK INTELLIGENCE — Edición #${edition}</text>
-  <text x="${W - 40}" y="${H - 20}" text-anchor="end" font-size="10" fill="#475569" font-family="system-ui, -apple-system, sans-serif">© 2026 M. Castillo. Todos los derechos reservados.</text>
+  <text x="40" y="${H - 36}" class="signature" font-family="system-ui, -apple-system, sans-serif">M. Castillo - Privacy Tools  |  SME en RRSS, OSINT y Estrategia Digital</text>
+  <text x="40" y="${H - 20}" font-size="10" fill="#475569" font-family="system-ui, -apple-system, sans-serif">OSINT | ML | TRAVEL RISK INTELLIGENCE - Edicion #${edition}</text>
+  <text x="${W - 40}" y="${H - 20}" text-anchor="end" font-size="10" fill="#475569" font-family="system-ui, -apple-system, sans-serif">(c) 2026 M. Castillo. Todos los derechos reservados.</text>
 </svg>`;
 }
 
@@ -337,9 +336,9 @@ export function generateInfografiaHTML(data: InfografiaData): string {
 <body>
   <div class="infografia">
     <div class="header">
-      <h1>VIAJE CON INTELIGENCIA — INFORME SEMANAL #${edition}</h1>
+      <h1>VIAJE CON INTELIGENCIA - INFORME SEMANAL #${edition}</h1>
       <div class="slogan">"Tu radar de seguridad global impulsado por IA"</div>
-      <div class="meta">${weekStart} — ${weekEnd}  •  ${stats.totalPaises} países monitoreados</div>
+      <div class="meta">${weekStart} - ${weekEnd}  |  ${stats.totalPaises} paises monitoreados</div>
     </div>
 
     <div class="card" style="margin-bottom: 12px; padding: 12px 20px; text-align: center; border-color: #f59e0b;">
@@ -370,7 +369,7 @@ export function generateInfografiaHTML(data: InfografiaData): string {
 
     <div class="grid-2">
       <div class="card">
-        <h2>RIESGO GLOBAL — DISTRIBUCIÓN</h2>
+        <h2>RIESGO GLOBAL - DISTRIBUCION</h2>
         ${[
           { label: 'Sin riesgo', count: riskDistribution.sinRiesgo, pct: (riskDistribution.sinRiesgo / stats.totalPaises) * 100, c: ACCENT_GREEN },
           { label: 'Bajo', count: riskDistribution.bajo, pct: (riskDistribution.bajo / stats.totalPaises) * 100, c: '#84cc16' },
@@ -380,7 +379,7 @@ export function generateInfografiaHTML(data: InfografiaData): string {
         ].map(r => `<div class="risk-bar"><span style="width:80px;font-size:13px;">${r.label}</span><div class="bar-track"><div class="bar-fill" style="width:${r.pct}%;background:${r.c}"></div></div><span style="width:40px;text-align:right;font-weight:bold;">${r.count}</span><span style="width:40px;text-align:right;color:#94a3b8;font-size:12px;">${r.pct.toFixed(0)}%</span></div>`).join('')}
       </div>
       <div class="card">
-        <h2>MÉTRICAS CLAVE</h2>
+        <h2>METRICAS CLAVE</h2>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:8px;">
           <div><div class="value-lg" style="color:${ACCENT_RED}">${stats.altoOMuyAlto}</div><div class="text-slate" style="font-size:12px;">Alto/Muy alto riesgo</div></div>
           <div><div class="value-lg" style="color:${ACCENT_GREEN}">${stats.seguroOBajo}</div><div class="text-slate" style="font-size:12px;">Seguro/Bajo riesgo</div></div>
@@ -391,19 +390,19 @@ export function generateInfografiaHTML(data: InfografiaData): string {
     </div>
 
     <div class="card" style="margin-bottom: 16px;">
-      <h2>TOP 5 — MAYOR RIESGO</h2>
-      ${topRiskCountries.slice(0, 5).map((c, i) => `<div class="country-row"><span style="color:#64748b;width:24px;">${String(i + 1).padStart(2, ' ')}</span><span>${c.flag}</span><span style="flex:1;">${c.name}</span><span style="color:#64748b;width:100px;font-size:12px;">${c.region}</span><span class="risk-dot" style="background:${riskColor(c.riskLevel)}"></span><span style="font-size:11px;font-weight:bold;color:${riskColor(c.riskLevel)};width:70px;">${c.riskLevel.toUpperCase()}</span></div>`).join('')}
+        <h2>TOP 5 - MAYOR RIESGO</h2>
+      ${topRiskCountries.slice(0, 5).map((c, i) => `<div class="country-row"><span style="color:#64748b;width:24px;">${String(i + 1).padStart(2, ' ')}</span><span class="risk-dot" style="background:${riskColor(c.riskLevel)};display:inline-block;width:10px;height:10px;border-radius:2px;"></span><span style="width:30px;font-size:11px;color:#94a3b8;">${c.code}</span><span style="flex:1;">${c.name}</span><span style="color:#64748b;width:100px;font-size:12px;">${c.region}</span><span style="font-size:11px;font-weight:bold;color:${riskColor(c.riskLevel)};width:70px;">${c.riskLevel.toUpperCase()}</span></div>`).join('')}
     </div>
 
     <div class="cta-banner">
-      📊 <a href="https://viajeinteligencia.com/infografias">Más inteligencia semanal: viajeinteligencia.com/infografias</a>
+      [>>] <a href="https://viajeinteligencia.com/infografias">Mas inteligencia semanal: viajeinteligencia.com/infografias</a>
     </div>
 
     <div class="footer">
-      Fuentes: MAEC • US State Dept • GPI • GTI • HDI • IPC • GDELT • USGS • GDACS • OpenSky<br/>
+      Fuentes: MAEC | US State Dept | GPI | GTI | HDI | IPC | GDELT | USGS | GDACS | OpenSky<br/>
       viajeinteligencia.com/infografias  |  info@viajeinteligencia.com<br/>
-      <div class="signature">M. Castillo — Privacy Tools  •  SME en RRSS, OSINT y Estrategia Digital</div>
-      © 2026 M. Castillo. Todos los derechos reservados.
+      <div class="signature">M. Castillo - Privacy Tools  |  SME en RRSS, OSINT y Estrategia Digital</div>
+      (c) 2026 M. Castillo. Todos los derechos reservados.
     </div>
   </div>
 </body>
