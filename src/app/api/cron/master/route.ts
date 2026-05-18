@@ -428,7 +428,7 @@ async function runNewsSentiment(): Promise<any> {
         summary: classification?.summary || post.title, location_name: post.locationName,
         lat: post.lat, lng: post.lng, severity: post.severity, mag: post.mag,
         event_type: post.eventType, post_timestamp: post.timestamp.toISOString(),
-        tone_score: post.toneScore,
+        tone_score: post.toneScore ?? classification?.sentiment ?? null,
       });
     }
 

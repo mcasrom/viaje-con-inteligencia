@@ -28,6 +28,7 @@ export interface ClassifiedSignal {
   isFirstResponder: boolean;
   urgency: 'low' | 'medium' | 'high' | 'critical';
   summary: string;
+  sentiment?: number; // -10 to +10, from Groq LLM sentiment analysis
 }
 
 const FIRST_PERSON_PATTERNS = [
@@ -387,7 +388,8 @@ Responde SOLO con JSON válido en este formato:
   "confidence": 0.0-1.0,
   "isFirstResponder": true/false (si el autor parece estar en el lugar del incidente),
   "urgency": "low|medium|high|critical",
-  "summary": "resumen conciso en español del incidente"
+  "summary": "resumen conciso en español del incidente",
+  "sentiment": -10 a +10 (tono emocional del mensaje: negativo si es peligro/alarma, positivo si es informativo/tranquilo, 0 neutro)
 }
 
 Categorías:
@@ -428,6 +430,7 @@ export async function classifySignal(post: RawPost): Promise<ClassifiedSignal> {
       isFirstResponder: parsed.isFirstResponder || detectFirstPerson(text),
       urgency: parsed.urgency || 'low',
       summary: parsed.summary || post.title,
+      sentiment: typeof parsed.sentiment === 'number' ? Math.max(-10, Math.min(10, parsed.sentiment)) : undefined,
     };
   } catch (e) {
     log.error('Classification error:', e);
@@ -437,6 +440,7 @@ export async function classifySignal(post: RawPost): Promise<ClassifiedSignal> {
       isFirstResponder: detectFirstPerson(`${post.title} ${post.content}`),
       urgency: 'low',
       summary: post.title,
+      sentiment: undefined,
     };
   }
 }
