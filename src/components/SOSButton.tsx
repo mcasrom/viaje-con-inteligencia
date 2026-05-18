@@ -1,6 +1,6 @@
 'use client';
 import { useState, useCallback, useEffect, useRef } from 'react';
-import { AlertTriangle, X, MapPin, Phone, Shield, ExternalLink, Loader2, ChevronDown, Navigation } from 'lucide-react';
+import { AlertTriangle, X, MapPin, Phone, Shield, ExternalLink, Loader2, Navigation, Search } from 'lucide-react';
 import { paisesData, getEmergenciasPorPais, getTodosLosPaises, type NivelRiesgo } from '@/data/paises';
 
 interface EmergencyPoi {
@@ -15,6 +15,13 @@ interface EmergencyPoi {
   lon: number;
 }
 
+interface LocationResult {
+  lat: number;
+  lon: number;
+  countryCode: string;
+  displayName: string;
+}
+
 interface SOSData {
   countryCode: string;
   countryName: string;
@@ -23,6 +30,7 @@ interface SOSData {
   emergencies: { general: string; policia: string; bomberos: string; ambulancia: string } | null;
   emergencyPois: EmergencyPoi[];
   emoji: string;
+  locationLabel: string;
 }
 
 const RISK_LABELS: Record<NivelRiesgo, { label: string; color: string; bg: string }> = {
@@ -40,20 +48,20 @@ const FLAG_EMOJI: Record<string, string> = {
   bo: '🇧🇴', py: '🇵🇾', pa: '🇵🇦', cr: '🇨🇷', jp: '🇯🇵', cn: '🇨🇳', kr: '🇰🇷',
   th: '🇹🇭', in: '🇮🇳', au: '🇦🇺', nz: '🇳🇿', ru: '🇷🇺', ua: '🇺🇦', tr: '🇹🇷',
   eg: '🇪🇬', ma: '🇲🇦', za: '🇿🇦', ke: '🇰🇪', ng: '🇳🇬', il: '🇮🇱', ae: '🇦🇪',
-  sa: '🇸🇦', ir: '🇮🇷', iq: '🇮🇶', sy: '🇸🇾', ye: '🇾🇪', af: '🇦🇫', pk: '🇵🇰',
-  id: '🇮🇩', my: '🇲🇾', sg: '🇸🇬', ph: '🇵🇭', vn: '🇻🇳', gr: '🇬🇷', pl: '🇵🇱',
-  nl: '🇳🇱', be: '🇧🇪', ch: '🇨🇭', at: '🇦🇹', se: '🇸🇪', no: '🇳🇴', dk: '🇩🇰',
-  fi: '🇫🇮', hu: '🇭🇺', bg: '🇧🇬', hr: '🇭🇷', ro: '🇷🇴', cz: '🇨🇿',
-  sk: '🇸🇰', si: '🇸🇮', lt: '🇱🇹', lv: '🇱🇻', ee: '🇪🇪', is: '🇮🇸', mt: '🇲🇹',
-  cy: '🇨🇾', ly: '🇱🇾', dz: '🇩🇿', tn: '🇹🇳', sd: '🇸🇩', et: '🇪🇹', tz: '🇹🇿',
-  gh: '🇬🇭', sn: '🇸🇳', mz: '🇲🇿', ao: '🇦🇴', ci: '🇨🇮', cm: '🇨🇲', ug: '🇺🇬',
-  zm: '🇿🇲', zw: '🇿🇼', bw: '🇧🇼', na: '🇳🇦', ht: '🇭🇹', mm: '🇲🇲', kh: '🇰🇭',
-  la: '🇱🇦', np: '🇳🇵', bd: '🇧🇩', lk: '🇱🇰', kz: '🇰🇿', uz: '🇺🇿', jo: '🇯🇴',
-  lb: '🇱🇧', ps: '🇵🇸', so: '🇸🇴', ss: '🇸🇸', cf: '🇨🇫', ml: '🇲🇱', bf: '🇧🇫',
-  ne: '🇳🇪', ga: '🇬🇦', cg: '🇨🇬', cd: '🇨🇩', mg: '🇲🇬', mu: '🇲🇺', sc: '🇸🇨',
-  mv: '🇲🇻', bn: '🇧🇳', tl: '🇹🇱', fj: '🇫🇯', pg: '🇵🇬', sb: '🇸🇧', ws: '🇼🇸',
-  ge: '🇬🇪', am: '🇦🇲', az: '🇦🇿', al: '🇦🇱', ba: '🇧🇦', me: '🇲🇪', rs: '🇷🇸',
-  mk: '🇲🇰', xk: '🇽🇰', kp: '🇰🇵',
+  sa: '🇸🇦', ir: '🇮🇷', iq: '🇮🇶', id: '🇮🇩', my: '🇲🇾', sg: '🇸🇬', ph: '🇵🇭',
+  vn: '🇻🇳', gr: '🇬🇷', pl: '🇵🇱', nl: '🇳🇱', be: '🇧🇪', ch: '🇨🇭', at: '🇦🇹',
+  se: '🇸🇪', no: '🇳🇴', dk: '🇩🇰', fi: '🇫🇮', hu: '🇭🇺', bg: '🇧🇬', hr: '🇭🇷',
+  ro: '🇷🇴', cz: '🇨🇿', sk: '🇸🇰', si: '🇸🇮', lt: '🇱🇹', lv: '🇱🇻', ee: '🇪🇪',
+  is: '🇮🇸', mt: '🇲🇹', cy: '🇨🇾', ly: '🇱🇾', dz: '🇩🇿', tn: '🇹🇳', sd: '🇸🇩',
+  et: '🇪🇹', tz: '🇹🇿', gh: '🇬🇭', sn: '🇸🇳', mz: '🇲🇿', ao: '🇦🇴', ci: '🇨🇮',
+  cm: '🇨🇲', ug: '🇺🇬', zm: '🇿🇲', zw: '🇿🇼', bw: '🇧🇼', na: '🇳🇦', ht: '🇭🇹',
+  mm: '🇲🇲', kh: '🇰🇭', la: '🇱🇦', np: '🇳🇵', bd: '🇧🇩', lk: '🇱🇰', kz: '🇰🇿',
+  uz: '🇺🇿', jo: '🇯🇴', lb: '🇱🇧', ps: '🇵🇸', so: '🇸🇴', ss: '🇸🇸', cf: '🇨🇫',
+  ml: '🇲🇱', bf: '🇧🇫', ne: '🇳🇪', ga: '🇬🇦', cg: '🇨🇬', cd: '🇨🇩', mg: '🇲🇬',
+  mu: '🇲🇺', sc: '🇸🇨', mv: '🇲🇻', bn: '🇧🇳', tl: '🇹🇱', fj: '🇫🇯', pg: '🇵🇬',
+  sb: '🇸🇧', ws: '🇼🇸', ge: '🇬🇪', am: '🇦🇲', az: '🇦🇿', al: '🇦🇱', ba: '🇧🇦',
+  me: '🇲🇪', rs: '🇷🇸', mk: '🇲🇰', kp: '🇰🇵', pk: '🇵🇰', af: '🇦🇫', sy: '🇸🇾',
+  ye: '🇾🇪', xk: '🇽🇰',
 };
 
 const COUNTRY_BY_NOMINATIM: Record<string, string> = {
@@ -80,12 +88,16 @@ const COUNTRY_BY_NOMINATIM: Record<string, string> = {
 
 export default function SOSButton() {
   const [isOpen, setIsOpen] = useState(false);
-  const [step, setStep] = useState<'idle' | 'locating' | 'manual' | 'ready'>('idle');
+  const [step, setStep] = useState<'idle' | 'locating' | 'search' | 'ready'>('idle');
   const [data, setData] = useState<SOSData | null>(null);
   const [poisLoading, setPoisLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [manualCode, setManualCode] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState<LocationResult[]>([]);
+  const [searching, setSearching] = useState(false);
+  const searchTimeout = useRef<ReturnType<typeof setTimeout>>(undefined);
   const userCoords = useRef<{ lat: number; lon: number } | null>(null);
+
 
   useEffect(() => {
     const handler = () => {
@@ -138,7 +150,7 @@ export default function SOSButton() {
 
   const getLocation = useCallback(() => {
     if (!navigator.geolocation) {
-      tryIpGeolocation();
+      setStep('search');
       return;
     }
     navigator.geolocation.getCurrentPosition(
@@ -152,43 +164,76 @@ export default function SOSButton() {
           const geo = await res.json();
           const cc = (geo.address?.country_code || '').toLowerCase();
           if (!cc || !COUNTRY_BY_NOMINATIM[cc]) {
-            setError('No pudimos determinar tu país desde tu ubicación.');
-            tryIpGeolocation();
+            setStep('search');
             return;
           }
-          buildSOSData(COUNTRY_BY_NOMINATIM[cc]);
+          const locationLabel = geo.display_name?.split(',')?.slice(0, 3)?.join(',') || 'Ubicación actual';
+          buildSOSData(COUNTRY_BY_NOMINATIM[cc], locationLabel);
         } catch {
-          tryIpGeolocation();
+          setStep('search');
         }
       },
-      () => { tryIpGeolocation(); },
+      () => { setStep('search'); },
       { timeout: 5000, enableHighAccuracy: false }
     );
   }, []);
 
-  const tryIpGeolocation = async () => {
-    userCoords.current = null;
-    setError(null);
+  const geocodeSearch = async (query: string) => {
+    if (query.length < 3) {
+      setSearchResults([]);
+      return;
+    }
+    setSearching(true);
     try {
-      const res = await fetch('https://ip-api.com/json/?fields=countryCode', {
-        headers: { 'User-Agent': 'ViajeInteligencia/1.0' },
-      });
+      const res = await fetch(
+        `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=6&accept-language=es`,
+        { headers: { 'User-Agent': 'ViajeInteligencia/1.0' } }
+      );
       const data = await res.json();
-      const cc = (data.countryCode || '').toLowerCase();
-      if (cc && COUNTRY_BY_NOMINATIM[cc]) {
-        buildSOSData(COUNTRY_BY_NOMINATIM[cc]);
-        return;
+      const results: LocationResult[] = data
+        .filter((r: any) => r.type !== 'country')
+        .map((r: any) => ({
+          lat: parseFloat(r.lat),
+          lon: parseFloat(r.lon),
+          countryCode: '',
+          displayName: r.display_name,
+        }));
+
+      // Enrich with country codes
+      for (const result of results) {
+        try {
+          const rev = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?lat=${result.lat}&lon=${result.lon}&format=json&zoom=3&accept-language=es`,
+            { headers: { 'User-Agent': 'ViajeInteligencia/1.0' } }
+          );
+          const geo = await rev.json();
+          const cc = (geo.address?.country_code || '').toLowerCase();
+          result.countryCode = COUNTRY_BY_NOMINATIM[cc] || cc;
+        } catch {}
       }
+
+      setSearchResults(results.filter(r => r.countryCode && paisesData[r.countryCode]));
     } catch {}
-    setError('No pudimos obtener tu ubicación por GPS ni IP.');
-    setStep('manual');
+    setSearching(false);
   };
 
-  const buildSOSData = async (code: string) => {
+  const handleSearchChange = (value: string) => {
+    setSearchQuery(value);
+    clearTimeout(searchTimeout.current);
+    searchTimeout.current = setTimeout(() => geocodeSearch(value), 400);
+  };
+
+  const handleSelectLocation = (loc: LocationResult) => {
+    userCoords.current = { lat: loc.lat, lon: loc.lon };
+    const label = loc.displayName.split(',').slice(0, 3).join(',');
+    buildSOSData(loc.countryCode, label);
+  };
+
+  const buildSOSData = async (code: string, locationLabel?: string) => {
     const pais = paisesData[code];
     if (!pais) {
       setError(`País "${code}" no disponible en la base de datos.`);
-      setStep('manual');
+      setStep('search');
       return;
     }
     const emergencies = getEmergenciasPorPais(code);
@@ -202,17 +247,11 @@ export default function SOSButton() {
       emergencies,
       emergencyPois: [],
       emoji: FLAG_EMOJI[code] || pais.bandera || '🌍',
+      locationLabel: locationLabel || pais.nombre,
     });
     setStep('ready');
 
     loadEmergencyPois(code);
-  };
-
-  const handleManualSubmit = () => {
-    const code = manualCode.toLowerCase().trim();
-    if (code && paisesData[code]) {
-      buildSOSData(code);
-    }
   };
 
   return (
@@ -249,53 +288,83 @@ export default function SOSButton() {
                 <div className="text-center py-8 space-y-3">
                   <Loader2 className="w-10 h-10 text-red-500 animate-spin mx-auto" />
                   <p className="text-slate-300">Detectando tu ubicación...</p>
-                  <p className="text-slate-500 text-sm">Usamos tu posición para mostrarte los riesgos y contactos locales.</p>
+                  <p className="text-slate-500 text-sm">Intentando obtener tu posición por GPS.</p>
+                  <button
+                    onClick={() => { setStep('search'); setError(null); }}
+                    className="text-sm text-slate-400 hover:text-white underline mt-2"
+                  >
+                    No tengo GPS — buscar manualmente
+                  </button>
                 </div>
               )}
 
-              {step === 'manual' && (
+              {step === 'search' && (
                 <div className="space-y-4">
                   <div className="bg-yellow-900/30 border border-yellow-700/40 rounded-xl p-4 text-sm text-yellow-300">
-                    <p className="font-medium mb-1">📍 No pudimos obtener tu ubicación</p>
-                    <p className="text-yellow-400/70">Selecciona tu país manualmente para ver la información de emergencia.</p>
+                    <p className="font-medium mb-1">📍 Busca tu ubicación</p>
+                    <p className="text-yellow-400/70">Escribe una ciudad, aeropuerto o lugar para encontrar servicios de emergencia cercanos.</p>
                   </div>
-                  <div>
-                    <label className="block text-sm text-slate-400 mb-2">Tu país actual</label>
-                    <div className="flex gap-2">
-                      <select
-                        value={manualCode}
-                        onChange={(e) => setManualCode(e.target.value)}
-                        className="flex-1 px-3 py-2.5 bg-slate-700 border border-slate-600 rounded-lg text-white text-sm focus:outline-none focus:border-red-500"
-                      >
-                        <option value="">Selecciona un país...</option>
-                        {getTodosLosPaises().map(p => (
-                          <option key={p.codigo} value={p.codigo}>
-                            {FLAG_EMOJI[p.codigo] || '🌍'} {p.nombre}
-                          </option>
-                        ))}
-                      </select>
-                      <button
-                        onClick={handleManualSubmit}
-                        disabled={!manualCode}
-                        className="px-4 py-2.5 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 text-sm font-medium"
-                      >
-                        Ver
-                      </button>
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                    <input
+                      type="text"
+                      value={searchQuery}
+                      onChange={(e) => handleSearchChange(e.target.value)}
+                      placeholder="Ej: Barcelona, Chiang Mai, Aeropuerto CDG..."
+                      className="w-full pl-10 pr-4 py-3 bg-slate-700 border border-slate-600 rounded-xl text-white text-sm placeholder:text-slate-500 focus:outline-none focus:border-red-500"
+                      autoFocus
+                    />
+                    {searching && (
+                      <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 animate-spin" />
+                    )}
+                  </div>
+
+                  {searchResults.length > 0 && (
+                    <div className="space-y-2 max-h-60 overflow-y-auto">
+                      {searchResults.map((loc, i) => {
+                        const flag = FLAG_EMOJI[loc.countryCode] || '🌍';
+                        const pais = paisesData[loc.countryCode];
+                        const label = loc.displayName.split(',').slice(0, 4).join(',');
+                        return (
+                          <button
+                            key={i}
+                            onClick={() => handleSelectLocation(loc)}
+                            className="w-full text-left bg-slate-700/50 hover:bg-slate-600/50 rounded-xl p-3 transition-colors border border-slate-600/30"
+                          >
+                            <div className="flex items-center gap-2">
+                              <MapPin className="w-4 h-4 text-red-400 shrink-0" />
+                              <div className="min-w-0">
+                                <p className="text-white text-sm font-medium truncate">{label}</p>
+                                <p className="text-slate-400 text-xs">{flag} {pais?.nombre || loc.countryCode}</p>
+                              </div>
+                            </div>
+                          </button>
+                        );
+                      })}
                     </div>
-                  </div>
+                  )}
+
+                  {searchQuery.length >= 3 && !searching && searchResults.length === 0 && (
+                    <p className="text-slate-500 text-sm text-center py-4">
+                      No encontramos resultados. Prueba con otra ciudad o lugar.
+                    </p>
+                  )}
+
                   {error && <p className="text-red-400 text-sm">{error}</p>}
                 </div>
               )}
 
               {step === 'ready' && data && (
                 <>
-                  {/* Country & Risk */}
+                  {/* Location & Risk */}
                   <div className="bg-slate-700/40 rounded-xl p-4 border border-slate-600/50">
                     <div className="flex items-center gap-3 mb-3">
                       <span className="text-4xl">{data.emoji}</span>
                       <div>
                         <h3 className="text-white text-xl font-bold">{data.countryName}</h3>
-                        <p className="text-slate-400 text-sm">Ubicación actual detectada</p>
+                        <p className="text-slate-400 text-xs flex items-center gap-1 mt-0.5">
+                          <MapPin className="w-3 h-3" /> {data.locationLabel}
+                        </p>
                       </div>
                     </div>
                     <div className={`px-3 py-2 rounded-lg text-sm font-bold border ${RISK_LABELS[data.risk].bg} ${RISK_LABELS[data.risk].color}`}>
