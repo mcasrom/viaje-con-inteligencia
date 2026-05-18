@@ -1,4 +1,4 @@
-const CACHE_NAME = 'viaje-ia-v6';
+const CACHE_NAME = 'viaje-ia-v7';
 const STATIC_CACHE = CACHE_NAME + '-static';
 const PAGE_CACHE = CACHE_NAME + '-pages';
 const ASSET_CACHE = CACHE_NAME + '-assets';
@@ -98,12 +98,11 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Never cache tile server requests (OSM, CARTO) — they fail as opaque in SW context
+  // Skip tile server requests (OSM, CARTO) — SW fetch() fails for no-cors cross-origin (NS_ERROR_INTERCEPTION_FAILED)
   if (
     hostname.endsWith('tile.openstreetmap.org') ||
     hostname.endsWith('basemaps.cartocdn.com')
   ) {
-    event.respondWith(fetch(event.request));
     return;
   }
 
