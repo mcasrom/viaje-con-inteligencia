@@ -96,7 +96,6 @@ export default function SOSButton() {
   const [searchResults, setSearchResults] = useState<LocationResult[]>([]);
   const [searching, setSearching] = useState(false);
   const searchTimeout = useRef<ReturnType<typeof setTimeout>>(undefined);
-  const lastSearchTime = useRef(0);
   const userCoords = useRef<{ lat: number; lon: number } | null>(null);
 
 
@@ -159,9 +158,9 @@ export default function SOSButton() {
         userCoords.current = { lat: pos.coords.latitude, lon: pos.coords.longitude };
         try {
           const res = await fetch(
-            `https://nominatim.openstreetmap.org/reverse?lat=${pos.coords.latitude}&lon=${pos.coords.longitude}&format=json&accept-language=es`,
-            { headers: { 'User-Agent': 'ViajeInteligencia/1.0' } }
+            `/api/geocode?lat=${pos.coords.latitude}&lon=${pos.coords.longitude}`
           );
+          if (!res.ok) { setStep('search'); return; }
           const geo = await res.json();
           const cc = (geo.address?.country_code || '').toLowerCase();
           if (!cc || !COUNTRY_BY_NOMINATIM[cc]) {
@@ -187,14 +186,9 @@ export default function SOSButton() {
       return;
     }
     setError(null);
-    const controller = new AbortController();
-    const abortTimeout = setTimeout(() => controller.abort(), 8000);
+    setSearching(true);
     try {
-      const res = await fetch(
-        `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=6&addressdetails=1&accept-language=es`,
-        { headers: { 'User-Agent': 'ViajeInteligencia/1.0' }, signal: controller.signal }
-      );
-      clearTimeout(abortTimeout);
+      const res = await fetch(`/api/geocode?q=${encodeURIComponent(query)}&limit=6`);
       if (!res.ok) {
         setError(`Error al buscar (HTTP ${res.status})`);
         return;
@@ -217,13 +211,8 @@ export default function SOSButton() {
         });
 
       setSearchResults(results.filter(r => r.countryCode && paisesData[r.countryCode]));
-    } catch (e: any) {
-      clearTimeout(abortTimeout);
-      if (e?.name === 'AbortError') {
-        setError('La consulta tardó demasiado. Intenta de nuevo.');
-      } else {
-        setError('Error de conexión al buscar ubicación.');
-      }
+    } catch {
+      setError('Error de conexión al buscar ubicación.');
     }
     setSearching(false);
   };
@@ -231,13 +220,7 @@ export default function SOSButton() {
   const handleSearchChange = (value: string) => {
     setSearchQuery(value);
     clearTimeout(searchTimeout.current);
-    const now = Date.now();
-    const timeSinceLastSearch = now - lastSearchTime.current;
-    const delay = timeSinceLastSearch < 2000 ? Math.max(800, 2000 - timeSinceLastSearch) : 400;
-    searchTimeout.current = setTimeout(() => {
-      lastSearchTime.current = Date.now();
-      geocodeSearch(value);
-    }, delay);
+    searchTimeout.current = setTimeout(() => geocodeSearch(value), 400);
   };
 
   const handleSelectLocation = (loc: LocationResult) => {
