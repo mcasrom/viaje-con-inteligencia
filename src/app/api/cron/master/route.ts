@@ -17,6 +17,7 @@ import { fetchAndStoreEvents } from '@/lib/events-fetch';
 import { runMonitorForUser } from '@/lib/seguros/monitor';
 import { createLogger } from '@/lib/logger';
 import { getAirspaceStatuses } from '@/lib/opensky';
+import { generateInfografia } from '@/lib/infografia/generate';
 const log = createLogger('Master');
 
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
@@ -47,10 +48,28 @@ async function runMaecScrape(): Promise<any> {
   }
 }
 
+// Simple retry wrapper with backoff
+async function withRetry<T>(fn: () => Promise<T>, label: string, maxRetries = 2): Promise<T> {
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      return await fn();
+    } catch (e: any) {
+      if (attempt < maxRetries) {
+        const delay = attempt * 2000;
+        log.warn(`${label} attempt ${attempt} failed, retrying in ${delay}ms`, e.message);
+        await new Promise(r => setTimeout(r, delay));
+      } else {
+        throw e;
+      }
+    }
+  }
+  throw new Error(`${label} failed after ${maxRetries} attempts`);
+}
+
 // ===== US STATE DEPT SCRAPE =====
 async function runUSStateDept(): Promise<any> {
   try {
-    const result = await scrapeUSAdvisories();
+    const result = await withRetry(() => scrapeUSAdvisories(), 'US State Dept');
     await supabase.from('scraper_logs').insert({
       source: 'us_state_dept', status: result.errors > 0 ? 'partial' : 'success',
       items_scraped: result.stored, items_failed: result.errors,
@@ -439,10 +458,13 @@ async function runNewsSentiment(): Promise<any> {
 // ===== OIL PRICE =====
 async function runOilPrice(): Promise<any> {
   try {
-    const res = await fetch('https://query1.finance.yahoo.com/v8/finance/chart/BZ=F?range=1d&interval=1d', {
-      headers: { 'User-Agent': 'Mozilla/5.0' },
-      signal: AbortSignal.timeout(8000),
-    });
+    const res = await withRetry(
+      () => fetch('https://query1.finance.yahoo.com/v8/finance/chart/BZ=F?range=1d&interval=1d', {
+        headers: { 'User-Agent': 'Mozilla/5.0' },
+        signal: AbortSignal.timeout(10000),
+      }),
+      'Oil price fetch'
+    );
     if (res.ok) {
       const data = await res.json();
       const price = data?.chart?.result?.[0]?.meta?.regularMarketPrice;
@@ -719,21 +741,9 @@ async function runInfografiaGenerator(): Promise<any> {
   if (day !== 0) return { status: 'skipped', reason: 'Not Sunday' };
 
   try {
-    const baseUrl = process.env.APP_BASE_URL || 'https://www.viajeinteligencia.com';
-    const cronSecret = process.env.CRON_SECRET;
-    if (!cronSecret) return { status: 'skipped', reason: 'No CRON_SECRET' };
+    const result = await generateInfografia();
 
-    const res = await fetch(`${baseUrl}/api/infografias`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${cronSecret}`,
-        'Content-Type': 'application/json',
-      },
-    });
-    const result = await res.json();
-    if (!res.ok) return { status: 'error', ...result };
-
-    const infografiaUrl = `${baseUrl}/infografias`;
+    const infografiaUrl = `${BASE_URL}/infografias`;
 
     const { publishToTelegramChannel, publishToMastodon, publishToBlueSky } = await import('@/lib/social-publisher');
 
@@ -800,27 +810,40 @@ export async function GET(request: Request) {
   log.info('Starting...');
 
   // Phase 1: Independent tasks (run in parallel)
-  // MAEC scrape (90s), US State Dept (20s), Airspace OSINT (30s), Oil Price (15s), Events (90s)
-  // Events fetch is fire-and-forget (too slow to block the cron)
-  runEventsFetch().then(result => {
-    results.events = result;
-  }).catch(() => {
-    results.events = { status: 'error', error: 'Async fetch failed' };
-  });
-  results.events = { status: 'fired', note: 'Events started asynchronously' };
+  // All tasks execute concurrently with individual timeouts.
+  // Phase 1 also has a global timeout to prevent total hang.
+  const PHASE1_TIMEOUT_MS = 150000;
 
-  const [maecRes, usStateDeptRes, airspaceRes, oilRes, modelTrainingRes] = await Promise.all([
+  const settledPromises = Promise.allSettled([
     withTimeout(() => runMaecScrape(), 90000, '1/8 MAEC scrape'),
     withTimeout(() => runUSStateDept(), 30000, '1b/8 US State Dept'),
     withTimeout(() => runAirspaceOsint(), 30000, '4/8 Airspace OSINT'),
     withTimeout(() => runOilPrice(), 15000, '6/8 Oil price'),
     withTimeout(() => runModelTraining(), 5000, '6/8 Model training'),
+    withTimeout(() => runEventsFetch(), 120000, 'Events fetch'),
   ]);
-  results.maec = maecRes;
-  results.us_state_dept = usStateDeptRes;
-  results.airspace = airspaceRes;
-  results.oil = oilRes;
-  results.model_training = modelTrainingRes;
+
+  const phase1Result = await Promise.race([
+    settledPromises.then((r: PromiseSettledResult<any>[]) => ({ ok: true, results: r })),
+    new Promise<{ ok: false; error: string }>((resolve) =>
+      setTimeout(() => resolve({ ok: false, error: `Phase 1 timed out after ${PHASE1_TIMEOUT_MS}ms` }), PHASE1_TIMEOUT_MS)
+    ),
+  ]);
+
+  if (!phase1Result.ok) {
+    log.error('Phase 1 timeout — proceeding with partial results');
+  }
+
+  const settled = phase1Result.ok ? phase1Result.results : [];
+  const extract = (r: PromiseSettledResult<any> | undefined) =>
+    r?.status === 'fulfilled' ? r.value : { status: 'error', error: (r as any)?.reason?.message || 'Phase 1 timeout' };
+
+  results.maec = extract(settled[0]);
+  results.us_state_dept = extract(settled[1]);
+  results.airspace = extract(settled[2]);
+  results.oil = extract(settled[3]);
+  results.model_training = extract(settled[4]);
+  results.events = extract(settled[5]);
 
   // Phase 2: Depends on Phase 1 results
   // Risk check (needs MAEC data), Flight costs (needs oil price)
