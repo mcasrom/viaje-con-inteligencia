@@ -526,6 +526,9 @@ export default function ChatClient() {
                 <span className="text-green-400">Modelo 70b Premium activo — Chat ilimitado</span>
               )}
             </div>
+            <p className="mt-1.5 text-[10px] text-slate-600 text-center leading-relaxed">
+              Las respuestas IA son orientativas y se contrastan con fuentes oficiales. Ver <Link href="/metodologia" className="underline hover:text-slate-400">metodología</Link>.
+            </p>
           </div>
         </div>
       </div>

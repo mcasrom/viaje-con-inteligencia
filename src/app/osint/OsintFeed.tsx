@@ -355,7 +355,7 @@ export default function OsintFeed() {
 
         <footer className="mt-12 pt-6 border-t border-slate-800 text-center">
           <p className="text-slate-600 text-xs">
-            Datos actualizados cada 6h vía cron automático. Fuentes: GDELT, USGS, GDACS, RSS, Reddit.
+            Datos agregados desde fuentes OSINT y organismos oficiales. Actualizado cada 6h vía cron automático.
           </p>
           <p className="text-slate-600 text-xs mt-1">
             Esta información no sustituye avisos oficiales del MAEC o embajadas.

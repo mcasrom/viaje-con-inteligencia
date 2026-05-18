@@ -6,7 +6,8 @@ import { useState, useEffect } from 'react';
 import { 
   Search, Sparkles, Crown, Bell, Globe, Filter, 
   ChevronRight, Menu, X, Calculator, Route, ClipboardList, BarChart3, 
-  BookOpen, Newspaper, ChevronRight as Chevron, Navigation, TrendingUp, Shield, ArrowRight
+  BookOpen, Newspaper, ChevronRight as Chevron, Navigation, TrendingUp, Shield, ArrowRight,
+  ShieldCheck, Database, Brain, Lock, Eye, FileText, User
 } from 'lucide-react';
 import { paisesData } from '@/data/paises';
 import { TOTAL_PAISES } from '@/lib/constants';
@@ -514,6 +515,56 @@ export default function HomeClient() {
         <PrimaryCTA />
       </div>
 
+      {/* Trust Band — Cómo funciona */}
+      <section className="max-w-5xl mx-auto px-4 py-16 -mt-8 relative z-10">
+        <div className="bg-gradient-to-br from-slate-800/90 to-slate-900/90 backdrop-blur-sm rounded-2xl border border-slate-700/50 p-8 md:p-10">
+          <div className="text-center mb-8">
+            <h2 className="text-2xl md:text-3xl font-bold text-white mb-2">
+              Cómo funciona Viaje Inteligencia
+            </h2>
+            <p className="text-slate-400 text-sm max-w-2xl mx-auto">
+              Datos oficiales, IA asistida y transparencia total — sin cajas negras.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+            {[
+              { icon: Globe, title: 'Datos oficiales', desc: 'MAEC + US State Dept + 73 fuentes OSINT en tiempo real', color: 'text-blue-400', bg: 'bg-blue-500/10' },
+              { icon: Brain, title: 'IA asistida', desc: 'Groq LLM analiza, no decide. Las alertas las validamos con fuentes', color: 'text-purple-400', bg: 'bg-purple-500/10' },
+              { icon: FileText, title: 'Metodología abierta', desc: 'Cada riesgo, cada score, cada fuente — explicado y auditable', color: 'text-emerald-400', bg: 'bg-emerald-500/10' },
+              { icon: Lock, title: 'Privacidad por diseño', desc: 'No almacenamos ubicación. Sin tracking. Sin perfiles comerciales', color: 'text-amber-400', bg: 'bg-amber-500/10' },
+              { icon: Shield, title: 'Proyecto independiente', desc: 'Desarrollado en España. Sin venture capital. Sin venta de datos', color: 'text-rose-400', bg: 'bg-rose-500/10' },
+            ].map((item, i) => (
+              <div key={i} className="text-center p-4 rounded-xl hover:bg-slate-700/30 transition-colors">
+                <div className={`w-10 h-10 ${item.bg} rounded-xl flex items-center justify-center mx-auto mb-3`}>
+                  <item.icon className={`w-5 h-5 ${item.color}`} />
+                </div>
+                <h3 className="text-white text-sm font-semibold mb-1">{item.title}</h3>
+                <p className="text-slate-400 text-xs leading-relaxed">{item.desc}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="flex flex-wrap items-center justify-center gap-3 mt-6 pt-4 border-t border-slate-700/50">
+            <Link href="/metodologia" className="inline-flex items-center gap-1.5 text-xs text-slate-400 hover:text-white transition-colors">
+              <ShieldCheck className="w-3.5 h-3.5" /> Metodología completa
+            </Link>
+            <span className="text-slate-700">·</span>
+            <Link href="/transparencia" className="inline-flex items-center gap-1.5 text-xs text-slate-400 hover:text-white transition-colors">
+              <Eye className="w-3.5 h-3.5" /> Centro de Transparencia
+            </Link>
+            <span className="text-slate-700">·</span>
+            <Link href="/fuentes-osint" className="inline-flex items-center gap-1.5 text-xs text-slate-400 hover:text-white transition-colors">
+              <Database className="w-3.5 h-3.5" /> Fuentes y limitaciones
+            </Link>
+            <span className="text-slate-700">·</span>
+            <Link href="/seguridad" className="inline-flex items-center gap-1.5 text-xs text-slate-400 hover:text-white transition-colors">
+              <Lock className="w-3.5 h-3.5" /> Cómo protegemos tus datos
+            </Link>
+          </div>
+        </div>
+      </section>
+
       <section className="max-w-7xl mx-auto px-4 pt-32 pb-12">
         <div className="text-center mb-8">
           <h2 className="text-2xl md:text-3xl font-bold text-white mb-3">
@@ -567,6 +618,29 @@ export default function HomeClient() {
           <p className="text-slate-400 text-sm leading-relaxed">
             Herramientas adicionales: calculadora de coste de viaje ajustada al petróleo, rutas temáticas de España, alertas de cambio de riesgo MAEC, generador de reclamaciones para aerolíneas y dashboard con KPIs globales de 6 índices internacionales.
           </p>
+        </div>
+
+        {/* Sobre el proyecto — autor */}
+        <div className="max-w-3xl mx-auto mt-8 bg-gradient-to-r from-slate-800/50 to-slate-800/20 rounded-xl border border-slate-700/30 p-6">
+          <div className="flex items-start gap-4">
+            <div className="w-14 h-14 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white text-xl font-bold flex-shrink-0">
+              MC
+            </div>
+            <div className="min-w-0">
+              <h3 className="text-white font-semibold text-sm">Sobre el proyecto</h3>
+              <p className="text-slate-400 text-xs mt-1 leading-relaxed">
+                Soy <strong className="text-slate-300">Miguel Castillo</strong> y desarrollo Viaje Inteligencia como plataforma independiente de travel intelligence, OSINT y análisis de riesgo para viajeros. Stack: Next.js, Supabase, Groq LLM, OpenStreetMap, datos MAEC + US State Dept + GDELT + USGS + GDACS.
+              </p>
+              <p className="text-slate-500 text-xs mt-1.5">
+                Proyecto 100% independiente, desarrollado en España. Sin venture capital, sin publicidad, sin venta de datos.
+              </p>
+              <div className="flex flex-wrap gap-2 mt-2">
+                <Link href="/metodologia" className="text-xs text-blue-400 hover:text-blue-300 transition-colors">Metodología →</Link>
+                <Link href="/manifiesto" className="text-xs text-blue-400 hover:text-blue-300 transition-colors">Manifiesto →</Link>
+                <Link href="/transparencia" className="text-xs text-blue-400 hover:text-blue-300 transition-colors">Transparencia →</Link>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
       <SloganPopup />

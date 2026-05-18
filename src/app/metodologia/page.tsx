@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { ArrowLeft, Shield, AlertTriangle, BarChart3, FileText, Globe, Database, TrendingUp, Brain, MessageSquare } from 'lucide-react';
+import { ArrowLeft, Shield, AlertTriangle, BarChart3, FileText, Globe, Database, TrendingUp, Brain, MessageSquare, Bell, ArrowRight } from 'lucide-react';
 import { TOTAL_PAISES } from '@/lib/constants';
 
 export const metadata: Metadata = {
@@ -77,10 +77,43 @@ export default function MetodologiaPage() {
         </Link>
 
         <div className="text-center mb-10">
-          <h1 className="text-3xl md:text-4xl font-bold text-white mb-3">Metodología MAEC</h1>
+          <h1 className="text-3xl md:text-4xl font-bold text-white mb-3">Metodología</h1>
           <p className="text-slate-400 max-w-2xl mx-auto">
-            Cómo analizamos y clasificamos el riesgo de {TOTAL_PAISES} países para viajeros españoles. Basado en las recomendaciones oficiales del Ministerio de Asuntos Exteriores.
+            Cómo analizamos y clasificamos el riesgo de viaje. Explicación completa del pipeline: fuentes, IA, alertas y presentación.
           </p>
+        </div>
+
+        {/* Pipeline visual */}
+        <div className="bg-slate-800/60 rounded-xl border border-slate-700/50 p-6 mb-8">
+          <div className="flex items-center gap-3 mb-6">
+            <BarChart3 className="w-6 h-6 text-emerald-400" />
+            <h2 className="text-xl font-bold text-white">Cómo funciona el sistema</h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
+            {[
+              { step: '1', title: 'Ingesta de datos', desc: 'MAEC · USGS · OpenStreetMap · Open-Meteo · GDELT · RSS · Reddit · GDACS', icon: Database, color: 'text-blue-400' },
+              { step: '2', title: 'Normalización', desc: 'Estandarizamos formatos, códigos ISO, coordenadas y categorías de todas las fuentes', icon: FileText, color: 'text-indigo-400' },
+              { step: '3', title: 'IA y análisis', desc: 'Groq LLM clasifica señales OSINT. ML Random Forest predice cambios de riesgo', icon: Brain, color: 'text-purple-400' },
+              { step: '4', title: 'Alertas', desc: 'Detección de incidentes, clusterización, sentimiento, notificaciones Telegram', icon: Bell, color: 'text-amber-400' },
+              { step: '5', title: 'Para el viajero', desc: 'Mapa interactivo, fichas de país, radar, chat IA, dashboard, newsletter', icon: Globe, color: 'text-green-400' },
+            ].map((item, i) => (
+              <div key={i} className="relative">
+                <div className="bg-slate-700/30 rounded-xl p-4 h-full border border-slate-600/30">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="w-6 h-6 bg-blue-600/80 rounded-full flex items-center justify-center text-white font-bold text-[10px]">{item.step}</span>
+                    <item.icon className={`w-4 h-4 ${item.color}`} />
+                  </div>
+                  <h3 className="text-white text-sm font-semibold mb-1">{item.title}</h3>
+                  <p className="text-slate-400 text-xs leading-relaxed">{item.desc}</p>
+                </div>
+                {i < 4 && (
+                  <div className="hidden md:flex absolute -right-2 top-1/2 -translate-y-1/2 z-10">
+                    <ArrowRight className="w-4 h-4 text-slate-600" />
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* Source */}
