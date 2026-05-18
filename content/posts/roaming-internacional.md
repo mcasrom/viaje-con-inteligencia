@@ -6,7 +6,7 @@ slug: roaming-internacional
 image: https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=800
 author: Miguel Castillo
 readingTime: 9 minutos
-tags: [roaming, móviles, telecomunicaciones, datos, economia,, tecnologia, SIM]
+tags: [roaming, móviles, telecomunicaciones, datos, economia, tecnologia, SIM]
 categories: [Tecnología]
 keywords: "roaming internacional, datos móveis abroad, eSIM viaje, roaming España, SIM local, datos internacionales"
 ---

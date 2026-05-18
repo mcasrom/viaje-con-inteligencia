@@ -90,7 +90,7 @@ export function getPostBySlug(slug: string): Post | null {
       keywords: data.keywords || data.description || '',
       excerpt: data.excerpt || data.description || '',
       description: data.description || '',
-      tags: data.tags || [],
+      tags: Array.isArray(data.tags) ? data.tags.filter(Boolean) : [],
       featured: data.featured || false,
     };
   } catch {
@@ -137,7 +137,7 @@ export function getAllPosts(filter?: PostsFilter): PostMeta[] {
 
   if (filter?.tag) {
     const tagLower = filter.tag.toLowerCase();
-    posts = posts.filter(p => p.tags?.some(t => t.toLowerCase() === tagLower));
+    posts = posts.filter(p => p.tags?.some(t => t && t.toLowerCase && t.toLowerCase() === tagLower));
   }
 
   if (filter?.sort === 'oldest') {
@@ -273,7 +273,7 @@ export function getPostsByRisk(riskLevel: string, limit: number = 10): PostMeta[
         const pKeywords = getKeywordsArray(p.keywords);
         return pKeywords.some(pk => pk.toLowerCase().includes(k.toLowerCase())) ||
           p.title.toLowerCase().includes(k.toLowerCase()) ||
-          p.tags?.some(t => t.toLowerCase().includes(k.toLowerCase()));
+          p.tags?.some(t => t && t.toLowerCase().includes(k.toLowerCase()));
       })
     )
     .slice(0, limit);

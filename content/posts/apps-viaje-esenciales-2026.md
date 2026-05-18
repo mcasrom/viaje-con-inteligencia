@@ -6,7 +6,7 @@ slug: apps-viaje-esenciales-2026
 image: https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=800
 author: Miguel Castillo
 readingTime: 8 minutos
-tags: [apps, tecnología, herramientas,, hoteles, maps]
+tags: [apps, tecnología, herramientas, hoteles, maps]
 categories: [Tecnología]
 ---
 
