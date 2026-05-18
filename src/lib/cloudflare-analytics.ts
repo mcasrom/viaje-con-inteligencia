@@ -70,51 +70,76 @@ function buildCsv(rows: Record<string, string | number>[]): string {
   return [header, ...lines].join('\n');
 }
 
-async function fetchDashboard(): Promise<CfTotals | null> {
+async function fetchGraphql(): Promise<CfTotals | null> {
   const since = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
-  const url = `${CF_API_BASE}/zones/${CF_ZONE_ID}/analytics/dashboard?since=${since}&until=${new Date().toISOString()}&continuous=true`;
+  const until = new Date().toISOString();
+  const query = {
+    query: `{
+      viewer {
+        zones(filter: {zoneTag: "${CF_ZONE_ID}"}) {
+          httpRequests1hGroups(
+            limit: 168
+            filter: {datetime_gt: "${since}", datetime_lt: "${until}"}
+            orderBy: [datetime_DESC]
+          ) {
+            dimensions { datetime }
+            sum {
+              requests
+              bytes
+              threats
+              pageViews
+              cachedRequests
+              encryptedRequests
+            }
+            uniq { uniques }
+          }
+        }
+      }
+    }`,
+  };
   try {
-    const res = await fetch(url, { headers: headers() });
+    const res = await fetch(`${CF_API_BASE}/graphql`, {
+      method: 'POST',
+      headers: headers(),
+      body: JSON.stringify(query),
+    });
     if (!res.ok) {
-      log.warn(`Dashboard API HTTP ${res.status}`);
+      log.warn(`GraphQL API HTTP ${res.status}`);
       return null;
     }
     const json = await res.json();
-    if (!json.success) {
-      log.warn('Dashboard API returned error', json.errors);
+    if (json.errors) {
+      log.warn('GraphQL API errors', json.errors);
       return null;
     }
-    const t = json.result.totals;
-    const total = t.requests.all || 0;
-    const ssl = t.requests.ssl || 0;
+    const groups = json.data?.viewer?.zones?.[0]?.httpRequests1hGroups || [];
+    if (!groups.length) {
+      log.warn('GraphQL returned empty data');
+      return null;
+    }
+    let totalRequests = 0, totalBytes = 0, totalThreats = 0, totalPageViews = 0, totalUniques = 0, totalEncrypted = 0, totalCached = 0;
+    const seenUniques = new Set<string>();
+    groups.forEach((g: any) => {
+      totalRequests += g.sum?.requests || 0;
+      totalBytes += g.sum?.bytes || 0;
+      totalThreats += g.sum?.threats || 0;
+      totalPageViews += g.sum?.pageViews || 0;
+      totalEncrypted += g.sum?.encryptedRequests || 0;
+      totalCached += g.sum?.cachedRequests || 0;
+    });
+    const uniqueHrs = groups.filter((g: any) => g.uniq?.uniques).length || 1;
+    totalUniques = Math.round(groups.reduce((a: number, g: any) => a + (g.uniq?.uniques || 0), 0) / uniqueHrs * 24);
     return {
-      pageViews: t.pageviews?.all || 0,
-      uniqueVisitors: t.uniques?.all || 0,
-      requests: total,
-      bandwidthBytes: t.bandwidth?.all || 0,
-      threats: t.threats?.all || 0,
-      sslPct: total > 0 ? Math.round((ssl / total) * 10000) / 100 : 0,
+      pageViews: totalPageViews,
+      uniqueVisitors: totalUniques,
+      requests: totalRequests,
+      bandwidthBytes: totalBytes,
+      threats: totalThreats,
+      sslPct: totalRequests > 0 ? Math.round((totalEncrypted / totalRequests) * 10000) / 100 : 0,
     };
   } catch (err) {
-    log.error('Dashboard API fetch failed', err);
+    log.error('GraphQL fetch failed', err);
     return null;
-  }
-}
-
-async function fetchTopPagesFromNginx(): Promise<{ topPaths: CfTopPath[]; statusCodes: CfStatusCodes; countryRequests: CfCountry[] }> {
-  try {
-    const res = await fetch('http://localhost:8080/nginx-stats', {
-      signal: AbortSignal.timeout(5000),
-    });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const data = await res.json();
-    return {
-      topPaths: data.topPaths || [],
-      statusCodes: data.statusCodes || {},
-      countryRequests: data.countries || [],
-    };
-  } catch {
-    return { topPaths: [], statusCodes: {}, countryRequests: [] };
   }
 }
 
@@ -146,18 +171,16 @@ export async function runCloudflareAnalytics(): Promise<{ stored: boolean; summa
     return { stored: false, summary: '❌ Cloudflare Analytics no configurado (faltan tokens)' };
   }
 
-  const totals = await fetchDashboard();
+  const totals = await fetchGraphql();
   if (!totals) {
     return { stored: false, summary: '❌ Error al consultar Cloudflare Analytics API' };
   }
 
-  const nginxData = await fetchTopPagesFromNginx();
-
   const result: CfAnalyticsResult = {
     totals,
-    countries: nginxData.countryRequests || [],
-    topPaths: nginxData.topPaths || [],
-    statusCodes: nginxData.statusCodes || {},
+    countries: [],
+    topPaths: [],
+    statusCodes: {},
     crawlerRequests: 0,
   };
 
