@@ -17,6 +17,7 @@ const CATEGORY_ICONS: Record<string, string> = {
   Básicos: '📖',
   'Infografía': '📊',
   'Nota del Editor': '📝',
+  Editorial: '📝',
 };
 const CATEGORY_COLORS: Record<string, string> = {
   Destinos: 'from-emerald-500/20 to-emerald-600/10 border-emerald-500/30',
@@ -28,6 +29,7 @@ const CATEGORY_COLORS: Record<string, string> = {
   Básicos: 'from-sky-500/20 to-sky-600/10 border-sky-500/30',
   'Infografía': 'from-blue-500/20 to-indigo-600/10 border-blue-500/30',
   'Nota del Editor': 'from-orange-500/20 to-orange-600/10 border-orange-500/30',
+  Editorial: 'from-blue-500/20 to-indigo-600/10 border-blue-500/30',
 };
 
 export const revalidate = 300;
