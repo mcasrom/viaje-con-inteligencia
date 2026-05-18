@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Shield, Clock, Mail, Globe, Users, AlertTriangle, CheckCircle, XCircle, FileText, Database, MessageSquare, ExternalLink, RefreshCw, Play, Send, Radio, Bot, LogOut, DollarSign, Key, Download, Eye, Calendar as CalendarIcon, TrendingUp } from 'lucide-react';
+import { Shield, Clock, Mail, Globe, Users, AlertTriangle, CheckCircle, XCircle, FileText, Database, MessageSquare, ExternalLink, RefreshCw, Play, Send, Radio, Bot, LogOut, DollarSign, Key, Download, Eye, Calendar as CalendarIcon, TrendingUp, Euro, Activity, GitBranch } from 'lucide-react';
 
 export default function AdminDashboard() {
   const router = useRouter();
@@ -415,10 +415,52 @@ export default function AdminDashboard() {
           </a>
         </section>
 
+        {/* Project Costs */}
+        <section className="bg-slate-800 rounded-2xl border border-slate-700 p-6">
+          <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+            <Euro className="w-5 h-5 text-emerald-400" />
+            Costes del Proyecto
+          </h2>
+          <p className="text-slate-400 text-sm mb-4">Transparencia financiera: desglose de gastos mensuales y anuales del proyecto. Datos desde mayo 2026.</p>
+          <div className="flex gap-3">
+            <a href="/admin/costes" className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600/20 border border-emerald-500/30 text-emerald-400 rounded-lg hover:bg-emerald-600/30 transition-colors text-sm font-medium">
+              Ver costes <Euro className="w-4 h-4" />
+            </a>
+          </div>
+        </section>
+
+        {/* Cron Health */}
+        <section className="bg-slate-800 rounded-2xl border border-slate-700 p-6">
+          <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+            <Activity className="w-5 h-5 text-cyan-400" />
+            Monitor de Cron
+          </h2>
+          <p className="text-slate-400 text-sm mb-4">Historial de ejecuciones, detección de degradación y estado del heartbeat externo.</p>
+          <div className="flex gap-3">
+            <a href="/admin/health-cron" className="inline-flex items-center gap-2 px-4 py-2 bg-cyan-600/20 border border-cyan-500/30 text-cyan-400 rounded-lg hover:bg-cyan-600/30 transition-colors text-sm font-medium">
+              Ver estado <Activity className="w-4 h-4" />
+            </a>
+          </div>
+        </section>
+
+        {/* Deploy */}
+        <section className="bg-slate-800 rounded-2xl border border-slate-700 p-6">
+          <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+            <GitBranch className="w-5 h-5 text-white" />
+            Deploy y Procedimiento
+          </h2>
+          <p className="text-slate-400 text-sm mb-4">Documentación del pipeline de deploy automático vía GitHub Actions: rsync + build + PM2 en Hetzner.</p>
+          <div className="flex gap-3">
+            <a href="/admin/deploy" className="inline-flex items-center gap-2 px-4 py-2 bg-slate-700 border border-slate-600 text-slate-300 rounded-lg hover:bg-slate-600 transition-colors text-sm font-medium">
+              Ver procedimiento <GitBranch className="w-4 h-4" />
+            </a>
+          </div>
+        </section>
+
         {/* Users */}
         <section className="bg-slate-800 rounded-2xl border border-slate-700 p-6">
           <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-            <Users className="w-5 h-5 text-blue-400" />
+            <Users className="w-5 h-5 text-green-400" />
             Usuarios
           </h2>
           <p className="text-slate-400 text-sm mb-4">Listado de usuarios registrados, estado premium, trials activos.</p>

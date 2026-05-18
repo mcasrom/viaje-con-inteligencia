@@ -1,7 +1,19 @@
 'use client';
-import { useState, useCallback, useEffect } from 'react';
-import { AlertTriangle, X, MapPin, Phone, Shield, ExternalLink, Loader2, ChevronDown } from 'lucide-react';
+import { useState, useCallback, useEffect, useRef } from 'react';
+import { AlertTriangle, X, MapPin, Phone, Shield, ExternalLink, Loader2, ChevronDown, Navigation } from 'lucide-react';
 import { paisesData, getEmergenciasPorPais, getTodosLosPaises, type NivelRiesgo } from '@/data/paises';
+
+interface EmergencyPoi {
+  name: string;
+  type: string;
+  typeName: string;
+  icon: string;
+  phone?: string;
+  address?: string;
+  distance_m?: number;
+  lat: number;
+  lon: number;
+}
 
 interface SOSData {
   countryCode: string;
@@ -9,7 +21,7 @@ interface SOSData {
   risk: NivelRiesgo;
   embassy: { nombre: string; telefono: string; direccion: string; email?: string } | null;
   emergencies: { general: string; policia: string; bomberos: string; ambulancia: string } | null;
-  hospitals: { nombre: string; telefono?: string; direccion?: string }[];
+  emergencyPois: EmergencyPoi[];
   emoji: string;
 }
 
@@ -70,9 +82,10 @@ export default function SOSButton() {
   const [isOpen, setIsOpen] = useState(false);
   const [step, setStep] = useState<'idle' | 'locating' | 'manual' | 'ready'>('idle');
   const [data, setData] = useState<SOSData | null>(null);
-  const [hospitalsLoading, setHospitalsLoading] = useState(false);
+  const [poisLoading, setPoisLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [manualCode, setManualCode] = useState('');
+  const userCoords = useRef<{ lat: number; lon: number } | null>(null);
 
   useEffect(() => {
     const handler = () => {
@@ -82,23 +95,31 @@ export default function SOSButton() {
     return () => globalThis.removeEventListener?.('open-sos', handler);
   }, [isOpen]);
 
-  const loadHospitals = async (code: string) => {
-    setHospitalsLoading(true);
+  const loadEmergencyPois = async (code: string) => {
+    setPoisLoading(true);
     try {
-      const res = await fetch(`/api/pois?country=${code}&type=hospital&limit=5`);
+      const coords = userCoords.current;
+      const url = coords
+        ? `/api/pois?type=emergency&lat=${coords.lat}&lon=${coords.lon}&radius=5000&limit=8`
+        : `/api/pois?country=${code}&type=emergency&limit=8`;
+      const res = await fetch(url);
       const poiData = await res.json();
       if (poiData?.pois?.length) {
-        setData(prev => prev ? {
-          ...prev,
-          hospitals: poiData.pois.slice(0, 3).map((p: any) => ({
-            nombre: p.nombre || p.name || 'Hospital',
-            telefono: p.telefono || p.phone,
-            direccion: p.direccion || p.address,
-          })),
-        } : prev);
+        const pois = poiData.pois.slice(0, 6).map((p: any) => ({
+          name: p.name,
+          type: p.type,
+          typeName: p.typeName,
+          icon: p.icon,
+          phone: p.phone,
+          address: p.address,
+          distance_m: p.distance_m,
+          lat: p.lat,
+          lon: p.lon,
+        }));
+        setData(prev => prev ? { ...prev, emergencyPois: pois } : prev);
       }
     } catch {}
-    setHospitalsLoading(false);
+    setPoisLoading(false);
   };
 
   const handleOpen = () => {
@@ -122,6 +143,7 @@ export default function SOSButton() {
     }
     navigator.geolocation.getCurrentPosition(
       async (pos) => {
+        userCoords.current = { lat: pos.coords.latitude, lon: pos.coords.longitude };
         try {
           const res = await fetch(
             `https://nominatim.openstreetmap.org/reverse?lat=${pos.coords.latitude}&lon=${pos.coords.longitude}&format=json&accept-language=es`,
@@ -145,6 +167,7 @@ export default function SOSButton() {
   }, []);
 
   const tryIpGeolocation = async () => {
+    userCoords.current = null;
     setError(null);
     try {
       const res = await fetch('https://ip-api.com/json/?fields=countryCode', {
@@ -177,12 +200,12 @@ export default function SOSButton() {
       risk: pais.nivelRiesgo,
       embassy,
       emergencies,
-      hospitals: [],
+      emergencyPois: [],
       emoji: FLAG_EMOJI[code] || pais.bandera || '🌍',
     });
     setStep('ready');
 
-    loadHospitals(code);
+    loadEmergencyPois(code);
   };
 
   const handleManualSubmit = () => {
@@ -339,26 +362,39 @@ export default function SOSButton() {
                     </div>
                   )}
 
-                  {/* Hospitals */}
-                  {(data.hospitals.length > 0 || hospitalsLoading) && (
+                  {/* Emergency POIs */}
+                  {(data.emergencyPois.length > 0 || poisLoading) && (
                     <div className="bg-green-900/20 border border-green-800/30 rounded-xl p-4">
                       <h4 className="text-white font-bold flex items-center gap-2 mb-3">
-                        <MapPin className="w-4 h-4 text-green-400" /> Hospitales cercanos
+                        <MapPin className="w-4 h-4 text-green-400" /> Puntos de interés cercanos
                       </h4>
-                      {hospitalsLoading && data.hospitals.length === 0 ? (
+                      {poisLoading && data.emergencyPois.length === 0 ? (
                         <div className="flex items-center gap-2 text-slate-400 text-sm">
                           <Loader2 className="w-4 h-4 animate-spin" />
-                          Cargando hospitales...
+                          Cargando puntos de interés...
                         </div>
                       ) : (
                         <div className="space-y-2">
-                          {data.hospitals.map((h, i) => (
+                          {data.emergencyPois.map((poi, i) => (
                             <div key={i} className="bg-slate-800/60 rounded-lg p-3">
-                              <p className="text-white font-medium text-sm">{h.nombre}</p>
-                              {h.direccion && <p className="text-slate-400 text-xs mt-0.5">{h.direccion}</p>}
-                              {h.telefono && (
-                                <a href={`tel:${h.telefono.replace(/[^+\d]/g, '')}`} className="text-green-400 text-xs hover:underline mt-1 inline-block">
-                                  {h.telefono}
+                              <div className="flex items-center gap-2">
+                                <span className="text-lg">{poi.icon}</span>
+                                <div className="flex-1 min-w-0">
+                                  <p className="text-white font-medium text-sm truncate">{poi.name}</p>
+                                  <p className="text-slate-400 text-xs">{poi.typeName}</p>
+                                </div>
+                                {poi.distance_m != null && (
+                                  <span className="text-slate-400 text-xs shrink-0 flex items-center gap-1">
+                                    <Navigation className="w-3 h-3" />
+                                    {poi.distance_m < 1000
+                                      ? `${poi.distance_m}m`
+                                      : `${(poi.distance_m / 1000).toFixed(1)}km`}
+                                  </span>
+                                )}
+                              </div>
+                              {poi.phone && (
+                                <a href={`tel:${poi.phone.replace(/[^+\d]/g, '')}`} className="text-green-400 text-xs hover:underline mt-1 inline-block">
+                                  {poi.phone}
                                 </a>
                               )}
                             </div>

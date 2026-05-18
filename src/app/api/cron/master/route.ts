@@ -938,6 +938,29 @@ export async function GET(request: Request) {
 
   const elapsed = Date.now() - startTime;
 
+  // Log to cron_history
+  const steps = results;
+  const totalSteps = Object.keys(steps).length;
+  const okSteps = Object.values(steps).filter(s => s && (s as any).status === 'ok' || (s as any).status === 'fired').length;
+  const errorSteps = Object.values(steps).filter(s => s && (s as any).status === 'error').length;
+  const cronStatus = errorSteps === 0 ? 'success' : errorSteps === totalSteps ? 'error' : 'partial';
+
+  try {
+    await supabase.from('cron_history').insert({
+      started_at: new Date(startTime).toISOString(),
+      completed_at: new Date().toISOString(),
+      duration_ms: elapsed,
+      status: cronStatus,
+      steps,
+      total_steps: totalSteps,
+      ok_steps: okSteps,
+      error_steps: errorSteps,
+      heartbeat_sent: false,
+    });
+  } catch (e) {
+    log.error('Failed to log cron_history:', e);
+  }
+
   return NextResponse.json({
     success: true,
     elapsed_ms: elapsed,

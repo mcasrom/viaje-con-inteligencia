@@ -417,6 +417,7 @@ Para probar authenticated endpoints se necesita sesión válida (vía browser).
 5. **🔗 Vinculación Telegram** ✅ — SQL ejecutado, fix deployado. Pendiente: probar flujo desde Telegram
 6. **📊 Resultados RRSS 15 May** — Analizar engagement de Bluesky/Mastodon/X/Telegram
 7. **🧭 Comparador de itinerarios** ✅ — Página `/viajes/comparar` con tabla side-by-side, recomendación, enlace desde `/viajes`
+8. **💓 Heartbeat externo** — Registrar `https://www.viajeinteligencia.com/api/heartbeat` en monitor gratuito (Better Uptime, UptimeRobot, CronHub) con check cada 30-60 min para recibir alerta si el cron falla o no se ejecuta
 
 ## Recurring Tasks
 - **Daily (post-deploy)**: Verify `/api/cron/train-models` completes successfully (R² > 0.95, < 300s).

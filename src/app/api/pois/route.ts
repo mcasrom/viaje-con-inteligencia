@@ -27,6 +27,8 @@ const POI_TYPES: Record<string, { osm: string; label: string; icon: string }> = 
   border:        { osm: 'barrier=border_control',    label: 'Fronteras',        icon: '🛂' },
   police:        { osm: 'amenity=police',            label: 'Comisaría',        icon: '👮' },
   hospital:      { osm: 'amenity=hospital',          label: 'Hospital',         icon: '🏥' },
+  pharmacy:      { osm: 'amenity=pharmacy',          label: 'Farmacia',         icon: '💊' },
+  fuel:          { osm: 'amenity=fuel',              label: 'Gasolinera',       icon: '⛽' },
 };
 
 const COUNTRY_ISO_OVERRIDES: Record<string, string> = {
@@ -62,6 +64,25 @@ out center ${limit};
 `;
 }
 
+function buildOverpassRadiusQuery(lat: number, lon: number, radius: number, types: string[], limit: number): string {
+  const filters = types.map(t => POI_TYPES[t]).filter(Boolean);
+  if (filters.length === 0) return '';
+
+  const queries = filters.map(f => {
+    const [key, val] = f.osm.split('=');
+    return `
+  node["${key}"="${val}"](around:${radius},${lat},${lon});
+  way["${key}"="${val}"](around:${radius},${lat},${lon});`;
+  }).join('');
+
+  return `[out:json][timeout:25];
+(
+${queries}
+);
+out center ${limit};
+`;
+}
+
 function parseCoord(el: any): { lat: number; lon: number } | null {
   const lat = el.lat || el.center?.lat;
   const lon = el.lon || el.center?.lon;
@@ -70,11 +91,11 @@ function parseCoord(el: any): { lat: number; lon: number } | null {
 }
 
 const PROFILE_WEIGHTS: Record<string, Record<string, number>> = {
-  mochilero:  { museum: 0.3, heritage: 0.4, beach: 0.8, lighthouse: 0.5, nature: 1.0, viewpoint: 0.9, castle: 0.4, archaeological: 0.5, airport: 0.1, border: 0.2, police: 0.1, hospital: 0.1 },
-  lujo:       { museum: 1.0, heritage: 1.0, beach: 0.7, lighthouse: 0.5, nature: 0.4, viewpoint: 0.5, castle: 0.9, archaeological: 0.6, airport: 0.8, border: 0.1, police: 0.1, hospital: 0.1 },
-  familiar:   { museum: 0.6, heritage: 0.5, beach: 1.0, lighthouse: 0.4, nature: 0.8, viewpoint: 0.6, castle: 0.7, archaeological: 0.3, airport: 0.5, border: 0.1, police: 0.3, hospital: 0.4 },
-  aventura:   { museum: 0.2, heritage: 0.3, beach: 0.6, lighthouse: 0.4, nature: 1.0, viewpoint: 1.0, castle: 0.3, archaeological: 0.4, airport: 0.2, border: 0.3, police: 0.2, hospital: 0.4 },
-  negocios:   { museum: 0.3, heritage: 0.3, beach: 0.2, lighthouse: 0.1, nature: 0.2, viewpoint: 0.2, castle: 0.2, archaeological: 0.2, airport: 1.0, border: 0.4, police: 0.5, hospital: 0.3 },
+  mochilero:  { museum: 0.3, heritage: 0.4, beach: 0.8, lighthouse: 0.5, nature: 1.0, viewpoint: 0.9, castle: 0.4, archaeological: 0.5, airport: 0.1, border: 0.2, police: 0.1, hospital: 0.1, pharmacy: 0.1, fuel: 0.2 },
+  lujo:       { museum: 1.0, heritage: 1.0, beach: 0.7, lighthouse: 0.5, nature: 0.4, viewpoint: 0.5, castle: 0.9, archaeological: 0.6, airport: 0.8, border: 0.1, police: 0.1, hospital: 0.1, pharmacy: 0.1, fuel: 0.1 },
+  familiar:   { museum: 0.6, heritage: 0.5, beach: 1.0, lighthouse: 0.4, nature: 0.8, viewpoint: 0.6, castle: 0.7, archaeological: 0.3, airport: 0.5, border: 0.1, police: 0.3, hospital: 0.4, pharmacy: 0.5, fuel: 0.3 },
+  aventura:   { museum: 0.2, heritage: 0.3, beach: 0.6, lighthouse: 0.4, nature: 1.0, viewpoint: 1.0, castle: 0.3, archaeological: 0.4, airport: 0.2, border: 0.3, police: 0.2, hospital: 0.4, pharmacy: 0.2, fuel: 0.5 },
+  negocios:   { museum: 0.3, heritage: 0.3, beach: 0.2, lighthouse: 0.1, nature: 0.2, viewpoint: 0.2, castle: 0.2, archaeological: 0.2, airport: 1.0, border: 0.4, police: 0.5, hospital: 0.3, pharmacy: 0.2, fuel: 0.3 },
 };
 
 export async function GET(request: NextRequest) {
@@ -83,6 +104,11 @@ export async function GET(request: NextRequest) {
   const type = params.get('type') || 'all';
   const limit = Math.min(parseInt(params.get('limit') || '30', 10), 50);
   const profile = params.get('profile') || '';
+  const lat = params.get('lat') ? parseFloat(params.get('lat')!) : null;
+  const lon = params.get('lon') ? parseFloat(params.get('lon')!) : null;
+  const radius = Math.min(parseInt(params.get('radius') || '5000', 10), 50000);
+
+  const isRadiusMode = lat !== null && lon !== null && !isNaN(lat) && !isNaN(lon);
 
   // Timeout controller (AbortSignal.timeout no disponible en todas las versiones)
   const controller = new AbortController();
@@ -92,9 +118,11 @@ export async function GET(request: NextRequest) {
   if (type === 'all') {
     typeList = Object.keys(POI_TYPES);
   } else if (type === 'disruption') {
-    typeList = ['airport', 'border', 'police', 'hospital'];
+    typeList = ['airport', 'border', 'police', 'hospital', 'pharmacy', 'fuel'];
   } else if (type === 'tourist') {
     typeList = ['museum', 'heritage', 'beach', 'lighthouse', 'nature', 'viewpoint', 'castle', 'archaeological'];
+  } else if (type === 'emergency') {
+    typeList = ['hospital', 'pharmacy', 'fuel', 'police'];
   } else if (POI_TYPES[type]) {
     typeList = [type];
   } else {
@@ -102,9 +130,9 @@ export async function GET(request: NextRequest) {
   }
 
   // Check cache first
-  const cacheKey = `${country}_${type}_${profile}`;
+  const cacheKey = isRadiusMode ? `${lat}_${lon}_${radius}_${type}_${profile}` : `${country}_${type}_${profile}`;
   try {
-    if (supabaseAdmin) {
+    if (supabaseAdmin && !isRadiusMode) {
       const { data: cached } = await supabaseAdmin
         .from('pois_cache')
         .select('data, updated_at')
@@ -122,7 +150,9 @@ export async function GET(request: NextRequest) {
     }
   } catch {}
 
-  const query = buildOverpassQuery(country, typeList, limit);
+  const query = isRadiusMode
+    ? buildOverpassRadiusQuery(lat!, lon!, radius, typeList, limit)
+    : buildOverpassQuery(country, typeList, limit);
   if (!query) {
     return NextResponse.json({ error: 'Error construyendo query' }, { status: 500 });
   }
@@ -161,7 +191,7 @@ export async function GET(request: NextRequest) {
           return tags[k] === v;
         }) || 'unknown';
 
-        return {
+        const poi: any = {
           id: el.id,
           name: tags.name || tags.operator || tags.short_name || tags['official:name'] || tags.alt_name || null,
           type: osmType === 'unknown' ? typeList[0] : osmType,
@@ -174,6 +204,15 @@ export async function GET(request: NextRequest) {
           opening_hours: tags.opening_hours || null,
           phone: tags.phone || null,
         };
+
+        if (isRadiusMode) {
+          const dlat = lat! - coord.lat;
+          const dlon = lon! - coord.lon;
+          const dist = Math.sqrt(dlat * dlat + dlon * dlon) * 111320;
+          poi.distance_m = Math.round(dist);
+        }
+
+        return poi;
       })
       .filter((p: any) => p && p.name)
       .slice(0, limit);
@@ -189,16 +228,17 @@ export async function GET(request: NextRequest) {
       source: 'openstreetmap-overpass',
       url: 'https://overpass-api.de',
       license: 'ODbL',
-      query: { country, profile: profile || 'none', types: typeList, limit },
+      query: isRadiusMode ? { lat, lon, radius, profile: profile || 'none', types: typeList, limit } : { country, profile: profile || 'none', types: typeList, limit },
       count: scored.length,
+      radius_mode: isRadiusMode,
       types_available: Object.keys(POI_TYPES).map((k: any) => ({ type: k, ...POI_TYPES[k] })),
       pois: scored,
       timestamp: new Date().toISOString(),
     };
 
-    // Save to cache (async, don't block response)
+    // Save to cache (only country mode, radius queries are ephemeral)
     try {
-      if (supabaseAdmin) {
+      if (supabaseAdmin && !isRadiusMode) {
         await supabaseAdmin.from('pois_cache').upsert({
           country_code: country,
           poi_type: type,
