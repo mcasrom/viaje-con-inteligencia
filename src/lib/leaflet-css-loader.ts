@@ -57,7 +57,7 @@ export function ensureLeafletCSS(): Promise<void> {
 
     // Also load full Leaflet CSS from CDN
     const existing = document.querySelector<HTMLLinkElement>(
-      'link[href*="leaflet@1.9.4/dist/leaflet.css"]'
+      'link[rel="stylesheet"][href*="leaflet@1.9.4/dist/leaflet.css"]'
     );
 
     const done = () => {
