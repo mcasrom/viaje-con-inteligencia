@@ -186,31 +186,21 @@ export default function SOSButton() {
     setSearching(true);
     try {
       const res = await fetch(
-        `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=6&accept-language=es`,
+        `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=6&addressdetails=1&accept-language=es`,
         { headers: { 'User-Agent': 'ViajeInteligencia/1.0' } }
       );
       const data = await res.json();
       const results: LocationResult[] = data
         .filter((r: any) => r.type !== 'country')
-        .map((r: any) => ({
-          lat: parseFloat(r.lat),
-          lon: parseFloat(r.lon),
-          countryCode: '',
-          displayName: r.display_name,
-        }));
-
-      // Enrich with country codes
-      for (const result of results) {
-        try {
-          const rev = await fetch(
-            `https://nominatim.openstreetmap.org/reverse?lat=${result.lat}&lon=${result.lon}&format=json&zoom=3&accept-language=es`,
-            { headers: { 'User-Agent': 'ViajeInteligencia/1.0' } }
-          );
-          const geo = await rev.json();
-          const cc = (geo.address?.country_code || '').toLowerCase();
-          result.countryCode = COUNTRY_BY_NOMINATIM[cc] || cc;
-        } catch {}
-      }
+        .map((r: any) => {
+          const cc = (r.address?.country_code || '').toLowerCase();
+          return {
+            lat: parseFloat(r.lat),
+            lon: parseFloat(r.lon),
+            countryCode: COUNTRY_BY_NOMINATIM[cc] || cc,
+            displayName: r.display_name,
+          };
+        });
 
       setSearchResults(results.filter(r => r.countryCode && paisesData[r.countryCode]));
     } catch {}
