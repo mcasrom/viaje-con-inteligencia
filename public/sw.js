@@ -80,7 +80,7 @@ async function cacheFirst(req) {
 
 self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
-  const { pathname } = url;
+  const { pathname, hostname } = url;
 
   // Never cache API, admin, or auth requests
   if (
@@ -95,6 +95,15 @@ self.addEventListener('fetch', (event) => {
   // Navigation requests: network-first with offline fallback
   if (event.request.mode === 'navigate') {
     event.respondWith(networkFirst(event.request, '/offline.html'));
+    return;
+  }
+
+  // Never cache tile server requests (OSM, CARTO) — they fail as opaque in SW context
+  if (
+    hostname.endsWith('tile.openstreetmap.org') ||
+    hostname.endsWith('basemaps.cartocdn.com')
+  ) {
+    event.respondWith(fetch(event.request));
     return;
   }
 
