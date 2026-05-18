@@ -86,7 +86,7 @@ export default function Footer() {
               <li><Link href="/reclamaciones" className="text-slate-400 hover:text-white transition-colors">Reclamaciones</Link></li>
               <li><Link href="/metodologia" className="text-slate-400 hover:text-white transition-colors">Metodología MAEC</Link></li>
               <li><Link href="/fuentes-osint" className="text-slate-400 hover:text-white transition-colors">Fuentes OSINT</Link></li>
-              <li><Link href="/transparencia" className="text-slate-400 hover:text-white transition-colors">Transparencia</Link></li>
+              <li><Link href="/seguridad" className="text-slate-400 hover:text-white transition-colors">Transparencia Operativa</Link></li>
               <li><Link href="/kpi" className="text-slate-400 hover:text-white transition-colors">Índice de Paz</Link></li>
               <li><Link href="/indices" className="text-slate-400 hover:text-white transition-colors">Índices y Métricas</Link></li>
               <li><Link href="/stats" className="text-slate-400 hover:text-white transition-colors">Estadísticas</Link></li>

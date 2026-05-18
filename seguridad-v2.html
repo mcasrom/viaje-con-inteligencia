@@ -1,0 +1,1245 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- ═══════════════════════════════════════════════════════
+       SEO META — /seguridad
+  ═══════════════════════════════════════════════════════ -->
+  <title>Seguridad, Privacidad y Transparencia IA | Viaje con Inteligencia</title>
+  <meta name="description" content="Cómo protegemos tus datos de viaje: infraestructura self-hosted en EU, cifrado AES-256, retención mínima, protección prompt injection y cumplimiento RGPD y AI Act." />
+  <meta name="keywords" content="seguridad viaje, privacidad OSINT, RGPD viajeros, protección datos itinerario, AI Act transparencia, seguridad IA viaje, Hetzner EU" />
+  <meta name="robots" content="index, follow" />
+  <meta name="author" content="M.Castillo" />
+  <meta name="creator" content="M.Castillo" />
+  <meta name="google-site-verification" content="gn0Kmx84cnhJifWfqu-3E-zEIgOak4oVJw61ObNBqds" />
+  <meta name="msvalidate.01" content="79B687F3E7391A245058BD02622B5D5D" />
+  <link rel="canonical" href="https://www.viajeinteligencia.com/seguridad" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://www.viajeinteligencia.com/seguridad" />
+  <meta property="og:title" content="Seguridad y Privacidad | Viaje con Inteligencia" />
+  <meta property="og:description" content="Infraestructura self-hosted en EU, cifrado en reposo, retención mínima de itinerarios y cumplimiento RGPD + AI Act." />
+  <meta property="og:locale" content="es_ES" />
+  <meta property="og:site_name" content="Viaje con Inteligencia" />
+  <meta property="og:image" content="https://www.viajeinteligencia.com/preview_favicon.jpg" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:creator" content="@ViajeIntel2026" />
+  <meta name="twitter:title" content="Seguridad y Privacidad | Viaje con Inteligencia" />
+  <meta name="twitter:description" content="Stack self-hosted en EU, cifrado AES-256, RGPD y AI Act. Sin promesas vacías." />
+  <meta name="twitter:image" content="https://www.viajeinteligencia.com/preview_favicon.jpg" />
+  <meta name="theme-color" content="#0f172a" />
+
+  <!-- FAQ Schema — rich snippets -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "¿Se almacena mi itinerario de viaje?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Los datos de itinerario introducidos para análisis no se almacenan permanentemente. Son procesados en sesión y eliminados automáticamente tras un máximo de 24 horas. No se utilizan para entrenar modelos de IA."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "¿Qué modelos de IA procesan mis datos?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "El Chat IA utiliza la API de Groq (LLaMA). Los análisis de riesgo compuestos pueden usar Anthropic Claude API. Ambas integraciones son stateless: cada sesión es una llamada independiente sin historial compartido entre usuarios."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "¿Dónde están alojados mis datos?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "La aplicación corre en servidores Hetzner Cloud (datacenter EU) bajo control propio — Next.js bare metal con PM2 y Nginx. La base de datos está en Supabase (región EU). Ningún dato sale del Espacio Económico Europeo salvo las llamadas a APIs de IA externas, realizadas bajo garantías contractuales RGPD."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "¿Cumple la plataforma con el RGPD?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Sí. Base jurídica: consentimiento explícito (art. 6.1.a). Datos alojados en EU (Hetzner + Supabase EU). Dispones de derechos de acceso, rectificación, supresión y portabilidad ejercibles desde tu perfil o en privacidad@viajeinteligencia.com."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "¿Puedo confiar en el análisis de riesgo para decisiones de seguridad críticas?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Para planificación ordinaria, sí. Para operaciones de alto riesgo, zonas de conflicto o misiones humanitarias, consulta siempre fuentes oficiales (MAEC, Foreign Office) y profesionales certificados. Viaje con Inteligencia es una herramienta de conciencia situacional, no un sustituto del criterio profesional."
+        }
+      }
+    ]
+  }
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Syne:wght@400;500;700&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:         #0f172a;
+      --bg2:        #111827;
+      --bg3:        #1e293b;
+      --surface:    #243044;
+      --border:     rgba(255,255,255,0.07);
+      --border-hi:  rgba(255,255,255,0.13);
+
+      --teal:       #1D9E75;
+      --teal-soft:  rgba(29,158,117,0.11);
+      --teal-mid:   #15765a;
+      --teal-hi:    #5DCAA5;
+
+      --amber:      #EF9F27;
+      --amber-soft: rgba(239,159,39,0.10);
+      --amber-hi:   #FAC775;
+
+      --red:        #E24B4A;
+      --red-soft:   rgba(226,75,74,0.10);
+      --red-hi:     #F09595;
+
+      --blue:       #378ADD;
+      --blue-soft:  rgba(55,138,221,0.10);
+      --blue-hi:    #85B7EB;
+
+      --txt:        #e2e8f0;
+      --txt2:       #94a3b8;
+      --txt3:       #475569;
+
+      --font-head:  'DM Serif Display', Georgia, serif;
+      --font-body:  'Syne', sans-serif;
+      --font-mono:  'DM Mono', 'Courier New', monospace;
+      --radius:     10px;
+      --radius-lg:  16px;
+      --max:        880px;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--txt);
+      font-family: var(--font-body);
+      font-size: 16px;
+      line-height: 1.75;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── NAV ── */
+    .nav {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 24px;
+      border-bottom: 0.5px solid var(--border);
+      max-width: var(--max); margin: 0 auto;
+    }
+    .nav-logo {
+      font-family: var(--font-mono); font-size: 13px; font-weight: 500;
+      color: var(--txt); text-decoration: none;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .nav-logo img { height: 22px; width: auto; }
+    .nav-back {
+      font-family: var(--font-mono); font-size: 11px;
+      color: var(--txt3); text-decoration: none;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .nav-back:hover { color: var(--teal-hi); }
+
+    /* ── LAYOUT ── */
+    .page { max-width: var(--max); margin: 0 auto; padding: 0 24px 80px; }
+
+    /* ── HERO ── */
+    .hero {
+      padding: 64px 0 52px;
+      border-bottom: 0.5px solid var(--border);
+      position: relative; overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 600px 350px at 70% -10%, rgba(29,158,117,0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-kicker {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: var(--font-mono); font-size: 11px;
+      letter-spacing: .1em; text-transform: uppercase;
+      color: var(--teal-hi);
+      background: var(--teal-soft);
+      border: 0.5px solid rgba(93,202,165,0.22);
+      border-radius: 4px; padding: 4px 10px;
+      margin-bottom: 22px;
+    }
+    .hero-kicker::before {
+      content: ''; display: block;
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--teal-hi);
+      animation: pulse 2.2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%,100%{ opacity:1; transform:scale(1); }
+      50%{ opacity:.35; transform:scale(0.75); }
+    }
+    .hero h1 {
+      font-family: var(--font-head);
+      font-size: clamp(30px, 4.5vw, 50px);
+      line-height: 1.1; color: #fff;
+      max-width: 660px; margin-bottom: 18px;
+    }
+    .hero h1 em { font-style: italic; color: var(--teal-hi); }
+    .hero-lead {
+      font-size: 16px; color: var(--txt2);
+      max-width: 580px; line-height: 1.8; margin-bottom: 28px;
+    }
+    .hero-chips { display: flex; gap: 10px; flex-wrap: wrap; }
+    .chip {
+      font-family: var(--font-mono); font-size: 11px;
+      padding: 4px 10px; border-radius: 4px;
+      border: 0.5px solid var(--border-hi);
+      color: var(--txt2); background: var(--bg3);
+    }
+    .chip-green { border-color: rgba(93,202,165,0.25); color: var(--teal-hi); background: var(--teal-soft); }
+
+    /* ── DISCLAIMER ── */
+    .disclaimer {
+      margin: 36px 0;
+      background: var(--amber-soft);
+      border: 0.5px solid rgba(239,159,39,0.28);
+      border-left: 3px solid var(--amber);
+      border-radius: var(--radius);
+      padding: 18px 22px;
+    }
+    .disclaimer-title {
+      font-family: var(--font-mono); font-size: 11px;
+      text-transform: uppercase; letter-spacing: .1em;
+      color: var(--amber); margin-bottom: 9px;
+    }
+    .disclaimer p { font-size: 14px; color: var(--amber-hi); line-height: 1.75; }
+    .disclaimer p + p { margin-top: 7px; }
+    .disclaimer a { color: var(--amber-hi); }
+
+    /* ── SECTIONS ── */
+    .sec { margin-top: 60px; }
+    .sec-label {
+      font-family: var(--font-mono); font-size: 11px;
+      letter-spacing: .1em; text-transform: uppercase;
+      color: var(--txt3); margin-bottom: 18px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .sec-label::after { content:''; flex:1; height:0.5px; background:var(--border); }
+    .sec h2 {
+      font-family: var(--font-head);
+      font-size: clamp(20px, 3vw, 28px);
+      color: #fff; margin-bottom: 14px; line-height: 1.2;
+    }
+    .sec-intro { color: var(--txt2); font-size: 15px; line-height: 1.8; margin-bottom: 28px; }
+
+    /* ── CARDS ── */
+    .card-grid { display: grid; gap: 12px; }
+    .card-grid-2 { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+    .card-grid-3 { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+
+    .card {
+      background: var(--bg3);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 18px 20px;
+      transition: border-color .2s;
+    }
+    .card:hover { border-color: var(--border-hi); }
+
+    .card-tag {
+      font-family: var(--font-mono); font-size: 10px;
+      letter-spacing: .07em; text-transform: uppercase;
+      padding: 3px 8px; border-radius: 3px; display: inline-block;
+      margin-bottom: 11px;
+    }
+    .tag-green { background:var(--teal-soft);  color:var(--teal-hi);  border:0.5px solid rgba(93,202,165,0.2); }
+    .tag-amber { background:var(--amber-soft); color:var(--amber-hi); border:0.5px solid rgba(239,159,39,0.2); }
+    .tag-red   { background:var(--red-soft);   color:var(--red-hi);   border:0.5px solid rgba(226,75,74,0.2); }
+    .tag-blue  { background:var(--blue-soft);  color:var(--blue-hi);  border:0.5px solid rgba(55,138,221,0.2); }
+    .tag-gray  { background:rgba(255,255,255,0.04); color:var(--txt2); border:0.5px solid var(--border); }
+
+    .card h3 {
+      font-size: 15px; font-weight: 700;
+      color: #fff; margin-bottom: 8px; line-height: 1.3;
+    }
+    .card p, .card li { font-size: 13px; color: var(--txt2); line-height: 1.75; }
+    .card ul { padding-left: 1.1rem; margin-top: 7px; }
+    .card ul li { margin-bottom: 3px; }
+    code {
+      font-family: var(--font-mono); font-size: 11px;
+      background: rgba(255,255,255,0.06);
+      padding: 1px 5px; border-radius: 3px;
+    }
+
+    /* ── STACK DIAGRAM ── */
+    .stack-wrap {
+      background: var(--bg2);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 28px 20px 20px;
+      margin: 28px 0;
+    }
+    .stack-title {
+      font-family: var(--font-mono); font-size: 10px;
+      letter-spacing: .08em; text-transform: uppercase;
+      color: var(--txt3); margin-bottom: 20px; text-align: center;
+    }
+    .stack-layers { display: flex; flex-direction: column; gap: 8px; }
+    .stack-layer {
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      gap: 12px; align-items: center;
+    }
+    .stack-layer-label {
+      font-family: var(--font-mono); font-size: 10px;
+      letter-spacing: .06em; text-transform: uppercase;
+      color: var(--txt3); text-align: right;
+    }
+    .stack-layer-bar {
+      background: var(--surface);
+      border: 0.5px solid var(--border-hi);
+      border-radius: var(--radius);
+      padding: 10px 14px;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 10px;
+    }
+    .stack-layer-name { font-size: 13px; font-weight: 700; color: #fff; }
+    .stack-layer-detail { font-family: var(--font-mono); font-size: 11px; color: var(--txt2); }
+    .stack-layer-badge {
+      font-family: var(--font-mono); font-size: 9px;
+      text-transform: uppercase; letter-spacing: .06em;
+      padding: 2px 7px; border-radius: 3px; flex-shrink: 0;
+    }
+    .sb-green { background:var(--teal-soft); color:var(--teal-hi); }
+    .sb-blue  { background:var(--blue-soft); color:var(--blue-hi); }
+    .sb-amber { background:var(--amber-soft); color:var(--amber-hi); }
+    .sb-gray  { background:rgba(255,255,255,0.05); color:var(--txt2); }
+
+    /* ── FLOW ── */
+    .flow-wrap {
+      background: var(--bg2);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 28px 20px;
+      margin: 28px 0;
+      overflow-x: auto;
+    }
+    .flow {
+      display: flex; align-items: center; gap: 0;
+      min-width: 540px; justify-content: center;
+    }
+    .flow-node {
+      background: var(--surface);
+      border: 0.5px solid var(--border-hi);
+      border-radius: var(--radius);
+      padding: 12px 16px; text-align: center;
+      min-width: 100px; flex-shrink: 0;
+    }
+    .flow-node-icon { font-size: 18px; margin-bottom: 5px; display: block; }
+    .flow-node-label { font-family:var(--font-mono); font-size:11px; color:var(--txt2); letter-spacing:.03em; }
+    .flow-node-sub   { font-size:10px; color:var(--txt3); margin-top:2px; font-family:var(--font-mono); }
+    .flow-node.gn { border-color: rgba(29,158,117,0.35); }
+    .flow-node.rd { border-color: rgba(226,75,74,0.25); }
+    .flow-arr {
+      flex:1; min-width:24px; position:relative;
+      display:flex; align-items:center; justify-content:center;
+    }
+    .flow-arr::before {
+      content:''; position:absolute; top:50%; left:4px; right:14px;
+      height:0.5px; background:var(--border-hi); transform:translateY(-50%);
+    }
+    .flow-arr::after { content:'▶'; font-size:9px; color:var(--txt3); position:relative; z-index:1; margin-left:auto; padding-right:2px; }
+    .flow-arr-label {
+      position:absolute; top:-17px;
+      font-family:var(--font-mono); font-size:9px;
+      color:var(--teal-hi); letter-spacing:.03em; white-space:nowrap;
+    }
+
+    /* ── TABLE ── */
+    .table-wrap { overflow-x:auto; margin:22px 0; border-radius:var(--radius); border:0.5px solid var(--border); }
+    table { width:100%; border-collapse:collapse; }
+    thead tr { background:var(--surface); }
+    th {
+      font-family:var(--font-mono); font-size:11px;
+      text-transform:uppercase; letter-spacing:.07em;
+      color:var(--txt2); padding:11px 14px; text-align:left; font-weight:500;
+    }
+    td {
+      font-size:13px; color:var(--txt2);
+      padding:10px 14px; border-top:0.5px solid var(--border); line-height:1.6;
+    }
+    td:first-child { color:var(--txt); font-weight:500; font-family:var(--font-mono); font-size:11px; }
+    tr:hover td { background:rgba(255,255,255,0.02); }
+    .dg { color:#5DCAA5; }
+    .da { color:#FAC775; }
+    .dr { color:#F09595; }
+
+    /* ── HIGHLIGHT ── */
+    .highlight {
+      background: var(--teal-soft);
+      border: 0.5px solid rgba(29,158,117,0.22);
+      border-left: 3px solid var(--teal);
+      border-radius: var(--radius);
+      padding: 16px 20px; margin: 18px 0;
+    }
+    .highlight p { font-size: 14px; color: var(--teal-hi); line-height: 1.75; }
+    .highlight a { color: var(--teal-hi); }
+
+    /* ── ROADMAP ── */
+    .roadmap { display:flex; flex-direction:column; gap:0; margin-top:22px; }
+    .rm-item { display:grid; grid-template-columns:76px 1fr; gap:0 14px; }
+    .rm-phase {
+      font-family:var(--font-mono); font-size:10px;
+      letter-spacing:.06em; text-transform:uppercase;
+      color:var(--txt3); text-align:right; padding-top:2px; line-height:1.4;
+    }
+    .rm-right {
+      display:flex; gap:12px; padding-bottom:26px;
+      border-left:0.5px solid var(--border);
+      padding-left:18px; margin-left:-0.25px;
+    }
+    .rm-dot {
+      width:8px; height:8px; border-radius:50%;
+      flex-shrink:0; margin-top:5px; margin-left:-22px;
+    }
+    .rm-dot-green { background:var(--teal); box-shadow:0 0 7px rgba(29,158,117,0.45); }
+    .rm-dot-amber { background:var(--amber); }
+    .rm-dot-blue  { background:var(--blue); }
+    .rm-title { font-size:14px; font-weight:700; color:#fff; margin-bottom:4px; }
+    .rm-desc  { font-size:13px; color:var(--txt2); line-height:1.65; }
+    .rm-badge {
+      display:inline-block; font-family:var(--font-mono); font-size:9px;
+      text-transform:uppercase; letter-spacing:.06em;
+      padding:2px 7px; border-radius:3px; margin-left:8px; vertical-align:middle;
+    }
+    .rmb-g { background:var(--teal-soft); color:var(--teal-hi); }
+    .rmb-a { background:var(--amber-soft); color:var(--amber-hi); }
+    .rmb-b { background:var(--blue-soft); color:var(--blue-hi); }
+
+    /* ── SOURCES GRID ── */
+    .sources-grid {
+      display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+      gap:8px; margin-top:20px;
+    }
+    .source-pill {
+      background:var(--bg3); border:0.5px solid var(--border);
+      border-radius:var(--radius); padding:10px 14px;
+    }
+    .source-pill-cat {
+      font-family:var(--font-mono); font-size:9px;
+      text-transform:uppercase; letter-spacing:.06em;
+      color:var(--txt3); margin-bottom:4px;
+    }
+    .source-pill-name { font-size:13px; font-weight:700; color:var(--txt); }
+    .source-pill-desc { font-size:11px; color:var(--txt2); margin-top:2px; }
+
+    /* ── FAQ ── */
+    .faq-item { border-top:0.5px solid var(--border); padding:18px 0; }
+    .faq-item:last-child { border-bottom:0.5px solid var(--border); }
+    .faq-q {
+      font-size:15px; font-weight:700; color:#fff;
+      cursor:pointer; display:flex; justify-content:space-between; align-items:flex-start;
+      gap:12px; user-select:none;
+    }
+    .faq-q::after { content:'+'; color:var(--teal-hi); font-size:20px; line-height:1; flex-shrink:0; margin-top:-1px; }
+    .faq-item.open .faq-q::after { content:'−'; }
+    .faq-a {
+      font-size:14px; color:var(--txt2); line-height:1.8;
+      max-height:0; overflow:hidden;
+      transition:max-height .35s ease, padding .35s;
+    }
+    .faq-item.open .faq-a { max-height:420px; padding-top:12px; }
+    .faq-a a { color:var(--teal-hi); }
+
+    /* ── FOOTER ── */
+    .page-footer {
+      margin-top:64px; padding-top:28px;
+      border-top:0.5px solid var(--border);
+    }
+    .footer-grid {
+      display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+      gap:24px; margin-bottom:28px;
+    }
+    .footer-col h4 {
+      font-family:var(--font-mono); font-size:10px;
+      letter-spacing:.08em; text-transform:uppercase;
+      color:var(--txt3); margin-bottom:10px;
+    }
+    .footer-col a, .footer-col p {
+      font-size:13px; color:var(--txt2); line-height:1.7;
+      text-decoration:none; display:block; margin-bottom:3px;
+    }
+    .footer-col a:hover { color:var(--teal-hi); }
+    .bottom-bar {
+      padding:18px 0 0;
+      border-top:0.5px solid var(--border);
+      display:flex; justify-content:space-between; align-items:center;
+      flex-wrap:wrap; gap:8px;
+      font-family:var(--font-mono); font-size:11px; color:var(--txt3);
+    }
+    .bottom-bar a { color:var(--txt3); text-decoration:none; }
+    .bottom-bar a:hover { color:var(--teal-hi); }
+
+    @media(max-width:600px){
+      .flow{ flex-direction:column; align-items:stretch; min-width:0; }
+      .flow-arr{ transform:rotate(90deg); height:28px; width:100%; min-width:0; }
+      .flow-arr-label{ display:none; }
+      .stack-layer{ grid-template-columns:80px 1fr; }
+      .rm-item{ grid-template-columns:58px 1fr; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- NAV -->
+  <nav class="nav" aria-label="Navegación de página">
+    <a href="https://www.viajeinteligencia.com/" class="nav-logo">
+      <img src="https://www.viajeinteligencia.com/logo.webp" alt="Viaje con Inteligencia" />
+      Viaje con Inteligencia
+    </a>
+    <a href="https://www.viajeinteligencia.com/" class="nav-back">← Volver al inicio</a>
+  </nav>
+
+  <div class="page">
+
+    <!-- ══ HERO ══ -->
+    <header class="hero">
+      <div class="hero-kicker">Seguridad · Privacidad · Transparencia</div>
+      <h1>Tus datos de viaje,<br/><em>protegidos por diseño</em></h1>
+      <p class="hero-lead">
+        Cómo recopilamos, procesamos y protegemos la información que introduces.
+        Sin letra pequeña. Hechos técnicos verificables sobre un stack 100% bajo control propio en la Unión Europea.
+      </p>
+      <div class="hero-chips">
+        <span class="chip chip-green">Self-hosted EU · Hetzner Cloud</span>
+        <span class="chip">Next.js + PM2 + Nginx</span>
+        <span class="chip">Supabase EU</span>
+        <span class="chip">RGPD · AI Act UE · LSSI-CE</span>
+        <span class="chip">Última revisión: Mayo 2026</span>
+      </div>
+    </header>
+
+
+    <!-- ══ DISCLAIMER ══ -->
+    <div class="disclaimer" role="note" aria-label="Aviso de limitación de responsabilidad">
+      <div class="disclaimer-title">⚠ Aviso de limitación de responsabilidad operacional</div>
+      <p>
+        Viaje con Inteligencia es un <strong>ecosistema de conciencia situacional asistido por fuentes OSINT públicas</strong>.
+        Los análisis de riesgo generados son síntesis automatizadas de información pública (MAEC, USGS, GDACS, ACLED, WHO y 73+ fuentes más)
+        combinadas con modelos de IA. <strong>No constituyen asesoramiento de seguridad profesional, legal, médico ni consular.</strong>
+      </p>
+      <p>
+        Las condiciones en destino pueden cambiar sin previo aviso. Para operaciones de alto riesgo, viajes a zonas en conflicto,
+        misiones humanitarias o cualquier decisión donde la seguridad personal sea crítica, consulta siempre
+        las <a href="https://www.exteriores.gob.es" target="_blank" rel="noopener">recomendaciones oficiales del MAEC</a>
+        y un profesional certificado en seguridad de viaje. Este servicio no reemplaza a ninguno de ellos.
+      </p>
+    </div>
+
+
+    <!-- ══ 01 · POSICIONAMIENTO ══ -->
+    <section class="sec" id="posicionamiento" aria-labelledby="h-pos">
+      <div class="sec-label">01 · Qué es este ecosistema</div>
+      <h2 id="h-pos">Un aggregator OSINT-asistido, no una plataforma de inteligencia operacional</h2>
+      <p class="sec-intro">
+        Precisión semántica antes que cualquier otra cosa. Viaje con Inteligencia no genera inteligencia primaria
+        mediante recopilación activa. Correlaciona y contextualiza 73+ fuentes OSINT públicas para que viajeros ordinarios
+        accedan a información que normalmente solo está al alcance de servicios de inteligencia corporativos.
+      </p>
+
+      <div class="card-grid card-grid-2">
+        <div class="card">
+          <span class="card-tag tag-green">Lo que hacemos</span>
+          <h3>Contextualización OSINT-asistida por IA</h3>
+          <p>Correlacionamos fuentes abiertas (MAEC, USGS, GDACS, ACLED, WHO, World Bank, Global Peace Index, Aviation Safety Network…) y aplicamos un índice IRV compuesto de <strong>16 KPIs en 5 dimensiones ponderadas</strong> para 110 países. El Chat IA (Groq/LLaMA) genera recomendaciones personalizadas en tiempo real.</p>
+        </div>
+        <div class="card">
+          <span class="card-tag tag-amber">Lo que no hacemos</span>
+          <h3>No generamos inteligencia operacional primaria</h3>
+          <p>No realizamos recopilación activa, vigilancia, análisis HUMINT ni accedemos a fuentes clasificadas. Los análisis dependen de la calidad y actualidad de las fuentes públicas integradas. Consulta <a href="https://www.viajeinteligencia.com/fuentes-osint" style="color:var(--teal-hi);">la lista completa de fuentes</a> y la <a href="https://www.viajeinteligencia.com/metodologia" style="color:var(--teal-hi);">metodología IRV</a>.</p>
+        </div>
+        <div class="card">
+          <span class="card-tag tag-blue">Público objetivo</span>
+          <h3>El espacio entre el MAEC y la inteligencia corporativa</h3>
+          <p>Viajeros independientes, periodistas freelance, trabajadores de ONG, nómadas digitales y equipos pequeños sin acceso a productos de inteligencia de viaje corporativos. El MAEC ofrece avisos genéricos; los productos empresariales cuestan cinco cifras anuales. Existimos en el espacio intermedio.</p>
+        </div>
+        <div class="card">
+          <span class="card-tag tag-gray">Transparencia</span>
+          <h3>Proyecto personal de código abierto</h3>
+          <p>Desarrollado por M. Castillo desde España. El repositorio es público en <a href="https://github.com/mcasrom/viaje-con-inteligencia" target="_blank" rel="noopener" style="color:var(--teal-hi);">GitHub</a>. No es un producto corporativo. La arquitectura, limitaciones y evolución se documentan abiertamente en <a href="https://www.viajeinteligencia.com/ecosistema" style="color:var(--teal-hi);">/ecosistema</a>.</p>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ══ 02 · STACK TÉCNICO ══ -->
+    <section class="sec" id="stack" aria-labelledby="h-stack">
+      <div class="sec-label">02 · Infraestructura</div>
+      <h2 id="h-stack">Stack técnico verificable — 100% EU, bajo control propio</h2>
+      <p class="sec-intro">
+        En mayo de 2026 completamos la migración de Vercel a infraestructura self-hosted en Hetzner Cloud (datacenter EU).
+        Ningún dato de usuario transita por redes de edge compartidas fuera de nuestro control.
+      </p>
+
+      <div class="stack-wrap" role="img" aria-label="Diagrama de capas del stack técnico de Viaje con Inteligencia">
+        <div class="stack-title">Arquitectura de producción — Mayo 2026</div>
+        <div class="stack-layers">
+          <div class="stack-layer">
+            <div class="stack-layer-label">Cliente</div>
+            <div class="stack-layer-bar">
+              <div>
+                <div class="stack-layer-name">Navegador / PWA</div>
+                <div class="stack-layer-detail">Next.js 14 · React · Leaflet · i18n ES/EN/PT</div>
+              </div>
+              <span class="stack-layer-badge sb-gray">Frontend</span>
+            </div>
+          </div>
+          <div class="stack-layer">
+            <div class="stack-layer-label">Transporte</div>
+            <div class="stack-layer-bar">
+              <div>
+                <div class="stack-layer-name">HTTPS · TLS 1.3 · HSTS</div>
+                <div class="stack-layer-detail">Nginx como reverse proxy · Certificados Let's Encrypt auto-renovados</div>
+              </div>
+              <span class="stack-layer-badge sb-green">Cifrado</span>
+            </div>
+          </div>
+          <div class="stack-layer">
+            <div class="stack-layer-label">Aplicación</div>
+            <div class="stack-layer-bar">
+              <div>
+                <div class="stack-layer-name">Next.js bare metal · PM2</div>
+                <div class="stack-layer-detail">Hetzner Cloud VPS · datacenter EU · control propio total</div>
+              </div>
+              <span class="stack-layer-badge sb-green">Self-hosted EU</span>
+            </div>
+          </div>
+          <div class="stack-layer">
+            <div class="stack-layer-label">Base de datos</div>
+            <div class="stack-layer-bar">
+              <div>
+                <div class="stack-layer-name">Supabase · PostgreSQL</div>
+                <div class="stack-layer-detail">Región EU · AES-256 en reposo · RLS por usuario</div>
+              </div>
+              <span class="stack-layer-badge sb-green">EU · Cifrado</span>
+            </div>
+          </div>
+          <div class="stack-layer">
+            <div class="stack-layer-label">IA · Chat</div>
+            <div class="stack-layer-bar">
+              <div>
+                <div class="stack-layer-name">Groq API · LLaMA</div>
+                <div class="stack-layer-detail">Chat IA tiempo real · stateless · sin retención de historial entre usuarios</div>
+              </div>
+              <span class="stack-layer-badge sb-amber">API externa</span>
+            </div>
+          </div>
+          <div class="stack-layer">
+            <div class="stack-layer-label">IA · Análisis</div>
+            <div class="stack-layer-bar">
+              <div>
+                <div class="stack-layer-name">Anthropic Claude API</div>
+                <div class="stack-layer-detail">Análisis de riesgo compuesto · stateless · sin contexto compartido</div>
+              </div>
+              <span class="stack-layer-badge sb-amber">API externa</span>
+            </div>
+          </div>
+          <div class="stack-layer">
+            <div class="stack-layer-label">Pagos</div>
+            <div class="stack-layer-bar">
+              <div>
+                <div class="stack-layer-name">Stripe Checkout hospedado</div>
+                <div class="stack-layer-detail">PCI DSS Level 1 · SAQ-A · datos de tarjeta nunca tocan nuestra infraestructura</div>
+              </div>
+              <span class="stack-layer-badge sb-blue">PCI L1</span>
+            </div>
+          </div>
+          <div class="stack-layer">
+            <div class="stack-layer-label">Email</div>
+            <div class="stack-layer-bar">
+              <div>
+                <div class="stack-layer-name">Resend</div>
+                <div class="stack-layer-detail">Transaccional y newsletter · sin almacenamiento de contenido de email en nuestra BD</div>
+              </div>
+              <span class="stack-layer-badge sb-gray">API externa</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="highlight">
+        <p>
+          <strong>Nota sobre APIs externas de IA:</strong> Groq y Anthropic son proveedores ubicados en EE.UU.
+          Las llamadas a sus APIs se realizan bajo las Cláusulas Contractuales Tipo (SCCs) vigentes del RGPD.
+          Ninguna de las dos APIs retiene datos de usuario en su política estándar de uso por API.
+          Los datos enviados son exclusivamente el input sanitizado de la sesión activa — nunca identificadores persistentes.
+        </p>
+      </div>
+    </section>
+
+
+    <!-- ══ 03 · FLUJO DE DATOS ══ -->
+    <section class="sec" id="datos" aria-labelledby="h-datos">
+      <div class="sec-label">03 · Ciclo de vida del dato</div>
+      <h2 id="h-datos">¿Qué ocurre con tu itinerario? Trazabilidad completa</h2>
+      <p class="sec-intro">
+        Del momento en que introduces tu destino hasta la eliminación automática. Sin pasos ocultos.
+      </p>
+
+      <div class="flow-wrap" role="img" aria-label="Flujo de datos del itinerario del usuario">
+        <div class="flow">
+          <div class="flow-node gn">
+            <span class="flow-node-icon">🧑</span>
+            <div class="flow-node-label">Tú</div>
+            <div class="flow-node-sub">Destino / itinerario</div>
+          </div>
+          <div class="flow-arr" style="position:relative;">
+            <span class="flow-arr-label">TLS 1.3</span>
+          </div>
+          <div class="flow-node">
+            <span class="flow-node-icon">🛡</span>
+            <div class="flow-node-label">Nginx · PM2</div>
+            <div class="flow-node-sub">Hetzner EU</div>
+          </div>
+          <div class="flow-arr" style="position:relative;">
+            <span class="flow-arr-label">Sanitizado</span>
+          </div>
+          <div class="flow-node">
+            <span class="flow-node-icon">🤖</span>
+            <div class="flow-node-label">Groq / Claude</div>
+            <div class="flow-node-sub">Stateless</div>
+          </div>
+          <div class="flow-arr" style="position:relative;">
+            <span class="flow-arr-label">IRV compuesto</span>
+          </div>
+          <div class="flow-node gn">
+            <span class="flow-node-icon">📊</span>
+            <div class="flow-node-label">Informe</div>
+            <div class="flow-node-sub">Tu pantalla</div>
+          </div>
+          <div class="flow-arr" style="position:relative;">
+            <span class="flow-arr-label" style="color:var(--amber);">TTL &lt;24h</span>
+          </div>
+          <div class="flow-node rd">
+            <span class="flow-node-icon">🗑</span>
+            <div class="flow-node-label">Purga auto</div>
+            <div class="flow-node-sub">Eliminación</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Dato</th>
+              <th>¿Se almacena?</th>
+              <th>Retención</th>
+              <th>Cifrado</th>
+              <th>Propósito</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Email / cuenta</td>
+              <td><span class="dg">●</span> Sí</td>
+              <td>Vida de la cuenta</td>
+              <td>AES-256 · Supabase EU</td>
+              <td>Autenticación y suscripción</td>
+            </tr>
+            <tr>
+              <td>Itinerario / destino</td>
+              <td><span class="da">●</span> Temporal</td>
+              <td>Máx. 24 horas</td>
+              <td>TLS en tránsito · RLS en BD</td>
+              <td>Generación del análisis IRV</td>
+            </tr>
+            <tr>
+              <td>Historial de consultas</td>
+              <td><span class="da">●</span> Opcional</td>
+              <td>Hasta supresión por usuario</td>
+              <td>AES-256 · RLS por uid</td>
+              <td>Acceso a informes previos</td>
+            </tr>
+            <tr>
+              <td>Datos de pago</td>
+              <td><span class="dg">●</span> No (Stripe)</td>
+              <td>No aplica</td>
+              <td>PCI DSS L1 vía Stripe</td>
+              <td>Facturación delegada totalmente</td>
+            </tr>
+            <tr>
+              <td>Email newsletter</td>
+              <td><span class="dg">●</span> Sí</td>
+              <td>Hasta baja</td>
+              <td>Resend · AES-256</td>
+              <td>Comunicación opcional suscrita</td>
+            </tr>
+            <tr>
+              <td>Logs de acceso</td>
+              <td><span class="dg">●</span> Sí</td>
+              <td>30 días rolling</td>
+              <td>Nginx · servidor Hetzner</td>
+              <td>Seguridad y detección de abuso</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+
+    <!-- ══ 04 · SEGURIDAD INFORMÁTICA ══ -->
+    <section class="sec" id="seguridad-tecnica" aria-labelledby="h-seginfo">
+      <div class="sec-label">04 · Seguridad informática</div>
+      <h2 id="h-seginfo">Defensa en capas — respuestas técnicas concretas</h2>
+      <p class="sec-intro">
+        Las preguntas correctas son: ¿qué se almacena?, ¿cuánto tiempo?, ¿está cifrado?, ¿qué garantías hay?
+        Aquí están las respuestas — sin marketing.
+      </p>
+
+      <div class="card-grid card-grid-2">
+        <div class="card">
+          <span class="card-tag tag-green">Activo</span>
+          <h3>Cifrado en tránsito y en reposo</h3>
+          <ul>
+            <li>TLS 1.3 en toda la cadena: cliente → Nginx → Next.js → Supabase</li>
+            <li>HSTS con preload — no hay fallback a HTTP</li>
+            <li>Supabase cifra volúmenes con AES-256 en reposo</li>
+            <li>Certificados Let's Encrypt con renovación automática</li>
+          </ul>
+        </div>
+        <div class="card">
+          <span class="card-tag tag-green">Activo</span>
+          <h3>Row Level Security (RLS) en base de datos</h3>
+          <ul>
+            <li>Todas las tablas con datos personales tienen RLS activo</li>
+            <li>Políticas: <code>auth.uid() = user_id</code> — aislamiento total por usuario</li>
+            <li>Una API key comprometida no puede acceder a datos de otros usuarios</li>
+            <li>Auditoría de accesos habilitada en Supabase</li>
+          </ul>
+        </div>
+        <div class="card">
+          <span class="card-tag tag-green">Activo</span>
+          <h3>Control propio de infraestructura</h3>
+          <ul>
+            <li>Migración a Hetzner Cloud EU completada en mayo 2026</li>
+            <li>Elimina la superficie de ataque de edge networks compartidas</li>
+            <li>Acceso SSH con clave pública únicamente — sin contraseñas</li>
+            <li>Firewall UFW + reglas Nginx restrictivas por defecto</li>
+          </ul>
+        </div>
+        <div class="card">
+          <span class="card-tag tag-green">Activo</span>
+          <h3>Gestión de secretos</h3>
+          <ul>
+            <li>Todas las API keys en variables de entorno del servidor — nunca en código</li>
+            <li>Cero secretos comiteados en el repositorio GitHub</li>
+            <li>Rotación programada de credenciales</li>
+            <li>Webhook de Stripe validado con firma HMAC</li>
+          </ul>
+        </div>
+        <div class="card">
+          <span class="card-tag tag-amber">En progreso</span>
+          <h3>Rate limiting en API públicas y B2B</h3>
+          <ul>
+            <li>Límites por IP y por <code>user_id</code> en rutas <code>/api/*</code></li>
+            <li>Protección reforzada en <code>/api/webhooks/stripe</code></li>
+            <li>API B2B (<code>/precio-api</code>) con autenticación por token</li>
+            <li>Registro de intentos de abuso en Supabase</li>
+          </ul>
+        </div>
+        <div class="card">
+          <span class="card-tag tag-amber">Planificado</span>
+          <h3>Canal de divulgación de vulnerabilidades</h3>
+          <ul>
+            <li><code>/.well-known/security.txt</code> con contacto y PGP key</li>
+            <li>SLA de respuesta a reportes: 72 horas</li>
+            <li>Reconocimiento público a investigadores responsables</li>
+            <li>Auditoría de dependencias con Dependabot</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ══ 05 · SEGURIDAD IA ══ -->
+    <section class="sec" id="seguridad-ia" aria-labelledby="h-segia">
+      <div class="sec-label">05 · Seguridad IA</div>
+      <h2 id="h-segia">Los modelos que usamos y cómo los protegemos</h2>
+      <p class="sec-intro">
+        Dos integraciones de IA activas con arquitecturas distintas.
+        Ambas stateless. Ninguna comparte contexto entre usuarios.
+      </p>
+
+      <div class="card-grid card-grid-2">
+        <div class="card">
+          <span class="card-tag tag-blue">Groq API · LLaMA</span>
+          <h3>Chat IA en tiempo real</h3>
+          <ul>
+            <li>Usado para el Chat IA conversacional (<code>/dashboard</code>)</li>
+            <li>Cada conversación es una sesión completamente nueva</li>
+            <li>No existe historial compartido entre usuarios</li>
+            <li>Input sanitizado antes de enviar — longitud, caracteres de control, patrones de inyección</li>
+          </ul>
+        </div>
+        <div class="card">
+          <span class="card-tag tag-blue">Anthropic Claude API</span>
+          <h3>Análisis de riesgo compuesto IRV</h3>
+          <ul>
+            <li>Síntesis de fuentes OSINT en informes estructurados</li>
+            <li>Stateless: cada análisis es una llamada API independiente</li>
+            <li>System prompt con rol estricto y negación explícita de redireccionamiento</li>
+            <li>Anthropic no retiene datos de API en su política estándar</li>
+          </ul>
+        </div>
+        <div class="card">
+          <span class="card-tag tag-red">Amenaza mitigada</span>
+          <h3>Prompt injection</h3>
+          <ul>
+            <li>Función <code>sanitizeItinerary()</code> pre-LLM: elimina caracteres de control, limita longitud, detecta patrones de jailbreak</li>
+            <li>Separación estructural: datos de usuario y system prompt en roles API distintos — nunca concatenación de strings</li>
+            <li>Monitorización de outputs fuera del dominio de análisis de viaje</li>
+            <li>Self-hosting elimina vectores de ataque de edge compartido</li>
+          </ul>
+        </div>
+        <div class="card">
+          <span class="card-tag tag-amber">AI Act · art. 14 y 50</span>
+          <h3>Transparencia y supervisión humana</h3>
+          <ul>
+            <li>Todos los análisis generados por IA están identificados como tales</li>
+            <li>Mecanismo de feedback (👍/👎 + comentario) en informes generados</li>
+            <li>El sistema no realiza perfilado discriminatorio, manipulación subliminal ni puntuación social</li>
+            <li>Documentación de fuentes, limitaciones y versiones del modelo mantenida públicamente</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ══ 06 · FUENTES OSINT ══ -->
+    <section class="sec" id="fuentes" aria-labelledby="h-fuentes">
+      <div class="sec-label">06 · Fuentes de datos</div>
+      <h2 id="h-fuentes">73+ fuentes OSINT públicas integradas</h2>
+      <p class="sec-intro">
+        Todas las fuentes son públicas y verificables. Ninguna es propietaria ni clasificada.
+        Consulta la <a href="https://www.viajeinteligencia.com/fuentes-osint" style="color:var(--teal-hi);">lista completa en /fuentes-osint</a>.
+      </p>
+
+      <div class="sources-grid">
+        <div class="source-pill">
+          <div class="source-pill-cat">Riesgo oficial</div>
+          <div class="source-pill-name">MAEC España</div>
+          <div class="source-pill-desc">Scraping automatizado cada hora · 110 países</div>
+        </div>
+        <div class="source-pill">
+          <div class="source-pill-cat">Conflictos</div>
+          <div class="source-pill-name">ACLED</div>
+          <div class="source-pill-desc">Armed Conflict Location & Event Data</div>
+        </div>
+        <div class="source-pill">
+          <div class="source-pill-cat">Desastres</div>
+          <div class="source-pill-name">GDACS</div>
+          <div class="source-pill-desc">Alertas de desastres naturales globales</div>
+        </div>
+        <div class="source-pill">
+          <div class="source-pill-cat">Sísmico</div>
+          <div class="source-pill-name">USGS</div>
+          <div class="source-pill-desc">Actividad sísmica en tiempo real</div>
+        </div>
+        <div class="source-pill">
+          <div class="source-pill-cat">Salud</div>
+          <div class="source-pill-name">WHO GHO</div>
+          <div class="source-pill-desc">Global Health Observatory</div>
+        </div>
+        <div class="source-pill">
+          <div class="source-pill-cat">Paz global</div>
+          <div class="source-pill-name">Global Peace Index</div>
+          <div class="source-pill-desc">Institute for Economics & Peace</div>
+        </div>
+        <div class="source-pill">
+          <div class="source-pill-cat">Economía</div>
+          <div class="source-pill-name">World Bank</div>
+          <div class="source-pill-desc">IPC, PIB, indicadores por país</div>
+        </div>
+        <div class="source-pill">
+          <div class="source-pill-cat">Aviación</div>
+          <div class="source-pill-name">Aviation Safety Network</div>
+          <div class="source-pill-desc">Seguridad aérea y accidentes</div>
+        </div>
+        <div class="source-pill">
+          <div class="source-pill-cat">Transporte</div>
+          <div class="source-pill-name">OpenSky Network</div>
+          <div class="source-pill-desc">Tráfico aéreo en tiempo real</div>
+        </div>
+        <div class="source-pill">
+          <div class="source-pill-cat">Turismo</div>
+          <div class="source-pill-name">UNWTO</div>
+          <div class="source-pill-desc">Estadísticas internacionales de turismo</div>
+        </div>
+        <div class="source-pill">
+          <div class="source-pill-cat">Desarrollo</div>
+          <div class="source-pill-name">UNDP HDI</div>
+          <div class="source-pill-desc">Índice de Desarrollo Humano</div>
+        </div>
+        <div class="source-pill">
+          <div class="source-pill-cat">Terrorismo</div>
+          <div class="source-pill-name">Global Terrorism Index</div>
+          <div class="source-pill-desc">IEP · impacto del terrorismo mundial</div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ══ 07 · LEGAL ══ -->
+    <section class="sec" id="legal" aria-labelledby="h-legal">
+      <div class="sec-label">07 · Marco legal</div>
+      <h2 id="h-legal">Normativa aplicable y cumplimiento</h2>
+      <p class="sec-intro">
+        Operamos desde España con usuarios en la Unión Europea.
+        Estas son las normas que nos aplican y cómo las implementamos.
+      </p>
+
+      <div class="card-grid card-grid-2">
+        <div class="card">
+          <span class="card-tag tag-blue">RGPD · Reglamento (UE) 2016/679</span>
+          <h3>Protección de datos personales</h3>
+          <ul>
+            <li><strong>Base jurídica:</strong> consentimiento explícito (art. 6.1.a) para tratamiento del itinerario</li>
+            <li><strong>Minimización:</strong> solo los datos estrictamente necesarios para el análisis</li>
+            <li><strong>Tus derechos:</strong> acceso, rectificación, supresión, portabilidad y oposición — desde tu perfil o en <a href="mailto:privacidad@viajeinteligencia.com" style="color:var(--teal-hi);">privacidad@viajeinteligencia.com</a></li>
+            <li><strong>Infraestructura:</strong> Hetzner EU + Supabase EU — datos dentro del EEE</li>
+            <li><strong>APIs externas IA:</strong> cubiertas por SCCs del RGPD</li>
+          </ul>
+        </div>
+        <div class="card">
+          <span class="card-tag tag-amber">AI Act · Reglamento (UE) 2024/1689</span>
+          <h3>Uso responsable de inteligencia artificial</h3>
+          <ul>
+            <li><strong>Clasificación:</strong> riesgo limitado según uso actual (conciencia situacional)</li>
+            <li><strong>Transparencia (art. 50):</strong> toda interacción IA identificada como tal</li>
+            <li><strong>Supervisión humana (art. 14):</strong> feedback activo en informes generados</li>
+            <li><strong>Prohibiciones (art. 5):</strong> sin perfilado discriminatorio, manipulación subliminal ni puntuación social</li>
+          </ul>
+        </div>
+        <div class="card">
+          <span class="card-tag tag-gray">LSSI-CE · Ley 34/2002</span>
+          <h3>Servicios de la Sociedad de la Información</h3>
+          <ul>
+            <li>Identificación del prestador en <a href="https://www.viajeinteligencia.com/legal" style="color:var(--teal-hi);">/legal</a></li>
+            <li>Política de cookies conforme a directrices AEPD</li>
+            <li>Disclaimer operacional en todos los informes IA</li>
+            <li>Comunicaciones comerciales identificadas</li>
+          </ul>
+        </div>
+        <div class="card">
+          <span class="card-tag tag-gray">PCI DSS · Pagos</span>
+          <h3>Seguridad en pagos delegada en Stripe</h3>
+          <ul>
+            <li>Stripe Checkout hospedado — datos de tarjeta nunca tocan nuestra infraestructura</li>
+            <li>Clasificación SAQ-A: mínima responsabilidad PCI DSS</li>
+            <li>Stripe: proveedor certificado PCI DSS Level 1</li>
+            <li>Webhook validado con firma HMAC <code>Stripe-Signature</code></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ══ 08 · ROADMAP ══ -->
+    <section class="sec" id="roadmap" aria-labelledby="h-roadmap">
+      <div class="sec-label">08 · Hoja de ruta de seguridad</div>
+      <h2 id="h-roadmap">Compromisos con fechas reales</h2>
+
+      <div class="roadmap">
+        <div class="rm-item">
+          <div class="rm-phase">Fase 1<br/>Mayo 2026</div>
+          <div class="rm-right">
+            <div class="rm-dot rm-dot-green"></div>
+            <div>
+              <div class="rm-title">Migración a Hetzner Cloud EU <span class="rm-badge rmb-g">completado</span></div>
+              <div class="rm-desc">Infraestructura self-hosted bajo control propio. Next.js bare metal + PM2 + Nginx. Elimina superficie de ataque de edge networks compartidas.</div>
+            </div>
+          </div>
+        </div>
+        <div class="rm-item">
+          <div class="rm-phase">Fase 1<br/>Mayo 2026</div>
+          <div class="rm-right">
+            <div class="rm-dot rm-dot-green"></div>
+            <div>
+              <div class="rm-title">Sanitización de input pre-LLM <span class="rm-badge rmb-g">activo</span></div>
+              <div class="rm-desc">Función <code>sanitizeItinerary()</code>: validación de longitud, eliminación de caracteres de control, detección de patrones de prompt injection antes de cualquier llamada a API de IA.</div>
+            </div>
+          </div>
+        </div>
+        <div class="rm-item">
+          <div class="rm-phase">Fase 1<br/>Mayo 2026</div>
+          <div class="rm-right">
+            <div class="rm-dot rm-dot-green"></div>
+            <div>
+              <div class="rm-title">Purga automática de itinerarios TTL 24h <span class="rm-badge rmb-g">activo</span></div>
+              <div class="rm-desc">Eliminación automática de datos de itinerario tras el análisis. Soft delete con <code>deleted_at</code> auditado en Supabase.</div>
+            </div>
+          </div>
+        </div>
+        <div class="rm-item">
+          <div class="rm-phase">Fase 2<br/>Q3 2026</div>
+          <div class="rm-right">
+            <div class="rm-dot rm-dot-amber"></div>
+            <div>
+              <div class="rm-title">Hardening Nginx + UFW completo <span class="rm-badge rmb-a">en curso</span></div>
+              <div class="rm-desc">Configuración final de reglas de firewall, headers de seguridad (CSP, X-Frame-Options, Permissions-Policy), y auditoría de puertos expuestos tras la migración.</div>
+            </div>
+          </div>
+        </div>
+        <div class="rm-item">
+          <div class="rm-phase">Fase 2<br/>Q3 2026</div>
+          <div class="rm-right">
+            <div class="rm-dot rm-dot-amber"></div>
+            <div>
+              <div class="rm-title">Rate limiting en API pública y B2B <span class="rm-badge rmb-a">en curso</span></div>
+              <div class="rm-desc">Límites por IP y <code>user_id</code> en todos los endpoints <code>/api/*</code>, especialmente <code>/api/analyze</code>, <code>/api/recommendations</code> y la API B2B.</div>
+            </div>
+          </div>
+        </div>
+        <div class="rm-item">
+          <div class="rm-phase">Fase 3<br/>Q4 2026</div>
+          <div class="rm-right">
+            <div class="rm-dot rm-dot-blue"></div>
+            <div>
+              <div class="rm-title">security.txt y canal de divulgación responsable <span class="rm-badge rmb-b">planificado</span></div>
+              <div class="rm-desc">Publicación de <code>/.well-known/security.txt</code> con clave PGP y SLA de 72h para investigadores de seguridad.</div>
+            </div>
+          </div>
+        </div>
+        <div class="rm-item">
+          <div class="rm-phase">Fase 3<br/>Q4 2026</div>
+          <div class="rm-right">
+            <div class="rm-dot rm-dot-blue"></div>
+            <div>
+              <div class="rm-title">Zero Data Retention con Anthropic <span class="rm-badge rmb-b">evaluando</span></div>
+              <div class="rm-desc">Negociación de acuerdo ZDR para garantizar que ningún dato de itinerario se retiene en infraestructura del proveedor IA, ni siquiera temporalmente.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ══ 09 · FAQ ══ -->
+    <section class="sec" id="faq" aria-labelledby="h-faq">
+      <div class="sec-label">09 · Preguntas frecuentes</div>
+      <h2 id="h-faq">Lo que los usuarios nos preguntan</h2>
+
+      <div>
+        <div class="faq-item open">
+          <div class="faq-q" role="button" tabindex="0" aria-expanded="true">¿Se almacena mi itinerario de viaje?</div>
+          <div class="faq-a">No de forma permanente. Los datos de itinerario se procesan en sesión y se eliminan automáticamente en menos de 24 horas. Si activas el historial en tu perfil, el resumen del informe (no el itinerario en bruto) puede guardarse hasta que lo elimines tú. Tienes control total desde la configuración de tu cuenta.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" role="button" tabindex="0" aria-expanded="false">¿Qué modelos de IA procesan mis datos?</div>
+          <div class="faq-a">El Chat IA usa la API de Groq (LLaMA). Los análisis de riesgo compuesto pueden usar Anthropic Claude API. Ambas integraciones son completamente stateless — cada sesión es una llamada API nueva sin historial compartido entre usuarios. Ninguna de las dos APIs retiene datos en su política estándar de uso.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" role="button" tabindex="0" aria-expanded="false">¿Dónde están alojados mis datos?</div>
+          <div class="faq-a">La aplicación corre en servidores Hetzner Cloud (datacenter EU) bajo control propio — Next.js bare metal con PM2 y Nginx. La base de datos está en Supabase (región EU). Ningún dato personal sale del Espacio Económico Europeo salvo las llamadas a APIs de IA (Groq, Anthropic), realizadas bajo Cláusulas Contractuales Tipo RGPD.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" role="button" tabindex="0" aria-expanded="false">¿Puedo confiar en el análisis para decisiones de seguridad críticas?</div>
+          <div class="faq-a">Para planificación ordinaria, sí — el IRV aporta contextualización que normalmente no tendrías. Para operaciones de alto riesgo, zonas de conflicto o misiones humanitarias: consulta siempre las <a href="https://www.exteriores.gob.es" target="_blank" rel="noopener">recomendaciones oficiales del MAEC</a> y profesionales certificados. Somos una herramienta de conciencia situacional, no un sustituto del criterio profesional.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" role="button" tabindex="0" aria-expanded="false">¿Cumple la plataforma con el RGPD?</div>
+          <div class="faq-a">Sí. Base jurídica: consentimiento explícito (art. 6.1.a). Infraestructura en EU (Hetzner + Supabase EU). Dispones de derechos de acceso, rectificación, supresión y portabilidad ejercibles desde tu perfil o en <a href="mailto:privacidad@viajeinteligencia.com">privacidad@viajeinteligencia.com</a>.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" role="button" tabindex="0" aria-expanded="false">¿Cómo protegéis contra prompt injection?</div>
+          <div class="faq-a">Tres capas: (1) función <code>sanitizeItinerary()</code> que valida el input antes del LLM; (2) separación estructural estricta entre datos de usuario e instrucciones del sistema usando roles API distintos — nunca concatenación de strings; (3) monitorización de outputs fuera del dominio de análisis de viaje. El self-hosting en Hetzner elimina adicionalmente vectores de ataque presentes en edge networks compartidas.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" role="button" tabindex="0" aria-expanded="false">¿Dónde reporto una vulnerabilidad?</div>
+          <div class="faq-a">Escríbenos a <a href="mailto:seguridad@viajeinteligencia.com">seguridad@viajeinteligencia.com</a>. Respondemos en máximo 72 horas. Estamos preparando <code>/.well-known/security.txt</code> con clave PGP para comunicaciones cifradas (Q3 2026). Todo reporte responsable recibe reconocimiento explícito.</div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ══ FOOTER ══ -->
+    <footer class="page-footer">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <h4>Legal</h4>
+          <a href="https://www.viajeinteligencia.com/legal">Aviso legal y privacidad</a>
+          <a href="https://www.viajeinteligencia.com/legal#privacidad">Política de privacidad</a>
+          <a href="https://www.viajeinteligencia.com/transparencia">Transparencia</a>
+        </div>
+        <div class="footer-col">
+          <h4>Plataforma</h4>
+          <a href="https://www.viajeinteligencia.com/metodologia">Metodología IRV</a>
+          <a href="https://www.viajeinteligencia.com/fuentes-osint">Fuentes OSINT</a>
+          <a href="https://www.viajeinteligencia.com/ecosistema">Ecosistema</a>
+          <a href="https://www.viajeinteligencia.com/api-endpoints">API pública</a>
+        </div>
+        <div class="footer-col">
+          <h4>Contacto</h4>
+          <a href="mailto:privacidad@viajeinteligencia.com">privacidad@viajeinteligencia.com</a>
+          <a href="mailto:seguridad@viajeinteligencia.com">seguridad@viajeinteligencia.com</a>
+          <a href="mailto:info@viajeinteligencia.com">info@viajeinteligencia.com</a>
+        </div>
+        <div class="footer-col">
+          <h4>Infraestructura</h4>
+          <p>Hosting: Hetzner Cloud EU</p>
+          <p>App: Next.js + PM2 + Nginx</p>
+          <p>BD: Supabase EU · AES-256</p>
+          <p>IA: Groq + Anthropic (stateless)</p>
+          <p>Pagos: Stripe PCI DSS L1</p>
+        </div>
+      </div>
+
+      <div class="bottom-bar">
+        <span>
+          <a href="https://www.viajeinteligencia.com/">Viaje con Inteligencia</a> ·
+          © 2026 M.Castillo ·
+          <a href="https://github.com/mcasrom/viaje-con-inteligencia" target="_blank" rel="noopener">GitHub</a> ·
+          <a href="https://ko-fi.com/mcasrom" target="_blank" rel="noopener">Ko-fi</a>
+        </span>
+        <span><code>/seguridad</code> · v2.0 · Mayo 2026</span>
+      </div>
+    </footer>
+
+  </div><!-- /page -->
+
+  <script>
+    document.querySelectorAll('.faq-q').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const item = btn.closest('.faq-item');
+        const isOpen = item.classList.contains('open');
+        document.querySelectorAll('.faq-item.open').forEach(el => {
+          el.classList.remove('open');
+          el.querySelector('.faq-q').setAttribute('aria-expanded','false');
+        });
+        if (!isOpen) {
+          item.classList.add('open');
+          btn.setAttribute('aria-expanded','true');
+        }
+      });
+      btn.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); btn.click(); }
+      });
+    });
+  </script>
+</body>
+</html>
