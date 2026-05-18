@@ -147,7 +147,7 @@ export default function AdminCalendario() {
     });
 
     editorNotes.forEach(note => {
-      const d = new Date(note.month);
+      const d = new Date(note.created_at);
       all.push({
         date: d,
         type: 'editor_note',
