@@ -86,15 +86,15 @@
 13. **Trip Risk Score en viajes** ✅ — API `/api/trips/[id]/risk-score` con scoring por país+mes+perfil. Tabla visual en detalle de viaje con 4 dimensiones y score global. Lógica compartida en `src/lib/trip-risk-score.ts`. Comparador `/viajes/comparar` con tabla side-by-side y recomendación. Scoring mejorado: factor duración (viajes largos = más exposición) + intereses del viajero personalizan perfil. Pesos ajustados por perfil (mochilero → coste 40%, familiar → riesgo 40%, etc.). Country codes corregidos en viajes existentes.
 
 ### Tareas a observar / backlog
-1. **Groq para GDELT/RSS** — Clasificación semántica con Groq en vez de solo keywords para mejorar precisión de urgencia en señales OSINT
+1. **Groq para GDELT/RSS** ✅ — Clasificación semántica con Groq implementada para Reddit, RSS y GDELT
 2. **Widget "Clima de viaje" en ficha de país** — Badge emocional (😊/😐/😟) basado en media de `tone_score` últimos 7 días para ese país
 3. **Newsletter con sentimiento** — Incluir "🇪🇬 Egipto: sentimiento negativo esta semana (-6.2)" en el digest semanal
 4. **Tendencias semanales de sentimiento** — Página o widget en admin con "países con mayor caída de sentimiento" (delta semanal de tone_score)
 5. **Alertas de sentimiento** — Notificar cuando un país cruza umbral de negatividad (ej. tone_score < -7)
-6. **Persistir tone_score en incidents** — Al clusterizar señales → incidentes, conservar el tone_score medio para mostrarlo en tarjetas de incidente
+6. **Persistir tone_score en incidents** ✅ — Media del cluster almacenada en columna `tone_score` de incidents. Badge visible en `/osint`
 7. **Resultados RRSS 15 May** — Analizar engagement de Bluesky/Mastodon/X/Telegram
 8. **Análisis frecuencia de palabras** — Tabla `osint_word_trends` para detectar spikes anómalos de términos (hantavirus, brotes, etc.) por comparación con media de 7 días
-9. **Groq para toda señal OSINT** — Aplicar `classifySignal()` también a GDELT y RSS (hoy solo Reddit usa Groq; el resto usa keywords)
+9. **Groq para toda señal OSINT** ✅ — GDELT y RSS ya usan Groq (no solo keywords)
 
 ## PAUSED STATE (13 May 2026 — Sprint 13 May PM — Irán + Newsletter multicanal + Alertas web)
 - **Irán añadido a paises.ts**: Entrada completa con embajada en Teherán, visa VOA, riesgo muy-alto, emergencias. Añadido a GPI, GTI, HDI, IPC indices — ya visible en mapa de KPIs. Referencias hardcode actualizadas (106+ → 108+).
@@ -408,16 +408,24 @@ Para probar authenticated endpoints se necesita sesión válida (vía browser).
 | Día 4 | Facebook Comunidad Viajeros | Versión español | ✅ (draft en content/outreach/facebook-comunidad-viajeros.mdx) |
 | Día 5 | Email bloggers/agencias | Outreach 5-10 | ⏳ |
 
-## Next Steps
+## Sprint 1 ✅ — Trust Layer (19 May 2026)
+1. **Banda "Cómo funciona" en Homepage** (`page.tsx:517-556`): 5 pilares visuales (datos oficiales, IA asistida, metodología abierta, privacidad, proyecto independiente) + CTAs a `/metodologia`, `/transparencia`, `/fuentes-osint`, `/seguridad`
+2. **Micro trust signals**: Chat IA (`ChatClient.tsx:530`) — *"Respuestas orientativas, contrasta con fuentes oficiales"*. OSINT (`OsintFeed.tsx:357`) — *"Datos agregados desde fuentes OSINT y organismos oficiales"*
+3. **Metodología → HUB visual** (`/metodologia`): Pipeline 5 pasos (ingesta → normalización → IA → alertas → viajero) con iconos + flechas de flujo al inicio
+4. **Centro de Transparencia** (`/transparencia`): 8 secciones (fuentes, IA, limitaciones, privacidad, seguridad, actualización, sesgos, filosofía), navegación por anchors, recursos relacionados
+5. **Caja de autor**: Sección "Sobre el proyecto" en homepage con bio de Miguel Castillo, stack, enlaces
+6. **Footer**: Enlace a Centro de Transparencia añadido
+7. **SOS fix**: Proxy server-side `/api/geocode` elimina dependencia directa de Nominatim desde el cliente (CORS/adblockers)
 
-1. **📢 Outreach** — Reddit (r/SideProject, r/digitalnomad), foros de viajeros (LosViajeros, Foro de Viajeros), Facebook grupos
-2. **✈️ FlightLabs en Reclamaciones** ✅ — Ya implementado: API key en `.env.local`, endpoint `/api/flights/verify-delay`, botón "Verificar" en ReclamacionesClient, health check activo
-3. **🤖 ML temporal** — Esperar ~22 días para validación temporal CV. Expandir features RF (tasas de cambio, clima, visados)
-4. **🎯 Afinar pesos ScoreBadge** — Ajustar pesos de riesgo/season/coste/perfil con datos reales de uso
-5. **🔗 Vinculación Telegram** ✅ — SQL ejecutado, fix deployado. Pendiente: probar flujo desde Telegram
-6. **📊 Resultados RRSS 15 May** — Analizar engagement de Bluesky/Mastodon/X/Telegram
-7. **🧭 Comparador de itinerarios** ✅ — Página `/viajes/comparar` con tabla side-by-side, recomendación, enlace desde `/viajes`
-8. **💓 Heartbeat externo** — Registrar `https://www.viajeinteligencia.com/api/heartbeat` en monitor gratuito (Better Uptime, UptimeRobot, CronHub) con check cada 30-60 min para recibir alerta si el cron falla o no se ejecuta
+## Sprint 2 — Madurez de plataforma (pendiente)
+1. **Eliminar apariencia experimental** — Revisar textos: cambiar "beta", "experimental", "LLM", "clustering", "prototipo" por "operacional", "producción", "inteligencia aplicada", "análisis", "plataforma". Meta descriptions y OG tags
+2. **Pillar pages SEO** — Crear `/travel-risk-intelligence` (3000-5000 palabras), `/osint-para-viajeros`, `/geopolitica-y-viajes`. Interlinking desde blog existente
+3. **Indexación quirúrgica** — `noindex` a tags de blog, búsquedas internas, `/admin/*`, `/dashboard/*`, feeds, previews. Consolidar páginas thin. Revisar canónicos
+
+## Sprint 3 — Arquitectura SEO (pendiente)
+1. **Pillar + Satellite** — Cada pillar page → 5-8 artículos satélite enlazados bidireccionalmente. Schema Article + FAQ en pillars
+
+## Next Steps
 
 ## Recurring Tasks
 - **Daily (post-deploy)**: Verify `/api/cron/train-models` completes successfully (R² > 0.95, < 300s).
