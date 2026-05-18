@@ -96,6 +96,7 @@ export default function SOSButton() {
   const [searchResults, setSearchResults] = useState<LocationResult[]>([]);
   const [searching, setSearching] = useState(false);
   const searchTimeout = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const lastSearchTime = useRef(0);
   const userCoords = useRef<{ lat: number; lon: number } | null>(null);
 
 
@@ -179,17 +180,30 @@ export default function SOSButton() {
   }, []);
 
   const geocodeSearch = async (query: string) => {
+    setSearching(true);
     if (query.length < 3) {
       setSearchResults([]);
+      setSearching(false);
       return;
     }
-    setSearching(true);
+    setError(null);
+    const controller = new AbortController();
+    const abortTimeout = setTimeout(() => controller.abort(), 8000);
     try {
       const res = await fetch(
         `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=6&addressdetails=1&accept-language=es`,
-        { headers: { 'User-Agent': 'ViajeInteligencia/1.0' } }
+        { headers: { 'User-Agent': 'ViajeInteligencia/1.0' }, signal: controller.signal }
       );
+      clearTimeout(abortTimeout);
+      if (!res.ok) {
+        setError(`Error al buscar (HTTP ${res.status})`);
+        return;
+      }
       const data = await res.json();
+      if (!Array.isArray(data)) {
+        setError('Respuesta inesperada del servidor de geolocalización.');
+        return;
+      }
       const results: LocationResult[] = data
         .filter((r: any) => r.type !== 'country')
         .map((r: any) => {
@@ -203,14 +217,27 @@ export default function SOSButton() {
         });
 
       setSearchResults(results.filter(r => r.countryCode && paisesData[r.countryCode]));
-    } catch {}
+    } catch (e: any) {
+      clearTimeout(abortTimeout);
+      if (e?.name === 'AbortError') {
+        setError('La consulta tardó demasiado. Intenta de nuevo.');
+      } else {
+        setError('Error de conexión al buscar ubicación.');
+      }
+    }
     setSearching(false);
   };
 
   const handleSearchChange = (value: string) => {
     setSearchQuery(value);
     clearTimeout(searchTimeout.current);
-    searchTimeout.current = setTimeout(() => geocodeSearch(value), 400);
+    const now = Date.now();
+    const timeSinceLastSearch = now - lastSearchTime.current;
+    const delay = timeSinceLastSearch < 2000 ? Math.max(800, 2000 - timeSinceLastSearch) : 400;
+    searchTimeout.current = setTimeout(() => {
+      lastSearchTime.current = Date.now();
+      geocodeSearch(value);
+    }, delay);
   };
 
   const handleSelectLocation = (loc: LocationResult) => {
