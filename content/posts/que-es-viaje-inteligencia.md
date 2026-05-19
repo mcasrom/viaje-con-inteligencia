@@ -26,6 +26,8 @@ Viaje Inteligencia es una plataforma enfocada en:
 
 > **optimizar decisiones de viaje utilizando datos, análisis y herramientas inteligentes**
 
+¿Quieres saber más sobre cómo la [inteligencia de riesgos de viaje](/travel-risk-intelligence) y el [OSINT para viajeros](/osint-para-viajeros) se combinan en el sistema?
+
 No es solo un blog.
 
 No es solo contenido.
@@ -98,6 +100,7 @@ Este proyecto introduce una capa nueva:
 - generación de escenarios
 - optimización de rutas
 - predicción de costes
+- monitorización de [riesgos geopolíticos](/geopolitica-y-viajes) que afectan a tus destinos
 
 ## 🧭 3. Enfoque estratégico
 - no solo “qué hacer”

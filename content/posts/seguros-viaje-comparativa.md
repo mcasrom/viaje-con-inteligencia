@@ -171,7 +171,7 @@ Viajar inteligentemente requiere más que simplemente reservar un vuelo y encont
 
 La fase de planificación es crítica para el éxito de cualquier viaje internacional. Comienza con una lista de verificación completa que incluya documentación, finanzas, salud, seguridad y comunicación. Dedica tiempo a investigar tu destino a fondo, incluyendo costumbres locales, situación política actual, y alertas de viaje de tu país.
 
-Usa múltiples fuentes de información para construir una imagen completa de tu destino. Las embajadas y konsulados proporcionan información officielle, pero los foros de viajeros y blogs independientes ofrecen perspectivas más candidatas. Combina ambas para obtener una visión equilibrada de lo que puedes esperar.
+Usa múltiples fuentes de información para construir una imagen completa de tu destino. Las embajadas y consulados proporcionan información oficial, pero los foros de viajeros y blogs independientes ofrecen perspectivas más cercanas. Combínalas con el [análisis de riesgos geopolíticos](/geopolitica-y-viajes) para elegir el seguro adecuado.
 
 ### Ejecución Durante el Viaje
 

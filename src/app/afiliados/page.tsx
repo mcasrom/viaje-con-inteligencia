@@ -35,7 +35,7 @@ export default function AfiliadosPage() {
             Gana dinero recommending viajes seguros
           </h1>
           <p className="text-xl text-slate-400 max-w-2xl mx-auto">
-            Únete a nuestro programa y gana <span className="text-yellow-400 font-bold">20% de comisión</span> en todas las suscripciones que recomiendes. Para siempre.
+            Únete al programa y gana <span className="text-yellow-400 font-bold">20% de comisión</span> en todas las suscripciones que recomiendes. Para siempre.
           </p>
         </div>
 
@@ -56,7 +56,7 @@ export default function AfiliadosPage() {
             </div>
             <h3 className="text-xl font-bold text-white mb-2">+1,000 Creadores</h3>
             <p className="text-slate-400">
-              Blogueros de viaje, agencias, y creadores de contenido ya están ganando con nuestro programa.
+              Blogueros de viaje, agencias, y creadores de contenido ya están ganando con el programa.
             </p>
           </div>
 

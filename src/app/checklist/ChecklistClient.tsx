@@ -456,7 +456,7 @@ export default function ChecklistClient() {
         <div className="mt-8 bg-gradient-to-r from-blue-600/20 to-cyan-600/20 border border-blue-500/30 rounded-xl p-5 text-center">
           <AlertTriangle className="w-6 h-6 text-blue-400 mx-auto mb-2" />
           <h3 className="text-white font-bold mb-1">¿No sabes a dónde ir?</h3>
-          <p className="text-slate-400 text-sm mb-3">Usa nuestro comparador de destinos y encuentra el viaje perfecto según seguridad, coste y clima.</p>
+          <p className="text-slate-400 text-sm mb-3">Usa el comparador de destinos y encuentra el viaje perfecto según seguridad, coste y clima.</p>
           <Link href="/decidir" className="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium">
             Descubrir destinos →
           </Link>

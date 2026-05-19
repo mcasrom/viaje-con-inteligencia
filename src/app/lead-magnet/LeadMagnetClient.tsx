@@ -51,7 +51,7 @@ export default function LeadMagnetClient() {
           <div className="bg-green-500/20 border-2 border-green-500 rounded-2xl p-8">
             <Check className="w-16 h-16 text-green-400 mx-auto mb-4" />
             <h1 className="text-2xl font-bold text-white mb-2">¡Descargado!</h1>
-            <p className="text-slate-300 mb-6">Tu checklist premium se ha descargado. También recibirás nuestro resumen semanal.</p>
+            <p className="text-slate-300 mb-6">Tu checklist premium se ha descargado. También recibirás el resumen semanal.</p>
             
             <div className="space-y-3 text-left">
               <p className="text-slate-400 text-sm font-medium">📱 También disponible en:</p>
@@ -112,7 +112,7 @@ export default function LeadMagnetClient() {
             Checklist Premium de Viaje
           </h1>
           <p className="text-slate-300 text-lg max-w-2xl mx-auto">
-            Descarga nuestra guía completa con 80+ items verificados por viajeros experimentados. 
+            Descarga la guía completa con 80+ items verificados por viajeros experimentados. 
             No olvides nada en tu próximo viaje.
           </p>
         </div>

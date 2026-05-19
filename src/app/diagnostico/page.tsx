@@ -246,7 +246,7 @@ export default function DiagnosticoPage() {
             ¿Necesitas ayuda?
           </h3>
           <p className="text-slate-400 mb-4">
-            Si tienes problemas con tu suscripción o acceso, contacta con nuestro equipo:
+            Si tienes problemas con tu suscripción o acceso, contacta con el equipo:
           </p>
           <div className="flex flex-wrap gap-4">
             <a 

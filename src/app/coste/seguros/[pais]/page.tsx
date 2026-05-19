@@ -19,7 +19,7 @@ export async function generateMetadata({ params }: { params: Promise<{ pais: str
     description: `Compara los mejores seguros de viaje para ${nombrePais} según el riesgo real del destino (IRV), tu perfil y las actividades planeadas. IATI, Chapka, AXA y más.`,
     openGraph: {
       title: `Seguro de viaje para ${nombrePais} — Comparativa OSINT`,
-      description: `Encuentra el seguro ideal para ${nombrePais} con nuestro comparador basado en datos de riesgo en tiempo real.`,
+      description: `Encuentra el seguro ideal para ${nombrePais} con el comparador basado en datos de riesgo en tiempo real.`,
     },
   };
 }

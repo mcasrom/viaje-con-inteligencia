@@ -248,7 +248,7 @@ export default function MetodologiaPage() {
             <h2 className="text-xl font-bold text-white">Análisis de sentimiento OSINT</h2>
           </div>
           <p className="text-slate-300 text-sm mb-4">
-            Cada señal de OSINT (redes sociales, RSS, GDELT) lleva un <strong>tone_score</strong> que mide el tono emocional del mensaje. Este valor se conserva al clusterizar señales en incidentes y alimenta nuestro modelo de Machine Learning.
+            Cada señal de OSINT (redes sociales, RSS, GDELT) lleva un <strong>tone_score</strong> que mide el tono emocional del mensaje. Este valor se conserva al clusterizar señales en incidentes y alimenta el modelo de Machine Learning.
           </p>
 
           <div className="space-y-4">
@@ -300,7 +300,7 @@ export default function MetodologiaPage() {
             <div className="bg-slate-700/30 rounded-lg p-4">
               <h4 className="text-white font-semibold text-sm mb-2">Machine Learning</h4>
               <p className="text-slate-400 text-xs">
-                El tone_score alimenta 5 features de nuestro modelo Random Forest: <strong>avgTone7d</strong>, <strong>avgTone30d</strong>, <strong>toneTrend7d</strong>, <strong>negativeRatio7d</strong> y <strong>toneVolatility7d</strong>. 
+                El tone_score alimenta 5 features del modelo Random Forest: <strong>avgTone7d</strong>, <strong>avgTone30d</strong>, <strong>toneTrend7d</strong>, <strong>negativeRatio7d</strong> y <strong>toneVolatility7d</strong>. 
                 Estas features permiten al modelo detectar cambios de clima informativo que preceden a cambios de riesgo. 
                 Se necesita al menos 7 días de datos de sentimiento para que estas features sean significativas.
               </p>

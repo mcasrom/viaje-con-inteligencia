@@ -153,7 +153,7 @@ export default function SeguridadPage() {
           <h2 className="text-2xl font-bold text-white mb-3">Stack técnico verificable — 100% EU, bajo control propio</h2>
           <p className="text-sm text-slate-400 leading-relaxed mb-6">
             En mayo de 2026 completamos la migración de Vercel a infraestructura self-hosted en Hetzner Cloud (datacenter EU).
-            Ningún dato de usuario transita por redes de edge compartidas fuera de nuestro control.
+            Ningún dato de usuario transita por redes de edge compartidas fuera del control de la plataforma.
           </p>
 
           <div className="bg-slate-800/30 rounded-xl border border-slate-700 p-6 mb-6">
@@ -164,8 +164,8 @@ export default function SeguridadPage() {
               <StackLayer label="Aplicación" name="Next.js bare metal · PM2" detail="Hetzner Cloud VPS · datacenter EU · control propio" badge="Self-hosted EU" badgeColor="green" />
               <StackLayer label="Base de datos" name="Supabase · PostgreSQL" detail="Región EU · AES-256 en reposo · RLS por usuario" badge="EU · Cifrado" badgeColor="green" />
               <StackLayer label="IA · Chat" name="Groq API · LLaMA" detail="Chat IA tiempo real · stateless · sin historial entre usuarios" badge="API externa" badgeColor="amber" />
-              <StackLayer label="Pagos" name="Stripe Checkout" detail="PCI DSS Level 1 · SAQ-A · tarjetas nunca tocan nuestra infra" badge="PCI L1" badgeColor="blue" />
-              <StackLayer label="Email" name="Resend" detail="Transaccional y newsletter · sin almacenamiento en nuestra BD" badge="API externa" badgeColor="gray" />
+              <StackLayer label="Pagos" name="Stripe Checkout" detail="PCI DSS Level 1 · SAQ-A · tarjetas nunca tocan la infraestructura del servidor" badge="PCI L1" badgeColor="blue" />
+              <StackLayer label="Email" name="Resend" detail="Transaccional y newsletter · sin almacenamiento en la base de datos" badge="API externa" badgeColor="gray" />
             </div>
           </div>
 
@@ -406,7 +406,7 @@ export default function SeguridadPage() {
             </Card>
             <Card tag="PCI DSS · Stripe" tagColor="gray" title="Seguridad en pagos delegada">
               <ul className="list-disc pl-4 space-y-1">
-                <li>Stripe Checkout — tarjetas nunca tocan nuestra infraestructura</li>
+                <li>Stripe Checkout — tarjetas nunca tocan la infraestructura</li>
                 <li>Clasificación SAQ-A: mínima responsabilidad PCI DSS</li>
                 <li>Webhook validado con firma HMAC</li>
               </ul>

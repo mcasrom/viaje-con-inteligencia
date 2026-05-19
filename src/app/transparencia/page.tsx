@@ -39,7 +39,7 @@ const SECTIONS = [
     title: 'Cómo usamos la IA',
     content: [
       'La IA analiza, no decide. Groq (modelo de lenguaje) clasifica señales OSINT por categoría, urgencia y sentimiento. El modelo Random Forest predice cambios de riesgo basándose en 25 features históricas.',
-      'Ninguna alerta o recomendación se genera automáticamente sin pasar por nuestro pipeline de validación: fuente original → normalización → clasificación → revisión.',
+      'Ninguna alerta o recomendación se genera automáticamente sin pasar por el pipeline de validación: fuente original → normalización → clasificación → revisión.',
       'El Chat IA responde preguntas de viajeros usando Groq, pero siempre advertimos que sus respuestas son orientativas y deben contrastarse con fuentes oficiales.',
       'No usamos IA para: decidir niveles de riesgo MAEC, modificar datos oficiales, generar contenido sin supervisión, ni tomar decisiones en nombre del usuario.',
     ],
@@ -70,7 +70,7 @@ const SECTIONS = [
       'No vendemos, compartimos ni cedemos datos personales a terceros. No usamos trackers publicitarios ni cookies de terceros.',
       'Los datos de usuario (viajes, favoritos, preferencias) se almacenan en Supabase con autenticación mediante magic link. El usuario puede eliminar sus datos en cualquier momento.',
       'No creamos perfiles comerciales ni de comportamiento. No usamos los datos para publicidad ni recomendaciones sesgadas.',
-      'El Monitor de Seguros procesa tus pólizas íntegramente en tu navegador (localStorage). No almacenamos en servidor los detalles de tu seguro médico, coberturas ni aseguradora. Si pierdes el dispositivo o borras los datos del navegador, perderás tus pólizas guardadas — no hay copia en nuestros servidores.',
+      'El Monitor de Seguros procesa tus pólizas íntegramente en tu navegador (localStorage). No almacenamos en servidor los detalles de tu seguro médico, coberturas ni aseguradora. Si pierdes el dispositivo o borras los datos del navegador, perderás tus pólizas guardadas — no hay copia en los servidores.',
     ],
   },
   {

@@ -406,10 +406,16 @@ Idea: reclutar colaboradores (redactores de contenido, traductores, community ma
 - Webhook para actualizar `api_keys.tier` al confirmar pago
 - Rate limiting server-side por tier
 
-### 🟢 Sprint África — 17 países restantes (prioridad: baja)
-- GA, GQ, MG, ML, NE, TD, ZM, ZW, BJ, BF, BI, MW, NA, SL, LR, DJ, ER
+### 🟢 Sprint África — 28 países pendientes (prioridad: alta)
+**Motivación:** La página `/geopolitica-y-viajes` tiene un monitor de conflictos con 8 países (RU, UA, IR, IL, LB, SY, YE, VE) que actualmente son `div` sin link porque no existen en la base de datos. Además de los 17 africanos, faltan estos 8 países de conflicto + 3 de LATAM/Asia prioritarios.
 
-### 🟢 Sprint SEO Pillar Pages (prioridad: media)
+**Pendientes:**
+- África (17): GA, GQ, MG, ML, NE, TD, ZM, ZW, BJ, BF, BI, MW, NA, SL, LR, DJ, ER
+- Conflictos (8): RU, UA, IR, IL, LB, SY, YE, VE
+- LATAM/Asia (3): UY, PY, NP (países con viajeros frecuentes)
+- Al añadirlos, revertir los `div` a `Link` en `/geopolitica-y-viajes` conflict monitor
+
+### 🟢 Sprint SEO Pillar Pages (prioridad: completada)
 - `/travel-risk-intelligence` (EN), `/osint-para-viajeros`, `/geopolitica-y-viajes`
 - Interlinking con blog existente
 - Schema Article + FAQ

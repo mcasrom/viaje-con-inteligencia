@@ -105,7 +105,9 @@ export default function AdminCalendario() {
         return;
       }
 
-      if (!infRes.ok || !nlRes.ok || !notesRes.ok) throw new Error('Error fetching data');
+      if (!infRes.ok) throw new Error(`Error fetching infografias: ${infRes.status}`);
+      if (!nlRes.ok) throw new Error(`Error fetching newsletter stats: ${nlRes.status}`);
+      if (!notesRes.ok) throw new Error(`Error fetching editor notes: ${notesRes.status}`);
 
       const [infData, nlData, notesData] = await Promise.all([
         infRes.json(), nlRes.json(), notesRes.json(),

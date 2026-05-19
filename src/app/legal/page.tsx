@@ -81,7 +81,7 @@ export default function LegalPage() {
                 <strong className="text-white">Derechos:</strong> Puedes ejercer tus derechos de acceso, rectificación, supresión y portabilidad contactando a info@viajeinteligencia.com.
               </p>
               <p>
-                <strong className="text-white">Base legal:</strong> El tratamiento de datos se basa en tu consentimiento y en el interés legítimo de mejorar nuestros servicios.
+                <strong className="text-white">Base legal:</strong> El tratamiento de datos se basa en tu consentimiento y en el interés legítimo de mejorar los servicios.
               </p>
             </div>
           </div>

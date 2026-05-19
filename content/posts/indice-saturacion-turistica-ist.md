@@ -39,7 +39,7 @@ Lo más preocupante es que esta situación no solo afecta al bolsillo del viajer
 
 ## La metodología OSINT aplicada al turismo
 
-Para resolver esta brecha de información, el IST utiliza un modelo basado en señales OSINT, conocido en español como Inteligencia de Fuentes Abiertas. Esta metodología consiste en recopilar y analizar información disponible públicamente de múltiples fuentes para obtener conocimientos accionables. En el contexto turístico, las OSINT nos permiten capturar señales del mundo real que nos ayudan a entender la presión turística en cada destino.
+Para resolver esta brecha de información, el IST utiliza un modelo basado en señales OSINT, conocido en español como [Inteligencia de Fuentes Abiertas](/osint-para-viajeros). Esta metodología consiste en recopilar y analizar información disponible públicamente de múltiples fuentes para obtener conocimientos accionables. En el contexto turístico, las OSINT nos permiten capturar señales del mundo real que nos ayudan a entender la presión turística en cada destino.
 
 Las fuentes que alimentan nuestro sistema son diversas y complementarias. Las APIs de proveedores de alojamiento nos ofrecen datos en tiempo real sobre ocupación hotelera y evolución de precios. Los feeds de eventos nos permiten conocer qué eventos masivos, festivales, conciertos o acontecimientos deportivos coincidirán con nuestro viaje. Los datos de redes sociales, analizados de forma agregada y respetuosa con la privacidad, nos ayudan a detectar picos de actividad turística en lugares específicos.
 

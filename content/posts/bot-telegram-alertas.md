@@ -24,7 +24,7 @@ Es un asistente de viaje basado en IA que te ayuda a planificar y viajar de form
 
 ### ⚠️ Alertas de riesgo por país
 
-Información actualizada sobre el nivel de riesgo de cada destino según datos del MAEC español.
+Información actualizada sobre el nivel de riesgo de cada destino según datos del MAEC español. Las alertas se complementan con [análisis OSINT en tiempo real](/osint-para-viajeros) sobre seguridad y estabilidad.
 
 ### 🌦️ Información meteorológica
 

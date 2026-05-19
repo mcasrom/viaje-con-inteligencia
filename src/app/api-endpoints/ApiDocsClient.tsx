@@ -244,7 +244,7 @@ export default function ApiDocsClient() {
           <div className="flex items-center gap-3">
             <Smartphone className="w-6 h-6 text-blue-400" />
             <div>
-              <p className="text-blue-300 font-semibold text-sm">¿Quieres integrar nuestros datos?</p>
+              <p className="text-blue-300 font-semibold text-sm">¿Quieres integrar los datos de riesgo en tu app?</p>
               <p className="text-slate-400 text-xs mt-1">Contacta en <a href="mailto:info@viajeinteligencia.com" className="text-blue-400 hover:underline">info@viajeinteligencia.com</a> para partners, volúmenes superiores o necesidades personalizadas.</p>
             </div>
           </div>
