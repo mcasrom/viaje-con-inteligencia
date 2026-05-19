@@ -5037,7 +5037,7 @@
       },
       "voltaje": "230V / 50Hz",
       "prefijoTelefono": "+972",
-      "nivelRiesgo": "medio",
+      "nivelRiesgo": "alto",
       "ultimoInforme": "Abril 2026",
       "contactos": [
         {
@@ -6409,7 +6409,7 @@
       },
       "voltaje": "220V / 50Hz",
       "prefijoTelefono": "+961",
-      "nivelRiesgo": "medio",
+      "nivelRiesgo": "muy-alto",
       "ultimoInforme": "Marzo 2026",
       "contactos": [
         {
@@ -9106,7 +9106,7 @@
       },
       "voltaje": "220V / 50Hz",
       "prefijoTelefono": "+7",
-      "nivelRiesgo": "alto",
+      "nivelRiesgo": "muy-alto",
       "ultimoInforme": "Abril 2026",
       "contactos": [
         {
@@ -11134,7 +11134,7 @@
       },
       "voltaje": "120V / 60Hz",
       "prefijoTelefono": "+58",
-      "nivelRiesgo": "alto",
+      "nivelRiesgo": "muy-alto",
       "ultimoInforme": "Marzo 2026",
       "contactos": [
         {
@@ -12157,8 +12157,8 @@
     "ve": {
       "general": "911",
       "policia": "911",
-      "bomberos": "171",
-      "ambulancia": "171"
+      "bomberos": "911",
+      "ambulancia": "911"
     },
     "vn": {
       "general": "113",
@@ -12171,6 +12171,18 @@
       "policia": "10111",
       "bomberos": "1017",
       "ambulancia": "10177"
+    },
+    "sy": {
+      "general": "112",
+      "policia": "112",
+      "bomberos": "113",
+      "ambulancia": "110"
+    },
+    "ye": {
+      "general": "999",
+      "policia": "999",
+      "bomberos": "998",
+      "ambulancia": "995"
     }
   }
 }
