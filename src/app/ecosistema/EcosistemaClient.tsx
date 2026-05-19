@@ -8,7 +8,7 @@ const layers: { key: LayerKey; title: string; emoji: string }[] = [
   { key: 'sources', title: 'Fuentes de Datos', emoji: '📡' },
   { key: 'pipelines', title: 'Pipelines (Master Cron)', emoji: '⚙️' },
   { key: 'storage', title: 'Almacenamiento', emoji: '💾' },
-  { key: 'ml', title: 'ML Pipeline', emoji: '🤖' },
+  { key: 'ml', title: 'Pipeline de IA', emoji: '🤖' },
   { key: 'apis', title: 'APIs REST', emoji: '🔌' },
   { key: 'frontend', title: 'Frontend', emoji: '🖥️' },
   { key: 'social', title: 'Distribución', emoji: '📱' },
@@ -41,7 +41,7 @@ const items: Record<LayerKey, { name: string; desc: string; color: string }[]> =
     { name: 'TCI + Oil', desc: 'Índice coste viaje + precio crudo', color: 'amber' },
     { name: 'Airspace OSINT', desc: 'OpenSky para países en conflicto', color: 'cyan' },
     { name: 'Feature Store', desc: '25 features por país → ml_features', color: 'emerald' },
-    { name: 'ML Training', desc: 'Random Forest 50 trees · 4 modelos', color: 'rose' },
+    { name: 'Entrenamiento IA', desc: 'Random Forest 50 trees · 4 modelos', color: 'rose' },
     { name: 'Risk Predictions', desc: 'Score + probUp 7/14/30 días', color: 'red' },
     { name: 'Social Publisher', desc: 'Telegram + Bluesky + Mastodon', color: 'orange' },
     { name: 'Newsletter', desc: 'Digest semanal vía Resend', color: 'pink' },
@@ -70,14 +70,14 @@ const items: Record<LayerKey, { name: string; desc: string; color: string }[]> =
     { name: 'prob_up_14d_rf', desc: 'Probabilidad subida 14 días', color: 'yellow' },
     { name: 'prob_up_30d_rf', desc: 'Probabilidad subida 30 días', color: 'lime' },
     { name: 'Trip Risk Score', desc: 'Scoring por país + mes + perfil', color: 'teal' },
-    { name: 'ScoreBadge', desc: 'Badge visual de riesgo ML', color: 'indigo' },
+    { name: 'ScoreBadge', desc: 'Badge visual de riesgo IA', color: 'indigo' },
   ],
   apis: [
     { name: '/api/maec', desc: 'Riesgo MAEC + timestamp', color: 'blue' },
     { name: '/api/osint/signals', desc: 'Señales OSINT públicas', color: 'violet' },
     { name: '/api/pois', desc: 'POIs con scoring por perfil', color: 'teal' },
     { name: '/api/indices', desc: 'GPI, GTI, HDI, IPC', color: 'indigo' },
-    { name: '/api/ml/score', desc: 'Score ML por país', color: 'rose' },
+    { name: '/api/ml/score', desc: 'Score IA por país', color: 'rose' },
     { name: '/api/pais/[codigo]', desc: 'Datos completos país', color: 'slate' },
     { name: '/api/trips/*', desc: 'CRUD viajes + comparador', color: 'cyan' },
     { name: '/api/user/*', desc: 'Preferencias + watchlist', color: 'sky' },
@@ -291,7 +291,7 @@ export default function EcosistemaClient() {
                     ['Comparador países', '✅', '✅', '/comparar'],
                     ['Itinerarios IA', '✅ 1 activo', '✅ ilimitados', '/viajes'],
                     ['Check-list viaje', '✅ básico', '✅ completo', '/checklist'],
-                    ['Predicciones ML riesgo', '❌', '✅', 'Dashboard premium'],
+                    ['Predicciones de riesgo IA', '❌', '✅', 'Dashboard premium'],
                     ['Score por perfil viajero', '❌', '✅', 'Fichas país'],
                     ['Destinos alternativos ML', '❌', '✅', 'Fichas país'],
                     ['OSINT avanzado (Groq)', '❌', '✅', '/osint'],
@@ -317,13 +317,13 @@ export default function EcosistemaClient() {
 
         {/* Marketing */}
         <div className="mb-12">
-          <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">📣 Marketing — Claves del Ecosistema</h2>
+          <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">📣 Claves del Ecosistema</h2>
           <div className="grid md:grid-cols-2 gap-4">
             <div className="bg-slate-900/80 border border-slate-700/50 rounded-xl p-5">
               <h3 className="font-semibold text-white mb-3">🔥 Diferenciadores únicos</h3>
               <ul className="space-y-2 text-sm text-slate-300">
                 <li className="flex gap-2"><span className="text-blue-400 shrink-0">1.</span> 14 fuentes de datos vivas combinadas — MAEC + US State Dept + GDELT + OSINT en tiempo real</li>
-                <li className="flex gap-2"><span className="text-blue-400 shrink-0">2.</span> ML de riesgo con sentimiento — 25 features, 4 modelos RF, actualización diaria</li>
+                <li className="flex gap-2"><span className="text-blue-400 shrink-0">2.</span> IA de riesgo con sentimiento — 25 features, 4 modelos RF, actualización diaria</li>
                 <li className="flex gap-2"><span className="text-blue-400 shrink-0">3.</span> 5 features de sentimiento — tono emocional de noticias como señal temprana</li>
                 <li className="flex gap-2"><span className="text-blue-400 shrink-0">4.</span> Radar de Viaje con timeline — proyección ajustada por estacionalidad</li>
                 <li className="flex gap-2"><span className="text-blue-400 shrink-0">5.</span> 15 health checks diarios — transparencia total del sistema</li>
@@ -340,7 +340,7 @@ export default function EcosistemaClient() {
                   📊 &ldquo;25 variables por país, 4 modelos ML, actualización diaria.&rdquo;
                 </div>
                 <div className="bg-amber-900/20 border border-amber-700/30 rounded-lg p-3 text-amber-200">
-                  🆓 &ldquo;Todo gratis. Premium solo para ML predictivo avanzado.&rdquo;
+                  🆓 &ldquo;Todo gratis. Premium solo para IA predictiva avanzada.&rdquo;
                 </div>
                 <div className="bg-violet-900/20 border border-violet-700/30 rounded-lg p-3 text-violet-200">
                   🔗 &ldquo;viajeinteligencia.com/ecosistema — arquitectura pública y transparente.&rdquo;

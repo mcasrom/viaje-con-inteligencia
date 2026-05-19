@@ -60,7 +60,7 @@ export default function PetroleoClient() {
       <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800 flex items-center justify-center">
         <div className="flex flex-col items-center gap-3">
           <Loader2 className="w-8 h-8 text-amber-400 animate-spin" />
-          <span className="text-slate-400 text-sm">Analizando datos OSINT + ML...</span>
+          <span className="text-slate-400 text-sm">Analizando datos OSINT + IA...</span>
         </div>
       </div>
     );
@@ -100,10 +100,10 @@ export default function PetroleoClient() {
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
           <div>
             <h1 className="text-3xl font-bold text-white flex items-center gap-3">
-              <Droplet className="w-8 h-8 text-amber-400" />Petróleo Brent — Análisis OSINT + ML
+              <Droplet className="w-8 h-8 text-amber-400" />Petróleo Brent — Análisis OSINT + IA
             </h1>
             <p className="text-slate-400 text-sm mt-1">
-              Datos scraping en tiempo real · Predicción ML · Impacto geopolítico
+              Datos en tiempo real · Predicción por IA · Impacto geopolítico
             </p>
           </div>
           <div className="bg-slate-800/60 border border-slate-700/50 rounded-xl px-5 py-3 text-center">

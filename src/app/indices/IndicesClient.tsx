@@ -92,7 +92,7 @@ const proprietaryIndices = [
     rangeLabel: '0 (muy riesgoso) → 80 (muy seguro)',
     color: 'rose',
     currentValue: 60,
-    narrative: 'Score de seguridad usado en el algoritmo de clustering K-Means. Transforma los niveles MAEC a una escala 0-80 para ser usado como feature ponderada (peso: 2x) en la agrupación de destinos similares.',
+    narrative: 'Score de seguridad usado en el algoritmo de análisis K-Means. Transforma los niveles MAEC a una escala 0-80 para ser usado como feature ponderada (peso: 2x) en la agrupación de destinos similares.',
     formula: 'Risk Score = 100 − (nivel × 20), donde nivel: sin-riesgo=1 → 80, muy-alto=5 → 0',
     levels: [
       { label: 'Muy seguro', min: 60, color: 'text-green-400', bg: 'bg-green-500' },
@@ -183,7 +183,7 @@ const algorithmMetrics = [
     color: 'amber',
   },
   {
-    name: 'K-Means Clustering',
+    name: 'K-Means Analysis',
     fullName: 'Agrupación de destinos',
     icon: Layers,
     range: '3 – 8 clusters',

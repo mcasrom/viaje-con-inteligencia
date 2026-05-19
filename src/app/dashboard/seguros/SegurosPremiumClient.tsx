@@ -1,24 +1,127 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { Shield, AlertTriangle, Plus, Trash2, Bell, CheckCircle, Loader2, ChevronDown, ChevronUp, ExternalLink } from 'lucide-react';
+import { useState, useEffect, useCallback } from 'react';
+import { Shield, AlertTriangle, Plus, Trash2, Bell, CheckCircle, Loader2, ChevronDown, ChevronUp, Info } from 'lucide-react';
 import Link from 'next/link';
-import type { UserPolicy, InsuranceAlert } from '@/lib/seguros/monitor';
+import { paisesData } from '@/data/paises';
 
 const PROVIDERS = ['IATI Seguros', 'Chapka', 'Intermundial', 'AXA', 'Mapfre', 'Allianz', 'Otro'];
+const STORAGE_KEY = 'viajeinteligencia_seguros_policies';
+const ALERTS_KEY = 'viajeinteligencia_seguros_alerts';
+
+interface LocalPolicy {
+  id: string;
+  policy_name: string;
+  provider: string;
+  medical_coverage: number;
+  evacuation_coverage: number;
+  cancelation_percent: number;
+  covers_repatriation: boolean;
+  covers_covid: boolean;
+  covers_sports: boolean;
+  covers_adventure_sports: boolean;
+  covers_electronics: boolean;
+  max_equipaje: number;
+  created_at: string;
+}
+
+interface LocalAlert {
+  id: string;
+  policy_id: string;
+  type: 'coverage_gap' | 'activity_warning';
+  country_code: string | null;
+  severity: 'high' | 'medium' | 'info';
+  title: string;
+  message: string;
+  read: boolean;
+  created_at: string;
+}
+
+const riskLevelNum: Record<string, number> = {
+  'sin-riesgo': 1, 'bajo': 2, 'medio': 3, 'alto': 4, 'muy-alto': 5,
+};
+
+function loadPolicies(): LocalPolicy[] {
+  if (typeof window === 'undefined') return [];
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch { return []; }
+}
+
+function savePolicies(policies: LocalPolicy[]) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(policies));
+}
+
+function loadAlerts(): LocalAlert[] {
+  if (typeof window === 'undefined') return [];
+  try {
+    const raw = localStorage.getItem(ALERTS_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch { return []; }
+}
+
+function saveAlerts(alerts: LocalAlert[]) {
+  localStorage.setItem(ALERTS_KEY, JSON.stringify(alerts));
+}
+
+function getCoberturaRecomendada(irv: number): { medica: number; evacuacion: number } {
+  if (irv > 65) return { medica: 1000000, evacuacion: 2000000 };
+  if (irv > 50) return { medica: 500000, evacuacion: 1000000 };
+  return { medica: 300000, evacuacion: 500000 };
+}
+
+function checkPolicyCoverage(policy: LocalPolicy): LocalAlert[] {
+  const alerts: LocalAlert[] = [];
+  const countries = Object.values(paisesData).filter(p => p.visible !== false);
+
+  for (const pais of countries) {
+    const nivel = riskLevelNum[pais.nivelRiesgo] || 2;
+    const irv = Math.max(40, Math.min(100, 100 - nivel * 10));
+    const rec = getCoberturaRecomendada(irv);
+
+    if (policy.medical_coverage < rec.medica) {
+      alerts.push({
+        id: `${policy.id}-${pais.codigo}-medica`,
+        policy_id: policy.id,
+        type: 'coverage_gap',
+        country_code: pais.codigo,
+        severity: irv > 65 ? 'high' : 'medium',
+        title: `Cobertura médica insuficiente para ${pais.nombre}`,
+        message: `Tu póliza cubre ${(policy.medical_coverage / 1000000).toFixed(1)}M€. Para ${pais.nombre} (IRV ${irv}) se recomienda ≥${(rec.medica / 1000000).toFixed(1)}M€.`,
+        read: false,
+        created_at: new Date().toISOString(),
+      });
+    }
+
+    if (policy.evacuation_coverage < rec.evacuacion) {
+      alerts.push({
+        id: `${policy.id}-${pais.codigo}-evacuacion`,
+        policy_id: policy.id,
+        type: 'coverage_gap',
+        country_code: pais.codigo,
+        severity: irv > 65 ? 'high' : 'medium',
+        title: `Evacuación insuficiente para ${pais.nombre}`,
+        message: `Tu póliza cubre ${(policy.evacuation_coverage / 1000000).toFixed(1)}M€ en evacuación. Para ${pais.nombre} se recomienda ≥${(rec.evacuacion / 1000000).toFixed(1)}M€.`,
+        read: false,
+        created_at: new Date().toISOString(),
+      });
+    }
+  }
+
+  return alerts;
+}
 
 interface Props {
   userId: string;
 }
 
 export default function SegurosPremiumClient({ userId }: Props) {
-  const [policies, setPolicies] = useState<UserPolicy[]>([]);
-  const [alerts, setAlerts] = useState<InsuranceAlert[]>([]);
+  const [policies, setPolicies] = useState<LocalPolicy[]>([]);
+  const [alerts, setAlerts] = useState<LocalAlert[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
-  const [saving, setSaving] = useState(false);
   const [checking, setChecking] = useState(false);
-  const [checkResult, setCheckResult] = useState<string | null>(null);
   const [showAllAlerts, setShowAllAlerts] = useState(false);
 
   const [form, setForm] = useState({
@@ -35,65 +138,56 @@ export default function SegurosPremiumClient({ userId }: Props) {
     max_equipaje: 800,
   });
 
-  const loadData = async () => {
-    const [pRes, aRes] = await Promise.all([
-      fetch('/api/seguros/policies'),
-      fetch('/api/seguros/alerts'),
-    ]);
-    if (pRes.ok) setPolicies(await pRes.json());
-    if (aRes.ok) setAlerts(await aRes.json());
+  useEffect(() => {
+    setPolicies(loadPolicies());
+    setAlerts(loadAlerts());
     setLoading(false);
-  };
+  }, []);
 
-  useEffect(() => { loadData(); }, []);
+  const persistPolicies = useCallback((newPolicies: LocalPolicy[]) => {
+    setPolicies(newPolicies);
+    savePolicies(newPolicies);
+  }, []);
 
-  const handleSave = async (e: React.FormEvent) => {
+  const persistAlerts = useCallback((newAlerts: LocalAlert[]) => {
+    setAlerts(newAlerts);
+    saveAlerts(newAlerts);
+  }, []);
+
+  const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
-    setSaving(true);
-    try {
-      const res = await fetch('/api/seguros/policies', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
-      });
-      if (res.ok) {
-        setShowForm(false);
-        setForm({
-          policy_name: '', provider: '', medical_coverage: 500000,
-          evacuation_coverage: 1000000, cancelation_percent: 75,
-          covers_repatriation: true, covers_covid: true, covers_sports: true,
-          covers_adventure_sports: false, covers_electronics: false, max_equipaje: 800,
-        });
-        await loadData();
-      }
-    } finally {
-      setSaving(false);
-    }
+    const newPolicy: LocalPolicy = {
+      id: `policy_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
+      ...form,
+      created_at: new Date().toISOString(),
+    };
+    persistPolicies([...policies, newPolicy]);
+    setShowForm(false);
+    setForm({
+      policy_name: '', provider: '', medical_coverage: 500000,
+      evacuation_coverage: 1000000, cancelation_percent: 75,
+      covers_repatriation: true, covers_covid: true, covers_sports: true,
+      covers_adventure_sports: false, covers_electronics: false, max_equipaje: 800,
+    });
   };
 
-  const handleDelete = async (id: number) => {
-    await fetch(`/api/seguros/policies?id=${id}`, { method: 'DELETE' });
-    await loadData();
+  const handleDelete = (id: string) => {
+    persistPolicies(policies.filter(p => p.id !== id));
+    persistAlerts(alerts.filter(a => a.policy_id !== id));
   };
 
-  const handleCheckNow = async () => {
+  const handleCheckNow = () => {
     setChecking(true);
-    setCheckResult(null);
-    try {
-      const res = await fetch('/api/seguros/monitor', { method: 'POST' });
-      const data = await res.json();
-      setCheckResult(data.alerts !== undefined ? `${data.alerts} alertas generadas` : 'Error');
-      await loadData();
-    } catch {
-      setCheckResult('Error al verificar');
-    } finally {
-      setChecking(false);
+    const newAlerts: LocalAlert[] = [];
+    for (const policy of policies) {
+      newAlerts.push(...checkPolicyCoverage(policy));
     }
+    persistAlerts(newAlerts);
+    setChecking(false);
   };
 
-  const handleMarkRead = async (id: number) => {
-    await fetch(`/api/seguros/alerts?id=${id}`, { method: 'PATCH' });
-    setAlerts(prev => prev.map(a => a.id === id ? { ...a, read: true } : a));
+  const handleMarkRead = (id: string) => {
+    persistAlerts(alerts.map(a => a.id === id ? { ...a, read: true } : a));
   };
 
   const unreadCount = alerts.filter(a => !a.read).length;
@@ -123,12 +217,23 @@ export default function SegurosPremiumClient({ userId }: Props) {
               <h1 className="text-2xl font-bold text-white">Monitor de Seguros</h1>
             </div>
             <p className="text-slate-400 text-sm">
-              Compara tu póliza con el riesgo real de tus destinos favoritos
+              Tus datos se guardan solo en este navegador. No almacenamos nada en el servidor.
             </p>
           </div>
           <Link href="/dashboard" className="text-sm text-blue-400 hover:text-blue-300">
             ← Dashboard
           </Link>
+        </div>
+
+        <div className="bg-blue-500/10 border border-blue-500/20 rounded-xl p-4 mb-8">
+          <div className="flex items-start gap-3">
+            <Info className="w-5 h-5 text-blue-400 shrink-0 mt-0.5" />
+            <div className="text-xs text-slate-300 leading-relaxed">
+              <p className="font-medium text-blue-300 mb-1">Privacidad total — datos locales</p>
+              <p>Tus pólizas de seguro y alertas se almacenan exclusivamente en el almacenamiento local de tu navegador (localStorage). No se envían a ningún servidor. No tenemos acceso a los detalles de tu seguro.</p>
+              <p className="mt-1 text-yellow-400">⚠️ Si pierdes el dispositivo, cambias de navegador o borras los datos de navegación, perderás tus pólizas guardadas. No hay copia de seguridad en el servidor.</p>
+            </div>
+          </div>
         </div>
 
         {alerts.length > 0 && (
@@ -147,12 +252,6 @@ export default function SegurosPremiumClient({ userId }: Props) {
                 Verificar ahora
               </button>
             </div>
-
-            {checkResult && (
-              <div className="mb-3 p-3 bg-blue-500/10 border border-blue-500/30 rounded-lg text-blue-400 text-sm">
-                {checkResult}
-              </div>
-            )}
 
             <div className="space-y-2">
               {displayedAlerts.map(alert => (
@@ -178,7 +277,7 @@ export default function SegurosPremiumClient({ userId }: Props) {
                     </div>
                     {!alert.read && (
                       <button
-                        onClick={() => handleMarkRead(alert.id!)}
+                        onClick={() => handleMarkRead(alert.id)}
                         className="text-xs text-blue-400 hover:text-blue-300 shrink-0"
                       >
                         ✓ Leído
@@ -302,10 +401,9 @@ export default function SegurosPremiumClient({ userId }: Props) {
 
               <button
                 type="submit"
-                disabled={saving}
-                className="px-4 py-2 bg-blue-500 text-white rounded-lg text-sm font-medium hover:bg-blue-400 disabled:opacity-50 transition-colors"
+                className="px-4 py-2 bg-blue-500 text-white rounded-lg text-sm font-medium hover:bg-blue-400 transition-colors"
               >
-                {saving ? <Loader2 className="w-4 h-4 animate-spin inline" /> : 'Guardar póliza'}
+                Guardar póliza (solo en este dispositivo)
               </button>
             </form>
           )}
@@ -314,6 +412,7 @@ export default function SegurosPremiumClient({ userId }: Props) {
             <div className="text-center py-8 text-slate-500 bg-slate-800/30 rounded-xl">
               <Shield className="w-8 h-8 mx-auto mb-2 opacity-50" />
               <p className="text-sm">Añade tu seguro de viaje para empezar a monitorizar</p>
+              <p className="text-xs text-slate-600 mt-1">Los datos se guardan solo en este navegador</p>
             </div>
           ) : (
             <div className="space-y-2">
@@ -359,7 +458,7 @@ export default function SegurosPremiumClient({ userId }: Props) {
         {alerts.length === 0 && policies.length > 0 && (
           <div className="text-center py-8 text-slate-500">
             <CheckCircle className="w-8 h-8 mx-auto mb-2 text-green-500" />
-            <p>No hay alertas activas. Tus pólizas cumplen con la cobertura recomendada para tus destinos.</p>
+            <p>Tus pólizas cumplen con la cobertura recomendada para todos los países.</p>
             <button
               onClick={handleCheckNow}
               disabled={checking}

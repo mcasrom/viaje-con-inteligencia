@@ -66,7 +66,7 @@ export default function AnalisisClient() {
           </Link>
           <div className="flex items-center gap-2 px-3 py-1.5 bg-amber-500/10 rounded-full border border-amber-500/20">
             <BarChart3 className="w-4 h-4 text-amber-400" />
-            <span className="text-amber-400 text-sm font-medium">Análisis Global ML</span>
+            <span className="text-amber-400 text-sm font-medium">Análisis Global IA</span>
           </div>
         </div>
       </header>
@@ -77,7 +77,7 @@ export default function AnalisisClient() {
             Análisis de Impacto Global
           </h1>
           <p className="text-slate-400">
-            Cómo afectan los conflictos, el precio del petróleo y las amenazas globales al comportamiento turístico. Datos ML y patrones de redistribución.
+            Cómo afectan los conflictos, el precio del petróleo y las amenazas globales al comportamiento turístico. Análisis por IA y patrones de redistribución.
           </p>
         </div>
 

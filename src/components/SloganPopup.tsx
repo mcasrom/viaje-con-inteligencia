@@ -52,7 +52,7 @@ export default function SloganPopup() {
             Tu radar de seguridad global impulsado por IA.
           </p>
           <p className="text-slate-500 text-xs leading-relaxed mb-6">
-            Datos oficiales MAEC, análisis ML y herramientas inteligentes para viajar informado y seguro.
+            Datos oficiales MAEC, análisis por IA y herramientas inteligentes para viajar informado y seguro.
           </p>
 
           <button

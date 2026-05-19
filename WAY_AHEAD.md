@@ -1,6 +1,40 @@
 # Way Ahead
 
-## Última sesión: 07 May 2026
+## Última sesión: 19 May 2026 — Sprint Trust Layer + Caveat Seguros
+
+---
+
+## ⚠️ LECCIÓN CRÍTICA — DEPLOY PATH MISMATCH (19 May 2026)
+
+**Bug:** El workflow de GitHub Actions (`deploy-hetzner.yml`) rsync enviaba los archivos a un directorio pero PM2 servía desde otro.
+
+**Detalle:**
+- `rsync` → `/var/www/viajeinteligencia/` ✔️
+- Pero tras debugging resultó que el path real donde PM2 leía era distinto al de rsync
+- El build nuevo NUNCA se estaba ejecutando — el servidor seguía con el binario anterior
+- Síntoma: `curl /dashboard/seguros` devolvía 307 redirect a `/premium` (JS bundle viejo sin los cambios)
+
+**Fix:** Verificar que `ecosystem.config.cjs` apunte EXACTAMENTE al mismo path que `rsync`. Comprobar:
+1. `ecosystem.config.cjs` → `cwd: '/var/www/viajeinteligencia'`
+2. `deploy-hetzner.yml` → `rsync ... /var/www/viajeinteligencia/`
+3. Tras deploy: `pm2 describe viajeinteligencia` para ver el `cwd` real
+4. Si hay duda: `pm2 delete viajeinteligencia && pm2 start ecosystem.config.cjs`
+
+**Regla:** Si un deploy parece no reflejarse, NO asumir cache. Verificar path de PM2 primero. Hacer `curl -s http://localhost:3001/api/health | grep "version"` (o revisar si el JS bundle tiene los cambios nuevos).
+
+---
+
+## 🛡️ CAVEAT DEL SEGURO — Políticas a localStorage (19 May 2026)
+
+**Problema:** Almacenar pólizas de seguro en Supabase/server crea responsabilidad legal (datos sensibles del usuario, RGPD, posible consideración de datos de salud).
+
+**Decisión:** Las pólizas de seguro viven SOLO en localStorage del navegador.
+- Eliminadas rutas API: `src/app/api/seguros/alerts/`, `/monitor/`, `/policies/`
+- `runInsuranceMonitor()` comentado en master cron (ya no hay datos server-side que monitorizar)
+- `SegurosPremiumClient.tsx` reescrito para usar localStorage
+- Homepage: texto actualizado → *"Tus pólizas de seguro solo en tu navegador"*
+
+**Regla:** NO volver a implementar server-side storage de datos de seguro sin asesoría legal explícita.
 
 ---
 
@@ -8,18 +42,16 @@
 
 **Fase 1 completada.** 21 funcionalidades entregadas, coste operativo ~€0/mes, deploy automatico en cada push a main.
 
-### Lo conseguido en esta sesión (07 May)
+### Lo conseguido en esta sesión (19 May)
 
 | # | Entregable | Detalle |
 |---|------------|---------|
-| 1 | **Documentacion 3 guias** | `guia-usuario.org`, `guia-gestor.org`, `analisis-ejecutivo.org` con diagramas PlantUML |
-| 2 | **Manifiesto fundador** | `/manifiesto` page permanente + blog post (61 posts ahora) + carta newsletter ed #1-3 |
-| 3 | **Welcome email** | Rediseño completo con historia de Miguel, 4 secciones, links rapidos |
-| 4 | **Confirmation email** | Template limpio con branding consistente |
-| 5 | **Newsletter header** | Carta del fundador visible solo en ediciones #1-3, desaparece automaticamente |
-| 6 | **Blog search fix** | "Todos" ahora limpia filtros, categorias preservan busqueda activa |
-| 7 | **Blog slug fix** | Post "por que cree" no aparecia (é en slug, regex rechazaba), renombrado a ASCII → 61 posts |
-| 8 | **ESTADO-PROYECTO.md** | Documento maestro: 20 funcionalidades completadas + 12 opciones pendientes priorizadas |
+| 1 | **Caveat seguros** | Polízas movidas a localStorage. Eliminadas 3 APIs server. Homepage actualizada |
+| 2 | **NewsMCP eliminado** | Conflicts API ya no llama a newsmcp.io (caía siempre a fallback). Solo fallback local |
+| 3 | **ML en Metodología** | Sección Random Forest detallada: 25 features, 4 modelos, parámetros, limitaciones |
+| 4 | **Sentiment wake-up** | Alerta 🔔 para países en observación cuando empiezan a tener datos de sentimiento |
+| 5 | **Seguridad footer** | Labels con estilo `<label>: <value>` en infraestructura |
+| 6 | **Trust Layer** | Banda "Cómo funciona" en homepage, micro trust signals, metodología, transparencia, SOS fix |
 
 ---
 
@@ -164,7 +196,8 @@
 - Groq API: `llama-3.1-8b-instant` (free), `llama-3.3-70b-versatile` (premium)
 - Supabase: PostgreSQL + Auth + RLS
 - Resend: 3,000 emails/mes gratis
-- Vercel: Hobby plan (1 cron job max)
+- **Hosting**: Hetzner VPS (migrado desde Vercel Hobby)
+- **Deploy**: GitHub Actions → rsync → PM2 (`/var/www/viajeinteligencia`)
 - Telegram: Bot alertas
 
 ### Reglas arquitectonicas

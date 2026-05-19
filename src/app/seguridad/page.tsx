@@ -479,7 +479,7 @@ export default function SeguridadPage() {
 
         {/* FOOTER */}
         <footer className="pt-8 border-t border-slate-700/50">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
             <div>
               <h4 className="text-[10px] font-mono uppercase tracking-wider text-slate-500 mb-2">Legal</h4>
               <div className="space-y-1">
@@ -507,12 +507,12 @@ export default function SeguridadPage() {
             </div>
             <div>
               <h4 className="text-[10px] font-mono uppercase tracking-wider text-slate-500 mb-2">Infraestructura</h4>
-              <div className="space-y-0.5 text-sm text-slate-400">
-                <p>Hosting: Hetzner Cloud EU</p>
-                <p>App: Next.js + PM2 + Nginx</p>
-                <p>BD: Supabase EU · AES-256</p>
-                <p>IA: Groq (stateless)</p>
-                <p>Pagos: Stripe PCI DSS L1</p>
+              <div className="space-y-1 text-xs text-slate-400">
+                <p><span className="text-slate-500">Hosting:</span> Hetzner Cloud EU</p>
+                <p><span className="text-slate-500">App:</span> Next.js + PM2 + Nginx</p>
+                <p><span className="text-slate-500">BD:</span> Supabase EU · AES-256</p>
+                <p><span className="text-slate-500">IA:</span> Groq (stateless)</p>
+                <p><span className="text-slate-500">Pagos:</span> Stripe PCI DSS L1</p>
               </div>
             </div>
           </div>

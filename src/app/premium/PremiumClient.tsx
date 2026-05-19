@@ -15,12 +15,12 @@ const FEATURES = [
   { icon: <Shield className="w-5 h-5" />, title: 'Análisis de Riesgo', desc: 'Fichas completas por país: seguridad, costes, contactos y visados.' },
   { icon: <FileCheck className="w-5 h-5" />, title: 'Reclamaciones PDF', desc: 'Genera formularios de reclamación listos para enviar a aerolíneas.' },
   { icon: <TrendingUp className="w-5 h-5" />, title: 'KPIs Globales', desc: '6 índices comparativos: paz, terrorismo, desarrollo, inflación, sismos.' },
-  { icon: <Sparkles className="w-5 h-5" />, title: 'ML Clustering', desc: 'Destinos agrupados por IA según seguridad, coste y preferencias.' },
+  { icon: <Sparkles className="w-5 h-5" />, title: 'Análisis de Destinos IA', desc: 'Destinos agrupados por IA según seguridad, coste y preferencias.' },
   { icon: <Cloud className="w-5 h-5" />, title: 'Clima en Vivo', desc: 'Pronóstico meteorológico actualizado con Open-Meteo para cualquier destino.' },
   { icon: <MapPin className="w-5 h-5" />, title: 'Puntos de Interés (POIs)', desc: 'Explora hoteles, restaurantes y atracciones desde OpenStreetMap en cada país.' },
   { icon: <BadgeCheck className="w-5 h-5" />, title: 'Doble Validación de Riesgo', desc: 'Compara la valoración MAEC con el aviso de viaje del Departamento de Estado de EE.UU.' },
   { icon: <Thermometer className="w-5 h-5" />, title: 'Índice TCI en Vivo', desc: 'Travel Cost Index con precio real de combustible, estacionalidad y cierres aéreos desde Supabase.' },
-  { icon: <Code className="w-5 h-5" />, title: 'API Pública v1', desc: 'Accede a datos de riesgo, predicciones ML y alertas vía REST. Ideal para integraciones.' },
+  { icon: <Code className="w-5 h-5" />, title: 'API Pública v1', desc: 'Accede a datos de riesgo, predicciones por IA y alertas vía REST. Ideal para integraciones.' },
 ];
 
 const COMPARISON = [
@@ -34,7 +34,7 @@ const COMPARISON = [
   { feature: 'Alertas en tiempo real', free: false, premium: true },
   { feature: 'Mapa de sismos USGS', free: false, premium: true },
   { feature: 'Monitor de conflictos activo', free: false, premium: true },
-  { feature: 'ML Clustering de destinos', free: false, premium: true },
+  { feature: 'Análisis de destinos por IA', free: false, premium: true },
   { feature: 'KPIs globales comparativos', free: false, premium: true },
   { feature: 'Reclamaciones PDF', free: false, premium: true },
   { feature: 'Dashboard personalizado', free: false, premium: true },
@@ -324,7 +324,7 @@ export default function PremiumClient() {
                   'Análisis de riesgo por país',
                   'Generador de reclamaciones PDF',
                   'KPIs globales comparativos',
-                  'ML Clustering de destinos',
+                  'Análisis de destinos por IA',
                   'Clima en vivo por destino',
                   'Puntos de interés OpenStreetMap',
                   'Doble validación MAEC + US State Dept',

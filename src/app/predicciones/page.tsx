@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import PredictionsClient from './PredictionsClient';
 
 export const metadata: Metadata = {
-  title: 'ML Risk Predictions | IA Predictiva de Riesgo de Viaje',
+  title: 'Predicciones de Riesgo IA | Pronóstico de Seguridad de Viaje',
   description: 'Predicciones de cambio de riesgo por país basadas en análisis predictivo. Cruza OSINT, conflictos, petróleo y estacionalidad para anticipar cambios MAEC.',
   alternates: {
     canonical: 'https://www.viajeinteligencia.com/predicciones',

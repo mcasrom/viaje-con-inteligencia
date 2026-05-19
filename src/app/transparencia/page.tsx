@@ -70,6 +70,7 @@ const SECTIONS = [
       'No vendemos, compartimos ni cedemos datos personales a terceros. No usamos trackers publicitarios ni cookies de terceros.',
       'Los datos de usuario (viajes, favoritos, preferencias) se almacenan en Supabase con autenticación mediante magic link. El usuario puede eliminar sus datos en cualquier momento.',
       'No creamos perfiles comerciales ni de comportamiento. No usamos los datos para publicidad ni recomendaciones sesgadas.',
+      'El Monitor de Seguros procesa tus pólizas íntegramente en tu navegador (localStorage). No almacenamos en servidor los detalles de tu seguro médico, coberturas ni aseguradora. Si pierdes el dispositivo o borras los datos del navegador, perderás tus pólizas guardadas — no hay copia en nuestros servidores.',
     ],
   },
   {

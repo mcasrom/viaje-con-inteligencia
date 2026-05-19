@@ -35,8 +35,6 @@ yarn-error.log*
 env_backup_*.txt
 !ENV_VARIABLES.md
 
-# vercel
-.vercel
 
 # typescript
 *.tsbuildinfo

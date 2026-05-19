@@ -87,7 +87,7 @@ export const VIP_ACCESS = {
       included: true
     },
     {
-      name: '🔓 Beta features',
+      name: '🔓 Nuevas funciones primero',
       included: true
     },
     {

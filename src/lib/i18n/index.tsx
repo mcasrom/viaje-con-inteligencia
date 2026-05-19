@@ -219,8 +219,8 @@ const translations: Translation = {
     en: 'Smart Traveler: AI-Driven Global Risk Radar for the Conscious Explorer.',
   },
   'premium.upsell': {
-    es: 'Desbloquea análisis ML, alertas en tiempo real, chat IA ilimitado y herramientas exclusivas.',
-    en: 'Unlock ML analysis, real-time alerts, unlimited AI chat and exclusive tools.',
+    es: 'Desbloquea análisis por IA, alertas en tiempo real, chat IA ilimitado y herramientas exclusivas.',
+    en: 'Unlock AI analysis, real-time alerts, unlimited AI chat and exclusive tools.',
   },
 };
 

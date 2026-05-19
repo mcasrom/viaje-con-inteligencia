@@ -34,26 +34,34 @@ const CATEGORY_COLORS: Record<string, string> = {
 
 export const revalidate = 300;
 
-export const metadata: Metadata = {
-  title: 'Blog OSINT | Análisis de Viajes y Seguridad - Viaje con Inteligencia',
-  description: 'Análisis geopolíticos, guías de seguridad y tendencias de viaje basadas en datos OSINT e inteligencia artificial.',
-  keywords: 'blog viajes, análisis geopolítico, OSINT viajes, seguridad viajeros, tendencias viaje, inteligencia artificial viajes',
-  alternates: {
-    canonical: 'https://www.viajeinteligencia.com/blog',
-  },
-  openGraph: {
-    title: 'Blog OSINT | Análisis de Viajes y Seguridad - Viaje con Inteligencia',
-    description: 'Análisis geopolíticos, guías de seguridad y tendencias de viaje basadas en datos OSINT e inteligencia artificial.',
-    url: 'https://www.viajeinteligencia.com/blog',
-    type: 'website',
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Blog OSINT | Análisis de Viajes y Seguridad - Viaje con Inteligencia',
-    description: 'Análisis geopolíticos, guías de seguridad y tendencias de viaje basadas en datos OSINT.',
-    creator: '@ViajeIntel2026',
-  },
-};
+export async function generateMetadata({ searchParams }: BlogPageProps): Promise<Metadata> {
+  const params = await searchParams;
+  const isFiltered = !!(params.tag || params.search || params.category);
+
+  return {
+    title: isFiltered ? 'Blog | Viaje con Inteligencia' : 'Blog OSINT | Análisis de Viajes y Seguridad - Viaje con Inteligencia',
+    description: isFiltered
+      ? 'Artículos filtrados sobre viajes, seguridad y geopolítica.'
+      : 'Análisis geopolíticos, guías de seguridad y tendencias de viaje basadas en datos OSINT e inteligencia artificial.',
+    keywords: 'blog viajes, análisis geopolítico, OSINT viajes, seguridad viajeros, tendencias viaje, inteligencia artificial viajes',
+    alternates: {
+      canonical: 'https://www.viajeinteligencia.com/blog',
+    },
+    robots: isFiltered ? { index: false, follow: true } : undefined,
+    openGraph: {
+      title: 'Blog OSINT | Análisis de Viajes y Seguridad - Viaje con Inteligencia',
+      description: 'Análisis geopolíticos, guías de seguridad y tendencias de viaje basadas en datos OSINT e inteligencia artificial.',
+      url: 'https://www.viajeinteligencia.com/blog',
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: 'Blog OSINT | Análisis de Viajes y Seguridad - Viaje con Inteligencia',
+      description: 'Análisis geopolíticos, guías de seguridad y tendencias de viaje basadas en datos OSINT.',
+      creator: '@ViajeIntel2026',
+    },
+  };
+}
 
 function PostCard({ post }: { post: PostMeta & { isInfografia?: boolean; infografiaId?: string } }) {
   const href = post.isInfografia ? `/infografias/${post.infografiaId}` : `/blog/${post.slug}`;

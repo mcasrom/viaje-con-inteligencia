@@ -14,6 +14,12 @@ const SEVERITY_THRESHOLDS = [
 
 const DEDUP_HOURS = 48;
 
+const OBSERVATION_COUNTRIES = [
+  'ir', 'il', 'ru', 'ua', 've', 'lb', 'mm', 'af', 'sd', 'ye',
+  'es', 'mx', 'co', 'ar',
+];
+const WAKEUP_DEDUP_DAYS = 14;
+
 export interface SentimentAlert {
   countryCode: string;
   countryName: string;
@@ -87,6 +93,36 @@ export async function detectSentimentAlerts(): Promise<{
       severity: threshold.severity,
       severityLabel: threshold.label,
       message,
+    });
+  }
+
+  // === Observation countries: wake-up detection ===
+  for (const code of OBSERVATION_COUNTRIES) {
+    if (newAlerts.some(a => a.countryCode === code)) continue;
+    const tones = byCountry.get(code);
+    if (!tones || tones.length === 0) continue;
+
+    const wakeupWindow = new Date(now.getTime() - WAKEUP_DEDUP_DAYS * 24 * 60 * 60 * 1000);
+    const { data: recentWakeup } = await supabase
+      .from('sentiment_alerts')
+      .select('id')
+      .eq('country_code', code)
+      .eq('severity', 'info')
+      .gte('created_at', wakeupWindow.toISOString())
+      .limit(1);
+
+    if (recentWakeup && recentWakeup.length > 0) continue;
+
+    const avgTone = Math.round((tones.reduce((a, b) => a + b, 0) / tones.length) * 10) / 10;
+    const countryName = getCountryName(code) || code.toUpperCase();
+    newAlerts.push({
+      countryCode: code,
+      countryName,
+      avgTone,
+      signalCount: tones.length,
+      severity: 'info',
+      severityLabel: '🔔 Nueva señal',
+      message: `🔔 Señales detectadas en ${countryName}: ${avgTone > 0 ? '+' : ''}${avgTone} medio (${tones.length} señales en 7d) — país en observación ahora tiene datos`,
     });
   }
 

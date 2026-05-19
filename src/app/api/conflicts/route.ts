@@ -78,61 +78,15 @@ const FALLBACK_CONFLICTS = [
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const limit = parseInt(searchParams.get('limit') || '15');
-  const useFallback = searchParams.get('fallback') === 'true';
 
-  const url = `https://newsmcp.io/v1/news/?topics=politics,military&per_page=${limit}`;
+  const fallbackData = FALLBACK_CONFLICTS.slice(0, limit);
+  const lastUpdate = fallbackData[0]?.date;
 
-  try {
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 8000);
-
-    const response = await fetch(url, {
-      headers: { 
-        'User-Agent': 'ViajeConInteligencia/1.0',
-        'Accept': 'application/json',
-      },
-      signal: controller.signal,
-    });
-
-    clearTimeout(timeout);
-
-    if (!response.ok) {
-      throw new Error(`API error: ${response.status}`);
-    }
-
-    const data = await response.json();
-
-    const conflicts = (data.events || data.articles || []).map((event: any) => ({
-      id: event.id || event.url,
-      title: (event.summary || event.title || '').substring(0, 150),
-      url: event.entries?.[0]?.url || event.url || '#',
-      domain: event.entries?.[0]?.domain || 'news',
-      date: event.last_seen_at || event.published_at || new Date().toISOString(),
-      country: event.geo?.[0] || 'global',
-      impact: event.impact_score || 'medio',
-    }));
-
-    return NextResponse.json({
-      count: conflicts.length,
-      conflicts,
-      source: 'NewsMCP',
-      updated: new Date().toISOString(),
-      status: 'live',
-    });
-  } catch (error: any) {
-    console.error('Conflicts API error:', error.message || error);
-    
-    const fallbackData = FALLBACK_CONFLICTS.slice(0, limit);
-    const lastUpdate = fallbackData[0]?.date;
-    
-    return NextResponse.json({
-      count: fallbackData.length,
-      conflicts: fallbackData,
-      source: 'Fallback - NewsMCP no disponible',
-      updated: lastUpdate,
-      status: 'fallback',
-      error: 'API externa no disponible. Mostrando últimos datos disponibles.',
-      lastRealUpdate: lastUpdate,
-    });
-  }
+  return NextResponse.json({
+    count: fallbackData.length,
+    conflicts: fallbackData,
+    source: 'Datos de referencia',
+    updated: lastUpdate,
+    status: 'fallback',
+  });
 }

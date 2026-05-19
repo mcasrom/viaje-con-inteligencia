@@ -134,7 +134,7 @@ export default function ViajeCosteClient({
               <h1 className="text-3xl font-bold text-white">
                 Cuánto cuesta viajar a {pais.nombre}
               </h1>
-              <p className="text-slate-400">Índice de coste con predicción ML · {mesActual}</p>
+              <p className="text-slate-400">Índice de coste con predicción por IA · {mesActual}</p>
             </div>
           </div>
         </header>
@@ -266,7 +266,7 @@ export default function ViajeCosteClient({
             <div className="bg-gradient-to-r from-slate-800 to-slate-900 rounded-xl p-6 border border-slate-700">
               <div className="flex items-center gap-2 mb-3">
                 <Target className="w-5 h-5 text-cyan-400" />
-                <h2 className="text-lg font-bold text-white">Predicción ML</h2>
+                <h2 className="text-lg font-bold text-white">Predicción por IA</h2>
               </div>
 
               <div className="space-y-3">
@@ -525,7 +525,7 @@ export default function ViajeCosteClient({
               },
               {
                 q: `¿Cuál es el mejor mes para viajar a ${pais.nombre}?`,
-                a: `El mejor momento para visitar ${pais.nombre} es ${mesIdeal.mejor}. La predicción ML indica que el TCI ${mlAnalysis.prediction.nextMonth > tci.tci ? 'subirá' : mlAnalysis.prediction.nextMonth < tci.tci ? 'bajará' : 'se mantendrá estable'} el próximo mes.`
+                a: `El mejor momento para visitar ${pais.nombre} es ${mesIdeal.mejor}. La predicción por IA indica que el TCI ${mlAnalysis.prediction.nextMonth > tci.tci ? 'subirá' : mlAnalysis.prediction.nextMonth < tci.tci ? 'bajará' : 'se mantendrá estable'} el próximo mes.`
               },
               {
                 q: `¿Cuánto dinero necesito por día en ${pais.nombre}?`,

@@ -135,7 +135,7 @@ export default function PrecioApiPage() {
           <h2 className="text-2xl font-bold text-white text-center mb-10">¿Qué incluye la API?</h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
-              { icon: Shield, title: 'Riesgo país', desc: 'Nivel MAEC + US State Dept, score numérico, predicción ML a 7/14/30 días' },
+              { icon: Shield, title: 'Riesgo país', desc: 'Nivel MAEC + US State Dept, score numérico, predicción por IA a 7/14/30 días' },
               { icon: BarChart3, title: 'Travel Cost Index', desc: 'TCI completo con desglose por demanda, petróleo, estacionalidad, IPC y riesgo' },
               { icon: AlertTriangle, title: 'Incidentes en vivo', desc: 'Incidentes activos con severidad, coordenadas y recomendaciones. Filtrables por país/tipo' },
               { icon: Users, title: 'Datos por país', desc: '111 países con bandera, capital, moneda, zona horaria y nivel de riesgo' },

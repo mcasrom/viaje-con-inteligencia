@@ -14,7 +14,6 @@ import { detectAndCreateIncidents } from '@/lib/incident-detector';
 import { notifySubscribers } from '@/lib/incident-notifier';
 import { detectSentimentAlerts } from '@/lib/sentiment-alert';
 import { fetchAndStoreEvents } from '@/lib/events-fetch';
-import { runMonitorForUser } from '@/lib/seguros/monitor';
 import { createLogger } from '@/lib/logger';
 import { getAirspaceStatuses } from '@/lib/opensky';
 import { generateInfografia } from '@/lib/infografia/generate';
@@ -691,32 +690,30 @@ async function runTrialNotifications(): Promise<any> {
   }
 }
 
-// ===== INSURANCE MONITOR (weekly, for all premium users) =====
-async function runInsuranceMonitor(): Promise<any> {
-  const day = new Date().getDay();
-  if (day !== 1) return { status: 'skipped', reason: 'Not Monday' };
-
-  try {
-    const { data: premiumUsers } = await supabaseAdmin
-      .from('profiles')
-      .select('id')
-      .or('is_premium.eq.true,subscription_status.eq.active');
-
-    if (!premiumUsers || premiumUsers.length === 0) {
-      return { status: 'ok', checked: 0 };
-    }
-
-    let totalAlerts = 0;
-    for (const user of premiumUsers) {
-      const alerts = await runMonitorForUser(user.id);
-      totalAlerts += alerts;
-    }
-
-    return { status: 'ok', checked: premiumUsers.length, alerts_generated: totalAlerts };
-  } catch (e: any) {
-    return { status: 'error', error: e.message };
-  }
-}
+// ===== INSURANCE MONITOR — DEPRECATED =====
+// Policies moved to client-side localStorage (19 May 2026).
+// Server-side insurance policies table is no longer populated.
+// async function runInsuranceMonitor(): Promise<any> {
+//   const day = new Date().getDay();
+//   if (day !== 1) return { status: 'skipped', reason: 'Not Monday' };
+//   try {
+//     const { data: premiumUsers } = await supabaseAdmin
+//       .from('profiles')
+//       .select('id')
+//       .or('is_premium.eq.true,subscription_status.eq.active');
+//     if (!premiumUsers || premiumUsers.length === 0) {
+//       return { status: 'ok', checked: 0 };
+//     }
+//     let totalAlerts = 0;
+//     for (const user of premiumUsers) {
+//       const alerts = await runMonitorForUser(user.id);
+//       totalAlerts += alerts;
+//     }
+//     return { status: 'ok', checked: premiumUsers.length, alerts_generated: totalAlerts };
+//   } catch (e: any) {
+//     return { status: 'error', error: e.message };
+//   }
+// }
 
 // ===== EVENTS FETCH (Wikidata + GDELT + Groq) =====
 async function runEventsFetch(): Promise<any> {
@@ -921,8 +918,9 @@ export async function GET(request: Request) {
   log.info('8a/8 Infografia semanal...');
   results.infografia = await withTimeout(() => runInfografiaGenerator(), 120000, '8a/8 Infografia semanal');
 
-  log.info('8b/8 Insurance monitor...');
-  results.insurance_monitor = await withTimeout(() => runInsuranceMonitor(), 30000, '8b/8 Insurance monitor');
+  // 8b/8 Insurance monitor — deprecated (policies are now client-side localStorage)
+  // log.info('8b/8 Insurance monitor...');
+  // results.insurance_monitor = await withTimeout(() => runInsuranceMonitor(), 30000, '8b/8 Insurance monitor');
 
   log.info('8f/8 Cloudflare Analytics (only on Sundays)...');
   results.cloudflare_analytics = await withTimeout(() => runCloudflareAnalytics(), 60000, '8f/8 Cloudflare Analytics');

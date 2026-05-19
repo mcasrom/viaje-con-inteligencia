@@ -11,9 +11,7 @@ Allow: /_next/static/
 
 Disallow: /api/
 Disallow: /dashboard/
-
-# Revisar estratégicamente si /viajes/ debe indexarse
-Disallow: /viajes/
+Disallow: /admin/
 
 # ----------------------------------------------------
 # Major Search Engines

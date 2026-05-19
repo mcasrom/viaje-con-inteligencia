@@ -288,7 +288,7 @@ export default function PlanificadorSimple() {
 
           <div className="flex flex-wrap gap-2 justify-center mt-4 text-sm">
             <span className="text-slate-600 font-medium">Powered by </span>
-            <span className="text-slate-900 font-bold">ML Clustering</span>
+            <span className="text-slate-900 font-bold">Análisis de Destinos</span>
             <Link href="/viajes/clima" className="text-blue-600 hover:text-blue-700 font-medium ml-2 underline underline-offset-2">
               🌤️ Ver clima
             </Link>

@@ -62,7 +62,7 @@ export async function generatePdfBuffer(infografia: any): Promise<Buffer> {
 
         <View style={styles.footer}>
           <Text>VIAJE CON INTELIGENCIA — viajeinteligencia.com/infografias</Text>
-          <Text>OSINT • ML • TRAVEL RISK INTELLIGENCE — Edición #{infografia.edition}</Text>
+          <Text>OSINT • IA • TRAVEL RISK INTELLIGENCE — Edición #{infografia.edition}</Text>
         </View>
       </Page>
     </Document>

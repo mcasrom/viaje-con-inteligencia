@@ -10,7 +10,10 @@
 - Usar 1-2 de la primera línea + 2-3 de la segunda por post
 
 ## ⚙️ Observaciones Técnicas
-- **Speed Insights (Vercel)**: Desactivado por consumo excesivo de recursos. Esto NO afecta a los despliegues — los builds y deployments son independientes de Speed Insights. Si un deploy no se refleja, el problema es de build failure o cache de ISR, no de Speed Insights.
+- **Cloudflare**: Dominio `viajeinteligencia.com`. Email `mcasrom@gmail.com`. Zone ID `a56f7c002b1db64082f0813b839db412`. Credenciales en `.env.local`:
+  - `CLOUDFLARE_API_KEY` (Global Key, usa X-Auth-Email + X-Auth-Key para cambios de config)
+  - `CLOUDFLARE_API_TOKEN` (Bearer token, solo analytics:read para cloudflare-analytics.ts)
+  - Config aplicada 19 May 2026: Browser Integrity Check = OFF, Security Level = Medium, Rocket Loader = OFF Esto NO afecta a los despliegues — los builds y deployments son independientes de Speed Insights. Si un deploy no se refleja, el problema es de build failure o cache de ISR, no de Speed Insights.
 - **Blog sort**: Actualizado a fecha-primero (featured solo como tiebreaker en misma fecha). Commit `91a5b6a`. Ya no necesita `featured: true` en posts nuevos — el más reciente aparece primero automáticamente.
 - **Blog UX**: Category cards visuales (como sección de metodología en `/coste`) + lista colapsada por defecto (solo 3 posts). "Mostrar todos" expande con búsqueda + paginación. Commit `f359da3`.
 
@@ -82,7 +85,7 @@
 9. **Score personalizado por país (ML)** ✅ — API `/api/ml/score` + componente `ScoreBadge` + selectores visuales de perfil y presupuesto en cabecera de ficha de país. Guarda a localStorage y `/api/user/preferences`. Pendiente: afinar pesos con datos reales.
 10. **Sentimiento GDELT público** ✅ — Badge de tone_score visible en `/osint` (sección "Sentimiento GDELT") y en `OsintAlertsBanner` de fichas de país. Nueva API pública `/api/osint/signals`. Schema SQL actualizado.
 11. **Admin calendario** ✅ — Página `/admin/calendario` con calendario mensual + notas del editor + timeline. API CRUD `/api/admin/editor-notes`.
-12. **Publicado RRSS 15 May**: Bluesky ✅, Mastodon ✅, Telegram ❌ (fallo local, funciona en Vercel), X ✅ (manual). Revisar resultados.
+12. **Publicado RRSS 15 May**: Bluesky ✅, Mastodon ✅, Telegram ❌ (fallo local, funciona en producción), X ✅ (manual). Revisar resultados.
 13. **Trip Risk Score en viajes** ✅ — API `/api/trips/[id]/risk-score` con scoring por país+mes+perfil. Tabla visual en detalle de viaje con 4 dimensiones y score global. Lógica compartida en `src/lib/trip-risk-score.ts`. Comparador `/viajes/comparar` con tabla side-by-side y recomendación. Scoring mejorado: factor duración (viajes largos = más exposición) + intereses del viajero personalizan perfil. Pesos ajustados por perfil (mochilero → coste 40%, familiar → riesgo 40%, etc.). Country codes corregidos en viajes existentes.
 
 ### Tareas a observar / backlog
@@ -115,10 +118,10 @@
 - **Build fixes**: imports rotos en telegram route restaurados, type error de withTimeout manejado con type guard.
 
 ## PAUSED STATE (13 May 2026 — Sprint 13 May AM)
-- **Admin premium bypass**: `checkPremium()` + `/api/subscription/check` devuelven `isPremium: true, status: 'admin'` si `user.email === ADMIN_EMAIL`. Env vars `ADMIN_EMAIL=mcasrom@gmail.com` en `.env.local` y `.env.vercel`.
+- **Admin premium bypass**: `checkPremium()` + `/api/subscription/check` devuelven `isPremium: true, status: 'admin'` si `user.email === ADMIN_EMAIL`. Env vars `ADMIN_EMAIL=mcasrom@gmail.com` en `.env.local` y `.env.production`.
 - **Newsletter preview/tracking**: Endpoint `/api/newsletter/preview` + botón Vista Previa (Eye icon) en admin dashboard. Envío batch con `open_tracking: true` + `click_tracking: true` vía Resend API directa.
 - **Blog post author**: Footer `*M. Castillo — ViajeInteligencia*` añadido a `content/posts/como-usar-ia-planificar-viajes-2026.md`.
-- **GitHub Actions cron**: Workflow `.github/workflows/cron.yml` diario 06:00 UTC. Reemplaza Vercel cron (eliminado `crons` de `vercel.json`).
+- **GitHub Actions cron**: Workflow `.github/workflows/cron.yml` diario 06:00 UTC. Reemplaza el anterior cron de Vercel (eliminado al migrar a Hetzner).
 - **Cron fixes**: events fire-and-forget (29→17 países), us_state_dept timeout 20→30s, model_training/incidents Telegram summary trata resultados sin `status` como OK. Error detail en resumen Telegram. Duración 161s→~97s.
 - **Compartir desde Chat IA**: Botón + formulario inline en `ChatClient.tsx`. Crea trip público via `POST /api/trips` con `is_public: true`. Link copiable.
 - **Admin ML page**: `/admin/ml` con métricas último entrenamiento + tabla histórica 30 registros + narrativa explicativa. Link en admin dashboard.
@@ -183,7 +186,7 @@
 
 ## Project
 - **Framework**: Next.js 16 + App Router, TypeScript
-- **Deploy**: Vercel (auto-deploy on `main` push)
+- **Deploy**: Hetzner VPS (auto-deploy on `main` push via GitHub Actions → rsync + PM2)
 - **UI**: Tailwind CSS, lucide-react, react-markdown
 - **AI**: Groq API (`llama-3.1-8b-instant` free, `llama-3.3-70b-versatile` premium)
 - **Auth/DB**: Supabase (users, trips, favorites)
@@ -224,13 +227,13 @@ Trigger (GitHub Actions / Anomaly) → Data (MAEC+USGS+GDACS) → LLM Groq (cont
 1. React Email template (`@react-email/components`) — personalized with `{{nombre}}`, `{{pais}}`, `{{riesgo_favorito}}`
 2. `/api/newsletter/send` route — batch send via Resend (100 per call)
 3. `newsletter-generator.ts` — Groq LLM generates destination descriptions (40-50 words, no fluff)
-4. GitHub Actions scheduler (free alternative to Vercel cron limits)
+4. GitHub Actions scheduler (cron en servidor propio)
 5. `newsletter_logs` table in Supabase (opens, clicks tracking)
 
 **Status:** Architecture defined, not yet implemented. Need to decide what's viable vs not.
 
 ## CRON Incident (07 May 2026)
-- Vercel Hobby allows ONLY 1 cron job. Had 7 crons configured — only 1 was running, rest were silently ignored.
+- Previously on Vercel Hobby: only 1 cron job allowed — had 7 configured, only 1 ran.
 - `/admin/osint/` showed no new data because `osint-sensor` cron never ran.
 - **Fix**: Consolidated ALL crons into single `/api/cron/master` route (runs at 06:00 UTC):
   1. MAEC scrape
@@ -358,7 +361,7 @@ Para probar authenticated endpoints se necesita sesión válida (vía browser).
 
 ## Recent Work (07 May 2026)
 - Created master cron consolidating 7 jobs into 1 (`src/app/api/cron/master/route.ts`)
-- Newsletter: double opt-in flow restored, RESEND_API_KEY saved in `.env.local` + Vercel
+- Newsletter: double opt-in flow restored, RESEND_API_KEY saved in `.env.local` + Hetzner
 - Added `src/app/api/cron/master/route.ts` — single entry point for all daily automation
 - Eurostat integration attempted and abandoned (SDMX v2 too complex, timeout issues)
 - OSINT sensor already implemented: `/admin/osint/` + `src/lib/osint-sensor.ts` + `src/app/api/cron/osint-sensor/route.ts`

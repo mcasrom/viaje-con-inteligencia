@@ -319,6 +319,163 @@ export default function MetodologiaPage() {
           </div>
         </div>
 
+        {/* Machine Learning Algorithm */}
+        <div className="bg-slate-800/60 rounded-xl border border-slate-700/50 p-6 mb-8">
+          <div className="flex items-center gap-3 mb-4">
+            <Brain className="w-6 h-6 text-purple-400" />
+            <h2 className="text-xl font-bold text-white">Algoritmo ML: Random Forest</h2>
+          </div>
+          <p className="text-slate-300 text-sm mb-4">
+            Entrenamos un modelo <strong>Random Forest</strong> por país con <strong>25 features</strong> que predicen la evolución del riesgo. 
+            El modelo se reentrena diariamente y sus predicciones se comparan con el modelo heurístico para detectar desviaciones.
+          </p>
+
+          <div className="space-y-4">
+            <div className="bg-slate-700/30 rounded-lg p-4">
+              <h4 className="text-white font-semibold text-sm mb-2">Parámetros del modelo</h4>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs">
+                <div className="bg-slate-600/20 rounded p-2">
+                  <span className="text-purple-400 font-bold">Árboles</span>
+                  <p className="text-slate-400 mt-0.5">50 (n_estimators)</p>
+                </div>
+                <div className="bg-slate-600/20 rounded p-2">
+                  <span className="text-purple-400 font-bold">Profundidad</span>
+                  <p className="text-slate-400 mt-0.5">8 (max_depth)</p>
+                </div>
+                <div className="bg-slate-600/20 rounded p-2">
+                  <span className="text-purple-400 font-bold">Semilla</span>
+                  <p className="text-slate-400 mt-0.5">42 (random_state)</p>
+                </div>
+                <div className="bg-slate-600/20 rounded p-2">
+                  <span className="text-purple-400 font-bold">Librería</span>
+                  <p className="text-slate-400 mt-0.5">ml-random-forest</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-slate-700/30 rounded-lg p-4">
+              <h4 className="text-white font-semibold text-sm mb-2">4 modelos por país</h4>
+              <div className="space-y-2 text-xs">
+                <div className="flex gap-3">
+                  <code className="text-purple-300 bg-slate-600/20 px-2 py-0.5 rounded flex-shrink-0">risk_score_rf</code>
+                  <span className="text-slate-400">Predice el score de riesgo (0–100) basado en las 25 features actuales</span>
+                </div>
+                <div className="flex gap-3">
+                  <code className="text-purple-300 bg-slate-600/20 px-2 py-0.5 rounded flex-shrink-0">prob_up_7d_rf</code>
+                  <span className="text-slate-400">Probabilidad de que el riesgo suba en los próximos 7 días</span>
+                </div>
+                <div className="flex gap-3">
+                  <code className="text-purple-300 bg-slate-600/20 px-2 py-0.5 rounded flex-shrink-0">prob_up_14d_rf</code>
+                  <span className="text-slate-400">Probabilidad de subida de riesgo a 14 días</span>
+                </div>
+                <div className="flex gap-3">
+                  <code className="text-purple-300 bg-slate-600/20 px-2 py-0.5 rounded flex-shrink-0">prob_up_30d_rf</code>
+                  <span className="text-slate-400">Probabilidad de subida de riesgo a 30 días</span>
+                </div>
+              </div>
+              <p className="text-slate-500 text-xs mt-2">Si el modelo RF no está disponible para un país, se usa el modelo heurístico como fallback.</p>
+            </div>
+
+            <div className="bg-slate-700/30 rounded-lg p-4">
+              <h4 className="text-white font-semibold text-sm mb-2">25 features por país</h4>
+              <div className="grid md:grid-cols-2 gap-3 text-xs">
+                <div>
+                  <p className="text-slate-500 mb-1 font-medium">Riesgo</p>
+                  <ul className="space-y-1 text-slate-400">
+                    <li><code className="text-purple-300">risk_level</code> — nivel MAEC numérico</li>
+                    <li><code className="text-purple-300">risk_score</code> — score compuesto 0–100</li>
+                    <li><code className="text-purple-300">risk_trend_7d</code> — tendencia 7 días</li>
+                    <li><code className="text-purple-300">risk_trend_30d</code> — tendencia 30 días</li>
+                  </ul>
+                </div>
+                <div>
+                  <p className="text-slate-500 mb-1 font-medium">Índices globales</p>
+                  <ul className="space-y-1 text-slate-400">
+                    <li><code className="text-purple-300">gpi_score</code> — Global Peace Index</li>
+                    <li><code className="text-purple-300">gti_score</code> — Global Terrorism Index</li>
+                    <li><code className="text-purple-300">hdi_score</code> — Human Development Index</li>
+                    <li><code className="text-purple-300">ipc_score</code> — inflación</li>
+                  </ul>
+                </div>
+                <div>
+                  <p className="text-slate-500 mb-1 font-medium">Coste y demanda</p>
+                  <ul className="space-y-1 text-slate-400">
+                    <li><code className="text-purple-300">tci_score</code> — Travel Cost Index</li>
+                    <li><code className="text-purple-300">tci_trend</code> — tendencia de coste</li>
+                    <li><code className="text-purple-300">demand_index</code> — demanda turística</li>
+                    <li><code className="text-purple-300">seasonality_index</code> — estacionalidad</li>
+                  </ul>
+                </div>
+                <div>
+                  <p className="text-slate-500 mb-1 font-medium">OSINT</p>
+                  <ul className="space-y-1 text-slate-400">
+                    <li><code className="text-purple-300">signal_count_7d</code> — señales OSINT 7d</li>
+                    <li><code className="text-purple-300">incident_count_7d</code> — incidentes 7d</li>
+                  </ul>
+                </div>
+                <div>
+                  <p className="text-slate-500 mb-1 font-medium">Geopolítica</p>
+                  <ul className="space-y-1 text-slate-400">
+                    <li><code className="text-purple-300">airspace_closure_active</code> — espacio aéreo</li>
+                    <li><code className="text-purple-300">route_disruption_active</code> — rutas</li>
+                    <li><code className="text-purple-300">us_risk_score</code> — US State Dept</li>
+                    <li><code className="text-purple-300">events_30d</code> / <code className="text-purple-300">high_impact_events_30d</code></li>
+                  </ul>
+                </div>
+                <div>
+                  <p className="text-slate-500 mb-1 font-medium">Sentimiento (5)</p>
+                  <ul className="space-y-1 text-slate-400">
+                    <li><code className="text-purple-300">avg_tone_7d</code> — sentimiento medio 7d</li>
+                    <li><code className="text-purple-300">avg_tone_30d</code> — sentimiento medio 30d</li>
+                    <li><code className="text-purple-300">tone_trend_7d</code> — tendencia de tono</li>
+                    <li><code className="text-purple-300">negative_ratio_7d</code> — ratio negativo</li>
+                    <li><code className="text-purple-300">tone_volatility_7d</code> — volatilidad</li>
+                  </ul>
+                </div>
+              </div>
+              <div className="mt-3 bg-slate-600/20 rounded p-2">
+                <p className="text-slate-500 text-xs">Además: <code className="text-purple-300">safety_composite</code>, <code className="text-purple-300">cost_composite</code>, <code className="text-purple-300">cluster_label</code>, <code className="text-purple-300">model_version</code></p>
+              </div>
+            </div>
+
+            <div className="bg-slate-700/30 rounded-lg p-4">
+              <h4 className="text-white font-semibold text-sm mb-2">Evaluación del modelo</h4>
+              <p className="text-slate-400 text-xs mb-2">
+                Comparamos las predicciones del Random Forest contra el modelo heurístico cada día. Las métricas se publican en el panel de administración.
+              </p>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs">
+                <div className="bg-slate-600/20 rounded p-2">
+                  <span className="text-purple-400 font-bold">MAE riskScore</span>
+                  <p className="text-slate-400 mt-0.5">Diferencia media entre RF y heurístico (0–100). ~0.8 típico</p>
+                </div>
+                <div className="bg-slate-600/20 rounded p-2">
+                  <span className="text-purple-400 font-bold">MAE probUp</span>
+                  <p className="text-slate-400 mt-0.5">Error medio en probabilidades 7/14/30d. ~0.5% típico</p>
+                </div>
+                <div className="bg-slate-600/20 rounded p-2">
+                  <span className="text-purple-400 font-bold">Desviación máxima</span>
+                  <p className="text-slate-400 mt-0.5">País donde RF y heurístico más difieren. Se monitoriza diariamente</p>
+                </div>
+                <div className="bg-slate-600/20 rounded p-2">
+                  <span className="text-purple-400 font-bold">R²</span>
+                  <p className="text-slate-400 mt-0.5">Coeficiente de determinación. Se calcula por modelo tras cada entrenamiento</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-slate-700/30 rounded-lg p-4">
+              <h4 className="text-white font-semibold text-sm mb-2">Limitaciones</h4>
+              <ul className="text-slate-400 text-xs space-y-1.5 list-disc list-inside">
+                <li>El modelo RF se entrena contra predicciones heurísticas, no contra datos reales de riesgo. La validación real requiere &ge;30 días de historial.</li>
+                <li>Random Forest no puede predecir eventos sin precedentes históricos (golpes de estado, guerras relámpago, desastres naturales imprevistos).</li>
+                <li>Las features de sentimiento necesitan al menos 7 días de datos para ser significativas.</li>
+                <li>Países con pocas señales OSINT tienen menos precisión en las predicciones a corto plazo.</li>
+                <li>El modelo se reentrena diariamente, pero los cambios de riesgo real pueden tardar horas en reflejarse en las features.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
         {/* Disclaimer */}
         <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl p-5">
           <div className="flex items-center gap-3 mb-2">

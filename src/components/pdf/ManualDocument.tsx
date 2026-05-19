@@ -314,8 +314,8 @@ export default function ManualDocument({
             <Text style={styles.updateTitle}>{t('Acerca de esta guía', 'About this guide')}</Text>
             <Text style={styles.updateText}>
               {t(
-                `Este manual se generó el ${todayStr} con datos actualizados del Ministerio de Asuntos Exteriores (MAEC), US State Dept, GDELT, USGS, GDACS y calendario de eventos. Incluye 19 herramientas: mapa interactivo, chat IA, radar de viaje con proyección 12 meses, score ML personalizado por perfil viajero, infografías semanales, newsletter IA, alertas OSINT con sentimiento GDELT, clustering ML, comparador de seguros, y más. Los niveles de riesgo pueden cambiar. Descarga una nueva versión desde viajeinteligencia.com/dashboard o forza actualización con ?auth=false.`,
-                `This manual was generated on ${todayStr} with updated data from the Ministry of Foreign Affairs (MAEC), US State Dept, GDELT, USGS, GDACS and events calendar. Includes 19 tools: interactive map, AI chat, travel radar with 12-month projection, personalized ML score by traveler profile, weekly infographics, AI newsletter, OSINT alerts with GDELT sentiment, ML clustering, insurance comparison, and more. Risk levels may change. Download a new version at viajeinteligencia.com/en/dashboard or force refresh with ?auth=false.`
+                `Este manual se generó el ${todayStr} con datos actualizados del Ministerio de Asuntos Exteriores (MAEC), US State Dept, GDELT, USGS, GDACS y calendario de eventos. Incluye 19 herramientas: mapa interactivo, chat IA, radar de viaje con proyección 12 meses, score IA personalizado por perfil viajero, infografías semanales, newsletter IA, alertas OSINT con sentimiento GDELT, análisis de destinos, comparador de seguros, y más. Los niveles de riesgo pueden cambiar. Descarga una nueva versión desde viajeinteligencia.com/dashboard o forza actualización con ?auth=false.`,
+                `This manual was generated on ${todayStr} with updated data from the Ministry of Foreign Affairs (MAEC), US State Dept, GDELT, USGS, GDACS and events calendar. Includes 19 tools: interactive map, AI chat, travel radar with 12-month projection, personalized AI score by traveler profile, weekly infographics, AI newsletter, OSINT alerts with GDELT sentiment, destination analysis, insurance comparison, and more. Risk levels may change. Download a new version at viajeinteligencia.com/en/dashboard or force refresh with ?auth=false.`
               )}
             </Text>
           </View>
@@ -505,7 +505,7 @@ export default function ManualDocument({
             <View style={styles.featureCard}>
               <Text style={[styles.featureName, { fontSize: 14 }]}>[API]</Text>
               <Text style={styles.featureName}>API v1</Text>
-              <Text style={styles.featureDesc}>{t('Endpoint REST público con riesgo, predicciones ML y usRisk.', 'Public REST endpoint with risk, ML predictions and usRisk.')}</Text>
+              <Text style={styles.featureDesc}>{t('Endpoint REST público con riesgo, predicciones por IA y usRisk.', 'Public REST endpoint with risk, AI predictions and usRisk.')}</Text>
             </View>
             <View style={styles.featureCard}>
               <Text style={[styles.featureName, { fontSize: 14 }]}>[BLOG]</Text>
@@ -520,7 +520,7 @@ export default function ManualDocument({
             <View style={styles.featureCard}>
               <Text style={[styles.featureName, { fontSize: 14 }]}>[SCR]</Text>
               <Text style={styles.featureName}>{t('Score Personalizado', 'Personalized Score')}</Text>
-              <Text style={styles.featureDesc}>{t('Puntuación ML 0-100 combinando riesgo, temporada, coste y perfil viajero.', 'ML score 0-100 combining risk, season, cost and traveler profile.')}</Text>
+              <Text style={styles.featureDesc}>{t('Puntuación IA 0-100 combinando riesgo, temporada, coste y perfil viajero.', 'AI score 0-100 combining risk, season, cost and traveler profile.')}</Text>
             </View>
             <View style={styles.featureCard}>
               <Text style={[styles.featureName, { fontSize: 14 }]}>[INF]</Text>

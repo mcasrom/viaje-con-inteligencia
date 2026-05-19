@@ -102,7 +102,7 @@ export default function ScoreBadge({ countryCode, profile: propProfile, budget: 
             </div>
           </div>
           <div className="pt-2 border-t border-slate-700 text-center">
-            <span className="text-slate-500 text-[10px]">Score ML personalizado según tu perfil y presupuesto</span>
+            <span className="text-slate-500 text-[10px]">Score IA personalizado según tu perfil y presupuesto</span>
           </div>
         </div>
       )}

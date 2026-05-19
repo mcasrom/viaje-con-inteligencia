@@ -45,7 +45,7 @@ export default function ClusteringClient() {
       <div className="min-h-screen bg-slate-900 flex items-center justify-center p-6">
         <div className="text-center max-w-md">
           <Crown className="w-16 h-16 text-yellow-400 mx-auto mb-4" />
-          <h2 className="text-2xl font-bold text-white mb-2">ML Clustering Premium</h2>
+          <h2 className="text-2xl font-bold text-white mb-2">Análisis de Destinos Premium</h2>
           <p className="text-slate-400 mb-6">Descubre destinos agrupados por IA según seguridad, coste y preferencias. Activa tu prueba gratuita de 7 días.</p>
           <Link
             href="/premium"
@@ -68,7 +68,7 @@ export default function ClusteringClient() {
           </Link>
           <div className="flex items-center gap-2 px-4 py-2 bg-purple-500/10 rounded-lg border border-purple-500/30">
             <Sparkles className="w-4 h-4 text-purple-400" />
-            <span className="text-purple-300 text-sm font-medium">K-Means Clustering</span>
+            <span className="text-purple-300 text-sm font-medium">Análisis Inteligente</span>
           </div>
         </div>
       </header>
@@ -76,7 +76,7 @@ export default function ClusteringClient() {
       <main className="max-w-6xl mx-auto px-6 py-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-white mb-2">
-            ML Clustering de Destinos
+            Análisis de Destinos
           </h1>
           <p className="text-slate-400">
             {destinations.length} destinos agrupados por seguridad, coste, distancia y popularidad turística.

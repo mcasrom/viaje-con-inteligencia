@@ -190,7 +190,7 @@ function TopBar() {
             </Link>
             <Link href="/analisis" className="flex items-center gap-3 px-4 py-3 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition-colors">
               <TrendingUp className="w-5 h-5 text-amber-400" />
-              Análisis Global ML
+              Análisis Global IA
             </Link>
             <Link href="/rutas" className="flex items-center gap-3 px-4 py-3 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition-colors">
               <Route className="w-5 h-5 text-green-400" />
@@ -324,7 +324,7 @@ function SidePanel() {
     : [];
 
   const tools = [
-    { icon: <Calculator className="w-4 h-4 text-blue-400" />, label: 'ML Coste Viajes', href: '/coste' },
+    { icon: <Calculator className="w-4 h-4 text-blue-400" />, label: 'Calculadora Coste Viajes', href: '/coste' },
     { icon: <Route className="w-4 h-4 text-green-400" />, label: 'Rutas Seguras', href: '/rutas' },
     { icon: <ClipboardList className="w-4 h-4 text-orange-400" />, label: 'Checklist', href: '/checklist' },
     { icon: <BarChart3 className="w-4 h-4 text-purple-400" />, label: 'Dashboard KPIs', href: '/dashboard/kpis' },
@@ -532,7 +532,7 @@ export default function HomeClient() {
               { icon: Globe, title: 'Datos oficiales', desc: 'MAEC + US State Dept + 73 fuentes OSINT en tiempo real', color: 'text-blue-400', bg: 'bg-blue-500/10' },
               { icon: Brain, title: 'IA asistida', desc: 'Groq analiza, no decide. Las alertas las validamos con fuentes', color: 'text-purple-400', bg: 'bg-purple-500/10' },
               { icon: FileText, title: 'Metodología abierta', desc: 'Cada riesgo, cada score, cada fuente — explicado y auditable', color: 'text-emerald-400', bg: 'bg-emerald-500/10' },
-              { icon: Lock, title: 'Privacidad por diseño', desc: 'No almacenamos ubicación. Sin tracking. Sin perfiles comerciales', color: 'text-amber-400', bg: 'bg-amber-500/10' },
+              { icon: Lock, title: 'Privacidad por diseño', desc: 'No almacenamos ubicación. Sin tracking. Tus pólizas de seguro solo en tu navegador', color: 'text-amber-400', bg: 'bg-amber-500/10' },
               { icon: Shield, title: 'Proyecto independiente', desc: 'Desarrollado en España. Sin venture capital. Sin venta de datos', color: 'text-rose-400', bg: 'bg-rose-500/10' },
             ].map((item, i) => (
               <div key={i} className="text-center p-4 rounded-xl hover:bg-slate-700/30 transition-colors">
@@ -571,7 +571,7 @@ export default function HomeClient() {
             Viaja informado, viaja seguro
           </h2>
           <p className="text-slate-400 text-lg max-w-2xl mx-auto">
-            Mapa interactivo con datos oficiales MAEC, análisis ML y herramientas inteligentes para planificar tu viaje.
+            Mapa interactivo con datos oficiales MAEC, análisis por IA y herramientas inteligentes para planificar tu viaje.
           </p>
         </div>
 
@@ -582,7 +582,7 @@ export default function HomeClient() {
           </Link>
           <Link href="/coste" className="bg-slate-800/50 rounded-xl p-3 text-center hover:bg-slate-800 transition-colors border border-slate-700/50">
             <Calculator className="w-5 h-5 text-blue-400 mx-auto mb-1.5" />
-            <span className="text-white text-xs font-medium">ML Coste</span>
+            <span className="text-white text-xs font-medium">Calculadora Coste</span>
           </Link>
           <Link href="/analisis" className="bg-slate-800/50 rounded-xl p-3 text-center hover:bg-slate-800 transition-colors border border-slate-700/50">
             <TrendingUp className="w-5 h-5 text-amber-400 mx-auto mb-1.5" />

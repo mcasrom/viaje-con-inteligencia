@@ -418,6 +418,17 @@ export default function SegurosPage() {
             )}
           </div>
         )}
+
+        {/* Privacy notice */}
+        <div className="mt-8 bg-blue-500/10 border border-blue-500/20 rounded-xl p-4">
+          <div className="flex items-start gap-3">
+            <Shield className="w-5 h-5 text-blue-400 shrink-0 mt-0.5" />
+            <div className="text-xs text-slate-300 leading-relaxed">
+              <p className="font-medium text-blue-300 mb-1">Privacidad de tus datos</p>
+              <p>Esta comparativa se procesa en tiempo real sin almacenar tus datos de viaje. Si eres usuario premium y usas el <Link href="/dashboard/seguros" className="text-blue-400 hover:text-blue-300 underline">Monitor de Seguros</Link>, tus pólizas se guardan exclusivamente en tu navegador (localStorage). No tenemos acceso a los detalles de tu seguro.</p>
+            </div>
+          </div>
+        </div>
       </main>
     </div>
   );

@@ -69,7 +69,7 @@ export default function AdminMLPage() {
             <ArrowLeft className="w-5 h-5" />
           </Link>
           <Brain className="w-5 h-5 text-purple-400" />
-          <h1 className="text-xl font-bold text-white">ML — Evolución</h1>
+          <h1 className="text-xl font-bold text-white">IA — Evolución</h1>
         </div>
       </header>
 
