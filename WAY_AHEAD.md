@@ -113,7 +113,7 @@ curl -s http://178.105.80.193:3001/api/health
 | DJ | Yibuti | Estratégico, cuerno África | ❌ |
 | ER | Eritrea | Cuerno África | ❌ |
 
-**Acción:** Añadir en próximos sprints. Priorizar países con: conflicto activo, brotes sanitarios, frontera con RDC/UG, o relevancia turística.
+> **17 países restantes para próximos sprints.** Prioridad: Malí, Níger, Chad, Burkina Faso (conflicto Sahel), Zambia, Zimbabue (turismo), Gabón, Guinea Ecuatorial (frontera).
 
 ---
 
@@ -324,4 +324,4 @@ git add -A && git commit -m "msg" && git push
 
 ---
 
-*Actualizado: 19 May 2026 — sesion 3 finalizada*
+*Actualizado: 19 May 2026 — pendiente decidir proximo sprint*

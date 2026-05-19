@@ -393,8 +393,11 @@ async function runNewsSentiment(): Promise<any> {
     const processedUrls = new Set(processedData?.map(d => d.source_url) || []);
     const newPosts = recentPosts.filter(p => !processedUrls.has(p.sourceUrl));
 
-    // Cap at 30 to prevent timeout
-    const toProcess = newPosts.slice(0, 30);
+    // Prioritize WHO, GDELT, GDACS, USGS over general RSS/Reddit
+    const prioritySources = new Set(['who', 'gdelt', 'gdacs', 'usgs']);
+    const priority = newPosts.filter(p => p.source && prioritySources.has(p.source));
+    const rest = newPosts.filter(p => !p.source || !prioritySources.has(p.source));
+    const toProcess = [...priority, ...rest].slice(0, 50);
 
     const signals: any[] = [];
     for (const post of toProcess) {

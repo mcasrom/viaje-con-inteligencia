@@ -280,8 +280,13 @@ export async function fetchWhoDon(limit = 10): Promise<RawPost[]> {
     for (const item of items) {
       if (!item.Title) continue;
       const title = item.Title;
-      const locationName = item.Regionscountries || item.Country || '';
+      const overrideTitle = item.OverrideTitle || title;
+      const locationRaw = item.Regionscountries || item.Country || '';
       const summary = (item.Summary || '').substring(0, 1000);
+      // Extract location from OverrideTitle when Regionscountries is missing
+      // Format: "Ebola disease, Democratic Republic of the Congo & Uganda"
+      const locFromTitle = overrideTitle.replace(/^[^,]+,\s*/, '').trim();
+      const locationName = locationRaw || locFromTitle || '';
       posts.push({
         source: 'who',
         sourceUrl: `https://www.who.int/emergencies/disease-outbreak-news/item/${item.UrlName || item.DonId}`,
@@ -289,7 +294,7 @@ export async function fetchWhoDon(limit = 10): Promise<RawPost[]> {
         content: summary || (item.Overview || '').substring(0, 1000),
         author: 'World Health Organization',
         timestamp: item.PublicationDateAndTime ? new Date(item.PublicationDateAndTime) : new Date(),
-        locationName: locationName || title.split(' - ').pop()?.trim() || '',
+        locationName,
         eventType: 'outbreak',
       });
     }
