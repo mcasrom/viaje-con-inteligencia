@@ -57,6 +57,13 @@ export const GPI_DATA: GPICountry[] = [
   { rank: 48, country: 'Afganistán', code: 'AF', score: 3.929, change: 0, region: 'Asia' },
   { rank: 157, country: 'Rep. Dem. del Congo', code: 'CD', score: 3.221, change: 0, region: 'África Subsahariana' },
   { rank: 118, country: 'Uganda', code: 'UG', score: 2.571, change: 0, region: 'África Subsahariana' },
+  { rank: 82, country: 'Angola', code: 'AO', score: 1.948, change: 0, region: 'África Subsahariana' },
+  { rank: 103, country: 'Camerún', code: 'CM', score: 2.210, change: 0, region: 'África Subsahariana' },
+  { rank: 100, country: 'Costa de Marfil', code: 'CI', score: 2.181, change: 0, region: 'África Subsahariana' },
+  { rank: 108, country: 'Rep. del Congo', code: 'CG', score: 2.298, change: 0, region: 'África Subsahariana' },
+  { rank: 134, country: 'Rep. Centroafricana', code: 'CF', score: 2.821, change: 0, region: 'África Subsahariana' },
+  { rank: 149, country: 'Somalia', code: 'SO', score: 3.194, change: 0, region: 'África Subsahariana' },
+  { rank: 155, country: 'Sudán del Sur', code: 'SS', score: 3.423, change: 0, region: 'África Subsahariana' },
 ];
 
 export const GTI_DATA = [
@@ -111,6 +118,11 @@ export const GTI_DATA = [
   { rank: 48, country: 'Rep. Centroafricana', code: 'CF', score: 6.8, change: 0, region: 'África' },
   { rank: 12, country: 'Rep. Dem. del Congo', code: 'CD', score: 6.842, change: 0, region: 'África Subsahariana' },
   { rank: 36, country: 'Uganda', code: 'UG', score: 4.215, change: 0, region: 'África Subsahariana' },
+  { rank: 40, country: 'Angola', code: 'AO', score: 5.124, change: 0, region: 'África Subsahariana' },
+  { rank: 35, country: 'Camerún', code: 'CM', score: 4.812, change: 0, region: 'África Subsahariana' },
+  { rank: 38, country: 'Costa de Marfil', code: 'CI', score: 4.973, change: 0, region: 'África Subsahariana' },
+  { rank: 43, country: 'Rep. del Congo', code: 'CG', score: 5.543, change: 0, region: 'África Subsahariana' },
+  { rank: 46, country: 'Sudán del Sur', code: 'SS', score: 6.251, change: 0, region: 'África Subsahariana' },
 ];
 
 export const HDI_DATA = [
@@ -162,6 +174,13 @@ export const HDI_DATA = [
   { rank: 45, country: 'Australia', code: 'AU', score: 0.939, change: 0, region: 'Oceanía' },
   { rank: 179, country: 'Rep. Dem. del Congo', code: 'CD', score: 0.479, change: 0, region: 'África Subsahariana' },
   { rank: 166, country: 'Uganda', code: 'UG', score: 0.525, change: 0, region: 'África Subsahariana' },
+  { rank: 148, country: 'Angola', code: 'AO', score: 0.591, change: 0, region: 'África Subsahariana' },
+  { rank: 151, country: 'Camerún', code: 'CM', score: 0.587, change: 0, region: 'África Subsahariana' },
+  { rank: 159, country: 'Costa de Marfil', code: 'CI', score: 0.556, change: 0, region: 'África Subsahariana' },
+  { rank: 149, country: 'Rep. del Congo', code: 'CG', score: 0.589, change: 0, region: 'África Subsahariana' },
+  { rank: 188, country: 'Rep. Centroafricana', code: 'CF', score: 0.387, change: 0, region: 'África Subsahariana' },
+  { rank: 192, country: 'Somalia', code: 'SO', score: 0.351, change: 0, region: 'África Subsahariana' },
+  { rank: 187, country: 'Sudán del Sur', code: 'SS', score: 0.396, change: 0, region: 'África Subsahariana' },
 ];
 
 export const IPC_DATA = [
@@ -225,6 +244,13 @@ export const IPC_DATA = [
   { country: 'Luxemburgo', code: 'LU', ipc: '2.5%', nivel: 'Medio', region: 'Europa' },
   { country: 'República Democrática del Congo', code: 'CD', ipc: '20%', nivel: 'Muy alto', region: 'África' },
   { country: 'Uganda', code: 'UG', ipc: '26%', nivel: 'Muy alto', region: 'África' },
+  { country: 'Angola', code: 'AO', ipc: '26%', nivel: 'Extremo', region: 'África' },
+  { country: 'Camerún', code: 'CM', ipc: '6.5%', nivel: 'Alto', region: 'África' },
+  { country: 'Costa de Marfil', code: 'CI', ipc: '4.5%', nivel: 'Alto', region: 'África' },
+  { country: 'República del Congo', code: 'CG', ipc: '3.5%', nivel: 'Medio', region: 'África' },
+  { country: 'República Centroafricana', code: 'CF', ipc: '7%', nivel: 'Muy alto', region: 'África' },
+  { country: 'Somalia', code: 'SO', ipc: '7.5%', nivel: 'Muy alto', region: 'África' },
+  { country: 'Sudán del Sur', code: 'SS', ipc: '30%', nivel: 'Extremo', region: 'África' },
 ];
 
 export const LAYERS = [

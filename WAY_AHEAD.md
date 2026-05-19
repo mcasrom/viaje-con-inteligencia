@@ -1,8 +1,8 @@
 # Way Ahead
 
-## Última sesión: 19 May 2026 — Sprint 2 (tarde): Chromium fix + WHO API + países críticos África
+## Última sesión: 19 May 2026 — Sprint 3: Health OSINT pipeline + 7 países África críticos
 
-> **Pendiente:** Verificar último deploy (commit `da54fce`) — revisar build + health check.
+> **Último deploy verificado:** OK — health check pass, uptime 9h ✅
 > ```bash
 > ssh deploy@178.105.80.193 "pm2 logs viajeinteligencia --lines 20"
 > curl -s http://178.105.80.193:3001/api/health
@@ -61,16 +61,19 @@ curl -s http://178.105.80.193:3001/api/health
 
 ---
 
-## 🧠 SPRINT SIGUIENTE — Health OSINT + Detección brotes (propuesto)
+## ✅ SPRINT SALUD — Health OSINT Pipeline (completado 19 May 2026)
 
 **Objetivo:** Que el sistema detecte automáticamente brotes epidémicos (Ebola, Marburg, Nipah, etc.) desde fuentes oficiales.
 
-**Híbrido viable:**
-1. **Añadir ProMED-mail** (si RSS sigue vivo) + **WHO Disease Outbreak News API** (`/api/hubs/diseaseoutbreaknews`) como fuentes nuevas en `fetchAllPosts()`
-2. **Groq solo para estas fuentes** (volumen bajo, ~5-10/día) — extraer: países afectados, casos, muertes, tipo brote, severidad
-3. Pipeline existente (RSS/GDELT) sigue con keywords para no aumentar coste Groq
+**Logrado:**
+1. ✅ **WHO Disease Outbreak News API** (`/api/hubs/diseaseoutbreaknews`) como fuente en `fetchAllPosts()`
+2. ✅ **Groq para clasificar señales WHO** — todas las fuentes no-autoritativas (incluyendo WHO) pasan por `classifySignal()` con Groq
+3. ✅ **Países añadidos:** RDC (CD), Uganda (UG), Angola (AO), Camerún (CM), Costa de Marfil (CI), Congo (CG), RCA (CF), Somalia (SO), Sudán del Sur (SS) — todos con fichas completas, embajadas, e índices
+4. ✅ **extractCountryCode() expandido** con 50+ nuevas entradas africanas + nombres usados por WHO (Regionscountries como "Democratic Republic of the Congo", "Uganda")
+5. ✅ **Pipeline completo:** WHO DON → `fetchAllPosts()` → `runNewsSentiment()` → Groq classification → `osint_signals` → `detectAndCreateIncidents()` → `notifySubscribers()`
 
-**Complejidad:** ~2-3h
+**Pendiente opcional:**
+- ProMED-mail (si RSS sigue vivo, redundante con WHO DON + ReliefWeb + GDELT)
 
 ---
 
@@ -83,32 +86,32 @@ curl -s http://178.105.80.193:3001/api/health
 
 **Países africanos críticos que siguen faltando (priorizar):**
 
-| Código | País | Motivo |
-|--------|------|--------|
-| AO | Angola | Frontera RDC, petróleo, turismo |
-| CM | Camerún | África Central, seguridad |
-| CI | Côte d'Ivoire | Economía creciente, turismo |
-| CG | República del Congo | Frontera RDC, brotes |
-| CF | República Centroafricana | Conflicto activo |
-| GA | Gabón | África Central |
-| GQ | Guinea Ecuatorial | Hispanohablante, petróleo |
-| MG | Madagascar | Destino turístico único |
-| ML | Malí | Conflicto Sahel |
-| NE | Níger | Conflicto Sahel |
-| TD | Chad | Conflicto, frontera Sudán |
-| SO | Somalia | Conflicto, ya en conflictZones |
-| SS | Sudán del Sur | Conflicto, nuevo país |
-| ZM | Zambia | Turismo (Victoria Falls) |
-| ZW | Zimbabue | Turismo, inestabilidad |
-| BJ | Benín | África Occidental |
-| BF | Burkina Faso | Conflicto Sahel |
-| BI | Burundi | Frontera RDC |
-| MW | Malaui | África Austral |
-| NA | Namibia | Turismo, frontera Angola |
-| SL | Sierra Leona | África Occidental |
-| LR | Liberia | África Occidental |
-| DJ | Yibuti | Estratégico, cuerno África |
-| ER | Eritrea | Cuerno África |
+| Código | País | Motivo | Estado |
+|--------|------|--------|--------|
+| AO | Angola | Frontera RDC, petróleo, turismo | ✅ Añadido |
+| CM | Camerún | África Central, seguridad | ✅ Añadido |
+| CI | Côte d'Ivoire | Economía creciente, turismo | ✅ Añadido |
+| CG | República del Congo | Frontera RDC, brotes | ✅ Añadido |
+| CF | República Centroafricana | Conflicto activo | ✅ Añadido |
+| GA | Gabón | África Central | ❌ |
+| GQ | Guinea Ecuatorial | Hispanohablante, petróleo | ❌ |
+| MG | Madagascar | Destino turístico único | ❌ |
+| ML | Malí | Conflicto Sahel | ❌ |
+| NE | Níger | Conflicto Sahel | ❌ |
+| TD | Chad | Conflicto, frontera Sudán | ❌ |
+| SO | Somalia | Conflicto, ya en conflictZones | ✅ Añadido |
+| SS | Sudán del Sur | Conflicto, nuevo país | ✅ Añadido |
+| ZM | Zambia | Turismo (Victoria Falls) | ❌ |
+| ZW | Zimbabue | Turismo, inestabilidad | ❌ |
+| BJ | Benín | África Occidental | ❌ |
+| BF | Burkina Faso | Conflicto Sahel | ❌ |
+| BI | Burundi | Frontera RDC | ❌ |
+| MW | Malaui | África Austral | ❌ |
+| NA | Namibia | Turismo, frontera Angola | ❌ |
+| SL | Sierra Leona | África Occidental | ❌ |
+| LR | Liberia | África Occidental | ❌ |
+| DJ | Yibuti | Estratégico, cuerno África | ❌ |
+| ER | Eritrea | Cuerno África | ❌ |
 
 **Acción:** Añadir en próximos sprints. Priorizar países con: conflicto activo, brotes sanitarios, frontera con RDC/UG, o relevancia turística.
 
@@ -132,14 +135,14 @@ curl -s http://178.105.80.193:3001/api/health
 
 **Fase 1 completada.** 21 funcionalidades entregadas, coste operativo ~€0/mes, deploy automatico en cada push a main.
 
-### Lo conseguido en esta sesión (19 May — sesión 2)
+### Lo conseguido en esta sesión (19 May — sesión 3)
 
 | # | Entregable | Detalle |
 |---|------------|---------|
-| 1 | **Chromium map fix** | SW saltaba unpkg.com por CSP connect-src → leaflet-css-loader colgado. Fix: try-catch + timeout + SW skip unpkg |
-| 2 | **OSINT gap Ebola** | WHO RSS feed 404 (meses roto) → ReliefWeb. Añadidas keywords ebola, cholera, marburg, nipah, zika, pandemic, pheic. GDELT limit 30→50 |
-| 3 | **Países críticos** | Añadidos RDC (CD) muy-alto y Uganda (UG) alto con fichas, embajadas, índices |
-| 4 | **Build fix** | /alertas page hacía fetch a producción en build estático → timeout 60s. Cambiado a force-dynamic |
+| 1 | **Health OSINT pipeline completado** | WHO DON API conectada al pipeline (fetchAllPosts → Groq classification → osint_signals → detectAndCreateIncidents). Expandido extractCountryCode() con 50+ nuevos países africanos más nombres usados por WHO (Regionscountries). Los brotes sanitarios ahora se geolocalizan correctamente |
+| 2 | **7 nuevos países críticos** | Añadidos Angola (AO), Camerún (CM), Costa de Marfil (CI), Congo (CG), RCA (CF), Somalia (SO), Sudán del Sur (SS) con fichas completas, embajadas, emergencias, coordenadas, índices GPI/GTI/HDI/IPC |
+| 3 | **extractCountryCode() expandido** | +50 entradas para África (incluyendo ciudades capitales, WHO naming como "Democratic Republic of the Congo") |
+| 4 | **Build verificado** | `tsc --noEmit` sin errores |
 
 ---
 
@@ -321,4 +324,4 @@ git add -A && git commit -m "msg" && git push
 
 ---
 
-*Actualizado: 19 May 2026 — sesion finalizada*
+*Actualizado: 19 May 2026 — sesion 3 finalizada*
