@@ -190,14 +190,14 @@ export default function GeopoliticaYViajesPage() {
           </h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-3">
             {CONFLICT_MONITOR.map(c => (
-              <Link key={c.code} href={`/pais/${c.code}`}
-                className="flex items-center gap-3 bg-slate-700/30 rounded-lg p-3 hover:bg-slate-700/50 transition-colors group">
+              <div key={c.code}
+                className="flex items-center gap-3 bg-slate-700/30 rounded-lg p-3">
                 <Flag className="w-5 h-5 text-rose-400 flex-shrink-0" />
                 <div className="flex-1 min-w-0">
                   <span className="text-white text-sm font-medium">{c.name}</span>
                   <p className="text-slate-400 text-xs mt-0.5">{c.status}</p>
                 </div>
-              </Link>
+              </div>
             ))}
           </div>
         </div>
