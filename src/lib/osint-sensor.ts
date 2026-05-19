@@ -51,6 +51,7 @@ const KEYWORDS = [
   'food poison', 'scam', 'danger', 'unsafe', 'riot', 'strike', 'blocked',
   'closed', 'shutdown', 'warning', 'emergency', 'hospital', 'disease',
   'earthquake', 'tsunami', 'hurricane', 'storm', 'wildfire', 'outbreak',
+  'ebola', 'dengue', 'mpox', 'quarantine', 'epidemic', 'contagio',
   'detained', 'arrested', 'robbed', 'attacked', 'shooting', 'bomb',
   'atentado', 'manifestacion', 'huelga', 'inundacion', 'incendio',
   'terremoto', 'enfermo', 'intoxicacion', 'estafa', 'peligro',
@@ -68,7 +69,7 @@ const NEWS_RSS_FEEDS = [
   { name: 'France24 EN', url: 'https://www.france24.com/en/rss' },
   { name: 'The Guardian World', url: 'https://www.theguardian.com/world/rss' },
   { name: 'CNN World', url: 'http://rss.cnn.com/rss/edition_world.rss' },
-  { name: 'WHO Outbreaks', url: 'https://www.who.int/feeds/entity/csr/don/en/rss.xml' },
+  { name: 'ReliefWeb', url: 'https://reliefweb.int/updates/rss.xml' },
   { name: 'ECDC Threats', url: 'https://ecdc.europa.eu/en/rss' },
   { name: 'CDC Travel', url: 'https://wwwnc.cdc.gov/travel/notices/rss' },
   { name: 'Aviation Herald', url: 'http://avherald.com/rss.xml' },
@@ -84,10 +85,11 @@ const NEWS_KEYWORDS = [
   'brotes', 'enfermedad', 'fallecido', 'herido', 'incendio',
   'inundación', 'terremoto', 'huelga', 'protesta', 'cierre',
   'aeropuerto', 'vuelo cancelado', 'frontera',
-  'hantavirus', 'norovirus', 'dengue', 'mpox', 'quarantine',
+  'hantavirus', 'norovirus', 'dengue', 'mpox', 'quarantine', 'ebola',
+  'cholera', 'marburg', 'nipah', 'zika', 'pandemic', 'endemic',
   'containment', 'sanitary', 'biohazard', 'health notice',
-  'travel advisory', 'disease outbreak', 'virus', 'infection',
-  'contagio', 'brote', 'aislamiento', 'cuarentena', 'sanitario',
+  'travel advisory', 'disease outbreak', 'virus', 'infection', 'pheic',
+  'contagio', 'brote', 'aislamiento', 'cuarentena', 'sanitario', 'epidemia',
   'aviation accident', 'plane crash', 'runway', 'aircraft',
   'turbulence', 'emergency landing', 'bird strike', 'engine failure',
   'overbooked', 'tarmac delay', 'stranded passengers',
@@ -264,7 +266,7 @@ export async function fetchUsgsEarthquakes(limit = 15): Promise<RawPost[]> {
   return posts;
 }
 
-export async function fetchGdeltEvents(limit = 30): Promise<RawPost[]> {
+export async function fetchGdeltEvents(limit = 50): Promise<RawPost[]> {
   const posts: RawPost[] = [];
   
   const TRAVEL_KEYWORDS = [
@@ -272,7 +274,8 @@ export async function fetchGdeltEvents(limit = 30): Promise<RawPost[]> {
     'cyclone', 'tsunami', 'volcano', 'outbreak', 'epidemic', 'bomb',
     'terrorist', 'attack', 'shooting', 'assassination', 'kidnap',
     'evacuation', 'border closure', 'airport closure', 'travel ban',
-    'hantavirus', 'norovirus', 'dengue', 'mpox', 'quarantine',
+    'hantavirus', 'norovirus', 'dengue', 'mpox', 'quarantine', 'ebola',
+    'cholera', 'marburg', 'nipah', 'zika', 'pandemic', 'pheic',
     'containment', 'sanitary', 'biohazard', 'cruise outbreak',
     'norovirus cruise', 'containment zone', 'health emergency',
   ];
