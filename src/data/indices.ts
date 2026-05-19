@@ -223,8 +223,8 @@ export const IPC_DATA = [
   { country: 'Eslovaquia', code: 'SK', ipc: '2.5%', nivel: 'Medio', region: 'Europa' },
   { country: 'Irlanda', code: 'IE', ipc: '2.5%', nivel: 'Medio', region: 'Europa' },
   { country: 'Luxemburgo', code: 'LU', ipc: '2.5%', nivel: 'Medio', region: 'Europa' },
-  { country: 'República Democrática del Congo', code: 'CD', ipc: 20, nivel: 'Muy alto', region: 'África' },
-  { country: 'Uganda', code: 'UG', ipc: 26, nivel: 'Muy alto', region: 'África' },
+  { country: 'República Democrática del Congo', code: 'CD', ipc: '20%', nivel: 'Muy alto', region: 'África' },
+  { country: 'Uganda', code: 'UG', ipc: '26%', nivel: 'Muy alto', region: 'África' },
 ];
 
 export const LAYERS = [

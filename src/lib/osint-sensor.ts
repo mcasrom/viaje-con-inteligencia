@@ -6,7 +6,7 @@ const log = createLogger('OSINT');
 export type SignalCategory = 'salud' | 'seguridad' | 'clima' | 'logistico' | 'geopolitico' | 'otro';
 
 export interface RawPost {
-  source: 'reddit' | 'gdacs' | 'usgs' | 'gdelt' | 'rss';
+  source: 'reddit' | 'gdacs' | 'usgs' | 'gdelt' | 'rss' | 'who';
   sourceUrl: string;
   title: string;
   content: string;
@@ -158,6 +158,7 @@ export async function fetchAllPosts(): Promise<RawPost[]> {
     fetchUsgsEarthquakes(),
     fetchGdeltEvents(),
     fetchNewsRSS(),
+    fetchWhoDon(),
   ]);
 
   const posts: RawPost[] = [];
@@ -263,6 +264,38 @@ export async function fetchUsgsEarthquakes(limit = 15): Promise<RawPost[]> {
     log.error('USGS Feed error:', e);
   }
 
+  return posts;
+}
+
+export async function fetchWhoDon(limit = 10): Promise<RawPost[]> {
+  const posts: RawPost[] = [];
+  try {
+    const res = await fetch(
+      `https://www.who.int/api/hubs/diseaseoutbreaknews?$orderby=PublicationDateAndTime%20desc&$top=${limit}`,
+      { cache: 'no-store', signal: AbortSignal.timeout(15000) }
+    );
+    if (!res.ok) return posts;
+    const data = await res.json();
+    const items = data.value || data.items || data || [];
+    for (const item of items) {
+      if (!item.Title) continue;
+      const title = item.Title;
+      const locationName = item.Regionscountries || item.Country || '';
+      const summary = (item.Summary || '').substring(0, 1000);
+      posts.push({
+        source: 'who',
+        sourceUrl: `https://www.who.int/emergencies/disease-outbreak-news/item/${item.UrlName || item.DonId}`,
+        title: `🦠 WHO: ${title}`,
+        content: summary || (item.Overview || '').substring(0, 1000),
+        author: 'World Health Organization',
+        timestamp: item.PublicationDateAndTime ? new Date(item.PublicationDateAndTime) : new Date(),
+        locationName: locationName || title.split(' - ').pop()?.trim() || '',
+        eventType: 'outbreak',
+      });
+    }
+  } catch (e) {
+    log.error('WHO DON error:', e);
+  }
   return posts;
 }
 
