@@ -705,7 +705,7 @@ export default function AdminDashboard() {
               { label: 'Alertas en Tiempo Real', desc: 'Monitor MAEC en vivo', href: '/alertas', icon: '🔔', status: 'existe' },
               { label: 'Mapa de Sismos USGS', desc: 'Terremotos en vivo', href: '/dashboard/kpis', icon: '🌍', status: 'existe' },
               { label: 'Monitor de Conflictos', desc: 'Zonas de conflicto activas', href: '/dashboard/kpis', icon: '⚔️', status: 'existe' },
-              { label: 'ML Clustering', desc: 'Destinos agrupados por IA', href: '/clustering', icon: '🤖', status: 'existe' },
+              { label: 'Análisis de destinos', desc: 'Destinos agrupados por IA', href: '/clustering', icon: '🤖', status: 'existe' },
               { label: 'ML Evolución', desc: 'MAE, desviaciones, histórico', href: '/admin/ml', icon: '🧠', status: 'existe' },
               { label: 'KPIs Globales', desc: '6 índices comparativos', href: '/indices', icon: '📊', status: 'existe' },
               { label: 'Reclamaciones PDF', desc: 'Generar formularios', href: '/checklist', icon: '📋', status: 'existe' },

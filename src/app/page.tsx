@@ -530,7 +530,7 @@ export default function HomeClient() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
             {[
               { icon: Globe, title: 'Datos oficiales', desc: 'MAEC + US State Dept + 73 fuentes OSINT en tiempo real', color: 'text-blue-400', bg: 'bg-blue-500/10' },
-              { icon: Brain, title: 'IA asistida', desc: 'Groq LLM analiza, no decide. Las alertas las validamos con fuentes', color: 'text-purple-400', bg: 'bg-purple-500/10' },
+              { icon: Brain, title: 'IA asistida', desc: 'Groq analiza, no decide. Las alertas las validamos con fuentes', color: 'text-purple-400', bg: 'bg-purple-500/10' },
               { icon: FileText, title: 'Metodología abierta', desc: 'Cada riesgo, cada score, cada fuente — explicado y auditable', color: 'text-emerald-400', bg: 'bg-emerald-500/10' },
               { icon: Lock, title: 'Privacidad por diseño', desc: 'No almacenamos ubicación. Sin tracking. Sin perfiles comerciales', color: 'text-amber-400', bg: 'bg-amber-500/10' },
               { icon: Shield, title: 'Proyecto independiente', desc: 'Desarrollado en España. Sin venture capital. Sin venta de datos', color: 'text-rose-400', bg: 'bg-rose-500/10' },
@@ -613,7 +613,7 @@ export default function HomeClient() {
             <strong className="text-slate-300">Viaje con Inteligencia</strong> es la primera plataforma que combina el índice de riesgo MAEC español con análisis de Machine Learning para {TOTAL_PAISES} países. Nuestro <strong className="text-slate-300">índice IRV</strong> (Indicador de Riesgo de Viaje) cruza 16 KPIs — desde seguridad y terrorismo hasta coste de vida e inflación — para darte una puntuación única y actualizada.
           </p>
           <p className="text-slate-400 text-sm leading-relaxed mb-4">
-            El motor de <strong className="text-slate-300">clustering ML</strong> agrupa destinos según tu perfil: presupuesto, tipo de viaje y preferencias. El <strong className="text-slate-300">Chat IA</strong> con Groq te da recomendaciones personalizadas en segundos. El sistema <strong className="text-slate-300">OSINT</strong> monitoriza 73+ fuentes en tiempo real: GDELT, USGS, GDACS, Reddit y RSS.
+            El motor de <strong className="text-slate-300">análisis inteligente</strong> agrupa destinos según tu perfil: presupuesto, tipo de viaje y preferencias. El <strong className="text-slate-300">Chat IA</strong> con Groq te da recomendaciones personalizadas en segundos. El sistema <strong className="text-slate-300">OSINT</strong> monitoriza 73+ fuentes en tiempo real: GDELT, USGS, GDACS, Reddit y RSS.
           </p>
           <p className="text-slate-400 text-sm leading-relaxed">
             Herramientas adicionales: calculadora de coste de viaje ajustada al petróleo, rutas temáticas de España, alertas de cambio de riesgo MAEC, generador de reclamaciones para aerolíneas y dashboard con KPIs globales de 6 índices internacionales.
@@ -629,7 +629,7 @@ export default function HomeClient() {
             <div className="min-w-0">
               <h3 className="text-white font-semibold text-sm">Sobre el proyecto</h3>
               <p className="text-slate-400 text-xs mt-1 leading-relaxed">
-                Soy <strong className="text-slate-300">Miguel Castillo</strong> y desarrollo Viaje Inteligencia como plataforma independiente de travel intelligence, OSINT y análisis de riesgo para viajeros. Stack: Next.js, Supabase, Groq LLM, OpenStreetMap, datos MAEC + US State Dept + GDELT + USGS + GDACS.
+                Soy <strong className="text-slate-300">Miguel Castillo</strong> y desarrollo Viaje Inteligencia como plataforma independiente de travel intelligence, OSINT y análisis de riesgo para viajeros. Stack: Next.js, Supabase, Groq, OpenStreetMap, datos MAEC + US State Dept + GDELT + USGS + GDACS.
               </p>
               <p className="text-slate-500 text-xs mt-1.5">
                 Proyecto 100% independiente, desarrollado en España. Sin venture capital, sin publicidad, sin venta de datos.

@@ -110,7 +110,7 @@ const items: Record<LayerKey, { name: string; desc: string; color: string }[]> =
     { name: 'Bing IndexNow', desc: 'Indexación inmediata post-deploy', color: 'indigo' },
   ],
   external: [
-    { name: 'Groq API', desc: 'LLM llama-3.3-70b · Clasificación + generación', color: 'emerald' },
+    { name: 'Groq API', desc: 'Modelo llama-3.3-70b · Clasificación + generación', color: 'emerald' },
     { name: 'Supabase', desc: 'Base de datos + Auth · Hobby (gratis)', color: 'emerald' },
     { name: 'Resend', desc: 'Email transaccional · 3000/mes gratis', color: 'red' },
     { name: 'Hetzner', desc: 'Servidor dedicado CX42 · 8 vCPU 16GB RAM', color: 'slate' },

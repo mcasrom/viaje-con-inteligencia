@@ -42,7 +42,7 @@ export async function generateMetadata({ params }: PageProps) {
 
   return {
     title: `Cuánto cuesta viajar a ${pais.nombre} en ${mesActual} | Índice TCI ${tci.tci}`,
-    description: `Descubre cuánto cuesta viajar a ${pais.nombre}. Índice de coste TCI: ${tci.tci} (${costLabel}, tendencia ${tci.trend}). Presupuesto estimado, mes más barato y proyección ML.`,
+    description: `Descubre cuánto cuesta viajar a ${pais.nombre}. Índice de coste TCI: ${tci.tci} (${costLabel}, tendencia ${tci.trend}). Presupuesto estimado, mes más barato y proyección inteligente.`,
     alternates: {
       canonical: `https://www.viajeinteligencia.com/coste/${codigo}`,
     },

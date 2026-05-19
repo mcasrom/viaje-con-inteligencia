@@ -323,7 +323,7 @@ export default function SeguridadPage() {
             </Card>
             <Card tag="Amenaza mitigada" tagColor="red" title="Prompt injection">
               <ul className="list-disc pl-4 space-y-1">
-                <li>Función <code className="text-[11px] bg-slate-700 px-1 rounded">sanitizeItinerary()</code> pre-LLM: valida y limpia el input</li>
+                <li>Función <code className="text-[11px] bg-slate-700 px-1 rounded">sanitizeItinerary()</code> previo al análisis: valida y limpia el input</li>
                 <li>Separación estructural: datos de usuario y system prompt en roles API distintos</li>
                 <li>Monitorización de outputs fuera del dominio de viaje</li>
                 <li>Self-hosting elimina vectores de ataque de edge compartido</li>
@@ -422,7 +422,7 @@ export default function SeguridadPage() {
           <div className="space-y-0">
             {[
               { phase: 'Fase 1\nMayo 2026', title: 'Migración a Hetzner Cloud EU', badge: 'completado', badgeColor: 'bg-emerald-500/10 text-emerald-400', color: 'bg-emerald-500', desc: 'Infraestructura self-hosted bajo control propio. Next.js bare metal + PM2 + Nginx.' },
-              { phase: 'Fase 1\nMayo 2026', title: 'Sanitización de input pre-LLM', badge: 'activo', badgeColor: 'bg-emerald-500/10 text-emerald-400', color: 'bg-emerald-500', desc: 'Función sanitizeItinerary(): validación y detección de prompt injection antes de llamadas a IA.' },
+              { phase: 'Fase 1\nMayo 2026', title: 'Sanitización de input previo al análisis', badge: 'activo', badgeColor: 'bg-emerald-500/10 text-emerald-400', color: 'bg-emerald-500', desc: 'Función sanitizeItinerary(): validación y detección de prompt injection antes de llamadas a IA.' },
               { phase: 'Fase 1\nMayo 2026', title: 'Purga automática TTL 24h', badge: 'activo', badgeColor: 'bg-emerald-500/10 text-emerald-400', color: 'bg-emerald-500', desc: 'Eliminación automática de itinerarios tras el análisis.' },
               { phase: 'Fase 2\nQ3 2026', title: 'Hardening Nginx + UFW completo', badge: 'en curso', badgeColor: 'bg-amber-500/10 text-amber-400', color: 'bg-amber-500', desc: 'Configuración final de firewall, headers de seguridad (CSP, X-Frame-Options).' },
               { phase: 'Fase 2\nQ3 2026', title: 'Rate limiting API pública y B2B', badge: 'en curso', badgeColor: 'bg-amber-500/10 text-amber-400', color: 'bg-amber-500', desc: 'Límites por IP y user_id en endpoints /api/*.' },
@@ -463,7 +463,7 @@ export default function SeguridadPage() {
               { q: '¿Dónde están alojados mis datos?', a: 'La aplicación corre en servidores Hetzner Cloud (datacenter EU) bajo control propio. La base de datos está en Supabase (región EU). Ningún dato personal sale del EEE salvo las llamadas a la API de Groq, realizadas bajo Cláusulas Contractuales Tipo RGPD.' },
               { q: '¿Puedo confiar en el análisis para decisiones de seguridad críticas?', a: 'Para planificación ordinaria, sí. Para operaciones de alto riesgo, zonas de conflicto o misiones humanitarias: consulta siempre las recomendaciones oficiales del MAEC y profesionales certificados. Somos una herramienta de conciencia situacional, no un sustituto del criterio profesional.' },
               { q: '¿Cumple la plataforma con el RGPD?', a: 'Sí. Base jurídica: consentimiento explícito (art. 6.1.a). Infraestructura en EU (Hetzner + Supabase EU). Derechos de acceso, rectificación, supresión y portabilidad desde tu perfil o en privacidad@viajeinteligencia.com.' },
-              { q: '¿Cómo protegéis contra prompt injection?', a: 'Tres capas: (1) función sanitizeItinerary() que valida el input antes del LLM; (2) separación estructural entre datos de usuario e instrucciones del sistema usando roles API distintos; (3) monitorización de outputs fuera del dominio de análisis de viaje.' },
+              { q: '¿Cómo protegéis contra prompt injection?', a: 'Tres capas: (1) función sanitizeItinerary() que valida el input previo al análisis; (2) separación estructural entre datos de usuario e instrucciones del sistema usando roles API distintos; (3) monitorización de outputs fuera del dominio de análisis de viaje.' },
               { q: '¿Dónde reporto una vulnerabilidad?', a: 'Escribe a seguridad@viajeinteligencia.com. Respondemos en máximo 72 horas. Estamos preparando /.well-known/security.txt con clave PGP (Q3 2026).' },
             ].map((faq, i) => (
               <details key={i} className="group py-4" open={i === 0}>

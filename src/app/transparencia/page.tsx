@@ -38,7 +38,7 @@ const SECTIONS = [
     border: 'border-purple-500/20',
     title: 'Cómo usamos la IA',
     content: [
-      'La IA analiza, no decide. Groq LLM (LLaMA 3.1) clasifica señales OSINT por categoría, urgencia y sentimiento. El modelo Random Forest predice cambios de riesgo basándose en 25 features históricas.',
+      'La IA analiza, no decide. Groq (modelo de lenguaje) clasifica señales OSINT por categoría, urgencia y sentimiento. El modelo Random Forest predice cambios de riesgo basándose en 25 features históricas.',
       'Ninguna alerta o recomendación se genera automáticamente sin pasar por nuestro pipeline de validación: fuente original → normalización → clasificación → revisión.',
       'El Chat IA responde preguntas de viajeros usando Groq, pero siempre advertimos que sus respuestas son orientativas y deben contrastarse con fuentes oficiales.',
       'No usamos IA para: decidir niveles de riesgo MAEC, modificar datos oficiales, generar contenido sin supervisión, ni tomar decisiones en nombre del usuario.',
