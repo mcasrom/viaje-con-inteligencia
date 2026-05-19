@@ -46,7 +46,6 @@ export function ensureLeafletCSS(): Promise<void> {
   if (loading) return loading;
 
   loading = new Promise((resolve) => {
-    // Inject critical inline styles immediately (no network dependency)
     const styleId = 'leaflet-critical';
     if (!document.getElementById(styleId)) {
       const style = document.createElement('style');
@@ -55,12 +54,22 @@ export function ensureLeafletCSS(): Promise<void> {
       document.head.appendChild(style);
     }
 
-    // Also load full Leaflet CSS from CDN
     const existing = document.querySelector<HTMLLinkElement>(
       'link[rel="stylesheet"][href*="leaflet@1.9.4/dist/leaflet.css"]'
     );
 
+    let resolved = false;
+    const timeout = setTimeout(() => {
+      if (resolved) return;
+      resolved = true;
+      loaded = true;
+      resolve();
+    }, 3000);
+
     const done = () => {
+      if (resolved) return;
+      resolved = true;
+      clearTimeout(timeout);
       document.body.offsetHeight;
       requestAnimationFrame(() => {
         loaded = true;
@@ -75,9 +84,13 @@ export function ensureLeafletCSS(): Promise<void> {
           return;
         }
       }
-      if (existing.sheet) {
-        done();
-        return;
+      try {
+        if (existing.sheet) {
+          done();
+          return;
+        }
+      } catch {
+        // Chromium throws SecurityError accessing .sheet on cross-origin <link>
       }
       existing.addEventListener('load', done, { once: true });
       existing.addEventListener('error', done, { once: true });
