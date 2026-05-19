@@ -357,6 +357,37 @@ El cron 8f/8 existía (`cloudflare-analytics.ts`) pero NUNCA obtenía datos real
 
 ---
 
+## ✅ SPRINT SEO PILLAR PAGES (19 May 2026)
+
+### Background
+Las 3 pillar pages existían pero eran demasiado cortas (~800-1200 palabras cada una). Necesitaban expansión a 3000-5000 palabras con FAQ schema, interlinking a posts satélite y tono solo-founder.
+
+### Cambios
+
+**`/travel-risk-intelligence` (EN pillar):**
+- 3 secciones nuevas: OSINT, Sistema de alertas, Comparativa con fuentes alternativas
+- FAQ sección con 6 preguntas visibles + JSON-LD schema
+- Features grid expandido de 6→9 cards
+- Links a 3 posts satélite del blog
+
+**`/osint-para-viajeros` (ES pillar):**
+- 2 secciones nuevas: Limitaciones del OSINT, Preguntas frecuentes
+- Fuentes grid expandido de 6→9 (WHO DON, ReliefWeb, clustering)
+- FAQ schema JSON-LD + FAQ visible renderizado
+
+**`/geopolitica-y-viajes` (ES pillar):**
+- FAQ sección nueva con 5 preguntas
+- Contenido expandido con ejemplos concretos
+- Links a 4 posts satélite
+
+### Cambios generales
+- **Tono solo-founder**: reemplazados todos los "nuestra/nuestro" por formas impersonales
+- **Verbos 1ª persona plural eliminados**: "monitorizamos"→"se monitoriza", etc.
+- **Interlinking**: cada pillar enlaza a las otras 2 + 3-4 posts satélite
+- **Build**: verificado sin errores
+
+---
+
 ## SPRINTS PENDIENTES
 
 ### 🟢 Sprint Colaboradores (prioridad: media)

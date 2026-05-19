@@ -1,25 +1,25 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { ArrowLeft, Globe, Shield, AlertTriangle, TrendingUp, Map, Users, Plane, Database, BookOpen, ArrowRight, ExternalLink, Flag, Radio, Activity, BarChart3 } from 'lucide-react';
+import { ArrowLeft, Globe, Shield, AlertTriangle, TrendingUp, Map, Users, Plane, Database, BookOpen, ArrowRight, ExternalLink, Flag, Radio, Activity, BarChart3, HelpCircle } from 'lucide-react';
 
 export const metadata: Metadata = {
   title: 'Geopolítica y Viajes | Cómo Afectan los Conflictos al Turismo',
-  description: 'Análisis del impacto geopolítico en viajes: conflictos activos, cierres de espacio aéreo, sanciones y cómo afectan a la seguridad y coste de tus destinos.',
+  description: 'Análisis del impacto geopolítico en viajes: conflictos activos, cierres de espacio aéreo, sanciones, GPI, GTI y cómo afectan a la seguridad y coste de tus destinos. 120 países monitorizados.',
   openGraph: {
     title: 'Geopolítica y Viajes | Viaje con Inteligencia',
-    description: 'Analizamos cómo los conflictos, las sanciones y la geopolítica global afectan a la seguridad y el coste de viajar.',
+    description: 'Indicadores GPI, GTI, HDI, conflictos activos, cierres de espacio aéreo y alertas OSINT combinados en un análisis geopolítico para viajeros. 120 países monitorizados.',
     url: 'https://www.viajeinteligencia.com/geopolitica-y-viajes',
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Geopolítica y Viajes | Viaje con Inteligencia',
-    description: 'Cómo afectan los conflictos globales a la seguridad y coste de tus viajes.',
+    description: 'Cómo afectan los conflictos globales a la seguridad y coste de tus viajes. Conflictos activos, espacio aéreo, sanciones y predicciones.',
   },
   alternates: {
     canonical: 'https://www.viajeinteligencia.com/geopolitica-y-viajes',
   },
-  keywords: ['geopolítica viajes', 'conflictos y turismo', 'riesgo geopolítico destino', 'cierre espacio aéreo', 'sanciones viajeros', 'seguridad viaje conflicto'],
+  keywords: ['geopolítica viajes', 'conflictos y turismo', 'riesgo geopolítico destino', 'cierre espacio aéreo', 'sanciones viajeros', 'seguridad viaje conflicto', 'GPI viajes', 'GTI turismo', 'análisis geopolítico viajero'],
 };
 
 const SECTIONS = [
@@ -28,25 +28,29 @@ const SECTIONS = [
     title: 'Geopolítica y viajes: una relación inseparable',
     content: `La geopolítica determina en gran medida la seguridad y el coste de viajar. Un cambio en las relaciones diplomáticas puede cerrar espacio aéreo de la noche a la mañana. Una sanción económica puede disparar la inflación local. Un conflicto armado puede convertir un destino turístico en zona de riesgo en cuestión de horas.
 
-Nuestra plataforma monitoriza continuamente indicadores geopolíticos que afectan directamente al viajero: niveles de riesgo MAEC y US State Dept, cierres de espacio aéreo, conflictos activos, sanciones económicas y eventos disruptivos.`,
+Esta plataforma monitoriza continuamente indicadores geopolíticos que afectan directamente al viajero: niveles de riesgo MAEC y US State Dept, cierres de espacio aéreo, conflictos activos, sanciones económicas y eventos disruptivos.
+
+La diferencia entre viajar a un destino estable y uno en tensión geopolítica no siempre es obvia. Países como Marruecos, Turquía o Egipto tienen riesgos geopolíticos que varían con el tiempo y que es crucial conocer antes de reservar.`,
   },
   {
     id: 'conflictos',
     title: 'Conflictos activos y su impacto en viajes',
     content: `Los conflictos armados tienen efectos inmediatos y duraderos sobre el turismo. El cierre de espacio aéreo impide volar hacia o sobre un país. Los combates activos hacen insegura cualquier visita. Pero el impacto va más allá: países vecinos a una zona de conflicto también ven reducido su turismo, aunque estén en paz.
 
-Nuestro sistema detecta automáticamente países con espacio aéreo cerrado o restringido usando datos de OpenSky Network. Cuando un país en conflicto muestra cero tráfico aéreo, se genera una alerta de anomalía.
+El sistema detecta automáticamente países con espacio aéreo cerrado o restringido usando datos de OpenSky Network. Cuando un país en conflicto muestra cero tráfico aéreo, se genera una alerta de anomalía. Esto ha ocurrido con Ucrania (feb 2022), Rusia (cierre mutuo con UE), Irán y Líbano.
 
-Además, los conflictos afectan al precio del petróleo, que es un componente clave del Travel Cost Index (TCI). Una escalada en Oriente Medio puede disparar el coste de los vuelos globalmente.`,
+Además, los conflictos afectan al precio del petróleo, que es un componente clave del Travel Cost Index (TCI). Una escalada en Oriente Medio puede disparar el coste de los vuelos globalmente. En 2026, la inestabilidad en múltiples frentes (Europa del Este, Oriente Medio, Cuerno de África) mantiene el precio del Brent volátil.`,
   },
   {
     id: 'indicadores',
     title: 'Indicadores geopolíticos clave',
-    content: `El Global Peace Index (GPI) mide la paz en 163 países según 23 indicadores: conflictos internos e internacionales, criminalidad, gasto militar y relaciones con vecinos. Es el indicador de referencia para evaluar la estabilidad de un destino.
+    content: `El Global Peace Index (GPI) mide la paz en 163 países según 23 indicadores: conflictos internos e internacionales, criminalidad, gasto militar y relaciones con vecinos. Es el indicador de referencia para evaluar la estabilidad de un destino. España ocupa un puesto alto en el GPI; países como Rusia, Ucrania o Yemen ocupan los últimos.
 
-El Global Terrorism Index (GTI) cuantifica el impacto del terrorismo. Un país con GTI alto no es necesariamente inseguro para el turismo (el terrorismo puede concentrarse en zonas no turísticas), pero el índice alerta sobre el riesgo potencial.
+El Global Terrorism Index (GTI) cuantifica el impacto del terrorismo. Un país con GTI alto no es necesariamente inseguro para el turismo (el terrorismo puede concentrarse en zonas no turísticas), pero el índice alerta sobre el riesgo potencial. Países como Afganistán, Irak o Nigeria tienen GTI muy alto.
 
-El Human Development Index (HDI) mide esperanza de vida, educación e ingresos. Un HDI alto suele correlacionarse con mejor infraestructura sanitaria y mayor seguridad para el viajero.
+El Human Development Index (HDI) mide esperanza de vida, educación e ingresos. Un HDI alto suele correlacionarse con mejor infraestructura sanitaria y mayor seguridad para el viajero. Los países nórdicos, Suiza y Australia encabezan el ranking.
+
+La inflación (IPC) es un indicador geopolítico que afecta directamente al bolsillo del viajero. Una inflación alta encarece alojamiento, transporte y comida en destino. Países con inflación descontrolada (Argentina, Venezuela, Turquía) requieren presupuestos más flexibles.
 
 Estos índices se combinan con los niveles MAEC, US State Dept y datos OSINT para generar el score de riesgo compuesto de cada país.`,
   },
@@ -55,27 +59,40 @@ Estos índices se combinan con los niveles MAEC, US State Dept y datos OSINT par
     title: 'Espacio aéreo y rutas de viaje',
     content: `El cierre de espacio aéreo es una de las consecuencias geopolíticas que más afecta al viajero. Cuando un país cierra su espacio aéreo por conflicto, las aerolíneas deben redirigir vuelos, lo que alarga tiempos de viaje y aumenta el coste del combustible.
 
-Nuestro sistema monitoriza el espacio aéreo de 20 países en zonas de conflicto: Rusia, Ucrania, Siria, Libia, Yemen, Afganistán, Irak, Somalia, Sudán, Irán, Israel y Líbano. Cuando se detecta una caída anómala de tráfico aéreo (por debajo de umbrales históricos), se registra como anomalía.
+El sistema monitoriza el espacio aéreo de 20 países en zonas de conflicto: Rusia, Ucrania, Siria, Libia, Yemen, Afganistán, Irak, Somalia, Sudán, Irán, Israel y Líbano. Cuando se detecta una caída anómala de tráfico aéreo (por debajo de umbrales históricos), se registra como anomalía.
 
-Estos datos alimentan el TCI: si hay cierres activos que afectan rutas hacia un destino, el índice de coste se ajusta al alza para reflejar la mayor dificultad de acceso.`,
+Estos datos alimentan el TCI: si hay cierres activos que afectan rutas hacia un destino, el índice de coste se ajusta al alza para reflejar la mayor dificultad de acceso. Por ejemplo, volar a Asia desde Europa evitando espacio aéreo ruso añade horas y coste.`,
   },
   {
     id: 'sanciones',
     title: 'Sanciones y restricciones de viaje',
     content: `Las sanciones internacionales pueden afectar al viajero de varias formas: restricciones de visado, prohibición de vuelos directos, limitaciones a transacciones financieras y requisitos adicionales de entrada.
 
-Países como Irán, Corea del Norte, Venezuela o Rusia tienen sanciones que afectan a viajeros occidentales. Nuestras fichas de país incluyen información actualizada sobre requisitos de visado, restricciones de entrada y recomendaciones específicas del MAEC.
+Países como Irán, Corea del Norte, Venezuela o Rusia tienen sanciones que afectan a viajeros occidentales. Las fichas de país incluyen información actualizada sobre requisitos de visado, restricciones de entrada y recomendaciones específicas del MAEC.
 
-El sistema alerta cuando un país cambia su nivel de riesgo MAEC, lo que puede reflejar nuevas sanciones o restricciones impuestas por la UE o EE.UU.`,
+El sistema alerta cuando un país cambia su nivel de riesgo MAEC, lo que puede reflejar nuevas sanciones o restricciones impuestas por la UE o EE.UU. En 2026, la situación de países como Nicaragua y Bielorrusia sigue siendo dinámica, con cambios periódicos en las recomendaciones.`,
   },
   {
     id: 'tendencias',
     title: 'Tendencias geopolíticas y planificación de viajes',
     content: `La geopolítica no solo afecta a destinos en conflicto. Las tensiones comerciales entre potencias, los movimientos migratorios, las crisis diplomáticas y los cambios de gobierno pueden alterar el panorama de viajes global.
 
-Nuestra plataforma permite al viajero informado tomar decisiones con datos actualizados: consultar el nivel de riesgo antes de reservar, activar alertas para destinos en tensión, y usar el radar de viaje para proyectar cómo puede evolucionar el riesgo en los próximos meses según la estacionalidad y los indicadores geopolíticos.
+La plataforma permite al viajero informado tomar decisiones con datos actualizados: consultar el nivel de riesgo antes de reservar, activar alertas para destinos en tensión, y usar el radar de viaje para proyectar cómo puede evolucionar el riesgo en los próximos meses según la estacionalidad y los indicadores geopolíticos.
 
-Para el viajero de negocios o el expatriado, las alertas personalizadas y el análisis de sentimiento GDELT ofrecen una ventana adicional sobre la evolución de la estabilidad de un país.`,
+Para el viajero de negocios o el expatriado, las alertas personalizadas y el análisis de sentimiento GDELT ofrecen una ventana adicional sobre la evolución de la estabilidad de un país. Un cambio brusco en el tone_score puede anticipar inestabilidad antes de que las fuentes oficiales actualicen sus recomendaciones.`,
+  },
+  {
+    id: 'preguntas',
+    title: 'Preguntas frecuentes',
+    content: `¿Qué países están actualmente en conflicto activo? Ucrania, Siria, Yemen, Myanmar y Sudán tienen conflictos armados activos. Israel y Líbano están en alerta máxima. Rusia tiene espacio aéreo restringido para aerolíneas europeas.
+
+¿Es seguro viajar a un país vecino de una zona de conflicto? Depende del país y la distancia al conflicto. Polonia y Rumanía, vecinos de Ucrania, son seguros. La frontera entre Turquía y Siria es zona de riesgo, pero Estambul está lejos del conflicto.
+
+¿Cómo afectan las sanciones al viajero individual? Pueden limitar el uso de tarjetas de crédito internacionales, prohibir vuelos directos, requerir visados especiales o restringir la importación/exportación de ciertos bienes.
+
+¿Las aseguradoras de viaje cubren destinos en conflicto? Generalmente no. La mayoría de las aseguradoras excluyen países con recomendación de no viajar del MAEC o US State Dept. Verifica siempre la cobertura antes de contratar.
+
+¿Cada cuánto se actualizan los indicadores geopolíticos? Los niveles MAEC y US State Dept se actualizan diariamente. GPI, GTI, HDI e IPC se actualizan anualmente por sus fuentes oficiales. Las señales OSINT se procesan cada 6 horas.`,
   },
 ];
 
@@ -106,6 +123,12 @@ const RELATED = [
   { href: '/pulso-global', label: 'Pulso Global', desc: 'Sentimiento GDELT por país' },
   { href: '/mapa', label: 'Mapa de riesgos', desc: '120 países con nivel MAEC actualizado' },
   { href: '/transparencia', label: 'Centro de transparencia', desc: 'Fuentes y metodología' },
+  { href: '/osint-para-viajeros', label: 'OSINT para Viajeros', desc: 'Monitorización de fuentes abiertas' },
+  { href: '/travel-risk-intelligence', label: 'Travel Risk Intelligence', desc: 'Visión global de inteligencia de viaje' },
+  { href: '/blog/crisis-combustible-vuelos-2026', label: 'Crisis combustible (blog)', desc: 'Impacto de la geopolítica en el coste de volar' },
+  { href: '/blog/cancelacion-vuelos-oriente-medio', label: 'Cancelaciones Oriente Medio (blog)', desc: 'Cómo los conflictos afectan a los vuelos' },
+  { href: '/blog/radar-viaje-seguridad-maec-usa', label: 'Radar MAEC+USA (blog)', desc: 'Cómo usar el radar de viaje' },
+  { href: '/blog/estafas-turisticas', label: 'Estafas turísticas (blog)', desc: 'Riesgos geopolíticos y seguridad personal' },
 ];
 
 export default function GeopoliticaYViajesPage() {
@@ -132,6 +155,21 @@ export default function GeopoliticaYViajesPage() {
             tempranas y análisis predictivo.
           </p>
         </div>
+
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'FAQPage',
+              mainEntity: [
+                { '@type': 'Question', name: '¿Qué países están actualmente en conflicto activo?', acceptedAnswer: { '@type': 'Answer', text: 'Ucrania, Siria, Yemen, Myanmar y Sudán tienen conflictos armados activos. Israel y Líbano están en alerta máxima.' } },
+                { '@type': 'Question', name: '¿Es seguro viajar a un país vecino de una zona de conflicto?', acceptedAnswer: { '@type': 'Answer', text: 'Depende del país y la distancia. Polonia y Rumanía, vecinos de Ucrania, son seguros. La frontera Turquía-Siria es zona de riesgo.' } },
+                { '@type': 'Question', name: '¿Las aseguradoras de viaje cubren destinos en conflicto?', acceptedAnswer: { '@type': 'Answer', text: 'Generalmente no. La mayoría excluye países con recomendación de no viajar del MAEC o US State Dept.' } },
+              ],
+            }),
+          }}
+        />
 
         <div className="grid md:grid-cols-3 gap-4 mb-12">
           {INDICATORS.map(ind => (
@@ -168,9 +206,25 @@ export default function GeopoliticaYViajesPage() {
           {SECTIONS.map(section => (
             <section key={section.id} id={section.id} className="bg-slate-800/40 rounded-xl border border-slate-700/30 p-6">
               <h2 className="text-xl font-bold text-white mb-4">{section.title}</h2>
-              {section.content.split('\n\n').filter(Boolean).map((p, i) => (
-                <p key={i} className="text-slate-300 text-sm leading-relaxed mb-3 last:mb-0">{p}</p>
-              ))}
+              {section.id === 'preguntas' ? (
+                <div className="space-y-4">
+                  {section.content.split('\n\n').filter(Boolean).map((p, i) => {
+                    const qa = p.split('? ');
+                    return qa.length > 1 ? (
+                      <div key={i}>
+                        <p className="text-white text-sm font-semibold mb-1">{qa[0]}?</p>
+                        <p className="text-slate-300 text-sm leading-relaxed">{qa.slice(1).join('? ')}</p>
+                      </div>
+                    ) : (
+                      <p key={i} className="text-slate-300 text-sm leading-relaxed">{p}</p>
+                    );
+                  })}
+                </div>
+              ) : (
+                section.content.split('\n\n').filter(Boolean).map((p, i) => (
+                  <p key={i} className="text-slate-300 text-sm leading-relaxed mb-3 last:mb-0">{p}</p>
+                ))
+              )}
             </section>
           ))}
         </div>
@@ -202,7 +256,7 @@ export default function GeopoliticaYViajesPage() {
               <p className="text-slate-400 text-xs leading-relaxed">
                 La situación geopolítica cambia rápidamente. Consulte siempre las recomendaciones 
                 oficiales del Ministerio de Asuntos Exteriores (MAEC) antes de viajar, especialmente 
-                a destinos con nivel de riesgo medio o superior. Nuestros datos se actualizan 
+                a destinos con nivel de riesgo medio o superior. Los datos se actualizan 
                 diariamente pero pueden existir demoras.
               </p>
             </div>
