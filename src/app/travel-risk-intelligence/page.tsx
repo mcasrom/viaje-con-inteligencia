@@ -141,6 +141,8 @@ const QUICK_LINKS = [
   { href: '/blog/ecosistema-osint-viajero-moderno', label: 'Ecosistema OSINT', desc: 'Cómo encajan todas las piezas (blog)' },
   { href: '/blog/de-plataforma-a-inteligencia', label: 'De plataforma a inteligencia', desc: 'Visión del proyecto (blog)' },
   { href: '/blog/radar-viaje-seguridad-maec-usa', label: 'Radar MAEC+USA', desc: 'Cómo usar el radar de viaje (blog)' },
+  { href: '/osint-para-viajeros', label: 'OSINT para Viajeros', desc: 'Monitorización de fuentes abiertas' },
+  { href: '/geopolitica-y-viajes', label: 'Geopolítica y Viajes', desc: 'Conflictos, sanciones y espacio aéreo' },
 ];
 
 export default function TravelRiskIntelligencePage() {

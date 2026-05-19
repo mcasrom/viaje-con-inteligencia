@@ -77,6 +77,9 @@ export default function Footer() {
               <li><Link href="/relojes" className="text-slate-400 hover:text-white transition-colors">Horario Global</Link></li>
               <li><Link href="/eventos" className="text-slate-400 hover:text-white transition-colors">Eventos</Link></li>
               <li><Link href="/precio-api" className="text-slate-400 hover:text-white transition-colors">API B2B</Link></li>
+              <li><Link href="/travel-risk-intelligence" className="text-slate-400 hover:text-white transition-colors">Travel Risk Intelligence</Link></li>
+              <li><Link href="/osint-para-viajeros" className="text-slate-400 hover:text-white transition-colors">OSINT para Viajeros</Link></li>
+              <li><Link href="/geopolitica-y-viajes" className="text-slate-400 hover:text-white transition-colors">Geopolítica y Viajes</Link></li>
             </ul>
           </div>
           <div>
