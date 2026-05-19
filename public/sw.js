@@ -101,7 +101,8 @@ self.addEventListener('fetch', (event) => {
   // Skip tile server requests (OSM, CARTO) — SW fetch() fails for no-cors cross-origin (NS_ERROR_INTERCEPTION_FAILED)
   if (
     hostname.endsWith('tile.openstreetmap.org') ||
-    hostname.endsWith('basemaps.cartocdn.com')
+    hostname.endsWith('basemaps.cartocdn.com') ||
+    hostname.endsWith('unpkg.com')
   ) {
     return;
   }
