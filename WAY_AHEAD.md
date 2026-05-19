@@ -1,6 +1,12 @@
 # Way Ahead
 
-## Última sesión: 19 May 2026 — Sprint Chromium fix + OSINT gap + países críticos África
+## Última sesión: 19 May 2026 — Sprint 2 (tarde): Chromium fix + WHO API + países críticos África
+
+> **Pendiente:** Verificar último deploy (commit `da54fce`) — revisar build + health check.
+> ```bash
+> ssh deploy@178.105.80.193 "pm2 logs viajeinteligencia --lines 20"
+> curl -s http://178.105.80.193:3001/api/health
+> ```
 
 ---
 
@@ -52,6 +58,19 @@ curl -s http://178.105.80.193:3001/api/health
 4. Si hay duda: `pm2 delete viajeinteligencia && pm2 start ecosystem.config.cjs`
 
 **Regla:** Si un deploy parece no reflejarse, NO asumir cache. Verificar path de PM2 primero. Hacer `curl -s http://localhost:3001/api/health | grep "version"` (o revisar si el JS bundle tiene los cambios nuevos).
+
+---
+
+## 🧠 SPRINT SIGUIENTE — Health OSINT + Detección brotes (propuesto)
+
+**Objetivo:** Que el sistema detecte automáticamente brotes epidémicos (Ebola, Marburg, Nipah, etc.) desde fuentes oficiales.
+
+**Híbrido viable:**
+1. **Añadir ProMED-mail** (si RSS sigue vivo) + **WHO Disease Outbreak News API** (`/api/hubs/diseaseoutbreaknews`) como fuentes nuevas en `fetchAllPosts()`
+2. **Groq solo para estas fuentes** (volumen bajo, ~5-10/día) — extraer: países afectados, casos, muertes, tipo brote, severidad
+3. Pipeline existente (RSS/GDELT) sigue con keywords para no aumentar coste Groq
+
+**Complejidad:** ~2-3h
 
 ---
 
@@ -302,4 +321,4 @@ git add -A && git commit -m "msg" && git push
 
 ---
 
-*Actualizado: 07 May 2026 — sesion finalizada*
+*Actualizado: 19 May 2026 — sesion finalizada*
