@@ -1,6 +1,37 @@
 # Way Ahead
 
-## Última sesión: 19 May 2026 — Sprint Trust Layer + Caveat Seguros
+## Última sesión: 19 May 2026 — Sprint 2 + Stripe keys production
+
+---
+
+## 🔐 SERVIDOR HETZNER — Acceso SSH
+
+| Dato | Valor |
+|------|-------|
+| IPv4 | `178.105.80.193/32` |
+| IPv6 | `2a01:4f8:1c1e:92d2::/64` |
+| Usuario | `deploy` |
+| Puerto | `22` |
+| Clave | `~/.ssh/id_rsa` (local) |
+| Path app | `/var/www/viajeinteligencia` |
+| PM2 | `pm2 startOrReload ecosystem.config.cjs --update-env` |
+
+**Comandos útiles:**
+```bash
+# Transferir .env.production (excluido del rsync por seguridad)
+scp .env.production deploy@178.105.80.193:/var/www/viajeinteligencia/
+
+# Forzar recarga de env vars
+ssh deploy@178.105.80.193 "cd /var/www/viajeinteligencia && pm2 restart viajeinteligencia --update-env && pm2 save"
+
+# Ver logs
+ssh deploy@178.105.80.193 "pm2 logs viajeinteligencia --lines 50"
+
+# Health check
+curl -s http://178.105.80.193:3001/api/health
+```
+
+**Regla:** `.env*` está excluido del rsync por seguridad. Cualquier cambio en vars de entorno requiere `scp` manual + `pm2 restart --update-env`.
 
 ---
 
