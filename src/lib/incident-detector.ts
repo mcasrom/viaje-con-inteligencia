@@ -165,10 +165,13 @@ function extractCountryCode(text: string): string | null {
     'finland': 'fi', 'helsinki': 'fi',
     'ireland': 'ie', 'dublin': 'ie',
     // África — países críticos
+    // NOTA: claves más específicas (multi-word) deben ir ANTES para priority match
+    'democratic republic of the congo': 'cd', 'kinshasa': 'cd',
+    'republic of the congo': 'cg', 'brazzaville': 'cg',
     'angola': 'ao', 'luanda': 'ao',
     'cameroon': 'cm', 'yaoundé': 'cm', 'douala': 'cm',
     "côte d'ivoire": 'ci', 'ivory coast': 'ci', 'abidjan': 'ci', 'yamoussoukro': 'ci',
-    'congo': 'cg', 'republic of the congo': 'cg', 'brazzaville': 'cg',
+    'congo': 'cg',
     'central african republic': 'cf', 'bangui': 'cf',
     'gabon': 'ga', 'libreville': 'ga',
     'equatorial guinea': 'gq', 'malabo': 'gq',
@@ -198,8 +201,6 @@ function extractCountryCode(text: string): string | null {
     'rwanda': 'rw', 'kigali': 'rw',
     'sudan': 'sd', 'khartoum': 'sd',
     'ghana': 'gh', 'accra': 'gh',
-    'democratic republic of the congo': 'cd', 'kinshasa': 'cd',
-    'uganda': 'ug', 'kampala': 'ug',
   };
   
   const lower = text.toLowerCase();
