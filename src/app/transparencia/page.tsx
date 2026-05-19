@@ -25,7 +25,7 @@ const SECTIONS = [
     title: 'Fuentes de datos',
     content: [
       'Extraemos las recomendaciones de viaje del MAEC (Ministerio de Asuntos Exteriores de España) y los Travel Advisories del US State Department como fuentes primarias de riesgo.',
-      'Complementamos con 73+ fuentes OSINT: GDELT (monitorización global de noticias), USGS (terremotos), GDACS (desastres naturales), Reddit (r/travel, r/solotravel, r/digitalnomad), RSS feeds de agencias internacionales y OpenStreetMap.',
+      'Complementamos con 73+ fuentes OSINT: WHO Disease Outbreak News (brotes epidémicos), GDELT (monitorización global de noticias), USGS (terremotos), GDACS (desastres naturales), Reddit (r/travel, r/solotravel, r/digitalnomad), RSS feeds de agencias internacionales y OpenStreetMap.',
       'Para el cálculo de costes usamos: precio del petróleo Brent (EIA + Yahoo Finance), tipos de cambio (Frankfurter API), datos turísticos del INE y estacionalidad histórica.',
       'Los índices globales (GPI, GTI, HDI, IPC) se obtienen de sus fuentes oficiales anuales.',
     ],

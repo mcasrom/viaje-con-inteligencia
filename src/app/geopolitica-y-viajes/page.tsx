@@ -104,7 +104,7 @@ const RELATED = [
   { href: '/predicciones', label: 'Predicciones de riesgo', desc: 'Probabilidad de cambio por país' },
   { href: '/alertas', label: 'Alertas geopolíticas', desc: 'Notificaciones de cambios de riesgo' },
   { href: '/pulso-global', label: 'Pulso Global', desc: 'Sentimiento GDELT por país' },
-  { href: '/mapa', label: 'Mapa de riesgos', desc: '111 países con nivel MAEC actualizado' },
+  { href: '/mapa', label: 'Mapa de riesgos', desc: '120 países con nivel MAEC actualizado' },
   { href: '/transparencia', label: 'Centro de transparencia', desc: 'Fuentes y metodología' },
 ];
 

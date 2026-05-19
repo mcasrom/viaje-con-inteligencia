@@ -133,7 +133,7 @@ TCI --> Flight
 @enduml
 #+END_SRC
 
-- Coste diario estimado para 107 paises
+- Coste diario estimado para 120 paises
 - Incluye: alojamiento, comida, transporte, actividades
 - Ajustado por presupuesto: bajo, medio, alto, luxury
 - Algoritmo TCI incorpora petroleo + conflictos
@@ -170,7 +170,7 @@ TCI --> Flight
 
 | Modo | Destinos | Categorias | Filtros |
 |------+----------+------------+---------|
-| Internacional | 107 paises | Riesgo, coste, clima | Presupuesto, duracion, tipo |
+| Internacional | 120 paises | Riesgo, coste, clima | Presupuesto, duracion, tipo |
 | Turismo Espana | 20 regiones | 12 categorias | Local, estacional, coste |
 
 Recomendaciones basadas en clustering K-Means (4 clusters: Europa cercana,

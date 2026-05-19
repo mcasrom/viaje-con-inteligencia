@@ -133,7 +133,7 @@ export default function SeguridadPage() {
           </p>
           <div className="grid md:grid-cols-2 gap-3">
             <Card tag="Lo que hacemos" tagColor="green" title="Contextualización OSINT-asistida por IA">
-              <p>Correlacionamos fuentes abiertas (MAEC, USGS, GDACS, ACLED, WHO, World Bank, Global Peace Index, Aviation Safety Network…) y aplicamos un índice IRV compuesto de <strong className="text-white">16 KPIs en 5 dimensiones ponderadas</strong> para 110 países. El Chat IA (Groq/LLaMA) genera recomendaciones personalizadas en tiempo real.</p>
+              <p>Correlacionamos fuentes abiertas (MAEC, USGS, GDACS, ACLED, WHO, World Bank, Global Peace Index, Aviation Safety Network…) y aplicamos un índice IRV compuesto de <strong className="text-white">16 KPIs en 5 dimensiones ponderadas</strong> para 120 países. El Chat IA (Groq/LLaMA) genera recomendaciones personalizadas en tiempo real.</p>
             </Card>
             <Card tag="Lo que no hacemos" tagColor="amber" title="No generamos inteligencia operacional primaria">
               <p>No realizamos recopilación activa, vigilancia, análisis HUMINT ni accedemos a fuentes clasificadas. Consulta <Link href="/fuentes-osint" className="text-emerald-400 hover:underline">la lista completa de fuentes</Link> y la <Link href="/metodologia" className="text-emerald-400 hover:underline">metodología IRV</Link>.</p>

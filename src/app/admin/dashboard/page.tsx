@@ -790,6 +790,20 @@ export default function AdminDashboard() {
           </div>
         </section>
 
+        {/* Cloudflare Analytics */}
+        <section className="bg-slate-800 rounded-2xl border border-slate-700 p-6">
+          <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+            <Activity className="w-5 h-5 text-orange-400" />
+            Cloudflare Analytics
+          </h2>
+          <p className="text-slate-400 text-sm mb-4">Tráfico semanal por país, rutas top, visitantes únicos. Datos del cron dominical (8f/8).</p>
+          <div className="flex gap-3">
+            <a href="/admin/analytics" className="inline-flex items-center gap-2 px-4 py-2 bg-orange-600/20 border border-orange-500/30 text-orange-400 rounded-lg hover:bg-orange-600/30 transition-colors text-sm font-medium">
+              Ver tráfico <Activity className="w-4 h-4" />
+            </a>
+          </div>
+        </section>
+
         {/* Acciones - Social Media Publish */}
         <section className="bg-slate-800 rounded-2xl border border-slate-700 p-6">
           <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">

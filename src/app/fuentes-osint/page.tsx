@@ -47,6 +47,7 @@ const SOURCES = [
     bg: 'bg-pink-500/10',
     items: [
       { name: 'WHO Global Health Observatory', desc: 'Datos de salud mundial: tuberculosis, VIH, vacunación, gasto sanitario', url: 'https://www.who.int/data/global-health-observatory' },
+      { name: 'WHO Disease Outbreak News', desc: 'Alertas de brotes epidémicos: Ebola, Marburg, Nipah, viruela del mono, cólera (API OData)', url: 'https://www.who.int/publications/i/item/disease-outbreak-news' },
       { name: 'USGS Earthquake Hazards', desc: 'Actividad sísmica en tiempo real y alertas de tsunami', url: 'https://earthquake.usgs.gov' },
     ],
   },

@@ -82,12 +82,12 @@ informados via newsletter y Telegram.
 - 26 paises MAEC escaneados
 - 73+ fuentes OSINT analizadas
 - 5-20 señales clasificadas
-- 107 paises con TCI calculado
+- 120 paises con TCI calculado
 - 16 incidentes detectados (promedio)
 - Petroleo monitorizado (actual: $101.91/barril)
 
 ** Cobertura:
-- 107 paises con analisis de riesgo
+- 120 paises con analisis de riesgo
 - 60+ articulos en blog
 - 10 categorias de incidentes
 - 5 niveles de severidad

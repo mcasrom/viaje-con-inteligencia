@@ -34,7 +34,7 @@ async function runMaecScrape(): Promise<any> {
     const alerts = await getAllMAECAlerts();
 
     // getAllMAECAlerts already scrapes 26 priority countries and caches them.
-    // No need to scrape all 107 countries — paisesData provides hardcoded fallback.
+    // No need to scrape all 120 countries — paisesData provides hardcoded fallback.
     // Just log the scrape result.
     await supabase.from('scraper_logs').insert({
       source: 'maec_full_scrape', status: 'success',
@@ -840,7 +840,7 @@ export async function GET(request: Request) {
     withTimeout(() => runAirspaceOsint(), 30000, '4/8 Airspace OSINT'),
     withTimeout(() => runOilPrice(), 15000, '6/8 Oil price'),
     withTimeout(() => runModelTraining(), 5000, '6/8 Model training'),
-    withTimeout(() => runEventsFetch(), 120000, 'Events fetch'),
+    withTimeout(() => runEventsFetch(), 180000, 'Events fetch'),
   ]);
 
   const phase1Result = await Promise.race([

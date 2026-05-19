@@ -135,7 +135,7 @@ Telegram --> User
 | Componentes | `src/app/*/*Client.tsx` | Client components con 'use client' |
 | API | `src/app/api/*/route.ts` | Endpoints REST |
 | Librerias | `src/lib/*.ts` | Logica de negocio |
-| Datos | `src/data/paises.ts` | 107 paises con riesgo MAEC |
+| Datos | `src/data/paises.ts` | 120 paises con riesgo MAEC |
 | ML | `src/data/clustering.ts` | K-Means, atributos, datos INE |
 | Contenido | `src/content/posts/*.md` | 60 articulos en markdown |
 | SQL | `sql/incidents.sql` | Migraciones de base de datos |
@@ -162,7 +162,7 @@ partition "Fase 1: Paralelo (0-90s)" {
 
 partition "Fase 2: Dependencias (90-150s)" {
   :Risk alerts check;\nnote right: Necesita datos MAEC\n30s timeout
-  :Flight costs / TCI (107 paises);\nnote right: Necesita precio petroleo\n60s timeout
+  :Flight costs / TCI (120 paises);\nnote right: Necesita precio petroleo\n60s timeout
 }
 
 partition "Fase 3: OSINT (150-240s)" {
@@ -189,7 +189,7 @@ stop
 | 1 | Airspace OSINT | 30s | Ninguna | Cierres espacio aereo |
 | 1 | Oil price | 15s | Ninguna | Precio Brent actual |
 | 2 | Risk alerts | 30s | MAEC data | Alertas de cambio riesgo |
-| 2 | Flight costs | 60s | Oil price + seasonality + airspace | TCI con datos vivos para 107 paises |
+| 2 | Flight costs | 60s | Oil price + seasonality + airspace | TCI con datos vivos para 120 paises |
 | 3 | News sentiment | 90s | None | Señales OSINT en DB |
 | 3 | Incident detection | 15s | OSINT signals | Incidentes agrupados |
 | 4 | Daily digest | 30s | Todos los anteriores | Resumen Telegram + email |

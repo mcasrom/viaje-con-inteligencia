@@ -57,6 +57,20 @@ function formatBytes(bytes: number): string {
   return `${bytes} B`;
 }
 
+function countryName(code: string): string {
+  const map: Record<string, string> = {
+    AU: 'Australia', US: 'Estados Unidos', ES: 'España', DE: 'Alemania', FR: 'Francia',
+    GB: 'Reino Unido', IE: 'Irlanda', NL: 'Países Bajos', JP: 'Japón', SG: 'Singapur',
+    CH: 'Suiza', CN: 'China', KR: 'Corea del Sur', CA: 'Canadá', BE: 'Bélgica',
+    BR: 'Brasil', MX: 'México', AR: 'Argentina', CO: 'Colombia', CL: 'Chile',
+    PE: 'Perú', IT: 'Italia', PT: 'Portugal', IN: 'India', RU: 'Rusia',
+    IL: 'Israel', EG: 'Egipto', ZA: 'Sudáfrica', NZ: 'Nueva Zelanda', HK: 'Hong Kong',
+    NO: 'Noruega', SE: 'Suecia', FI: 'Finlandia', PL: 'Polonia', VN: 'Vietnam',
+    ID: 'Indonesia', TH: 'Tailandia', TW: 'Taiwán', UA: 'Ucrania',
+  };
+  return map[code] || code;
+}
+
 function buildCsv(rows: Record<string, string | number>[]): string {
   if (!rows.length) return '';
   const keys = Object.keys(rows[0]);
@@ -70,12 +84,13 @@ function buildCsv(rows: Record<string, string | number>[]): string {
   return [header, ...lines].join('\n');
 }
 
-async function fetchGraphql(): Promise<CfTotals | null> {
+async function fetchGraphql(): Promise<{ totals: CfTotals; countries: CfCountry[]; topPaths: CfTopPath[] } | null> {
   const since = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
   const until = new Date().toISOString();
+  const sinceDay = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
   const query = {
     query: `{
-      viewer {
+      hourly: viewer {
         zones(filter: {zoneTag: "${CF_ZONE_ID}"}) {
           httpRequests1hGroups(
             limit: 168
@@ -83,15 +98,38 @@ async function fetchGraphql(): Promise<CfTotals | null> {
             orderBy: [datetime_DESC]
           ) {
             dimensions { datetime }
+            sum { requests bytes threats pageViews cachedRequests encryptedRequests }
+            uniq { uniques }
+          }
+        }
+      }
+      daily: viewer {
+        zones(filter: {zoneTag: "${CF_ZONE_ID}"}) {
+          httpRequests1dGroups(
+            limit: 7
+            filter: {date_gt: "${sinceDay}"}
+            orderBy: [date_DESC]
+          ) {
+            dimensions { date }
             sum {
               requests
-              bytes
-              threats
-              pageViews
-              cachedRequests
-              encryptedRequests
+              countryMap {
+                clientCountryName
+                requests
+              }
             }
-            uniq { uniques }
+          }
+        }
+      }
+      paths: viewer {
+        zones(filter: {zoneTag: "${CF_ZONE_ID}"}) {
+          httpRequests1hGroups(
+            limit: 168
+            filter: {datetime_gt: "${since}", datetime_lt: "${until}"}
+            orderBy: [datetime_DESC]
+          ) {
+            dimensions { datetime clientRequestPath }
+            sum { requests }
           }
         }
       }
@@ -112,14 +150,15 @@ async function fetchGraphql(): Promise<CfTotals | null> {
       log.warn('GraphQL API errors', json.errors);
       return null;
     }
-    const groups = json.data?.viewer?.zones?.[0]?.httpRequests1hGroups || [];
-    if (!groups.length) {
-      log.warn('GraphQL returned empty data');
+    const hourly = json.data?.hourly?.zones?.[0]?.httpRequests1hGroups || [];
+    const daily = json.data?.daily?.zones?.[0]?.httpRequests1dGroups || [];
+    const pathGroups = json.data?.paths?.zones?.[0]?.httpRequests1hGroups || [];
+    if (!hourly.length) {
+      log.warn('GraphQL returned empty hourly data');
       return null;
     }
     let totalRequests = 0, totalBytes = 0, totalThreats = 0, totalPageViews = 0, totalUniques = 0, totalEncrypted = 0, totalCached = 0;
-    const seenUniques = new Set<string>();
-    groups.forEach((g: any) => {
+    hourly.forEach((g: any) => {
       totalRequests += g.sum?.requests || 0;
       totalBytes += g.sum?.bytes || 0;
       totalThreats += g.sum?.threats || 0;
@@ -127,15 +166,44 @@ async function fetchGraphql(): Promise<CfTotals | null> {
       totalEncrypted += g.sum?.encryptedRequests || 0;
       totalCached += g.sum?.cachedRequests || 0;
     });
-    const uniqueHrs = groups.filter((g: any) => g.uniq?.uniques).length || 1;
-    totalUniques = Math.round(groups.reduce((a: number, g: any) => a + (g.uniq?.uniques || 0), 0) / uniqueHrs * 24);
+    const uniqueHrs = hourly.filter((g: any) => g.uniq?.uniques).length || 1;
+    totalUniques = Math.round(hourly.reduce((a: number, g: any) => a + (g.uniq?.uniques || 0), 0) / uniqueHrs * 24);
+
+    // Aggregate countryMap across days
+    const countryAgg = new Map<string, number>();
+    for (const g of daily) {
+      for (const c of g.sum?.countryMap || []) {
+        const name = c.clientCountryName || 'ZZ';
+        countryAgg.set(name, (countryAgg.get(name) || 0) + c.requests);
+      }
+    }
+    const totalCountry = [...countryAgg.values()].reduce((a, b) => a + b, 0);
+    const countries: CfCountry[] = [...countryAgg.entries()]
+      .map(([country, requests]) => ({ country, requests, pct: totalCountry > 0 ? Math.round((requests / totalCountry) * 1000) / 10 : 0 }))
+      .sort((a, b) => b.requests - a.requests);
+
+    // Aggregate paths
+    const pathAgg = new Map<string, number>();
+    for (const g of pathGroups) {
+      const path = g.dimensions?.clientRequestPath || '(unknown)';
+      pathAgg.set(path, (pathAgg.get(path) || 0) + (g.sum?.requests || 0));
+    }
+    const topPaths: CfTopPath[] = [...pathAgg.entries()]
+      .map(([path, requests]) => ({ path, requests }))
+      .sort((a, b) => b.requests - a.requests)
+      .slice(0, 20);
+
     return {
-      pageViews: totalPageViews,
-      uniqueVisitors: totalUniques,
-      requests: totalRequests,
-      bandwidthBytes: totalBytes,
-      threats: totalThreats,
-      sslPct: totalRequests > 0 ? Math.round((totalEncrypted / totalRequests) * 10000) / 100 : 0,
+      totals: {
+        pageViews: totalPageViews,
+        uniqueVisitors: totalUniques,
+        requests: totalRequests,
+        bandwidthBytes: totalBytes,
+        threats: totalThreats,
+        sslPct: totalRequests > 0 ? Math.round((totalEncrypted / totalRequests) * 10000) / 100 : 0,
+      },
+      countries,
+      topPaths,
     };
   } catch (err) {
     log.error('GraphQL fetch failed', err);
@@ -149,6 +217,24 @@ function buildSummary(result: CfAnalyticsResult, weekStart: string, weekEnd: str
   const avgPageViews = Math.round(result.totals.pageViews / days);
   const topPath = result.topPaths[0];
   const seoIssues = result.statusCodes['404'] || 0;
+
+  const table = result.countries.length > 0 ? [
+    '',
+    '🌍  TRÁFICO POR PAÍS (últimos 7 días)',
+    '┌──────────────────────┬──────────┬───────┐',
+    ...result.countries.slice(0, 15).map((c, i) => {
+      const name = `${c.country} ${countryName(c.country)}`.padEnd(20);
+      const req = c.requests.toLocaleString().padStart(8);
+      const pct = `${c.pct}%`.padStart(5);
+      const note = i === 0 && c.country === 'AU' ? ' ← tú (desarrollo)' :
+                   c.country === 'US' ? ' ← crawlers/crons' :
+                   c.country === 'ES' ? ' ← tu residencia' : '';
+      return `│ ${name} │ ${req} │ ${pct} │${note}`;
+    }).join('\n'),
+    '└──────────────────────┴──────────┴───────┘',
+    result.countries.length > 15 ? `... y ${result.countries.length - 15} países más` : '',
+  ].join('\n') : '';
+
   return [
     `📊 Cloudflare Analytics — ${weekStart} a ${weekEnd}`,
     '',
@@ -158,10 +244,10 @@ function buildSummary(result: CfAnalyticsResult, weekStart: string, weekEnd: str
     `💾 Ancho de banda: ${formatBytes(result.totals.bandwidthBytes)}`,
     `🔒 SSL: ${result.totals.sslPct}%`,
     `⚠️ Amenazas: ${result.totals.threats}`,
-    `🤖 Crawlers: ${result.crawlerRequests}`,
+    result.crawlerRequests > 0 ? `🤖 Crawlers: ${result.crawlerRequests}` : '',
     topPath ? `\n🏆 Página top: ${topPath.path} (${topPath.requests} req)` : '',
-    seoIssues > 0 ? `\n🔴 404s: ${seoIssues}` : '',
-    result.countries.length > 0 ? `\n🌍 Top países: ${result.countries.slice(0, 5).map(c => `${c.country} (${c.pct}%)`).join(', ')}` : '',
+    seoIssues > 0 ? `🔴 404s: ${seoIssues}` : '',
+    table,
   ].join('\n');
 }
 
@@ -171,18 +257,23 @@ export async function runCloudflareAnalytics(): Promise<{ stored: boolean; summa
     return { stored: false, summary: '❌ Cloudflare Analytics no configurado (faltan tokens)' };
   }
 
-  const totals = await fetchGraphql();
-  if (!totals) {
+  const fetched = await fetchGraphql();
+  if (!fetched) {
     return { stored: false, summary: '❌ Error al consultar Cloudflare Analytics API' };
   }
 
   const result: CfAnalyticsResult = {
-    totals,
-    countries: [],
-    topPaths: [],
+    totals: fetched.totals,
+    countries: fetched.countries,
+    topPaths: fetched.topPaths,
     statusCodes: {},
-    crawlerRequests: 0,
+    crawlerRequests: fetched.countries
+      .filter(c => ['US', 'IE', 'DE', 'NL', 'GB'].includes(c.country))
+      .reduce((sum, c) => sum + c.requests, 0),
   };
+
+  // Estimate crawler traffic: US + major DC countries that are likely bots/crons
+  result.crawlerRequests = Math.round(result.crawlerRequests * 0.6);
 
   const now = new Date();
   const weekStart = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
@@ -196,19 +287,19 @@ export async function runCloudflareAnalytics(): Promise<{ stored: boolean; summa
     csvRows.push({
       fecha: d.toISOString().split('T')[0],
       dia: dayName,
-      visitantes_unicos: i === 0 ? Math.round(totals.uniqueVisitors / 7) : 0,
-      paginas_vistas: i === 0 ? Math.round(totals.pageViews / 7) : 0,
-      peticiones: i === 0 ? Math.round(totals.requests / 7) : 0,
+      visitantes_unicos: i === 0 ? Math.round(fetched.totals.uniqueVisitors / 7) : 0,
+      paginas_vistas: i === 0 ? Math.round(fetched.totals.pageViews / 7) : 0,
+      peticiones: i === 0 ? Math.round(fetched.totals.requests / 7) : 0,
     });
   }
 
   const csvData = buildCsv(csvRows);
 
   const seoMetrics = {
-    not_found_404: result.statusCodes['404'] || 0,
-    redirects_301: result.statusCodes['301'] || 0,
-    server_errors_5xx: (result.statusCodes['500'] || 0) + (result.statusCodes['502'] || 0) + (result.statusCodes['503'] || 0),
-    total_status_codes: result.statusCodes,
+    not_found_404: 0,
+    redirects_301: 0,
+    server_errors_5xx: 0,
+    total_status_codes: {},
   };
 
   const summary = buildSummary(result, weekStart, weekEnd);
@@ -217,17 +308,17 @@ export async function runCloudflareAnalytics(): Promise<{ stored: boolean; summa
     const { error } = await supabaseAdmin.from('cloudflare_analytics').insert({
       week_start: weekStart,
       week_end: weekEnd,
-      page_views: totals.pageViews,
-      unique_visitors: totals.uniqueVisitors,
-      total_requests: totals.requests,
-      bandwidth_bytes: totals.bandwidthBytes,
-      threat_count: totals.threats,
-      top_pages: result.topPaths,
-      status_codes: result.statusCodes,
-      countries: result.countries,
+      page_views: fetched.totals.pageViews,
+      unique_visitors: fetched.totals.uniqueVisitors,
+      total_requests: fetched.totals.requests,
+      bandwidth_bytes: fetched.totals.bandwidthBytes,
+      threat_count: fetched.totals.threats,
+      top_pages: fetched.topPaths,
+      status_codes: {},
+      countries: fetched.countries,
       seo_metrics: seoMetrics,
       csv_data: csvData,
-      ssl_encrypted_pct: totals.sslPct,
+      ssl_encrypted_pct: fetched.totals.sslPct,
       crawler_requests: result.crawlerRequests,
       extracted_at: new Date().toISOString(),
     });

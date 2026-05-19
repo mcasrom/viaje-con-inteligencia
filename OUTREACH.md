@@ -6,7 +6,7 @@
 ```
 🧭 Ya no necesitas adivinar si un país es seguro para viajar.
 
-Viaje con Inteligencia analiza el riesgo real de 110+ países usando:
+Viaje con Inteligencia analiza el riesgo real de 120+ países usando:
 • Metodología MAEC + OSINT en tiempo real
 • Chat IA que planifica tu viaje según tu perfil
 • Radar de Viaje con proyección de riesgo 12 meses
@@ -24,7 +24,7 @@ No es otra web de viajes. Es inteligencia de viaje.
 🧭 Planificando tu próximo viaje? Antes de reservar, revisa el riesgo real del país.
 
 Viaje con Inteligencia te da:
-✅ Riesgo MAEC actualizado de 110+ países
+✅ Riesgo MAEC actualizado de 120+ países
 💬 Chat IA que responde sobre visados, seguridad, coste
 📈 Radar con proyección 12 meses
 🔔 Alertas si cambia el nivel de riesgo
@@ -37,7 +37,7 @@ Gratis, sin registro necesario para lo básico.
 ```
 🧭 ¿Sabes el riesgo real de tu próximo destino?
 
-110+ países analizados con MAEC + IA + OSINT.
+120+ países analizados con MAEC + IA + OSINT.
 Gratis. viajeinteligencia.com
 ```
 
@@ -67,7 +67,7 @@ Hola, soy Miguel, creador de Viaje con Inteligencia.
 Llevo años viajando y siempre me ha faltado una herramienta que centralice la información de seguridad de los países sin tener que mirar 5 webs diferentes. Así que la construí.
 
 Viaje con Inteligencia te permite:
-• Ver el riesgo MAEC de 110+ países en un mapa
+• Ver el riesgo MAEC de 120+ países en un mapa
 • Preguntar al Chat IA sobre visados, seguridad, coste...
 • Configurar alertas para recibir notificación si cambia el riesgo de tu destino
 • Comparar países lado a lado
@@ -89,7 +89,7 @@ Hola [Nombre],
 
 Soy Miguel, creador de Viaje con Inteligencia (viajeinteligencia.com).
 
-He construido una herramienta que centraliza el análisis de riesgo de 110+ países usando la metodología MAEC, datos OSINT en tiempo real, e IA conversacional. Es totalmente gratuita.
+He construido una herramienta que centraliza el análisis de riesgo de 120+ países usando la metodología MAEC, datos OSINT en tiempo real, e IA conversacional. Es totalmente gratuita.
 
 Creo que puede ser muy útil para tu audiencia de viajeros porque:
 

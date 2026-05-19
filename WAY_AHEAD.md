@@ -1,12 +1,8 @@
 # Way Ahead
 
-## Última sesión: 19 May 2026 — Sprint 3: Health OSINT pipeline + 7 países África críticos
+## Última sesión: 19 May 2026 — Sprint 4: Debug HEalth OSINT pipeline + 120 países + docs
 
-> **Último deploy verificado:** OK — health check pass, uptime 9h ✅
-> ```bash
-> ssh deploy@178.105.80.193 "pm2 logs viajeinteligencia --lines 20"
-> curl -s http://178.105.80.193:3001/api/health
-> ```
+> **Último deploy verificado:** OK ✅ — todos los fixes validados con cron manual
 
 ---
 
@@ -77,6 +73,31 @@ curl -s http://178.105.80.193:3001/api/health
 
 ---
 
+## 🐛 CADENA DE FALLOS — Ebola no detectado (rastreo completo)
+
+**Síntoma:** Brote Ebola Bundibugyo RDC/Uganda declarado PHEIC 17 May 2026. El sistema nunca creó un incidente `health_outbreak`.
+
+### Búsqueda de causas (orden de descubrimiento en sesión 19 May)
+
+| # | Bug | Archivo/Lugar | Cómo se descubrió | Fix | Verificación |
+|---|-----|--------------|-------------------|-----|-------------|
+| 1 | **WHO RSS feed 404** (meses roto) | `fetchNewsRSS()` | Se sabía, WAY_AHEAD lo anota | Reemplazado por `fetchWhoDon()` + ReliefWeb | WHO DON API devuelve datos actuales |
+| 2 | **Keywords ebola/pheic ausentes** | `NEWS_KEYWORDS` + `TRAVEL_KEYWORDS` | Se sabía | Añadidas en sesión previa | GDELT ahora busca ebola |
+| 3 | **RDC/Uganda no existían** | `paises-data.json` + `indices.ts` | Se sabía | Añadidos CD, UG + 7 más | 120 países total |
+| 4 | **API no devuelve `Regionscountries`** | `fetchWhoDon()` línea 283 | Probamos API real desde SSH: campo ausente | Extraer location de `OverrideTitle` | Señal WHO con `location_name: "Democratic Republic of the Congo & Uganda"` |
+| 5 | **CHECK constraint solo `rss`/`reddit`** | Supabase `osint_signals_source_check` | Cron mostraba `signals_inserted: 0` aunque `processed: 21`. Error log: "violates check constraint" | `ALTER TABLE` para incluir `gdacs`,`usgs`,`gdelt`,`who` | Siguiente cron: 21 signals insertados |
+| 6 | **`slice(0,30)` cortaba WHO** | `runNewsSentiment()` línea 397 | WHO posts al final del array por `Promise.allSettled`. RSS llenaba el cupo de 30 | Priorizar WHO/GDELT/GDACS/USGS + cap 30→50 | WHO señal #1 en osint_signals |
+| 7 | **`'congo'` matchea antes que `'democratic republic of the congo'`** | `extractCountryCode()` | Incidente creado con `country_code: 'cg'` en vez de `cd` | Ordenar claves multi-word primero | Fix verificado en build |
+
+### Lecciones aprendidas
+
+1. **CHECK constraints en Supabase** — Al añadir nuevos `source` values, verificar siempre que la constraint los permita. Error silencioso: batch insert falla → one-by-one falla → `signals_inserted: 0` sin alerta.
+2. **`slice(0,30)` como bottleneck silencioso** — En `Promise.allSettled` el orden de resultados importa. Fuentes nuevas al final del array pueden no procesarse nunca si el cap se llena.
+3. **`extractCountryCode()` con Object.entries** — El orden de inserción en el objeto dicta prioridad de match. Claves genéricas como `'congo'` matchean antes que `'democratic republic of the congo'`.
+4. **Siempre verificar API real vs documentación** — `Regionscountries` no existe en la respuesta real de WHO DON a pesar de estar documentado.
+
+---
+
 ## 🌍 PAÍSES CRÍTICOS DE ÁFRICA CENTRAL — PENDIENTES (19 May 2026)
 
 **Detonante:** Brote de Ebola Bundibugyo en RDC y Uganda (PHEIC 17 May 2026). El sistema NO detectó el brote porque:
@@ -135,14 +156,19 @@ curl -s http://178.105.80.193:3001/api/health
 
 **Fase 1 completada.** 21 funcionalidades entregadas, coste operativo ~€0/mes, deploy automatico en cada push a main.
 
-### Lo conseguido en esta sesión (19 May — sesión 3)
+### Lo conseguido en esta sesión (19 May — sesión 4)
 
 | # | Entregable | Detalle |
 |---|------------|---------|
-| 1 | **Health OSINT pipeline completado** | WHO DON API conectada al pipeline (fetchAllPosts → Groq classification → osint_signals → detectAndCreateIncidents). Expandido extractCountryCode() con 50+ nuevos países africanos más nombres usados por WHO (Regionscountries). Los brotes sanitarios ahora se geolocalizan correctamente |
-| 2 | **7 nuevos países críticos** | Añadidos Angola (AO), Camerún (CM), Costa de Marfil (CI), Congo (CG), RCA (CF), Somalia (SO), Sudán del Sur (SS) con fichas completas, embajadas, emergencias, coordenadas, índices GPI/GTI/HDI/IPC |
-| 3 | **extractCountryCode() expandido** | +50 entradas para África (incluyendo ciudades capitales, WHO naming como "Democratic Republic of the Congo") |
-| 4 | **Build verificado** | `tsc --noEmit` sin errores |
+| 1 | **Debug cadena de fallos Ebola** | 7 bugs encadenados impedían detección. Identificados y corregidos todos (ver tabla abajo) |
+| 2 | **CHECK constraint Supabase** | `osint_signals_source_check` solo permitía `rss`/`reddit`. GDACS/USGS/GDELT/WHO rechazados en silencio desde el inicio. Fix: ALTER TABLE |
+| 3 | **WHO DON location parse** | API real no tiene campo `Regionscountries`. Fix: extraer location de `OverrideTitle` |
+| 4 | **Prioridad WHO en news sentiment** | `slice(0,30)` cap cortaba WHO por estar al final del array. Fix: priorizar WHO/GDELT/GDACS/USGS, cap 30→50 |
+| 5 | **Congo country code mismatch** | `'congo'` matcheaba antes que `'democratic republic of the congo'` → incidente asignado a CG en vez de CD. Fix: orden multi-word primero |
+| 6 | **120 países (+7 nuevos)** | Angola, Camerún, Costa de Marfil, Congo, RCA, Somalia, Sudán del Sur con fichas completas, embajadas, índices |
+| 7 | **Contadores actualizados** | 57 hardcoded references de 107/108/110/111 actualizadas a 120 en toda la app y docs |
+| 8 | **WHO DON en fuentes públicas** | Añadido a `/fuentes-osint`, `/metodologia`, `/transparencia`, `/ecosistema`, `ECOSISTEMA.md` |
+| 9 | **Pipeline verificado** | 21 señales insertadas, 5 incidentes nuevos, WHO Ebola DON con `category:salud`, `location:Democratic Republic of the Congo & Uganda` |
 
 ---
 
@@ -151,7 +177,7 @@ curl -s http://178.105.80.193:3001/api/health
 ### Cron Master (UNICO en Vercel Hobby)
 - **Horario**: 06:00 UTC diario, ~95s ejecucion
 - **Fase 1 (paralelo)**: MAEC scrape 26 paises (90s) + Airspace OSINT (30s) + Oil price (15s)
-- **Fase 2 (dependencias)**: Risk alerts (30s) + Flight costs/TCI 107 paises (60s)
+- **Fase 2 (dependencias)**: Risk alerts (30s) + Flight costs/TCI 120 paises (60s)
 - **Fase 3 (OSINT)**: News sentiment 73 fuentes (90s) + Incident detection (15s)
 - **Fase 4 (comunicacion)**: Daily digest Telegram/email (30s) + Weekly digest lunes (30s)
 
@@ -189,7 +215,7 @@ curl -s http://178.105.80.193:3001/api/health
 
 | # | Funcionalidad | Endpoint | Estado |
 |---|---------------|----------|--------|
-| 1 | Mapa riesgo interactivo | `/` | ✅ Leaflet + MAEC 107 paises |
+| 1 | Mapa riesgo interactivo | `/` | ✅ Leaflet + MAEC 120 paises |
 | 2 | Calculadora costes TCI | `/coste` | ✅ Petroleo + conflictos |
 | 3 | Blog 61 articulos | `/blog` | ✅ Paginacion, busqueda, grid/list |
 | 4 | Chat IA viajes | `/chat` | ✅ Groq 8b free / 70b premium |
@@ -303,6 +329,63 @@ curl -s http://178.105.80.193:3001/api/health
 - Fotos en `public/photos/` — usar `<Image>`
 - Rate limit Chat IA es client-side — necesita server-side con Stripe
 - INE API (`servicios.ine.es/wstempus`) devuelve 404 — fallback data usada
+
+---
+
+## ✅ SPRINT CLOUDFLARE ANALYTICS (19 May 2026)
+
+### Background
+El cron 8f/8 existía (`cloudflare-analytics.ts`) pero NUNCA obtenía datos reales por país porque `fetchGraphql()` solo consultaba `httpRequests1hGroups` sin `countryMap`. `countries: []`, `topPaths: []`, `statusCodes: {}` — todo vacío.
+
+### Cambios
+1. **`cloudflare-analytics.ts`**: `fetchGraphql()` ahora hace 3 consultas en 1 (aliases GraphQL):
+   - `hourly`: `httpRequests1hGroups` (totales, SSL, threats) — igual que antes
+   - `daily`: `httpRequests1dGroups` con `countryMap` (requests por país en 7 días)
+   - `paths`: `httpRequests1hGroups` con `clientRequestPath` (top 20 rutas)
+2. **`buildSummary()`**: Tabla ASCII de 15 países con notas explicativas (AU=desarrollo, US=crawlers, ES=residencia)
+3. **Admin panel**: Nueva página `/admin/analytics` con tabla de tráfico por país, cards de resumen, top paths, histórico semanal, y leyenda interpretativa
+4. **API**: `GET /api/admin/analytics` — sirve `cloudflare_analytics` ordenado por semana
+
+### Notas
+- `paths` query no está 100% optimizada (pide path como dimensión en 168 filas horarias, agrega en cliente). Suficiente para 1 vez/semana.
+- Crawlers se estima como ~60% del tráfico de US+IE+DE+NL+GB (data centers).
+
+### Lecciones
+1. **`countryMap` no es dimensión** — está en `sum.countryMap`, no en `dimensions`. Fácil de pasar por alto en la documentación de Cloudflare GraphQL.
+2. **Tres queries en paralelo con aliases** evita hacer 3 llamadas HTTP separadas.
+3. El cron ya existía pero daba datos vacíos — nadie lo había verificado.
+
+---
+
+## SPRINTS PENDIENTES
+
+### 🟢 Sprint Colaboradores (prioridad: media)
+**Email creado:** `colabs@viajeinteligencia.com`
+
+Idea: reclutar colaboradores (redactores de contenido, traductores, community managers) para escalar el proyecto sin coste. Posibles acciones:
+- Landing page "Colabora con nosotros" con beneficios (byline, enlace a portfolio, acceso anticipado a features)
+- Programa de afiliados para bloggers de viajes
+- Contribuciones OSINT (crowdsourcing de alerts locales)
+- Traducciones comunitarias (inglés, portugués, francés)
+
+**Pendiente de diseñar en el sprint correspondiente.**
+
+### 🟢 Sprint API B2B Stripe (prioridad: media-alta)
+- Integrar checkout Stripe en tiers Starter/Pro/Enterprise
+- Webhook para actualizar `api_keys.tier` al confirmar pago
+- Rate limiting server-side por tier
+
+### 🟢 Sprint África — 17 países restantes (prioridad: baja)
+- GA, GQ, MG, ML, NE, TD, ZM, ZW, BJ, BF, BI, MW, NA, SL, LR, DJ, ER
+
+### 🟢 Sprint SEO Pillar Pages (prioridad: media)
+- `/travel-risk-intelligence` (EN), `/osint-para-viajeros`, `/geopolitica-y-viajes`
+- Interlinking con blog existente
+- Schema Article + FAQ
+
+### 🟢 Sprint Outreach (prioridad: baja)
+- Publicar drafts de Reddit (4) y Facebook (2) desde `content/outreach/`
+- Email outreach a bloggers/agencias
 
 ---
 

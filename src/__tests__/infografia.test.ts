@@ -10,7 +10,7 @@ function mockData(overrides?: Partial<InfografiaData>): InfografiaData {
     title: 'Informe Semanal #20',
     subtitle: '18 May — 24 May 2026',
     stats: {
-      totalPaises: 110,
+      totalPaises: 120,
       totalContinentes: 6,
       sinRiesgo: 42,
       riesgoBajo: 47,

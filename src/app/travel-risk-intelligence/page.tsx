@@ -77,7 +77,7 @@ Para el viajero de negocios o expatriado, las alertas personalizadas vía Telegr
 ];
 
 const FEATURES = [
-  { icon: Shield, title: '111 países monitorizados', desc: 'Cada destino con ficha completa, riesgo MAEC+US, contactos y visados' },
+  { icon: Shield, title: '120 países monitorizados', desc: 'Cada destino con ficha completa, riesgo MAEC+US, contactos y visados' },
   { icon: Bell, title: 'Alertas en tiempo real', desc: 'Cambios de riesgo, incidentes OSINT y notificaciones personalizadas' },
   { icon: Brain, title: 'Predicciones por IA', desc: 'Modelos Random Forest que anticipan cambios de riesgo a 7/14/30 días' },
   { icon: Globe, title: '14 fuentes OSINT', desc: 'GDELT, Reddit, RSS, USGS, GDACS, OpenSky y más en una sola plataforma' },

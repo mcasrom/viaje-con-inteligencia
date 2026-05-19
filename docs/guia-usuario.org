@@ -27,7 +27,7 @@ No es un blog. No es una agencia. Es un *sistema de decision*.
 - Click en cualquier pais para ver analisis detallado
 
 ** 💰 Calculadora de Coste de Viaje
-- Coste diario estimado para 107 paises
+- Coste diario estimado para 120 paises
 - Incluye alojamiento, comida, transporte, actividades
 - Ajustado por presupuesto (bajo, medio, alto)
 - Algoritmo TCI (Travel Cost Index) que incorpora precio del petroleo y conflictos
@@ -39,7 +39,7 @@ No es un blog. No es una agencia. Es un *sistema de decision*.
 - Disponible en /ai/chat
 
 ** 🎯 /decidir — ¿A dónde voy?
-- Modo Internacional: 107 paises con datos de riesgo, coste, clima
+- Modo Internacional: 120 paises con datos de riesgo, coste, clima
 - Modo España: 20 regiones con turismo, costes locales, mejor epoca
 - Filtros por presupuesto, tipo de viaje, duracion
 - Recomendaciones basadas en clustering K-Means

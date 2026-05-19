@@ -91,7 +91,7 @@ export default function MetodologiaPage() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
             {[
-              { step: '1', title: 'Ingesta de datos', desc: 'MAEC · USGS · OpenStreetMap · Open-Meteo · GDELT · RSS · Reddit · GDACS', icon: Database, color: 'text-blue-400' },
+              { step: '1', title: 'Ingesta de datos', desc: 'MAEC · USGS · WHO · OpenStreetMap · Open-Meteo · GDELT · RSS · Reddit · GDACS', icon: Database, color: 'text-blue-400' },
               { step: '2', title: 'Normalización', desc: 'Estandarizamos formatos, códigos ISO, coordenadas y categorías de todas las fuentes', icon: FileText, color: 'text-indigo-400' },
               { step: '3', title: 'IA y análisis', desc: 'Groq clasifica señales OSINT. ML Random Forest predice cambios de riesgo', icon: Brain, color: 'text-purple-400' },
               { step: '4', title: 'Alertas', desc: 'Detección de incidentes, clusterización, sentimiento, notificaciones Telegram', icon: Bell, color: 'text-amber-400' },

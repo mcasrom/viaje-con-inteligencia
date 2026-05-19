@@ -82,7 +82,7 @@ Cada mañana a las 06:00 UTC, el sistema se ejecuta automáticamente:
 | Escanea 26 países MAEC | Riesgo actualizado |
 | Analiza 73+ fuentes OSINT | 5-20 señales clasificadas |
 | Detecta incidentes | Agrupa señales en alertas concretas |
-| Calcula TCI para 107 países | Coste real ajustado a petróleo |
+| Calcula TCI para 120 países | Coste real ajustado a petróleo |
 | Genera recomendaciones | Qué hacer en cada situación |
 
 Todo sin intervención manual.

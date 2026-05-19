@@ -36,7 +36,7 @@ src/
 │   ├── newsletter-generator.ts      ← Generador de newsletter
 │   └── posts.ts                     ← CMS del blog (markdown)
 ├── data/
-│   ├── paises.ts                    ← 107 paises con riesgo MAEC
+│   ├── paises.ts                    ← 120 paises con riesgo MAEC
 │   └── clustering.ts                ← K-Means, atributos, datos INE
 └── content/posts/                   ← 60 articulos en markdown
 #+END_SRC
@@ -56,7 +56,7 @@ Fase 1 (paralelo):
 
 Fase 2 (depende de Fase 1):
 ├─ Risk alerts check (30s) — cambios de riesgo MAEC
-└─ Flight costs / TCI (60s) — 107 paises con datos vivos
+└─ Flight costs / TCI (60s) — 120 paises con datos vivos
 
 Fase 3:
 ├─ News sentiment (90s) — OSINT sensor (73 fuentes → 5-20 señales)
@@ -215,7 +215,7 @@ curl -s -H "Authorization: Bearer $CRON_SECRET" \
 ** Cron tarda mas de 90s
 - Reducir timeout de news_sentiment (actual 90s)
 - Limitar posts procesados (actual 20 max)
-- Verificar que MAEC no scrapea 107 paises (solo 26)
+- Verificar que MAEC no scrapea 120 paises (solo 26)
 
 ** Incidentes no se crean
 - Verificar que hay señales en osint_signals

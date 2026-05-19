@@ -154,7 +154,7 @@ skinparam defaultFontSize 12
 title Cobertura del Sistema
 
 rectangle "Paises" as Countries {
-  [107 paises\ncon analisis de riesgo] as Risk
+  [120 paises\ncon analisis de riesgo] as Risk
   [10 categorias\nde incidentes] as Incidents
   [5 niveles\nde severidad] as Severity
 }

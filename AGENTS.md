@@ -36,7 +36,7 @@ Añadidos RDC (CD) y Uganda (UG) el 19 May 2026 por brote Ebola. Siguen faltando
   - SQL `api_keys` + `api_plan_requests` tables en `supabase/api_keys.sql` y `supabase/api_plan_requests.sql`
   - `src/lib/api-auth.ts` con `verifyApiKey()`, `generateApiKey()`, `hashApiKey()`, `logApiUsage()` + rate limiting por tier
   - Admin CRUD `/admin/api-keys` con crear/ver/desactivar/eliminar keys, sección en dashboard admin
-  - **4 endpoints públicos v1**: `GET /api/v1/risk/{country}` (riesgo MAEC + predicción ML), `GET /api/v1/tci/{country}` (TCI con factores), `GET /api/v1/incidents` (incidentes activos filtrables), `GET /api/v1/countries` (catálogo 111 países)
+  - **4 endpoints públicos v1**: `GET /api/v1/risk/{country}` (riesgo MAEC + predicción ML), `GET /api/v1/tci/{country}` (TCI con factores), `GET /api/v1/incidents` (incidentes activos filtrables), `GET /api/v1/countries` (catálogo 120 países)
   - Página pública `/precio-api` con 4 tiers (Free/Starter/Pro/Enterprise), features grid, CTA
   - Modal "Quiero esto para aquí" (`RequestApiPlanModal.tsx`) con captura de leads → Supabase `api_plan_requests` + notificación email a admin vía Resend
   - Enlace API B2B en Footer → Explorar y en admin dashboard
@@ -60,7 +60,7 @@ Añadidos RDC (CD) y Uganda (UG) el 19 May 2026 por brote Ebola. Siguen faltando
 - **Login fix + Alertas persistence**: Toast notification invisible (nunca se renderizaba). POST subscribe devolvía 400 por `alert_types` mal formado (string vs array). Dashboard no mostraba suscripciones (faltaba fallback `data.alerts`). Todo corregido y verificado.
 - **Migración airports**: Creado `src/lib/airports-db.ts` con `getMainAirport()` y `getAirportCoordinates()` DB-first + fallback. `cost-estimate/route.ts` actualizado.
 - **Migración indices**: `recommendation-engine.ts` usa `getGPI/getGTI/getHDI/getIPC` de `@/lib/indices`. `kpi/page.tsx` fetch desde `/api/indices`. Ya había API + tabla `indices` poblada.
-- **Migración paises**: Datos extraídos de `paises.ts` (6360→245 líneas) a `paises-data.json` (111 países, 87 emergencies). DB warm-up asíncrono al arrancar. 42 consumidores siguen igual — cero cambios.
+- **Migración paises**: Datos extraídos de `paises.ts` (6360→245 líneas) a `paises-data.json` (120 países, 87 emergencies). DB warm-up asíncrono al arrancar. 42 consumidores siguen igual — cero cambios.
 - **Migraciones completadas**: Todos los targets listados ya estaban migrados con init files + DB fallback:
   - `tci-engine.ts` → `lib/seasonality-init.ts` sobreescribe `SEASONALITY_MAP` desde Supabase. Engine computacional (no datos).
   - `clustering.ts` → `lib/clustering-init.ts` sobreescribe `travelAttributes` y llama `updateTourismData()` desde Supabase. Engine computacional.
@@ -189,7 +189,8 @@ Añadidos RDC (CD) y Uganda (UG) el 19 May 2026 por brote Ebola. Siguen faltando
 
 ## Project
 - **Framework**: Next.js 16 + App Router, TypeScript
-- **Deploy**: Hetzner VPS (auto-deploy on `main` push via GitHub Actions → rsync + PM2)
+- **Root (source of truth)**: `/home/miguelc/viaje-con-inteligencia/` (local desktop)
+- **Deploy**: Hetzner VPS en `/var/www/viajeinteligencia/` (auto-deploy on `main` push via GitHub Actions → rsync + PM2)
 - **UI**: Tailwind CSS, lucide-react, react-markdown
 - **AI**: Groq API (`llama-3.1-8b-instant` free, `llama-3.3-70b-versatile` premium)
 - **Auth/DB**: Supabase (users, trips, favorites)
@@ -208,7 +209,7 @@ npm run start        # production server
 - **Server pages**: `page.tsx` exports metadata, wraps Client component
 - **Client components**: `*Client.tsx` — `'use client'` directive
 - **AI routes**: `/api/ai/chat`, `/api/ai/itinerary`, `/api/ai/risk`, `/api/ai/compare`, etc.
-- **Data**: `src/data/paises.ts` — 111 países (110 visibles + 1 oculta: Cuba) con riesgo MAEC
+- **Data**: `src/data/paises.ts` — 120 países (119 visibles + 1 oculta: Cuba) con riesgo MAEC
 - **Z-index**: TopBar `z-[1010]`, SidePanel `z-[1005]`, Leaflet `z-[400-1000]`
 
 ## Newsletter Architecture Design (Pending Discussion)

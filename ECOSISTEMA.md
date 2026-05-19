@@ -168,7 +168,7 @@ flowchart TB
 
 | Fuente | Tipo | Datos | Frecuencia |
 |--------|------|-------|------------|
-| MAEC | Gobierno | Riesgo viaje 111 países | Diaria (scrape) |
+| MAEC | Gobierno | Riesgo viaje 120 países | Diaria (scrape) |
 | US State Dept | Gobierno | Travel Advisories + riesgo numérico | Diaria (scrape) |
 | GDELT | OSINT | Sentimiento global tone_score | Cada 15min |
 | RSS (AP, BBC, Sky) | OSINT | Noticias breaking | Tiempo real |
@@ -269,7 +269,7 @@ flowchart TB
 
 ## Métricas Clave
 
-- **111 países** monitorizados con riesgo MAEC
+- **120 países** monitorizados con riesgo MAEC
 - **14 fuentes** de datos activas
 - **25 features** para ML
 - **4 modelos** Random Forest entrenados diariamente
@@ -282,7 +282,7 @@ flowchart TB
 
 | Funcionalidad | Gratuito | Premium | Dónde |
 |---|---|---|---|
-| Riesgo MAEC 111 países | ✅ | ✅ | `/pais/[codigo]` |
+| Riesgo MAEC 120 países | ✅ | ✅ | `/pais/[codigo]` |
 | Mapa interactivo KPIs | ✅ | ✅ | `/` |
 | Blog SEO viajes | ✅ | ✅ | `/blog` |
 | Pulso Global sentimiento | ✅ | ✅ | `/pulso-global` |
