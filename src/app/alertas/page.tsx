@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import AlertasClient from './AlertasClient';
 
+export const dynamic = 'force-dynamic';
+
 const MAEC_URL = 'https://www.exteriores.gob.es/es/Paginas/index.aspx';
 
 interface MAECAlert {
