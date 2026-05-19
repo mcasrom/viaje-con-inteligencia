@@ -17,6 +17,9 @@
 - **Blog sort**: Actualizado a fecha-primero (featured solo como tiebreaker en misma fecha). Commit `91a5b6a`. Ya no necesita `featured: true` en posts nuevos — el más reciente aparece primero automáticamente.
 - **Blog UX**: Category cards visuales (como sección de metodología en `/coste`) + lista colapsada por defecto (solo 3 posts). "Mostrar todos" expande con búsqueda + paginación. Commit `f359da3`.
 
+## 🌍 PAÍSES CRÍTICOS DE ÁFRICA FALTANTES
+Añadidos RDC (CD) y Uganda (UG) el 19 May 2026 por brote Ebola. Siguen faltando ~20 países africanos críticos (ver WAY_AHEAD.md). Priorizar: Angola, Camerún, Costa de Marfil, Congo, Somalia, Sudán del Sur, Zambia, Zimbabue, Malí, Níger, Chad, RCA, Guinea Ecuatorial.
+
 ## SOS Botón Emergencia — Marketing & Presencia
 - **Footer**: Añadir enlace al Modo Emergencia en el footer del site (sección Herramientas o Comunidad). El botón flotante está implementado (`src/components/SOSButton.tsx`), pero no hay enlace de texto en el footer para usuarios que no quieren interactuar con el botón flotante. Pendiente.
 - **Newsletter**: Incluir el Modo Emergencia en todas las newsletters dentro de la sección de contactos/emergencias. Texto sugerido: "🆘 ¿Emergencia en tu destino? Usa nuestro Modo Emergencia con geolocalización, teléfonos locales y contacto consular — botón rojo ⚠️ abajo a la izquierda en viajeinteligencia.com"

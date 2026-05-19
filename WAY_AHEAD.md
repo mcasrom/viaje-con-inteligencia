@@ -1,6 +1,6 @@
 # Way Ahead
 
-## Última sesión: 19 May 2026 — Sprint 2 + Stripe keys production
+## Última sesión: 19 May 2026 — Sprint Chromium fix + OSINT gap + países críticos África
 
 ---
 
@@ -55,6 +55,46 @@ curl -s http://178.105.80.193:3001/api/health
 
 ---
 
+## 🌍 PAÍSES CRÍTICOS DE ÁFRICA CENTRAL — PENDIENTES (19 May 2026)
+
+**Detonante:** Brote de Ebola Bundibugyo en RDC y Uganda (PHEIC 17 May 2026). El sistema NO detectó el brote porque:
+1. WHO RSS feed roto (404) → reemplazado por ReliefWeb
+2. `ebola` y enfermedades clave no estaban en keywords → añadidas
+3. RDC y Uganda NO existían en nuestra base de datos → añadidos
+
+**Países africanos críticos que siguen faltando (priorizar):**
+
+| Código | País | Motivo |
+|--------|------|--------|
+| AO | Angola | Frontera RDC, petróleo, turismo |
+| CM | Camerún | África Central, seguridad |
+| CI | Côte d'Ivoire | Economía creciente, turismo |
+| CG | República del Congo | Frontera RDC, brotes |
+| CF | República Centroafricana | Conflicto activo |
+| GA | Gabón | África Central |
+| GQ | Guinea Ecuatorial | Hispanohablante, petróleo |
+| MG | Madagascar | Destino turístico único |
+| ML | Malí | Conflicto Sahel |
+| NE | Níger | Conflicto Sahel |
+| TD | Chad | Conflicto, frontera Sudán |
+| SO | Somalia | Conflicto, ya en conflictZones |
+| SS | Sudán del Sur | Conflicto, nuevo país |
+| ZM | Zambia | Turismo (Victoria Falls) |
+| ZW | Zimbabue | Turismo, inestabilidad |
+| BJ | Benín | África Occidental |
+| BF | Burkina Faso | Conflicto Sahel |
+| BI | Burundi | Frontera RDC |
+| MW | Malaui | África Austral |
+| NA | Namibia | Turismo, frontera Angola |
+| SL | Sierra Leona | África Occidental |
+| LR | Liberia | África Occidental |
+| DJ | Yibuti | Estratégico, cuerno África |
+| ER | Eritrea | Cuerno África |
+
+**Acción:** Añadir en próximos sprints. Priorizar países con: conflicto activo, brotes sanitarios, frontera con RDC/UG, o relevancia turística.
+
+---
+
 ## 🛡️ CAVEAT DEL SEGURO — Políticas a localStorage (19 May 2026)
 
 **Problema:** Almacenar pólizas de seguro en Supabase/server crea responsabilidad legal (datos sensibles del usuario, RGPD, posible consideración de datos de salud).
@@ -73,16 +113,14 @@ curl -s http://178.105.80.193:3001/api/health
 
 **Fase 1 completada.** 21 funcionalidades entregadas, coste operativo ~€0/mes, deploy automatico en cada push a main.
 
-### Lo conseguido en esta sesión (19 May)
+### Lo conseguido en esta sesión (19 May — sesión 2)
 
 | # | Entregable | Detalle |
 |---|------------|---------|
-| 1 | **Caveat seguros** | Polízas movidas a localStorage. Eliminadas 3 APIs server. Homepage actualizada |
-| 2 | **NewsMCP eliminado** | Conflicts API ya no llama a newsmcp.io (caía siempre a fallback). Solo fallback local |
-| 3 | **ML en Metodología** | Sección Random Forest detallada: 25 features, 4 modelos, parámetros, limitaciones |
-| 4 | **Sentiment wake-up** | Alerta 🔔 para países en observación cuando empiezan a tener datos de sentimiento |
-| 5 | **Seguridad footer** | Labels con estilo `<label>: <value>` en infraestructura |
-| 6 | **Trust Layer** | Banda "Cómo funciona" en homepage, micro trust signals, metodología, transparencia, SOS fix |
+| 1 | **Chromium map fix** | SW saltaba unpkg.com por CSP connect-src → leaflet-css-loader colgado. Fix: try-catch + timeout + SW skip unpkg |
+| 2 | **OSINT gap Ebola** | WHO RSS feed 404 (meses roto) → ReliefWeb. Añadidas keywords ebola, cholera, marburg, nipah, zika, pandemic, pheic. GDELT limit 30→50 |
+| 3 | **Países críticos** | Añadidos RDC (CD) muy-alto y Uganda (UG) alto con fichas, embajadas, índices |
+| 4 | **Build fix** | /alertas page hacía fetch a producción en build estático → timeout 60s. Cambiado a force-dynamic |
 
 ---
 
