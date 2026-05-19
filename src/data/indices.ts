@@ -55,6 +55,8 @@ export const GPI_DATA: GPICountry[] = [
   { rank: 46, country: 'Irán', code: 'IR', score: 2.750, change: -4, region: 'Oriente Medio' },
   { rank: 47, country: 'Rusia', code: 'RU', score: 3.441, change: -2, region: 'Europa' },
   { rank: 48, country: 'Afganistán', code: 'AF', score: 3.929, change: 0, region: 'Asia' },
+  { rank: 157, country: 'Rep. Dem. del Congo', code: 'CD', score: 3.221, change: 0, region: 'África Subsahariana' },
+  { rank: 118, country: 'Uganda', code: 'UG', score: 2.571, change: 0, region: 'África Subsahariana' },
 ];
 
 export const GTI_DATA = [
@@ -107,6 +109,8 @@ export const GTI_DATA = [
   { rank: 46, country: 'Afganistán', code: 'AF', score: 6.5, change: 0, region: 'Asia' },
   { rank: 47, country: 'Somalia', code: 'SO', score: 6.7, change: 0, region: 'África' },
   { rank: 48, country: 'Rep. Centroafricana', code: 'CF', score: 6.8, change: 0, region: 'África' },
+  { rank: 12, country: 'Rep. Dem. del Congo', code: 'CD', score: 6.842, change: 0, region: 'África Subsahariana' },
+  { rank: 36, country: 'Uganda', code: 'UG', score: 4.215, change: 0, region: 'África Subsahariana' },
 ];
 
 export const HDI_DATA = [
@@ -156,6 +160,8 @@ export const HDI_DATA = [
   { rank: 44, country: 'India', code: 'IN', score: 0.645, change: 0, region: 'Asia' },
   { rank: 44, country: 'Japón', code: 'JP', score: 0.925, change: 0, region: 'Asia' },
   { rank: 45, country: 'Australia', code: 'AU', score: 0.939, change: 0, region: 'Oceanía' },
+  { rank: 179, country: 'Rep. Dem. del Congo', code: 'CD', score: 0.479, change: 0, region: 'África Subsahariana' },
+  { rank: 166, country: 'Uganda', code: 'UG', score: 0.525, change: 0, region: 'África Subsahariana' },
 ];
 
 export const IPC_DATA = [
@@ -217,6 +223,8 @@ export const IPC_DATA = [
   { country: 'Eslovaquia', code: 'SK', ipc: '2.5%', nivel: 'Medio', region: 'Europa' },
   { country: 'Irlanda', code: 'IE', ipc: '2.5%', nivel: 'Medio', region: 'Europa' },
   { country: 'Luxemburgo', code: 'LU', ipc: '2.5%', nivel: 'Medio', region: 'Europa' },
+  { country: 'República Democrática del Congo', code: 'CD', ipc: 20, nivel: 'Muy alto', region: 'África' },
+  { country: 'Uganda', code: 'UG', ipc: 26, nivel: 'Muy alto', region: 'África' },
 ];
 
 export const LAYERS = [

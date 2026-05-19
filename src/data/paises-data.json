@@ -10027,6 +10027,189 @@
         32.5599
       ]
     },
+    "cd": {
+      "codigo": "cd",
+      "nombre": "República Democrática del Congo",
+      "capital": "Kinshasa",
+      "continente": "África",
+      "idioma": "Francés, Lingala, Suajili",
+      "moneda": "Franco congoleño (CDF)",
+      "tipoCambio": "1 EUR ≈ 2500 CDF",
+      "zonaHoraria": "UTC+1 a UTC+2",
+      "conduccion": "derecha",
+      "poblacion": "112 millones",
+      "pib": "65 mil millones USD",
+      "indicadores": {
+        "ipc": "20%",
+        "indicePrecios": "Muy alto"
+      },
+      "voltaje": "220V / 50Hz",
+      "prefijoTelefono": "+243",
+      "nivelRiesgo": "muy-alto",
+      "ultimoInforme": "Mayo 2026",
+      "contactos": [
+        {
+          "tipo": "Embajada",
+          "nombre": "Embajada de España en Kinshasa",
+          "direccion": "Avenue des Aviateurs 154, Kinshasa/Gombe",
+          "telefono": "+243 812 600 600",
+          "email": "emb.kinshasa@maec.es",
+          "horario": "Lunes a viernes 8:00-16:00"
+        }
+      ],
+      "requerimientos": [
+        {
+          "categoria": "Documentación",
+          "icon": "📄",
+          "items": [
+            "Pasaporte válido 6 meses",
+            "Visa obligatoria",
+            "Certificado vacuna fiebre amarilla"
+          ]
+        },
+        {
+          "categoria": "Sanitario",
+          "icon": "🏥",
+          "items": [
+            "Seguro médico con repatriación imprescindible",
+            "Vacunas: Fiebre amarilla obligatoria, Hepatitis A/B, Tifoidea, Cólera",
+            "Profilaxis malaria obligatoria",
+            "Agua embotellada siempre"
+          ]
+        },
+        {
+          "categoria": "Seguridad",
+          "icon": "⚠️",
+          "items": [
+            "Brote activo de Ebola Bundibugyo (PHEIC)",
+            "Conflicto armado en Ituri y Kivu del Norte",
+            "No viajar salvo extrema necesidad",
+            "Embajada con capacidad limitada"
+          ]
+        }
+      ],
+      "queHacer": [
+        "Visitar el Parque Nacional Virunga",
+        "Explorar Kinshasa",
+        "Ver las cataratas Livingstone"
+      ],
+      "queNoHacer": [
+        "No viajar de noche",
+        "No beber agua del grifo",
+        "No mostrar objetos de valor",
+        "No adentrarse en zonas de conflicto sin escolta"
+      ],
+      "diarios": [
+        {
+          "nombre": "Radio Okapi",
+          "url": "https://www.radiookapi.net"
+        }
+      ],
+      "urlsUtiles": [
+        {
+          "nombre": "MAEC - RDC",
+          "url": "https://www.exteriores.gob.es/Embajadas/Kinshasa"
+        }
+      ],
+      "bandera": "🇨🇩",
+      "mapaCoordenadas": [
+        -4.0383,
+        21.7587
+      ]
+    },
+    "ug": {
+      "codigo": "ug",
+      "nombre": "Uganda",
+      "capital": "Kampala",
+      "continente": "África",
+      "idioma": "Inglés, Suajili",
+      "moneda": "Chelín ugandés (UGX)",
+      "tipoCambio": "1 EUR ≈ 4200 UGX",
+      "zonaHoraria": "UTC+3",
+      "conduccion": "izquierda",
+      "poblacion": "50 millones",
+      "pib": "50 mil millones USD",
+      "indicadores": {
+        "ipc": "5%",
+        "indicePrecios": "Bajo"
+      },
+      "voltaje": "240V / 50Hz",
+      "prefijoTelefono": "+256",
+      "nivelRiesgo": "alto",
+      "ultimoInforme": "Mayo 2026",
+      "contactos": [
+        {
+          "tipo": "Embajada",
+          "nombre": "Embajada de España en Kampala",
+          "direccion": "Plot 14A, Upper Kololo Terrace, Kampala",
+          "telefono": "+256 393 228 300",
+          "email": "emb.kampala@maec.es",
+          "horario": "Lunes a viernes 8:00-16:00"
+        }
+      ],
+      "requerimientos": [
+        {
+          "categoria": "Documentación",
+          "icon": "📄",
+          "items": [
+            "Pasaporte válido 6 meses",
+            "Visa obligatoria (e-Visa disponible)",
+            "Registro en embajada recomendado"
+          ]
+        },
+        {
+          "categoria": "Sanitario",
+          "icon": "🏥",
+          "items": [
+            "Seguro médico con repatriación",
+            "Vacunas: Fiebre amarilla obligatoria, Hepatitis A/B, Tifoidea",
+            "Profilaxis malaria recomendada"
+          ]
+        },
+        {
+          "categoria": "Seguridad",
+          "icon": "⚠️",
+          "items": [
+            "Casos confirmados de Ebola Bundibugyo",
+            "Frontera con RDC en alerta sanitaria",
+            "Evitar zonas fronterizas con RDC y Sudán del Sur",
+            "Seguridad urbana vigilante"
+          ]
+        }
+      ],
+      "queHacer": [
+        "Visitar el Parque Nacional de Murchison Falls",
+        "Hacer safari en Queen Elizabeth NP",
+        "Ver los gorilas de montaña en Bwindi"
+      ],
+      "queNoHacer": [
+        "No viajar sin profilaxis malaria",
+        "No beber agua del grifo",
+        "No fotografiar instalaciones gubernamentales",
+        "No conducir de noche"
+      ],
+      "diarios": [
+        {
+          "nombre": "Daily Monitor",
+          "url": "https://www.monitor.co.ug"
+        }
+      ],
+      "urlsUtiles": [
+        {
+          "nombre": "Turismo Uganda",
+          "url": "https://www.visituganda.com"
+        },
+        {
+          "nombre": "MAEC - Uganda",
+          "url": "https://www.exteriores.gob.es/Embajadas/Kampala"
+        }
+      ],
+      "bandera": "🇺🇬",
+      "mapaCoordenadas": [
+        1.3733,
+        32.2903
+      ]
+    },
     "af": {
       "codigo": "af",
       "nombre": "Afganistán",
@@ -11324,6 +11507,18 @@
       "policia": "110",
       "bomberos": "125",
       "ambulancia": "115"
+    },
+    "cd": {
+      "general": "112",
+      "policia": "112",
+      "bomberos": "112",
+      "ambulancia": "112"
+    },
+    "ug": {
+      "general": "112",
+      "policia": "999",
+      "bomberos": "112",
+      "ambulancia": "112"
     }
   }
 }
