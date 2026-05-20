@@ -40,7 +40,7 @@
 ## Notas
 
 - Todas las acciones son coste 0€ (solo horas de desarrollo)
-- 20 May: Sprint Captación día 1. Completados A1, A2, A3, B1 (FB), B2 (Reddit), B3 (LinkedIn), D1 (email onboarding). Pendiente: B4, B5, A4, C1-3, D2-3
+- 20 May: Sprint Captación día 1. Completados A1, A2, A3, A4, B1 (FB), B2 (Reddit, LinkedIn), D1 (email onboarding), D2 (notificaciones cambio riesgo). Pendientes: B3, B4, B5, C1-3, D3
 - r/osinttools primer post (sesión anterior) → 2.5k views. Próximo post técnico en ~7 días
 - D1 (email onboarding): ✅ código + SQL ejecutado
 - queHacer: rellenado para CF, SO, SS (3 países africanos sin recomendaciones)
