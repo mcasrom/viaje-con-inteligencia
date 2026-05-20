@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { TOTAL_PAISES } from '@/lib/constants';
 
 type LayerKey = 'sources' | 'pipelines' | 'storage' | 'ml' | 'apis' | 'frontend' | 'social' | 'external';
 
@@ -19,7 +20,7 @@ const flowOrder: LayerKey[] = ['sources', 'pipelines', 'storage', 'ml', 'apis', 
 
 const items: Record<LayerKey, { name: string; desc: string; color: string }[]> = {
   sources: [
-    { name: 'MAEC', desc: 'Ministerio Exteriores · Riesgo viaje 120 países', color: 'blue' },
+    { name: 'MAEC', desc: `Ministerio Exteriores · Riesgo viaje ${TOTAL_PAISES} países`, color: 'blue' },
     { name: 'US State Dept', desc: 'Travel Advisories · Nivel numérico riesgo', color: 'indigo' },
     { name: 'GDELT', desc: 'Sentimiento global · Tone_score cada 15min', color: 'emerald' },
     { name: 'RSS (AP, BBC, Sky)', desc: 'Noticias breaking en tiempo real', color: 'violet' },
@@ -56,7 +57,7 @@ const items: Record<LayerKey, { name: string; desc: string; color: string }[]> =
     { name: 'risk_predictions', desc: 'Predicciones diarias', color: 'orange' },
     { name: 'maec_risk_history', desc: 'Histórico riesgo MAEC', color: 'blue' },
     { name: 'external_risk', desc: 'Riesgo US State Dept', color: 'indigo' },
-    { name: 'paises', desc: '120 países con datos completos', color: 'slate' },
+    { name: 'paises', desc: `${TOTAL_PAISES} países con datos completos`, color: 'slate' },
     { name: 'indices', desc: 'GPI, GTI, HDI, IPC', color: 'teal' },
     { name: 'events', desc: 'Eventos disruptivos', color: 'yellow' },
     { name: 'trips', desc: 'Itinerarios de viaje', color: 'cyan' },
@@ -187,7 +188,7 @@ export default function EcosistemaClient() {
 
         {/* Metrics */}
         <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-12">
-          <MetricCard label="Países" value="120" />
+          <MetricCard label="Países" value={String(TOTAL_PAISES)} />
           <MetricCard label="Fuentes activas" value="14" />
           <MetricCard label="Features ML" value="25" />
           <MetricCard label="Modelos RF" value="4" />
@@ -277,7 +278,7 @@ export default function EcosistemaClient() {
                 </thead>
                 <tbody>
                   {[
-                    ['Riesgo MAEC 120 países', '✅', '✅', '/pais/[codigo]'],
+                    [`Riesgo MAEC ${TOTAL_PAISES} países`, '✅', '✅', '/pais/[codigo]'],
                     ['Mapa interactivo KPIs', '✅', '✅', '/'],
                     ['Blog SEO viajes', '✅', '✅', '/blog'],
                     ['Pulso Global sentimiento', '✅', '✅', '/pulso-global'],

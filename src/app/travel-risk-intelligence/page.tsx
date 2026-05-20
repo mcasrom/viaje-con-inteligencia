@@ -4,7 +4,7 @@ import { ArrowLeft, Shield, Globe, Brain, AlertTriangle, BarChart3, FileText, Da
 
 export const metadata: Metadata = {
   title: 'Travel Risk Intelligence | Inteligencia de Riesgo para Viajes',
-  description: 'Plataforma de inteligencia de riesgo de viaje que combina datos oficiales MAEC, OSINT, Machine Learning y análisis predictivo para viajeros conscientes. 120 países monitorizados en tiempo real.',
+  description: 'Plataforma de inteligencia de riesgo de viaje que combina datos oficiales MAEC, OSINT, Machine Learning y análisis predictivo para viajeros conscientes. 137 países monitorizados en tiempo real.',
   openGraph: {
     title: 'Travel Risk Intelligence | Viaje con Inteligencia',
     description: 'Datos oficiales, señales OSINT y análisis predictivo combinados en una plataforma para viajar informado. Alertas, radar y predicciones ML.',
@@ -111,7 +111,7 @@ TRI combina lo mejor de cada enfoque: la autoridad de las fuentes diplomáticas,
 
 ¿Puedo integrar los datos en mi propia aplicación? Sí, ofrezco una API REST pública con cuatro endpoints: riesgo por país, TCI, incidentes activos y catálogo de países. Plan gratuito con 3,000 requests/mes y planes de pago para mayor volumen.
 
-¿Cubrís todos los países del mundo? Actualmente se monitorizan 120 países con fichas completas. Se priorizan los destinos más visitados por viajeros españoles y latinoamericanos. El mapa global muestra todos los países con su nivel MAEC.
+¿Cubrís todos los países del mundo? Actualmente se monitorizan 137 países con fichas completas. Se priorizan los destinos más visitados por viajeros españoles y latinoamericanos. El mapa global muestra todos los países con su nivel MAEC.
 
 ¿Las predicciones por IA son fiables? Los modelos Random Forest tienen un MAE (Mean Absolute Error) de 0.82 puntos en score de riesgo. Las predicciones a 7 días son más fiables que las de 30 días. Recomendamos usar las predicciones como orientación, no como verdad absoluta.
 
@@ -120,7 +120,7 @@ TRI combina lo mejor de cada enfoque: la autoridad de las fuentes diplomáticas,
 ];
 
 const FEATURES = [
-  { icon: Shield, title: '120 países monitorizados', desc: 'Cada destino con ficha completa, riesgo MAEC+US, contactos y visados' },
+  { icon: Shield, title: '137 países monitorizados', desc: 'Cada destino con ficha completa, riesgo MAEC+US, contactos y visados' },
   { icon: Bell, title: 'Alertas en tiempo real', desc: 'Cambios de riesgo, incidentes OSINT y notificaciones personalizadas vía Telegram' },
   { icon: Brain, title: 'Predicciones por IA', desc: 'Modelos Random Forest que anticipan cambios de riesgo a 7/14/30 días' },
   { icon: Globe, title: '14 fuentes OSINT', desc: 'GDELT, Reddit, RSS, USGS, GDACS, WHO, OpenSky y más en una sola plataforma' },
@@ -175,13 +175,27 @@ export default function TravelRiskIntelligencePage() {
           dangerouslySetInnerHTML={{
             __html: JSON.stringify({
               '@context': 'https://schema.org',
-              '@type': 'FAQPage',
-              mainEntity: [
-                { '@type': 'Question', name: '¿Con qué frecuencia se actualizan los datos?', acceptedAnswer: { '@type': 'Answer', text: 'Los niveles MAEC y US State Dept se actualizan diariamente. Las señales OSINT se procesan cada 6 horas. Los modelos ML se reentrenan cada noche.' } },
-                { '@type': 'Question', name: '¿Travel Risk Intelligence es gratis?', acceptedAnswer: { '@type': 'Answer', text: 'Sí, el mapa de riesgos, las fichas de país, el radar de viaje y el feed OSINT público son gratuitos. Las alertas personalizadas vía Telegram y el dashboard de KPIs requieren suscripción premium (4.99€/mes).' } },
-                { '@type': 'Question', name: '¿Cubrís todos los países del mundo?', acceptedAnswer: { '@type': 'Answer', text: 'Actualmente se monitorizan 120 países con fichas completas. Se priorizan los destinos más visitados por viajeros españoles y latinoamericanos.' } },
-                { '@type': 'Question', name: '¿Puedo integrar los datos en mi propia aplicación?', acceptedAnswer: { '@type': 'Answer', text: 'Sí, ofrezco una API REST pública con cuatro endpoints: riesgo por país, TCI, incidentes activos y catálogo de países.' } },
-                { '@type': 'Question', name: '¿Las predicciones por IA son fiables?', acceptedAnswer: { '@type': 'Answer', text: 'Los modelos Random Forest tienen un MAE de 0.82 puntos en score de riesgo. Las predicciones a 7 días son más fiables que las de 30 días.' } },
+              '@graph': [
+                {
+                  '@type': 'Article',
+                  headline: 'Travel Risk Intelligence | Inteligencia de Riesgo para Viajes',
+                  description: 'Plataforma de inteligencia de riesgo de viaje que combina datos oficiales MAEC, OSINT, Machine Learning y análisis predictivo para viajeros conscientes.',
+                  author: { '@type': 'Person', name: 'M. Castillo' },
+                  publisher: { '@type': 'Organization', name: 'Viaje con Inteligencia' },
+                  datePublished: '2026-05-01',
+                  dateModified: '2026-05-20',
+                  image: 'https://www.viajeinteligencia.com/preview_favicon.jpg',
+                },
+                {
+                  '@type': 'FAQPage',
+                  mainEntity: [
+                    { '@type': 'Question', name: '¿Con qué frecuencia se actualizan los datos?', acceptedAnswer: { '@type': 'Answer', text: 'Los niveles MAEC y US State Dept se actualizan diariamente. Las señales OSINT se procesan cada 6 horas. Los modelos ML se reentrenan cada noche.' } },
+                    { '@type': 'Question', name: '¿Travel Risk Intelligence es gratis?', acceptedAnswer: { '@type': 'Answer', text: 'Sí, el mapa de riesgos, las fichas de país, el radar de viaje y el feed OSINT público son gratuitos. Las alertas personalizadas vía Telegram y el dashboard de KPIs requieren suscripción premium (4.99€/mes).' } },
+                    { '@type': 'Question', name: '¿Cubrís todos los países del mundo?', acceptedAnswer: { '@type': 'Answer', text: 'Actualmente se monitorizan 137 países con fichas completas. Se priorizan los destinos más visitados por viajeros españoles y latinoamericanos.' } },
+                    { '@type': 'Question', name: '¿Puedo integrar los datos en mi propia aplicación?', acceptedAnswer: { '@type': 'Answer', text: 'Sí, ofrezco una API REST pública con cuatro endpoints: riesgo por país, TCI, incidentes activos y catálogo de países.' } },
+                    { '@type': 'Question', name: '¿Las predicciones por IA son fiables?', acceptedAnswer: { '@type': 'Answer', text: 'Los modelos Random Forest tienen un MAE de 0.82 puntos en score de riesgo. Las predicciones a 7 días son más fiables que las de 30 días.' } },
+                  ],
+                },
               ],
             }),
           }}

@@ -11593,6 +11593,1570 @@
         -30.5595,
         22.9375
       ]
+    },
+    "ga": {
+      "codigo": "ga",
+      "nombre": "Gabón",
+      "capital": "Libreville",
+      "continente": "África",
+      "idioma": "Francés",
+      "moneda": "Franco CFA de África Central (XAF)",
+      "tipoCambio": "1 EUR = 655,957 XAF",
+      "zonaHoraria": "UTC+1",
+      "conduccion": "derecha",
+      "poblacion": "2,3 millones",
+      "pib": "20,4 mil millones USD",
+      "indicadores": {
+        "ipc": "3,2%",
+        "indicePrecios": "Medio"
+      },
+      "voltaje": "220V / 50Hz",
+      "prefijoTelefono": "+241",
+      "nivelRiesgo": "medio",
+      "ultimoInforme": "Mayo 2026",
+      "contactos": [
+        {
+          "tipo": "Embajada",
+          "nombre": "Embajada de España en Gabón",
+          "direccion": "Immeuble Diamant, 2ème étage, Bd. de la Nation, BP 1157, Libreville",
+          "telefono": "+241 011 72 12 64",
+          "email": "emb.libreville@maec.es",
+          "horario": "Lunes a viernes 07:30-15:00"
+        }
+      ],
+      "requerimientos": [
+        {
+          "categoria": "Documentación",
+          "items": [
+            "Pasaporte con validez mínima de 6 meses",
+            "Visado de turista obtenido previamente (se puede solicitar online)",
+            "Certificado de vacunación de fiebre amarilla obligatorio",
+            "Reserva de hotel y billete de vuelta"
+          ]
+        },
+        {
+          "categoria": "Sanitario",
+          "items": [
+            "Vacuna contra la fiebre amarilla obligatoria",
+            "Profilaxis contra la malaria recomendada",
+            "Vacuna contra la hepatitis A y B, tifus y meningitis",
+            "Seguro médico con cobertura de repatriación"
+          ]
+        },
+        {
+          "categoria": "Seguridad",
+          "items": [
+            "Evitar desplazamientos nocturnos fuera de zonas urbanas",
+            "No fotografiar edificios gubernamentales o militares",
+            "Mantener puertas del vehículo bloqueadas en semáforos",
+            "Registrarse en el consulado español al llegar"
+          ]
+        }
+      ],
+      "queHacer": [
+        "Visitar el Parque Nacional de Loango para ver elefantes, hipopótamos y gorilas",
+        "Recorrer la Reserva de la Biosfera de Ipassa-Makokou en la selva tropical",
+        "Explorar la ciudad de Port-Gentil y sus playas en la costa atlántica"
+      ],
+      "queNoHacer": [
+        "No usar taxis compartidos (taxi-bus), especialmente por la noche",
+        "No mostrar objetos de valor ni grandes cantidades de efectivo en público",
+        "No viajar por carretera fuera de la capital después del anochecer",
+        "No participar en manifestaciones o concentraciones políticas"
+      ],
+      "diarios": [
+        {
+          "nombre": "Gabon Review",
+          "url": "https://www.gabonreview.com"
+        }
+      ],
+      "urlsUtiles": [
+        [
+          "Embajada de España en Gabón",
+          "https://www.exteriores.gob.es/Embajadas/libreville"
+        ],
+        [
+          "Recomendaciones de viaje MAEC",
+          "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Recomendaciones-de-viaje.aspx"
+        ]
+      ],
+      "bandera": "🇬🇦",
+      "mapaCoordenadas": [
+        0.4167,
+        9.4667
+      ]
+    },
+    "gq": {
+      "codigo": "gq",
+      "nombre": "Guinea Ecuatorial",
+      "capital": "Malabo",
+      "continente": "África",
+      "idioma": "Español, Francés, Portugués",
+      "moneda": "Franco CFA de África Central (XAF)",
+      "tipoCambio": "1 EUR = 655,957 XAF",
+      "zonaHoraria": "UTC+1",
+      "conduccion": "derecha",
+      "poblacion": "1,4 millones",
+      "pib": "12,3 mil millones USD",
+      "indicadores": {
+        "ipc": "4,8%",
+        "indicePrecios": "Medio"
+      },
+      "voltaje": "220V / 50Hz",
+      "prefijoTelefono": "+240",
+      "nivelRiesgo": "medio",
+      "ultimoInforme": "Mayo 2026",
+      "contactos": [
+        {
+          "tipo": "Embajada",
+          "nombre": "Embajada de España en Guinea Ecuatorial",
+          "direccion": "Carretera del Aeropuerto, s/n, junto al Centro Cultural de España, Malabo",
+          "telefono": "+240 333 092 020",
+          "email": "emb.malabo@maec.es",
+          "horario": "Lunes a viernes 08:00-15:30"
+        }
+      ],
+      "requerimientos": [
+        {
+          "categoria": "Documentación",
+          "items": [
+            "Pasaporte con validez mínima de 6 meses",
+            "Visado de turista (obtenible en embajada o a la llegada)",
+            "Certificado de vacunación de fiebre amarilla obligatorio",
+            "Carta de invitación o reserva de hotel"
+          ]
+        },
+        {
+          "categoria": "Sanitario",
+          "items": [
+            "Vacuna contra la fiebre amarilla obligatoria",
+            "Profilaxis contra la malaria recomendada",
+            "Vacunación contra hepatitis A y B, tifus",
+            "Seguro médico internacional con repatriación"
+          ]
+        },
+        {
+          "categoria": "Seguridad",
+          "items": [
+            "Evitar zonas aisladas y playas solitarias por la noche",
+            "No mostrar signos de riqueza en público",
+            "Extremar precaución en carreteras fuera de Malabo",
+            "Identificación siempre disponible para controles"
+          ]
+        }
+      ],
+      "queHacer": [
+        "Visitar la isla de Bioko y el parque nacional del Pico Basilé",
+        "Conocer la ciudad de Bata y sus playas en la región continental",
+        "Recorrer el casco colonial de Malabo con su catedral y palacio"
+      ],
+      "queNoHacer": [
+        "No fotografiar edificios gubernamentales, palacios o instalaciones militares",
+        "No criticar al gobierno o la familia presidencial en público",
+        "No conducir de noche fuera de las zonas urbanas",
+        "No consumir drogas: las penas son severas"
+      ],
+      "diarios": [
+        {
+          "nombre": "Guinea Ecuatorial Press",
+          "url": "https://www.guineaecuatorialpress.com"
+        }
+      ],
+      "urlsUtiles": [
+        [
+          "Embajada de España en Guinea Ecuatorial",
+          "https://www.exteriores.gob.es/Embajadas/malabo"
+        ],
+        [
+          "Recomendaciones de viaje MAEC",
+          "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Recomendaciones-de-viaje.aspx"
+        ]
+      ],
+      "bandera": "🇬🇶",
+      "mapaCoordenadas": [
+        3.75,
+        8.7833
+      ]
+    },
+    "mg": {
+      "codigo": "mg",
+      "nombre": "Madagascar",
+      "capital": "Antananarivo",
+      "continente": "África",
+      "idioma": "Malgache, Francés",
+      "moneda": "Ariary malgache (MGA)",
+      "tipoCambio": "1 EUR = 4.816 MGA",
+      "zonaHoraria": "UTC+3",
+      "conduccion": "derecha",
+      "poblacion": "32,7 millones",
+      "pib": "16,0 mil millones USD",
+      "indicadores": {
+        "ipc": "8,5%",
+        "indicePrecios": "Medio"
+      },
+      "voltaje": "220V / 50Hz",
+      "prefijoTelefono": "+261",
+      "nivelRiesgo": "medio",
+      "ultimoInforme": "Mayo 2026",
+      "contactos": [
+        {
+          "tipo": "Consulado Honorario",
+          "nombre": "Consulado Honorario de España en Antananarivo",
+          "direccion": "Enceinte Groupe Filatex, Ankadimbahoaka, Antananarivo 101",
+          "telefono": "+261 20 22 222 31",
+          "email": "consespa2002@yahoo.fr",
+          "horario": "Lunes a viernes 09:00-13:00"
+        }
+      ],
+      "requerimientos": [
+        {
+          "categoria": "Documentación",
+          "items": [
+            "Pasaporte con validez mínima de 6 meses",
+            "Visado de turista a la llegada (válido hasta 60 días)",
+            "Certificado de vacunación de fiebre amarilla (si procede de zona endémica)",
+            "Billete de vuelta y reserva de alojamiento"
+          ]
+        },
+        {
+          "categoria": "Sanitario",
+          "items": [
+            "Profilaxis contra la malaria obligatoria en zonas costeras y rurales",
+            "Vacuna contra la hepatitis A y B, tifus y rabia",
+            "Repelente de mosquitos permanente",
+            "Seguro médico con evacuación sanitaria"
+          ]
+        },
+        {
+          "categoria": "Seguridad",
+          "items": [
+            "Evitar desplazamientos nocturnos en Antananarivo",
+            "No pasear solo por zonas aisladas o playas solitarias",
+            "Proteger objetos personales en mercados y zonas concurridas",
+            "Contratar guía local para rutas de senderismo"
+          ]
+        }
+      ],
+      "queHacer": [
+        "Explorar la Avenida de los Baobabs en la región de Menabe",
+        "Visitar el Parque Nacional de Andasibe-Mantadia para ver lémures",
+        "Recorrer el casco antiguo de Antananarivo y el Palacio de la Reina"
+      ],
+      "queNoHacer": [
+        "No comprar artículos elaborados con carey, marfil o pieles protegidas",
+        "No tomar fotos a personas sin su permiso explícito",
+        "No beber agua del grifo; usar siempre agua embotellada",
+        "No viajar por carretera de noche, especialmente en temporada de lluvias"
+      ],
+      "diarios": [
+        {
+          "nombre": "Midi Madagasikara",
+          "url": "https://www.midi-madagasikara.mg"
+        }
+      ],
+      "urlsUtiles": [
+        [
+          "Embajada de España en Pretoria (acreditada)",
+          "https://www.exteriores.gob.es/Embajadas/pretoria"
+        ],
+        [
+          "Recomendaciones de viaje MAEC",
+          "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Recomendaciones-de-viaje.aspx"
+        ]
+      ],
+      "bandera": "🇲🇬",
+      "mapaCoordenadas": [
+        -18.9333,
+        47.5167
+      ]
+    },
+    "ml": {
+      "codigo": "ml",
+      "nombre": "Mali",
+      "capital": "Bamako",
+      "continente": "África",
+      "idioma": "Francés",
+      "moneda": "Franco CFA de África Occidental (XOF)",
+      "tipoCambio": "1 EUR = 655,957 XOF",
+      "zonaHoraria": "UTC+0",
+      "conduccion": "derecha",
+      "poblacion": "23,8 millones",
+      "pib": "19,0 mil millones USD",
+      "indicadores": {
+        "ipc": "4,5%",
+        "indicePrecios": "Medio"
+      },
+      "voltaje": "220V / 50Hz",
+      "prefijoTelefono": "+223",
+      "nivelRiesgo": "muy-alto",
+      "ultimoInforme": "Mayo 2026",
+      "contactos": [
+        {
+          "tipo": "Embajada",
+          "nombre": "Embajada de España en Mali",
+          "direccion": "ACI 2000, en face de l'École de Maintien de la Paix, BP E-3230, Bamako",
+          "telefono": "+223 44 98 24 30",
+          "email": "emb.bamako@maec.es",
+          "horario": "Lunes a viernes 08:00-15:00"
+        }
+      ],
+      "requerimientos": [
+        {
+          "categoria": "Documentación",
+          "items": [
+            "Pasaporte con validez mínima de 6 meses",
+            "Visado de turista obtenido previamente en embajada",
+            "Certificado de vacunación de fiebre amarilla obligatorio",
+            "Registro de viajero en la embajada de España"
+          ]
+        },
+        {
+          "categoria": "Sanitario",
+          "items": [
+            "Vacuna contra la fiebre amarilla obligatoria",
+            "Profilaxis contra la malaria obligatoria",
+            "Vacuna contra meningitis, hepatitis A y B, tifus",
+            "Seguro médico internacional con evacuación de emergencia"
+          ]
+        },
+        {
+          "categoria": "Seguridad",
+          "items": [
+            "Extremar precaución por riesgo de atentados y secuestros en el norte",
+            "No viajar fuera de Bamako sin convoy escoltado",
+            "Evitar zonas limítrofes con Níger y Burkina Faso",
+            "Mantener contacto permanente con la embajada"
+          ]
+        }
+      ],
+      "queHacer": [
+        "Visitar la Gran Mezquita de Djenné, Patrimonio de la Humanidad",
+        "Recorrer el Museo Nacional de Mali en Bamako",
+        "Explorar la ciudad histórica de Tombuctú (solo si la seguridad lo permite)"
+      ],
+      "queNoHacer": [
+        "No viajar al norte del país (Níger, Tombuctú, Gao) por alto riesgo terrorista",
+        "No hacer fotografías cerca de instalaciones militares o gubernamentales",
+        "No mostrar signos de riqueza ni llevar grandes cantidades de efectivo",
+        "No viajar de noche en carretera bajo ninguna circunstancia"
+      ],
+      "diarios": [
+        {
+          "nombre": "Maliweb",
+          "url": "https://www.maliweb.net"
+        }
+      ],
+      "urlsUtiles": [
+        [
+          "Embajada de España en Mali",
+          "https://www.exteriores.gob.es/Embajadas/bamako"
+        ],
+        [
+          "Recomendaciones de viaje MAEC",
+          "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Recomendaciones-de-viaje.aspx"
+        ]
+      ],
+      "bandera": "🇲🇱",
+      "mapaCoordenadas": [
+        12.6458,
+        -7.9922
+      ]
+    },
+    "ne": {
+      "codigo": "ne",
+      "nombre": "Níger",
+      "capital": "Niamey",
+      "continente": "África",
+      "idioma": "Francés",
+      "moneda": "Franco CFA de África Occidental (XOF)",
+      "tipoCambio": "1 EUR = 655,957 XOF",
+      "zonaHoraria": "UTC+1",
+      "conduccion": "derecha",
+      "poblacion": "27,1 millones",
+      "pib": "15,9 mil millones USD",
+      "indicadores": {
+        "ipc": "6,5%",
+        "indicePrecios": "Medio"
+      },
+      "voltaje": "220V / 50Hz",
+      "prefijoTelefono": "+227",
+      "nivelRiesgo": "alto",
+      "ultimoInforme": "Mayo 2026",
+      "contactos": [
+        {
+          "tipo": "Embajada",
+          "nombre": "Embajada de España en Níger",
+          "direccion": "Rue AM-5, enfrente de la Embajada de Turquía, Koira Kano, Niamey",
+          "telefono": "+227 20 75 59 61",
+          "email": "emb.niamey@maec.es",
+          "horario": "Lunes a viernes 08:00-15:00"
+        }
+      ],
+      "requerimientos": [
+        {
+          "categoria": "Documentación",
+          "items": [
+            "Pasaporte con validez mínima de 6 meses",
+            "Visado de turista obtenido previamente en embajada",
+            "Certificado de vacunación de fiebre amarilla obligatorio",
+            "Registro de viajero en la embajada de España"
+          ]
+        },
+        {
+          "categoria": "Sanitario",
+          "items": [
+            "Vacuna contra la fiebre amarilla obligatoria",
+            "Profilaxis contra la malaria obligatoria",
+            "Vacuna contra meningitis, cólera, hepatitis y tifus",
+            "Botiquín de emergencia y seguro con evacuación"
+          ]
+        },
+        {
+          "categoria": "Seguridad",
+          "items": [
+            "Riesgo elevado de atentados y secuestros en regiones del oeste y norte",
+            "Evitar desplazamientos fuera de Niamey sin escolta",
+            "No viajar a las fronteras con Mali, Burkina Faso, Nigeria o Libia",
+            "Seguir estrictamente las indicaciones de las autoridades locales"
+          ]
+        }
+      ],
+      "queHacer": [
+        "Visitar el Parque Nacional W de Níger, Patrimonio de la Humanidad",
+        "Recorrer el Gran Mercado de Niamey y la Gran Mezquita",
+        "Conocer el Museo Nacional de Níger y sus exhibiciones culturales"
+      ],
+      "queNoHacer": [
+        "No viajar a las regiones de Tillabéri, Tahoua o Diffa por inseguridad",
+        "No fotografiar edificios públicos, militares o puentes",
+        "No consumir alcohol en público durante el Ramadán",
+        "No mostrar vestimenta demasiado reveladora en espacios públicos"
+      ],
+      "diarios": [
+        {
+          "nombre": "ActuNiger",
+          "url": "https://www.actuniger.com"
+        }
+      ],
+      "urlsUtiles": [
+        [
+          "Embajada de España en Níger",
+          "https://www.exteriores.gob.es/Embajadas/niamey"
+        ],
+        [
+          "Recomendaciones de viaje MAEC",
+          "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Recomendaciones-de-viaje.aspx"
+        ]
+      ],
+      "bandera": "🇳🇪",
+      "mapaCoordenadas": [
+        13.5167,
+        2.1167
+      ]
+    },
+    "td": {
+      "codigo": "td",
+      "nombre": "Chad",
+      "capital": "Yamena",
+      "continente": "África",
+      "idioma": "Francés, Árabe",
+      "moneda": "Franco CFA de África Central (XAF)",
+      "tipoCambio": "1 EUR = 655,957 XAF",
+      "zonaHoraria": "UTC+1",
+      "conduccion": "derecha",
+      "poblacion": "19,3 millones",
+      "pib": "19,5 mil millones USD",
+      "indicadores": {
+        "ipc": "9,0%",
+        "indicePrecios": "Alto"
+      },
+      "voltaje": "220V / 50Hz",
+      "prefijoTelefono": "+235",
+      "nivelRiesgo": "alto",
+      "ultimoInforme": "Mayo 2026",
+      "contactos": [
+        {
+          "tipo": "Antena Diplomática",
+          "nombre": "Antena Diplomática de España en Yamena",
+          "direccion": "150 Avenue Général Kerim Nassour, BP 552, N'Djamena",
+          "telefono": "+235 68 45 51 37",
+          "email": "ant.yamena@maec.es",
+          "horario": "Lunes a viernes 08:00-15:00"
+        }
+      ],
+      "requerimientos": [
+        {
+          "categoria": "Documentación",
+          "items": [
+            "Pasaporte con validez mínima de 6 meses",
+            "Visado de turista obtenido previamente en embajada",
+            "Certificado de vacunación de fiebre amarilla obligatorio",
+            "Registro obligatorio en la representación diplomática"
+          ]
+        },
+        {
+          "categoria": "Sanitario",
+          "items": [
+            "Vacuna contra la fiebre amarilla obligatoria",
+            "Profilaxis contra la malaria obligatoria",
+            "Vacuna contra meningitis, hepatitis A y B, cólera y tifus",
+            "Seguro médico internacional con evacuación urgente"
+          ]
+        },
+        {
+          "categoria": "Seguridad",
+          "items": [
+            "Riesgo de atentados en la región del lago Chad",
+            "Evitar viajes al norte y este del país",
+            "Extremar precaución incluso en Yamena",
+            "No viajar de noche bajo ninguna circunstancia"
+          ]
+        }
+      ],
+      "queHacer": [
+        "Visitar el mercado central de Yamena y la Gran Mezquita",
+        "Explorar el Parque Nacional de Zakouma, famoso por su fauna",
+        "Conocer las aldeas tradicionales del pueblo hadjeray en la región de Guéra"
+      ],
+      "queNoHacer": [
+        "No acercarse a la frontera con Sudán, Libia o la región del lago Chad",
+        "No fotografiar personas sin permiso, especialmente mujeres",
+        "No vestir de forma inapropiada según la cultura local islámica",
+        "No beber alcohol ni fumar en público durante el Ramadán"
+      ],
+      "diarios": [
+        {
+          "nombre": "Alwihda Info",
+          "url": "https://www.alwihdainfo.com"
+        }
+      ],
+      "urlsUtiles": [
+        [
+          "Embajada de España en Yaundé (acreditada)",
+          "https://www.exteriores.gob.es/Embajadas/yaunde"
+        ],
+        [
+          "Recomendaciones de viaje MAEC",
+          "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Recomendaciones-de-viaje.aspx"
+        ]
+      ],
+      "bandera": "🇹🇩",
+      "mapaCoordenadas": [
+        12.1167,
+        15.05
+      ]
+    },
+    "zm": {
+      "codigo": "zm",
+      "nombre": "Zambia",
+      "capital": "Lusaka",
+      "continente": "África",
+      "idioma": "Inglés",
+      "moneda": "Kwacha zambiano (ZMW)",
+      "tipoCambio": "1 EUR = 22,31 ZMW",
+      "zonaHoraria": "UTC+2",
+      "conduccion": "izquierda",
+      "poblacion": "20,2 millones",
+      "pib": "29,0 mil millones USD",
+      "indicadores": {
+        "ipc": "6,8%",
+        "indicePrecios": "Bajo"
+      },
+      "voltaje": "230V / 50Hz",
+      "prefijoTelefono": "+260",
+      "nivelRiesgo": "bajo",
+      "ultimoInforme": "Mayo 2026",
+      "contactos": [
+        {
+          "tipo": "Consulado Honorario",
+          "nombre": "Consulado Honorario de España en Zambia",
+          "direccion": "Plot 22768 Thabo Mbeki Road, Acacia Park, Lusaka",
+          "telefono": "+260 211 258057",
+          "email": "ch.zambia@maec.es",
+          "horario": "Lunes a viernes 09:00-14:00"
+        }
+      ],
+      "requerimientos": [
+        {
+          "categoria": "Documentación",
+          "items": [
+            "Pasaporte con validez mínima de 6 meses",
+            "Visado de turista disponible a la llegada o online",
+            "Certificado de vacunación de fiebre amarilla (si procede de zona endémica)",
+            "Billete de vuelta y reserva de alojamiento"
+          ]
+        },
+        {
+          "categoria": "Sanitario",
+          "items": [
+            "Profilaxis contra la malaria recomendada en zonas rurales",
+            "Vacuna contra hepatitis A y B, tifus y cólera",
+            "Repelente de mosquitos en zonas de safari",
+            "Seguro de viaje con cobertura médica"
+          ]
+        },
+        {
+          "categoria": "Seguridad",
+          "items": [
+            "Evitar mostrar objetos de valor en zonas urbanas concurridas",
+            "No viajar de noche por carretera (mal estado y fauna)",
+            "Usar taxis oficiales o aplicaciones de transporte",
+            "Mantener documentos de identificación siempre a mano"
+          ]
+        }
+      ],
+      "queHacer": [
+        "Visitar las Cataratas Victoria en Livingstone, una de las siete maravillas naturales",
+        "Hacer un safari en el Parque Nacional South Luangwa",
+        "Recorrer el mercado de arte y artesanía de Lusaka"
+      ],
+      "queNoHacer": [
+        "No conducir de noche fuera de Lusaka por el mal estado de las carreteras",
+        "No tomar fotos en zonas fronterizas o instalaciones gubernamentales",
+        "No beber agua del grifo; consumir siempre agua embotellada",
+        "No mostrar gestos de riqueza excesiva en áreas urbanas"
+      ],
+      "diarios": [
+        {
+          "nombre": "Zambia Daily Mail",
+          "url": "https://www.daily-mail.co.zm"
+        }
+      ],
+      "urlsUtiles": [
+        [
+          "Embajada de España en Harare (acreditada)",
+          "https://www.exteriores.gob.es/Embajadas/harare"
+        ],
+        [
+          "Recomendaciones de viaje MAEC",
+          "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Recomendaciones-de-viaje.aspx"
+        ]
+      ],
+      "bandera": "🇿🇲",
+      "mapaCoordenadas": [
+        -15.4167,
+        28.2833
+      ]
+    },
+    "zw": {
+      "codigo": "zw",
+      "nombre": "Zimbabue",
+      "capital": "Harare",
+      "continente": "África",
+      "idioma": "Inglés, Shona, Ndebele",
+      "moneda": "Oro de Zimbabue (ZWG), también USD",
+      "tipoCambio": "1 EUR ≈ 379 ZWG",
+      "zonaHoraria": "UTC+2",
+      "conduccion": "izquierda",
+      "poblacion": "17,0 millones",
+      "pib": "56,7 mil millones USD",
+      "indicadores": {
+        "ipc": "95,8%",
+        "indicePrecios": "Muy alto"
+      },
+      "voltaje": "220V / 50Hz",
+      "prefijoTelefono": "+263",
+      "nivelRiesgo": "medio",
+      "ultimoInforme": "Mayo 2026",
+      "contactos": [
+        {
+          "tipo": "Embajada",
+          "nombre": "Embajada de España en Zimbabue",
+          "direccion": "16 Phillips Avenue, Belgravia, P.O. Box 3300, Harare",
+          "telefono": "+263 0242 250740",
+          "email": "emb.harare@maec.es",
+          "horario": "Lunes a viernes 08:00-15:00"
+        }
+      ],
+      "requerimientos": [
+        {
+          "categoria": "Documentación",
+          "items": [
+            "Pasaporte con validez mínima de 6 meses",
+            "Visado de turista disponible a la llegada (sujeto a cambios)",
+            "Certificado de vacunación de fiebre amarilla (si procede de zona endémica)",
+            "Billete de vuelta y fondos suficientes para la estancia"
+          ]
+        },
+        {
+          "categoria": "Sanitario",
+          "items": [
+            "Profilaxis contra la malaria recomendada en el valle del Zambeze",
+            "Vacuna contra cólera, hepatitis A y B, tifus",
+            "Precaución con el VIH/SIDA (alta prevalencia)",
+            "Seguro médico con cobertura de evacuación"
+          ]
+        },
+        {
+          "categoria": "Seguridad",
+          "items": [
+            "Cambiar moneda solo en bancos oficiales, no en mercado paralelo",
+            "Evitar zonas de minas en áreas rurales del este",
+            "No participar en manifestaciones políticas",
+            "Extremar precaución en Harare y Bulawayo por robos menores"
+          ]
+        }
+      ],
+      "queHacer": [
+        "Visitar las Cataratas Victoria desde el lado zimbabuense",
+        "Hacer un safari en el Parque Nacional Hwange para ver los Cinco Grandes",
+        "Recorrer el Gran Zimbabue, las ruinas arqueológicas Patrimonio de la Humanidad"
+      ],
+      "queNoHacer": [
+        "No hacer comentarios políticos negativos en público",
+        "No cambiar divisas en el mercado negro (está penado por ley)",
+        "No conducir de noche por carreteras interestatales",
+        "No tomar fotos de edificios gubernamentales ni del palacio presidencial"
+      ],
+      "diarios": [
+        {
+          "nombre": "The Herald",
+          "url": "https://www.herald.co.zw"
+        }
+      ],
+      "urlsUtiles": [
+        [
+          "Embajada de España en Zimbabue",
+          "https://www.exteriores.gob.es/Embajadas/harare"
+        ],
+        [
+          "Recomendaciones de viaje MAEC",
+          "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Recomendaciones-de-viaje.aspx"
+        ]
+      ],
+      "bandera": "🇿🇼",
+      "mapaCoordenadas": [
+        -17.8292,
+        31.0522
+      ]
+    },
+    "bj": {
+      "codigo": "bj",
+      "nombre": "Benín",
+      "capital": "Porto-Novo",
+      "continente": "África",
+      "idioma": "Francés",
+      "moneda": "Franco CFA de África Occidental (XOF)",
+      "tipoCambio": "1 EUR = 655,957 XOF",
+      "zonaHoraria": "UTC+1",
+      "conduccion": "derecha",
+      "poblacion": "14,1 millones",
+      "pib": "24,4 mil millones USD",
+      "indicadores": {
+        "ipc": "3,5%",
+        "indicePrecios": "Bajo"
+      },
+      "voltaje": "220V / 50Hz",
+      "prefijoTelefono": "+229",
+      "nivelRiesgo": "medio",
+      "ultimoInforme": "Mayo 2026",
+      "contactos": [
+        {
+          "tipo": "Consulado Honorario",
+          "nombre": "Consulado Honorario de España en Benín",
+          "direccion": "Immeuble Saint Charbel, 01 BP 2376, Cotonou",
+          "telefono": "+229 21 33 92 19",
+          "email": "ch.cotonou@maec.es",
+          "horario": "Lunes a viernes 09:00-13:00"
+        }
+      ],
+      "requerimientos": [
+        {
+          "categoria": "Documentación",
+          "items": [
+            "Pasaporte con validez mínima de 6 meses",
+            "Visado de turista (e-Visa disponible online)",
+            "Certificado de vacunación de fiebre amarilla obligatorio",
+            "Billete de regreso y reserva de hotel"
+          ]
+        },
+        {
+          "categoria": "Sanitario",
+          "items": [
+            "Vacuna contra la fiebre amarilla obligatoria",
+            "Profilaxis contra la malaria recomendada",
+            "Vacuna contra hepatitis A y B, tifus y meningitis",
+            "Seguro de viaje con cobertura médica"
+          ]
+        },
+        {
+          "categoria": "Seguridad",
+          "items": [
+            "Evitar el norte del país (frontera con Burkina Faso y Níger) por riesgo terrorista",
+            "No pasear solo por la playa de Cotonou de noche",
+            "Extremar precaución en mercados y zonas concurridas",
+            "Proteger objetos de valor en zonas turísticas"
+          ]
+        }
+      ],
+      "queHacer": [
+        "Visitar Ganvié, la 'Venecia de África', aldea lacustre sobre pilotes",
+        "Recorrer el Palacio Real de Abomey, Patrimonio de la Humanidad",
+        "Explorar la Ruta de los Esclavos en Ouidah y la Puerta del No Retorno"
+      ],
+      "queNoHacer": [
+        "No fotografiar a las personas sin pedir permiso",
+        "No tomar fotos de instalaciones militares ni gubernamentales",
+        "No vestir de forma demasiado informal en zonas religiosas",
+        "No consumir drogas: las penas son severas e incluyen prisión"
+      ],
+      "diarios": [
+        {
+          "nombre": "La Nouvelle Tribune",
+          "url": "https://lanouvelletribune.info"
+        }
+      ],
+      "urlsUtiles": [
+        [
+          "Embajada de España en Abuja (acreditada)",
+          "https://www.exteriores.gob.es/Embajadas/abuja"
+        ],
+        [
+          "Recomendaciones de viaje MAEC",
+          "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Recomendaciones-de-viaje.aspx"
+        ]
+      ],
+      "bandera": "🇧🇯",
+      "mapaCoordenadas": [
+        6.5,
+        2.6
+      ]
+    },
+    "bf": {
+      "codigo": "bf",
+      "nombre": "Burkina Faso",
+      "capital": "Uagadugú",
+      "continente": "África",
+      "idioma": "Francés",
+      "moneda": "Franco CFA de África Occidental (XOF)",
+      "tipoCambio": "1 EUR = 655,957 XOF",
+      "zonaHoraria": "UTC+0",
+      "conduccion": "derecha",
+      "poblacion": "23,8 millones",
+      "pib": "20,3 mil millones USD",
+      "indicadores": {
+        "ipc": "0,8%",
+        "indicePrecios": "Bajo"
+      },
+      "voltaje": "220V / 50Hz",
+      "prefijoTelefono": "+226",
+      "nivelRiesgo": "alto",
+      "ultimoInforme": "Mayo 2026",
+      "contactos": [
+        {
+          "tipo": "Viceconsulado Honorario",
+          "nombre": "Viceconsulado Honorario de España en Uagadugú",
+          "direccion": "Avenue J.F. Kennedy, Koulouba, junto a Embajada de EE.UU., Uagadugú",
+          "telefono": "+226 50 33 16 32",
+          "email": "ch.ouagadougou@maec.es",
+          "horario": "Lunes a viernes 09:00-12:00"
+        }
+      ],
+      "requerimientos": [
+        {
+          "categoria": "Documentación",
+          "items": [
+            "Pasaporte con validez mínima de 6 meses",
+            "Visado de turista obtenido previamente en embajada",
+            "Certificado de vacunación de fiebre amarilla obligatorio",
+            "Registro de viajero en la embajada de España en Bamako"
+          ]
+        },
+        {
+          "categoria": "Sanitario",
+          "items": [
+            "Vacuna contra la fiebre amarilla obligatoria",
+            "Profilaxis contra la malaria obligatoria",
+            "Vacuna contra meningitis, hepatitis A y B, tifus",
+            "Seguro médico con evacuación de emergencia"
+          ]
+        },
+        {
+          "categoria": "Seguridad",
+          "items": [
+            "Riesgo muy elevado de atentados terroristas en todo el país",
+            "No viajar a las regiones del norte, este y oeste",
+            "Extremar la vigilancia incluso en Uagadugú",
+            "Evitar cualquier concentración o manifestación pública"
+          ]
+        }
+      ],
+      "queHacer": [
+        "Visitar la catedral de Uagadugú y el Museo Nacional de Burkina Faso",
+        "Recorrer el mercado artesanal de Bobo-Dioulasso",
+        "Explorar las ruinas de Loropéni, Patrimonio de la Humanidad"
+      ],
+      "queNoHacer": [
+        "No viajar a las regiones del Sahel, Este o Cascades por inseguridad",
+        "No fotografiar edificios militares ni gubernamentales",
+        "No viajar de noche por carretera en ninguna circunstancia",
+        "No mostrar objetos de valor ni grandes cantidades de dinero"
+      ],
+      "diarios": [
+        {
+          "nombre": "Le Faso",
+          "url": "https://www.lefaso.net"
+        }
+      ],
+      "urlsUtiles": [
+        [
+          "Embajada de España en Bamako (acreditada)",
+          "https://www.exteriores.gob.es/Embajadas/bamako"
+        ],
+        [
+          "Recomendaciones de viaje MAEC",
+          "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Recomendaciones-de-viaje.aspx"
+        ]
+      ],
+      "bandera": "🇧🇫",
+      "mapaCoordenadas": [
+        12.3658,
+        -1.5325
+      ]
+    },
+    "bi": {
+      "codigo": "bi",
+      "nombre": "Burundi",
+      "capital": "Guitega",
+      "continente": "África",
+      "idioma": "Kirundi, Francés, Inglés",
+      "moneda": "Franco burundés (BIF)",
+      "tipoCambio": "1 EUR = 3.501 BIF",
+      "zonaHoraria": "UTC+2",
+      "conduccion": "derecha",
+      "poblacion": "12,9 millones",
+      "pib": "6,8 mil millones USD",
+      "indicadores": {
+        "ipc": "18,5%",
+        "indicePrecios": "Alto"
+      },
+      "voltaje": "220V / 50Hz",
+      "prefijoTelefono": "+257",
+      "nivelRiesgo": "alto",
+      "ultimoInforme": "Mayo 2026",
+      "contactos": [
+        {
+          "tipo": "Consulado Honorario",
+          "nombre": "Consulado Honorario de España en Burundi",
+          "direccion": "Avenue Inkondo 28, Mutanga Nord, BP 1961, Bujumbura",
+          "telefono": "+257 22 25 36 10",
+          "email": "consulespbdi@yahoo.fr",
+          "horario": "Lunes a viernes 09:00-13:00"
+        }
+      ],
+      "requerimientos": [
+        {
+          "categoria": "Documentación",
+          "items": [
+            "Pasaporte con validez mínima de 6 meses",
+            "Visado de turista disponible a la llegada (aeropuerto de Bujumbura)",
+            "Certificado de vacunación de fiebre amarilla obligatorio",
+            "Registro en la embajada de España en Dar es Salaam"
+          ]
+        },
+        {
+          "categoria": "Sanitario",
+          "items": [
+            "Vacuna contra la fiebre amarilla obligatoria",
+            "Profilaxis contra la malaria obligatoria",
+            "Vacuna contra hepatitis A y B, tifus, cólera y rabia",
+            "Seguro médico internacional con repatriación"
+          ]
+        },
+        {
+          "categoria": "Seguridad",
+          "items": [
+            "Riesgo de tensiones políticas y protestas violentas",
+            "Evitar aglomeraciones y mítines políticos",
+            "Extremar precaución en zonas rurales aisladas",
+            "No viajar de noche bajo ninguna circunstancia"
+          ]
+        }
+      ],
+      "queHacer": [
+        "Visitar las fuentes del Nilo en Rutovu, cerca de la frontera con Tanzania",
+        "Explorar el lago Tanganica y sus playas cerca de Bujumbura",
+        "Conocer la ciudad real de Guitega y el Museo Nacional de Burundi"
+      ],
+      "queNoHacer": [
+        "No hacer comentarios políticos sobre el gobierno o la etnia",
+        "No fotografiar edificios gubernamentales ni instalaciones militares",
+        "No beber agua del grifo ni consumir hielo en establecimientos",
+        "No mostrar gestos de riqueza que puedan atraer la atención"
+      ],
+      "diarios": [
+        {
+          "nombre": "Iwacu Burundi",
+          "url": "https://www.iwacu-burundi.org"
+        }
+      ],
+      "urlsUtiles": [
+        [
+          "Embajada de España en Dar es Salaam (acreditada)",
+          "https://www.exteriores.gob.es/Embajadas/daressalaam"
+        ],
+        [
+          "Recomendaciones de viaje MAEC",
+          "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Recomendaciones-de-viaje.aspx"
+        ]
+      ],
+      "bandera": "🇧🇮",
+      "mapaCoordenadas": [
+        -3.3825,
+        29.3611
+      ]
+    },
+    "mw": {
+      "codigo": "mw",
+      "nombre": "Malawi",
+      "capital": "Lilongwe",
+      "continente": "África",
+      "idioma": "Chichewa, Inglés",
+      "moneda": "Kwacha malauí (MWK)",
+      "tipoCambio": "1 EUR = 2.031 MWK",
+      "zonaHoraria": "UTC+2",
+      "conduccion": "izquierda",
+      "poblacion": "21,0 millones",
+      "pib": "14,0 mil millones USD",
+      "indicadores": {
+        "ipc": "23,8%",
+        "indicePrecios": "Alto"
+      },
+      "voltaje": "230V / 50Hz",
+      "prefijoTelefono": "+265",
+      "nivelRiesgo": "medio",
+      "ultimoInforme": "Mayo 2026",
+      "contactos": [
+        {
+          "tipo": "Consulado Honorario",
+          "nombre": "Consulado Honorario de España en Malawi",
+          "direccion": "Área 10, Blantyre Street 279, Lilongwe",
+          "telefono": "+265 999 846 081",
+          "email": "mangeles.soriano@gmail.com",
+          "horario": "Lunes a viernes 09:00-13:00"
+        }
+      ],
+      "requerimientos": [
+        {
+          "categoria": "Documentación",
+          "items": [
+            "Pasaporte con validez mínima de 6 meses",
+            "Visado de turista disponible a la llegada",
+            "Certificado de vacunación de fiebre amarilla (si procede de zona endémica)",
+            "Billete de regreso y fondos suficientes"
+          ]
+        },
+        {
+          "categoria": "Sanitario",
+          "items": [
+            "Profilaxis contra la malaria obligatoria en todo el país",
+            "Vacuna contra hepatitis A y B, tifus, cólera",
+            "Vacuna contra la rabia recomendada para estancias largas",
+            "Seguro médico con evacuación"
+          ]
+        },
+        {
+          "categoria": "Seguridad",
+          "items": [
+            "Evitar desplazamientos nocturnos en zonas urbanas y rurales",
+            "Proteger objetos de valor en mercados y autobuses",
+            "No hacer autoestop ni recoger desconocidos",
+            "Usar taxis oficiales en Lilongwe y Blantyre"
+          ]
+        }
+      ],
+      "queHacer": [
+        "Explorar el lago Malawi, sus playas y practicar deportes acuáticos",
+        "Visitar el Parque Nacional de Liwonde para ver elefantes e hipopótamos",
+        "Ascender el monte Mulanje, el pico más alto de África Central"
+      ],
+      "queNoHacer": [
+        "No nadar en el lago Malawi por la noche (riesgo de esquistosomiasis)",
+        "No beber agua del grifo ni consumir alimentos crudos no lavados",
+        "No tomar fotografías de personas sin su permiso",
+        "No hacer comentarios sobre política local o el gobierno"
+      ],
+      "diarios": [
+        {
+          "nombre": "The Nation Malawi",
+          "url": "https://www.mwnation.com"
+        }
+      ],
+      "urlsUtiles": [
+        [
+          "Embajada de España en Harare (acreditada)",
+          "https://www.exteriores.gob.es/Embajadas/harare"
+        ],
+        [
+          "Recomendaciones de viaje MAEC",
+          "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Recomendaciones-de-viaje.aspx"
+        ]
+      ],
+      "bandera": "🇲🇼",
+      "mapaCoordenadas": [
+        -13.9833,
+        33.7833
+      ]
+    },
+    "na": {
+      "codigo": "na",
+      "nombre": "Namibia",
+      "capital": "Windhoek",
+      "continente": "África",
+      "idioma": "Inglés, Oshivambo, Afrikaans",
+      "moneda": "Dólar namibio (NAD)",
+      "tipoCambio": "1 EUR = 19,61 NAD",
+      "zonaHoraria": "UTC+2",
+      "conduccion": "izquierda",
+      "poblacion": "3,1 millones",
+      "pib": "13,7 mil millones USD",
+      "indicadores": {
+        "ipc": "5,0%",
+        "indicePrecios": "Bajo"
+      },
+      "voltaje": "220V / 50Hz",
+      "prefijoTelefono": "+264",
+      "nivelRiesgo": "bajo",
+      "ultimoInforme": "Mayo 2026",
+      "contactos": [
+        {
+          "tipo": "Embajada",
+          "nombre": "Embajada de España en Namibia",
+          "direccion": "58 Simeon Shixungileni Street, P.O. Box 21811, Windhoek",
+          "telefono": "+264 61 22 30 66",
+          "email": "emb.windhoek@maec.es",
+          "horario": "Lunes a viernes 08:00-15:00"
+        }
+      ],
+      "requerimientos": [
+        {
+          "categoria": "Documentación",
+          "items": [
+            "Pasaporte con validez mínima de 6 meses",
+            "Visado de turista (exento hasta 90 días para españoles)",
+            "Certificado de vacunación de fiebre amarilla (si procede de zona endémica)",
+            "Billete de regreso y reservas de alojamiento"
+          ]
+        },
+        {
+          "categoria": "Sanitario",
+          "items": [
+            "Profilaxis contra la malaria recomendada en el norte del país",
+            "Vacuna contra hepatitis A y B, tifus",
+            "Protección solar intensa (UV extremo en desierto)",
+            "Seguro de viaje con cobertura médica"
+          ]
+        },
+        {
+          "categoria": "Seguridad",
+          "items": [
+            "Namibia es un país seguro, pero mantener precaución en zonas turísticas",
+            "No dejar objetos visibles en vehículos aparcados",
+            "Evitar paseos solitarios por zonas aisladas de Windhoek de noche",
+            "Conducir con precaución por carreteras con fauna suelta"
+          ]
+        }
+      ],
+      "queHacer": [
+        "Recorrer las dunas rojas de Sossusvlei y el Deadvlei en el desierto del Namib",
+        "Hacer un safari en el Parque Nacional de Etosha para ver los Cinco Grandes",
+        "Visitar la Costa de los Esqueletos y sus naufragios en la costa atlántica"
+      ],
+      "queNoHacer": [
+        "No salirse de las pistas señalizadas en el desierto (riesgo de perderse)",
+        "No acercarse a animales salvajes en los parques nacionales",
+        "No conducir de noche en carreteras rurales (fauna suelta y falta de iluminación)",
+        "No volar drones sin permiso expreso de las autoridades"
+      ],
+      "diarios": [
+        {
+          "nombre": "The Namibian",
+          "url": "https://www.namibian.com.na"
+        }
+      ],
+      "urlsUtiles": [
+        [
+          "Embajada de España en Namibia",
+          "https://www.exteriores.gob.es/Embajadas/windhoek"
+        ],
+        [
+          "Recomendaciones de viaje MAEC",
+          "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Recomendaciones-de-viaje.aspx"
+        ]
+      ],
+      "bandera": "🇳🇦",
+      "mapaCoordenadas": [
+        -22.57,
+        17.065
+      ]
+    },
+    "sl": {
+      "codigo": "sl",
+      "nombre": "Sierra Leona",
+      "capital": "Freetown",
+      "continente": "África",
+      "idioma": "Inglés, Krio",
+      "moneda": "Leone (SLE)",
+      "tipoCambio": "1 EUR = 27,9 SLE (nuevo leone)",
+      "zonaHoraria": "UTC+0",
+      "conduccion": "derecha",
+      "poblacion": "8,4 millones",
+      "pib": "7,2 mil millones USD",
+      "indicadores": {
+        "ipc": "18,0%",
+        "indicePrecios": "Alto"
+      },
+      "voltaje": "230V / 50Hz",
+      "prefijoTelefono": "+232",
+      "nivelRiesgo": "medio",
+      "ultimoInforme": "Mayo 2026",
+      "contactos": [
+        {
+          "tipo": "Consulado Honorario",
+          "nombre": "Consulado Honorario de España en Freetown",
+          "direccion": "22 Siaka Stevens Street, Freetown",
+          "telefono": "+232 22 22 62 44",
+          "email": "honconspsl@yahoo.com",
+          "horario": "Lunes a viernes 09:00-14:00"
+        }
+      ],
+      "requerimientos": [
+        {
+          "categoria": "Documentación",
+          "items": [
+            "Pasaporte con validez mínima de 6 meses",
+            "Visado de turista obtenido previamente en embajada",
+            "Certificado de vacunación de fiebre amarilla obligatorio",
+            "Billete de regreso y reserva de hotel"
+          ]
+        },
+        {
+          "categoria": "Sanitario",
+          "items": [
+            "Vacuna contra la fiebre amarilla obligatoria",
+            "Profilaxis contra la malaria obligatoria",
+            "Vacuna contra hepatitis A y B, tifus, cólera y fiebre tifoidea",
+            "Seguro médico internacional con evacuación"
+          ]
+        },
+        {
+          "categoria": "Seguridad",
+          "items": [
+            "Evitar playas solitarias y zonas aisladas en Freetown",
+            "No viajar de noche por carretera",
+            "Extremar precaución en mercados y estaciones de autobús",
+            "Registrarse en la embajada de España al llegar"
+          ]
+        }
+      ],
+      "queHacer": [
+        "Visitar la isla de Bunce, centro de comercio de esclavos, Patrimonio de la Humanidad",
+        "Relajarse en las playas de arena blanca de River Number Two Beach",
+        "Recorrer el Parque Nacional de la Selva de Tacugama y ver chimpancés"
+      ],
+      "queNoHacer": [
+        "No comprar diamantes en bruto o sin certificación oficial",
+        "No fotografiar edificios gubernamentales ni instalaciones militares",
+        "No beber agua del grifo ni consumir alimentos de venta callejera dudosos",
+        "No mostrar joyas u objetos de valor en público"
+      ],
+      "diarios": [
+        {
+          "nombre": "Awoko Newspaper",
+          "url": "https://www.awokonewspaper.com"
+        }
+      ],
+      "urlsUtiles": [
+        [
+          "Embajada de España en Abuja (acreditada)",
+          "https://www.exteriores.gob.es/Embajadas/abuja"
+        ],
+        [
+          "Recomendaciones de viaje MAEC",
+          "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Recomendaciones-de-viaje.aspx"
+        ]
+      ],
+      "bandera": "🇸🇱",
+      "mapaCoordenadas": [
+        8.4872,
+        -13.2356
+      ]
+    },
+    "lr": {
+      "codigo": "lr",
+      "nombre": "Liberia",
+      "capital": "Monrovia",
+      "continente": "África",
+      "idioma": "Inglés",
+      "moneda": "Dólar liberiano (LRD), también USD",
+      "tipoCambio": "1 EUR = 215,86 LRD",
+      "zonaHoraria": "UTC+0",
+      "conduccion": "derecha",
+      "poblacion": "5,6 millones",
+      "pib": "4,0 mil millones USD",
+      "indicadores": {
+        "ipc": "11,0%",
+        "indicePrecios": "Medio"
+      },
+      "voltaje": "120V / 60Hz",
+      "prefijoTelefono": "+231",
+      "nivelRiesgo": "medio",
+      "ultimoInforme": "Mayo 2026",
+      "contactos": [
+        {
+          "tipo": "Consulado Honorario",
+          "nombre": "Consulado Honorario de España en Liberia",
+          "direccion": "56 Broad Street, P.O. Box 1413, Monrovia",
+          "telefono": "+231 88 652 44 52",
+          "email": "weasuakemgsa2003@yahoo.es",
+          "horario": "Lunes a viernes 09:00-14:00"
+        }
+      ],
+      "requerimientos": [
+        {
+          "categoria": "Documentación",
+          "items": [
+            "Pasaporte con validez mínima de 6 meses",
+            "Visado de turista obtenido previamente en embajada",
+            "Certificado de vacunación de fiebre amarilla obligatorio",
+            "Billete de regreso y reserva de alojamiento"
+          ]
+        },
+        {
+          "categoria": "Sanitario",
+          "items": [
+            "Vacuna contra la fiebre amarilla obligatoria",
+            "Profilaxis contra la malaria obligatoria",
+            "Vacuna contra hepatitis A y B, tifus, cólera y fiebre tifoidea",
+            "Seguro médico con evacuación de emergencia"
+          ]
+        },
+        {
+          "categoria": "Seguridad",
+          "items": [
+            "Evitar zonas aisladas y playas solitarias después del atardecer",
+            "Extremar precaución en Monrovia, especialmente de noche",
+            "No mostrar objetos de valor ni llevar grandes sumas de efectivo",
+            "Usar taxis de confianza o vehículos del hotel"
+          ]
+        }
+      ],
+      "queHacer": [
+        "Visitar la isla de Providence, donde se asentaron los primeros esclavos liberados",
+        "Recorrer el parque nacional Sapo, una de las selvas más vírgenes de África",
+        "Relajarse en las playas de Robertsport, famosas para el surf"
+      ],
+      "queNoHacer": [
+        "No tomar fotografías cerca de edificios gubernamentales o mansiones presidenciales",
+        "No beber agua del grifo ni consumir alimentos crudos sin lavar",
+        "No caminar solo por la playa después del anochecer",
+        "No discutir sobre política o etnias locales en público"
+      ],
+      "diarios": [
+        {
+          "nombre": "The Daily Observer",
+          "url": "https://www.liberianobserver.com"
+        }
+      ],
+      "urlsUtiles": [
+        [
+          "Embajada de España en Abuja (acreditada)",
+          "https://www.exteriores.gob.es/Embajadas/abuja"
+        ],
+        [
+          "Recomendaciones de viaje MAEC",
+          "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Recomendaciones-de-viaje.aspx"
+        ]
+      ],
+      "bandera": "🇱🇷",
+      "mapaCoordenadas": [
+        6.3,
+        -10.8
+      ]
+    },
+    "dj": {
+      "codigo": "dj",
+      "nombre": "Yibuti",
+      "capital": "Yibuti",
+      "continente": "África",
+      "idioma": "Árabe, Francés",
+      "moneda": "Franco yibutiano (DJF)",
+      "tipoCambio": "1 EUR = 208 DJF",
+      "zonaHoraria": "UTC+3",
+      "conduccion": "derecha",
+      "poblacion": "1,2 millones",
+      "pib": "3,8 mil millones USD",
+      "indicadores": {
+        "ipc": "1,4%",
+        "indicePrecios": "Bajo"
+      },
+      "voltaje": "220V / 50Hz",
+      "prefijoTelefono": "+253",
+      "nivelRiesgo": "medio",
+      "ultimoInforme": "Mayo 2026",
+      "contactos": [
+        {
+          "tipo": "Viceconsulado Honorario",
+          "nombre": "Viceconsulado Honorario de España en Yibuti",
+          "direccion": "Boulevard Gallieni, Immeuble Aref, 1er étage, BP 219, Yibuti",
+          "telefono": "+253 21 35 63 53",
+          "email": "josefinallorente@yahoo.fr",
+          "horario": "Lunes a viernes 09:00-13:00"
+        }
+      ],
+      "requerimientos": [
+        {
+          "categoria": "Documentación",
+          "items": [
+            "Pasaporte con validez mínima de 6 meses",
+            "Visado de turista disponible online (e-Visa)",
+            "Certificado de vacunación de fiebre amarilla (si procede de zona endémica)",
+            "Billete de regreso y reserva de hotel"
+          ]
+        },
+        {
+          "categoria": "Sanitario",
+          "items": [
+            "Profilaxis contra la malaria recomendada",
+            "Vacuna contra hepatitis A y B, tifus",
+            "Precaución con el calor extremo (hidratación constante)",
+            "Seguro médico con evacuación"
+          ]
+        },
+        {
+          "categoria": "Seguridad",
+          "items": [
+            "Yibuti es relativamente seguro pero mantenerse alerta en zonas concurridas",
+            "Evitar la frontera con Eritrea y Somalia por tensiones",
+            "Respetar las costumbres islámicas en la vestimenta",
+            "No viajar de noche fuera de la capital"
+          ]
+        }
+      ],
+      "queHacer": [
+        "Explorar el lago Assal, el punto más bajo de África y tercero del mundo",
+        "Practicar buceo en el Golfo de Tadjoura con arrecifes de coral",
+        "Visitar el Parque Nacional del Bosque de Day, hábitat del lémur"
+      ],
+      "queNoHacer": [
+        "No fotografiar instalaciones militares ni puertos estratégicos",
+        "No consumir alcohol en público durante el Ramadán",
+        "No vestir de forma demasiado informal en zonas religiosas",
+        "No beber agua del grifo ni consumir hielo de dudosa procedencia"
+      ],
+      "diarios": [
+        {
+          "nombre": "La Nation de Djibouti",
+          "url": "https://www.lanation.dj"
+        }
+      ],
+      "urlsUtiles": [
+        [
+          "Embajada de España en Addis Abeba (acreditada)",
+          "https://www.exteriores.gob.es/Embajadas/addisabeba"
+        ],
+        [
+          "Recomendaciones de viaje MAEC",
+          "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Recomendaciones-de-viaje.aspx"
+        ]
+      ],
+      "bandera": "🇩🇯",
+      "mapaCoordenadas": [
+        11.5886,
+        43.145
+      ]
+    },
+    "er": {
+      "codigo": "er",
+      "nombre": "Eritrea",
+      "capital": "Asmara",
+      "continente": "África",
+      "idioma": "Tigriña, Árabe, Inglés",
+      "moneda": "Nakfa eritreo (ERN)",
+      "tipoCambio": "1 EUR = 17,63 ERN (oficial)",
+      "zonaHoraria": "UTC+3",
+      "conduccion": "derecha",
+      "poblacion": "3,6 millones",
+      "pib": "2,5 mil millones USD",
+      "indicadores": {
+        "ipc": "9,0%",
+        "indicePrecios": "Alto"
+      },
+      "voltaje": "230V / 50Hz",
+      "prefijoTelefono": "+291",
+      "nivelRiesgo": "alto",
+      "ultimoInforme": "Mayo 2026",
+      "contactos": [
+        {
+          "tipo": "Viceconsulado Honorario",
+          "nombre": "Viceconsulado Honorario de España en Asmara",
+          "direccion": "Independence Avenue, Cattani Building III Floor, Suite 8, P.O. Box 5254, Asmara",
+          "telefono": "+291 1 20 28 86",
+          "email": "elcoser@gemel.com.er",
+          "horario": "Lunes a viernes 09:00-13:00"
+        }
+      ],
+      "requerimientos": [
+        {
+          "categoria": "Documentación",
+          "items": [
+            "Pasaporte con validez mínima de 6 meses",
+            "Visado de turista obtenido previamente en embajada (no disponible a la llegada)",
+            "Certificado de vacunación de fiebre amarilla (si procede de zona endémica)",
+            "Permiso especial para viajar fuera de Asmara"
+          ]
+        },
+        {
+          "categoria": "Sanitario",
+          "items": [
+            "Profilaxis contra la malaria recomendada en zonas bajas",
+            "Vacuna contra hepatitis A y B, tifus",
+            "Precaución con la higiene alimentaria",
+            "Seguro médico internacional con evacuación"
+          ]
+        },
+        {
+          "categoria": "Seguridad",
+          "items": [
+            "No fotografiar edificios gubernamentales, militares o infraestructuras",
+            "No viajar sin permiso a zonas fronterizas con Etiopía o Yibuti",
+            "Restricciones severas a la libertad de movimiento",
+            "Registro obligatorio en la representación diplomática"
+          ]
+        }
+      ],
+      "queHacer": [
+        "Recorrer el casco histórico de Asmara, con arquitectura colonial italiana Art Decó",
+        "Visitar las ruinas arqueológicas de Qohaito, ciudad pre-axumita",
+        "Explorar el puerto de Massawa y su arquitectura otomana y egipcia"
+      ],
+      "queNoHacer": [
+        "No fotografiar absolutamente nada de infraestructura militar o gubernamental",
+        "No hacer comentarios críticos sobre el gobierno o el servicio militar",
+        "No cambiar dinero en el mercado paralelo (está prohibido)",
+        "No salir de Asmara sin el permiso de las autoridades de turismo"
+      ],
+      "diarios": [
+        {
+          "nombre": "TesfaNews",
+          "url": "https://www.tesfanews.net"
+        }
+      ],
+      "urlsUtiles": [
+        [
+          "Embajada de España en Jartum (acreditada)",
+          "https://www.exteriores.gob.es/Embajadas/jartum"
+        ],
+        [
+          "Recomendaciones de viaje MAEC",
+          "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Recomendaciones-de-viaje.aspx"
+        ]
+      ],
+      "bandera": "🇪🇷",
+      "mapaCoordenadas": [
+        15.3333,
+        38.9333
+      ]
     }
   },
   "emergenciasData": {

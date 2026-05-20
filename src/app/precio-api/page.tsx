@@ -138,7 +138,7 @@ export default function PrecioApiPage() {
               { icon: Shield, title: 'Riesgo país', desc: 'Nivel MAEC + US State Dept, score numérico, predicción por IA a 7/14/30 días' },
               { icon: BarChart3, title: 'Travel Cost Index', desc: 'TCI completo con desglose por demanda, petróleo, estacionalidad, IPC y riesgo' },
               { icon: AlertTriangle, title: 'Incidentes en vivo', desc: 'Incidentes activos con severidad, coordenadas y recomendaciones. Filtrables por país/tipo' },
-              { icon: Users, title: 'Datos por país', desc: '120 países con bandera, capital, moneda, zona horaria y nivel de riesgo' },
+              { icon: Users, title: 'Datos por país', desc: '137 países con bandera, capital, moneda, zona horaria y nivel de riesgo' },
             ].map((feature) => (
               <div key={feature.title} className="bg-slate-800/50 rounded-xl p-5 border border-slate-700/50">
                 <feature.icon className="w-8 h-8 text-blue-400 mb-3" />

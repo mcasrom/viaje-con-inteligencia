@@ -57,7 +57,7 @@ graph LR
 # 📊 2. Diferencias clave
 
 | Dimensión                | Plataforma turística tradicional | Inteligencia turística OSINT |
-|--------------------------+----------------------------------+-------------------------------|
+|--------------------------|----------------------------------|-------------------------------|
 | Tipo de información     | Estática                         | Dinámica en tiempo real       |
 | Fuente de datos         | Editorial / humana               | OSINT + APIs + scraping       |
 | Enfoque                 | Inspiración                      | Decisión y riesgo             |
@@ -120,13 +120,15 @@ Un sistema OSINT transforma datos en decisiones.
 
 ## 📐 Índice de riesgo turístico
 
-:contentReference[oaicite:0]{index=0}
+```
+IRV = w₁·R_p + w₂·R_a + w₃·R_c
 
 Donde:
-
 - R_p = riesgo político
 - R_a = riesgo de movilidad y vuelos
 - R_c = contexto, restricciones y eventos
+- w₁, w₂, w₃ = pesos ajustables por perfil de viajero
+```
 
 ---
 

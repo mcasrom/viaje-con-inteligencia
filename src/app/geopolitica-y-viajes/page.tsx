@@ -4,10 +4,10 @@ import { ArrowLeft, Globe, Shield, AlertTriangle, TrendingUp, Map, Users, Plane,
 
 export const metadata: Metadata = {
   title: 'Geopolítica y Viajes | Cómo Afectan los Conflictos al Turismo',
-  description: 'Análisis del impacto geopolítico en viajes: conflictos activos, cierres de espacio aéreo, sanciones, GPI, GTI y cómo afectan a la seguridad y coste de tus destinos. 120 países monitorizados.',
+  description: 'Análisis del impacto geopolítico en viajes: conflictos activos, cierres de espacio aéreo, sanciones, GPI, GTI y cómo afectan a la seguridad y coste de tus destinos. 137 países monitorizados.',
   openGraph: {
     title: 'Geopolítica y Viajes | Viaje con Inteligencia',
-    description: 'Indicadores GPI, GTI, HDI, conflictos activos, cierres de espacio aéreo y alertas OSINT combinados en un análisis geopolítico para viajeros. 120 países monitorizados.',
+    description: 'Indicadores GPI, GTI, HDI, conflictos activos, cierres de espacio aéreo y alertas OSINT combinados en un análisis geopolítico para viajeros. 137 países monitorizados.',
     url: 'https://www.viajeinteligencia.com/geopolitica-y-viajes',
     type: 'website',
   },
@@ -121,7 +121,7 @@ const RELATED = [
   { href: '/predicciones', label: 'Predicciones de riesgo', desc: 'Probabilidad de cambio por país' },
   { href: '/alertas', label: 'Alertas geopolíticas', desc: 'Notificaciones de cambios de riesgo' },
   { href: '/pulso-global', label: 'Pulso Global', desc: 'Sentimiento GDELT por país' },
-  { href: '/mapa', label: 'Mapa de riesgos', desc: '120 países con nivel MAEC actualizado' },
+  { href: '/mapa', label: 'Mapa de riesgos', desc: '137 países con nivel MAEC actualizado' },
   { href: '/transparencia', label: 'Centro de transparencia', desc: 'Fuentes y metodología' },
   { href: '/osint-para-viajeros', label: 'OSINT para Viajeros', desc: 'Monitorización de fuentes abiertas' },
   { href: '/travel-risk-intelligence', label: 'Travel Risk Intelligence', desc: 'Visión global de inteligencia de viaje' },
@@ -161,11 +161,25 @@ export default function GeopoliticaYViajesPage() {
           dangerouslySetInnerHTML={{
             __html: JSON.stringify({
               '@context': 'https://schema.org',
-              '@type': 'FAQPage',
-              mainEntity: [
-                { '@type': 'Question', name: '¿Qué países están actualmente en conflicto activo?', acceptedAnswer: { '@type': 'Answer', text: 'Ucrania, Siria, Yemen, Myanmar y Sudán tienen conflictos armados activos. Israel y Líbano están en alerta máxima.' } },
-                { '@type': 'Question', name: '¿Es seguro viajar a un país vecino de una zona de conflicto?', acceptedAnswer: { '@type': 'Answer', text: 'Depende del país y la distancia. Polonia y Rumanía, vecinos de Ucrania, son seguros. La frontera Turquía-Siria es zona de riesgo.' } },
-                { '@type': 'Question', name: '¿Las aseguradoras de viaje cubren destinos en conflicto?', acceptedAnswer: { '@type': 'Answer', text: 'Generalmente no. La mayoría excluye países con recomendación de no viajar del MAEC o US State Dept.' } },
+              '@graph': [
+                {
+                  '@type': 'Article',
+                  headline: 'Geopolítica y Viajes | Cómo Afectan los Conflictos al Turismo',
+                  description: 'Análisis del impacto geopolítico en viajes: conflictos activos, cierres de espacio aéreo, sanciones, GPI, GTI y cómo afectan a la seguridad y coste de tus destinos.',
+                  author: { '@type': 'Person', name: 'M. Castillo' },
+                  publisher: { '@type': 'Organization', name: 'Viaje con Inteligencia' },
+                  datePublished: '2026-05-01',
+                  dateModified: '2026-05-20',
+                  image: 'https://www.viajeinteligencia.com/preview_favicon.jpg',
+                },
+                {
+                  '@type': 'FAQPage',
+                  mainEntity: [
+                    { '@type': 'Question', name: '¿Qué países están actualmente en conflicto activo?', acceptedAnswer: { '@type': 'Answer', text: 'Ucrania, Siria, Yemen, Myanmar y Sudán tienen conflictos armados activos. Israel y Líbano están en alerta máxima.' } },
+                    { '@type': 'Question', name: '¿Es seguro viajar a un país vecino de una zona de conflicto?', acceptedAnswer: { '@type': 'Answer', text: 'Depende del país y la distancia. Polonia y Rumanía, vecinos de Ucrania, son seguros. La frontera Turquía-Siria es zona de riesgo.' } },
+                    { '@type': 'Question', name: '¿Las aseguradoras de viaje cubren destinos en conflicto?', acceptedAnswer: { '@type': 'Answer', text: 'Generalmente no. La mayoría excluye países con recomendación de no viajar del MAEC o US State Dept.' } },
+                  ],
+                },
               ],
             }),
           }}

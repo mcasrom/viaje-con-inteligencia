@@ -4,7 +4,7 @@ import { ArrowLeft, Globe, Newspaper, Shield, AlertTriangle, Database, TrendingU
 
 export const metadata: Metadata = {
   title: 'OSINT para Viajeros | Cómo Usar Fuentes Abiertas para Viajar Seguro',
-  description: 'Guía completa de OSINT aplicado a viajes: cómo monitorizar riesgos geopolíticos, desastres naturales, brotes sanitarios y seguridad con fuentes abiertas y análisis por IA. 120 países, 14 fuentes.',
+  description: 'Guía completa de OSINT aplicado a viajes: cómo monitorizar riesgos geopolíticos, desastres naturales, brotes sanitarios y seguridad con fuentes abiertas y análisis por IA. 137 países, 14 fuentes.',
   openGraph: {
     title: 'OSINT para Viajeros | Viaje con Inteligencia',
     description: 'Aprende a usar fuentes abiertas para monitorizar riesgos, incidentes y seguridad en tus destinos de viaje. 14 fuentes OSINT, alertas y análisis predictivo.',
@@ -180,12 +180,26 @@ export default function OsintParaViajerosPage() {
           dangerouslySetInnerHTML={{
             __html: JSON.stringify({
               '@context': 'https://schema.org',
-              '@type': 'FAQPage',
-              mainEntity: [
-                { '@type': 'Question', name: '¿Qué diferencia hay entre OSINT y las noticias tradicionales?', acceptedAnswer: { '@type': 'Answer', text: 'OSINT captura señales en bruto de múltiples fuentes sin edición intermedia. Es más rápido pero requiere validación.' } },
-                { '@type': 'Question', name: '¿El sistema detecta todos los incidentes en un país?', acceptedAnswer: { '@type': 'Answer', text: 'No. Detecta incidentes que generan señales en GDELT, Reddit, RSS, USGS, GDACS, WHO o ReliefWeb. La cobertura mejora con cada fuente añadida.' } },
-                { '@type': 'Question', name: '¿Puedo confiar en las alertas automáticas?', acceptedAnswer: { '@type': 'Answer', text: 'Las alertas son un sistema de aviso temprano, no una verificación forense. Recomendamos contrastar con fuentes oficiales antes de actuar.' } },
-                { '@type': 'Question', name: '¿Cuánto cuesta el acceso al OSINT?', acceptedAnswer: { '@type': 'Answer', text: 'El feed OSINT público y las fichas de país son gratuitos. Las alertas personalizadas vía Telegram requieren suscripción premium.' } },
+              '@graph': [
+                {
+                  '@type': 'Article',
+                  headline: 'OSINT para Viajeros | Cómo Usar Fuentes Abiertas para Viajar Seguro',
+                  description: 'Guía completa de OSINT aplicado a viajes: cómo monitorizar riesgos geopolíticos, desastres naturales, brotes sanitarios y seguridad con fuentes abiertas y análisis por IA.',
+                  author: { '@type': 'Person', name: 'M. Castillo' },
+                  publisher: { '@type': 'Organization', name: 'Viaje con Inteligencia' },
+                  datePublished: '2026-05-01',
+                  dateModified: '2026-05-20',
+                  image: 'https://www.viajeinteligencia.com/preview_favicon.jpg',
+                },
+                {
+                  '@type': 'FAQPage',
+                  mainEntity: [
+                    { '@type': 'Question', name: '¿Qué diferencia hay entre OSINT y las noticias tradicionales?', acceptedAnswer: { '@type': 'Answer', text: 'OSINT captura señales en bruto de múltiples fuentes sin edición intermedia. Es más rápido pero requiere validación.' } },
+                    { '@type': 'Question', name: '¿El sistema detecta todos los incidentes en un país?', acceptedAnswer: { '@type': 'Answer', text: 'No. Detecta incidentes que generan señales en GDELT, Reddit, RSS, USGS, GDACS, WHO o ReliefWeb. La cobertura mejora con cada fuente añadida.' } },
+                    { '@type': 'Question', name: '¿Puedo confiar en las alertas automáticas?', acceptedAnswer: { '@type': 'Answer', text: 'Las alertas son un sistema de aviso temprano, no una verificación forense. Recomendamos contrastar con fuentes oficiales antes de actuar.' } },
+                    { '@type': 'Question', name: '¿Cuánto cuesta el acceso al OSINT?', acceptedAnswer: { '@type': 'Answer', text: 'El feed OSINT público y las fichas de país son gratuitos. Las alertas personalizadas vía Telegram requieren suscripción premium.' } },
+                  ],
+                },
               ],
             }),
           }}
