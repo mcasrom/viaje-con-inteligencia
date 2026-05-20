@@ -25,7 +25,7 @@
 | A3 | Landing `/colaborar` + formulario + API + footer | A | 20 May | 20 May | 5h | ✅ |
 | B1 | Post FB "Formación Turismo IES Tirant lo Blanc" | B | 20 May | 20 May | 30min | ✅ |
 | B2 | Post r/digitalnomadlife | B | 20 May | 20 May | 15min | ✅ |
-| D1 | Email onboarding (3 emails) | D | — | — | 6h | Pendiente |
+| D1 | Email onboarding (3 emails) | D | 20 May | 20 May | 6h | ✅ |
 | A4 | Página `/afiliados` | A | — | — | 8h | Pendiente |
 | B2 | Hilo X semanal | B | — | — | 1h/sem | Pendiente |
 | B3 | Telegram contenido diario | B | — | — | 30min/día | Pendiente |
@@ -40,7 +40,9 @@
 ## Notas
 
 - Todas las acciones son coste 0€ (solo horas de desarrollo)
-- 20 May: Sprint Captación día 1. Completados A1, A2, A3, B1 (FB), B2 (Reddit). Pendiente: B4, B5, A4, C1-3, D2-3
+- 20 May: Sprint Captación día 1. Completados A1, A2, A3, B1 (FB), B2 (Reddit), B3 (LinkedIn), D1 (email onboarding). Pendiente: B4, B5, A4, C1-3, D2-3
 - r/osinttools primer post (sesión anterior) → 2.5k views. Próximo post técnico en ~7 días
-- D1 (email onboarding): templates 3 emails, trigger post-registro, procesamiento en master cron. Sin ejecutar SQL migration (pendiente)
+- D1 (email onboarding): ✅ código + SQL ejecutado
 - queHacer: rellenado para CF, SO, SS (3 países africanos sin recomendaciones)
+- Sitemap: convertido a route handler dinámico (estaba devolviendo vacío)
+- robots.txt: limpiado (Googlebot/Bingbot no tenían Disallow, indexaban API/admin)
