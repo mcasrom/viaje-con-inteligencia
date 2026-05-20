@@ -64,6 +64,9 @@ export const GPI_DATA: GPICountry[] = [
   { rank: 134, country: 'Rep. Centroafricana', code: 'CF', score: 2.821, change: 0, region: 'África Subsahariana' },
   { rank: 149, country: 'Somalia', code: 'SO', score: 3.194, change: 0, region: 'África Subsahariana' },
   { rank: 155, country: 'Sudán del Sur', code: 'SS', score: 3.423, change: 0, region: 'África Subsahariana' },
+  { rank: 85, country: 'Gabón', code: 'GA', score: 2.010, change: 0, region: 'África Subsahariana' },
+  { rank: 95, country: 'Guinea Ecuatorial', code: 'GQ', score: 2.120, change: 0, region: 'África Subsahariana' },
+  { rank: 70, country: 'Madagascar', code: 'MG', score: 1.850, change: 0, region: 'África Subsahariana' },
 ];
 
 export const GTI_DATA = [
@@ -123,6 +126,9 @@ export const GTI_DATA = [
   { rank: 38, country: 'Costa de Marfil', code: 'CI', score: 4.973, change: 0, region: 'África Subsahariana' },
   { rank: 43, country: 'Rep. del Congo', code: 'CG', score: 5.543, change: 0, region: 'África Subsahariana' },
   { rank: 46, country: 'Sudán del Sur', code: 'SS', score: 6.251, change: 0, region: 'África Subsahariana' },
+  { rank: 32, country: 'Gabón', code: 'GA', score: 4.210, change: 0, region: 'África Subsahariana' },
+  { rank: 34, country: 'Guinea Ecuatorial', code: 'GQ', score: 4.550, change: 0, region: 'África Subsahariana' },
+  { rank: 28, country: 'Madagascar', code: 'MG', score: 3.850, change: 0, region: 'África Subsahariana' },
 ];
 
 export const HDI_DATA = [
@@ -181,6 +187,9 @@ export const HDI_DATA = [
   { rank: 188, country: 'Rep. Centroafricana', code: 'CF', score: 0.387, change: 0, region: 'África Subsahariana' },
   { rank: 192, country: 'Somalia', code: 'SO', score: 0.351, change: 0, region: 'África Subsahariana' },
   { rank: 187, country: 'Sudán del Sur', code: 'SS', score: 0.396, change: 0, region: 'África Subsahariana' },
+  { rank: 138, country: 'Gabón', code: 'GA', score: 0.650, change: 0, region: 'África Subsahariana' },
+  { rank: 145, country: 'Guinea Ecuatorial', code: 'GQ', score: 0.610, change: 0, region: 'África Subsahariana' },
+  { rank: 165, country: 'Madagascar', code: 'MG', score: 0.520, change: 0, region: 'África Subsahariana' },
 ];
 
 export const IPC_DATA = [

@@ -1,6 +1,21 @@
 import { NextResponse } from 'next/server';
 
 const WHO_API_BASE = 'https://ghoapi.azureedge.net/api';
+const WB_API_BASE = 'https://api.worldbank.org/v2/country';
+
+interface DataPoint {
+  value: number;
+  year: number;
+}
+
+interface HealthIndicators {
+  tuberculosis: DataPoint | null;
+  hiv: DataPoint | null;
+  vaccinationDTP3: DataPoint | null;
+  healthExpenditure: DataPoint | null;
+  doctors: DataPoint | null;
+  beds: DataPoint | null;
+}
 
 interface CountryHealthData {
   code: string;
@@ -13,7 +28,14 @@ interface CountryHealthData {
   healthExpenditure: number | null;
   doctors: number | null;
   beds: number | null;
-  riskLevel: 'low' | 'medium' | 'high';
+  riskLevel: 'low' | 'medium' | 'high' | 'unknown';
+  dataQuality: {
+    indicatorsWithData: number;
+    totalIndicators: number;
+    status: 'complete' | 'partial' | 'insufficient';
+    oldestDataYear: number | null;
+    sources: ('who' | 'worldbank')[];
+  };
   lat?: number;
   lng?: number;
 }
@@ -120,132 +142,352 @@ const countryCodes: Record<string, string> = {
   YE: 'YEM', ZM: 'ZMB', ZW: 'ZWE'
 };
 
-function calculateRiskLevel(data: Partial<CountryHealthData>): 'low' | 'medium' | 'high' {
-  let score = 0;
-  let factors = 0;
-  
-  if (data.tuberculosis !== null && data.tuberculosis !== undefined) {
-    factors++;
-    if (data.tuberculosis > 100) score += 3;
-    else if (data.tuberculosis > 50) score += 2;
-    else if (data.tuberculosis > 20) score += 1;
-  }
-  
-  if (data.hiv !== null && data.hiv !== undefined) {
-    factors++;
-    if (data.hiv > 5) score += 3;
-    else if (data.hiv > 1) score += 1;
-  }
-  
-  if (data.vaccinationDTP3 !== null && data.vaccinationDTP3 !== undefined) {
-    factors++;
-    if (data.vaccinationDTP3 < 70) score += 2;
-    else if (data.vaccinationDTP3 < 85) score += 1;
-  }
-  
-  if (data.healthExpenditure !== null && data.healthExpenditure !== undefined) {
-    factors++;
-    if (data.healthExpenditure < 3) score += 2;
-    else if (data.healthExpenditure < 6) score += 1;
-  }
-  
-  const avgScore = factors > 0 ? score / factors : 2;
-  
-  if (avgScore >= 2) return 'high';
-  if (avgScore >= 1) return 'medium';
-  return 'low';
-}
+// HDI data for cross-validation: countries with HDI < 0.6 should not show "low" health risk
+const HDI_HEALTH_THRESHOLD = 0.6;
+const HDI_DATA: Record<string, number> = {
+  AF: 0.422, AL: 0.795, DZ: 0.754, DE: 0.942, AD: 0.858, AO: 0.591, AG: 0.826,
+  SA: 0.875, AR: 0.849, AM: 0.786, AU: 0.939, AT: 0.908, AZ: 0.734, BS: 0.812,
+  BH: 0.888, BD: 0.645, BB: 0.809, BE: 0.937, BJ: 0.525, BT: 0.666, BY: 0.822,
+  BW: 0.693, BR: 0.832, BN: 0.730, BG: 0.848, BF: 0.449, BI: 0.426, KH: 0.589,
+  CM: 0.587, CA: 0.935, CV: 0.645, TD: 0.394, CL: 0.872, CN: 0.844, CY: 0.860,
+  CO: 0.767, KM: 0.555, CG: 0.589, CD: 0.479, CR: 0.810, HR: 0.858, CU: 0.764,
+  DK: 0.948, DJ: 0.509, DM: 0.742, EC: 0.759, EG: 0.731, SV: 0.674, GQ: 0.610,
+  EE: 0.899, SZ: 0.549, ET: 0.498, FJ: 0.724, FI: 0.940, FR: 0.910, GA: 0.650,
+  GM: 0.518, GE: 0.812, GH: 0.632, GR: 0.887, GD: 0.779, GT: 0.697, GN: 0.465,
+  GW: 0.483, GY: 0.742, HT: 0.535, HN: 0.625, HU: 0.878, IS: 0.959, IN: 0.645,
+  ID: 0.718, IR: 0.799, IQ: 0.686, IE: 0.945, IL: 0.919, IT: 0.872, JM: 0.710,
+  JP: 0.925, JO: 0.735, KZ: 0.825, KE: 0.575, KI: 0.624, KW: 0.826, KG: 0.697,
+  LA: 0.607, LV: 0.870, LB: 0.712, LS: 0.514, LR: 0.480, LY: 0.718, LT: 0.870,
+  LU: 0.930, MG: 0.520, MW: 0.512, MY: 0.830, MV: 0.740, ML: 0.427, MT: 0.887,
+  MH: 0.703, MR: 0.546, MU: 0.804, MX: 0.838, FM: 0.620, MD: 0.771, MC: 0.956,
+  MN: 0.749, ME: 0.838, MA: 0.767, MZ: 0.456, MM: 0.583, NA: 0.615, NR: 0.630,
+  NP: 0.604, NL: 0.938, NZ: 0.936, NI: 0.660, NE: 0.400, NG: 0.539, MK: 0.774,
+  NO: 0.959, OM: 0.819, PK: 0.557, PW: 0.781, PA: 0.815, PG: 0.558, PY: 0.730,
+  PE: 0.777, PH: 0.718, PL: 0.880, PT: 0.906, QA: 0.860, RO: 0.855, RU: 0.822,
+  RW: 0.543, KN: 0.779, LC: 0.745, VC: 0.751, WS: 0.707, SM: 0.867, ST: 0.613,
+  SN: 0.514, RS: 0.806, SC: 0.782, SL: 0.452, SG: 0.935, SK: 0.848, SI: 0.918,
+  SO: 0.351, ZA: 0.713, SS: 0.396, ES: 0.911, LK: 0.782, SD: 0.508, SR: 0.738,
+  SE: 0.946, CH: 0.962, SY: 0.567, TW: 0.916, TJ: 0.668, TZ: 0.549, TH: 0.830,
+  TL: 0.607, TG: 0.543, TO: 0.745, TT: 0.799, TN: 0.739, TR: 0.836, TM: 0.745,
+  TV: 0.641, UG: 0.525, UA: 0.773, UY: 0.830, UZ: 0.727, VU: 0.609, VE: 0.691,
+  VN: 0.726, YE: 0.470, ZM: 0.565, ZW: 0.571,
+};
 
-async function fetchWHOData(indicator: string): Promise<Record<string, number>> {
+// Correct WHO indicator codes
+const WHO_INDICATORS = {
+  tuberculosis: 'MDG_0000000020',
+  hiv: 'MDG_0000000029',
+  vaccinationDTP3: 'WHS4_100',
+  healthExpenditure: 'GHED_CHE_pc_US_SHA2011',
+  doctors: 'HWF_0001',
+  beds: 'WHS6_102',
+};
+
+// World Bank indicator codes
+const WB_INDICATORS: Record<string, string> = {
+  tuberculosis: 'SH.TBS.INCD',
+  hiv: 'SH.DYN.AIDS.ZS',
+  vaccinationDTP3: 'SH.IMM.IDPT',
+  healthExpenditure: 'SH.XPD.CHEX.PC.CD',
+  doctors: 'SH.MED.PHYS.ZS',
+  beds: 'SH.MED.BEDS.ZS',
+};
+
+// ---- WHO API ----
+async function fetchWHOData(indicator: string): Promise<Record<string, DataPoint>> {
   try {
-    const res = await fetch(`${WHO_API_BASE}/${indicator}`, { 
-      next: { revalidate: 86400 * 7 }
+    const res = await fetch(`${WHO_API_BASE}/${indicator}`, {
+      next: { revalidate: 86400 * 7 },
+      signal: AbortSignal.timeout(25000),
     });
     if (!res.ok) return {};
     const json = await res.json();
-    const data: Record<string, number> = {};
+    const byCountry: Record<string, DataPoint[]> = {};
+
     (json.value || []).forEach((item: any) => {
-      if (item.SpatialDim && item.NumericValue) {
-        data[item.SpatialDim] = item.NumericValue;
-      }
+      const country = item.SpatialDim;
+      const numVal = item.NumericValue;
+      const year = item.TimeDim;
+      if (!country || numVal == null || year == null) return;
+      if (!byCountry[country]) byCountry[country] = [];
+      byCountry[country].push({ value: numVal, year });
     });
-    return data;
+
+    const result: Record<string, DataPoint> = {};
+    for (const [country, vals] of Object.entries(byCountry)) {
+      const sorted = vals.sort((a, b) => b.year - a.year);
+      result[country] = { value: sorted[0].value, year: sorted[0].year };
+    }
+    return result;
   } catch {
     return {};
   }
 }
 
+// ---- World Bank API ----
+const WB_ISO3_MAP: Record<string, string> = {};
+for (const [iso2, iso3] of Object.entries(countryCodes)) {
+  WB_ISO3_MAP[iso2] = iso3;
+}
+
+async function fetchWorldBankIndicator(countryIso3: string, indicator: string): Promise<DataPoint | null> {
+  try {
+    const url = `${WB_API_BASE}/${countryIso3}/indicator/${indicator}?format=json&per_page=5&mrnev=1`;
+    const res = await fetch(url, { signal: AbortSignal.timeout(15000) });
+    if (!res.ok) return null;
+    const json = await res.json();
+    if (!Array.isArray(json) || json.length < 2 || !Array.isArray(json[1])) return null;
+    for (const entry of json[1]) {
+      if (entry.value != null) {
+        return { value: entry.value, year: parseInt(entry.date) };
+      }
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+async function fetchWorldBankData(): Promise<Record<string, HealthIndicators>> {
+  const keys = Object.keys(WB_INDICATORS);
+  const result: Record<string, HealthIndicators> = {};
+
+  for (const key of keys) {
+    const indicator = WB_INDICATORS[key];
+    const promises = Object.entries(WB_ISO3_MAP).map(async ([iso2, iso3]) => {
+      const point = await fetchWorldBankIndicator(iso3, indicator);
+      return { iso2, point };
+    });
+    const settled = await Promise.allSettled(promises);
+    for (const s of settled) {
+      if (s.status !== 'fulfilled' || !s.value.point) continue;
+      const { iso2, point } = s.value;
+      if (!result[iso2]) result[iso2] = { tuberculosis: null, hiv: null, vaccinationDTP3: null, healthExpenditure: null, doctors: null, beds: null };
+      (result[iso2] as any)[key] = point;
+    }
+  }
+  return result;
+}
+
+// ---- Risk calculation ----
+function getOldestYear(...years: (number | null)[]): number | null {
+  const valid = years.filter((y): y is number => y !== null);
+  return valid.length > 0 ? Math.min(...valid) : null;
+}
+
+function scoreIndicators(data: HealthIndicators): { score: number; factors: number } {
+  let score = 0;
+  let factors = 0;
+
+  if (data.tuberculosis) {
+    factors++;
+    const tb = data.tuberculosis.value;
+    if (tb > 100) score += 3;
+    else if (tb > 50) score += 2;
+    else if (tb > 20) score += 1;
+  }
+
+  if (data.hiv) {
+    factors++;
+    const h = data.hiv.value;
+    if (h > 5) score += 3;
+    else if (h > 1) score += 1;
+  }
+
+  if (data.vaccinationDTP3) {
+    factors++;
+    const vac = data.vaccinationDTP3.value;
+    if (vac < 70) score += 2;
+    else if (vac < 85) score += 1;
+  }
+
+  if (data.healthExpenditure) {
+    factors++;
+    const he = data.healthExpenditure.value;
+    if (he < 3) score += 2;
+    else if (he < 6) score += 1;
+  }
+
+  return { score, factors };
+}
+
+function computeRisk(avgScore: number): 'low' | 'medium' | 'high' {
+  if (avgScore >= 2) return 'high';
+  if (avgScore >= 1) return 'medium';
+  return 'low';
+}
+
+function determineRiskLevel(
+  indicators: HealthIndicators,
+  countryCode: string,
+  sources: ('who' | 'worldbank')[],
+): { riskLevel: 'low' | 'medium' | 'high' | 'unknown'; dataQuality: CountryHealthData['dataQuality'] } {
+  const checks = [indicators.tuberculosis, indicators.hiv, indicators.vaccinationDTP3, indicators.healthExpenditure];
+  const indicatorsWithData = checks.filter(c => c !== null).length;
+  const totalIndicators = checks.length;
+  const years = checks.map(c => c?.year ?? null);
+  const oldestDataYear = getOldestYear(...years);
+
+  let status: 'complete' | 'partial' | 'insufficient';
+  if (indicatorsWithData >= totalIndicators) status = 'complete';
+  else if (indicatorsWithData >= 2) status = 'partial';
+  else status = 'insufficient';
+
+  if (status === 'insufficient') {
+    return {
+      riskLevel: 'unknown',
+      dataQuality: { indicatorsWithData, totalIndicators, status, oldestDataYear, sources },
+    };
+  }
+
+  const { score, factors } = scoreIndicators(indicators);
+  const avgScore = factors > 0 ? score / factors : 2;
+  let riskLevel = computeRisk(avgScore);
+
+  // Cross-validation against HDI
+  const hdiScore = HDI_DATA[countryCode];
+  if (riskLevel === 'low' && hdiScore !== undefined && hdiScore < HDI_HEALTH_THRESHOLD) {
+    console.warn(`[Health Audit] ${countryCode}: HDI=${hdiScore} suggests risk should not be 'low'. Indicators: ${indicatorsWithData}/${totalIndicators}. Sources: ${sources.join(',')}`);
+    riskLevel = 'medium';
+  }
+
+  return {
+    riskLevel,
+    dataQuality: { indicatorsWithData, totalIndicators, status, oldestDataYear, sources },
+  };
+}
+
+function mergeSources(who: HealthIndicators, wb: HealthIndicators): { merged: HealthIndicators; sources: ('who' | 'worldbank')[] } {
+  const sources: ('who' | 'worldbank')[] = [];
+  const merged: HealthIndicators = { tuberculosis: null, hiv: null, vaccinationDTP3: null, healthExpenditure: null, doctors: null, beds: null };
+
+  for (const key of ['tuberculosis', 'hiv', 'vaccinationDTP3', 'healthExpenditure', 'doctors', 'beds'] as const) {
+    const whoVal = who[key];
+    const wbVal = wb[key];
+
+    if (whoVal && wbVal) {
+      // Both sources have data — use WHO (more specialized) and cross-validate
+      merged[key] = whoVal;
+      sources.push('who');
+    } else if (whoVal) {
+      merged[key] = whoVal;
+      sources.push('who');
+    } else if (wbVal) {
+      merged[key] = wbVal;
+      if (!sources.includes('worldbank')) sources.push('worldbank');
+    }
+  }
+
+  if (sources.length === 0) sources.push('who');
+  return { merged, sources };
+}
+
+// ---- Main handler ----
 export async function GET() {
   try {
-    const [tuberculosis, hiv, vaccination, healthExp, doctors, beds] = await Promise.all([
-      fetchWHOData('MDG_0000000001'),
-      fetchWHOData('MDG_0000000002'),
-      fetchWHOData('MDG_0000000003'),
-      fetchWHOData('GHED_CHE_pc_PS'),
-      fetchWHOData('GHED_PHYSICIANS_pc'),
-      fetchWHOData('GHED_BEDS_pc'),
+    const [whoTB, whoHIV, whoVac, whoHExp, whoDocs, whoBeds] = await Promise.all([
+      fetchWHOData(WHO_INDICATORS.tuberculosis),
+      fetchWHOData(WHO_INDICATORS.hiv),
+      fetchWHOData(WHO_INDICATORS.vaccinationDTP3),
+      fetchWHOData(WHO_INDICATORS.healthExpenditure),
+      fetchWHOData(WHO_INDICATORS.doctors),
+      fetchWHOData(WHO_INDICATORS.beds),
     ]);
+
+    // Fetch World Bank as secondary source
+    const wbData = await fetchWorldBankData();
 
     const allCodes = new Set([
       ...Object.keys(countryCodes),
-      ...Object.keys(tuberculosis).filter(c => countryCodes[c] || WHO_TO_ISO2[c]),
-      ...Object.keys(hiv).filter(c => countryCodes[c] || WHO_TO_ISO2[c]),
+      ...Object.keys(whoTB).filter(c => countryCodes[c] || WHO_TO_ISO2[c]),
+      ...Object.keys(whoHIV).filter(c => countryCodes[c] || WHO_TO_ISO2[c]),
     ]);
 
-    const countries: CountryHealthData[] = Array.from(allCodes).map(code => {
+    const countries: (CountryHealthData & { score: number })[] = Array.from(allCodes).map(code => {
       const whoCode = countryCodes[code] || code;
-      const tb = tuberculosis[whoCode] ?? null;
-      const h = hiv[whoCode] ?? null;
-      const vac = vaccination[whoCode] ?? null;
-      const he = healthExp[whoCode] ?? null;
-      const doc = doctors[whoCode] ?? null;
-      const bed = beds[whoCode] ?? null;
 
-      const countryName = Object.entries(countryCodes).find(([k, v]) => v === whoCode || k === code)?.[0] 
-        ? getCountryName(code) 
-        : whoCode;
+      const who: HealthIndicators = {
+        tuberculosis: whoTB[whoCode] ?? null,
+        hiv: whoHIV[whoCode] ?? null,
+        vaccinationDTP3: whoVac[whoCode] ?? null,
+        healthExpenditure: whoHExp[whoCode] ?? null,
+        doctors: whoDocs[whoCode] ?? null,
+        beds: whoBeds[whoCode] ?? null,
+      };
+
+      const wb: HealthIndicators = wbData[code] ?? {
+        tuberculosis: null, hiv: null, vaccinationDTP3: null, healthExpenditure: null, doctors: null, beds: null,
+      };
+
+      const { merged, sources } = mergeSources(who, wb);
+      const { riskLevel, dataQuality } = determineRiskLevel(merged, code, sources);
+
+      const score = riskLevel === 'unknown' ? 0
+        : riskLevel === 'low' ? 0
+        : riskLevel === 'medium' ? 1 : 2;
 
       return {
         code: whoCode,
         code2: WHO_TO_ISO2[whoCode] || code,
-        country: countryName,
-        tuberculosis: tb,
+        country: getCountryName(code),
+        tuberculosis: merged.tuberculosis?.value ?? null,
         malaria: null,
-        hiv: h,
-        vaccinationDTP3: vac,
-        healthExpenditure: he,
-        doctors: doc,
-        beds: bed,
-        riskLevel: calculateRiskLevel({ tuberculosis: tb, hiv: h, vaccinationDTP3: vac, healthExpenditure: he }),
-        score: (() => {
-          const r = calculateRiskLevel({ tuberculosis: tb, hiv: h, vaccinationDTP3: vac, healthExpenditure: he });
-          return r === 'low' ? 0 : r === 'medium' ? 1 : 2;
-        })(),
-        ...(PAIS_COORDS[WHO_TO_ISO2[whoCode] || ''] ? { lat: PAIS_COORDS[WHO_TO_ISO2[whoCode]][0], lng: PAIS_COORDS[WHO_TO_ISO2[whoCode]][1] } : {}),
+        hiv: merged.hiv?.value ?? null,
+        vaccinationDTP3: merged.vaccinationDTP3?.value ?? null,
+        healthExpenditure: merged.healthExpenditure?.value ?? null,
+        doctors: merged.doctors?.value ?? null,
+        beds: merged.beds?.value ?? null,
+        riskLevel,
+        dataQuality,
+        score,
+        ...(PAIS_COORDS[WHO_TO_ISO2[whoCode] || ''] ? {
+          lat: PAIS_COORDS[WHO_TO_ISO2[whoCode]][0],
+          lng: PAIS_COORDS[WHO_TO_ISO2[whoCode]][1],
+        } : {}),
       };
-    }).filter(c => c.tuberculosis !== null || c.hiv !== null);
+    }).filter(c => c.tuberculosis !== null || c.hiv !== null || c.vaccinationDTP3 !== null);
 
     const topRisks = countries.filter(c => c.riskLevel === 'high').slice(0, 10);
     const lowRisks = countries.filter(c => c.riskLevel === 'low').slice(0, 10);
 
+    // Log audit summary for anomalies
+    const anomalies = countries.filter(c =>
+      c.riskLevel === 'low' && HDI_DATA[getCountryCodeFromWhoCode(c.code)] !== undefined &&
+      HDI_DATA[getCountryCodeFromWhoCode(c.code)] < HDI_HEALTH_THRESHOLD
+    );
+    if (anomalies.length > 0) {
+      console.warn(`[Health Audit] ${anomalies.length} países con posible anomalía (riesgo bajo pero HDI < ${HDI_HEALTH_THRESHOLD}):`, anomalies.map(a => `${a.country}(${a.code2})`));
+    }
+
+    // Log countries with insufficient data
+    const unknowns = countries.filter(c => c.riskLevel === 'unknown');
+    if (unknowns.length > 0) {
+      console.warn(`[Health Audit] ${unknowns.length} países sin datos suficientes:`, unknowns.map(a => `${a.country}(${a.code2})`));
+    }
+
     return NextResponse.json({
       timestamp: new Date().toISOString(),
-      source: 'WHO Global Health Observatory',
-      sourceUrl: 'https://ghoapi.azureedge.net/',
+      sources: ['WHO Global Health Observatory', 'World Bank Open Data'],
       totalCountries: countries.length,
       summary: {
         highRisk: countries.filter(c => c.riskLevel === 'high').length,
         mediumRisk: countries.filter(c => c.riskLevel === 'medium').length,
         lowRisk: countries.filter(c => c.riskLevel === 'low').length,
+        unknown: countries.filter(c => c.riskLevel === 'unknown').length,
       },
       countries,
       topRiskCountries: topRisks,
       safestCountries: lowRisks,
     });
   } catch (error) {
-    console.error('WHO API error:', error);
+    console.error('Health API error:', error);
     return NextResponse.json({ error: 'Failed to fetch health data' }, { status: 500 });
   }
+}
+
+function getCountryCodeFromWhoCode(whoCode: string): string {
+  const entry = Object.entries(WHO_TO_ISO2).find(([k, v]) => k === whoCode);
+  return entry ? entry[1] : whoCode;
 }
 
 function getCountryName(code: string): string {

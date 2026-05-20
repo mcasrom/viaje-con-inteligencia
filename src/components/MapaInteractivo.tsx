@@ -55,13 +55,14 @@ interface SismoData {
 interface CountryHealthData {
   code: string;
   country: string;
-  riskLevel: 'low' | 'medium' | 'high';
+  riskLevel: 'low' | 'medium' | 'high' | 'unknown';
 }
 
 const healthColors: Record<string, { fill: string; border: string }> = {
   low: { fill: '#22c55e', border: '#16a34a' },
   medium: { fill: '#f59e0b', border: '#d97706' },
   high: { fill: '#ef4444', border: '#dc2626' },
+  unknown: { fill: '#64748b', border: '#475569' },
 };
 
 const conflictZones = [
@@ -316,7 +317,7 @@ export default function MapaInteractivo({ fullScreen = false }: { fullScreen?: b
                     className="mt-2 px-2 py-1 rounded text-white text-sm font-medium"
                     style={{ backgroundColor: hc.fill }}
                   >
-                    Riesgo sanitario: {c.riskLevel === 'low' ? 'Bajo' : c.riskLevel === 'medium' ? 'Medio' : 'Alto'}
+                    Riesgo sanitario: {c.riskLevel === 'low' ? 'Bajo' : c.riskLevel === 'medium' ? 'Medio' : c.riskLevel === 'high' ? 'Alto' : 'En estudio'}
                   </div>
                   <p className="text-xs text-slate-500 mt-2">Fuente: WHO Global Health Observatory</p>
                 </div>

@@ -9,7 +9,7 @@ interface WHOHealthData {
   timestamp: string;
   source: string;
   totalCountries: number;
-  summary: { highRisk: number; mediumRisk: number; lowRisk: number };
+  summary: { highRisk: number; mediumRisk: number; lowRisk: number; unknown: number };
   countries: {
     code: string;
     code2: string;
@@ -20,7 +20,13 @@ interface WHOHealthData {
     healthExpenditure: number | null;
     doctors: number | null;
     beds: number | null;
-    riskLevel: 'low' | 'medium' | 'high';
+    riskLevel: 'low' | 'medium' | 'high' | 'unknown';
+    dataQuality?: {
+      indicatorsWithData: number;
+      totalIndicators: number;
+      status: 'complete' | 'partial' | 'insufficient';
+      oldestDataYear: number | null;
+    };
   }[];
   topRiskCountries: { code: string; code2: string; country: string; tuberculosis: number | null; hiv: number | null; vaccinationDTP3: number | null; riskLevel: string }[];
   safestCountries: { code: string; code2: string; country: string; tuberculosis: number | null; hiv: number | null; vaccinationDTP3: number | null; riskLevel: string }[];
@@ -566,29 +572,33 @@ export default function KPIDashboard({
                 </div>
               </div>
 
-              {/* Risk distribution bar */}
-              <div className="bg-slate-800/60 rounded-xl border border-slate-700/50 p-5">
-                <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-                  <Activity className="w-5 h-5 text-purple-400" />
-                  Distribución de riesgo sanitario
-                </h3>
-                <div className="flex h-4 rounded-full overflow-hidden">
-                  {healthData.summary.lowRisk > 0 && (
-                    <div className="bg-emerald-500 transition-all" style={{ width: `${(healthData.summary.lowRisk / healthData.totalCountries) * 100}%` }} title={`Bajo: ${healthData.summary.lowRisk}`} />
-                  )}
-                  {healthData.summary.mediumRisk > 0 && (
-                    <div className="bg-amber-500 transition-all" style={{ width: `${(healthData.summary.mediumRisk / healthData.totalCountries) * 100}%` }} title={`Medio: ${healthData.summary.mediumRisk}`} />
-                  )}
-                  {healthData.summary.highRisk > 0 && (
-                    <div className="bg-rose-500 transition-all" style={{ width: `${(healthData.summary.highRisk / healthData.totalCountries) * 100}%` }} title={`Alto: ${healthData.summary.highRisk}`} />
-                  )}
+                {/* Risk distribution bar */}
+                <div className="bg-slate-800/60 rounded-xl border border-slate-700/50 p-5">
+                  <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                    <Activity className="w-5 h-5 text-purple-400" />
+                    Distribución de riesgo sanitario
+                  </h3>
+                  <div className="flex h-4 rounded-full overflow-hidden">
+                    {healthData.summary.lowRisk > 0 && (
+                      <div className="bg-emerald-500 transition-all" style={{ width: `${(healthData.summary.lowRisk / healthData.totalCountries) * 100}%` }} title={`Bajo: ${healthData.summary.lowRisk}`} />
+                    )}
+                    {healthData.summary.mediumRisk > 0 && (
+                      <div className="bg-amber-500 transition-all" style={{ width: `${(healthData.summary.mediumRisk / healthData.totalCountries) * 100}%` }} title={`Medio: ${healthData.summary.mediumRisk}`} />
+                    )}
+                    {healthData.summary.highRisk > 0 && (
+                      <div className="bg-rose-500 transition-all" style={{ width: `${(healthData.summary.highRisk / healthData.totalCountries) * 100}%` }} title={`Alto: ${healthData.summary.highRisk}`} />
+                    )}
+                    {healthData.summary.unknown > 0 && (
+                      <div className="bg-slate-500 transition-all" style={{ width: `${(healthData.summary.unknown / healthData.totalCountries) * 100}%` }} title={`En estudio: ${healthData.summary.unknown}`} />
+                    )}
+                  </div>
+                  <div className="flex gap-6 mt-3 text-xs">
+                    <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-emerald-500" /> Bajo ({healthData.summary.lowRisk})</span>
+                    <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-amber-500" /> Medio ({healthData.summary.mediumRisk})</span>
+                    <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-rose-500" /> Alto ({healthData.summary.highRisk})</span>
+                    {healthData.summary.unknown > 0 && <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-slate-500" /> En estudio ({healthData.summary.unknown})</span>}
+                  </div>
                 </div>
-                <div className="flex gap-6 mt-3 text-xs">
-                  <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-emerald-500" /> Bajo ({healthData.summary.lowRisk})</span>
-                  <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-amber-500" /> Medio ({healthData.summary.mediumRisk})</span>
-                  <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-rose-500" /> Alto ({healthData.summary.highRisk})</span>
-                </div>
-              </div>
 
               <div className="grid md:grid-cols-2 gap-6">
                 {/* Safest countries */}
