@@ -1,14 +1,15 @@
 # Way Ahead
 
-## Última sesión: 20 May 2026 — Sprint Captación (FB + Reddit outreach)
+## Última sesión: 20 May 2026 — Sprint Captación día 1 (FB, Reddit, LinkedIn)
 
-> **Último deploy verificado:** OK ✅ — A1/A2/A3 completados
+> **Último deploy verificado:** OK ✅ — A1/A2/A3 + D1 + sitemap fix + queHacer
 > 
 > **Sprint activo:** Captación — ver `captacion/README.md`
 >
 > **Outreach realizados:**
 > - ✅ FB "Formación Turismo IES Tirant lo Blanc" — 20 May
 > - ✅ r/digitalnomadlife — 20 May
+> - ✅ LinkedIn (post founder: "De una frustración personal a 137 países") — 20 May
 
 ---
 
