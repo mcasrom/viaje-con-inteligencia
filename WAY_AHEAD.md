@@ -1,14 +1,16 @@
 # Way Ahead
 
-## Última sesión: 21 May 2026 — Homepage EN + SentimentClimate bug fix
+## Última sesión: 21 May 2026 — Homepage EN + Incident boost OSINT
 
-> **Último deploy verificado:** OK ✅ (commit `f96bcf9`)
+> **Último deploy verificado:** OK ✅ (commit `02fa0e0`)
 >
 > **Sprint activo:** Captación — ver `captacion/README.md`
 >
 > **Logros día:**
-> - ✅ **Homepage EN (`/en`)** — refactor completo con I18n. ~80 keys de traducción. `t()` soporta params `t('key', { n: 136 })`. `/en` ahora renderiza la homepage moderna (antes: solo `<MapaMundial />` legacy).
-> - ✅ **SentimentClimate bug fix** — causa raíz: `location_name` siempre `null` para RSS/Reddit/GDELT/USGS (solo WHO lo puebla). Filtro JS buscaba nombre español ("Argentina", "Portugal") en datos en inglés → solo España funcionaba por chiripa. Fix: filter por `countryCode` vía `ilike` en Supabase (`location_name.ilike.%AR%`).
+> - ✅ **Homepage EN (`/en`)** — refactor completo con I18n. ~80 keys de traducción. `t()` soporta params. `/en` renderiza homepage moderna.
+> - ✅ **SentimentClimate bug fix** — `location_name` siempre `null` para 4/6 fuentes. Filtro JS por nombre español fallaba para casi todos los países. Fix: filter por `countryCode` vía `ilike` en Supabase.
+> - ✅ **Health risk outbreak integration** — incidentes `health_outbreak` activos elevan riesgo sanitario a 'alto' automáticamente (commit `64ad82c`).
+> - ✅ **Incident boost general (`useIncidentBoost`)** — nuevo hook que consulta incidentes activos (`conflict`, `terrorism`, `security_threat`, `protest`, `health_outbreak`) y escala `nivelRiesgo` mostrado en mapa y sidepanel. Nunca baja el riesgo, solo sube.
 > - ✅ **English page refactor** — item #9 de prioridades (baja) movido a completado.
 
 ---
@@ -225,13 +227,15 @@ curl -s http://178.105.80.193:3001/api/health
 | 6 | **RLS fix** | 4 tablas sin RLS (`osint_word_trends`, `seguros_catalog`, `seguros_perfiles`, `user_watchlist`) ahora con policies. Resuelto aviso crítico Supabase |
 | 7 | **Extras día 1** | Sitemap fix (route handler dinámico), robots.txt limpiado, queHacer 3 países (CF, SO, SS), analytics gráficos admin |
 
-### Lo conseguido en esta sesión (21 May — Homepage EN + SentimentClimate fix)
+### Lo conseguido en esta sesión (21 May — Homepage EN + Incident boost OSINT)
 
 | # | Entregable | Detalle |
 |---|------------|---------|
-| 1 | **Homepage EN (`/en`)** | Refactor i18n completo. ~80 keys de traducción añadidas. `t()` con params. `/en` renderiza homepage moderna en vez de MapaMundial legacy. |
-| 2 | **SentimentClimate bug fix** | `location_name` null para 4/6 fuentes OSINT. Filtro JS por nombre español no funcionaba para la mayoría de países. Fix: filter by `countryCode` vía `ilike` en Supabase. España funcionaba por chiripa. |
-| 3 | **Deploy** | Commit `f96bcf9` push a main. |
+| 1 | **Homepage EN (`/en`)** | Refactor i18n completo. ~80 keys, `t()` con params. `/en` renderiza homepage moderna. |
+| 2 | **SentimentClimate bug fix** | `location_name` null para 4/6 fuentes. Filter por countryCode vía `ilike` en Supabase. |
+| 3 | **Health outbreak integration** | Incidentes `health_outbreak` activos → riesgo sanitario 'alto'. Patrón: fetchActiveOutbreakCountries() + override. |
+| 4 | **Incident boost general** | Hook `useIncidentBoost` + `applyBoost`. Conflict→alto, terrorism→alto, security_threat→medio, protest→medio. Aplica en MapaInteractivo, SidePanel, HomeClient. |
+| 5 | **Deploy** | Commits `f96bcf9`, `64ad82c`, `02fa0e0` → main. |
 
 ### Lo conseguido en la sesión anterior (19 May — sesión 4)
 
@@ -309,6 +313,8 @@ curl -s http://178.105.80.193:3001/api/health
 | 25 | Deploy con swap | `.github/workflows/` | ✅ OOM fix Hetzner CX22 |
 | 26 | Homepage EN | `/en` | ✅ Refactor i18n, ~80 keys, `t()` con params |
 | 27 | SentimentClimate country filter | `sentiment-climate/route.ts` | ✅ Filter por countryCode vía `ilike` |
+| 28 | Health outbreak override | `kpis/health/route.ts` | ✅ Incidentes health_outbreak → riesgo 'alto' |
+| 29 | Incident boost hook | `lib/useIncidentBoost.ts` | ✅ OSINT activo escala riesgo general en mapa |
 
 ---
 
