@@ -859,6 +859,14 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
+  // Return 202 immediately — processing continues in background
+  // This avoids Cloudflare 100s gateway timeout and GitHub Actions 504 failures
+  runCronAsync().catch(e => log.error('Cron async failed', e));
+
+  return NextResponse.json({ status: 'started', message: 'Cron launched asynchronously — check Telegram digest for results' });
+}
+
+async function runCronAsync() {
   const startTime = Date.now();
   const results: Record<string, any> = {};
 
@@ -867,7 +875,7 @@ export async function GET(request: Request) {
   // Phase 1: Independent tasks (run in parallel)
   // All tasks execute concurrently with individual timeouts.
   // Phase 1 also has a global timeout to prevent total hang.
-  const PHASE1_TIMEOUT_MS = 150000;
+  const PHASE1_TIMEOUT_MS = 240000;
 
   const settledPromises = Promise.allSettled([
     withTimeout(() => runMaecScrape(), 90000, '1/8 MAEC scrape'),
@@ -1003,12 +1011,7 @@ results.onboarding = await withTimeout(() => runOnboardingQueue(), 30000, '8g/8 
     log.error('Failed to log cron_history:', e);
   }
 
-  return NextResponse.json({
-    success: true,
-    elapsed_ms: elapsed,
-    steps: results,
-    timestamp: new Date().toISOString(),
-  });
+  log.info(`✅ Cron completed in ${elapsed}ms — ${okSteps}/${totalSteps} OK, ${errorSteps} errors`);
 }
 
 // ===== HEATMAP DETECTOR =====

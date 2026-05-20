@@ -17,4 +17,5 @@ jobs:
           echo "HTTP $status"
           cat /tmp/cron_response.txt | head -c 500
           echo ""
-          [ "$status" = "200" ] || exit 1
+          # Accept 200 (sync) or 202 (async) as success
+          [ "$status" = "200" ] || [ "$status" = "202" ] || exit 1
