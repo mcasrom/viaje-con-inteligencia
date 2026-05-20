@@ -60,7 +60,7 @@ export default function PredictionsClient() {
   const loadPredictions = async () => {
     setLoading(true);
     try {
-      const res = await fetch('/api/risk-predictions?sort=riskScore&order=desc&limit=107');
+      const res = await fetch('/api/risk-predictions?sort=riskScore&order=desc&limit=200');
       const data = await res.json();
       setPredictions(data.predictions || []);
     } catch {
@@ -79,8 +79,9 @@ export default function PredictionsClient() {
     });
   };
 
+  const normalize = (s: string) => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
   const filtered = predictions.filter(p =>
-    p.countryName.toLowerCase().includes(search.toLowerCase()) ||
+    normalize(p.countryName).includes(normalize(search)) ||
     p.countryCode.toLowerCase().includes(search.toLowerCase())
   );
 

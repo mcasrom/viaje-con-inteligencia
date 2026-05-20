@@ -229,7 +229,10 @@ export function computeProbability(
   transitionProb: number,
   features: MlFeatures | null,
 ): { up7d: number; up14d: number; up30d: number } {
-  if (riskNum >= 5) return { up7d: 0.001, up14d: 0.002, up30d: 0.005 };
+  if (riskNum >= 5) {
+    const base = Math.min(0.02 + signals.criticalCount * 0.02 + signals.highCount * 0.01 + incidents.count * 0.01, 0.15);
+    return { up7d: base, up14d: Math.min(base * 1.8, 0.25), up30d: Math.min(base * 2.5, 0.35) };
+  }
 
   const signalBoost = signals.criticalCount * 0.05 + signals.highCount * 0.03;
   const incidentBoost = incidents.count * 0.04;
