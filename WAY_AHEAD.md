@@ -1,10 +1,14 @@
 # Way Ahead
 
-## Última sesión: 20 May 2026 — Sprint Captación activo (A2: free trial Chat IA)
+## Última sesión: 20 May 2026 — Sprint Captación (FB + Reddit outreach)
 
-> **Último deploy verificado:** OK ✅ — 137 países, SEO actualizado, blog fixes
+> **Último deploy verificado:** OK ✅ — A1/A2/A3 completados
 > 
-> **Sprint activo:** Captación — ver `captacion/README.md` para seguimiento detallado
+> **Sprint activo:** Captación — ver `captacion/README.md`
+>
+> **Outreach realizados:**
+> - ✅ FB "Formación Turismo IES Tirant lo Blanc" — 20 May
+> - ✅ r/digitalnomadlife — 20 May
 
 ---
 
