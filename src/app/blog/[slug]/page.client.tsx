@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { ArrowLeft, Calendar, Clock, Tag, Eye, Share2 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import MermaidRenderer from '@/components/MermaidRenderer';
 import StarRating from '@/components/StarRating';
 import ShareButtons from '@/components/ShareButtons';
 
@@ -255,6 +256,12 @@ export default function BlogPostPage({ post }: { post: Post }) {
             <ReactMarkdown
               remarkPlugins={[remarkGfm]}
               components={{
+                code: ({ className, children }) => {
+                  if (className === 'language-mermaid') {
+                    return <MermaidRenderer chart={String(children)} />;
+                  }
+                  return <code className={className}>{children}</code>;
+                },
                 img: ({ src, alt, title }) => {
                   if (!src || typeof src !== 'string') return null;
                   return <OptimizedImage src={src} alt={alt || ''} title={typeof title === 'string' ? title : undefined} />;

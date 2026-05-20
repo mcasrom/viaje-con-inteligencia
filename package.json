@@ -21,8 +21,8 @@
     "@stripe/stripe-js": "^9.2.0",
     "@supabase/ssr": "^0.10.2",
     "@supabase/supabase-js": "^2.103.3",
+    "@tailwindcss/postcss": "^4",
     "@tailwindcss/typography": "^0.5.19",
-
     "dexie": "^4.4.2",
     "dotenv": "^17.4.2",
     "framer-motion": "^12.38.0",
@@ -32,6 +32,7 @@
     "jspdf": "^4.2.1",
     "leaflet": "^1.9.4",
     "lucide-react": "^1.8.0",
+    "mermaid": "^11.15.0",
     "ml-random-forest": "^2.1.0",
     "next": "^16.2.6",
     "next-intl": "^4.9.1",
@@ -46,8 +47,7 @@
     "resend": "^6.12.2",
     "stripe": "^22.0.2",
     "web-push": "^3.6.7",
-    "zod": "^4.4.3",
-    "@tailwindcss/postcss": "^4"
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.9.1",

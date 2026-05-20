@@ -32,32 +32,25 @@ Aquí es donde nace la diferencia entre una **plataforma turística tradicional*
 
 ## 🔄 Cambio de paradigma
 
-#+BEGIN_SRC plantuml
-@startuml
-title Evolución: turismo informativo vs inteligencia turística
-
-actor Usuario
-
-rectangle "Plataformas turísticas tradicionales" {
-  [Blogs de viaje]
-  [Guías estáticas]
-  [Reservas]
-  [Recomendaciones editoriales]
-}
-
-rectangle "Sistema de inteligencia turística OSINT" {
-  [Scraping global]
-  [IA predictiva]
-  [Scoring de riesgo]
-  [Alertas en tiempo real]
-  [Análisis geopolítico]
-}
-
-Usuario --> [Plataformas turísticas tradicionales]
-Usuario --> [Sistema de inteligencia turística OSINT]
-
-@enduml
-#+END_SRC
+```mermaid
+graph LR
+  U((Usuario))
+  subgraph T["Plataformas turísticas tradicionales"]
+    Blogs["Blogs de viaje"]
+    Guias["Guías estáticas"]
+    Reservas["Reservas"]
+    Recomendaciones["Recomendaciones editoriales"]
+  end
+  subgraph S["Sistema de inteligencia turística OSINT"]
+    Scraping["Scraping global"]
+    IA["IA predictiva"]
+    Scoring["Scoring de riesgo"]
+    Alertas["Alertas en tiempo real"]
+    Geopolitico["Análisis geopolítico"]
+  end
+  U --> T
+  U --> S
+```
 
 ---
 
@@ -92,38 +85,30 @@ En el contexto turístico incluye:
 
 ## 🔁 Pipeline de inteligencia turística
 
-#+BEGIN_SRC plantuml
-@startuml
-title Arquitectura OSINT aplicada a turismo
-
-actor FuentesExternas
-
-rectangle "Ingesta OSINT" {
-  [Noticias globales]
-  [APIs de vuelos]
-  [Alertas gubernamentales]
-  [Redes sociales]
-}
-
-rectangle "Motor de IA" {
-  [Normalización]
-  [Detección de eventos]
-  [Scoring de riesgo]
-  [Predicción de cambios]
-}
-
-rectangle "Capa de usuario" {
-  [Mapa de riesgo]
-  [Recomendación IA]
-  [Alertas en tiempo real]
-}
-
-FuentesExternas --> [Ingesta OSINT]
-[Ingesta OSINT] --> [Motor de IA]
-[Motor de IA] --> [Capa de usuario]
-
-@enduml
-#+END_SRC
+```mermaid
+graph LR
+  F[("Fuentes Externas")]
+  subgraph Ingesta["Ingesta OSINT"]
+    Noticias["Noticias globales"]
+    Vuelos["APIs de vuelos"]
+    AlertasG["Alertas gubernamentales"]
+    Redes["Redes sociales"]
+  end
+  subgraph Motor["Motor de IA"]
+    Normalizacion["Normalización"]
+    Eventos["Detección de eventos"]
+    ScoringR["Scoring de riesgo"]
+    Prediccion["Predicción de cambios"]
+  end
+  subgraph Usuario["Capa de usuario"]
+    Mapa["Mapa de riesgo"]
+    Recomendacion["Recomendación IA"]
+    AlertasT["Alertas en tiempo real"]
+  end
+  F --> Ingesta
+  Ingesta --> Motor
+  Motor --> Usuario
+```
 
 ---
 
