@@ -20,8 +20,8 @@
 
 | # | Acción | Eje | Inicio | Fin | Horas | Estado |
 |---|--------|-----|--------|-----|-------|--------|
-| A2 | Free trial Chat IA (3 preguntas sin login) | A | 20 May | 20 May | 4h | ✅ Completado |
-| A1 | Lead magnet PDF checklist viaje seguro | A | — | — | 2h | Pendiente |
+| A2 | Free trial Chat IA (3 preguntas sin login) | A | 20 May | 20 May | 4h | ✅ |
+| A1 | Lead magnet PDF checklist viaje seguro | A | 20 May | 20 May | 3h | ✅ |
 | B1 | Publicar drafts Reddit + Facebook + X | B | — | — | 2h | Pendiente |
 | A3 | Landing `/colaborar` | A | — | — | 6h | Pendiente |
 | D1 | Email onboarding (3 emails) | D | — | — | 6h | Pendiente |

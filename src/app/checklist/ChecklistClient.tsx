@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, CheckCircle2, Circle, Download, Printer, Share2, ChevronDown, ChevronUp, FileText, Shield, Wallet, Smartphone, Briefcase, Heart, Zap, AlertTriangle, Star } from 'lucide-react';
+import { ArrowLeft, CheckCircle2, Circle, Download, Printer, Share2, ChevronDown, ChevronUp, FileText, Shield, Wallet, Smartphone, Briefcase, Heart, Zap, AlertTriangle, Star, Mail, Loader2, Check, X, Gift } from 'lucide-react';
 
 interface ChecklistCategory {
   id: string;
@@ -214,6 +214,11 @@ export default function ChecklistClient() {
     Object.fromEntries(INITIAL_CATEGORIES.map(c => [c.id, true]))
   );
   const [filter, setFilter] = useState<'all' | 'unchecked' | 'essential'>('all');
+  const [showLeadModal, setShowLeadModal] = useState(false);
+  const [leadEmail, setLeadEmail] = useState('');
+  const [leadName, setLeadName] = useState('');
+  const [leadStatus, setLeadStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [leadMessage, setLeadMessage] = useState('');
 
   const toggleItem = (categoryId: string, itemId: string) => {
     setCategories(prev =>
@@ -257,6 +262,31 @@ export default function ChecklistClient() {
   const totalItems = categories.reduce((sum, cat) => sum + cat.items.length, 0);
   const checkedItems = categories.reduce((sum, cat) => sum + cat.items.filter(i => i.checked).length, 0);
   const progress = totalItems > 0 ? Math.round((checkedItems / totalItems) * 100) : 0;
+
+  const handleLeadDownload = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLeadStatus('loading');
+    try {
+      const res = await fetch('/api/newsletter/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: leadEmail, nombre: leadName || undefined, source: 'checklist' }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setLeadStatus('success');
+        setLeadMessage(data.message || '¡Descargando!');
+        const url = '/api/checklist-pdf?' + new URLSearchParams({ email: leadEmail, name: leadName || 'viajero' });
+        window.open(url, '_blank');
+      } else {
+        setLeadStatus('error');
+        setLeadMessage(data.error || 'Error al procesar');
+      }
+    } catch {
+      setLeadStatus('error');
+      setLeadMessage('Error de conexión');
+    }
+  };
 
   const filteredCategories = categories.map(cat => {
     let items = cat.items;
@@ -452,8 +482,30 @@ export default function ChecklistClient() {
           })}
         </div>
 
+        {/* Lead Magnet — Download banner */}
+        <div className="mt-8 bg-gradient-to-r from-yellow-600/20 to-orange-600/20 rounded-xl border border-yellow-500/30 p-6">
+          <div className="flex flex-col sm:flex-row items-center gap-4">
+            <div className="flex-1">
+              <h3 className="text-white font-bold flex items-center gap-2">
+                <Gift className="w-5 h-5 text-yellow-400" />
+                Descarga la Checklist Premium
+              </h3>
+              <p className="text-slate-400 text-sm mt-1">
+                80+ items en PDF listo para imprimir. Incluye documentos, salud, finanzas y seguridad.
+              </p>
+            </div>
+            <button
+              onClick={() => setShowLeadModal(true)}
+              className="px-5 py-2.5 bg-yellow-500 hover:bg-yellow-400 text-slate-900 rounded-lg font-bold transition-colors text-sm flex items-center gap-2 whitespace-nowrap"
+            >
+              <Download className="w-4 h-4" />
+              Descargar gratis
+            </button>
+          </div>
+        </div>
+
         {/* Footer Tip */}
-        <div className="mt-8 bg-gradient-to-r from-blue-600/20 to-cyan-600/20 border border-blue-500/30 rounded-xl p-5 text-center">
+        <div className="mt-6 bg-gradient-to-r from-blue-600/20 to-cyan-600/20 border border-blue-500/30 rounded-xl p-5 text-center">
           <AlertTriangle className="w-6 h-6 text-blue-400 mx-auto mb-2" />
           <h3 className="text-white font-bold mb-1">¿No sabes a dónde ir?</h3>
           <p className="text-slate-400 text-sm mb-3">Usa el comparador de destinos y encuentra el viaje perfecto según seguridad, coste y clima.</p>
@@ -462,6 +514,78 @@ export default function ChecklistClient() {
           </Link>
         </div>
       </div>
+
+      {/* Lead magnet modal */}
+      {showLeadModal && (
+        <div className="fixed inset-0 z-[2000] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <div className="bg-slate-800 rounded-2xl p-6 max-w-md w-full border border-slate-700 shadow-2xl">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                <Gift className="w-5 h-5 text-yellow-400" />
+                Checklist Premium
+              </h3>
+              <button onClick={() => { setShowLeadModal(false); setLeadStatus('idle'); }} className="p-1 text-slate-400 hover:text-white transition-colors">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {leadStatus === 'success' ? (
+              <div className="text-center py-6">
+                <Check className="w-12 h-12 text-green-400 mx-auto mb-3" />
+                <p className="text-white font-medium">{leadMessage}</p>
+                <p className="text-slate-400 text-sm mt-1">El PDF se ha abierto en una nueva pestaña.</p>
+                <button onClick={() => setShowLeadModal(false)} className="mt-4 text-sm text-blue-400 hover:text-blue-300 underline">
+                  Cerrar
+                </button>
+              </div>
+            ) : (
+              <form onSubmit={handleLeadDownload} className="space-y-4">
+                <p className="text-slate-400 text-sm">Ingresa tu email y recibe la checklist completa en PDF. También recibirás alertas de viaje semanales.</p>
+
+                {leadStatus === 'error' && (
+                  <div className="text-red-400 text-sm bg-red-500/10 p-3 rounded-lg">{leadMessage}</div>
+                )}
+
+                <input
+                  type="text"
+                  value={leadName}
+                  onChange={e => setLeadName(e.target.value)}
+                  placeholder="Tu nombre (opcional)"
+                  className="w-full px-4 py-3 bg-slate-700 text-white rounded-lg border border-slate-600 focus:border-yellow-500 focus:outline-none text-sm"
+                />
+                <input
+                  type="email"
+                  value={leadEmail}
+                  onChange={e => setLeadEmail(e.target.value)}
+                  placeholder="tu@email.com"
+                  required
+                  className="w-full px-4 py-3 bg-slate-700 text-white rounded-lg border border-slate-600 focus:border-yellow-500 focus:outline-none text-sm"
+                />
+
+                <button
+                  type="submit"
+                  disabled={leadStatus === 'loading'}
+                  className="w-full px-4 py-3 bg-yellow-500 hover:bg-yellow-400 text-slate-900 rounded-lg font-bold transition-colors disabled:opacity-50 flex items-center justify-center gap-2 text-sm"
+                >
+                  {leadStatus === 'loading' ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <>
+                      <Download className="w-4 h-4" />
+                      Descargar PDF gratis
+                    </>
+                  )}
+                </button>
+
+                <p className="text-slate-500 text-xs text-center">
+                  <Mail className="w-3 h-3 inline mr-1" />
+                  Sin spam. Cancelas cuando quieras.
+                </p>
+              </form>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
