@@ -1,21 +1,15 @@
 # Way Ahead
 
-## Última sesión: 20 May 2026 — Sprint Captación día 1 + infra/ML
+## Última sesión: 21 May 2026 — Homepage EN + SentimentClimate bug fix
 
-> **Último deploy verificado:** OK ✅
+> **Último deploy verificado:** OK ✅ (commit `f96bcf9`)
 >
 > **Sprint activo:** Captación — ver `captacion/README.md`
 >
-> **Logros día (captación):** A1-A4, B1 (FB), B2 (Reddit, LinkedIn), B3 (Telegram diario), D1-D2
->
-> **Logros día (infra/ML):**
-> - ✅ **Cron async fix** — return 202 instantáneo + background processing (evita 504 Cloudflare)
-> - ✅ **Word frequency anomaly** (`osint_word_trends`) — detección temprana de picos de términos (z-score ≥ 2)
-> - ✅ **Sentimiento integrado en `computeRiskScore()`** — avg_tone_7d < -3 impacta el score heurístico
-> - ✅ **Sentimiento en `computeProbability()`** — probabilidad de escalada aumenta con negatividad
-> - ✅ **`buildFeatureVector()` corregido** — ahora incluye 5 features de sentimiento (antes 20, RF esperaba 25)
-> - ✅ **RLS fix** — 4 tablas sin RLS habilitadas (osint_word_trends, seguros_catalog, seguros_perfiles, user_watchlist)
-> - ✅ **Deploy fix** — swap 2GB + NODE_OPTIONS para evitar OOM en build de Hetzner
+> **Logros día:**
+> - ✅ **Homepage EN (`/en`)** — refactor completo con I18n. ~80 keys de traducción. `t()` soporta params `t('key', { n: 136 })`. `/en` ahora renderiza la homepage moderna (antes: solo `<MapaMundial />` legacy).
+> - ✅ **SentimentClimate bug fix** — causa raíz: `location_name` siempre `null` para RSS/Reddit/GDELT/USGS (solo WHO lo puebla). Filtro JS buscaba nombre español ("Argentina", "Portugal") en datos en inglés → solo España funcionaba por chiripa. Fix: filter por `countryCode` vía `ilike` en Supabase (`location_name.ilike.%AR%`).
+> - ✅ **English page refactor** — item #9 de prioridades (baja) movido a completado.
 
 ---
 
@@ -231,6 +225,14 @@ curl -s http://178.105.80.193:3001/api/health
 | 6 | **RLS fix** | 4 tablas sin RLS (`osint_word_trends`, `seguros_catalog`, `seguros_perfiles`, `user_watchlist`) ahora con policies. Resuelto aviso crítico Supabase |
 | 7 | **Extras día 1** | Sitemap fix (route handler dinámico), robots.txt limpiado, queHacer 3 países (CF, SO, SS), analytics gráficos admin |
 
+### Lo conseguido en esta sesión (21 May — Homepage EN + SentimentClimate fix)
+
+| # | Entregable | Detalle |
+|---|------------|---------|
+| 1 | **Homepage EN (`/en`)** | Refactor i18n completo. ~80 keys de traducción añadidas. `t()` con params. `/en` renderiza homepage moderna en vez de MapaMundial legacy. |
+| 2 | **SentimentClimate bug fix** | `location_name` null para 4/6 fuentes OSINT. Filtro JS por nombre español no funcionaba para la mayoría de países. Fix: filter by `countryCode` vía `ilike` en Supabase. España funcionaba por chiripa. |
+| 3 | **Deploy** | Commit `f96bcf9` push a main. |
+
 ### Lo conseguido en la sesión anterior (19 May — sesión 4)
 
 | # | Entregable | Detalle |
@@ -305,6 +307,8 @@ curl -s http://178.105.80.193:3001/api/health
 | 23 | Sentimiento en scoring | `ml-risk-predictor.ts` | ✅ 5 features en heuristico |
 | 24 | RLS fix 4 tablas | — | ✅ osint_word_trends, seguros*, user_watchlist |
 | 25 | Deploy con swap | `.github/workflows/` | ✅ OOM fix Hetzner CX22 |
+| 26 | Homepage EN | `/en` | ✅ Refactor i18n, ~80 keys, `t()` con params |
+| 27 | SentimentClimate country filter | `sentiment-climate/route.ts` | ✅ Filter por countryCode vía `ilike` |
 
 ---
 
@@ -344,7 +348,7 @@ curl -s http://178.105.80.193:3001/api/health
 
 ### 🟢 BAJA PRIORIDAD
 
-9. **Version ingles** — i18n Next.js, traducir UI + contenido (3-4 sprints)
+9. **Version ingles** — i18n Next.js, traducir UI + contenido ✅ Completado (homepage `/en` con i18n, ~80 keys)
 10. **Partnerships aseguradoras** — API riesgo para cotizacion automatica, widget embebible (variable)
 11. **Integracion calendarios** — Google Calendar OAuth, alertas pre-viaje (1-2 sprints)
 12. **ML Clustering avanzado** — K-Means + DBSCAN + recomendacion colaborativa (2 sprints)
@@ -359,7 +363,7 @@ curl -s http://178.105.80.193:3001/api/health
 | **Sprint 2** | ML Predictivo (data + features) + API Publica v1 | Anticipar riesgo + B2B |
 | **Sprint 3** | PWA + Chat IA contexto personalizado | Movil + engagement |
 | **Sprint 4** | ML Predictivo v2 (entrenar + deploy) + Dashboard Premium | Prediccion real + UX premium |
-| **Sprint 5+** | Comunidad → Calendarios → Aseguradoras → Ingles | Escala |
+| **Sprint 5+** | Comunidad → Calendarios → Aseguradoras → Escala |
 
 ---
 
@@ -571,7 +575,7 @@ git add -A && git commit -m "msg" && git push
 
 ### ML / Data
 - Validación temporal CV (~25 días de datos)
-- Widget "Clima de viaje" en ficha de país (tone_score badge)
+- [x] Widget "Clima de viaje" en ficha de país ✅ (existente, bug corregido 21 May: filtraba solo por nombre español, ahora usa countryCode + ilike)
 - Newsletter con sentimiento semanal
 - Tendencias semanales de sentimiento (página admin)
 - Alertas de sentimiento (umbral tone_score)

@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { supabase } from '@/lib/supabase';
 
 const WHO_API_BASE = 'https://ghoapi.azureedge.net/api';
 const WB_API_BASE = 'https://api.worldbank.org/v2/country';
@@ -382,16 +383,50 @@ function mergeSources(who: HealthIndicators, wb: HealthIndicators): { merged: He
   return { merged, sources };
 }
 
+// ---- Active outbreak integration ----
+async function fetchActiveOutbreakCountries(): Promise<Set<string>> {
+  const outbreakCountries = new Set<string>();
+  if (!supabase) return outbreakCountries;
+
+  try {
+    const { data, error } = await supabase
+      .from('incidents')
+      .select('country_code')
+      .eq('type', 'health_outbreak')
+      .eq('is_active', true);
+
+    if (error) {
+      console.error('[Health API] Error fetching active outbreaks:', error.message);
+      return outbreakCountries;
+    }
+
+    for (const inc of data || []) {
+      if (inc.country_code) {
+        outbreakCountries.add(inc.country_code.toUpperCase());
+      }
+    }
+
+    if (outbreakCountries.size > 0) {
+      console.log(`[Health API] Active outbreaks found for: ${Array.from(outbreakCountries).join(', ')}`);
+    }
+  } catch (e) {
+    console.error('[Health API] Failed to fetch outbreaks:', e);
+  }
+
+  return outbreakCountries;
+}
+
 // ---- Main handler ----
 export async function GET() {
   try {
-    const [whoTB, whoHIV, whoVac, whoHExp, whoDocs, whoBeds] = await Promise.all([
+    const [whoTB, whoHIV, whoVac, whoHExp, whoDocs, whoBeds, outbreakCountries] = await Promise.all([
       fetchWHOData(WHO_INDICATORS.tuberculosis),
       fetchWHOData(WHO_INDICATORS.hiv),
       fetchWHOData(WHO_INDICATORS.vaccinationDTP3),
       fetchWHOData(WHO_INDICATORS.healthExpenditure),
       fetchWHOData(WHO_INDICATORS.doctors),
       fetchWHOData(WHO_INDICATORS.beds),
+      fetchActiveOutbreakCountries(),
     ]);
 
     // Fetch World Bank as secondary source
@@ -420,7 +455,13 @@ export async function GET() {
       };
 
       const { merged, sources } = mergeSources(who, wb);
-      const { riskLevel, dataQuality } = determineRiskLevel(merged, code, sources);
+      let { riskLevel, dataQuality } = determineRiskLevel(merged, code, sources);
+
+      // Override to 'high' if an active health outbreak is detected via OSINT pipeline
+      if (riskLevel !== 'unknown' && outbreakCountries.has(code.toUpperCase())) {
+        console.log(`[Health API] ${code}: active outbreak detected, overriding riskLevel ${riskLevel} → high`);
+        riskLevel = 'high';
+      }
 
       const score = riskLevel === 'unknown' ? 0
         : riskLevel === 'low' ? 0
