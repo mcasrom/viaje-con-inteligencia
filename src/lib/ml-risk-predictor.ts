@@ -214,6 +214,19 @@ export function computeRiskScore(
       else if (features.ipc_score > 10) score += 10;
       else if (features.ipc_score > 5) score += 5;
     }
+
+    // Sentiment factors
+    if (features.avg_tone_7d !== null && features.avg_tone_7d !== undefined) {
+      if (features.avg_tone_7d < -8) score += 15;
+      else if (features.avg_tone_7d < -5) score += 10;
+      else if (features.avg_tone_7d < -3) score += 5;
+      else if (features.avg_tone_7d < -1) score += 2;
+    }
+    if (features.tone_trend_7d < -0.5) score += 5;
+    else if (features.tone_trend_7d < -0.2) score += 2;
+    if (features.negative_ratio_7d > 0.5) score += 7;
+    else if (features.negative_ratio_7d > 0.3) score += 3;
+    if (features.tone_volatility_7d > 3) score += 3;
   }
 
   return Math.min(Math.max(score, 1), 100);
@@ -249,6 +262,17 @@ export function computeProbability(
       else if (features.ipc_score > 10) trendBoost += 0.05;
       else if (features.ipc_score > 5) trendBoost += 0.03;
     }
+
+    // Sentiment probability boost
+    if (features.avg_tone_7d !== null && features.avg_tone_7d !== undefined) {
+      if (features.avg_tone_7d < -8) trendBoost += 0.08;
+      else if (features.avg_tone_7d < -5) trendBoost += 0.05;
+      else if (features.avg_tone_7d < -3) trendBoost += 0.03;
+    }
+    if (features.tone_trend_7d < -0.5) trendBoost += 0.04;
+    if (features.negative_ratio_7d > 0.5) trendBoost += 0.05;
+    else if (features.negative_ratio_7d > 0.3) trendBoost += 0.03;
+    if (features.tone_volatility_7d > 3) trendBoost += 0.02;
   }
 
   const base = Math.min(
@@ -298,6 +322,15 @@ function getTopFactors(
       else if (features.ipc_score > 10) factors.push(`Inflación muy alta (${features.ipc_score}%)`);
       else if (features.ipc_score > 5) factors.push(`Inflación elevada (${features.ipc_score}%)`);
     }
+
+    // Sentiment factors in UI
+    if (features.avg_tone_7d !== null && features.avg_tone_7d !== undefined) {
+      if (features.avg_tone_7d < -8) factors.push(`Sentimiento extremadamente negativo (${features.avg_tone_7d.toFixed(1)})`);
+      else if (features.avg_tone_7d < -5) factors.push(`Sentimiento muy negativo (${features.avg_tone_7d.toFixed(1)})`);
+    }
+    if (features.tone_trend_7d < -0.5) factors.push('Sentimiento en caída rápida');
+    if (features.negative_ratio_7d > 0.5) factors.push(`${Math.round(features.negative_ratio_7d * 100)}% de señales negativas`);
+    if (features.tone_volatility_7d > 3) factors.push('Alta volatilidad en sentimiento');
   }
 
   if (seasonalMult > 1.1) factors.push('Temporada de alto riesgo climático');
@@ -348,6 +381,11 @@ export async function buildFeatureVector(code: string): Promise<number[] | null>
     features?.us_risk_score ?? 0,
     features?.risk_trend_7d ?? 0,
     features?.risk_trend_30d ?? 0,
+    features?.avg_tone_7d ?? 0,
+    features?.avg_tone_30d ?? 0,
+    features?.tone_trend_7d ?? 0,
+    features?.negative_ratio_7d ?? 0,
+    features?.tone_volatility_7d ?? 0,
   ];
 }
 
