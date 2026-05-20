@@ -1,8 +1,10 @@
 # Way Ahead
 
-## Última sesión: 20 May 2026 — Sprint 5: Tono solo-founder + blog interlinking + conflict monitor links + Sprint Performance doc
+## Última sesión: 20 May 2026 — Sprint Captación activo (A2: free trial Chat IA)
 
-> **Último deploy verificado:** OK ✅ — push a main con fixes de tono, interlinking y conflict monitor
+> **Último deploy verificado:** OK ✅ — 137 países, SEO actualizado, blog fixes
+> 
+> **Sprint activo:** Captación — ver `captacion/README.md` para seguimiento detallado
 
 ---
 
@@ -389,6 +391,34 @@ Las 3 pillar pages existían pero eran demasiado cortas (~800-1200 palabras cada
 ---
 
 ## SPRINTS PENDIENTES
+
+### 🔴 Sprint Captación — Usuarios, Colaboradores & Partners (prioridad: MUY ALTA)
+**Problema:** La plataforma tiene producto funcional (137 países, OSINT, ML, alertas, API B2B) pero apenas tráfico orgánico ni usuarios registrados. Sin usuarios no hay feedback, ni métricas, ni tracción.
+
+**Objetivo:** Generar los primeros 100 usuarios registrados + 5 colaboradores activos + 2 partners estratégicos en 30 días.
+
+#### Marketing directo (coste 0€)
+- [ ] **Lead magnet checklist**: Ofrecer "Checklist de viaje seguro" PDF descargable a cambio de email en `/checklist`. Construir lista desde 0.
+- [ ] **Free trial sin registro**: Dejar que usuarios usen el Chat IA 3 preguntas sin loguearse (hoy pide login). Reduce fricción. Medir conversión a registro.
+- [ ] **Landing "Colabora"**: Página `/colaborar` con call to action claro: byline, enlace portfolio, acceso anticipado a features beta.
+- [ ] **Programa de afiliados manual**: 10% comisión en suscripciones premium para bloggers de viajes que refieran tráfico. Página `/afiliados` con dashboard básico.
+
+#### Outreach orgánico
+- [ ] **Publicar drafts Reddit (4) + Facebook (2)**: Ya existen en `content/outreach/`. Publicar esta semana.
+- [ ] **X/Twitter**: Hilo semanal con 1 predicción ML + 1 alerta activa. Usar hashtags #TurismoSeguro #IATravel.
+- [ ] **Telegram canal**: Contenido diario (alerta del día, país destacado). Promocionar en foros de viajeros.
+- [ ] **LosViajeros / Foro de Viajeros**: Post con firma, responder dudas sobre seguridad en destinos.
+- [ ] **Email outreach**: 10 bloggers de viajes (ES) + 5 agencias (LATAM) con propuesta de valor y demo gratuita.
+
+#### Partners estratégicos
+- [ ] **Aseguradoras de viaje**: Proponer widget IRV embed para web de seguros (ej: InterMundial, IATI). Ellos ganan diferenciación, nosotros ganamos backlinks + tráfico.
+- [ ] **Agencias de viajes**: API B2B free tier para que agencias pequeñas monitoricen destinos de sus clientes. Onboarding 1:1.
+- [ ] **Universidades**: Programa de investigación OSINT/turismo para estudiantes de relaciones internacionales o turismo. Data gratuita a cambio de papers/mención.
+
+#### Conversión y retención
+- [ ] **Email onboarding**: Serie 3 emails automáticos al registrarse (día 1: radar de viaje, día 3: alertas, día 7: predicciones ML).
+- [ ] **Notificación push**: País favorito cambia de nivel de riesgo → email + notificación web.
+- [ ] **Compartir con amigos**: Botón "Invita a un amigo" en dashboard que da 1 mes premium gratis por cada registro referido.
 
 ### 🟢 Sprint Colaboradores (prioridad: media)
 **Email creado:** `colabs@viajeinteligencia.com`
