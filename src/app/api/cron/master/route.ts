@@ -146,6 +146,17 @@ async function runRiskCheck(): Promise<any> {
       });
     }
 
+    // Notify users via email
+    if (changes.length > 0) {
+      try {
+        const { notifyRiskChanges } = await import('@/lib/risk-notifier');
+        const emailResult = await notifyRiskChanges(changes);
+        log.info(`Risk email notifications: ${emailResult.notified} sent, ${emailResult.errors} errors`);
+      } catch (e: any) {
+        log.error('Risk email notifications failed', e);
+      }
+    }
+
     return { status: 'ok', changes: changes.length, updated: updatedCount };
   } catch (e: any) {
     return { status: 'error', error: e.message };

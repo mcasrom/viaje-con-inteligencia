@@ -34,7 +34,7 @@
 | C1 | Widget IRV embed aseguradoras | C | — | — | 16h | Pendiente |
 | C2 | API free tier agencias | C | — | — | 8h | Pendiente |
 | C3 | Landing `/investigacion` universidades | C | — | — | 4h | Pendiente |
-| D2 | Notificaciones cambio riesgo | D | — | — | 8h | Pendiente |
+| D2 | Notificaciones cambio riesgo | D | 20 May | 20 May | 8h | ✅ |
 | D3 | Programa referidos | D | — | — | 12h | Pendiente |
 
 ## Notas
