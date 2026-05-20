@@ -19,12 +19,12 @@ interface Prediction {
   predictedAt: string;
 }
 
-const riskConfig: Record<string, { label: string; color: string; bg: string }> = {
-  'sin-riesgo': { label: 'Sin riesgo', color: 'text-green-400', bg: 'bg-green-500/10' },
-  'bajo': { label: 'Bajo', color: 'text-yellow-400', bg: 'bg-yellow-500/10' },
-  'medio': { label: 'Medio', color: 'text-orange-400', bg: 'bg-orange-500/10' },
-  'alto': { label: 'Alto', color: 'text-red-400', bg: 'bg-red-500/10' },
-  'muy-alto': { label: 'Muy alto', color: 'text-red-600', bg: 'bg-red-900/20' },
+const riskConfig: Record<string, { label: string; color: string; bg: string; hex: string }> = {
+  'sin-riesgo': { label: 'Sin riesgo', color: 'text-green-400', bg: 'bg-green-500/10', hex: '#4ade80' },
+  'bajo': { label: 'Bajo', color: 'text-yellow-400', bg: 'bg-yellow-500/10', hex: '#facc15' },
+  'medio': { label: 'Medio', color: 'text-orange-400', bg: 'bg-orange-500/10', hex: '#fb923c' },
+  'alto': { label: 'Alto', color: 'text-red-400', bg: 'bg-red-500/10', hex: '#f87171' },
+  'muy-alto': { label: 'Muy alto', color: 'text-red-600', bg: 'bg-red-900/20', hex: '#dc2626' },
 };
 
 function getRiskScoreColor(score: number): string {
@@ -52,6 +52,7 @@ export default function PredictionsClient() {
   const [search, setSearch] = useState('');
   const [sortBy, setSortBy] = useState<string>('riskScore');
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
+  const [riskFilter, setRiskFilter] = useState<string | null>(null);
 
   useEffect(() => {
     loadPredictions();
@@ -81,11 +82,24 @@ export default function PredictionsClient() {
 
   const normalize = (s: string) => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
   const filtered = predictions.filter(p =>
-    normalize(p.countryName).includes(normalize(search)) ||
-    p.countryCode.toLowerCase().includes(search.toLowerCase())
+    (normalize(p.countryName).includes(normalize(search)) ||
+    p.countryCode.toLowerCase().includes(search.toLowerCase())) &&
+    (riskFilter ? p.currentRisk === riskFilter : true)
   );
 
   const shown = [...filtered];
+
+  const distribution = Object.entries(
+    predictions.reduce<Record<string, number>>((acc, p) => {
+      acc[p.currentRisk] = (acc[p.currentRisk] || 0) + 1;
+      return acc;
+    }, {})
+  ).sort((a, b) => {
+    const order = ['muy-alto', 'alto', 'medio', 'bajo', 'sin-riesgo'];
+    return order.indexOf(a[0]) - order.indexOf(b[0]);
+  });
+
+  const total = predictions.length;
 
   return (
     <div className="min-h-screen bg-slate-900">
@@ -111,11 +125,71 @@ export default function PredictionsClient() {
           </div>
         </div>
 
-        <div className="flex items-center gap-2 mb-6 text-xs text-slate-500 bg-slate-800/50 rounded-lg px-4 py-2">
-          <Info className="w-3 h-3" />
-          El modelo cruza OSINT, incidentes activos, cambios recientes, petróleo y estacionalidad.
-          Las predicciones se actualizan diariamente vía cron.
+        <div className="mb-6 space-y-3">
+          <div className="flex items-center gap-2 text-xs text-slate-500 bg-slate-800/50 rounded-lg px-4 py-2">
+            <Info className="w-3 h-3 shrink-0" />
+            El modelo cruza OSINT, incidentes activos, cambios recientes, petróleo y estacionalidad. Las predicciones se actualizan diariamente vía cron.
+          </div>
+
+          {total > 0 && (
+            <>
+              <div className="flex h-8 rounded-lg overflow-hidden">
+                {distribution.map(([level, count]) => {
+                  const cfg = riskConfig[level] || riskConfig['sin-riesgo'];
+                  const pct = Math.round((count / total) * 100);
+                  const isActive = riskFilter === level;
+                  return (
+                    <button
+                      key={level}
+                      onClick={() => setRiskFilter(isActive ? null : level)}
+                      title={`${cfg.label}: ${count} países (${pct}%)`}
+                      className={`relative flex items-center justify-center text-[10px] font-bold text-white transition-all ${
+                        isActive ? 'ring-2 ring-white ring-offset-1 ring-offset-slate-900 z-10' : 'opacity-80 hover:opacity-100'
+                      }`}
+                      style={{ width: `${pct}%`, backgroundColor: cfg.hex }}
+                    >
+                      {pct > 8 ? `${count}` : null}
+                    </button>
+                  );
+                })}
+              </div>
+              <div className="flex flex-wrap gap-3 text-xs">
+                {distribution.map(([level, count]) => {
+                  const cfg = riskConfig[level] || riskConfig['sin-riesgo'];
+                  const isActive = riskFilter === level;
+                  return (
+                    <button
+                      key={level}
+                      onClick={() => setRiskFilter(isActive ? null : level)}
+                      className={`flex items-center gap-1.5 px-2 py-1 rounded-lg transition-colors ${
+                        isActive ? 'bg-slate-700 text-white' : 'text-slate-400 hover:text-white'
+                      }`}
+                    >
+                      <span className="w-2 h-2 rounded-full" style={{ backgroundColor: cfg.hex }} />
+                      {cfg.label} <span className="text-slate-500">{count}</span>
+                    </button>
+                  );
+                })}
+                {riskFilter && (
+                  <button onClick={() => setRiskFilter(null)} className="text-purple-400 hover:text-purple-300">
+                    Limpiar filtro
+                  </button>
+                )}
+              </div>
+            </>
+          )}
         </div>
+
+        <details className="mb-6 text-xs text-slate-400 bg-slate-800/30 rounded-lg px-4 py-2 open:pb-3">
+          <summary className="cursor-pointer font-medium text-slate-300">¿Cómo interpretar las predicciones?</summary>
+          <div className="mt-2 space-y-1.5">
+            <p><strong className="text-slate-200">Score de riesgo (0-100):</strong> puntuación compuesta que combina el nivel MAEC actual + señales OSINT + incidentes activos + indicadores económicos. A mayor score, mayor precaución recomendada.</p>
+            <p><strong className="text-slate-200">Probabilidad a 7 días:</strong> riesgo de que el país empeore su nivel MAEC en la próxima semana. Refleja señales OSINT muy recientes y cambios repentinos.</p>
+            <p><strong className="text-slate-200">Probabilidad a 14 días:</strong> misma métrica a dos semanas vista. añade la tendencia observada y el componente estacional.</p>
+            <p><strong className="text-slate-200">Probabilidad a 30 días:</strong> horizonte mensual. incorpora la inercia histórica, inflación, GPI/GTI y eventos programados. La menos precisa de las tres.</p>
+            <p className="text-slate-500 mt-1">Países en nivel "muy-alto" parten con probabilidades bajas por definición (ya están en el techo de riesgo). Las subidas aquí indican señales de crisis adicional (nuevos incidentes, cierre de espacio aéreo).</p>
+          </div>
+        </details>
 
         <div className="relative mb-6">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
