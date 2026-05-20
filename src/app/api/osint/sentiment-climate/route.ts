@@ -14,6 +14,8 @@ export async function GET(request: NextRequest) {
 
   const sevenDaysAgo = new Date();
   sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+  const threeHalfDaysAgo = new Date();
+  threeHalfDaysAgo.setDate(threeHalfDaysAgo.getDate() - 3);
 
   const { data, error } = await supabase
     .from('osint_signals')
@@ -30,19 +32,39 @@ export async function GET(request: NextRequest) {
 
   const relevant = (data || []).filter(s => {
     const text = `${s.location_name || ''} ${s.summary || ''}`.toLowerCase();
-    return text.includes(country.toLowerCase());
+    const match = text.includes(country.toLowerCase());
+    if (!match && s.summary) {
+      const words = country.toLowerCase().split(/\s+/);
+      return words.some(w => w.length > 3 && text.includes(w));
+    }
+    return match;
   });
 
   if (relevant.length === 0) {
     return NextResponse.json({ avgTone: null, signals: 0, country });
   }
 
-  const sum = relevant.reduce((acc, s) => acc + (s.tone_score || 0), 0);
-  const avgTone = Math.round((sum / relevant.length) * 10) / 10;
+  const valid = relevant.filter(s => s.tone_score != null && !isNaN(Number(s.tone_score)));
+  if (valid.length === 0) {
+    return NextResponse.json({ avgTone: null, signals: 0, country });
+  }
+
+  const sum = valid.reduce((acc, s) => acc + Number(s.tone_score), 0);
+  const avgTone = Math.round((sum / valid.length) * 10) / 10;
+
+  const recent = valid.filter(s => new Date(s.created_at) >= threeHalfDaysAgo);
+  const older = valid.filter(s => new Date(s.created_at) < threeHalfDaysAgo);
+  let toneTrend7d: number | null = null;
+  if (recent.length >= 2 && older.length >= 2) {
+    const avgRecent = recent.reduce((a, s) => a + Number(s.tone_score), 0) / recent.length;
+    const avgOlder = older.reduce((a, s) => a + Number(s.tone_score), 0) / older.length;
+    toneTrend7d = Math.round((avgRecent - avgOlder) * 100) / 100;
+  }
 
   return NextResponse.json({
     avgTone,
-    signals: relevant.length,
+    signals: valid.length,
+    toneTrend7d,
     mood: avgTone > 3 ? 'positive' : avgTone < -3 ? 'negative' : 'neutral',
     country,
   });

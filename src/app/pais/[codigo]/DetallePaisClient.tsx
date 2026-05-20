@@ -266,7 +266,10 @@ export default function DetallePaisClient({ pais, relatedPosts = [] }: DetallePa
               </div>
             </div>
             <div className="flex flex-col items-end gap-2">
-              <ScoreBadge countryCode={codigo} profile={travelerProfile} budget={travelerBudget} />
+              <div className="flex items-center gap-2">
+                <ScoreBadge countryCode={codigo} profile={travelerProfile} budget={travelerBudget} />
+                <SentimentClimate countryName={pais.nombre} countryCode={pais.codigo} compact />
+              </div>
               <div className="flex flex-wrap items-center justify-end gap-1">
                 <span className="text-[10px] text-slate-500 mr-0.5">Perfil:</span>
                 {[
@@ -354,10 +357,6 @@ export default function DetallePaisClient({ pais, relatedPosts = [] }: DetallePa
         )}
 
         <OsintAlertsBanner countryName={pais.nombre} />
-
-        <div className="mb-4">
-          <SentimentClimate countryName={pais.nombre} countryCode={pais.codigo} />
-        </div>
 
         <div className="mb-8">
           <EventTimeline country={pais.codigo} days={60} limit={8} title="Próximos eventos" />

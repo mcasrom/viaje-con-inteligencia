@@ -1,15 +1,21 @@
 # Way Ahead
 
-## Última sesión: 20 May 2026 — Sprint Captación día 1 (FB, Reddit, LinkedIn)
+## Última sesión: 20 May 2026 — Sprint Captación día 1 + infra/ML
 
-> **Último deploy verificado:** OK ✅ — A1/A2/A3 + D1 + sitemap fix + queHacer
-> 
+> **Último deploy verificado:** OK ✅
+>
 > **Sprint activo:** Captación — ver `captacion/README.md`
 >
-> **Outreach realizados:**
-> - ✅ FB "Formación Turismo IES Tirant lo Blanc" — 20 May
-> - ✅ r/digitalnomadlife — 20 May
-> - ✅ LinkedIn (post founder: "De una frustración personal a 137 países") — 20 May
+> **Logros día (captación):** A1-A4, B1 (FB), B2 (Reddit, LinkedIn), B3 (Telegram diario), D1-D2
+>
+> **Logros día (infra/ML):**
+> - ✅ **Cron async fix** — return 202 instantáneo + background processing (evita 504 Cloudflare)
+> - ✅ **Word frequency anomaly** (`osint_word_trends`) — detección temprana de picos de términos (z-score ≥ 2)
+> - ✅ **Sentimiento integrado en `computeRiskScore()`** — avg_tone_7d < -3 impacta el score heurístico
+> - ✅ **Sentimiento en `computeProbability()`** — probabilidad de escalada aumenta con negatividad
+> - ✅ **`buildFeatureVector()` corregido** — ahora incluye 5 features de sentimiento (antes 20, RF esperaba 25)
+> - ✅ **RLS fix** — 4 tablas sin RLS habilitadas (osint_word_trends, seguros_catalog, seguros_perfiles, user_watchlist)
+> - ✅ **Deploy fix** — swap 2GB + NODE_OPTIONS para evitar OOM en build de Hetzner
 
 ---
 
@@ -41,6 +47,56 @@ curl -s http://178.105.80.193:3001/api/health
 ```
 
 **Regla:** `.env*` está excluido del rsync por seguridad. Cualquier cambio en vars de entorno requiere `scp` manual + `pm2 restart --update-env`.
+
+---
+
+## ⚠️ LECCIÓN CRÍTICA — DEPLOY OOM HETZNER (20 May 2026)
+
+**Bug:** El despliegue fallaba en el paso `npm run build` remoto. El VPS (2GB RAM) se quedaba sin memoria durante el build de Next.js.
+
+**Fix:**
+1. Añadir swap de 2GB en el workflow (`sudo fallocate -l 2G /swapfile && sudo swapon /swapfile`)
+2. Pasar `NODE_OPTIONS=--max-old-space-size=1536` en el comando `npm run build`
+3. Swap se elimina automáticamente al reiniciar el VPS (no persistente)
+
+**Código añadido a `deploy-hetzner.yml`:**
+```yaml
+- name: Build Next.js
+  run: |
+    sudo fallocate -l 2G /swapfile
+    sudo chmod 600 /swapfile
+    sudo mkswap /swapfile
+    sudo swapon /swapfile
+    NODE_OPTIONS="--max-old-space-size=1536" npm run build
+    sudo swapoff /swapfile
+    sudo rm /swapfile
+```
+
+**Regla:** Hetzner CX22 (2GB RAM) necesita swap para builds de Next.js. Si el deploy falla sin error claro, asumir OOM primero.
+
+---
+
+## ⚠️ LECCIÓN CRÍTICA — CRON ASYNC + TIMEOUT CLOUDFLARE (20 May 2026)
+
+**Bug:** `/api/cron/master` devolvía 504 Gateway Timeout porque Cloudflare Workers limita a 100s. GitHub Actions cron esperaba respuesta HTTP — al recibir 504 lo marcaba como fallo.
+
+**Fix:**
+1. Refactorizar el cron handler: retorno **202 Accepted** inmediato
+2. El procesamiento real se ejecuta asíncronamente en `runCronAsync()` (sin `await`)
+3. `PHASE1_TIMEOUT_MS` subido de 150s a 240s
+4. GitHub Actions workflow `.github/workflows/cron.yml` acepta HTTP 202 como éxito
+
+**Regla:** Cualquier endpoint que pueda exceder 100s debe usar async + retorno 202. Cloudflare Workers limita a 100s por request.
+
+---
+
+## ⚠️ LECCIÓN CRÍTICA — RLS EN SUPABASE (20 May 2026)
+
+**Bug:** 4 tablas (`osint_word_trends`, `seguros_catalog`, `seguros_perfiles`, `user_watchlist`) no tenían RLS habilitado. Los datos eran accesibles públicamente a través de la API anónima de Supabase.
+
+**Fix:** Ejecutar `ALTER TABLE ... ENABLE ROW LEVEL SECURITY` + políticas de lectura/escritura para cada tabla. `supabase/fix_rls_tables.sql`.
+
+**Regla:** Toda tabla nueva en Supabase debe tener RLS + policies antes del primer deploy. Supabase envía alertas de seguridad — resolver antes de 24h.
 
 ---
 
@@ -163,19 +219,21 @@ curl -s http://178.105.80.193:3001/api/health
 
 **Fase 1 completada.** 21 funcionalidades entregadas, coste operativo ~€0/mes, deploy automatico en cada push a main.
 
-### Lo conseguido en esta sesión (19 May — sesión 4)
+### Lo conseguido en esta sesión (20 May — Sprint Captación día 1 + infra/ML)
 
 | # | Entregable | Detalle |
 |---|------------|---------|
-| 1 | **Debug cadena de fallos Ebola** | 7 bugs encadenados impedían detección. Identificados y corregidos todos (ver tabla abajo) |
-| 2 | **CHECK constraint Supabase** | `osint_signals_source_check` solo permitía `rss`/`reddit`. GDACS/USGS/GDELT/WHO rechazados en silencio desde el inicio. Fix: ALTER TABLE |
-| 3 | **WHO DON location parse** | API real no tiene campo `Regionscountries`. Fix: extraer location de `OverrideTitle` |
-| 4 | **Prioridad WHO en news sentiment** | `slice(0,30)` cap cortaba WHO por estar al final del array. Fix: priorizar WHO/GDELT/GDACS/USGS, cap 30→50 |
-| 5 | **Congo country code mismatch** | `'congo'` matcheaba antes que `'democratic republic of the congo'` → incidente asignado a CG en vez de CD. Fix: orden multi-word primero |
-| 6 | **120 países (+7 nuevos)** | Angola, Camerún, Costa de Marfil, Congo, RCA, Somalia, Sudán del Sur con fichas completas, embajadas, índices |
-| 7 | **Contadores actualizados** | 57 hardcoded references de 107/108/110/111 actualizadas a 120 en toda la app y docs |
-| 8 | **WHO DON en fuentes públicas** | Añadido a `/fuentes-osint`, `/metodologia`, `/transparencia`, `/ecosistema`, `ECOSISTEMA.md` |
-| 9 | **Pipeline verificado** | 21 señales insertadas, 5 incidentes nuevos, WHO Ebola DON con `category:salud`, `location:Democratic Republic of the Congo & Uganda` |
+| 1 | **Captación A1-A4, B1-B3, D1-D2** | Lead magnet, trial Chat IA, /colaborar, /afiliados, FB, Reddit, LinkedIn, Telegram diario, email onboarding, notificaciones cambio riesgo |
+| 2 | **Cron async fix** | Retorno 202 inmediato + `runCronAsync()` en background. Evita 504 Cloudflare (100s timeout). `PHASE1_TIMEOUT_MS=240000` |
+| 3 | **Word frequency anomaly detection** | `src/lib/word-trends.ts` — extrae palabras de OSINT 24h, z-score vs baseline 7d, persiste en `osint_word_trends`. Anomalías → Telegram alert. Integrado en master cron 5e/8 |
+| 4 | **Sentimiento integrado en scoring heurístico** | `computeRiskScore()` escala con `avg_tone_7d`, `tone_trend_7d`, `negative_ratio_7d`, `tone_volatility_7d`. `computeProbability()` refleja umbrales. `buildFeatureVector()` corregido: 25 features |
+| 5 | **Deploy OOM fix** | Swap 2GB + `NODE_OPTIONS=--max-old-space-size=1536` en build remoto. Hetzner CX22 (2GB RAM) ya no falla en npm run build |
+| 6 | **RLS fix** | 4 tablas sin RLS (`osint_word_trends`, `seguros_catalog`, `seguros_perfiles`, `user_watchlist`) ahora con policies. Resuelto aviso crítico Supabase |
+| 7 | **Extras día 1** | Sitemap fix (route handler dinámico), robots.txt limpiado, queHacer 3 países (CF, SO, SS), analytics gráficos admin |
+
+### Lo conseguido en la sesión anterior (19 May — sesión 4)
+
+| # | Entregable | Detalle |
 
 ---
 
@@ -218,21 +276,21 @@ curl -s http://178.105.80.193:3001/api/health
 
 ---
 
-## FUNCIONALIDADES COMPLETADAS (21)
+## FUNCIONALIDADES COMPLETADAS (25)
 
 | # | Funcionalidad | Endpoint | Estado |
 |---|---------------|----------|--------|
-| 1 | Mapa riesgo interactivo | `/` | ✅ Leaflet + MAEC 120 paises |
+| 1 | Mapa riesgo interactivo | `/` | ✅ Leaflet + MAEC 137 paises |
 | 2 | Calculadora costes TCI | `/coste` | ✅ Petroleo + conflictos |
 | 3 | Blog 61 articulos | `/blog` | ✅ Paginacion, busqueda, grid/list |
 | 4 | Chat IA viajes | `/chat` | ✅ Groq 8b free / 70b premium |
-| 5 | OSINT automatico | `/api/cron/master` | ✅ 73 fuentes |
+| 5 | OSINT automatico | `/api/cron/master` | ✅ 73 fuentes, async 202 |
 | 6 | Detector incidentes | `incident-detector.ts` | ✅ 10 tipos, clustering |
 | 7 | Newsletter semanal | `newsletter-generator.ts` | ✅ Groq + HTML, double opt-in |
 | 8 | Pagina OSINT publica | `/osint` | ✅ Incidentes + notas + ratings |
 | 9 | Sistema valoraciones | `/api/data-ratings` | ✅ Generico, cualquier entidad |
 | 10 | Notas analista | `/admin/incidents` | ✅ Admin panel + API |
-| 11 | Cron master unificado | `/api/cron/master` | ✅ ~95s, 8 tareas |
+| 11 | Cron master unificado | `/api/cron/master` | ✅ ~97s async, 8 tareas |
 | 12 | Auth Supabase | `/auth/*` | ✅ Magic link + password + Telegram |
 | 13 | Dashboard usuario | `/dashboard` | ✅ Favoritos, trips, perfil |
 | 14 | Reclamaciones | `/reclamaciones` | ✅ 8 tipos, gratis/premium |
@@ -241,8 +299,12 @@ curl -s http://178.105.80.193:3001/api/health
 | 17 | Selector destinos | `/decidir` | ✅ Internacional 107 + Espana 20 |
 | 18 | Transparencia operativa | `/transparencia` | ✅ Estado + fuentes + metricas |
 | 19 | Manifiesto fundador | `/manifiesto` | ✅ Historia + compromisos |
-| 20 | SEO + sitemap | `sitemap.ts` | ✅ 60+ posts indexados |
+| 20 | SEO + sitemap | `sitemap.ts` | ✅ Route handler dinamico |
 | 21 | ML Cost Estimate | `/api/ml/cost-estimate` | ✅ IPC + atributos viaje |
+| 22 | Word frequency anomaly | `word-trends.ts` | ✅ Z-score + Telegram alert |
+| 23 | Sentimiento en scoring | `ml-risk-predictor.ts` | ✅ 5 features en heuristico |
+| 24 | RLS fix 4 tablas | — | ✅ osint_word_trends, seguros*, user_watchlist |
+| 25 | Deploy con swap | `.github/workflows/` | ✅ OOM fix Hetzner CX22 |
 
 ---
 
@@ -403,15 +465,15 @@ Las 3 pillar pages existían pero eran demasiado cortas (~800-1200 palabras cada
 **Objetivo:** Generar los primeros 100 usuarios registrados + 5 colaboradores activos + 2 partners estratégicos en 30 días.
 
 #### Marketing directo (coste 0€)
-- [ ] **Lead magnet checklist**: Ofrecer "Checklist de viaje seguro" PDF descargable a cambio de email en `/checklist`. Construir lista desde 0.
-- [ ] **Free trial sin registro**: Dejar que usuarios usen el Chat IA 3 preguntas sin loguearse (hoy pide login). Reduce fricción. Medir conversión a registro.
-- [ ] **Landing "Colabora"**: Página `/colaborar` con call to action claro: byline, enlace portfolio, acceso anticipado a features beta.
-- [ ] **Programa de afiliados manual**: 10% comisión en suscripciones premium para bloggers de viajes que refieran tráfico. Página `/afiliados` con dashboard básico.
+- [x] **Lead magnet checklist**: Ofrecer "Checklist de viaje seguro" PDF descargable a cambio de email en `/checklist`. Construir lista desde 0.
+- [x] **Free trial sin registro**: Dejar que usuarios usen el Chat IA 3 preguntas sin loguearse (hoy pide login). Reduce fricción. Medir conversión a registro.
+- [x] **Landing "Colabora"**: Página `/colaborar` con call to action claro: byline, enlace portfolio, acceso anticipado a features beta.
+- [x] **Programa de afiliados manual**: 10% comisión en suscripciones premium para bloggers de viajes que refieran tráfico. Página `/afiliados` con dashboard básico.
 
 #### Outreach orgánico
-- [ ] **Publicar drafts Reddit (4) + Facebook (2)**: Ya existen en `content/outreach/`. Publicar esta semana.
+- [x] **Publicar drafts Reddit (4) + Facebook (2)**: Ya existen en `content/outreach/`. Publicar esta semana.
 - [ ] **X/Twitter**: Hilo semanal con 1 predicción ML + 1 alerta activa. Usar hashtags #TurismoSeguro #IATravel.
-- [ ] **Telegram canal**: Contenido diario (alerta del día, país destacado). Promocionar en foros de viajeros.
+- [x] **Telegram canal**: Contenido diario (alerta del día, país destacado). Promocionar en foros de viajeros.
 - [ ] **LosViajeros / Foro de Viajeros**: Post con firma, responder dudas sobre seguridad en destinos.
 - [ ] **Email outreach**: 10 bloggers de viajes (ES) + 5 agencias (LATAM) con propuesta de valor y demo gratuita.
 
@@ -421,8 +483,8 @@ Las 3 pillar pages existían pero eran demasiado cortas (~800-1200 palabras cada
 - [ ] **Universidades**: Programa de investigación OSINT/turismo para estudiantes de relaciones internacionales o turismo. Data gratuita a cambio de papers/mención.
 
 #### Conversión y retención
-- [ ] **Email onboarding**: Serie 3 emails automáticos al registrarse (día 1: radar de viaje, día 3: alertas, día 7: predicciones ML).
-- [ ] **Notificación push**: País favorito cambia de nivel de riesgo → email + notificación web.
+- [x] **Email onboarding**: Serie 3 emails automáticos al registrarse (día 1: radar de viaje, día 3: alertas, día 7: predicciones ML).
+- [x] **Notificación push**: País favorito cambia de nivel de riesgo → email + notificación web.
 - [ ] **Compartir con amigos**: Botón "Invita a un amigo" en dashboard que da 1 mes premium gratis por cada registro referido.
 
 ### 🟢 Sprint Colaboradores (prioridad: media)
@@ -513,7 +575,7 @@ git add -A && git commit -m "msg" && git push
 - Newsletter con sentimiento semanal
 - Tendencias semanales de sentimiento (página admin)
 - Alertas de sentimiento (umbral tone_score)
-- Análisis frecuencia de palabras (osint_word_trends)
+- [x] Análisis frecuencia de palabras (osint_word_trends) — hecho 20 May
 
 ### Infra / Admin
 - Admin API Leads page (solicitudes de api_plan_requests)
