@@ -443,7 +443,7 @@ export default function IndicesClient() {
             Cómo se combinan los índices
           </h3>
           <p className="text-slate-400 text-sm mb-4">
-            Ningún índice actúa solo. Nuestro sistema combina múltiples fuentes para dar una visión completa:
+            Ningún índice actúa solo. El sistema combina múltiples fuentes para dar una visión completa:
           </p>
           <div className="grid md:grid-cols-3 gap-4 text-sm">
             <div className="bg-slate-900/50 rounded-lg p-4">

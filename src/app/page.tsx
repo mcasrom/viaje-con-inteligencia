@@ -610,7 +610,7 @@ export default function HomeClient() {
         <div className="max-w-3xl mx-auto mt-12 border-t border-slate-800 pt-8">
           <h2 className="text-xl font-bold text-white mb-4">Mapa de Riesgos de Viaje con Inteligencia Artificial</h2>
           <p className="text-slate-400 text-sm leading-relaxed mb-4">
-            <strong className="text-slate-300">Viaje con Inteligencia</strong> es la primera plataforma que combina el índice de riesgo MAEC español con análisis de Machine Learning para {TOTAL_PAISES} países. Nuestro <strong className="text-slate-300">índice IRV</strong> (Indicador de Riesgo de Viaje) cruza 16 KPIs — desde seguridad y terrorismo hasta coste de vida e inflación — para darte una puntuación única y actualizada.
+            <strong className="text-slate-300">Viaje con Inteligencia</strong> es la primera plataforma que combina el índice de riesgo MAEC español con análisis de Machine Learning para {TOTAL_PAISES} países. El <strong className="text-slate-300">índice IRV</strong> (Indicador de Riesgo de Viaje) cruza 16 KPIs — desde seguridad y terrorismo hasta coste de vida e inflación — para darte una puntuación única y actualizada.
           </p>
           <p className="text-slate-400 text-sm leading-relaxed mb-4">
             El motor de <strong className="text-slate-300">análisis inteligente</strong> agrupa destinos según tu perfil: presupuesto, tipo de viaje y preferencias. El <strong className="text-slate-300">Chat IA</strong> con Groq te da recomendaciones personalizadas en segundos. El sistema <strong className="text-slate-300">OSINT</strong> monitoriza 73+ fuentes en tiempo real: GDELT, USGS, GDACS, Reddit y RSS.

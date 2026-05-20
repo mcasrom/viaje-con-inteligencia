@@ -134,7 +134,7 @@ export default function FuentesOSINTPage() {
             <h2 className="text-xl font-bold text-white">Cómo procesamos los datos</h2>
           </div>
           <p className="text-slate-300 text-sm leading-relaxed mb-4">
-            Nuestro sistema procesa estas fuentes de la siguiente manera:
+            El sistema procesa estas fuentes de la siguiente manera:
           </p>
           <div className="space-y-3">
             {[

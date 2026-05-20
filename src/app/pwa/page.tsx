@@ -22,7 +22,7 @@ export default function PWAPage() {
         <div className="text-center mb-12">
           <div className="inline-flex items-center gap-3 px-4 py-2 bg-blue-500/20 border border-blue-500/30 rounded-full text-blue-400 font-medium mb-4">
             <Smartphone className="w-5 h-5" />
-            <span>App Móvil - Instala Nuestra PWA</span>
+            <span>App Móvil - Instala la PWA</span>
           </div>
           <h1 className="text-3xl md:text-4xl font-bold mb-4">
             ✈️ Viaje con Inteligencia
