@@ -2,6 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import { Activity, Globe, ArrowUp, ExternalLink, ChevronDown, ChevronUp } from 'lucide-react';
+import {
+  LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend,
+} from 'recharts';
 
 interface CountryRow {
   country: string;
@@ -145,6 +148,56 @@ export default function AdminAnalyticsPage() {
             <p className="text-sm font-bold text-white">{new Date(latest.extracted_at).toLocaleString('es-ES')}</p>
           </div>
         </div>
+
+        {/* Trend chart */}
+        {weeks.length > 1 && (
+          <section className="bg-slate-800 rounded-2xl border border-slate-700 p-6">
+            <h2 className="text-lg font-bold text-white mb-4">Tendencia semanal</h2>
+            <ResponsiveContainer width="100%" height={300}>
+              <LineChart data={[...weeks].reverse()}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
+                <XAxis dataKey="week_start" tick={{ fill: '#94a3b8', fontSize: 11 }} axisLine={{ stroke: '#475569' }} />
+                <YAxis tick={{ fill: '#94a3b8', fontSize: 11 }} axisLine={{ stroke: '#475569' }} />
+                <Tooltip contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #334155', borderRadius: '8px', color: '#e2e8f0', fontSize: '13px' }} />
+                <Legend wrapperStyle={{ fontSize: '12px', color: '#cbd5e1' }} />
+                <Line type="monotone" dataKey="unique_visitors" stroke="#3b82f6" strokeWidth={2} name="Visitantes únicos" dot={{ r: 3 }} />
+                <Line type="monotone" dataKey="page_views" stroke="#f59e0b" strokeWidth={2} name="Páginas vistas" dot={{ r: 3 }} />
+              </LineChart>
+            </ResponsiveContainer>
+          </section>
+        )}
+
+        {/* Country chart */}
+        {latest.countries && latest.countries.length > 0 && (
+          <section className="bg-slate-800 rounded-2xl border border-slate-700 p-6">
+            <h2 className="text-lg font-bold text-white mb-4">Top países por requests</h2>
+            <ResponsiveContainer width="100%" height={250}>
+              <BarChart data={latest.countries.slice(0, 10)} layout="vertical">
+                <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
+                <XAxis type="number" tick={{ fill: '#94a3b8', fontSize: 11 }} axisLine={{ stroke: '#475569' }} />
+                <YAxis type="category" dataKey="country" tick={{ fill: '#94a3b8', fontSize: 11 }} axisLine={{ stroke: '#475569' }} width={30} />
+                <Tooltip contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #334155', borderRadius: '8px', color: '#e2e8f0', fontSize: '13px' }} />
+                <Bar dataKey="requests" fill="#3b82f6" radius={[0, 4, 4, 0]} name="Requests" />
+              </BarChart>
+            </ResponsiveContainer>
+          </section>
+        )}
+
+        {/* Top pages chart */}
+        {latest.top_pages && latest.top_pages.length > 0 && (
+          <section className="bg-slate-800 rounded-2xl border border-slate-700 p-6">
+            <h2 className="text-lg font-bold text-white mb-4">Top páginas</h2>
+            <ResponsiveContainer width="100%" height={250}>
+              <BarChart data={latest.top_pages.slice(0, 10)} layout="vertical">
+                <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
+                <XAxis type="number" tick={{ fill: '#94a3b8', fontSize: 11 }} axisLine={{ stroke: '#475569' }} />
+                <YAxis type="category" dataKey="path" tick={{ fill: '#94a3b8', fontSize: 10 }} axisLine={{ stroke: '#475569' }} width={200} />
+                <Tooltip contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #334155', borderRadius: '8px', color: '#e2e8f0', fontSize: '13px' }} />
+                <Bar dataKey="requests" fill="#10b981" radius={[0, 4, 4, 0]} name="Requests" />
+              </BarChart>
+            </ResponsiveContainer>
+          </section>
+        )}
 
         {/* Country table */}
         <section className="bg-slate-800 rounded-2xl border border-slate-700 overflow-hidden">
