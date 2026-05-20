@@ -805,6 +805,17 @@ async function runModelTraining(): Promise<any> {
   }
 }
 
+// ===== ONBOARDING QUEUE =====
+async function runOnboardingQueue(): Promise<any> {
+  try {
+    const { processOnboardingQueue } = await import('@/lib/onboarding');
+    const result = await processOnboardingQueue();
+    return { status: 'ok', ...result };
+  } catch (e: any) {
+    return { status: 'error', error: e.message };
+  }
+}
+
 // ===== MASTER CRON =====
 async function withTimeout<T>(fn: () => Promise<T>, ms: number, label: string): Promise<T | { status: 'error'; error: string }> {
   try {
@@ -934,8 +945,11 @@ export async function GET(request: Request) {
   log.info('8d/8 Health checks...');
   results.health = await withTimeout(() => runSystemHealth(), 60000, '8d/8 Health checks');
 
-  log.info('8e/8 Heatmap detector...');
-  results.heatmap = await withTimeout(() => runHeatmapDetection(), 30000, '8e/8 Heatmap detector');
+log.info('8e/8 Heatmap detector...');
+results.heatmap = await withTimeout(() => runHeatmapDetection(), 30000, '8e/8 Heatmap detector');
+
+log.info('8g/8 Onboarding queue...');
+results.onboarding = await withTimeout(() => runOnboardingQueue(), 30000, '8g/8 Onboarding queue');
 
   const elapsed = Date.now() - startTime;
 

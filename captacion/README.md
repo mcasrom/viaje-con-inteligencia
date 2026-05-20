@@ -40,7 +40,7 @@
 ## Notas
 
 - Todas las acciones son coste 0€ (solo horas de desarrollo)
-- 20 May: Sprint Captación día 1. Completados A1, A2, A3, B1 (FB), B2 (Reddit). Pendiente: D1, B4, B5, A4, C1-3, D2-3
+- 20 May: Sprint Captación día 1. Completados A1, A2, A3, B1 (FB), B2 (Reddit). Pendiente: B4, B5, A4, C1-3, D2-3
 - r/osinttools primer post (sesión anterior) → 2.5k views. Próximo post técnico en ~7 días
-- Sitemap fix: convertido a route handler dinámico (estaba devolviendo vacío en producción)
+- D1 (email onboarding): templates 3 emails, trigger post-registro, procesamiento en master cron. Sin ejecutar SQL migration (pendiente)
 - queHacer: rellenado para CF, SO, SS (3 países africanos sin recomendaciones)
