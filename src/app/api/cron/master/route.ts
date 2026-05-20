@@ -948,6 +948,10 @@ async function runCronAsync() {
     '5d/8 Sentiment alerts'
   );
 
+  // Phase 3e: Word frequency anomalies (early warning signals)
+  log.info('5e/8 Word trends...');
+  results.word_trends = await withTimeout(() => runWordTrends(), 30000, '5e/8 Word trends');
+
   // Phase 4: Digests and notifications (always run last)
   log.info('7/8 Daily digest...');
   results.digest = await withTimeout(() => runDailyDigest(results), 30000, '7/8 Daily digest');
@@ -1012,6 +1016,30 @@ results.onboarding = await withTimeout(() => runOnboardingQueue(), 30000, '8g/8 
   }
 
   log.info(`✅ Cron completed in ${elapsed}ms — ${okSteps}/${totalSteps} OK, ${errorSteps} errors`);
+}
+
+// ===== WORD TRENDS (EARLY WARNING) =====
+async function runWordTrends(): Promise<any> {
+  try {
+    const { computeWordTrends } = await import('@/lib/word-trends');
+    const anomalies = await computeWordTrends();
+    if (anomalies.length === 0) return { status: 'ok', anomalies: 0 };
+
+    const critical = anomalies.filter(a => a.z_score >= 3 || a.ratio >= 5);
+    if (critical.length > 0) {
+      const { publishToTelegramChannel } = await import('@/lib/social-publisher');
+      const msg = `🔍 *Detección temprana — palabras anómalas*\n\n` +
+        critical.slice(0, 8).map(a =>
+          `• *${a.word}*: x${a.ratio} (z=${a.z_score.toFixed(1)})` +
+          (a.country_codes.length > 0 ? ` — ${a.country_codes.map(c => `#${c.toUpperCase()}`).join(' ')}` : '')
+        ).join('\n');
+      await publishToTelegramChannel(msg);
+    }
+
+    return { status: 'ok', anomalies: anomalies.length, critical: critical.length };
+  } catch (e: any) {
+    return { error: e.message };
+  }
 }
 
 // ===== HEATMAP DETECTOR =====
