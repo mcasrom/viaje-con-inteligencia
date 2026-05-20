@@ -12,6 +12,7 @@ import {
 import { paisesData } from '@/data/paises';
 import { TOTAL_PAISES } from '@/lib/constants';
 import { useI18n } from '@/lib/i18n';
+import { useIncidentBoost, applyBoost } from '@/lib/useIncidentBoost';
 import LanguageSelector from '@/components/LanguageSelector';
 import OilPriceWidget from '@/components/OilPriceWidget';
 import AirportDelaysWidget from '@/components/AirportDelaysWidget';
@@ -320,6 +321,7 @@ function SidePanel() {
   const [open, setOpen] = useState(false);
   const alerts = useAlerts();
   const posts = useBlogPosts();
+  const boostMap = useIncidentBoost();
 
   const filteredCountries = search
     ? Object.values(paisesData).filter(p =>
@@ -366,22 +368,25 @@ function SidePanel() {
 
             {filteredCountries.length > 0 && (
               <div className="space-y-1">
-                {filteredCountries.map(p => (
-                  <Link
-                    key={p.codigo}
-                    href={`/pais/${p.codigo}`}
-                    className="flex items-center gap-2 bg-slate-800/50 hover:bg-slate-800 rounded-lg px-3 py-2 transition-colors"
-                  >
-                    <span className="text-sm">{p.bandera}</span>
-                    <span className="text-xs text-slate-300">{p.nombre}</span>
-                    <span className={`ml-auto w-2 h-2 rounded-full ${
-                      p.nivelRiesgo === 'sin-riesgo' ? 'bg-green-500' :
-                      p.nivelRiesgo === 'bajo' ? 'bg-emerald-500' :
-                      p.nivelRiesgo === 'medio' ? 'bg-orange-500' :
-                      p.nivelRiesgo === 'alto' ? 'bg-red-500' : 'bg-red-700'
-                    }`} />
-                  </Link>
-                ))}
+                {filteredCountries.map(p => {
+                  const boosted = applyBoost(p.nivelRiesgo, boostMap[p.codigo.toUpperCase()]);
+                  return (
+                    <Link
+                      key={p.codigo}
+                      href={`/pais/${p.codigo}`}
+                      className="flex items-center gap-2 bg-slate-800/50 hover:bg-slate-800 rounded-lg px-3 py-2 transition-colors"
+                    >
+                      <span className="text-sm">{p.bandera}</span>
+                      <span className="text-xs text-slate-300">{p.nombre}</span>
+                      <span className={`ml-auto w-2 h-2 rounded-full ${
+                        boosted === 'sin-riesgo' ? 'bg-green-500' :
+                        boosted === 'bajo' ? 'bg-emerald-500' :
+                        boosted === 'medio' ? 'bg-orange-500' :
+                        boosted === 'alto' ? 'bg-red-500' : 'bg-red-700'
+                      }${boosted !== p.nivelRiesgo ? ' ring-2 ring-amber-400' : ''}`} />
+                    </Link>
+                  );
+                })}
               </div>
             )}
 
@@ -512,8 +517,13 @@ function PrimaryCTA() {
 // ============================================================
 export default function HomeClient() {
   const { t } = useI18n();
+  const boostMap = useIncidentBoost();
 
-  const riskCount = Object.values(paisesData).filter(
+  const boostedPaises = Object.values(paisesData).map(p => ({
+    ...p,
+    nivelRiesgo: applyBoost(p.nivelRiesgo, boostMap[p.codigo.toUpperCase()]),
+  }));
+  const riskCount = boostedPaises.filter(
     p => p.nivelRiesgo === 'alto' || p.nivelRiesgo === 'muy-alto'
   ).length;
 

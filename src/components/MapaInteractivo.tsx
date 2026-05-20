@@ -6,6 +6,7 @@ import { getTodosLosPaises, NivelRiesgo } from '@/data/paises';
 import { useI18n } from '@/lib/i18n';
 import TileAltFixer from '@/components/TileAltFixer';
 import { ensureLeafletCSS } from '@/lib/leaflet-css-loader';
+import { useIncidentBoost, applyBoost } from '@/lib/useIncidentBoost';
 
 const riskColors: Record<NivelRiesgo, string> = {
   'sin-riesgo': '#22c55e',
@@ -93,6 +94,7 @@ const conflictSeverityColors: Record<string, string> = {
 export default function MapaInteractivo({ fullScreen = false }: { fullScreen?: boolean }) {
   const { t } = useI18n();
   const [mounted, setMounted] = useState(false);
+  const boostMap = useIncidentBoost();
   const [layer, setLayer] = useState<'riesgo' | 'sismos' | 'conflictos' | 'salud'>('riesgo');
   const [sismos, setSismos] = useState<SismoData[]>([]);
   const [healthData, setHealthData] = useState<CountryHealthData[]>([]);
@@ -199,39 +201,47 @@ export default function MapaInteractivo({ fullScreen = false }: { fullScreen?: b
         />
         <TileAltFixer />
 
-        {/* Layer: Risk MAEC */}
-        {layer === 'riesgo' && paises.map((pais) => (
-          <CircleMarker
-            key={pais.codigo}
-            center={pais.mapaCoordenadas as [number, number]}
-            pathOptions={{
-              fillColor: riskColors[pais.nivelRiesgo],
-              fillOpacity: 0.7,
-              color: riskColors[pais.nivelRiesgo],
-              weight: 1,
-            }}
-            radius={8}
-          >
-            <Popup>
-              <div className="text-slate-900 min-w-[200px]">
-                <h3 className="font-bold text-lg">{pais.nombre}</h3>
-                <p className="text-sm text-slate-600">{pais.capital}</p>
-                <div
-                  className="mt-2 px-2 py-1 rounded text-white text-sm font-medium"
-                  style={{ backgroundColor: riskColors[pais.nivelRiesgo] }}
-                >
-                  {riskLabels[pais.nivelRiesgo]}
+        {/* Layer: Risk MAEC + Incident Boost */}
+        {layer === 'riesgo' && paises.map((pais) => {
+          const boosted = applyBoost(pais.nivelRiesgo, boostMap[pais.codigo.toUpperCase()]);
+          return (
+            <CircleMarker
+              key={pais.codigo}
+              center={pais.mapaCoordenadas as [number, number]}
+              pathOptions={{
+                fillColor: riskColors[boosted],
+                fillOpacity: 0.7,
+                color: riskColors[boosted],
+                weight: 1,
+              }}
+              radius={8}
+            >
+              <Popup>
+                <div className="text-slate-900 min-w-[200px]">
+                  <h3 className="font-bold text-lg">{pais.nombre}</h3>
+                  <p className="text-sm text-slate-600">{pais.capital}</p>
+                  <div
+                    className="mt-2 px-2 py-1 rounded text-white text-sm font-medium"
+                    style={{ backgroundColor: riskColors[boosted] }}
+                  >
+                    {boosted !== pais.nivelRiesgo
+                      ? `${riskLabels[boosted]} ⚠`
+                      : riskLabels[pais.nivelRiesgo]}
+                  </div>
+                  {boosted !== pais.nivelRiesgo && (
+                    <p className="text-xs text-amber-600 mt-1">Riesgo elevado por incidente activo OSINT</p>
+                  )}
+                  <a
+                    href={`/pais/${pais.codigo}`}
+                    className="block mt-2 text-blue-600 hover:underline text-sm"
+                  >
+                    Ver detalles →
+                  </a>
                 </div>
-                <a
-                  href={`/pais/${pais.codigo}`}
-                  className="block mt-2 text-blue-600 hover:underline text-sm"
-                >
-                  Ver detalles →
-                </a>
-              </div>
-            </Popup>
-          </CircleMarker>
-        ))}
+              </Popup>
+            </CircleMarker>
+          );
+        })}
 
         {/* Layer: Sismos */}
         {layer === 'sismos' && sismos.map((s, i) => (
