@@ -26,7 +26,7 @@
 | B1 | Post FB "Formación Turismo IES Tirant lo Blanc" | B | 20 May | 20 May | 30min | ✅ |
 | B2 | Post r/digitalnomadlife | B | 20 May | 20 May | 15min | ✅ |
 | D1 | Email onboarding (3 emails) | D | 20 May | 20 May | 6h | ✅ |
-| A4 | Página `/afiliados` | A | — | — | 8h | Pendiente |
+| A4 | Página `/afiliados` | A | 20 May | 20 May | 8h | ✅ |
 | B2 | Hilo X semanal | B | — | — | 1h/sem | Pendiente |
 | B3 | Telegram contenido diario | B | — | — | 30min/día | Pendiente |
 | B4 | Foros viajeros | B | — | — | 2h/sem | Pendiente |
