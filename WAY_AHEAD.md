@@ -1,8 +1,8 @@
 # Way Ahead
 
-## Última sesión: 19 May 2026 — Sprint 4: Debug HEalth OSINT pipeline + 120 países + docs
+## Última sesión: 20 May 2026 — Sprint 5: Tono solo-founder + blog interlinking + conflict monitor links + Sprint Performance doc
 
-> **Último deploy verificado:** OK ✅ — todos los fixes validados con cron manual
+> **Último deploy verificado:** OK ✅ — push a main con fixes de tono, interlinking y conflict monitor
 
 ---
 
@@ -407,13 +407,24 @@ Idea: reclutar colaboradores (redactores de contenido, traductores, community ma
 - Rate limiting server-side por tier
 
 ### 🟢 Sprint África — 28 países pendientes (prioridad: alta)
-**Motivación:** La página `/geopolitica-y-viajes` tiene un monitor de conflictos con 8 países (RU, UA, IR, IL, LB, SY, YE, VE) que actualmente son `div` sin link porque no existen en la base de datos. Además de los 17 africanos, faltan estos 8 países de conflicto + 3 de LATAM/Asia prioritarios.
+**Motivación:** La página `/geopolitica-y-viajes` tiene un monitor de conflictos con 8 países para enlazar a fichas. Conflictos ya existen en paises-data.json.
 
 **Pendientes:**
 - África (17): GA, GQ, MG, ML, NE, TD, ZM, ZW, BJ, BF, BI, MW, NA, SL, LR, DJ, ER
-- Conflictos (8): RU, UA, IR, IL, LB, SY, YE, VE
-- LATAM/Asia (3): UY, PY, NP (países con viajeros frecuentes)
-- Al añadirlos, revertir los `div` a `Link` en `/geopolitica-y-viajes` conflict monitor
+- LATAM/Asia (3): UY, PY, NP
+- **Completado (20 May):** RU, UA, IR, IL, LB, SY, YE, VE ya existen y links `<Link>` activos en conflict monitor
+
+### 🟢 Sprint Performance Mobile — Lighthouse 74→90+ (prioridad: alta)
+**Motivación:** Lighthouse en Moto G Power da 74 rendimiento, LCP 5.9s. Urgente para Core Web Vitals y usuarios móviles.
+
+**Pendientes:**
+- Reducir JS no usado (~211 KiB) — lazy load Leaflet, Recharts, Chat IA
+- Mejorar LCP (5.9s → <2.5s) — hero image optimizada, preload, render-blocking resources
+- FCP (1.7s → <1.5s)
+- Accesibilidad (90→100) — aria-labels en botones, heading order, dialog names
+- Best Practices (88→100) — errores consola, imágenes baja resolución
+- Optimizar imágenes: WebP/AVIF, caché lifetimes
+- DOM size, CLS, image delivery
 
 ### 🟢 Sprint SEO Pillar Pages (prioridad: completada)
 - `/travel-risk-intelligence` (EN), `/osint-para-viajeros`, `/geopolitica-y-viajes`
@@ -444,4 +455,41 @@ git add -A && git commit -m "msg" && git push
 
 ---
 
-*Actualizado: 19 May 2026 — pendiente decidir proximo sprint*
+## PENDIENTES GENERALES (sin priorizar)
+
+### Stripe billing B2B
+- Checkout Stripe en tiers Starter/Pro/Enterprise
+- Webhook para actualizar `api_keys.tier` al confirmar pago
+- Rate limiting server-side por tier
+
+### Chat IA
+- Rate limit server-side
+- Modal "Quiero esto para aquí" leads → admin page
+
+### SEO / Content
+- Schema Article (no solo FAQ) en pillar pages
+- Posts satélite dedicados por pillar (3-5 más cada uno)
+- Versión EN de pillar pages ES
+- Añadir `/ecosistema` a sitemap.xml
+
+### ML / Data
+- Validación temporal CV (~25 días de datos)
+- Widget "Clima de viaje" en ficha de país (tone_score badge)
+- Newsletter con sentimiento semanal
+- Tendencias semanales de sentimiento (página admin)
+- Alertas de sentimiento (umbral tone_score)
+- Análisis frecuencia de palabras (osint_word_trends)
+
+### Infra / Admin
+- Admin API Leads page (solicitudes de api_plan_requests)
+- FlightLabs integration en Reclamaciones (verificar retraso real)
+- Vinculación Telegram verification (flujo completo)
+
+### Marketing
+- Publicar Reddit (4 drafts) + Facebook (2 drafts)
+- Email outreach a bloggers/agencias
+- Añadir enlace Modo Emergencia en footer (texto, no solo botón flotante)
+
+---
+
+*Actualizado: 20 May 2026*

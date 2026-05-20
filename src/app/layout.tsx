@@ -1,22 +1,24 @@
 import type { Metadata, Viewport } from "next";
 import { Geist } from "next/font/google";
 import "./globals.css";
+import dynamic from "next/dynamic";
 import Providers from "@/components/Providers";
 import TopBar from "@/components/TopBar";
 import Footer from "@/components/Footer";
-import QuickAccess from "@/components/QuickAccess";
-import AITravelAssistant from "@/components/AITravelAssistant";
-import SOSButton from "@/components/SOSButton";
-import ServiceWorkerRegistration from "@/components/ServiceWorkerRegistration";
-import InstallPWA from "@/components/InstallPWA";
-import Onboarding from "@/components/Onboarding";
-import InfografiaPopup from "@/components/InfografiaPopup";
 import { initPaisesData } from "@/lib/paises-init";
 import { initRutasData } from "@/lib/rutas-init";
 import { initClusteringData } from "@/lib/clustering-init";
 import { initIndicesData } from "@/lib/indices-init";
 import { initSeasonalityData } from "@/lib/seasonality-init";
 import { initSegurosData } from "@/lib/seguros-init";
+
+const QuickAccess = dynamic(() => import("@/components/QuickAccess"));
+const AITravelAssistant = dynamic(() => import("@/components/AITravelAssistant"));
+const SOSButton = dynamic(() => import("@/components/SOSButton"));
+const ServiceWorkerRegistration = dynamic(() => import("@/components/ServiceWorkerRegistration"));
+const InstallPWA = dynamic(() => import("@/components/InstallPWA"));
+const Onboarding = dynamic(() => import("@/components/Onboarding"));
+const InfografiaPopup = dynamic(() => import("@/components/InfografiaPopup"));
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -118,7 +120,12 @@ export default async function RootLayout({
         <link rel="alternate" hrefLang="x-default" href="https://www.viajeinteligencia.com" />
         <link rel="sitemap" type="application/xml" href="https://www.viajeinteligencia.com/sitemap.xml" />
         <meta name="thumbnail" content="/preview_favicon.jpg" />
-        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+        <link rel="preconnect" href="https://unpkg.com" />
+        <link rel="preconnect" href="https://tile.openstreetmap.org" />
+        <link rel="preconnect" href="https://tile.thunderforest.com" />
+        <link rel="dns-prefetch" href="https://unpkg.com" />
+        <link rel="dns-prefetch" href="https://tile.openstreetmap.org" />
+        <style id="leaflet-critical">{`.leaflet-pane,.leaflet-tile,.leaflet-marker-icon,.leaflet-marker-shadow,.leaflet-tile-container,.leaflet-pane>svg,.leaflet-pane>canvas,.leaflet-zoom-box,.leaflet-image-layer,.leaflet-layer{position:absolute;left:0;top:0}.leaflet-container{overflow:hidden}.leaflet-tile{position:absolute;width:256px;height:256px;max-width:none!important;pointer-events:none}.leaflet-tile-container{position:absolute;left:0;top:0}.leaflet-pane>svg{position:absolute;left:0;top:0}`}</style>
       </head>
       <body className={`${geistSans.variable} antialiased`}>
         <Providers>
