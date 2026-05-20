@@ -243,11 +243,11 @@ export default function BlogPostPage({ post }: { post: Post }) {
           <div className="mt-8">
             {post.image && post.image.trim() !== '' ? (
               <div className="rounded-2xl overflow-hidden relative w-full h-48 md:h-64">
-                <Image src={post.image} alt={post.title} fill className="object-cover opacity-80 grayscale-[20%]" loading="lazy" sizes="(max-width: 768px) 100vw, 50vw" />
+                <Image src={post.image} alt={post.title} fill className="object-cover opacity-80 grayscale-[20%]" priority sizes="(max-width: 768px) 100vw, 50vw" />
               </div>
             ) : (
               <div className="rounded-2xl overflow-hidden relative w-full h-48 md:h-64">
-                <Image src="/blog-header.jpg" alt={post.title} fill className="object-cover opacity-80 grayscale-[20%]" loading="lazy" sizes="(max-width: 768px) 100vw, 50vw" />
+                <Image src="/blog-header.webp" alt={post.title} fill className="object-cover opacity-80 grayscale-[20%]" priority sizes="(max-width: 768px) 100vw, 50vw" />
               </div>
             )}
           </div>

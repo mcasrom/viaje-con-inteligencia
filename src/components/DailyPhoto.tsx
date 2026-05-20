@@ -63,10 +63,10 @@ export default function DailyPhoto({
         src={photo.src}
         alt={photo.alt}
         fill
-        unoptimized
         className={`object-cover ${grayscale ? 'grayscale-[30%]' : ''}`}
         style={{ opacity }}
         sizes={sizes[type]}
+        {...(type === 'hero' ? { priority: true } : { loading: 'lazy' })}
       />
       <div className="absolute bottom-2 right-2 z-20 text-xs text-slate-400/60">
         {photo.place}

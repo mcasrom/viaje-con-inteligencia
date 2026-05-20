@@ -578,6 +578,7 @@ function RouteDetail({ route, onBack }: { route: any; onBack: () => void }) {
             <img
               src={route.image}
               alt={route.title}
+              loading="lazy"
               className="absolute inset-0 w-full h-full object-cover"
             />
           )}

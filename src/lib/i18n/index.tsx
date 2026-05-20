@@ -1,6 +1,7 @@
 'use client';
 
-import { createContext, useContext, useState, ReactNode } from 'react';
+import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 import { createLogger } from '@/lib/logger';
 
 const log = createLogger('I18n');
@@ -233,7 +234,19 @@ interface I18nContextType {
 const I18nContext = createContext<I18nContextType | undefined>(undefined);
 
 export function I18nProvider({ children }: { children: ReactNode }) {
-  const [locale, setLocale] = useState<Locale>('es');
+  const pathname = usePathname();
+  const [locale, setLocale] = useState<Locale>(() => {
+    if (typeof window !== 'undefined') {
+      return window.location.pathname.startsWith('/en') ? 'en' : 'es';
+    }
+    return 'es';
+  });
+
+  useEffect(() => {
+    const urlLocale = pathname.startsWith('/en') ? 'en' : 'es';
+    setLocale(urlLocale);
+    document.documentElement.lang = urlLocale;
+  }, [pathname]);
 
   const t = (key: string): string => {
     const translation = translations[key];

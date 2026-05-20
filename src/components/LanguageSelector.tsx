@@ -1,6 +1,7 @@
 'use client';
 
 import { useI18n } from '@/lib/i18n';
+import { useRouter, usePathname } from 'next/navigation';
 import { Globe, ChevronDown } from 'lucide-react';
 
 const PRIMARY_LOCALES = [
@@ -10,7 +11,18 @@ const PRIMARY_LOCALES = [
 
 export default function LanguageSelector() {
   const { locale, setLocale } = useI18n();
+  const router = useRouter();
+  const pathname = usePathname();
   const current = PRIMARY_LOCALES.find(l => l.code === locale) || PRIMARY_LOCALES[0];
+
+  function switchLocale(code: string) {
+    setLocale(code as any);
+    if (code === 'en' && !pathname.startsWith('/en')) {
+      router.push('/en');
+    } else if (code === 'es' && pathname.startsWith('/en')) {
+      router.push('/');
+    }
+  }
 
   return (
     <div className="relative group">
@@ -23,7 +35,7 @@ export default function LanguageSelector() {
         {PRIMARY_LOCALES.map((loc) => (
           <button
             key={loc.code}
-            onClick={() => setLocale(loc.code as any)}
+            onClick={() => switchLocale(loc.code)}
             className={`w-full text-left px-3 py-2 text-sm hover:bg-slate-700 transition-colors flex items-center gap-2 ${
               locale === loc.code ? 'text-blue-400 bg-slate-700/50' : 'text-slate-300'
             }`}
