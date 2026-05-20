@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { paisesData } from '@/data/paises';
 import { TOTAL_PAISES } from '@/lib/constants';
+import { useI18n } from '@/lib/i18n';
 import LanguageSelector from '@/components/LanguageSelector';
 import OilPriceWidget from '@/components/OilPriceWidget';
 import AirportDelaysWidget from '@/components/AirportDelaysWidget';
@@ -64,6 +65,7 @@ const RISK_DOT_POSITIONS = [
 ];
 
 function MapFallback() {
+  const { t } = useI18n();
   return (
     <div className="relative w-full h-[70vh] bg-slate-900 overflow-hidden">
       <svg viewBox="0 0 100 80" className="absolute inset-0 w-full h-full" preserveAspectRatio="xMidYMid meet">
@@ -82,7 +84,7 @@ function MapFallback() {
       </svg>
       <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-slate-800/80 backdrop-blur-sm rounded-full px-4 py-2 flex items-center gap-2">
         <span className="w-2 h-2 bg-blue-400 rounded-full animate-pulse" />
-        <span className="text-slate-300 text-xs font-medium">Cargando mapa interactivo...</span>
+        <span className="text-slate-300 text-xs font-medium">{t('map.loading')}</span>
       </div>
     </div>
   );
@@ -93,6 +95,7 @@ function MapFallback() {
 // ============================================================
 function TopBar() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const { t } = useI18n();
 
   return (
     <header className="fixed top-16 left-0 right-0 z-[1010] pointer-events-none">
@@ -103,16 +106,16 @@ function TopBar() {
             <div>
               <h1 className="text-white font-bold text-sm leading-tight">Viaje con Inteligencia</h1>
               <div className="flex items-center gap-2">
-                <span className="text-slate-400 text-[10px]">{TOTAL_PAISES} países</span>
+                <span className="text-slate-400 text-[10px]">{TOTAL_PAISES} {t('topbar.countries')}</span>
                 <span className="w-1 h-1 rounded-full bg-slate-600" />
                 <span className="flex items-center gap-1 text-[10px]">
                   <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-                  <span className="text-green-400 font-medium">Datos actualizados</span>
+                  <span className="text-green-400 font-medium">{t('topbar.updated')}</span>
                 </span>
               </div>
             </div>
             <span className="px-2 py-0.5 bg-blue-500/15 text-blue-400 text-[9px] font-bold rounded-full border border-blue-500/20">
-              MAEC May 2026
+              {t('topbar.maecLabel')}
             </span>
           </div>
         </div>
@@ -121,43 +124,43 @@ function TopBar() {
           <div className="bg-slate-900/90 backdrop-blur-md rounded-2xl border border-slate-700/50 px-2 py-1.5 flex items-center gap-1 shadow-2xl shadow-black/30">
             <Link href="/decidir" className="group flex flex-col items-center gap-0.5 px-4 py-1.5 text-slate-400 hover:text-white rounded-xl hover:bg-slate-800/80 transition-all">
               <Sparkles className="w-4 h-4 text-purple-400 group-hover:scale-110 transition-transform" />
-              <span className="text-[10px] font-medium">Decidir</span>
+              <span className="text-[10px] font-medium">{t('topbar.decide')}</span>
             </Link>
             <div className="w-px h-5 bg-slate-700" />
             <Link href="/blog" className="group flex flex-col items-center gap-0.5 px-4 py-1.5 text-slate-400 hover:text-white rounded-xl hover:bg-slate-800/80 transition-all">
               <Newspaper className="w-4 h-4 text-cyan-400 group-hover:scale-110 transition-transform" />
-              <span className="text-[10px] font-medium">Blog</span>
+              <span className="text-[10px] font-medium">{t('topbar.blog')}</span>
             </Link>
             <Link href="/coste" className="group flex flex-col items-center gap-0.5 px-4 py-1.5 text-slate-400 hover:text-white rounded-xl hover:bg-slate-800/80 transition-all">
               <Calculator className="w-4 h-4 text-blue-400 group-hover:scale-110 transition-transform" />
-              <span className="text-[10px] font-medium">Coste</span>
+              <span className="text-[10px] font-medium">{t('topbar.cost')}</span>
             </Link>
             <Link href="/analisis" className="group flex flex-col items-center gap-0.5 px-4 py-1.5 text-slate-400 hover:text-white rounded-xl hover:bg-slate-800/80 transition-all">
               <TrendingUp className="w-4 h-4 text-amber-400 group-hover:scale-110 transition-transform" />
-              <span className="text-[10px] font-medium">Análisis</span>
+              <span className="text-[10px] font-medium">{t('topbar.analysis')}</span>
             </Link>
             <Link href="/rutas" className="group flex flex-col items-center gap-0.5 px-4 py-1.5 text-slate-400 hover:text-white rounded-xl hover:bg-slate-800/80 transition-all">
               <Route className="w-4 h-4 text-green-400 group-hover:scale-110 transition-transform" />
-              <span className="text-[10px] font-medium">Rutas</span>
+              <span className="text-[10px] font-medium">{t('topbar.routes')}</span>
             </Link>
             <div className="w-px h-5 bg-slate-700" />
             <Link href="/rutas/planificar" className="group flex flex-col items-center gap-0.5 px-4 py-1.5 text-slate-400 hover:text-white rounded-xl hover:bg-slate-800/80 transition-all">
               <ArrowRight className="w-4 h-4 text-rose-400 group-hover:scale-110 transition-transform" />
-              <span className="text-[10px] font-medium">Ruta</span>
+              <span className="text-[10px] font-medium">{t('topbar.route')}</span>
             </Link>
             <Link href="/radius" className="group flex flex-col items-center gap-0.5 px-4 py-1.5 text-slate-400 hover:text-white rounded-xl hover:bg-slate-800/80 transition-all">
               <Navigation className="w-4 h-4 text-cyan-400 group-hover:scale-110 transition-transform" />
-              <span className="text-[10px] font-medium">Radius</span>
+              <span className="text-[10px] font-medium">{t('topbar.radius')}</span>
             </Link>
             <div className="w-px h-5 bg-slate-700" />
             <Link href="/alertas" className="group flex flex-col items-center gap-0.5 px-4 py-1.5 text-slate-400 hover:text-white rounded-xl hover:bg-slate-800/80 transition-all relative">
               <Bell className="w-4 h-4 text-amber-400 group-hover:scale-110 transition-transform" />
-              <span className="text-[10px] font-medium">Alertas</span>
+              <span className="text-[10px] font-medium">{t('topbar.alerts')}</span>
               <span className="absolute top-1 right-2.5 w-1.5 h-1.5 bg-red-500 rounded-full" />
             </Link>
             <Link href="/premium" className="group flex flex-col items-center gap-0.5 px-4 py-1.5 text-slate-400 hover:text-white rounded-xl hover:bg-slate-800/80 transition-all">
               <Crown className="w-4 h-4 text-amber-400 group-hover:scale-110 transition-transform" />
-              <span className="text-[10px] font-medium">Premium</span>
+              <span className="text-[10px] font-medium">{t('topbar.premium')}</span>
             </Link>
             <div className="w-px h-5 bg-slate-700" />
             <LanguageSelector />
@@ -167,7 +170,7 @@ function TopBar() {
         <button 
           onClick={() => setMenuOpen(!menuOpen)}
           className="md:hidden bg-slate-900/90 backdrop-blur-md rounded-xl border border-slate-700/50 p-3 shadow-xl text-white min-h-[44px] min-w-[44px] flex items-center justify-center"
-          aria-label={menuOpen ? 'Cerrar menú' : 'Abrir menú'}
+          aria-label={menuOpen ? t('aria.closeMenu') : t('aria.openMenu')}
         >
           {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
         </button>
@@ -178,48 +181,48 @@ function TopBar() {
           <div className="bg-slate-900/95 backdrop-blur-md rounded-xl border border-slate-700/50 p-2 shadow-xl space-y-1">
             <Link href="/decidir" className="flex items-center gap-3 px-4 py-3 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition-colors">
               <Sparkles className="w-5 h-5 text-purple-400" />
-              Decide en 30 seg
+              {t('mobile.decide30')}
             </Link>
             <Link href="/blog" className="flex items-center gap-3 px-4 py-3 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition-colors">
               <Newspaper className="w-5 h-5 text-cyan-400" />
-              Blog OSINT
+              {t('mobile.blogOsint')}
             </Link>
             <Link href="/coste" className="flex items-center gap-3 px-4 py-3 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition-colors">
               <Calculator className="w-5 h-5 text-blue-400" />
-              Coste del Viaje
+              {t('mobile.tripCost')}
             </Link>
             <Link href="/analisis" className="flex items-center gap-3 px-4 py-3 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition-colors">
               <TrendingUp className="w-5 h-5 text-amber-400" />
-              Análisis Global IA
+              {t('mobile.globalAi')}
             </Link>
             <Link href="/rutas" className="flex items-center gap-3 px-4 py-3 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition-colors">
               <Route className="w-5 h-5 text-green-400" />
-              Rutas Seguras
+              {t('mobile.safeRoutes')}
             </Link>
             <Link href="/radius" className="flex items-center gap-3 px-4 py-3 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition-colors">
               <Navigation className="w-5 h-5 text-cyan-400" />
-              Radio Inteligente
+              {t('mobile.smartRadius')}
             </Link>
             <Link href="/alertas" className="flex items-center gap-3 px-4 py-3 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition-colors">
               <Bell className="w-5 h-5 text-amber-400" />
-              Alertas MAEC
+              {t('mobile.maecAlerts')}
             </Link>
             <Link href="/dashboard/kpis" className="flex items-center gap-3 px-4 py-3 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition-colors">
               <BarChart3 className="w-5 h-5 text-purple-400" />
-              Dashboard KPIs
+              {t('mobile.dashboardKpis')}
             </Link>
             <Link href="/premium" className="flex items-center gap-3 px-4 py-3 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition-colors">
               <Crown className="w-5 h-5 text-amber-400" />
-              Premium
+              {t('topbar.premium')}
             </Link>
             <div className="border-t border-slate-700 my-1" />
             <Link href="/paises" className="flex items-center gap-3 px-4 py-3 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition-colors">
               <Globe className="w-5 h-5 text-blue-400" />
-              Todos los países
+              {t('mobile.allCountries')}
             </Link>
             <Link href="/checklist" className="flex items-center gap-3 px-4 py-3 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition-colors">
               <ClipboardList className="w-5 h-5 text-orange-400" />
-              Checklist Viaje
+              {t('mobile.checklist')}
             </Link>
             <div className="border-t border-slate-700 my-1" />
             <div className="px-4 py-2">
@@ -244,20 +247,21 @@ interface BlogPost {
 }
 
 function useAlerts() {
+  const { t } = useI18n();
   const [alerts, setAlerts] = useState<{ country: string; text: string; level: 'warning' | 'info' }[]>([]);
 
   useEffect(() => {
     const riskTexts: Record<string, string> = {
-      'medio': 'Revisar recomendaciones antes de viajar',
-      'alto': 'Viaje no esencial desaconsejado',
-      'muy-alto': 'Evitar todo viaje — zona de conflicto',
+      'medio': t('alert.medium'),
+      'alto': t('alert.high'),
+      'muy-alto': t('alert.veryHigh'),
     };
     const realAlerts = Object.values(paisesData)
       .filter(p => ['medio', 'alto', 'muy-alto'].includes(p.nivelRiesgo))
       .slice(0, 5)
       .map(p => ({
         country: p.nombre,
-        text: riskTexts[p.nivelRiesgo] || 'Consultar advertencias',
+        text: riskTexts[p.nivelRiesgo] || t('alert.fallback'),
         level: p.nivelRiesgo === 'muy-alto' || p.nivelRiesgo === 'alto' ? 'warning' as const : 'info' as const,
       }));
     setAlerts(realAlerts);
@@ -311,6 +315,7 @@ function formatDate(dateStr: string) {
 }
 
 function SidePanel() {
+  const { t } = useI18n();
   const [search, setSearch] = useState('');
   const [open, setOpen] = useState(false);
   const alerts = useAlerts();
@@ -324,11 +329,11 @@ function SidePanel() {
     : [];
 
   const tools = [
-    { icon: <Calculator className="w-4 h-4 text-blue-400" />, label: 'Calculadora Coste Viajes', href: '/coste' },
-    { icon: <Route className="w-4 h-4 text-green-400" />, label: 'Rutas Seguras', href: '/rutas' },
-    { icon: <ClipboardList className="w-4 h-4 text-orange-400" />, label: 'Checklist', href: '/checklist' },
-    { icon: <BarChart3 className="w-4 h-4 text-purple-400" />, label: 'Dashboard KPIs', href: '/dashboard/kpis' },
-    { icon: <Shield className="w-4 h-4 text-indigo-400" />, label: 'Seguro Viaje', href: '/coste/seguros' },
+    { icon: <Calculator className="w-4 h-4 text-blue-400" />, label: t('tool.costCalc'), href: '/coste' },
+    { icon: <Route className="w-4 h-4 text-green-400" />, label: t('tool.safeRoutes'), href: '/rutas' },
+    { icon: <ClipboardList className="w-4 h-4 text-orange-400" />, label: t('tool.checklist'), href: '/checklist' },
+    { icon: <BarChart3 className="w-4 h-4 text-purple-400" />, label: t('tool.kpis'), href: '/dashboard/kpis' },
+    { icon: <Shield className="w-4 h-4 text-indigo-400" />, label: t('tool.insurance'), href: '/coste/seguros' },
   ];
 
   return (
@@ -337,11 +342,11 @@ function SidePanel() {
         <button 
           onClick={() => setOpen(!open)}
           className="w-full flex items-center justify-between p-3 border-b border-slate-700/50 text-white hover:bg-slate-800 min-h-[44px]"
-          aria-label={open ? 'Cerrar panel' : 'Abrir panel explorar'}
+          aria-label={open ? t('aria.closePanel') : t('aria.openPanel')}
         >
           <div className="flex items-center gap-2">
             <Filter className="w-4 h-4 text-blue-400" />
-            {open && <span className="text-sm font-medium">Explorar</span>}
+            {open && <span className="text-sm font-medium">{t('panel.explore')}</span>}
           </div>
           <ChevronRight className={`w-4 h-4 transition-transform ${open ? '' : 'rotate-180'}`} />
         </button>
@@ -352,7 +357,7 @@ function SidePanel() {
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
               <input
                 type="text"
-                placeholder="Buscar país..."
+                placeholder={t('panel.search')}
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 className="w-full bg-slate-800 border border-slate-700 rounded-lg pl-10 pr-4 py-2.5 text-sm text-white placeholder-slate-500 focus:border-blue-500 focus:outline-none"
@@ -382,13 +387,13 @@ function SidePanel() {
 
             {!search && (
               <div className="space-y-2">
-                <div className="text-xs text-slate-500 font-bold uppercase tracking-wider">Filtrar por riesgo</div>
+                <div className="text-xs text-slate-500 font-bold uppercase tracking-wider">{t('panel.filterRisk')}</div>
                 <div className="grid grid-cols-2 gap-2">
                   {[
-                    { label: 'Seguro', color: 'bg-green-500', risk: 'sin-riesgo' },
-                    { label: 'Bajo', color: 'bg-yellow-500', risk: 'bajo' },
-                    { label: 'Medio', color: 'bg-orange-500', risk: 'medio' },
-                    { label: 'Alto', color: 'bg-red-500', risk: 'alto' },
+                    { label: t('panel.safe'), color: 'bg-green-500', risk: 'sin-riesgo' },
+                    { label: t('panel.low'), color: 'bg-yellow-500', risk: 'bajo' },
+                    { label: t('panel.medium'), color: 'bg-orange-500', risk: 'medio' },
+                    { label: t('panel.high'), color: 'bg-red-500', risk: 'alto' },
                   ].map((f) => (
                     <Link
                       key={f.label}
@@ -407,7 +412,7 @@ function SidePanel() {
               <div className="space-y-2">
                 <div className="text-xs text-slate-500 font-bold uppercase tracking-wider flex items-center gap-1">
                   <Bell className="w-3 h-3 text-amber-400" />
-                  Alertas MAEC activas
+                  {t('panel.alertsTitle')}
                 </div>
                 <div className="space-y-2">
                   {alerts.map((a, i) => (
@@ -423,7 +428,7 @@ function SidePanel() {
                   ))}
                 </div>
                 <Link href="/alertas" className="block text-center text-blue-400 text-xs font-medium hover:text-blue-300">
-                  Ver todas las alertas →
+                  {t('panel.viewAll')}
                 </Link>
               </div>
             )}
@@ -432,16 +437,16 @@ function SidePanel() {
 
             {!search && (
               <div className="space-y-2">
-                <div className="text-xs text-slate-500 font-bold uppercase tracking-wider">Herramientas</div>
+                <div className="text-xs text-slate-500 font-bold uppercase tracking-wider">{t('panel.tools')}</div>
                 <div className="space-y-1">
-                  {tools.map((t, i) => (
+                  {tools.map((tt, i) => (
                     <Link 
                       key={i}
-                      href={t.href}
+                      href={tt.href}
                       className="flex items-center gap-3 bg-slate-800/50 hover:bg-slate-800 rounded-lg px-3 py-2.5 transition-colors border border-transparent hover:border-slate-700"
                     >
-                      {t.icon}
-                      <span className="text-sm text-slate-300">{t.label}</span>
+                      {tt.icon}
+                      <span className="text-sm text-slate-300">{tt.label}</span>
                     </Link>
                   ))}
                 </div>
@@ -453,10 +458,10 @@ function SidePanel() {
                 <div className="flex items-center justify-between">
                   <div className="text-xs text-slate-500 font-bold uppercase tracking-wider flex items-center gap-1.5">
                     <BookOpen className="w-3 h-3 text-cyan-400" />
-                    Últimos análisis
+                    {t('panel.recentPosts')}
                   </div>
                   <Link href="/blog" className="text-[10px] text-cyan-400 hover:text-cyan-300 font-medium flex items-center gap-0.5">
-                    Todos <Chevron className="w-3 h-3" />
+                    {t('panel.all')} <Chevron className="w-3 h-3" />
                   </Link>
                 </div>
                 <div className="space-y-1.5">
@@ -487,6 +492,7 @@ function SidePanel() {
 // SINGLE CTA BUTTON — visible during loading & after map loads
 // ============================================================
 function PrimaryCTA() {
+  const { t } = useI18n();
   return (
     <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-[1020]">
       <Link
@@ -494,7 +500,7 @@ function PrimaryCTA() {
         className="flex items-center gap-2 sm:gap-3 px-5 sm:px-6 py-2.5 sm:py-3 bg-gradient-to-r from-purple-600 to-violet-600 text-white rounded-xl sm:rounded-2xl hover:opacity-90 transition-all shadow-2xl shadow-purple-500/25 text-sm sm:text-base font-semibold group"
       >
         <Sparkles className="w-5 h-5 group-hover:scale-110 transition-transform" />
-        Decide tu viaje en 30 segundos
+        {t('cta.decide')}
         <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
       </Link>
     </div>
@@ -505,6 +511,12 @@ function PrimaryCTA() {
 // HOME (Mapa 70vh dominante + contenido debajo)
 // ============================================================
 export default function HomeClient() {
+  const { t } = useI18n();
+
+  const riskCount = Object.values(paisesData).filter(
+    p => p.nivelRiesgo === 'alto' || p.nivelRiesgo === 'muy-alto'
+  ).length;
+
   return (
     <div className="min-h-screen bg-slate-950">
       <TopBar />
@@ -520,20 +532,20 @@ export default function HomeClient() {
         <div className="bg-gradient-to-br from-slate-800/90 to-slate-900/90 backdrop-blur-sm rounded-2xl border border-slate-700/50 p-8 md:p-10">
           <div className="text-center mb-8">
             <h2 className="text-2xl md:text-3xl font-bold text-white mb-2">
-              Cómo funciona Viaje Inteligencia
+              {t('trust.title')}
             </h2>
             <p className="text-slate-400 text-sm max-w-2xl mx-auto">
-              Datos oficiales, IA asistida y transparencia total — sin cajas negras.
+              {t('trust.subtitle')}
             </p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
             {[
-              { icon: Globe, title: 'Datos oficiales', desc: 'MAEC + US State Dept + 73 fuentes OSINT en tiempo real', color: 'text-blue-400', bg: 'bg-blue-500/10' },
-              { icon: Brain, title: 'IA asistida', desc: 'Groq analiza, no decide. Las alertas las validamos con fuentes', color: 'text-purple-400', bg: 'bg-purple-500/10' },
-              { icon: FileText, title: 'Metodología abierta', desc: 'Cada riesgo, cada score, cada fuente — explicado y auditable', color: 'text-emerald-400', bg: 'bg-emerald-500/10' },
-              { icon: Lock, title: 'Privacidad por diseño', desc: 'No almacenamos ubicación. Sin tracking. Tus pólizas de seguro solo en tu navegador', color: 'text-amber-400', bg: 'bg-amber-500/10' },
-              { icon: Shield, title: 'Proyecto independiente', desc: 'Desarrollado en España. Sin venture capital. Sin venta de datos', color: 'text-rose-400', bg: 'bg-rose-500/10' },
+              { icon: Globe, title: t('trust.officialData'), desc: t('trust.officialDataDesc'), color: 'text-blue-400', bg: 'bg-blue-500/10' },
+              { icon: Brain, title: t('trust.aiAssisted'), desc: t('trust.aiAssistedDesc'), color: 'text-purple-400', bg: 'bg-purple-500/10' },
+              { icon: FileText, title: t('trust.openMethod'), desc: t('trust.openMethodDesc'), color: 'text-emerald-400', bg: 'bg-emerald-500/10' },
+              { icon: Lock, title: t('trust.privacy'), desc: t('trust.privacyDesc'), color: 'text-amber-400', bg: 'bg-amber-500/10' },
+              { icon: Shield, title: t('trust.independent'), desc: t('trust.independentDesc'), color: 'text-rose-400', bg: 'bg-rose-500/10' },
             ].map((item, i) => (
               <div key={i} className="text-center p-4 rounded-xl hover:bg-slate-700/30 transition-colors">
                 <div className={`w-10 h-10 ${item.bg} rounded-xl flex items-center justify-center mx-auto mb-3`}>
@@ -547,19 +559,19 @@ export default function HomeClient() {
 
           <div className="flex flex-wrap items-center justify-center gap-3 mt-6 pt-4 border-t border-slate-700/50">
             <Link href="/metodologia" className="inline-flex items-center gap-1.5 text-xs text-slate-400 hover:text-white transition-colors">
-              <ShieldCheck className="w-3.5 h-3.5" /> Metodología completa
+              <ShieldCheck className="w-3.5 h-3.5" /> {t('trust.metodologia')}
             </Link>
             <span className="text-slate-700">·</span>
             <Link href="/transparencia" className="inline-flex items-center gap-1.5 text-xs text-slate-400 hover:text-white transition-colors">
-              <Eye className="w-3.5 h-3.5" /> Centro de Transparencia
+              <Eye className="w-3.5 h-3.5" /> {t('trust.transparencia')}
             </Link>
             <span className="text-slate-700">·</span>
             <Link href="/fuentes-osint" className="inline-flex items-center gap-1.5 text-xs text-slate-400 hover:text-white transition-colors">
-              <Database className="w-3.5 h-3.5" /> Fuentes y limitaciones
+              <Database className="w-3.5 h-3.5" /> {t('trust.fuentes')}
             </Link>
             <span className="text-slate-700">·</span>
             <Link href="/seguridad" className="inline-flex items-center gap-1.5 text-xs text-slate-400 hover:text-white transition-colors">
-              <Lock className="w-3.5 h-3.5" /> Cómo protegemos tus datos
+              <Lock className="w-3.5 h-3.5" /> {t('trust.seguridad')}
             </Link>
           </div>
         </div>
@@ -568,29 +580,29 @@ export default function HomeClient() {
       <section className="max-w-7xl mx-auto px-4 pt-32 pb-12">
         <div className="text-center mb-8">
           <h2 className="text-2xl md:text-3xl font-bold text-white mb-3">
-            Viaja informado, viaja seguro
+            {t('home.travelSafe')}
           </h2>
           <p className="text-slate-400 text-lg max-w-2xl mx-auto">
-            Mapa interactivo con datos oficiales MAEC, análisis por IA y herramientas inteligentes para planificar tu viaje.
+            {t('home.subtitle2')}
           </p>
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 max-w-3xl mx-auto">
           <Link href="/paises" className="bg-slate-800/50 rounded-xl p-3 text-center hover:bg-slate-800 transition-colors border border-slate-700/50">
             <Globe className="w-5 h-5 text-blue-400 mx-auto mb-1.5" />
-            <span className="text-white text-xs font-medium">{TOTAL_PAISES} Países</span>
+            <span className="text-white text-xs font-medium">{TOTAL_PAISES} {t('home.countriesLink')}</span>
           </Link>
           <Link href="/coste" className="bg-slate-800/50 rounded-xl p-3 text-center hover:bg-slate-800 transition-colors border border-slate-700/50">
             <Calculator className="w-5 h-5 text-blue-400 mx-auto mb-1.5" />
-            <span className="text-white text-xs font-medium">Calculadora Coste</span>
+            <span className="text-white text-xs font-medium">{t('home.costCalc')}</span>
           </Link>
           <Link href="/analisis" className="bg-slate-800/50 rounded-xl p-3 text-center hover:bg-slate-800 transition-colors border border-slate-700/50">
             <TrendingUp className="w-5 h-5 text-amber-400 mx-auto mb-1.5" />
-            <span className="text-white text-xs font-medium">Análisis</span>
+            <span className="text-white text-xs font-medium">{t('home.analysis')}</span>
           </Link>
           <Link href="/rutas" className="bg-slate-800/50 rounded-xl p-3 text-center hover:bg-slate-800 transition-colors border border-slate-700/50">
             <Route className="w-5 h-5 text-green-400 mx-auto mb-1.5" />
-            <span className="text-white text-xs font-medium">Rutas</span>
+            <span className="text-white text-xs font-medium">{t('home.routes')}</span>
           </Link>
         </div>
 
@@ -603,20 +615,20 @@ export default function HomeClient() {
 
         <div className="max-w-3xl mx-auto mt-6">
           <p className="text-slate-400 text-sm text-center bg-slate-800/30 rounded-xl px-4 py-3 border border-slate-700/30">
-            {Object.values(paisesData).filter(p => p.nivelRiesgo === 'alto' || p.nivelRiesgo === 'muy-alto').length} países en riesgo alto o muy alto — consulta las alertas activas antes de viajar
+            {t('home.riskSummary', { riskCount })}
           </p>
         </div>
 
         <div className="max-w-3xl mx-auto mt-12 border-t border-slate-800 pt-8">
-          <h2 className="text-xl font-bold text-white mb-4">Mapa de Riesgos de Viaje con Inteligencia Artificial</h2>
+          <h2 className="text-xl font-bold text-white mb-4">{t('home.seoTitle')}</h2>
           <p className="text-slate-400 text-sm leading-relaxed mb-4">
-            <strong className="text-slate-300">Viaje con Inteligencia</strong> es la primera plataforma que combina el índice de riesgo MAEC español con análisis de Machine Learning para {TOTAL_PAISES} países. El <strong className="text-slate-300">índice IRV</strong> (Indicador de Riesgo de Viaje) cruza 16 KPIs — desde seguridad y terrorismo hasta coste de vida e inflación — para darte una puntuación única y actualizada.
+            {t('home.seoP1', { n: TOTAL_PAISES })}
           </p>
           <p className="text-slate-400 text-sm leading-relaxed mb-4">
-            El motor de <strong className="text-slate-300">análisis inteligente</strong> agrupa destinos según tu perfil: presupuesto, tipo de viaje y preferencias. El <strong className="text-slate-300">Chat IA</strong> con Groq te da recomendaciones personalizadas en segundos. El sistema <strong className="text-slate-300">OSINT</strong> monitoriza 73+ fuentes en tiempo real: GDELT, USGS, GDACS, Reddit y RSS.
+            {t('home.seoP2')}
           </p>
           <p className="text-slate-400 text-sm leading-relaxed">
-            Herramientas adicionales: calculadora de coste de viaje ajustada al petróleo, rutas temáticas de España, alertas de cambio de riesgo MAEC, generador de reclamaciones para aerolíneas y dashboard con KPIs globales de 6 índices internacionales.
+            {t('home.seoP3')}
           </p>
         </div>
 
@@ -627,17 +639,17 @@ export default function HomeClient() {
               MC
             </div>
             <div className="min-w-0">
-              <h3 className="text-white font-semibold text-sm">Sobre el proyecto</h3>
+              <h3 className="text-white font-semibold text-sm">{t('about.title')}</h3>
               <p className="text-slate-400 text-xs mt-1 leading-relaxed">
-                Soy <strong className="text-slate-300">Miguel Castillo</strong> y desarrollo Viaje Inteligencia como plataforma independiente de travel intelligence, OSINT y análisis de riesgo para viajeros. Stack: Next.js, Supabase, Groq, OpenStreetMap, datos MAEC + US State Dept + GDELT + USGS + GDACS.
+                {t('about.text')}
               </p>
               <p className="text-slate-500 text-xs mt-1.5">
-                Proyecto 100% independiente, desarrollado en España. Sin venture capital, sin publicidad, sin venta de datos.
+                {t('about.independent')}
               </p>
               <div className="flex flex-wrap gap-2 mt-2">
-                <Link href="/metodologia" className="text-xs text-blue-400 hover:text-blue-300 transition-colors">Metodología →</Link>
-                <Link href="/manifiesto" className="text-xs text-blue-400 hover:text-blue-300 transition-colors">Manifiesto →</Link>
-                <Link href="/transparencia" className="text-xs text-blue-400 hover:text-blue-300 transition-colors">Transparencia →</Link>
+                <Link href="/metodologia" className="text-xs text-blue-400 hover:text-blue-300 transition-colors">{t('about.metodologia')}</Link>
+                <Link href="/manifiesto" className="text-xs text-blue-400 hover:text-blue-300 transition-colors">{t('about.manifiesto')}</Link>
+                <Link href="/transparencia" className="text-xs text-blue-400 hover:text-blue-300 transition-colors">{t('about.transparencia')}</Link>
               </div>
             </div>
           </div>

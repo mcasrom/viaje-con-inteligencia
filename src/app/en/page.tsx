@@ -1,5 +1,4 @@
-import MapaMundial from '@/components/MapaMundial';
-import Testimonios from '@/components/Testimonios';
+import HomeClient from '@/app/page';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -41,5 +40,5 @@ export const metadata: Metadata = {
 };
 
 export default function HomeEN() {
-  return <MapaMundial />;
+  return <HomeClient />;
 }

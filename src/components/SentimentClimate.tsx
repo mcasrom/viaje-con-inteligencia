@@ -28,15 +28,17 @@ function TrendArrow({ trend }: { trend: number | null }) {
   return <span className="text-slate-500 text-xs" title="Estable">→</span>;
 }
 
-export default function SentimentClimate({ countryName, compact }: Props) {
+export default function SentimentClimate({ countryName, countryCode, compact }: Props) {
   const [data, setData] = useState<ClimateData | null>(null);
 
   useEffect(() => {
-    fetch(`/api/osint/sentiment-climate?country=${encodeURIComponent(countryName)}`)
+    const params = new URLSearchParams({ country: countryName });
+    if (countryCode) params.set('code', countryCode);
+    fetch(`/api/osint/sentiment-climate?${params}`)
       .then(r => r.json())
       .then(setData)
       .catch(() => setData({ avgTone: null, signals: 0, toneTrend7d: null, mood: null }));
-  }, [countryName]);
+  }, [countryName, countryCode]);
 
   if (!data || data.signals === 0) return null;
 

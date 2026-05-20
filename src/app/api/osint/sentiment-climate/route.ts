@@ -8,6 +8,7 @@ export const dynamic = 'force-dynamic';
 
 export async function GET(request: NextRequest) {
   const country = request.nextUrl.searchParams.get('country');
+  const code = request.nextUrl.searchParams.get('code');
   if (!country) return NextResponse.json({ error: 'country param required' }, { status: 400 });
 
   if (!supabase) return NextResponse.json({ avgTone: null, signals: 0 });
@@ -17,13 +18,19 @@ export async function GET(request: NextRequest) {
   const threeHalfDaysAgo = new Date();
   threeHalfDaysAgo.setDate(threeHalfDaysAgo.getDate() - 3);
 
-  const { data, error } = await supabase
+  let query = supabase
     .from('osint_signals')
     .select('tone_score, created_at, location_name, summary')
     .gte('created_at', sevenDaysAgo.toISOString())
-    .not('tone_score', 'is', null)
+    .not('tone_score', 'is', null);
+
+  if (code) {
+    query = query.or(`location_name.ilike.%${code}%,title.ilike.%${code}%`);
+  }
+
+  const { data, error } = await query
     .order('created_at', { ascending: false })
-    .limit(100);
+    .limit(200);
 
   if (error) {
     log.error('Error fetching sentiment data', error);
@@ -41,12 +48,12 @@ export async function GET(request: NextRequest) {
   });
 
   if (relevant.length === 0) {
-    return NextResponse.json({ avgTone: null, signals: 0, country });
+    return NextResponse.json({ avgTone: null, signals: 0, country, code });
   }
 
   const valid = relevant.filter(s => s.tone_score != null && !isNaN(Number(s.tone_score)));
   if (valid.length === 0) {
-    return NextResponse.json({ avgTone: null, signals: 0, country });
+    return NextResponse.json({ avgTone: null, signals: 0, country, code });
   }
 
   const sum = valid.reduce((acc, s) => acc + Number(s.tone_score), 0);
@@ -67,5 +74,6 @@ export async function GET(request: NextRequest) {
     toneTrend7d,
     mood: avgTone > 3 ? 'positive' : avgTone < -3 ? 'negative' : 'neutral',
     country,
+    code,
   });
 }
