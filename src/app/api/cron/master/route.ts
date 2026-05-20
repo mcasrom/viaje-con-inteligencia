@@ -816,6 +816,19 @@ async function runModelTraining(): Promise<any> {
   }
 }
 
+// ===== DAILY TELEGRAM CONTENT =====
+async function runDailyTelegramContent(): Promise<any> {
+  try {
+    const { buildDailyPost, publishDailyPost } = await import('@/lib/daily-tg-content');
+    const post = await buildDailyPost();
+    if (!post) return { status: 'skipped', reason: 'No content generated' };
+    const ok = await publishDailyPost(post);
+    return { status: ok ? 'ok' : 'error', country: post.countryName };
+  } catch (e: any) {
+    return { status: 'error', error: e.message };
+  }
+}
+
 // ===== ONBOARDING QUEUE =====
 async function runOnboardingQueue(): Promise<any> {
   try {
@@ -936,6 +949,9 @@ export async function GET(request: Request) {
 
   log.info('7b/8 Trial notifications...');
   results.trial_notifications = await withTimeout(() => runTrialNotifications(), 15000, '7b/8 Trial notifications');
+
+  log.info('7c/8 Daily Telegram content...');
+  results.daily_tg = await withTimeout(() => runDailyTelegramContent(), 15000, '7c/8 Daily Telegram content');
 
   log.info('8/8 Weekly digest...');
   results.weekly = await withTimeout(() => runWeeklyDigest(), 30000, '8/8 Weekly digest');

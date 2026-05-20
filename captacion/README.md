@@ -28,7 +28,7 @@
 | D1 | Email onboarding (3 emails) | D | 20 May | 20 May | 6h | ✅ |
 | A4 | Página `/afiliados` | A | 20 May | 20 May | 8h | ✅ |
 | B2 | Hilo X semanal | B | — | — | 1h/sem | Pendiente |
-| B3 | Telegram contenido diario | B | — | — | 30min/día | Pendiente |
+| B3 | Telegram contenido diario | B | 20 May | 20 May | 30min | ✅ |
 | B4 | Foros viajeros | B | — | — | 2h/sem | Pendiente |
 | B5 | Email outreach bloggers | B | — | — | 4h | Pendiente |
 | C1 | Widget IRV embed aseguradoras | C | — | — | 16h | Pendiente |
@@ -40,7 +40,7 @@
 ## Notas
 
 - Todas las acciones son coste 0€ (solo horas de desarrollo)
-- 20 May: Sprint Captación día 1. Completados A1, A2, A3, A4, B1 (FB), B2 (Reddit, LinkedIn), D1 (email onboarding), D2 (notificaciones cambio riesgo). Pendientes: B3, B4, B5, C1-3, D3
+- 20 May: Sprint Captación día 1. Completados A1, A2, A3, A4, B1 (FB), B2 (Reddit, LinkedIn), B3 (Telegram diario), D1 (email onboarding), D2 (notificaciones cambio riesgo). Pendientes: B4, B5, C1-3, D3
 - r/osinttools primer post (sesión anterior) → 2.5k views. Próximo post técnico en ~7 días
 - D1 (email onboarding): ✅ código + SQL ejecutado
 - queHacer: rellenado para CF, SO, SS (3 países africanos sin recomendaciones)
