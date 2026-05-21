@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { ArrowLeft, Shield, AlertTriangle, BarChart3, FileText, Globe, Database, TrendingUp, Brain, MessageSquare, Bell, ArrowRight } from 'lucide-react';
+import { ArrowLeft, Shield, AlertTriangle, BarChart3, FileText, Globe, Database, TrendingUp, Brain, MessageSquare, Bell, ArrowRight, Heart } from 'lucide-react';
 import { TOTAL_PAISES } from '@/lib/constants';
 
 export const metadata: Metadata = {
@@ -238,6 +238,54 @@ export default function MetodologiaPage() {
               <h4 className="text-white font-medium text-sm">💰 IPC - Índice de Precios al Consumo</h4>
               <p className="text-slate-400 text-xs mt-1">Inflación y coste de vida por país</p>
             </div>
+          </div>
+        </div>
+
+        {/* WHO Health Risk */}
+        <div className="bg-slate-800/60 rounded-xl border border-slate-700/50 p-6 mb-8">
+          <div className="flex items-center gap-3 mb-4">
+            <Heart className="w-6 h-6 text-rose-400" />
+            <h2 className="text-xl font-bold text-white">Riesgo sanitario OMS</h2>
+          </div>
+          <p className="text-slate-300 text-sm mb-4">
+            El nivel de riesgo sanitario se calcula exclusivamente con datos de la <strong>Organización Mundial de la Salud</strong> (Global Health Observatory). Evalúa 4 indicadores por país:
+          </p>
+          <div className="grid md:grid-cols-2 gap-4 mb-6">
+            <div className="bg-slate-700/30 rounded-lg p-4">
+              <h4 className="text-white font-medium text-sm">🫁 Tuberculosis</h4>
+              <p className="text-slate-400 text-xs mt-1">Incidencia por 100.000 hab. &gt;100 → +3, &gt;50 → +2, &gt;20 → +1</p>
+            </div>
+            <div className="bg-slate-700/30 rounded-lg p-4">
+              <h4 className="text-white font-medium text-sm">🧬 VIH</h4>
+              <p className="text-slate-400 text-xs mt-1">Prevalencia en adultos &gt;5% → +3, &gt;1% → +1</p>
+            </div>
+            <div className="bg-slate-700/30 rounded-lg p-4">
+              <h4 className="text-white font-medium text-sm">💉 Vacunación DTP3</h4>
+              <p className="text-slate-400 text-xs mt-1">Cobertura infantil &lt;70% → +2, &lt;85% → +1</p>
+            </div>
+            <div className="bg-slate-700/30 rounded-lg p-4">
+              <h4 className="text-white font-medium text-sm">💰 Gasto sanitario</h4>
+              <p className="text-slate-400 text-xs mt-1">$ per cápita/año &lt;100 → +2, &lt;500 → +1</p>
+            </div>
+          </div>
+          <div className="bg-slate-700/30 rounded-lg p-4 mb-4">
+            <h4 className="text-white font-semibold text-sm mb-2">Umbrales de riesgo</h4>
+            <div className="grid grid-cols-3 gap-3 text-xs">
+              <div className="bg-emerald-500/10 rounded p-2 border border-emerald-500/20">
+                <span className="text-emerald-400 font-bold">Bajo</span>
+                <p className="text-slate-400 mt-0.5">avgScore &lt; 0.75</p>
+              </div>
+              <div className="bg-amber-500/10 rounded p-2 border border-amber-500/20">
+                <span className="text-amber-400 font-bold">Medio</span>
+                <p className="text-slate-400 mt-0.5">avgScore ≥ 0.75</p>
+              </div>
+              <div className="bg-rose-500/10 rounded p-2 border border-rose-500/20">
+                <span className="text-rose-400 font-bold">Alto</span>
+                <p className="text-slate-400 mt-0.5">avgScore ≥ 1.5</p>
+              </div>
+            </div>
+            <p className="text-slate-500 text-xs mt-2">Validación cruzada con HDI: países con HDI &lt; 0.6 no pueden ser "Bajo".</p>
+            <p className="text-slate-500 text-xs mt-1">Recalibrado 21 May 2026: umbral "Alto" bajado de ≥2.0 a ≥1.5, gasto sanitario de $3/$6 a $100/$500.</p>
           </div>
         </div>
 

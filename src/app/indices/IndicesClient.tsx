@@ -149,8 +149,14 @@ const externalIndices = [
     icon: HeartPulse,
     range: 'bajo / medio / alto',
     rangeLabel: 'Riesgo sanitario por país',
-    source: 'Organización Mundial de la Salud',
-    narrative: 'Evalúa tuberculosis, VIH, vacunación, gasto en salud, doctores y camas hospitalarias. Factor crítico para viajeros con condiciones médicas.',
+    source: 'Organización Mundial de la Salud (GHO)',
+    narrative: 'Evalúa 4 indicadores: tuberculosis (incidencia), VIH (prevalencia), vacunación DTP3 (cobertura infantil), y gasto sanitario ($ per cápita). Cada indicador suma puntos según umbrales. El promedio determina el nivel: <0.75 → bajo, ≥0.75 → medio, ≥1.5 → alto. Validación cruzada con HDI: países con HDI<0.6 no pueden ser "bajo". Recalibrado 21 May 2026.',
+    details: [
+      'TB >100 → +3, >50 → +2, >20 → +1',
+      'VIH >5% → +3, >1% → +1',
+      'Vacunación <70% → +2, <85% → +1',
+      'Gasto sanitario <$100 → +2, <$500 → +1',
+    ],
   },
 ];
 
@@ -312,6 +318,16 @@ function ExternalCard({ index }: { index: typeof externalIndices[0] }) {
             <div className="text-white">{index.source}</div>
           </div>
         </div>
+
+        {(index as any).details && (
+          <div className="mt-3 space-y-1">
+            {(index as any).details.map((d: string, i: number) => (
+              <div key={i} className="text-xs text-slate-400 bg-slate-900/30 rounded px-2 py-1 font-mono">
+                {d}
+              </div>
+            ))}
+          </div>
+        )}
 
         {index.url && (
           <Link href={index.url} className="text-sm text-blue-400 hover:text-blue-300 inline-flex items-center gap-1">

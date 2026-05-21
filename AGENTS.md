@@ -1,5 +1,24 @@
 # AGENTS.md — Viaje con Inteligencia
 
+## Today (21 May 2026) — Sprint Riesgo Sanitario + Mapa
+
+### Logros
+- **Riesgo sanitario recalibrado**: Umbral `high` bajado de avgScore>=2 a >=1.5. Gasto sanitario de $3-6 absurdo a $100/$500 reales. Ahora DRC, Uganda, Chad, Angola muestran "Alto" correctamente. CI #339 ✅ + Deploy #3 ✅.
+- **/mapa creado**: Página full-screen con `MapaInteractivo` (antes link muerto desde `/geopolitica-y-viajes`). Layout con metadata/OG. Botón "Volver al inicio". Build OK.
+- **Listados completos en KPIs dashboard** (premium): 
+  - **Paz y Seguridad**: "Listado completo por riesgo MAEC" + "Listado completo US State Dept" (189 países, niveles 1-4) — ambos colapsables
+  - **Salud OMS**: "Listado completo por riesgo sanitario OMS" (Alto/Medio/Bajo) — colapsable
+  - Componente `FullCountryList` creado localmente en `KPIDashboardClient.tsx`
+  - API `/api/data/us-risk` para datos US State Dept (fetch client-side)
+- **Enlace roto arreglado**: `/mapa` en `/geopolitica-y-viajes` ahora apunta a página real (antes 404)
+- **Fix 500 KPIs page**: Movido fetch US data de server-side (supabaseAdmin en page.tsx causaba error) a client-side con API endpoint
+
+### Commits
+- `e5f11be` fix: recalibrate health risk thresholds
+- `dac928f` feat: create /mapa page with full-screen interactive map
+- `0fadfd4` feat: add complete country lists by risk (MAEC, US State Dept, WHO health)
+- `93ad260` fix: fetch US risk data client-side, create /api/data/us-risk endpoint
+
 ## Slogans / Taglines (SEO)
 - **ES**: "Viaje con Inteligencia: Tu radar de seguridad global impulsado por IA."
 - **EN**: "Smart Traveler: AI-Driven Global Risk Radar for the Conscious Explorer."
