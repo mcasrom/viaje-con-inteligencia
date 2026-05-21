@@ -455,6 +455,8 @@ Categorías:
 
 IMPORTANTE: Si el contenido es sobre deportes, entretenimiento, política nacional/elecciones (sin impacto directo en viajeros), economía general o tecnología, usa SIEMPRE category "irrelevant" con confidence 1.0 y urgency "low".
 
+Mensaje:`;
+
 export async function classifySignal(post: RawPost): Promise<ClassifiedSignal> {
   try {
     const text = `${post.title} ${post.content}`.substring(0, 2000);
