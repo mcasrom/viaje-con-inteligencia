@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Geist } from "next/font/google";
 import "./globals.css";
 import dynamic from "next/dynamic";
+import { headers } from "next/headers";
 import Providers from "@/components/Providers";
 import TopBar from "@/components/TopBar";
 import Footer from "@/components/Footer";
@@ -86,11 +87,17 @@ export const metadata: Metadata = {
   },
 };
 
+const BOT_PATTERNS = /bot|crawl|googlebot|bingbot|slurp|duckduckbot|baiduspider|yandexbot|facebot|facebookexternalhit|twitterbot|whatsapp|telegram|semrush|ahrefs|majestic|archive|ia_archiver|curl|wget|python-requests/i;
+
 export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const headersList = await headers();
+  const userAgent = headersList.get('user-agent') || '';
+  const isBot = BOT_PATTERNS.test(userAgent);
+
   await Promise.all([
     initPaisesData(), 
     initRutasData(), 
@@ -133,7 +140,7 @@ export default async function RootLayout({
         <Providers>
           <TopBar />
           <ServiceWorkerRegistration />
-          <Onboarding />
+          {!isBot && <Onboarding />}
           <div className="pt-12">{children}</div>
           <InstallPWA />
           <QuickAccess />

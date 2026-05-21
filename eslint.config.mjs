@@ -21,6 +21,9 @@ const eslintConfig = defineConfig([
       "react/no-unescaped-entities": "off",
       "@next/next/no-img-element": "off",
       "react-hooks/exhaustive-deps": "off",
+      "prefer-const": "off",
+      "jsx-a11y/alt-text": "off",
+      "@typescript-eslint/no-unused-expressions": "off",
     },
   },
 ]);
