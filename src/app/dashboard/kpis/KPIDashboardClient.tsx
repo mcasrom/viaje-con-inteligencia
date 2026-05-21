@@ -56,7 +56,6 @@ interface KPIProps {
   continentDistribution: { continent: string; count: number }[];
   ipcDistribution: { nivel: string; count: number }[];
   gpiByRegion: { region: string; avgScore: number; count: number }[];
-  usRiskData: Record<string, { level: number; label: string }>;
 }
 
 const TABS = [
@@ -73,7 +72,6 @@ export default function KPIDashboard({
   gpiTop5, gpiWorst5, hdiTop5, gtiWorst5, riskDistribution, ipcExtremos,
   topTourism, tciBaratos, tciCaros, oilPrice, totalCountries, totalSafe,
   avgHDI, avgGPI, continentDistribution, ipcDistribution, gpiByRegion,
-  usRiskData,
 }: KPIProps) {
   const { isPremium, loading: premiumLoading } = useRequirePremium();
   const [activeTab, setActiveTab] = useState('paz');
@@ -83,9 +81,24 @@ export default function KPIDashboard({
   const [sismosLoading, setSismosLoading] = useState(false);
   const [conflictosData, setConflictosData] = useState<any[]>([]);
   const [conflictosLoading, setConflictosLoading] = useState(false);
+  const [usRiskData, setUsRiskData] = useState<Record<string, { level: number; label: string }>>({});
 
   useEffect(() => {
     if (!isPremium) return;
+    if (activeTab === 'paz' && Object.keys(usRiskData).length === 0) {
+      fetch('/api/data/us-risk')
+        .then(r => r.json())
+        .then(data => {
+          if (data?.countries) {
+            const map: Record<string, { level: number; label: string }> = {};
+            data.countries.forEach((c: any) => {
+              map[c.country_code.toUpperCase()] = { level: c.risk_level, label: c.risk_label || '' };
+            });
+            setUsRiskData(map);
+          }
+        })
+        .catch(() => {});
+    }
     if (activeTab === 'salud' && !healthData && !healthLoading) {
       setHealthLoading(true);
       fetch('/api/kpis/health')
@@ -147,7 +160,7 @@ export default function KPIDashboard({
         })
         .catch(() => setConflictosLoading(false));
     }
-  }, [activeTab, healthData, isPremium, sismosLoading, conflictosLoading]);
+  }, [activeTab, healthData, isPremium, sismosLoading, conflictosLoading, usRiskData]);
 
   if (premiumLoading) {
     return (
