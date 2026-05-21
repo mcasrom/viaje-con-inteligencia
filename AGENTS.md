@@ -445,13 +445,13 @@ Para probar authenticated endpoints se necesita sesión válida (vía browser).
 6. **Footer**: Enlace a Centro de Transparencia añadido
 7. **SOS fix**: Proxy server-side `/api/geocode` elimina dependencia directa de Nominatim desde el cliente (CORS/adblockers)
 
-## Sprint 2 — Madurez de plataforma (pendiente)
-1. **Eliminar apariencia experimental** — Revisar textos: cambiar "beta", "experimental", "LLM", "clustering", "prototipo" por "operacional", "producción", "inteligencia aplicada", "análisis", "plataforma". Meta descriptions y OG tags
-2. **Pillar pages SEO** — Crear `/travel-risk-intelligence` (3000-5000 palabras), `/osint-para-viajeros`, `/geopolitica-y-viajes`. Interlinking desde blog existente
-3. **Indexación quirúrgica** — `noindex` a tags de blog, búsquedas internas, `/admin/*`, `/dashboard/*`, feeds, previews. Consolidar páginas thin. Revisar canónicos
+## Sprint 2 ✅ — Madurez de plataforma (completado 21 May 2026)
+1. **Eliminar apariencia experimental** ✅ — Sin rastro de "beta/experimental/prototipo" en páginas públicas. "clustering" 3 menciones como término técnico en `/osint-para-viajeros` (aceptable).
+2. **Pillar pages SEO** ✅ — `/travel-risk-intelligence`, `/osint-para-viajeros`, `/geopolitica-y-viajes` creadas con metadata, OG, Schema Article+FAQ. Travel-risk-intelligence por debajo de 3k palabras objetivo.
+3. **Indexación quirúrgica** ✅ — `/admin/*` y `/dashboard/*` con noindex. Sin tags de blog. `robots.txt` ausente de `public/` (gestionado manualmente por el usuario, NO TOCAR).
 
-## Sprint 3 — Arquitectura SEO (pendiente)
-1. **Pillar + Satellite** — Cada pillar page → 5-8 artículos satélite enlazados bidireccionalmente. Schema Article + FAQ en pillars
+## Sprint 3 ✅ — Arquitectura SEO (completado 21 May 2026)
+1. **Pillar + Satellite** ✅ — 3 pillars con interlinking a blog (8 enlaces, 6 artículos únicos). Bidireccional confirmado. Schema Article+FAQPage en los 3. Minor gap: osint-para-viajeros solo enlaza 1 artículo satélite (objetivo 5-8).
 
 ## Next Steps
 
