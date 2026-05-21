@@ -1,11 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
+import { supabaseAdmin } from '@/lib/supabase-admin';
 import sharp from 'sharp';
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
 
 const MAX_SIZE = 800;
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
@@ -54,7 +49,7 @@ export async function POST(request: NextRequest) {
 
     const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 10)}.webp`;
 
-    const { data, error } = await supabase.storage
+    const { data, error } = await supabaseAdmin.storage
       .from('review-images')
       .upload(`reviews/${fileName}`, optimizedBuffer, {
         contentType: 'image/webp',
@@ -64,7 +59,7 @@ export async function POST(request: NextRequest) {
 
     if (error) throw error;
 
-    const { data: urlData } = supabase.storage
+    const { data: urlData } = supabaseAdmin.storage
       .from('review-images')
       .getPublicUrl(data.path);
 
