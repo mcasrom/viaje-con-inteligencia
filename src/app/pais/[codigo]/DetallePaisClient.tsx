@@ -252,7 +252,7 @@ export default function DetallePaisClient({ pais, relatedPosts = [] }: DetallePa
             <div className="flex items-center gap-4">
               <span className="text-7xl">{pais.bandera}</span>
               <div>
-                <h1 className="text-4xl font-bold text-white mb-1">{pais.nombre}</h1>
+                <h1 className="text-4xl font-bold text-white mb-1">Guía de {pais.nombre}: riesgo MAEC, visado y consejos</h1>
                 <p className="text-slate-400 flex items-center gap-2">
                   <MapPin className="w-4 h-4" />
                   Capital: {pais.capital} • {pais.continente}

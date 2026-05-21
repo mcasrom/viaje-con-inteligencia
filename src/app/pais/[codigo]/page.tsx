@@ -67,7 +67,6 @@ export default async function PaisPage({ params }: { params: Promise<{ codigo: s
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
       />
-      <h1 className="sr-only">Guía de viaje a {pais.nombre}: riesgo MAEC, visado, seguridad y consejos para viajeros</h1>
       <DetallePaisClient pais={pais} relatedPosts={relatedPosts} />
       <OsintSignalsWidget countryCode={codigo} countryName={pais.nombre} />
     </>
