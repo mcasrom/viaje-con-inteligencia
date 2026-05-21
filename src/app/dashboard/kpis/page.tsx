@@ -2,6 +2,7 @@ import { getTodosLosPaises } from '@/data/paises';
 import { getGPI, getGTI, getHDI, getIPC } from '@/lib/indices';
 import { getTCIForAllCountries, getCurrentOilPrice } from '@/data/tci-engine';
 import { getTourismByCodeMap } from '@/lib/tourism-db';
+import { supabaseAdmin } from '@/lib/supabase-admin';
 import KPIDashboard from './KPIDashboardClient';
 
 export const revalidate = 3600;
@@ -115,6 +116,19 @@ export default async function KPIsPage() {
   const avgHDI = HDI_DATA.length > 0 ? Math.round((HDI_DATA.reduce((s, h) => s + h.score, 0) / HDI_DATA.length) * 1000) / 1000 : 0;
   const avgGPI = GPI_DATA.length > 0 ? Math.round((GPI_DATA.reduce((s, g) => s + g.score, 0) / GPI_DATA.length) * 100) / 100 : 0;
 
+  let usRiskData: Record<string, { level: number; label: string }> = {};
+  try {
+    const { data: usData } = await supabaseAdmin
+      .from('external_risk')
+      .select('country_code, risk_level, risk_label')
+      .eq('source', 'us_state_dept');
+    if (usData) {
+      usData.forEach(r => {
+        usRiskData[r.country_code.toUpperCase()] = { level: r.risk_level, label: r.risk_label || '' };
+      });
+    }
+  } catch {} // eslint-disable-line no-empty
+
   return (
     <KPIDashboard
       gpiTop5={gpiTop5}
@@ -134,6 +148,7 @@ export default async function KPIsPage() {
       continentDistribution={continentDistribution}
       ipcDistribution={ipcDistribution}
       gpiByRegion={gpiByRegion}
+      usRiskData={usRiskData}
     />
   );
 }

@@ -56,6 +56,7 @@ interface KPIProps {
   continentDistribution: { continent: string; count: number }[];
   ipcDistribution: { nivel: string; count: number }[];
   gpiByRegion: { region: string; avgScore: number; count: number }[];
+  usRiskData: Record<string, { level: number; label: string }>;
 }
 
 const TABS = [
@@ -72,6 +73,7 @@ export default function KPIDashboard({
   gpiTop5, gpiWorst5, hdiTop5, gtiWorst5, riskDistribution, ipcExtremos,
   topTourism, tciBaratos, tciCaros, oilPrice, totalCountries, totalSafe,
   avgHDI, avgGPI, continentDistribution, ipcDistribution, gpiByRegion,
+  usRiskData,
 }: KPIProps) {
   const { isPremium, loading: premiumLoading } = useRequirePremium();
   const [activeTab, setActiveTab] = useState('paz');
@@ -356,6 +358,40 @@ export default function KPIDashboard({
                 ))}
               </div>
             </div>
+
+            {/* Listado completo MAEC */}
+            {Object.entries(riskDistribution).length > 0 && (
+              <FullCountryList
+                title="Listado completo por riesgo MAEC"
+                groups={Object.entries(riskDistribution).map(([level, data]) => ({
+                  level,
+                  label: ({'sin-riesgo':'Sin riesgo','bajo':'Bajo','medio':'Medio','alto':'Alto','muy-alto':'Muy alto'} as Record<string, string>)[level] || level,
+                  color: ({'sin-riesgo':'bg-emerald-500','bajo':'bg-green-500','medio':'bg-amber-500','alto':'bg-orange-500','muy-alto':'bg-red-500'} as Record<string, string>)[level] || 'bg-slate-500',
+                  countries: data.countries,
+                }))}
+              />
+            )}
+
+            {/* Listado completo US State Dept */}
+            {Object.keys(usRiskData).length > 0 && (
+              <FullCountryList
+                title="Listado completo por riesgo US State Dept"
+                groups={(() => {
+                  const byLevel: Record<number, { level: string; label: string; color: string; countries: string[] }> = {};
+                  Object.entries(usRiskData).forEach(([code, r]) => {
+                    const lvl = r.level.toString();
+                    if (!byLevel[r.level]) byLevel[r.level] = {
+                      level: lvl,
+                      label: ({1:'Nivel 1 - Precauciones normales',2:'Nivel 2 - Precaución',3:'Nivel 3 - Reconsiderar viaje',4:'Nivel 4 - No viajar'} as Record<number, string>)[r.level] || lvl,
+                      color: ({1:'bg-emerald-500',2:'bg-amber-500',3:'bg-orange-500',4:'bg-red-500'} as Record<number, string>)[r.level] || 'bg-slate-500',
+                      countries: [],
+                    };
+                    byLevel[r.level].countries.push(code);
+                  });
+                  return Object.values(byLevel);
+                })()}
+              />
+            )}
           </div>
         )}
 
@@ -724,6 +760,27 @@ export default function KPIDashboard({
                 </div>
               </div>
 
+              {/* Listado completo por riesgo sanitario OMS */}
+              <FullCountryList
+                title="Listado completo por riesgo sanitario OMS"
+                groups={(() => {
+                  const byRisk: Record<string, { level: string; label: string; color: string; countries: string[] }> = {};
+                  healthData.countries.forEach(c => {
+                    const risk = c.riskLevel || 'unknown';
+                    if (!byRisk[risk]) byRisk[risk] = {
+                      level: risk,
+                      label: ({'low':'Bajo','medium':'Medio','high':'Alto','unknown':'En estudio'} as Record<string, string>)[risk] || risk,
+                      color: ({'low':'bg-emerald-500','medium':'bg-amber-500','high':'bg-rose-500','unknown':'bg-slate-500'} as Record<string, string>)[risk] || 'bg-slate-500',
+                      countries: [],
+                    };
+                    if (!byRisk[risk].countries.includes(c.country || c.code2)) {
+                      byRisk[risk].countries.push(c.country || c.code2);
+                    }
+                  });
+                  return Object.values(byRisk);
+                })()}
+              />
+
               <div className="text-center text-xs text-slate-500">
                 Fuente: {healthData.source} · {new Date(healthData.timestamp).toLocaleDateString('es-ES')}
               </div>
@@ -933,6 +990,55 @@ export default function KPIDashboard({
           )
         )}
       </main>
+    </div>
+  );
+}
+
+function FullCountryList({ title, groups }: {
+  title: string;
+  groups: { level: string; label: string; color: string; countries: string[] }[];
+}) {
+  const [open, setOpen] = useState(false);
+  const total = groups.reduce((s, g) => s + g.countries.length, 0);
+  return (
+    <div className="bg-slate-800/60 rounded-xl border border-slate-700/50 p-5">
+      <button onClick={() => setOpen(!open)} className="flex items-center justify-between w-full text-left">
+        <h3 className="text-lg font-bold text-white flex items-center gap-2">
+          <Globe className="w-5 h-5 text-blue-400" />
+          {title}
+          <span className="text-sm font-normal text-slate-500">({total} países)</span>
+        </h3>
+        <ChevronDown className={`w-5 h-5 text-slate-400 transition-transform ${open ? 'rotate-180' : ''}`} />
+      </button>
+      <p className="text-xs text-slate-500 mt-1 mb-4">
+        {groups.map(g => `${g.label} (${g.countries.length})`).join(' · ')}
+      </p>
+      {open && (
+        <div className="space-y-4 max-h-[600px] overflow-y-auto">
+          {groups
+            .filter(g => g.countries.length > 0)
+            .sort((a, b) => {
+              const order = ['muy-alto', '4', '3', 'alto', 'high', 'medium', 'medio', '2', '1', 'bajo', 'sin-riesgo', 'low', 'unknown'];
+              return order.indexOf(a.level) - order.indexOf(b.level);
+            })
+            .map(g => (
+              <div key={g.level}>
+                <div className="flex items-center gap-2 mb-2">
+                  <div className={`w-2.5 h-2.5 rounded-full ${g.color}`} />
+                  <span className="text-sm font-medium text-slate-300">{g.label}</span>
+                  <span className="text-xs text-slate-500">({g.countries.length})</span>
+                </div>
+                <div className="flex flex-wrap gap-1">
+                  {g.countries.sort().map(c => (
+                    <span key={c} className="text-xs px-2 py-0.5 rounded-full bg-slate-700/60 text-slate-400 border border-slate-600/50">
+                      {c}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            ))}
+        </div>
+      )}
     </div>
   );
 }
