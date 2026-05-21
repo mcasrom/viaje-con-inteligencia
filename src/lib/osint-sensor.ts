@@ -3,7 +3,7 @@ import { createLogger } from '@/lib/logger';
 
 const log = createLogger('OSINT');
 
-export type SignalCategory = 'salud' | 'seguridad' | 'clima' | 'logistico' | 'geopolitico' | 'otro';
+export type SignalCategory = 'salud' | 'seguridad' | 'clima' | 'logistico' | 'geopolitico' | 'irrelevant' | 'otro';
 
 export interface RawPost {
   source: 'reddit' | 'gdacs' | 'usgs' | 'gdelt' | 'rss' | 'who';
@@ -77,11 +77,12 @@ const NEWS_RSS_FEEDS = [
 ];
 
 const NEWS_KEYWORDS = [
-  'cruise', 'ship', 'outbreak', 'evacuat', 'disaster', 'emergency',
-  'travel', 'tourist', 'airport', 'flight', 'strike', 'protest',
+  'outbreak', 'evacuat', 'disaster', 'emergency',
+  'travel', 'tourist',   'airport', 'flight', 'strike', 'protest',
   'earthquake', 'flood', 'fire', 'hurricane', 'cyclone', 'tsunami',
   'crisis', 'dead', 'killed', 'injured', 'hospital', 'disease',
-  'crucero', 'barco', 'turista', 'evacuación', 'emergencia',
+  'police', 'border', 'closure', 'blocked', 'shutdown', 'warning',
+  'turista', 'evacuación', 'emergencia',
   'brotes', 'enfermedad', 'fallecido', 'herido', 'incendio',
   'inundación', 'terremoto', 'huelga', 'protesta', 'cierre',
   'aeropuerto', 'vuelo cancelado', 'frontera',
@@ -93,8 +94,15 @@ const NEWS_KEYWORDS = [
   'aviation accident', 'plane crash', 'runway', 'aircraft',
   'turbulence', 'emergency landing', 'bird strike', 'engine failure',
   'overbooked', 'tarmac delay', 'stranded passengers',
-  'norovirus cruise', 'cruise ship sick', 'Princess Cruises',
-  'Carnival', 'Royal Caribbean', 'MSC Cruises', 'Costa',
+  'norovirus cruise', 'cruise ship sick',
+];
+
+const EXCLUDE_TITLE_PATTERNS = [
+  /\b(wins?|champion|title|title race|playoff|semi-final|quarterfinal|medal|cup final|grand slam|derby)\b/i,
+  /\b(golf|football|soccer|tennis|cricket|rugby|nba|nfl|mlb|f1|formula 1|boxing|ufc|mma|cycling|motogp|hockey|baseball|basketball|champions league|premier league|la liga|serie a|bundesliga|atp|wta|pga|lpga)\b/i,
+  /\b(stock market|ipo|bitcoin|crypto|nasdaq|dow jones|wall street|earnings|quarterly results|dividend|inflation rate|cpi|interest rate|fed|central bank)\b/i,
+  /\b(movie|film|album|concert|netflix|disney+|oscar|grammy|emmy|box office|premiere|actress|actor|director)\b/i,
+  /\b(election poll|opinion poll|rating|approval rating|survey shows|study finds|research suggests)\b/i,
 ];
 
 export async function fetchNewsRSS(limit = 50): Promise<RawPost[]> {
@@ -125,6 +133,9 @@ export async function fetchNewsRSS(limit = 50): Promise<RawPost[]> {
 
         const title = titleMatch[1].replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/<!\[CDATA\[/g, '').replace(/\]\]>/g, '');
         const desc = descMatch ? descMatch[1].replace(/<[^>]+>/g, '').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/<!\[CDATA\[/g, '').replace(/\]\]>/g, '') : '';
+
+        const isExcluded = EXCLUDE_TITLE_PATTERNS.some(p => p.test(title));
+        if (isExcluded) continue;
 
         const text = `${title} ${desc}`.toLowerCase();
         const hasKeyword = NEWS_KEYWORDS.some(kw => text.includes(kw.toLowerCase()));
@@ -421,11 +432,11 @@ export async function fetchRedditPosts(limit = 50): Promise<RawPost[]> {
   return posts;
 }
 
-const CLASSIFICATION_PROMPT = `Clasifica el siguiente mensaje de redes sociales sobre un incidente de viaje.
+const CLASSIFICATION_PROMPT = `Clasifica el siguiente contenido sobre SEGURIDAD Y VIAJES. Solo clasifica si el contenido está relacionado con incidentes de viaje, seguridad, salud, desastres naturales, protestas, huelgas o conflictos que afecten a viajeros.
 
 Responde SOLO con JSON válido en este formato:
 {
-  "category": "salud|seguridad|clima|logistico|geopolitico|otro",
+  "category": "salud|seguridad|clima|logistico|geopolitico|irrelevant|otro",
   "confidence": 0.0-1.0,
   "isFirstResponder": true/false (si el autor parece estar en el lugar del incidente),
   "urgency": "low|medium|high|critical",
@@ -439,9 +450,10 @@ Categorías:
 - clima: Inundaciones, incendios, tormentas, terremotos
 - logistico: Cancelaciones de vuelos/trenes, huelgas de transporte, colas
 - geopolitico: Protestas, disturbios, conflictos, cierres de fronteras
-- otro: No encaja en las anteriores
+- irrelevant: Deportes, entretenimiento, cine, política general, economía, mercados, tecnología, ciencia, cultura, opinión, análisis sin impacto en viajes
+- otro: No encaja en las anteriores pero SÍ está relacionado con viajes/seguridad
 
-Mensaje:`;
+IMPORTANTE: Si el contenido es sobre deportes, entretenimiento, política nacional/elecciones (sin impacto directo en viajeros), economía general o tecnología, usa SIEMPRE category "irrelevant" con confidence 1.0 y urgency "low".
 
 export async function classifySignal(post: RawPost): Promise<ClassifiedSignal> {
   try {

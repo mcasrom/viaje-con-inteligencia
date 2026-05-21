@@ -351,8 +351,20 @@ const URGENCY_KEYWORDS: Record<string, string[]> = {
   medium: ['protest', 'strike', 'closure', 'cancel', 'warning', 'huelga', 'cierre', 'cancelado', 'advertencia'],
 };
 
+const IRRELEVANT_KEYWORDS = [
+  'golf', 'football', 'soccer', 'tennis', 'cricket', 'rugby', 'nba', 'nfl', 'mlb', 'f1', 'boxing',
+  'champion', 'playoff', 'semi-final', 'quarterfinal', 'premier league', 'champions league',
+  'stock market', 'bitcoin', 'crypto', 'ipo', 'earnings', 'dividend', 'fiscal',
+  'movie', 'film', 'album', 'concert', 'netflix', 'oscar', 'grammy', 'emmy',
+  'election', 'opinion poll', 'approval rating', 'rating',
+];
+
 function classifyByKeywords(text: string, toneScore?: number): ClassifiedSignal {
   const lower = text.toLowerCase();
+  const isIrrelevant = IRRELEVANT_KEYWORDS.some(kw => lower.includes(kw));
+  if (isIrrelevant) {
+    return { category: 'irrelevant' as SignalCategory, confidence: 0.9, isFirstResponder: false, urgency: 'low', summary: '' };
+  }
   let category = 'otro' as SignalCategory;
   let maxCatScore = 0;
   for (const [cat, kws] of Object.entries(CATEGORY_KEYWORDS)) {
@@ -432,6 +444,8 @@ async function runNewsSentiment(): Promise<any> {
           classification = classifyByKeywords(`${post.title} ${post.content}`, post.toneScore);
         }
       }
+
+      if (classification?.category === 'irrelevant') continue;
 
       signals.push({
         source: post.source, source_url: post.sourceUrl, title: post.title.substring(0, 500),
