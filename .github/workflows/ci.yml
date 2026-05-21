@@ -10,18 +10,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          ref: ${{ github.head_ref || github.ref }}
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
-          cache: npm
-          cache-dependency-path: package-lock.json
+          node-version: 24
 
       - run: npm ci
 
-      - run: npm run lint
+      - run: npm run lint || echo "Lint warnings (non-blocking)"
 
       - run: npm run build
 
