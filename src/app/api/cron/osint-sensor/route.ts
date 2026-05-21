@@ -133,6 +133,7 @@ export async function GET(request: Request) {
           isFirstResponder: true,
           urgency,
           summary: post.title,
+          country_code: null,
         };
       } else {
         // GDELT and Reddit need AI classification
@@ -159,6 +160,7 @@ export async function GET(request: Request) {
         mag: post.mag,
         event_type: post.eventType,
         post_timestamp: post.timestamp.toISOString(),
+        country_code: classification.country_code || null,
       });
 
       // Rate limit to avoid Groq exhaustion (skip for authoritative sources)

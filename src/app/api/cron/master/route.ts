@@ -363,7 +363,7 @@ function classifyByKeywords(text: string, toneScore?: number): ClassifiedSignal 
   const lower = text.toLowerCase();
   const isIrrelevant = IRRELEVANT_KEYWORDS.some(kw => lower.includes(kw));
   if (isIrrelevant) {
-    return { category: 'irrelevant' as SignalCategory, confidence: 0.9, isFirstResponder: false, urgency: 'low', summary: '' };
+    return { category: 'irrelevant' as SignalCategory, confidence: 0.9, isFirstResponder: false, urgency: 'low', summary: '', country_code: null };
   }
   let category = 'otro' as SignalCategory;
   let maxCatScore = 0;
@@ -395,7 +395,7 @@ function classifyByKeywords(text: string, toneScore?: number): ClassifiedSignal 
 
   return {
     category, confidence: toneConfidence || (maxCatScore > 1 ? 0.85 : 0.6),
-    isFirstResponder: false, urgency, summary: text.substring(0, 200),
+    isFirstResponder: false, urgency, summary: text.substring(0, 200), country_code: null,
   };
 }
 
@@ -456,6 +456,7 @@ async function runNewsSentiment(): Promise<any> {
         lat: post.lat, lng: post.lng, severity: post.severity, mag: post.mag,
         event_type: post.eventType, post_timestamp: post.timestamp.toISOString(),
         tone_score: post.toneScore ?? classification?.sentiment ?? null,
+        country_code: classification?.country_code || null,
       });
     }
 

@@ -29,6 +29,7 @@ export interface ClassifiedSignal {
   urgency: 'low' | 'medium' | 'high' | 'critical';
   summary: string;
   sentiment?: number; // -10 to +10, from Groq LLM sentiment analysis
+  country_code?: string | null; // ISO 3166-1 alpha-2, null if global/general
 }
 
 const FIRST_PERSON_PATTERNS = [
@@ -441,7 +442,8 @@ Responde SOLO con JSON válido en este formato:
   "isFirstResponder": true/false (si el autor parece estar en el lugar del incidente),
   "urgency": "low|medium|high|critical",
   "summary": "resumen conciso en español del incidente",
-  "sentiment": -10 a +10 (tono emocional del mensaje: negativo si es peligro/alarma, positivo si es informativo/tranquilo, 0 neutro)
+  "sentiment": -10 a +10 (tono emocional del mensaje: negativo si es peligro/alarma, positivo si es informativo/tranquilo, 0 neutro),
+  "country_code": "ISO 3166-1 alpha-2 del país donde ocurre el incidente, o null si es global/general/sin ubicación específica"
 }
 
 Categorías:
@@ -479,6 +481,9 @@ export async function classifySignal(post: RawPost): Promise<ClassifiedSignal> {
     const raw = response.choices[0]?.message?.content || '{}';
     const parsed = JSON.parse(raw);
 
+    const country_code = parsed.country_code && typeof parsed.country_code === 'string' && parsed.country_code.length === 2
+      ? parsed.country_code.toLowerCase() : null;
+
     return {
       category: parsed.category || 'otro',
       confidence: parsed.confidence || 0.5,
@@ -486,6 +491,7 @@ export async function classifySignal(post: RawPost): Promise<ClassifiedSignal> {
       urgency: parsed.urgency || 'low',
       summary: parsed.summary || post.title,
       sentiment: typeof parsed.sentiment === 'number' ? Math.max(-10, Math.min(10, parsed.sentiment)) : undefined,
+      country_code,
     };
   } catch (e) {
     log.error('Classification error:', e);
@@ -496,6 +502,7 @@ export async function classifySignal(post: RawPost): Promise<ClassifiedSignal> {
       urgency: 'low',
       summary: post.title,
       sentiment: undefined,
+      country_code: null,
     };
   }
 }

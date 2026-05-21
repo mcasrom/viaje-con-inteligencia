@@ -224,7 +224,14 @@ async function buildCountryAlerts(alerts: any[], signals: any[]): Promise<Countr
 function findCountryFromSignal(sig: any) {
   const text = `${sig.title} ${sig.content} ${sig.location_name || ''}`.toLowerCase();
   for (const [code, pais] of Object.entries(paisesData)) {
-    if (text.includes(pais.nombre.toLowerCase()) || text.includes(code.toLowerCase())) return pais;
+    if (text.includes(pais.nombre.toLowerCase())) return pais;
+  }
+  // Fallback: match ISO code as whole word to avoid false positives (e.g. "us" in "focus")
+  const codeMatch = text.match(/\b(us|mx|fr|de|it|es|pt|gb|uk|cn|jp|kr|in|br|ar|ru|au|nz|ca|za|eg|ma|ng|ke|et|tz|ug|cd|cg|gh|sn|ci|ml|ne|bf|td|so|ss|sd|rw|ao|cm|zm|zw|mz|mg|mu|sc|mw|bw|na|sz|ls|gm|sl|lr|gn|gw|tg|bj|mr|cv|st|km|dj|er|ga|gq|cf)\b/g);
+  if (codeMatch) {
+    for (const match of codeMatch) {
+      if (paisesData[match]) return paisesData[match];
+    }
   }
   return null;
 }

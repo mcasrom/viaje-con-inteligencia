@@ -17,9 +17,21 @@ const BOOST_MAP: Record<string, NivelRiesgo> = {
   health_outbreak: 'alto',
 };
 
+// Severity threshold: only incidents at 'high' or 'critical' trigger boost
+const MIN_BOOST_SEVERITY = 'high';
+
+// Minimum boosting incidents for same country to apply boost
+const BOOST_THRESHOLD = 2;
+
+const SEVERITY_ORDER = ['low', 'medium', 'high', 'critical'];
+
 function maxLevel(a: NivelRiesgo, b: NivelRiesgo): NivelRiesgo {
   const order: NivelRiesgo[] = ['sin-riesgo', 'bajo', 'medio', 'alto', 'muy-alto'];
   return order.indexOf(a) >= order.indexOf(b) ? a : b;
+}
+
+function meetsSeverityThreshold(s: string): boolean {
+  return SEVERITY_ORDER.indexOf(s) >= SEVERITY_ORDER.indexOf(MIN_BOOST_SEVERITY);
 }
 
 export function useIncidentBoost(): Record<string, BoostedCountry> {
@@ -32,7 +44,10 @@ export function useIncidentBoost(): Record<string, BoostedCountry> {
       .then(data => {
         if (cancelled) return;
         const incidents = data.incidents || [];
-        const map: Record<string, BoostedCountry> = {};
+
+        // Count boosting-type incidents per country (only high/critical severity)
+        const counts: Record<string, number> = {};
+        const boosts: Record<string, BoostedCountry> = {};
 
         for (const inc of incidents) {
           const code: string = (inc.country_code || '').toUpperCase();
@@ -40,13 +55,23 @@ export function useIncidentBoost(): Record<string, BoostedCountry> {
           const type: string = inc.type || '';
           const boost = BOOST_MAP[type];
           if (!boost) continue;
-          const existing = map[code];
-          const newBoost: BoostedCountry = {
+          if (!meetsSeverityThreshold(inc.severity || 'low')) continue;
+
+          counts[code] = (counts[code] || 0) + 1;
+          const existing = boosts[code];
+          boosts[code] = {
             boostedLevel: existing ? maxLevel(existing.boostedLevel, boost) : boost,
             incidentType: existing ? existing.incidentType : type,
             severity: existing ? maxLevelBySeverity(existing.severity, inc.severity || 'low') : (inc.severity || 'low'),
           };
-          map[code] = newBoost;
+        }
+
+        // Final map: only include countries meeting the incident count threshold
+        const map: Record<string, BoostedCountry> = {};
+        for (const [code, b] of Object.entries(boosts)) {
+          if (counts[code] >= BOOST_THRESHOLD) {
+            map[code] = b;
+          }
         }
         setBoostMap(map);
       })

@@ -384,6 +384,9 @@ function mergeSources(who: HealthIndicators, wb: HealthIndicators): { merged: He
 }
 
 // ---- Active outbreak integration ----
+const MIN_OUTBREAK_SEVERITY = 'high';
+const OUTBREAK_THRESHOLD = 2;
+
 async function fetchActiveOutbreakCountries(): Promise<Set<string>> {
   const outbreakCountries = new Set<string>();
   if (!supabase) return outbreakCountries;
@@ -391,7 +394,7 @@ async function fetchActiveOutbreakCountries(): Promise<Set<string>> {
   try {
     const { data, error } = await supabase
       .from('incidents')
-      .select('country_code')
+      .select('country_code, severity')
       .eq('type', 'health_outbreak')
       .eq('is_active', true);
 
@@ -400,14 +403,26 @@ async function fetchActiveOutbreakCountries(): Promise<Set<string>> {
       return outbreakCountries;
     }
 
+    const severityOrder = ['low', 'medium', 'high', 'critical'];
+    const counts: Record<string, { count: number; hasCritical: boolean }> = {};
+
     for (const inc of data || []) {
-      if (inc.country_code) {
-        outbreakCountries.add(inc.country_code.toUpperCase());
+      if (inc.country_code && severityOrder.indexOf(inc.severity || 'low') >= severityOrder.indexOf(MIN_OUTBREAK_SEVERITY)) {
+        const code = inc.country_code.toUpperCase();
+        if (!counts[code]) counts[code] = { count: 0, hasCritical: false };
+        counts[code].count++;
+        if (inc.severity === 'critical') counts[code].hasCritical = true;
+      }
+    }
+
+    for (const [code, c] of Object.entries(counts)) {
+      if (c.hasCritical || c.count >= OUTBREAK_THRESHOLD) {
+        outbreakCountries.add(code);
       }
     }
 
     if (outbreakCountries.size > 0) {
-      console.log(`[Health API] Active outbreaks found for: ${Array.from(outbreakCountries).join(', ')}`);
+      console.log(`[Health API] Active outbreaks (${MIN_OUTBREAK_SEVERITY}+, threshold ${OUTBREAK_THRESHOLD}) for: ${Array.from(outbreakCountries).join(', ')}`);
     }
   } catch (e) {
     console.error('[Health API] Failed to fetch outbreaks:', e);

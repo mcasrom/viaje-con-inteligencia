@@ -201,6 +201,17 @@ function extractCountryCode(text: string): string | null {
     'rwanda': 'rw', 'kigali': 'rw',
     'sudan': 'sd', 'khartoum': 'sd',
     'ghana': 'gh', 'accra': 'gh',
+    'uganda': 'ug', 'kampala': 'ug',
+    'botswana': 'bw', 'gaborone': 'bw',
+    'lesotho': 'ls', 'maseru': 'ls',
+    'eswatini': 'sz', 'swaziland': 'sz', 'mbabane': 'sz',
+    'mauritius': 'mu', 'port louis': 'mu',
+    'seychelles': 'sc', 'victoria': 'sc',
+    'comoros': 'km', 'moroni': 'km',
+    'cabo verde': 'cv', 'cape verde': 'cv', 'praia': 'cv',
+    'sao tome': 'st', 'sao tome and principe': 'st',
+    'gambia': 'gm', 'banjul': 'gm',
+    'senegal': 'sn', 'dakar': 'sn',
   };
   
   const lower = text.toLowerCase();

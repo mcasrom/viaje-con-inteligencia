@@ -10,6 +10,8 @@
 - Usar 1-2 de la primera línea + 2-3 de la segunda por post
 
 ## ⚙️ Observaciones Técnicas
+- **🚫 NO TOCAR robots.txt ni sitemap.xml**: El usuario los ha regenerado manualmente varias veces porque este agente los ha dejado vacíos o rotos en commits pasados. NO modificar `public/robots.txt`, `public/sitemap.xml`, ni `src/app/sitemap.ts`. Cualquier cambio en rutas/ruteo debe reflejarse solo en código, no en estos archivos.
+
 - **Cloudflare**: Dominio `viajeinteligencia.com`. Email `mcasrom@gmail.com`. Zone ID `a56f7c002b1db64082f0813b839db412`. Credenciales en `.env.local`:
   - `CLOUDFLARE_API_KEY` (Global Key, usa X-Auth-Email + X-Auth-Key para cambios de config)
   - `CLOUDFLARE_API_TOKEN` (Bearer token, solo analytics:read para cloudflare-analytics.ts)
