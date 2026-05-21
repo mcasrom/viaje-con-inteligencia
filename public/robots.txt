@@ -1,6 +1,5 @@
 # Configuración SEO para Viaje con Inteligencia
 # ----------------------------------------------------
-
 User-agent: *
 Allow: /
 Disallow: /api/
