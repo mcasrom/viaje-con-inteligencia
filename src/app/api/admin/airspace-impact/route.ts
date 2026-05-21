@@ -1,11 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
+import { supabaseAdmin } from '@/lib/supabase-admin';
 import { verifyAdminPassword } from '@/lib/admin-auth';
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
 
 function requireAuth(request: NextRequest) {
   const authHeader = request.headers.get('authorization');
@@ -22,9 +17,9 @@ export async function GET(request: NextRequest) {
   }
   try {
     const [closuresRes, routesRes, tciRes] = await Promise.all([
-      supabase.from('airspace_closures').select('*').order('country_name'),
-      supabase.from('affected_routes').select('*').order('fuel_surcharge_pct', { ascending: false }),
-      supabase.from('tci_history').select('country_code, tci_value, conflict_surcharge, date').order('date', { ascending: true }),
+      supabaseAdmin.from('airspace_closures').select('*').order('country_name'),
+      supabaseAdmin.from('affected_routes').select('*').order('fuel_surcharge_pct', { ascending: false }),
+      supabaseAdmin.from('tci_history').select('country_code, tci_value, conflict_surcharge, date').order('date', { ascending: true }),
     ]);
 
     const closures = closuresRes.data || [];
