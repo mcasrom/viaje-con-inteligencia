@@ -1,0 +1,45 @@
+name: Sitemap & IndexNow
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: '0 8 * * *'
+
+jobs:
+  check-and-notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Esperar deploy (120s)
+        run: sleep 120
+
+      - name: Verificar sitemap no vacío
+        run: |
+          URLS=$(curl -s https://www.viajeinteligencia.com/sitemap.xml | grep -c "<loc>" || echo "0")
+          echo "URLs encontradas: $URLS"
+          if [ "$URLS" -lt 10 ]; then
+            echo "❌ sitemap roto: $URLS URLs"
+            exit 1
+          fi
+          echo "✅ Sitemap OK: $URLS URLs"
+
+      - name: Verificar robots.txt
+        run: |
+          SITEMAP=$(curl -s https://www.viajeinteligencia.com/robots.txt | grep "Sitemap:")
+          if [ -z "$SITEMAP" ]; then
+            echo "❌ robots.txt sin directiva Sitemap"
+            exit 1
+          fi
+          echo "✅ robots.txt OK: $SITEMAP"
+
+      - name: Notificar IndexNow
+        run: |
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" -X POST \
+            -H "x-deploy-secret: ${{ secrets.DEPLOY_SECRET }}" \
+            https://www.viajeinteligencia.com/api/indexnow)
+          echo "IndexNow HTTP: $STATUS"
+          if [ "$STATUS" != "200" ]; then
+            echo "⚠️ IndexNow respondió $STATUS"
+          else
+            echo "✅ IndexNow notificado"
+          fi
