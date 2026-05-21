@@ -305,16 +305,16 @@ function scoreIndicators(data: HealthIndicators): { score: number; factors: numb
   if (data.healthExpenditure) {
     factors++;
     const he = data.healthExpenditure.value;
-    if (he < 3) score += 2;
-    else if (he < 6) score += 1;
+    if (he < 100) score += 2;
+    else if (he < 500) score += 1;
   }
 
   return { score, factors };
 }
 
 function computeRisk(avgScore: number): 'low' | 'medium' | 'high' {
-  if (avgScore >= 2) return 'high';
-  if (avgScore >= 1) return 'medium';
+  if (avgScore >= 1.5) return 'high';
+  if (avgScore >= 0.75) return 'medium';
   return 'low';
 }
 
