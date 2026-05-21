@@ -69,6 +69,9 @@ export async function GET() {
       { loc: `${BASE_URL}/metodologia`, priority: '0.5', changefreq: 'monthly', lastmod: today },
       { loc: `${BASE_URL}/manifiesto`, priority: '0.5', changefreq: 'monthly', lastmod: today },
       { loc: `${BASE_URL}/afiliados`, priority: '0.4', changefreq: 'monthly', lastmod: today },
+      { loc: `${BASE_URL}/en`, priority: '0.8', changefreq: 'weekly', lastmod: today },
+      { loc: `${BASE_URL}/pulso-global`, priority: '0.7', changefreq: 'weekly', lastmod: today },
+      { loc: `${BASE_URL}/colaborar`, priority: '0.5', changefreq: 'monthly', lastmod: today },
     ];
 
     for (const p of staticPages) {

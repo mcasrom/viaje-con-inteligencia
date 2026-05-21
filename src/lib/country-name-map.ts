@@ -79,3 +79,25 @@ export function extractCountryCodes(text: string): string[] {
 }
 
 export const ALL_KNOWN_COUNTRY_NAMES = Array.from(nameToCode.keys());
+
+const codeToEnglish = new Map<string, string>();
+for (const [en, es] of Object.entries(ENGLISH_NAMES)) {
+  const code = nameToCode.get(es.toLowerCase());
+  if (code && !codeToEnglish.has(code)) {
+    codeToEnglish.set(code, en);
+  }
+}
+
+export function getEnglishName(code: string): string | null {
+  return codeToEnglish.get(code.toLowerCase()) ?? null;
+}
+
+export function getCountrySearchTerms(code: string): string[] {
+  const terms: string[] = [];
+  const es = getCountryName(code);
+  if (es) terms.push(es);
+  const en = getEnglishName(code);
+  if (en && en !== es?.toLowerCase()) terms.push(en);
+  if (terms.length === 0) terms.push(code);
+  return terms;
+}

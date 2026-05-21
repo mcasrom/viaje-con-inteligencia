@@ -11,40 +11,27 @@ export async function GET(request: NextRequest) {
   const code = request.nextUrl.searchParams.get('code');
   if (!country) return NextResponse.json({ error: 'country param required' }, { status: 400 });
 
-  if (!supabase) return NextResponse.json({ avgTone: null, signals: 0 });
+  if (!supabase) return NextResponse.json({ avgTone: null, signals: 0, country, code });
 
-  const sevenDaysAgo = new Date();
-  sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+  const daysAgo = new Date();
+  daysAgo.setDate(daysAgo.getDate() - 14);
   const threeHalfDaysAgo = new Date();
   threeHalfDaysAgo.setDate(threeHalfDaysAgo.getDate() - 3);
 
-  let query = supabase
-    .from('osint_signals')
-    .select('tone_score, created_at, location_name, summary')
-    .gte('created_at', sevenDaysAgo.toISOString())
-    .not('tone_score', 'is', null);
+  // Phase 1: search by full country name (most accurate)
+  let data = await querySignals(country, daysAgo);
 
-  if (code) {
-    query = query.or(`location_name.ilike.%${code}%,title.ilike.%${code}%`);
-  }
-
-  const { data, error } = await query
-    .order('created_at', { ascending: false })
-    .limit(200);
-
-  if (error) {
-    log.error('Error fetching sentiment data', error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+  // Phase 2: if no results and code is available, broaden search with code
+  if ((!data || data.length === 0) && code) {
+    data = await querySignals(` ${code} `, daysAgo);
   }
 
   const relevant = (data || []).filter(s => {
-    const text = `${s.location_name || ''} ${s.summary || ''}`.toLowerCase();
-    const match = text.includes(country.toLowerCase());
-    if (!match && s.summary) {
-      const words = country.toLowerCase().split(/\s+/);
-      return words.some(w => w.length > 3 && text.includes(w));
-    }
-    return match;
+    const text = `${s.title || ''} ${s.summary || ''} ${s.location_name || ''} ${s.content || ''}`.toLowerCase();
+    const countryLower = country.toLowerCase();
+    if (text.includes(countryLower)) return true;
+    const words = countryLower.split(/\s+/);
+    return words.some(w => w.length > 3 && text.includes(w));
   });
 
   if (relevant.length === 0) {
@@ -76,4 +63,21 @@ export async function GET(request: NextRequest) {
     country,
     code,
   });
+}
+
+async function querySignals(searchTerm: string, since: Date) {
+  const { data, error } = await supabase!
+    .from('osint_signals')
+    .select('tone_score, created_at, location_name, summary, title, content')
+    .gte('created_at', since.toISOString())
+    .not('tone_score', 'is', null)
+    .or(`title.ilike.%${searchTerm}%,summary.ilike.%${searchTerm}%,location_name.ilike.%${searchTerm}%`)
+    .order('created_at', { ascending: false })
+    .limit(200);
+
+  if (error) {
+    log.error('Error fetching sentiment data', error);
+    return [];
+  }
+  return data || [];
 }

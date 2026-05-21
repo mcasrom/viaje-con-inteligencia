@@ -1,4 +1,5 @@
 import { supabaseAdmin } from './supabase-admin';
+import { getCountrySearchTerms } from './country-name-map';
 import { paisesData, type NivelRiesgo } from '@/data/paises';
 import { getFeaturesByCountry } from './ml-features';
 import type { MlFeatures } from './ml-features';
@@ -103,11 +104,13 @@ interface SignalStats {
 
 export async function getSignalStats(countryCode: string): Promise<SignalStats> {
   const sevenDaysAgo = new Date(Date.now() - 7 * 86400000).toISOString();
+  const searchTerms = getCountrySearchTerms(countryCode);
+  const osintFilter = searchTerms.map(t => `location_name.ilike.%${t}%,title.ilike.%${t}%`).join(',');
   const { data } = await supabaseAdmin
     .from('osint_signals')
     .select('urgency, confidence')
     .gte('post_timestamp', sevenDaysAgo)
-    .or(`location_name.ilike.%${countryCode}%,title.ilike.%${countryCode}%`);
+    .or(osintFilter);
 
   if (!data) return { count: 0, criticalCount: 0, highCount: 0, mediumCount: 0, avgConfidence: 0 };
 

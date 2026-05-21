@@ -562,41 +562,24 @@ git add -A && git commit -m "msg" && git push
 
 ---
 
-## PENDIENTES GENERALES (sin priorizar)
+## PENDIENTES REALES (verificado 21 May 2026)
 
-### Stripe billing B2B
-- Checkout Stripe en tiers Starter/Pro/Enterprise
-- Webhook para actualizar `api_keys.tier` al confirmar pago
-- Rate limiting server-side por tier
+### 🟡 Admin / Infra
+- [ ] Admin API Leads page — interfaz para gestionar solicitudes entrantes de `api_plan_requests`
+- [ ] `spatial_ref_sys` RLS alert — silenciar en Supabase Dashboard (tabla de sistema PostGIS, no requiere RLS)
 
-### Chat IA
-- Rate limit server-side
-- Modal "Quiero esto para aquí" leads → admin page
+### 🟡 Content / SEO
+- [ ] Versión EN de pillar pages ES (`/en/osint-para-viajeros`, `/en/geopolitica-y-viajes`)
+- [ ] Newsletter con sentimiento semanal — integrar `tone_score` en el HTML del digest
 
-### SEO / Content
-- Schema Article (no solo FAQ) en pillar pages
-- Posts satélite dedicados por pillar (3-5 más cada uno)
-- Versión EN de pillar pages ES
-- Añadir `/ecosistema` a sitemap.xml
+### 🟡 Marketing
+- [ ] Publicar Reddit (4 drafts) + Facebook (2 drafts) desde `content/outreach/`
+- [ ] Email outreach a bloggers/agencias (5-10 emails)
 
-### ML / Data
-- Validación temporal CV (~25 días de datos)
-- [x] Widget "Clima de viaje" en ficha de país ✅ (existente, bug corregido 21 May: filtraba solo por nombre español, ahora usa countryCode + ilike)
-- Newsletter con sentimiento semanal
-- Tendencias semanales de sentimiento (página admin)
-- Alertas de sentimiento (umbral tone_score)
-- [x] Análisis frecuencia de palabras (osint_word_trends) — hecho 20 May
-
-### Infra / Admin
-- Admin API Leads page (solicitudes de api_plan_requests)
-- FlightLabs integration en Reclamaciones (verificar retraso real)
-- Vinculación Telegram verification (flujo completo)
-
-### Marketing
-- Publicar Reddit (4 drafts) + Facebook (2 drafts)
-- Email outreach a bloggers/agencias
-- Añadir enlace Modo Emergencia en footer (texto, no solo botón flotante)
+### 🟡 ML / Data
+- [ ] Validación temporal CV (~25 días de datos acumulados) — monitorizar
+- [ ] Aumentar cobertura OSINT: backfill de `tone_score` vía Groq en señales existentes sin sentiment
 
 ---
 
-*Actualizado: 20 May 2026*
+*Actualizado: 21 May 2026 — revisión completa: 14 items verificados, 8 hechos, 6 pendientes reales*

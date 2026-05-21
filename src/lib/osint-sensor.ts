@@ -322,7 +322,7 @@ export async function fetchGdeltEvents(limit = 50): Promise<RawPost[]> {
   const url = `https://api.gdeltproject.org/api/v2/doc/doc?query=${encodeURIComponent(query)}&mode=artlist&format=json&maxrecords=${limit}&sort=datedesc`;
 
   try {
-    const res = await fetch(url, { cache: 'no-store' });
+    const res = await fetch(url, { cache: 'no-store', signal: AbortSignal.timeout(15000) });
 
     if (!res.ok) return posts;
 

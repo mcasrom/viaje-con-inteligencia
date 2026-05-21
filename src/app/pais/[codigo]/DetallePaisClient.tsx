@@ -24,6 +24,7 @@ import ShareButtons from '@/components/ShareButtons';
 import AddToRadarButton from '@/components/AddToRadarButton';
 import RiskTrendIndicator from '@/components/RiskTrendIndicator';
 import ScoreBadge from '@/components/ScoreBadge';
+import { useIncidentBoost, applyBoost } from '@/lib/useIncidentBoost';
 
 interface DetallePaisClientProps {
   pais: DatoPais;
@@ -203,7 +204,11 @@ export default function DetallePaisClient({ pais, relatedPosts = [] }: DetallePa
     'muy-alto': { bg: 'bg-red-900', text: 'text-red-400', border: 'border-red-900', label: 'Riesgo muy alto', description: 'Riesgo muy alto. Se desaconsejan todos los viajes.' }
   };
 
-  const config = riesgoConfig[pais.nivelRiesgo];
+  const boostMap = useIncidentBoost();
+  const countryBoost = boostMap[codigo.toUpperCase()];
+  const boostedLevel = countryBoost ? applyBoost(pais.nivelRiesgo, countryBoost) : pais.nivelRiesgo;
+  const config = riesgoConfig[boostedLevel] || riesgoConfig['bajo'];
+  const isBoosted = countryBoost && boostedLevel !== pais.nivelRiesgo;
 
   return (
     <div className="min-h-screen bg-slate-900">
@@ -264,6 +269,12 @@ export default function DetallePaisClient({ pais, relatedPosts = [] }: DetallePa
                 <AlertTriangle className="w-6 h-6" />
                 <span>{config.label}</span>
               </div>
+              {isBoosted && (
+                <div className="mt-1 text-[10px] text-white/70 font-normal flex items-center gap-1">
+                  <Zap className="w-3 h-3 text-yellow-300" />
+                  Elevado por incidente OSINT activo
+                </div>
+              )}
             </div>
             <div className="flex flex-col items-end gap-2">
               <div className="flex items-center gap-2">

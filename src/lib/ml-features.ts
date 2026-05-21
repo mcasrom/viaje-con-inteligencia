@@ -1,4 +1,5 @@
 import { supabaseAdmin } from '@/lib/supabase-admin';
+import { getCountrySearchTerms } from '@/lib/country-name-map';
 
 export interface MlFeatures {
   country_code: string;
@@ -114,11 +115,14 @@ export async function computeAndStoreFeatures(code: string, riskLevel: string): 
   const today = new Date().toISOString().split('T')[0];
   const thirtyDaysAgoDate = new Date(Date.now() - 30 * 86400000).toISOString().split('T')[0];
   const codeUpper = code.toUpperCase();
+  const searchTerms = getCountrySearchTerms(code);
+  const osintFilter = searchTerms.map(t => `location_name.ilike.%${t}%,title.ilike.%${t}%`).join(',');
+  const toneFilter = searchTerms.map(t => `location_name.ilike.%${t}%,title.ilike.%${t}%,content.ilike.%${t}%`).join(',');
 
   const [eventsRes, highImpactRes, signalsRes, incidentsRes, airspaceRes, routesRes, riskHistory, indicesRes] = await Promise.all([
     admin.from('events').select('id', { count: 'exact', head: true }).eq('country_code', codeUpper).gte('date', thirtyDaysAgo),
     admin.from('events').select('id', { count: 'exact', head: true }).eq('country_code', codeUpper).eq('impact', 'high').gte('date', thirtyDaysAgo),
-    admin.from('osint_signals').select('id', { count: 'exact', head: true }).or(`location_name.ilike.%${code}%,title.ilike.%${code}%`).gte('post_timestamp', sevenDaysAgo),
+    admin.from('osint_signals').select('id', { count: 'exact', head: true }).or(osintFilter).gte('post_timestamp', sevenDaysAgo),
     admin.from('incidents').select('id', { count: 'exact', head: true }).eq('country_code', codeUpper).eq('is_active', true),
     admin.from('airspace_closures').select('id', { count: 'exact', head: true }).eq('country_code', codeUpper).eq('is_active', true),
     admin.from('affected_routes').select('id', { count: 'exact', head: true }).or(`origin.eq.${codeUpper},destination.eq.${codeUpper}`).eq('is_active', true),
@@ -140,14 +144,14 @@ export async function computeAndStoreFeatures(code: string, riskLevel: string): 
   const { data: toneSignals7d } = await admin
     .from('osint_signals')
     .select('tone_score')
-    .or(`location_name.ilike.%${code}%,title.ilike.%${code}%,content.ilike.%${code}%`)
+    .or(toneFilter)
     .gte('post_timestamp', sevenDaysAgo)
     .not('tone_score', 'is', null);
 
   const { data: toneSignals30d } = await admin
     .from('osint_signals')
     .select('tone_score')
-    .or(`location_name.ilike.%${code}%,title.ilike.%${code}%,content.ilike.%${code}%`)
+    .or(toneFilter)
     .gte('post_timestamp', thirtyDaysAgo)
     .not('tone_score', 'is', null);
 
