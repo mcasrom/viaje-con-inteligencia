@@ -1,10 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+import { supabaseAdminAdmin } from '@/lib/supabaseAdmin-admin';
 
 const AIRSPACE_CLOSURES = [
   { country_code: 'RU', country_name: 'Rusia', reason: 'Conflicto Ucrania - espacio aéreo cerrado', severity: 'critical' as const },
@@ -33,7 +28,7 @@ const AFFECTED_ROUTES = [
 async function detectNewClosures() {
   const results: Array<{ type: string; detail: string }> = [];
   
-  const { data: existing } = await supabase
+  const { data: existing } = await supabaseAdmin
     .from('airspace_closures')
     .select('country_code, is_active');
   
@@ -43,7 +38,7 @@ async function detectNewClosures() {
     const existing = existingMap.get(closure.country_code);
     
     if (existing === undefined) {
-      const { error } = await supabase
+      const { error } = await supabaseAdmin
         .from('airspace_closures')
         .insert({
           country_code: closure.country_code,
@@ -67,13 +62,13 @@ async function detectNewClosures() {
   
   const closedCountries = AIRSPACE_CLOSURES.filter(c => !existingMap.has(c.country_code) || existingMap.get(c.country_code)).map(c => c.country_code);
   
-  const { data: allExisting } = await supabase
+  const { data: allExisting } = await supabaseAdmin
     .from('airspace_closures')
     .select('country_code, is_active');
   
   for (const existing of allExisting || []) {
     if (existing.is_active && !closedCountries.includes(existing.country_code)) {
-      await supabase
+      await supabaseAdmin
         .from('airspace_closures')
         .update({ is_active: false, notes: 'Cierre finalizado - detectado por OSINT bot' })
         .eq('country_code', existing.country_code);
@@ -88,7 +83,7 @@ async function detectNewClosures() {
 async function syncAffectedRoutes() {
   const results: Array<{ type: string; detail: string }> = [];
   
-  const { data: existing } = await supabase
+  const { data: existing } = await supabaseAdmin
     .from('affected_routes')
     .select('origin_iata, destination_iata, is_active');
   
@@ -99,7 +94,7 @@ async function syncAffectedRoutes() {
     const existing = existingMap.get(key);
     
     if (!existing) {
-      const { error } = await supabase
+      const { error } = await supabaseAdmin
         .from('affected_routes')
         .insert({
           origin_iata: route.origin_iata,
@@ -139,7 +134,7 @@ export async function GET(request: NextRequest) {
     const allResults = [...closureResults, ...routeResults];
     const duration = Date.now() - startTime;
 
-    await supabase.from('scraper_logs').insert({
+    await supabaseAdmin.from('scraper_logs').insert({
       source: 'osint_airspace',
       status: 'success',
       items_scraped: AIRSPACE_CLOSURES.length + AFFECTED_ROUTES.length,
@@ -158,7 +153,7 @@ export async function GET(request: NextRequest) {
     const duration = Date.now() - startTime;
     console.error('OSINT bot error:', error);
 
-    await supabase.from('scraper_logs').insert({
+    await supabaseAdmin.from('scraper_logs').insert({
       source: 'osint_airspace',
       status: 'error',
       items_scraped: 0,
