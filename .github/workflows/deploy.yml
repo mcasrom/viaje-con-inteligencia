@@ -3,7 +3,6 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -22,7 +21,6 @@ jobs:
           echo "$SSH_KEY" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -p $SSH_PORT $SSH_HOST >> ~/.ssh/known_hosts
-
           RSYNC_RSH="ssh -p $SSH_PORT" rsync -az --delete \
             --exclude '.git' \
             --exclude 'node_modules' \
@@ -30,11 +28,9 @@ jobs:
             --exclude '.env*' \
             --exclude 'logs' \
             ./ $SSH_USER@$SSH_HOST:/var/www/viajeinteligencia/
-
           ssh -p $SSH_PORT $SSH_USER@$SSH_HOST << 'ENDSSH'
             set -e
             cd /var/www/viajeinteligencia
-            # Add swap if missing (prevents OOM during build)
             if ! swapon --show | grep -q /swapfile; then
               fallocate -l 2G /swapfile && chmod 600 /swapfile && mkswap /swapfile && swapon /swapfile
               echo "Swap created"
@@ -49,9 +45,22 @@ jobs:
       - name: Health check
         run: |
           sleep 10
-          curl -sSf -o /dev/null -w "%{http_code}" http://${{ secrets.HETZNER_HOST }}:3001/api/health || echo "Note: health check on port 3001"
+          STATUS=$(curl -sSf -o /dev/null -w "%{http_code}" https://www.viajeinteligencia.com/api/health 2>/dev/null || echo "000")
+          echo "Health: $STATUS"
 
-      - name: Health check
+      - name: Verificar sitemap
         run: |
-          sleep 10
-          curl -sSf -o /dev/null -w "%{http_code}" http://${{ secrets.HETZNER_HOST }}:3001/api/health || echo "Note: health check on port 3001"
+          URLS=$(curl -s https://www.viajeinteligencia.com/sitemap.xml | grep -c "<loc>" || echo "0")
+          echo "Sitemap URLs: $URLS"
+          if [ "$URLS" -lt 10 ]; then
+            echo "❌ Sitemap roto: $URLS URLs"
+            exit 1
+          fi
+          echo "✅ Sitemap OK: $URLS URLs"
+
+      - name: Notificar IndexNow
+        run: |
+          RESP=$(curl -s -X POST \
+            -H "x-deploy-secret: ${{ secrets.DEPLOY_SECRET }}" \
+            https://www.viajeinteligencia.com/api/indexnow)
+          echo "IndexNow: $RESP"
