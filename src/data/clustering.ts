@@ -364,6 +364,7 @@ export function getRecommendations(
   
   const scored = destinations
     .filter(d => travelAttributes[d.code])
+    .filter(d => d.code !== 'es')
     .map(d => {
       const attrs = travelAttributes[d.code];
       const pais = paisesData[d.code];
