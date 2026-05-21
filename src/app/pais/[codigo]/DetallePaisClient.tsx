@@ -578,22 +578,29 @@ export default function DetallePaisClient({ pais, relatedPosts = [] }: DetallePa
             ) : maecData ? (
               <div className="space-y-4">
                 <div className="flex items-center justify-between p-3 bg-slate-700/50 rounded-lg">
-                  <span className="text-slate-300">Nivel de riesgo</span>
-                  <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-                    maecData.nivelRiesgo === 'muy-alto' ? 'bg-red-900/40 text-red-400 border border-red-800' :
-                    maecData.nivelRiesgo === 'alto' ? 'bg-red-500/20 text-red-400' :
-                    maecData.nivelRiesgo === 'medio' ? 'bg-orange-500/20 text-orange-400' :
-                    maecData.nivelRiesgo === 'bajo' ? 'bg-yellow-500/20 text-yellow-400' :
-                    'bg-green-500/20 text-green-400'
-                  }`}>
-                    {maecData.nivelRiesgo === 'muy-alto' ? '🔴 Muy alto' :
-                     maecData.nivelRiesgo === 'alto' ? '🔴 Alto' :
-                     maecData.nivelRiesgo === 'medio' ? '🟠 Medio' :
-                     maecData.nivelRiesgo === 'bajo' ? '🟡 Bajo' :
-                     maecData.nivelRiesgo === 'sin-riesgo' ? '🟢 Sin riesgo' :
-                     '⚠️ Sin datos MAEC'}
-                  </span>
-                  <RiskTrendIndicator countryCode={codigo} />
+                  <div className="flex items-center gap-2">
+                    <span className="text-slate-300">Nivel de riesgo</span>
+                    {isBoosted && (
+                      <span className="text-xs bg-red-500/20 text-red-400 px-1.5 py-0.5 rounded">OSINT+</span>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className={`px-3 py-1 rounded-full text-sm font-medium ${
+                      boostedLevel === 'muy-alto' ? 'bg-red-900/40 text-red-400 border border-red-800' :
+                      boostedLevel === 'alto' ? 'bg-red-500/20 text-red-400' :
+                      boostedLevel === 'medio' ? 'bg-orange-500/20 text-orange-400' :
+                      boostedLevel === 'bajo' ? 'bg-yellow-500/20 text-yellow-400' :
+                      'bg-green-500/20 text-green-400'
+                    }`}>
+                      {boostedLevel === 'muy-alto' ? '🔴 Muy alto' :
+                       boostedLevel === 'alto' ? '🔴 Alto' :
+                       boostedLevel === 'medio' ? '🟠 Medio' :
+                       boostedLevel === 'bajo' ? '🟡 Bajo' :
+                       boostedLevel === 'sin-riesgo' ? '🟢 Sin riesgo' :
+                       '⚠️ Sin datos'}
+                    </span>
+                    <RiskTrendIndicator countryCode={codigo} />
+                  </div>
                 </div>
                 
                 {maecData.fechaActualizacion && (
@@ -643,22 +650,29 @@ export default function DetallePaisClient({ pais, relatedPosts = [] }: DetallePa
             ) : (
               <div className="space-y-4">
                 <div className="flex items-center justify-between p-3 bg-slate-700/50 rounded-lg">
-                  <span className="text-slate-300">Nivel de riesgo</span>
-                  <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-                    pais.nivelRiesgo === 'muy-alto' ? 'bg-red-900/40 text-red-400 border border-red-800' :
-                    pais.nivelRiesgo === 'alto' ? 'bg-red-500/20 text-red-400' :
-                    pais.nivelRiesgo === 'medio' ? 'bg-orange-500/20 text-orange-400' :
-                    pais.nivelRiesgo === 'bajo' ? 'bg-yellow-500/20 text-yellow-400' :
-                    'bg-green-500/20 text-green-400'
-                  }`}>
-                    {pais.nivelRiesgo === 'muy-alto' ? '🔴 Muy alto' :
-                     pais.nivelRiesgo === 'alto' ? '🔴 Alto' :
-                     pais.nivelRiesgo === 'medio' ? '🟠 Medio' :
-                     pais.nivelRiesgo === 'bajo' ? '🟡 Bajo' :
-                     '🟢 Sin riesgo'}
-                    <span className="ml-1 text-xs opacity-70">(fuente MAEC)</span>
-                  </span>
-                  <RiskTrendIndicator countryCode={codigo} />
+                  <div className="flex items-center gap-2">
+                    <span className="text-slate-300">Nivel de riesgo</span>
+                    {isBoosted && (
+                      <span className="text-xs bg-red-500/20 text-red-400 px-1.5 py-0.5 rounded">OSINT+</span>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className={`px-3 py-1 rounded-full text-sm font-medium ${
+                      boostedLevel === 'muy-alto' ? 'bg-red-900/40 text-red-400 border border-red-800' :
+                      boostedLevel === 'alto' ? 'bg-red-500/20 text-red-400' :
+                      boostedLevel === 'medio' ? 'bg-orange-500/20 text-orange-400' :
+                      boostedLevel === 'bajo' ? 'bg-yellow-500/20 text-yellow-400' :
+                      'bg-green-500/20 text-green-400'
+                    }`}>
+                      {boostedLevel === 'muy-alto' ? '🔴 Muy alto' :
+                       boostedLevel === 'alto' ? '🔴 Alto' :
+                       boostedLevel === 'medio' ? '🟠 Medio' :
+                       boostedLevel === 'bajo' ? '🟡 Bajo' :
+                       '🟢 Sin riesgo'}
+                      <span className="ml-1 text-xs opacity-70">(fuente MAEC)</span>
+                    </span>
+                    <RiskTrendIndicator countryCode={codigo} />
+                  </div>
                 </div>
 
                 <div className="flex items-center gap-2 text-slate-400 text-sm">
