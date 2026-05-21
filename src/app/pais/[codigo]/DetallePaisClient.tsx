@@ -24,7 +24,6 @@ import ShareButtons from '@/components/ShareButtons';
 import AddToRadarButton from '@/components/AddToRadarButton';
 import RiskTrendIndicator from '@/components/RiskTrendIndicator';
 import ScoreBadge from '@/components/ScoreBadge';
-import { useIncidentBoost, applyBoost } from '@/lib/useIncidentBoost';
 
 interface DetallePaisClientProps {
   pais: DatoPais;
@@ -204,11 +203,7 @@ export default function DetallePaisClient({ pais, relatedPosts = [] }: DetallePa
     'muy-alto': { bg: 'bg-red-900', text: 'text-red-400', border: 'border-red-900', label: 'Riesgo muy alto', description: 'Riesgo muy alto. Se desaconsejan todos los viajes.' }
   };
 
-  const boostMap = useIncidentBoost();
-  const countryBoost = boostMap[codigo.toUpperCase()];
-  const boostedLevel = countryBoost ? applyBoost(pais.nivelRiesgo, countryBoost) : pais.nivelRiesgo;
-  const config = riesgoConfig[boostedLevel] || riesgoConfig['bajo'];
-  const isBoosted = countryBoost && boostedLevel !== pais.nivelRiesgo;
+  const config = riesgoConfig[pais.nivelRiesgo] || riesgoConfig['bajo'];
 
   return (
     <div className="min-h-screen bg-slate-900">
@@ -269,12 +264,6 @@ export default function DetallePaisClient({ pais, relatedPosts = [] }: DetallePa
                 <AlertTriangle className="w-6 h-6" />
                 <span>{config.label}</span>
               </div>
-              {isBoosted && (
-                <div className="mt-1 text-[10px] text-white/70 font-normal flex items-center gap-1">
-                  <Zap className="w-3 h-3 text-yellow-300" />
-                  Elevado por incidente OSINT activo
-                </div>
-              )}
             </div>
             <div className="flex flex-col items-end gap-2">
               <div className="flex items-center gap-2">
@@ -580,26 +569,22 @@ export default function DetallePaisClient({ pais, relatedPosts = [] }: DetallePa
                 <div className="flex items-center justify-between p-3 bg-slate-700/50 rounded-lg">
                   <div className="flex items-center gap-2">
                     <span className="text-slate-300">Nivel de riesgo</span>
-                    {isBoosted && (
-                      <span className="text-xs bg-red-500/20 text-red-400 px-1.5 py-0.5 rounded">OSINT+</span>
-                    )}
                   </div>
                   <div className="flex items-center gap-2">
                     <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-                      boostedLevel === 'muy-alto' ? 'bg-red-900/40 text-red-400 border border-red-800' :
-                      boostedLevel === 'alto' ? 'bg-red-500/20 text-red-400' :
-                      boostedLevel === 'medio' ? 'bg-orange-500/20 text-orange-400' :
-                      boostedLevel === 'bajo' ? 'bg-yellow-500/20 text-yellow-400' :
+                      pais.nivelRiesgo === 'muy-alto' ? 'bg-red-900/40 text-red-400 border border-red-800' :
+                      pais.nivelRiesgo === 'alto' ? 'bg-red-500/20 text-red-400' :
+                      pais.nivelRiesgo === 'medio' ? 'bg-orange-500/20 text-orange-400' :
+                      pais.nivelRiesgo === 'bajo' ? 'bg-yellow-500/20 text-yellow-400' :
                       'bg-green-500/20 text-green-400'
                     }`}>
-                      {boostedLevel === 'muy-alto' ? '🔴 Muy alto' :
-                       boostedLevel === 'alto' ? '🔴 Alto' :
-                       boostedLevel === 'medio' ? '🟠 Medio' :
-                       boostedLevel === 'bajo' ? '🟡 Bajo' :
-                       boostedLevel === 'sin-riesgo' ? '🟢 Sin riesgo' :
+                      {pais.nivelRiesgo === 'muy-alto' ? '🔴 Muy alto' :
+                       pais.nivelRiesgo === 'alto' ? '🔴 Alto' :
+                       pais.nivelRiesgo === 'medio' ? '🟠 Medio' :
+                       pais.nivelRiesgo === 'bajo' ? '🟡 Bajo' :
+                       pais.nivelRiesgo === 'sin-riesgo' ? '🟢 Sin riesgo' :
                        '⚠️ Sin datos'}
                     </span>
-                    <RiskTrendIndicator countryCode={codigo} />
                   </div>
                 </div>
                 
@@ -650,24 +635,19 @@ export default function DetallePaisClient({ pais, relatedPosts = [] }: DetallePa
             ) : (
               <div className="space-y-4">
                 <div className="flex items-center justify-between p-3 bg-slate-700/50 rounded-lg">
-                  <div className="flex items-center gap-2">
-                    <span className="text-slate-300">Nivel de riesgo</span>
-                    {isBoosted && (
-                      <span className="text-xs bg-red-500/20 text-red-400 px-1.5 py-0.5 rounded">OSINT+</span>
-                    )}
-                  </div>
+                  <span className="text-slate-300">Nivel de riesgo</span>
                   <div className="flex items-center gap-2">
                     <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-                      boostedLevel === 'muy-alto' ? 'bg-red-900/40 text-red-400 border border-red-800' :
-                      boostedLevel === 'alto' ? 'bg-red-500/20 text-red-400' :
-                      boostedLevel === 'medio' ? 'bg-orange-500/20 text-orange-400' :
-                      boostedLevel === 'bajo' ? 'bg-yellow-500/20 text-yellow-400' :
+                      pais.nivelRiesgo === 'muy-alto' ? 'bg-red-900/40 text-red-400 border border-red-800' :
+                      pais.nivelRiesgo === 'alto' ? 'bg-red-500/20 text-red-400' :
+                      pais.nivelRiesgo === 'medio' ? 'bg-orange-500/20 text-orange-400' :
+                      pais.nivelRiesgo === 'bajo' ? 'bg-yellow-500/20 text-yellow-400' :
                       'bg-green-500/20 text-green-400'
                     }`}>
-                      {boostedLevel === 'muy-alto' ? '🔴 Muy alto' :
-                       boostedLevel === 'alto' ? '🔴 Alto' :
-                       boostedLevel === 'medio' ? '🟠 Medio' :
-                       boostedLevel === 'bajo' ? '🟡 Bajo' :
+                      {pais.nivelRiesgo === 'muy-alto' ? '🔴 Muy alto' :
+                       pais.nivelRiesgo === 'alto' ? '🔴 Alto' :
+                       pais.nivelRiesgo === 'medio' ? '🟠 Medio' :
+                       pais.nivelRiesgo === 'bajo' ? '🟡 Bajo' :
                        '🟢 Sin riesgo'}
                       <span className="ml-1 text-xs opacity-70">(fuente MAEC)</span>
                     </span>

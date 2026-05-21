@@ -384,64 +384,16 @@ function mergeSources(who: HealthIndicators, wb: HealthIndicators): { merged: He
 }
 
 // ---- Active outbreak integration ----
-const MIN_OUTBREAK_SEVERITY = 'high';
-const OUTBREAK_THRESHOLD = 2;
-
-async function fetchActiveOutbreakCountries(): Promise<Set<string>> {
-  const outbreakCountries = new Set<string>();
-  if (!supabase) return outbreakCountries;
-
-  try {
-    const { data, error } = await supabase
-      .from('incidents')
-      .select('country_code, severity')
-      .eq('type', 'health_outbreak')
-      .eq('is_active', true);
-
-    if (error) {
-      console.error('[Health API] Error fetching active outbreaks:', error.message);
-      return outbreakCountries;
-    }
-
-    const severityOrder = ['low', 'medium', 'high', 'critical'];
-    const counts: Record<string, { count: number; hasCritical: boolean }> = {};
-
-    for (const inc of data || []) {
-      if (inc.country_code && severityOrder.indexOf(inc.severity || 'low') >= severityOrder.indexOf(MIN_OUTBREAK_SEVERITY)) {
-        const code = inc.country_code.toUpperCase();
-        if (!counts[code]) counts[code] = { count: 0, hasCritical: false };
-        counts[code].count++;
-        if (inc.severity === 'critical') counts[code].hasCritical = true;
-      }
-    }
-
-    for (const [code, c] of Object.entries(counts)) {
-      if (c.hasCritical || c.count >= OUTBREAK_THRESHOLD) {
-        outbreakCountries.add(code);
-      }
-    }
-
-    if (outbreakCountries.size > 0) {
-      console.log(`[Health API] Active outbreaks (${MIN_OUTBREAK_SEVERITY}+, threshold ${OUTBREAK_THRESHOLD}) for: ${Array.from(outbreakCountries).join(', ')}`);
-    }
-  } catch (e) {
-    console.error('[Health API] Failed to fetch outbreaks:', e);
-  }
-
-  return outbreakCountries;
-}
-
 // ---- Main handler ----
 export async function GET() {
   try {
-    const [whoTB, whoHIV, whoVac, whoHExp, whoDocs, whoBeds, outbreakCountries] = await Promise.all([
+    const [whoTB, whoHIV, whoVac, whoHExp, whoDocs, whoBeds] = await Promise.all([
       fetchWHOData(WHO_INDICATORS.tuberculosis),
       fetchWHOData(WHO_INDICATORS.hiv),
       fetchWHOData(WHO_INDICATORS.vaccinationDTP3),
       fetchWHOData(WHO_INDICATORS.healthExpenditure),
       fetchWHOData(WHO_INDICATORS.doctors),
       fetchWHOData(WHO_INDICATORS.beds),
-      fetchActiveOutbreakCountries(),
     ]);
 
     // Fetch World Bank as secondary source
@@ -470,13 +422,7 @@ export async function GET() {
       };
 
       const { merged, sources } = mergeSources(who, wb);
-      let { riskLevel, dataQuality } = determineRiskLevel(merged, code, sources);
-
-      // Override to 'high' if an active health outbreak is detected via OSINT pipeline
-      if (riskLevel !== 'unknown' && outbreakCountries.has(code.toUpperCase())) {
-        console.log(`[Health API] ${code}: active outbreak detected, overriding riskLevel ${riskLevel} → high`);
-        riskLevel = 'high';
-      }
+      const { riskLevel, dataQuality } = determineRiskLevel(merged, code, sources);
 
       const score = riskLevel === 'unknown' ? 0
         : riskLevel === 'low' ? 0
