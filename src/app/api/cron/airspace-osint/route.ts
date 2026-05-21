@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabaseAdminAdmin } from '@/lib/supabaseAdmin-admin';
+import { supabaseAdmin } from '@/lib/supabase-admin';
 
 const AIRSPACE_CLOSURES = [
   { country_code: 'RU', country_name: 'Rusia', reason: 'Conflicto Ucrania - espacio aéreo cerrado', severity: 'critical' as const },
