@@ -55,7 +55,7 @@ const items: Record<LayerKey, { name: string; desc: string; color: string }[]> =
     { name: 'ml_features', desc: '25 features vector por país', color: 'emerald' },
     { name: 'ml_models', desc: 'Modelos RF serializados (4)', color: 'rose' },
     { name: 'risk_predictions', desc: 'Predicciones diarias', color: 'orange' },
-    { name: 'maec_risk_history', desc: 'Histórico riesgo MAEC', color: 'blue' },
+    { name: 'maec_risk_history', desc: 'Histórico riesgo MAEC (retención 90 días)', color: 'blue' },
     { name: 'external_risk', desc: 'Riesgo US State Dept', color: 'indigo' },
     { name: 'paises', desc: `${TOTAL_PAISES} países con datos completos`, color: 'slate' },
     { name: 'indices', desc: 'GPI, GTI, HDI, IPC', color: 'teal' },

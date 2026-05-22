@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { ArrowLeft, Shield, AlertTriangle, BarChart3, FileText, Globe, Database, TrendingUp, Brain, MessageSquare, Bell, ArrowRight, Heart } from 'lucide-react';
+import { ArrowLeft, Shield, AlertTriangle, BarChart3, FileText, Globe, Database, TrendingUp, Brain, MessageSquare, Bell, ArrowRight, Heart, RefreshCw } from 'lucide-react';
 import { TOTAL_PAISES } from '@/lib/constants';
 
 export const metadata: Metadata = {
@@ -210,6 +210,23 @@ export default function MetodologiaPage() {
               </div>
             ))}
           </div>
+        </div>
+
+        {/* Data retention */}
+        <div className="bg-slate-800/60 rounded-xl border border-slate-600/30 p-5 mb-8">
+          <div className="flex items-center gap-3 mb-3">
+            <RefreshCw className="w-5 h-5 text-cyan-400" />
+            <h2 className="text-lg font-bold text-white">Política de retención de datos</h2>
+          </div>
+          <p className="text-slate-300 text-sm leading-relaxed">
+            El histórico de riesgo MAEC se almacena en <strong className="text-white">maec_risk_history</strong> durante <strong className="text-white">90 días</strong>. 
+            Cada día se guarda el nivel de riesgo de cada país en una fila (país + fecha). 
+            Los registros anteriores a 90 días se eliminan automáticamente en el ciclo diario del cron maestro (fase 7c/8).
+          </p>
+          <p className="text-slate-400 text-xs mt-2">
+            Esta ventana de 90 días permite análisis de tendencias, detección temprana de patrones y entrenamiento del modelo ML. 
+            El histórico completo no persiste para minimizar almacenamiento y alinearse con la utilidad práctica de los datos.
+          </p>
         </div>
 
         {/* Indices used */}

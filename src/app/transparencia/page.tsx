@@ -99,6 +99,7 @@ const SECTIONS = [
       'Las señales OSINT (GDELT, Reddit, RSS, GDACS, USGS) se procesan cada 6 horas en el cron maestro. Los incidentes se clusterizan y actualizan en el mismo ciclo.',
       'El modelo ML se reentrena diariamente con los últimos datos de riesgo, sentimiento y features históricas. Las predicciones se comparan con el modelo heurístico para detectar desviaciones.',
       'Los precios del petróleo y tipos de cambio se actualizan cada hora. Los índices globales (GPI, GTI, HDI) se actualizan anualmente según publicación de sus fuentes.',
+      'Política de retención: el histórico de riesgo MAEC se conserva 90 días en maec_risk_history. Los registros anteriores se eliminan automáticamente cada ciclo diario del cron. El modelo ML y las predicciones actuales mantienen sus datos de entrenamiento históricos.',
     ],
   },
   {

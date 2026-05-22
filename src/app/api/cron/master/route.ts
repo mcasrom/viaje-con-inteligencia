@@ -977,8 +977,11 @@ async function runCronAsync() {
   log.info('7b/8 Trial notifications...');
   results.trial_notifications = await withTimeout(() => runTrialNotifications(), 15000, '7b/8 Trial notifications');
 
-  log.info('7c/8 Daily Telegram content...');
-  results.daily_tg = await withTimeout(() => runDailyTelegramContent(), 15000, '7c/8 Daily Telegram content');
+  log.info('7c/8 Data retention cleanup...');
+  results.retention = await withTimeout(() => cleanupOldRecords(), 15000, '7c/8 Data retention');
+
+  log.info('7d/8 Daily Telegram content...');
+  results.daily_tg = await withTimeout(() => runDailyTelegramContent(), 15000, '7d/8 Daily Telegram content');
 
   log.info('8/8 Weekly digest...');
   results.weekly = await withTimeout(() => runWeeklyDigest(), 30000, '8/8 Weekly digest');
@@ -1142,6 +1145,22 @@ async function runBingPing() {
     });
 
     return { status: res.status, ok: res.ok, urls: urls.length };
+  } catch (e: any) {
+    return { error: e.message };
+  }
+}
+
+async function cleanupOldRecords() {
+  try {
+    const cutoff = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString();
+    const { data, error } = await supabaseAdmin
+      .from('maec_risk_history')
+      .delete()
+      .lt('date', cutoff)
+      .select();
+
+    if (error) return { error: error.message };
+    return { deleted: data?.length ?? 0, retentionDays: 90 };
   } catch (e: any) {
     return { error: e.message };
   }
