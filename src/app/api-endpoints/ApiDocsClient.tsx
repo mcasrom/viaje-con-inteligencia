@@ -7,6 +7,29 @@ import { ArrowLeft, Code, Key, Globe, Shield, TrendingDown, AlertTriangle, Chevr
 const ENDPOINTS = [
   {
     method: 'GET',
+    path: '/api/v1/risk/{country}/history',
+    desc: 'Histórico de riesgo por país (30-90 días)',
+    params: [
+      { name: 'country', type: 'string', req: true, desc: 'ISO 3166-1 alpha-2' },
+      { name: 'days', type: 'number', req: false, desc: 'Ventana en días (default: 30, max: 90)' },
+    ],
+    example: `curl -H "X-API-Key: tu-api-key" \\
+  https://www.viajeinteligencia.com/api/v1/risk/ao/history?days=30`,
+    response: `{
+  "country": { "code": "AO", "name": "Angola" },
+  "currentRisk": { "level": "medio", "label": "Medio" },
+  "trend": "estable",
+  "averageScore": 3.0,
+  "history": [
+    { "date": "2026-04-22", "level": "medio", "label": "Medio", "score": 3 },
+    { "date": "2026-04-23", "level": "medio", "label": "Medio", "score": 3 }
+  ],
+  "period": "30 días",
+  "totalRecords": 30
+}`,
+  },
+  {
+    method: 'GET',
     path: '/api/v1/risk/{country}',
     desc: 'Datos de riesgo MAEC para un país',
     params: [
@@ -95,7 +118,7 @@ const ENDPOINTS = [
 ];
 
 const PRICING = [
-  { tier: 'Free', price: '0€', requests: '100/mes', features: ['1 API key', 'Risk endpoint', 'TCI endpoint', 'Incidents endpoint', 'Countries list'] },
+  { tier: 'Free', price: '0€', requests: '100/mes', features: ['1 API key', 'Risk endpoint', 'Risk history (30d)', 'TCI endpoint', 'Incidents endpoint', 'Countries list'] },
   { tier: 'Pro', price: '4.99€', requests: '10,000/mes', features: ['5 API keys', 'Todos los endpoints', '90 días histórico', 'Email support', 'Alertas en tiempo real'] },
 ];
 
