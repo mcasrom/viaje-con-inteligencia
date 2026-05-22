@@ -467,7 +467,7 @@ export async function POST(request: NextRequest) {
     
     if (text === '🏦 Tipo cambio' || text === '🏦 Exchange rate' || text === '🏦 Câmbio') {
       setUserState(chatId, { step: 'selecting_country' });
-      await sendMessage(chatId, t.selectCountry(), getCountryKeyboard());
+      await sendMessage(chatId, t.selectCountry(), await getCountryKeyboard());
       return NextResponse.json({ ok: true });
     }
     
@@ -479,7 +479,7 @@ export async function POST(request: NextRequest) {
     }
     
     if (text === '⚠️ Alertas de riesgo' || text === '⚠️ Risk alerts' || text === '⚠️ Alertas de risco') {
-      await sendMessage(chatId, getAlertasRiesgo(), {
+      await sendMessage(chatId, await getAlertasRiesgo(), {
         reply_markup: t.menu()
       });
       return NextResponse.json({ ok: true });
@@ -784,7 +784,7 @@ export async function POST(request: NextRequest) {
         }
       }
       
-      await sendMessage(chatId, '❌ No encontrado. Prueba: ES, España, FR, Francia, DE, Alemania...', getCountryKeyboard());
+      await sendMessage(chatId, '❌ No encontrado. Prueba: ES, España, FR, Francia, DE, Alemania...', await getCountryKeyboard());
       return NextResponse.json({ ok: true });
     }
     
@@ -828,7 +828,7 @@ export async function POST(request: NextRequest) {
     }
     
     if (text === '/alertas' || text === '/alerts') {
-      await sendMessage(chatId, getAlertasRiesgo(), {
+      await sendMessage(chatId, await getAlertasRiesgo(), {
         reply_markup: t.menu()
       });
       return NextResponse.json({ ok: true });

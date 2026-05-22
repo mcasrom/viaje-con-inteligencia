@@ -199,7 +199,8 @@ if (typeof process !== 'undefined' && process.env.NEXT_PUBLIC_SUPABASE_URL) {
 // ──────────────────────────────────────────────
 // Async DB-first wrappers (2.1 migration)
 // Usan Supabase como fuente primaria con fallback
-// a datos hardcodeados.
+// a datos hardcodeados. Migrar nuevos consumos a
+// getPaisesData/getPaisData desde @/lib/paises-db
 // ──────────────────────────────────────────────
 
 async function loadPaisesFromDB(): Promise<Map<string, DatoPais> | null> {

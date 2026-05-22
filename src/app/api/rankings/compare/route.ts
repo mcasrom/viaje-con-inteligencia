@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { paisesData } from '@/data/paises';
+import { getPaisesData } from '@/lib/paises-db';
 import { getWBIPC } from '@/lib/scraper/wb';
 
 export async function GET(request: NextRequest) {
@@ -7,10 +7,11 @@ export async function GET(request: NextRequest) {
   const countries = searchParams.get('countries')?.split(',') || ['es', 'fr', 'de'];
 
   try {
+    const paises = await getPaisesData();
     const results = await Promise.all(
       countries.map(async (code) => {
         const codeLower = code.toLowerCase();
-        const pais = paisesData[codeLower];
+        const pais = paises[codeLower];
         const ipcData = await getWBIPC(code.toUpperCase());
         
         return {

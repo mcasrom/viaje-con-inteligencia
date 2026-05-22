@@ -1,5 +1,5 @@
 import { supabaseAdmin } from './supabase-admin';
-import { paisesData } from '@/data/paises';
+import { getPaisesData } from '@/lib/paises-db';
 import { createLogger } from './logger';
 import { getFeaturesByCountry } from './ml-features';
 import {
@@ -73,14 +73,15 @@ export async function validateModels(): Promise<ValidationSummary> {
   // 2. Temporal cross-validation: train on earlier 80%, test on later 20%
   let temporalCv: ValidationSummary['temporalCv'] = null;
   try {
-    const countries = Object.keys(paisesData).filter(c => c !== 'cu');
+    const allPaises = await getPaisesData();
+    const countries = Object.keys(allPaises).filter(c => c !== 'cu');
     const matrix = await getTransitionMatrix();
     const RF = await import('ml-random-forest');
 
     const allRows: { features: number[]; heuristic: { riskScore: number; prob7d: number; prob14d: number; prob30d: number }; riskLevel: string }[] = [];
 
     for (const code of countries) {
-      const pais = paisesData[code.toLowerCase()];
+      const pais = allPaises[code.toLowerCase()];
       if (!pais) continue;
       const riskNum: RiskNum = (RISK_NUM[pais.nivelRiesgo] || 1) as RiskNum;
       const features = await buildFeatureVector(code);

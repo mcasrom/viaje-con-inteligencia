@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { paisesData } from '@/data/paises';
+import { getPaisesData } from '@/lib/paises-db';
 
 const GEOPOLITICAL_COUNTRIES = ['ir', 'il', 'lb', 'ps'];
 
@@ -44,8 +44,9 @@ export async function GET(request: NextRequest) {
   const countries = searchParams.get('countries')?.split(',') || GEOPOLITICAL_COUNTRIES;
 
   try {
+    const paises = await getPaisesData();
     const analysis = countries.map(code => {
-      const pais = paisesData[code];
+      const pais = paises[code];
       const conflict = CONFLICT_ZONES[code];
       
       if (!pais) {

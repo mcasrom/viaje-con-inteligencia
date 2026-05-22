@@ -1,4 +1,5 @@
-import { paisesData, getLabelRiesgo, NivelRiesgo } from '@/data/paises';
+import { getPaisesData } from '@/lib/paises-db';
+import { getLabelRiesgo, NivelRiesgo } from '@/data/paises';
 import { getGPI, getGTI, getHDI, getIPC } from '@/lib/indices';
 import { calculateTCI } from '@/data/tci-engine';
 import { createLogger } from '@/lib/logger';
@@ -106,7 +107,8 @@ interface AssembledCountry {
 }
 
 async function assembleCountryData(code: string): Promise<AssembledCountry | null> {
-  const pais = paisesData[code];
+  const allPaises = await getPaisesData();
+  const pais = allPaises[code];
   if (!pais) return null;
 
   const [gpiData, gtiData, hdiData, ipcData] = await Promise.all([

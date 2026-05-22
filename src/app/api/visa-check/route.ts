@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { paisesData } from '@/data/paises';
+import { getPaisesData } from '@/lib/paises-db';
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -9,7 +9,8 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: 'País no proporcionado' }, { status: 400 });
   }
 
-  const country = Object.values(paisesData).find(
+  const paises = await getPaisesData();
+  const country = Object.values(paises).find(
     p => p.nombre.toLowerCase().includes(countryQuery) ||
          p.codigo.toLowerCase() === countryQuery ||
          p.capital.toLowerCase().includes(countryQuery)

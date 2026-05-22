@@ -1,5 +1,6 @@
 import { createLogger } from '@/lib/logger';
-import { paisesData, getPaisPorCodigo, getLabelRiesgo, DatoPais } from '@/data/paises';
+import { getPaisesData } from '@/lib/paises-db';
+import { getPaisPorCodigo, getLabelRiesgo, DatoPais } from '@/data/paises';
 
 const log = createLogger('TelegramBot');
 
@@ -66,9 +67,9 @@ export function getAlertsFullKeyboard() {
    REGULAR COUNTRY KEYBOARD ( ReplyKeyboard)
 ========================= */
 
-export function getCountryKeyboard() {
-  // Usar una copia para evitar mutaciones
-  const countries = Object.values(paisesData);
+export async function getCountryKeyboard() {
+  const allPaises = await getPaisesData();
+  const countries = Object.values(allPaises);
   const keyboard = [];
 
   for (let i = 0; i < countries.length; i += 3) {
@@ -94,8 +95,9 @@ export function getCountryKeyboard() {
    INLINE COUNTRY SELECTOR
 ========================= */
 
-export function getCountryKeyboardInline() {
-  const countries = Object.values(paisesData).slice(0, 20);
+export async function getCountryKeyboardInline() {
+  const allPaises = await getPaisesData();
+  const countries = Object.values(allPaises).slice(0, 20);
   const inline_keyboard = [];
 
   for (let i = 0; i < countries.length; i += 2) {
@@ -242,8 +244,9 @@ if (pais.ultimoInforme) {
    ALERTAS
 ========================= */
 
-export function getAlertasRiesgo(): string {
-  const allCountries = Object.values(paisesData);
+export async function getAlertasRiesgo(): Promise<string> {
+  const allPaises = await getPaisesData();
+  const allCountries = Object.values(allPaises);
 
   const riesgoMuyAlto = allCountries.filter(p => p.nivelRiesgo === 'muy-alto');
   const riesgoAlto = allCountries.filter(p => p.nivelRiesgo === 'alto');
@@ -285,10 +288,11 @@ export function getAlertasRiesgo(): string {
    BUSCADOR
 ========================= */
 
-export function searchCountry(query: string): string | null {
+export async function searchCountry(query: string): Promise<string | null> {
+  const allPaises = await getPaisesData();
   const normalizedQuery = query.toLowerCase().trim();
 
-  const pais = Object.values(paisesData).find(
+  const pais = Object.values(allPaises).find(
     p =>
       p.nombre.toLowerCase().includes(normalizedQuery) ||
       p.capital.toLowerCase().includes(normalizedQuery) ||

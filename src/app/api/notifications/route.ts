@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { paisesData, getTodosLosPaises } from '@/data/paises';
+import { getPaisesData } from '@/lib/paises-db';
+import { getTodosLosPaises } from '@/data/paises';
 import { generateRiskChangeAlert, generateWeeklyDigest } from '@/lib/alerts-system';
 
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
@@ -71,7 +72,8 @@ export async function POST(request: NextRequest) {
         if (!countryCode) {
           return NextResponse.json({ error: 'Código de país requerido' }, { status: 400 });
         }
-        const pais = paisesData[countryCode];
+        const paises = await getPaisesData();
+        const pais = paises[countryCode];
         if (!pais) {
           return NextResponse.json({ error: 'País no encontrado' }, { status: 404 });
         }

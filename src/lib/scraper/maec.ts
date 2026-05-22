@@ -1,6 +1,6 @@
 import { createLogger } from '@/lib/logger';
 import { logScraperSuccess, logScraperWarning, logScraperError } from './audit';
-import { paisesData } from '@/data/paises';
+import { getPaisesData } from '@/lib/paises-db';
 
 const log = createLogger('MAEC');
 
@@ -194,8 +194,9 @@ export async function getMAECData(countryCode: string): Promise<MAECCountryData 
 
 export async function getAllMAECAlerts(): Promise<{ pais: string; nivelRiesgo: string; url: string; codigo: string }[]> {
   const MAEC_URL = 'https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Recomendaciones-de-Viaje.aspx';
+  const allData = await getPaisesData();
 
-  return Object.values(paisesData)
+  return Object.values(allData)
     .filter(p => p.visible !== false && (p.nivelRiesgo === 'alto' || p.nivelRiesgo === 'muy-alto'))
     .map(p => ({
       pais: p.nombre,

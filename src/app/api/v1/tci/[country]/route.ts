@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyApiKey, logApiUsage } from '@/lib/api-auth';
-import { paisesData } from '@/data/paises';
+import { getPaisData } from '@/lib/paises-db';
 import { calculateTCI } from '@/data/tci-engine';
 import { getLiveSeasonality, getLiveAirspaceClosures } from '@/lib/tci-db';
 
@@ -17,7 +17,7 @@ export async function GET(
 
   const { country } = await params;
   const code = country.toLowerCase();
-  const pais = paisesData[code];
+  const pais = await getPaisData(code);
   if (!pais) {
     return NextResponse.json({ error: 'Country not found' }, { status: 404 });
   }

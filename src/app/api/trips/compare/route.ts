@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase-server';
 import { calcularScore, getScoreLabel } from '@/lib/trip-risk-score';
-import { paisesData } from '@/data/paises';
+import { getPaisesData } from '@/lib/paises-db';
 
 export async function POST(request: NextRequest) {
   const supabase = await createSupabaseServerClient();
@@ -23,9 +23,10 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Viajes no encontrados' }, { status: 404 });
   }
 
+  const paises = await getPaisesData();
   const results = (await Promise.all(trips.map(async (trip) => {
     const countryCode = trip.country_code?.toLowerCase();
-    if (!countryCode || !paisesData[countryCode]) return null;
+    if (!countryCode || !paises[countryCode]) return null;
 
     const month = trip.start_date
       ? new Date(trip.start_date).getMonth() + 1
@@ -34,7 +35,7 @@ export async function POST(request: NextRequest) {
     const profile = 'mochilero';
     const budget = trip.budget || 'medio';
     const result = await calcularScore(countryCode, profile, budget, month, trip.days, trip.interests);
-    const pais = paisesData[countryCode];
+    const pais = paises[countryCode];
 
     return {
       trip_id: trip.id,

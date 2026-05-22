@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { supabaseAdmin, isSupabaseAdminConfigured } from '@/lib/supabase-admin';
-import { paisesData } from '@/data/paises';
+import { getPaisesData } from '@/lib/paises-db';
 
 export const dynamic = 'force-dynamic';
 
@@ -31,9 +31,10 @@ function riskLevelToScore(level: string): number {
   return map[level] || 3;
 }
 
-function buildRiskMapFromSnapshot(data: any): CountryRisk[] {
+async function buildRiskMapFromSnapshot(data: any): Promise<CountryRisk[]> {
+  const paises = await getPaisesData();
   const countries: CountryRisk[] = [];
-  for (const [code, pais] of Object.entries(paisesData)) {
+  for (const [code, pais] of Object.entries(paises)) {
     const c = code.toUpperCase();
     if (c === 'CU') continue;
     const riskLevel = pais.nivelRiesgo;
@@ -60,8 +61,9 @@ async function buildRiskMapForDate(targetDate: string): Promise<CountryRisk[]> {
 
   const historyMap = new Map((history || []).map(r => [r.country_code, r.nivel_riesgo]));
 
+  const paises = await getPaisesData();
   const countries: CountryRisk[] = [];
-  for (const [code, pais] of Object.entries(paisesData)) {
+  for (const [code, pais] of Object.entries(paises)) {
     const c = code.toUpperCase();
     if (c === 'CU') continue;
     const riskLevel = historyMap.get(code) || pais.nivelRiesgo;
@@ -91,7 +93,7 @@ export async function GET(request: Request) {
 
   if (!editionId) {
     // Return current risk map from paisesData
-    return NextResponse.json({ countries: buildRiskMapFromSnapshot(null), mode: 'current' });
+    return NextResponse.json({ countries: await buildRiskMapFromSnapshot(null), mode: 'current' });
   }
 
   // Fetch the edition's data_snapshot for the week_start

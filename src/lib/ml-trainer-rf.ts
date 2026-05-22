@@ -1,5 +1,5 @@
 import { supabaseAdmin } from './supabase-admin';
-import { paisesData } from '@/data/paises';
+import { getPaisesData } from '@/lib/paises-db';
 import { getFeaturesByCountry } from './ml-features';
 import {
   getSignalStats, getIncidentStats, getRecentRiskChanges, getTransitionMatrix,
@@ -28,7 +28,8 @@ async function buildTrainingRow(
 ): Promise<{
   features: number[]; riskScore: number; probUp7d: number; probUp14d: number; probUp30d: number;
 } | null> {
-  const pais = paisesData[code.toLowerCase()];
+  const allPaises = await getPaisesData();
+  const pais = allPaises[code.toLowerCase()];
   if (!pais) return null;
   const riskNum: RiskNum = (RISK_NUM[pais.nivelRiesgo] || 1) as RiskNum;
 
@@ -71,7 +72,8 @@ export async function trainRandomForest(): Promise<{
 }> {
   try {
     const RF = await import('ml-random-forest');
-    const countries = Object.keys(paisesData).filter(c => c !== 'cu');
+    const allPaises = await getPaisesData();
+    const countries = Object.keys(allPaises).filter(c => c !== 'cu');
     const X: number[][] = [];
     const yScore: number[] = [];
     const yProb7d: number[] = [];

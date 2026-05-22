@@ -1,5 +1,5 @@
 import { supabaseAdmin } from '@/lib/supabase-admin';
-import { paisesData } from '@/data/paises';
+import { getPaisesData } from '@/lib/paises-db';
 
 const riskLevelNum: Record<string, number> = {
   'sin-riesgo': 1, 'bajo': 2, 'medio': 3, 'alto': 4, 'muy-alto': 5,
@@ -68,7 +68,8 @@ export async function checkPolicyCoverage(
   policy: UserPolicy,
   countryCode: string
 ): Promise<InsuranceAlert[]> {
-  const pais = paisesData[countryCode.toLowerCase() as keyof typeof paisesData];
+  const allPaises = await getPaisesData();
+  const pais = allPaises[countryCode.toLowerCase()];
   if (!pais) return [];
 
   const nivel = riskLevelNum[pais.nivelRiesgo] || 2;

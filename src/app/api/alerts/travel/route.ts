@@ -68,7 +68,7 @@ function getCountryCoords(code: string): [number, number] | null {
 }
 
 async function fetchWeatherAlerts(country: string) {
-  const coords = getCountryCoords(country);
+  const coords = await getCountryCoords(country);
   if (!coords) return [];
   
   try {

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyApiKey, logApiUsage } from '@/lib/api-auth';
-import { paisesData } from '@/data/paises';
+import { getPaisesData } from '@/lib/paises-db';
 import type { DatoPais } from '@/data/paises';
 
 export const dynamic = 'force-dynamic';
@@ -16,7 +16,8 @@ export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const riskFilter = searchParams.get('risk');
 
-  const countries = Object.entries(paisesData)
+  const paises = await getPaisesData();
+  const countries = Object.entries(paises)
     .filter(([code, _p]) => !riskFilter || _p.nivelRiesgo === riskFilter)
     .map(([code, p]: [string, DatoPais]) => ({
       code,

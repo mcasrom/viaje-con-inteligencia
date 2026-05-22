@@ -27,7 +27,7 @@ export async function GET(request: NextRequest) {
 
     // Fetch live data in parallel
     const [paises, events, seguros] = await Promise.all([
-      Promise.resolve(getManualPaises()),
+      getManualPaises(),
       getManualEvents(lang),
       getManualSeguros(),
     ]);

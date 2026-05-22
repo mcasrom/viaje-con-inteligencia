@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { paisesData, getTodosLosPaises, NivelRiesgo } from '@/data/paises';
+import { getPaisesData } from '@/lib/paises-db';
+import { getTodosLosPaises, NivelRiesgo } from '@/data/paises';
 import { sendTelegramMessage } from '@/lib/telegram-channel';
 
 export const dynamic = 'force-dynamic';
@@ -39,7 +40,8 @@ export async function GET(request: NextRequest) {
   const days = parseInt(searchParams.get('days') || '7');
 
   if (country) {
-    const pais = paisesData[country.toLowerCase()];
+    const paises = await getPaisesData();
+    const pais = paises[country.toLowerCase()];
     if (!pais) {
       return NextResponse.json({ error: 'País no encontrado' }, { status: 404 });
     }
@@ -88,7 +90,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Faltan countryCode o message' }, { status: 400 });
     }
 
-    const pais = paisesData[countryCode.toLowerCase()];
+    const paises = await getPaisesData();
+    const pais = paises[countryCode.toLowerCase()];
     if (!pais) {
       return NextResponse.json({ error: 'País no encontrado' }, { status: 404 });
     }

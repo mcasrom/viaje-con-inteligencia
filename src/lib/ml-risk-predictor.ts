@@ -1,6 +1,7 @@
 import { supabaseAdmin } from './supabase-admin';
 import { getCountrySearchTerms } from './country-name-map';
-import { paisesData, type NivelRiesgo } from '@/data/paises';
+import { getPaisesData } from '@/lib/paises-db';
+import { type NivelRiesgo } from '@/data/paises';
 import { getFeaturesByCountry } from './ml-features';
 import type { MlFeatures } from './ml-features';
 
@@ -353,7 +354,8 @@ export function getHistoricalTrend(trend7d: number, trend30d: number): string {
 }
 
 export async function buildFeatureVector(code: string): Promise<number[] | null> {
-  const pais = paisesData[code.toLowerCase()];
+  const allPaises = await getPaisesData();
+  const pais = allPaises[code.toLowerCase()];
   if (!pais) return null;
 
   const riskNum: number = { 'sin-riesgo': 1, 'bajo': 2, 'medio': 3, 'alto': 4, 'muy-alto': 5 }[pais.nivelRiesgo] || 1;
@@ -416,7 +418,8 @@ async function predictWithRF(
 }
 
 export async function predictCountry(countryCode: string): Promise<RiskPrediction | null> {
-  const pais = paisesData[countryCode.toLowerCase()];
+  const allPaises = await getPaisesData();
+  const pais = allPaises[countryCode.toLowerCase()];
   if (!pais) return null;
 
   const riskNum = RISK_NUM[pais.nivelRiesgo] || 1;
@@ -472,8 +475,9 @@ export async function predictCountry(countryCode: string): Promise<RiskPredictio
 }
 
 export async function predictAllCountries(): Promise<RiskPrediction[]> {
+  const allPaises = await getPaisesData();
   const results: RiskPrediction[] = [];
-  const countries = Object.keys(paisesData).filter(c => c !== 'cu');
+  const countries = Object.keys(allPaises).filter(c => c !== 'cu');
 
   for (const code of countries) {
     const prediction = await predictCountry(code);

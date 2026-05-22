@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 import { getAllPosts, getPostSlugs } from '@/lib/posts';
-import { paisesData } from '@/data/paises';
+import { getPaisesData } from '@/lib/paises-db';
 import fs from 'fs';
 import path from 'path';
 import { getAdminPassword, verifyAdminPassword } from '@/lib/admin-auth';
@@ -115,8 +115,9 @@ function getBlogPostsInfo() {
   };
 }
 
-function getCountryAudit() {
-  const entries = Object.entries(paisesData);
+async function getCountryAudit() {
+  const paises = await getPaisesData();
+  const entries = Object.entries(paises);
   const visible = entries.filter(([, p]) => p.visible !== false);
   const hidden = entries.filter(([, p]) => p.visible === false);
   const queHacerZero = entries.filter(([, p]) => !p.queHacer || p.queHacer.length === 0);

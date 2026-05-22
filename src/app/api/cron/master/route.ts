@@ -614,7 +614,7 @@ async function runWeeklyDigest(): Promise<any> {
 
     // 2. Social channels
     const { buildNewsletterSummary, publishToTelegramChannel, publishToMastodon, publishToBlueSky, publishToTelegramSubscribers } = await import('@/lib/social-publisher');
-    const { full, short, mastodonThread } = buildNewsletterSummary(issue);
+    const { full, short, mastodonThread } = await buildNewsletterSummary(issue);
 
     results.telegram_channel = await publishToTelegramChannel(full);
     results.mastodon = { posted: false, threads: 0 };

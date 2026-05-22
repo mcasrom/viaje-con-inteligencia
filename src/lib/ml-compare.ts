@@ -1,5 +1,5 @@
 import { supabaseAdmin } from './supabase-admin';
-import { paisesData } from '@/data/paises';
+import { getPaisesData } from '@/lib/paises-db';
 import { getFeaturesByCountry } from './ml-features';
 import {
   getSignalStats, getIncidentStats, getRecentRiskChanges, getTransitionMatrix,
@@ -68,14 +68,15 @@ const LARGE_DEVIATION_THRESHOLD = {
 
 export async function comparePredictions(): Promise<ComparisonResult> {
   const start = Date.now();
-  const countries = Object.keys(paisesData).filter(c => c !== 'cu');
+  const allPaises = await getPaisesData();
+  const countries = Object.keys(allPaises).filter(c => c !== 'cu');
   const matrix = await getTransitionMatrix();
   const models = await loadModels();
 
   const comparisons: CountryComparison[] = [];
 
   for (const code of countries) {
-    const pais = paisesData[code.toLowerCase()];
+    const pais = allPaises[code.toLowerCase()];
     if (!pais) continue;
 
     const riskNum: RiskNum = (RISK_NUM[pais.nivelRiesgo] || 1) as RiskNum;

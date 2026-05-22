@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase-server';
 import { calcularScore, getScoreLabel } from '@/lib/trip-risk-score';
-import { paisesData } from '@/data/paises';
+import { getPaisesData } from '@/lib/paises-db';
 
 export async function GET(
   _request: NextRequest,
@@ -24,8 +24,9 @@ export async function GET(
     return NextResponse.json({ error: 'Trip not found' }, { status: 404 });
   }
 
+  const paises = await getPaisesData();
   const countryCode = trip.country_code?.toLowerCase();
-  if (!countryCode || !paisesData[countryCode]) {
+  if (!countryCode || !paises[countryCode]) {
     return NextResponse.json({ error: 'Trip has no valid country code' }, { status: 400 });
   }
 
@@ -37,7 +38,7 @@ export async function GET(
   const budget = trip.budget || 'medio';
 
   const result = await calcularScore(countryCode, profile, budget, month, trip.days, trip.interests);
-  const pais = paisesData[countryCode];
+  const pais = paises[countryCode];
 
   return NextResponse.json({
     trip_id: id,

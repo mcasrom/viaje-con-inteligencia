@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase-admin';
 import { verifyApiKey } from '@/lib/api-auth';
-import { paisesData } from '@/data/paises';
+import { getPaisData } from '@/lib/paises-db';
 import { createLogger } from '@/lib/logger';
 
 const log = createLogger('RiskHistory');
@@ -23,7 +23,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     return NextResponse.json({ error: authResult.error || 'API Key inválida' }, { status: authResult.status });
   }
 
-  const pais = paisesData[code.toLowerCase()];
+  const pais = await getPaisData(code.toLowerCase());
   if (!pais) {
     return NextResponse.json({ error: 'País no encontrado' }, { status: 404 });
   }

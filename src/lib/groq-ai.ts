@@ -1,5 +1,5 @@
 import Groq from 'groq-sdk';
-import { paisesData } from '@/data/paises';
+import { getPaisesData } from '@/lib/paises-db';
 import { createLogger } from '@/lib/logger';
 import { isCircuitOpen, recordSuccess, recordFailure } from '@/lib/circuit-breaker';
 import { trackFailure, trackSuccess } from '@/lib/alert-webhook';
@@ -33,8 +33,9 @@ const riesgoLabels: Record<string, string> = {
   'muy-alto': '🔴 Riesgo muy alto',
 };
 
-function getCountryRiskInfo(countryCode: string): string {
-  const pais = paisesData[countryCode];
+async function getCountryRiskInfo(countryCode: string): Promise<string> {
+  const allPaises = await getPaisesData();
+  const pais = allPaises[countryCode];
   if (!pais) return '';
   return `
 DATOS DEL PAÍS (actualizados):
@@ -47,8 +48,9 @@ DATOS DEL PAÍS (actualizados):
 `.trim();
 }
 
-function getCountryEnrichedData(countryCode: string): string {
-  const pais = paisesData[countryCode];
+async function getCountryEnrichedData(countryCode: string): Promise<string> {
+  const allPaises = await getPaisesData();
+  const pais = allPaises[countryCode];
   if (!pais) return '';
 
   const now = new Date();
@@ -83,8 +85,9 @@ DATOS ENRIQUECIDOS DEL PAÍS:
 `.trim();
 }
 
-function buildCountryDataBlock(): string {
-  const entries = Object.entries(paisesData)
+async function buildCountryDataBlock(): Promise<string> {
+  const allPaises = await getPaisesData();
+  const entries = Object.entries(allPaises)
     .filter(([code]) => code !== 'cu')
     .map(([code, p]) => `${code.toUpperCase()}: ${p.nombre} | Riesgo: ${p.nivelRiesgo} | Continente: ${p.continente}`)
     .join('\n');
@@ -295,8 +298,8 @@ export async function* chatWithAIStream(
   context: { country?: string; previousMessages?: string[]; model?: string }
 ): AsyncGenerator<string, string, unknown> {
   const countryCode = context.country?.toLowerCase();
-  const countryRisk = countryCode ? getCountryRiskInfo(countryCode) : '';
-  const countryEnriched = countryCode ? getCountryEnrichedData(countryCode) : '';
+  const countryRisk = countryCode ? await getCountryRiskInfo(countryCode) : '';
+  const countryEnriched = countryCode ? await getCountryEnrichedData(countryCode) : '';
   const enrichedBlock = countryEnriched ? `\n${countryEnriched}` : '';
   const countryContext = countryRisk
     ? `El usuario pregunta sobre ${context.country}.\n${countryRisk}${enrichedBlock}`
@@ -310,7 +313,7 @@ export async function* chatWithAIStream(
     .join('\n');
 
   const selectedModel = context.model || 'llama-3.1-8b-instant';
-  const countryDataBlock = buildCountryDataBlock();
+  const countryDataBlock = await buildCountryDataBlock();
 
   if (isCircuitOpen(CB_NAME)) {
     const msg = 'Servicio de IA temporalmente no disponible. Intenta de nuevo mas tarde.';
@@ -402,8 +405,8 @@ export async function chatWithAI(
   context: { country?: string; previousMessages?: string[]; model?: string }
 ): Promise<string> {
   const countryCode = context.country?.toLowerCase();
-  const countryRisk = countryCode ? getCountryRiskInfo(countryCode) : '';
-  const countryEnriched = countryCode ? getCountryEnrichedData(countryCode) : '';
+  const countryRisk = countryCode ? await getCountryRiskInfo(countryCode) : '';
+  const countryEnriched = countryCode ? await getCountryEnrichedData(countryCode) : '';
   const enrichedBlock = countryEnriched ? `\n${countryEnriched}` : '';
   const countryContext = countryRisk
     ? `El usuario pregunta sobre ${context.country}.\n${countryRisk}${enrichedBlock}`
@@ -426,7 +429,7 @@ export async function chatWithAI(
   const groqLimitMsg = checkGlobalGroq();
   if (groqLimitMsg) return groqLimitMsg;
 
-  const countryDataBlock = buildCountryDataBlock();
+  const countryDataBlock = await buildCountryDataBlock();
 
   try {
     const chatCompletion = await groqClient.chat.completions.create({

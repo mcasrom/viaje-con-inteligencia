@@ -1,4 +1,4 @@
-import { paisesData } from '@/data/paises'
+import { getPaisesData } from '@/lib/paises-db'
 
 export interface FallbackRoute {
   mode: 'driving' | 'transit' | 'flight'
@@ -19,8 +19,9 @@ function haversineKm(lat1: number, lon1: number, lat2: number, lon2: number): nu
   return EARTH_RADIUS_KM * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
 }
 
-function getCountryCoords(code: string): [number, number] | null {
-  const pais = paisesData[code.toLowerCase()]
+async function getCountryCoords(code: string): Promise<[number, number] | null> {
+  const allPaises = await getPaisesData()
+  const pais = allPaises[code.toLowerCase()]
   if (pais?.mapaCoordenadas && pais.mapaCoordenadas[0] !== 0) return pais.mapaCoordenadas
   return null
 }
@@ -37,13 +38,15 @@ const MODE_COST_PER_KM: Record<string, number> = {
   flight: 0.15,
 }
 
-export function estimateFallbackRoute(
+export async function estimateFallbackRoute(
   originCode: string,
   destCode: string,
   mode: 'driving' | 'transit' | 'flight' = 'flight'
-): FallbackRoute | null {
-  const originCoords = getCountryCoords(originCode)
-  const destCoords = getCountryCoords(destCode)
+): Promise<FallbackRoute | null> {
+  const [originCoords, destCoords] = await Promise.all([
+    getCountryCoords(originCode),
+    getCountryCoords(destCode),
+  ]);
   if (!originCoords || !destCoords) return null
 
   const distanceKm = haversineKm(originCoords[0], originCoords[1], destCoords[0], destCoords[1])
@@ -77,12 +80,12 @@ export function estimateFallbackRoute(
   }
 }
 
-export function estimateAllModes(originCode: string, destCode: string): FallbackRoute[] {
+export async function estimateAllModes(originCode: string, destCode: string): Promise<FallbackRoute[]> {
   const modes: ('driving' | 'transit' | 'flight')[] = ['flight', 'driving', 'transit']
   const routes: FallbackRoute[] = []
 
   for (const mode of modes) {
-    const route = estimateFallbackRoute(originCode, destCode, mode)
+    const route = await estimateFallbackRoute(originCode, destCode, mode)
     if (route && route.durationMinutes > 0) routes.push(route)
   }
 

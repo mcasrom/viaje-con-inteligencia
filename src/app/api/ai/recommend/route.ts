@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getRecommendations, getDestinationsWithFeatures, updateTourismData } from '@/data/clustering';
 import { getINEData } from '@/data/ine-data';
-import { paisesData } from '@/data/paises';
+import { getPaisesData } from '@/lib/paises-db';
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
@@ -18,8 +18,9 @@ export async function GET(request: NextRequest) {
     const recommendations = getRecommendations({ preferencia, presupuesto, duracion, desdeES: true }, limit);
     const features = getDestinationsWithFeatures();
 
+    const paises = await getPaisesData();
     const enriched = recommendations.map(r => {
-      const pais = paisesData[r.destination.toLowerCase()];
+      const pais = paises[r.destination.toLowerCase()];
       const feat = features.find(f => f.code === r.destination);
       return {
         ...r,

@@ -1,5 +1,5 @@
 import { createLogger } from '@/lib/logger';
-import { paisesData } from '@/data/paises';
+import { getPaisesData } from '@/lib/paises-db';
 import { supabaseAdmin, isSupabaseAdminConfigured } from './supabase-admin';
 import type { NewsletterIssue, RecentIncident } from '@/lib/newsletter-generator';
 
@@ -29,11 +29,11 @@ function escapeMD(text: string): string {
   return text.replace(/[_*[\]()~`>#+\-=|{}.!]/g, '\\$&');
 }
 
-export function buildNewsletterSummary(issue: NewsletterIssue): {
+export async function buildNewsletterSummary(issue: NewsletterIssue): Promise<{
   full: string;
   short: string;
   mastodonThread: string[];
-} {
+}> {
   const lines: string[] = [];
   lines.push(`📬 *Briefing Semanal* · Edición #${issue.edition}`);
   lines.push(`📅 ${issue.weekDate}`);
@@ -61,8 +61,9 @@ export function buildNewsletterSummary(issue: NewsletterIssue): {
 
   if (issue.recentIncidents.length > 0) {
     lines.push('*📱 Incidentes recientes:*');
+    const allPaises = await getPaisesData();
     for (const inc of issue.recentIncidents.slice(0, 3)) {
-      const pais = paisesData[inc.country_code];
+      const pais = allPaises[inc.country_code];
       const icon = TYPE_ICON[inc.type] || '📌';
       const sev = SEVERITY_LABEL[inc.severity] || inc.severity;
       lines.push(`${icon} *${pais?.nombre || inc.country_code}* · ${sev}`);
@@ -107,8 +108,9 @@ export function buildNewsletterSummary(issue: NewsletterIssue): {
     shortLines.push(`🔴 ${sa} alertas · 🔄 ${sc} cambios · 🟢 ${issue.stableCountries} estables`);
   }
   if (issue.recentIncidents.length > 0) {
+    const allPaisesShort = await getPaisesData();
     const incs = issue.recentIncidents.slice(0, 2).map(i => {
-      const p = paisesData[i.country_code];
+      const p = allPaisesShort[i.country_code];
       return `${p?.nombre || i.country_code} (${SEVERITY_LABEL[i.severity] || i.severity})`;
     });
     shortLines.push(`📱 Incidentes: ${incs.join(', ')}`);

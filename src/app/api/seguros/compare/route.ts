@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
       return apiError('Datos invalidos', parsed.error.message, 400);
     }
 
-    const resolved = resolvePais(parsed.data.destino);
+    const resolved = await resolvePais(parsed.data.destino);
     if (!resolved) {
       return NextResponse.json({ error: 'País no encontrado. Introduce un código ISO (ES, TH, ID...) o nombre del país.' }, { status: 400 });
     }
@@ -44,7 +44,7 @@ export async function POST(request: NextRequest) {
       residencia: (parsed.data.residencia ?? 'ES') as 'ES' | 'EU',
     };
 
-    const result = scoreSeguros(input);
+    const result = await scoreSeguros(input);
     return NextResponse.json(result);
   } catch (error: any) {
     log.error('Error en POST /api/seguros/compare', error);

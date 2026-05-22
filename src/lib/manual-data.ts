@@ -1,5 +1,6 @@
 import { supabaseAdmin } from '@/lib/supabase-admin';
-import { paisesData, type NivelRiesgo } from '@/data/paises';
+import { getPaisesData } from '@/lib/paises-db';
+import { type NivelRiesgo } from '@/data/paises';
 
 export interface ManualPais {
   code: string;
@@ -28,8 +29,9 @@ function getMonthName(m: number, lang: string): string {
   return lang === 'en' ? MONTHS_EN[m - 1] : MONTHS_ES[m - 1];
 }
 
-export function getManualPaises(): ManualPais[] {
-  return Object.entries(paisesData).map(([code, p]) => ({
+export async function getManualPaises(): Promise<ManualPais[]> {
+  const allPaises = await getPaisesData();
+  return Object.entries(allPaises).map(([code, p]) => ({
     code,
     nombre: p.nombre,
     nivelRiesgo: p.nivelRiesgo,
@@ -38,8 +40,9 @@ export function getManualPaises(): ManualPais[] {
   }));
 }
 
-export function getPaisByCode(code: string): ManualPais | null {
-  const p = paisesData[code.toLowerCase() as keyof typeof paisesData];
+export async function getPaisByCode(code: string): Promise<ManualPais | null> {
+  const allPaises = await getPaisesData();
+  const p = allPaises[code.toLowerCase()];
   if (!p) return null;
   return {
     code: code.toLowerCase(),

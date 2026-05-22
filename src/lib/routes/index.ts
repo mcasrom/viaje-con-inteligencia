@@ -1,7 +1,7 @@
 import { getOpenRouteRoutes } from './openroute'
 import { getFlights } from './serpapi'
 import { estimateAllModes } from './fallback'
-import { paisesData } from '@/data/paises'
+import { getPaisesData } from '@/lib/paises-db'
 
 export interface RouteResult {
   mode: string
@@ -45,8 +45,9 @@ const riesgoLabels: Record<string, string> = {
   'muy-alto': 'Muy alto',
 }
 
-function getRiskLevel(code: string): { level: string; score: number } {
-  const pais = paisesData[code.toLowerCase()]
+async function getRiskLevel(code: string): Promise<{ level: string; score: number }> {
+  const allPaises = await getPaisesData();
+  const pais = allPaises[code.toLowerCase()]
   if (!pais) return { level: 'desconocido', score: 50 }
   const level = pais.nivelRiesgo
   const riskMap: Record<string, number> = {
@@ -65,17 +66,22 @@ export async function findRoutes(
   date?: string
 ): Promise<RouteResult[]> {
   const results: RouteResult[] = []
-  const destRisk = getRiskLevel(destCode)
-  const originRisk = getRiskLevel(originCode)
+  const allPaises = await getPaisesData();
+  const [destRisk, originRisk] = await Promise.all([
+    getRiskLevel(destCode),
+    getRiskLevel(originCode),
+  ]);
   const avgRisk = Math.round((destRisk.score + originRisk.score) / 2)
 
-  const originCoords = paisesData[originCode.toLowerCase()]?.mapaCoordenadas
-  const destCoords = paisesData[destCode.toLowerCase()]?.mapaCoordenadas
+  const originPais = allPaises[originCode.toLowerCase()];
+  const destPais = allPaises[destCode.toLowerCase()];
+  const originCoords = originPais?.mapaCoordenadas
+  const destCoords = destPais?.mapaCoordenadas
   const straightPolyline = originCoords && destCoords
     ? [[originCoords[0], originCoords[1]] as [number, number], [destCoords[0], destCoords[1]] as [number, number]]
     : undefined
 
-  const fallbackRoutes = estimateAllModes(originCode, destCode)
+  const fallbackRoutes = await estimateAllModes(originCode, destCode)
 
   for (const fr of fallbackRoutes) {
     const riskAdjustment = Math.round((destRisk.score - 50) * 0.3)
@@ -151,8 +157,8 @@ export async function findRoutes(
   }
 
   if (date) {
-    const originPais = paisesData[originCode.toLowerCase()]
-    const destPais = paisesData[destCode.toLowerCase()]
+    const originPaisRoute = allPaises[originCode.toLowerCase()]
+    const destPaisRoute = allPaises[destCode.toLowerCase()]
     const airportMap: Record<string, string> = {
       es: 'MAD', fr: 'CDG', de: 'FRA', it: 'FCO', gb: 'LHR', pt: 'LIS',
       nl: 'AMS', be: 'BRU', ch: 'ZRH', at: 'VIE', ie: 'DUB', dk: 'CPH',
@@ -162,8 +168,8 @@ export async function findRoutes(
       jp: 'NRT', cn: 'PEK', kr: 'ICN', in: 'DEL', au: 'SYD', nz: 'AKL',
       eg: 'CAI', za: 'JNB', ma: 'CMN', tn: 'TUN', ke: 'NBO', ng: 'LOS',
     }
-    const originAirport = originPais?.transporte?.aeropuertos?.[0]?.iata || airportMap[originCode.toLowerCase()]
-    const destAirport = destPais?.transporte?.aeropuertos?.[0]?.iata || airportMap[destCode.toLowerCase()]
+    const originAirport = originPaisRoute?.transporte?.aeropuertos?.[0]?.iata || airportMap[originCode.toLowerCase()]
+    const destAirport = destPaisRoute?.transporte?.aeropuertos?.[0]?.iata || airportMap[destCode.toLowerCase()]
 
     if (originAirport && destAirport) {
       const flights = await getFlights(originAirport, destAirport, date)

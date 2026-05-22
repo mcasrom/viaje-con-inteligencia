@@ -1,5 +1,5 @@
 import { createLogger } from '@/lib/logger';
-import { paisesData } from '@/data/paises';
+import { getPaisesData } from '@/lib/paises-db';
 import { supabase, isSupabaseConfigured } from '@/lib/supabase';
 import { supabaseAdmin, isSupabaseAdminConfigured } from './supabase-admin';
 
@@ -90,7 +90,8 @@ export async function broadcastAlert(alert: AlertMessage): Promise<boolean> {
 ========================= */
 
 export async function sendRiskUpdate(): Promise<boolean> {
-  const all = Object.values(paisesData);
+  const allPaises = await getPaisesData();
+  const all = Object.values(allPaises);
 
   const sinRiesgo = all.filter(p => p.nivelRiesgo === 'sin-riesgo');
   const bajo = all.filter(p => p.nivelRiesgo === 'bajo');
@@ -111,7 +112,8 @@ export async function sendRiskUpdate(): Promise<boolean> {
 ========================= */
 
 export async function sendCountryAlert(countryCode: string): Promise<boolean> {
-  const pais = paisesData[countryCode];
+  const allPaises = await getPaisesData();
+  const pais = allPaises[countryCode];
   if (!pais) return false;
 
   const emojiMap = {

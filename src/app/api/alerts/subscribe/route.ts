@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerClient } from '@supabase/ssr';
 import { supabaseAdmin, isSupabaseAdminConfigured } from '@/lib/supabase-admin';
-import { paisesData } from '@/data/paises';
+import { getPaisesData } from '@/lib/paises-db';
 
 export const dynamic = 'force-dynamic';
 
@@ -43,8 +43,9 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
+    const paises = await getPaisesData();
     const enriched = (subs || []).map((sub: any) => {
-      const pais = paisesData[sub.country_code?.toLowerCase()];
+      const pais = paises[sub.country_code?.toLowerCase()];
       return {
         id: sub.id,
         country_code: sub.country_code,
@@ -97,8 +98,9 @@ export async function GET(request: NextRequest) {
         ...tgSubs.filter(s => !seen.has(s.country_code)),
       ];
 
+      const paises = await getPaisesData();
       const enriched = merged.map((sub: any) => {
-        const pais = paisesData[sub.country_code?.toLowerCase()];
+        const pais = paises[sub.country_code?.toLowerCase()];
         const source = sub.user_id ? 'web' : 'telegram';
         return {
           id: sub.id,
@@ -126,7 +128,8 @@ export async function GET(request: NextRequest) {
     });
   }
 
-  const pais = Object.values(paisesData).find(p => p.codigo === country.toLowerCase());
+  const paises = await getPaisesData();
+  const pais = Object.values(paises).find(p => p.codigo === country.toLowerCase());
 
   if (!pais) {
     return NextResponse.json({ error: 'País no encontrado' }, { status: 404 });

@@ -1,7 +1,7 @@
 import { createLogger } from '@/lib/logger';
 import { groqClient } from './groq-ai';
 import { supabaseAdmin, isSupabaseAdminConfigured } from './supabase-admin';
-import { paisesData } from '@/data/paises';
+import { getPaisesData } from '@/lib/paises-db';
 import { calculateTCI } from '@/data/tci-engine';
 import { TOTAL_PAISES } from '@/lib/constants';
 
@@ -92,6 +92,7 @@ export interface WeeklyQA {
 export async function collectNewsletterData(): Promise<NewsletterIssue> {
   if (!isSupabaseAdminConfigured()) throw new Error('No supabase admin');
 
+  const allPaisesData = await getPaisesData();
   const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
   const edition = Math.floor((Date.now() - new Date('2025-09-01').getTime()) / (7 * 24 * 60 * 60 * 1000)) + 1;
   const weekDate = new Date().toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric' });
@@ -118,7 +119,7 @@ export async function collectNewsletterData(): Promise<NewsletterIssue> {
   const practicalSignal = extractPracticalSignal(signals || []);
 
   // Destination spotlight — pick highest IRV with stable trend
-  const destinationSpotlight = pickDestinationSpotlight();
+  const destinationSpotlight = await pickDestinationSpotlight();
 
   // Weekly Q&A
   const weeklyQuestion = await generateWeeklyQA(countryAlerts);
@@ -133,7 +134,7 @@ export async function collectNewsletterData(): Promise<NewsletterIssue> {
     .limit(5);
 
   const recentIncidents: RecentIncident[] = (recentIncidentsRaw || [])
-    .filter((i: any) => i.country_code && paisesData[i.country_code])
+    .filter((i: any) => i.country_code && allPaisesData[i.country_code])
     .map((i: any) => ({
       country_code: i.country_code,
       type: i.type,
@@ -142,7 +143,7 @@ export async function collectNewsletterData(): Promise<NewsletterIssue> {
       detected_at: i.detected_at,
     }));
 
-  const totalCountries = Object.keys(paisesData).length;
+  const totalCountries = Object.keys(allPaisesData).length;
   const countriesWithAlerts = new Set(countryAlerts.map(a => a.country_code)).size;
 
   return {
@@ -160,10 +161,11 @@ export async function collectNewsletterData(): Promise<NewsletterIssue> {
 }
 
 async function buildCountryAlerts(alerts: any[], signals: any[]): Promise<CountryAlert[]> {
+  const allPaisesData = await getPaisesData();
   const result: CountryAlert[] = [];
 
   for (const alert of alerts.slice(0, 5)) {
-    const pais = paisesData[alert.country_code];
+    const pais = allPaisesData[alert.country_code];
     if (!pais) continue;
 
     const tci = calculateTCI(alert.country_code);
@@ -199,7 +201,7 @@ async function buildCountryAlerts(alerts: any[], signals: any[]): Promise<Countr
   for (const sig of signals.filter(s => s.urgency === 'critical' || s.urgency === 'high').slice(0, 3)) {
     if (result.find(r => r.title.includes(sig.title.substring(0, 20)))) continue;
 
-    const pais = findCountryFromSignal(sig);
+    const pais = await findCountryFromSignal(sig);
     const irvBase = pais ? Math.max(40, 100 - (riskLevelNum[pais.nivelRiesgo] || 3) * 10) : 60;
 
     result.push({
@@ -221,18 +223,19 @@ async function buildCountryAlerts(alerts: any[], signals: any[]): Promise<Countr
   return result.slice(0, 5);
 }
 
-function findCountryFromSignal(sig: any) {
+async function findCountryFromSignal(sig: any) {
+  const allPaisesData = await getPaisesData();
   const text = `${sig.title} ${sig.content} ${sig.location_name || ''}`.toLowerCase();
-  for (const [code, pais] of Object.entries(paisesData)) {
+  for (const [code, pais] of Object.entries(allPaisesData)) {
     if (text.includes(pais.nombre.toLowerCase())) return pais;
   }
   // Fallback: match ISO code as whole word to avoid false positives (e.g. "us" in "focus")
   const codeMatch = text.match(/\b(us|mx|fr|de|it|es|pt|gb|uk|cn|jp|kr|in|br|ar|ru|au|nz|ca|za|eg|ma|ng|ke|et|tz|ug|cd|cg|gh|sn|ci|ml|ne|bf|td|so|ss|sd|rw|ao|cm|zm|zw|mz|mg|mu|sc|mw|bw|na|sz|ls|gm|sl|lr|gn|gw|tg|bj|mr|cv|st|km|dj|er|ga|gq|cf)\b/g);
-  if (codeMatch) {
-    for (const match of codeMatch) {
-      if (paisesData[match]) return paisesData[match];
+    if (codeMatch) {
+      for (const match of codeMatch) {
+        if (allPaisesData[match]) return allPaisesData[match];
+      }
     }
-  }
   return null;
 }
 
@@ -258,8 +261,9 @@ function extractPracticalSignal(signals: any[]): PracticalSignal | null {
   return null;
 }
 
-function pickDestinationSpotlight(): DestinationSpotlight | null {
-  const visible = Object.values(paisesData).filter(p => p.visible !== false && p.nivelRiesgo !== 'alto' && p.nivelRiesgo !== 'muy-alto');
+async function pickDestinationSpotlight(): Promise<DestinationSpotlight | null> {
+  const allPaisesData = await getPaisesData();
+  const visible = Object.values(allPaisesData).filter(p => p.visible !== false && p.nivelRiesgo !== 'alto' && p.nivelRiesgo !== 'muy-alto');
   if (visible.length === 0) return null;
 
   const scored = visible.map(pais => {
@@ -300,7 +304,8 @@ function pickDestinationSpotlight(): DestinationSpotlight | null {
 
 async function generateWeeklyQA(alerts: CountryAlert[]): Promise<WeeklyQA | null> {
   // Pick a country with interesting data
-  const candidates = Object.values(paisesData).filter(p => p.visible !== false && (p.nivelRiesgo === 'medio' || p.nivelRiesgo === 'bajo'));
+  const allPaisesData = await getPaisesData();
+  const candidates = Object.values(allPaisesData).filter(p => p.visible !== false && (p.nivelRiesgo === 'medio' || p.nivelRiesgo === 'bajo'));
   if (candidates.length === 0) return null;
 
   const pick = candidates[Math.floor(Math.random() * candidates.length)];
@@ -349,6 +354,7 @@ Sé directo, sin frases genéricas. Usa datos, no opiniones.`,
 // HTML TEMPLATE — Professional newsletter format
 // ============================================================
 export async function buildWeeklyEmailHtml(issue: NewsletterIssue): Promise<string> {
+  const allPaisesForEmail = await getPaisesData();
   const headerBg = '#0f172a';
   const accent = '#3b82f6';
 
@@ -549,7 +555,7 @@ export async function buildWeeklyEmailHtml(issue: NewsletterIssue): Promise<stri
               security_threat: '🔒', infrastructure: '🏗️',
             };
             const sevColor = inc.severity === 'critical' ? '#dc2626' : inc.severity === 'high' ? '#ea580c' : inc.severity === 'medium' ? '#ca8a04' : '#64748b';
-            const pais = paisesData[inc.country_code];
+            const pais = allPaisesForEmail[inc.country_code];
             return `
             <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:#f8fafc;border-radius:6px;margin-bottom:6px;border-left:3px solid ${sevColor};">
               <span style="font-size:16px;">${iconMap[inc.type] || '📌'}</span>

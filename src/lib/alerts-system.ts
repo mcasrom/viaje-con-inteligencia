@@ -1,5 +1,6 @@
 import { createLogger } from '@/lib/logger';
-import { paisesData, getPaisPorCodigo, NivelRiesgo } from '@/data/paises';
+import { getPaisesData } from '@/lib/paises-db';
+import { getPaisPorCodigo, NivelRiesgo } from '@/data/paises';
 import { getAllPosts, PostMeta } from './posts';
 import { getAllMAECAlerts } from './scraper/maec';
 
@@ -91,7 +92,8 @@ export const defaultAlerts = [
 ];
 
 export async function generateWeeklyDigest(): Promise<string> {
-  const paises = Object.values(paisesData);
+  const allPaises = await getPaisesData();
+  const paises = Object.values(allPaises);
   const paisesRiesgo = paises.filter(p => p.nivelRiesgo !== 'sin-riesgo' && p.nivelRiesgo);
   const recentPosts = getAllPosts({ sort: 'recent' }).slice(0, 5);
   
@@ -158,7 +160,8 @@ function getWeekNumber(): number {
   return Math.ceil(diff / oneWeek);
 }
 
-export function registerInitialData(): void {
-  log.info(`Cargados ${Object.keys(paisesData).length} países`);
+export async function registerInitialData(): Promise<void> {
+  const allPaises = await getPaisesData();
+  log.info(`Cargados ${Object.keys(allPaises).length} países`);
   log.info('Alertas registradas: 0');
 }

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { paisesData } from '@/data/paises';
+import { getPaisesData } from '@/lib/paises-db';
 import { calcularScore, getScoreLabel } from '@/lib/trip-risk-score';
 
 const MESES = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
@@ -18,7 +18,9 @@ export async function GET(request: NextRequest) {
   const validProfiles = ['mochilero', 'lujo', 'familiar', 'aventura', 'negocios'];
   const validBudgets = ['bajo', 'medio', 'alto', 'lujo'];
 
-  if (!country || !paisesData[country]) {
+  const paises = await getPaisesData();
+
+  if (!country || !paises[country]) {
     return NextResponse.json({ error: 'Invalid or missing country code' }, { status: 400 });
   }
   if (!validProfiles.includes(profile)) {
@@ -32,7 +34,7 @@ export async function GET(request: NextRequest) {
   }
 
   const result = await calcularScore(country, profile, budget, month);
-  const pais = paisesData[country];
+  const pais = paises[country];
 
   return NextResponse.json({
     country: country.toUpperCase(),

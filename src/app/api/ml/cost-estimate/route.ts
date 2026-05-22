@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { paisesData } from '@/data/paises';
+import { getPaisesData } from '@/lib/paises-db';
 import { travelAttributes, ineTourismData } from '@/data/clustering';
 import { getAirportCoordinates, getMainAirport } from '@/lib/airports-db';
 import { getCurrentOilPrice, SEASONALITY_MAP } from '@/data/tci-engine';
@@ -115,22 +115,22 @@ const BASE_COSTS: Record<string, { accommodation: number; food: number; transpor
   other: { accommodation: 35, food: 15, transport: 8, activities: 10 },
 };
 
-function getCostProfile(code: string): string {
-  const ipcValue = getIpcValue(code);
+function getCostProfile(code: string, paises: Record<string, any>): string {
+  const ipcValue = getIpcValue(code, paises);
   if (ipcValue > 90) return 'eur';
   if (ipcValue > 70) return 'eur';
   if (ipcValue > 50) return 'other';
   return 'other';
 }
 
-function getIpcValue(code: string): number {
-  const pais = paisesData[code];
+function getIpcValue(code: string, paises: Record<string, any>): number {
+  const pais = paises[code];
   if (!pais) return 50;
   return parseFloat(pais.indicadores.ipc.replace('%', '')) || 50;
 }
 
-function getCurrency(code: string): string {
-  const pais = paisesData[code];
+function getCurrency(code: string, paises: Record<string, any>): string {
+  const pais = paises[code];
   if (!pais) return 'EUR';
   const continent = pais.continente;
   if (continent === 'Europa') return 'EUR';
@@ -146,7 +146,7 @@ function getCurrency(code: string): string {
   return 'EUR';
 }
 
-async function estimateFlightCost(from: string, to: string, budget: string): Promise<number> {
+async function estimateFlightCost(from: string, to: string, budget: string, paises: Record<string, any>): Promise<number> {
   const fromAirport = await getMainAirport(from);
   const toAirport = await getMainAirport(to);
 
@@ -162,9 +162,9 @@ async function estimateFlightCost(from: string, to: string, budget: string): Pro
   const originAirport = await getAirportCoordinates(from);
   
   if (!destAirport || !originAirport) {
-    const pais = paisesData[to];
+    const pais = paises[to];
     if (!pais) return 300;
-    const continent = paisesData[to]?.continente;
+    const continent = paises[to]?.continente;
     const continentBases: Record<string, number> = { Europa: 100, Américas: 500, Asia: 600, África: 350, Oceanía: 800 };
     const fallback = continentBases[continent || ''] || 300;
     const mult = budget === 'bajo' ? 0.7 : budget === 'alto' ? 1.5 : budget === 'luxury' ? 2.5 : 1;
@@ -180,7 +180,7 @@ async function estimateFlightCost(from: string, to: string, budget: string): Pro
   const seasonKey = String(now.getMonth() + 1);
   let seasonFactor = 1;
 
-  const pais = paisesData[to];
+  const pais = paises[to];
   if (pais) {
     const seasonData = SEASONALITY_MAP[pais.codigo];
     if (seasonData?.[seasonKey]) {
@@ -213,7 +213,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const pais = paisesData[destinationCode];
+    const paises = await getPaisesData();
+    const pais = paises[destinationCode];
     if (!pais) {
       return NextResponse.json(
         { error: `Destination ${destinationCode} not found` },
@@ -222,12 +223,12 @@ export async function POST(request: NextRequest) {
     }
 
     const attrs = travelAttributes[destinationCode];
-    const costProfile = getCostProfile(destinationCode);
-    const currency = getCurrency(destinationCode);
+    const costProfile = getCostProfile(destinationCode, paises);
+    const currency = getCurrency(destinationCode, paises);
     const baseCosts = BASE_COSTS[costProfile];
     const multipliers = BUDGET_MULTIPLIERS[budget];
 
-    const ipcValue = getIpcValue(destinationCode);
+    const ipcValue = getIpcValue(destinationCode, paises);
     const ipcAdjustment = 1 + (ipcValue - 50) / 200;
 
     const breakdown: CostBreakdown = {
@@ -271,7 +272,7 @@ export async function POST(request: NextRequest) {
     
     let flightCost = 0;
     if (includeFlights && departureFrom) {
-      flightCost = await estimateFlightCost(departureFrom, destinationCode, budget);
+      flightCost = await estimateFlightCost(departureFrom, destinationCode, budget, paises);
       breakdown.flights = {
         total: flightCost * travelers,
         note: `Estimacion por persona desde ${departureFrom.toUpperCase()}`,

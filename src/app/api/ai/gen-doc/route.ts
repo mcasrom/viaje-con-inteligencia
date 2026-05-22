@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { checkPremium } from '@/lib/premium-check';
 import { groqClient } from '@/lib/groq-ai';
-import { paisesData } from '@/data/paises';
+import { getPaisesData } from '@/lib/paises-db';
 import { formatTourismStats } from '@/data/tourism';
 import { getTourismStats } from '@/lib/tourism-db';
 
@@ -25,8 +25,9 @@ const riesgoLabels: Record<string, string> = {
   'muy-alto': '🔴 Riesgo muy alto',
 };
 
-function getPaisData(codigo: string) {
-  const pais = paisesData[codigo];
+async function getPaisData(codigo: string) {
+  const paises = await getPaisesData();
+  const pais = paises[codigo];
   if (!pais) return null;
   return {
     nombre: pais.nombre,
@@ -45,7 +46,7 @@ function getPaisData(codigo: string) {
 }
 
 async function generateInforme(pais: string) {
-  const paisData = getPaisData(pais);
+  const paisData = await getPaisData(pais);
   if (!paisData) {
     return { error: `País ${pais} no encontrado` };
   }
@@ -109,7 +110,7 @@ Formato: Markdown estructurado. Sé conciso pero útil.`;
 }
 
 async function generateResumen(pais: string, opciones?: GenerateDocRequest['opciones']) {
-  const paisData = getPaisData(pais);
+  const paisData = await getPaisData(pais);
   if (!paisData) {
     return { error: `País ${pais} no encontrado` };
   }
@@ -168,9 +169,9 @@ Formato: Markdown. Sé muy conciso.`;
 }
 
 async function generateComparativa(paises: string[]) {
-  const paisesDataList = paises
-    .map((codigo) => getPaisData(codigo))
-    .filter((p): p is NonNullable<typeof p> => p !== null);
+  const paisesDataList = (await Promise.all(
+    paises.map((codigo) => getPaisData(codigo))
+  )).filter((p): p is NonNullable<typeof p> => p !== null);
 
   if (paisesDataList.length < 2) {
     return { error: 'Se requieren al menos 2 países para comparar' };

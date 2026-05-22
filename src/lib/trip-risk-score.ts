@@ -1,4 +1,5 @@
-import { paisesData, type NivelRiesgo } from '@/data/paises';
+import { getPaisesData, getPaisData } from '@/lib/paises-db';
+import { type NivelRiesgo } from '@/data/paises';
 import { SEASONALITY_MAP } from '@/data/tci-engine';
 import { travelAttributes } from '@/data/clustering';
 import { supabaseAdmin } from '@/lib/supabase-admin';
@@ -83,11 +84,11 @@ export async function calcularScore(
   days?: number,
   interests?: string[]
 ): Promise<{ score: number; breakdown: Record<string, number>; labels: Record<string, string> }> {
-  const pais = paisesData[countryCode];
+  const pais = await getPaisData(countryCode);
   const attrs = travelAttributes[countryCode];
 
   const durationFactor = days ? 1 + Math.max(-0.15, Math.min(0.25, (days - 7) * 0.003)) : 1;
-  const riesgoBase = Math.round(RIESGO_SCORE[pais?.nivelRiesgo] ?? 50 * durationFactor);
+  const riesgoBase = Math.round((pais ? RIESGO_SCORE[pais.nivelRiesgo] : 50) * durationFactor);
 
   const seasonData = SEASONALITY_MAP[countryCode];
   const seasonIndex = seasonData?.[String(month)] ?? 100;

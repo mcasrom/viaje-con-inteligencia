@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { paisesData } from '@/data/paises';
+import { getPaisesData } from '@/lib/paises-db';
 
 const PACKING_LISTS: Record<string, { essential: string[]; clothing: string[]; toiletries?: string[]; electronics?: string[] }> = {
   general: {
@@ -52,7 +52,8 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Destino requerido' }, { status: 400 });
     }
 
-    const countryData = Object.values(paisesData).find(
+    const paises = await getPaisesData();
+    const countryData = Object.values(paises).find(
       p => p.nombre.toLowerCase().includes(destination.toLowerCase()) ||
            p.codigo.toLowerCase() === destination.toLowerCase()
     );

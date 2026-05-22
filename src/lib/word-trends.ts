@@ -1,6 +1,6 @@
 import { supabase } from '@/lib/supabase';
 import { createLogger } from '@/lib/logger';
-import { paisesData } from '@/data/paises';
+import { getPaisesData } from '@/lib/paises-db';
 
 const log = createLogger('WordTrends');
 
@@ -22,11 +22,7 @@ const TOP_WORDS = 30;
 const ANOMALY_Z_THRESHOLD = 2;
 const ANOMALY_RATIO_THRESHOLD = 3;
 
-const countryNames = new Map<string, string>();
-for (const p of Object.values(paisesData)) {
-  countryNames.set(p.nombre.toLowerCase(), p.codigo);
-  countryNames.set(p.codigo, p.codigo);
-}
+let countryNames: Map<string, string> | null = null;
 
 function extractWords(text: string): string[] {
   if (!text) return [];
@@ -43,7 +39,7 @@ function extractWords(text: string): string[] {
 }
 
 function detectCountryCodes(text: string): string[] {
-  if (!text) return [];
+  if (!text || !countryNames) return [];
   const lower = text.toLowerCase();
   const found = new Set<string>();
   for (const [name, code] of countryNames) {
@@ -65,6 +61,15 @@ export interface WordAnomaly {
 
 export async function computeWordTrends(): Promise<WordAnomaly[]> {
   if (!supabase) return [];
+
+  if (!countryNames) {
+    countryNames = new Map<string, string>();
+    const paisesData = await getPaisesData();
+    for (const p of Object.values(paisesData)) {
+      countryNames.set(p.nombre.toLowerCase(), p.codigo);
+      countryNames.set(p.codigo, p.codigo);
+    }
+  }
 
   const today = new Date().toISOString().split('T')[0];
   const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();

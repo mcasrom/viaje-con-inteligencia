@@ -1,5 +1,6 @@
 import { catalog } from '@/lib/seguros-data';
-import { paisesData, type NivelRiesgo } from '@/data/paises';
+import { getPaisesData } from '@/lib/paises-db';
+import { type NivelRiesgo } from '@/data/paises';
 
 export interface SeguroInput {
   destino: string;
@@ -50,25 +51,28 @@ const ACTIVIDAD_PESO: Record<string, number> = {
   rafting: 0.15, escalada: 0.15, safari: 0.08, voluntariado: 0.03,
 };
 
-export function resolvePais(input: string): { codigo: string; nombre: string } | null {
+export async function resolvePais(input: string): Promise<{ codigo: string; nombre: string } | null> {
+  const allPaises = await getPaisesData();
   const lower = input.toLowerCase().trim().replace(/^es$/, 'es');
-  const direct = paisesData[lower as keyof typeof paisesData];
+  const direct = allPaises[lower];
   if (direct) return { codigo: direct.codigo.toUpperCase(), nombre: direct.nombre };
-  for (const p of Object.values(paisesData)) {
+  for (const p of Object.values(allPaises)) {
     if (p.nombre.toLowerCase() === lower) return { codigo: p.codigo.toUpperCase(), nombre: p.nombre };
   }
-  for (const p of Object.values(paisesData)) {
+  for (const p of Object.values(allPaises)) {
     if (p.nombre.toLowerCase().includes(lower)) return { codigo: p.codigo.toUpperCase(), nombre: p.nombre };
   }
   return null;
 }
 
-export function listCountries(): { codigo: string; nombre: string }[] {
-  return Object.values(paisesData).map(p => ({ codigo: p.codigo.toUpperCase(), nombre: p.nombre }));
+export async function listCountries(): Promise<{ codigo: string; nombre: string }[]> {
+  const allPaises = await getPaisesData();
+  return Object.values(allPaises).map(p => ({ codigo: p.codigo.toUpperCase(), nombre: p.nombre }));
 }
 
-function getDangerLevel(codigo: string): { nivel: number; irv: number; nombre: string } {
-  const pais = paisesData[codigo.toLowerCase() as keyof typeof paisesData];
+async function getDangerLevel(codigo: string): Promise<{ nivel: number; irv: number; nombre: string }> {
+  const allPaises = await getPaisesData();
+  const pais = allPaises[codigo.toLowerCase()];
   if (!pais) return { nivel: 2, irv: 80, nombre: codigo.toUpperCase() };
   const nivel = riskLevelNum[pais.nivelRiesgo] || 2;
   const irv = Math.max(40, Math.min(100, 100 - nivel * 10));
@@ -87,15 +91,15 @@ function calcularPesos(input: SeguroInput, dangerLevel: number, duracionDias: nu
   return { pesoMedica, pesoEvacuacion, pesoCancelacion, pesoDeportes, pesoGeneral };
 }
 
-export function scoreSeguros(input: SeguroInput): {
+export async function scoreSeguros(input: SeguroInput): Promise<{
   destino_nombre: string;
   resultados: SeguroScore[];
   alerta_osint: string | null;
   irv: number;
   cobertura_recomendada: { medica: number; evacuacion: number };
   duracion_dias: number;
-} {
-  const { nivel, irv, nombre } = getDangerLevel(input.destino);
+}> {
+  const { nivel, irv, nombre } = await getDangerLevel(input.destino);
   const duracionEstimada = input.fechaIda && input.fechaVuelta
     ? Math.ceil((new Date(input.fechaVuelta).getTime() - new Date(input.fechaIda).getTime()) / 86400000)
     : 14;
