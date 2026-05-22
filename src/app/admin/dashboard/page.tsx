@@ -515,6 +515,9 @@ export default function AdminDashboard() {
             <a href="/admin/api-keys" className="inline-flex items-center gap-2 px-4 py-2 bg-yellow-600/20 border border-yellow-500/30 text-yellow-400 rounded-lg hover:bg-yellow-600/30 transition-colors text-sm font-medium">
               Gestionar keys <Key className="w-4 h-4" />
             </a>
+            <a href="/admin/api-leads" className="inline-flex items-center gap-2 px-4 py-2 bg-yellow-600/20 border border-yellow-500/30 text-yellow-400 rounded-lg hover:bg-yellow-600/30 transition-colors text-sm font-medium">
+              Leads B2B <ExternalLink className="w-4 h-4" />
+            </a>
           </div>
         </section>
 

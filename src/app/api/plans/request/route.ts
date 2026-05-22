@@ -1,7 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase-admin';
+import { verifyAdminPassword } from '@/lib/admin-auth';
 
 export const dynamic = 'force-dynamic';
+
+export async function GET(request: NextRequest) {
+  if (!supabaseAdmin) return NextResponse.json({ error: 'No disponible' }, { status: 500 });
+
+  const pw = request.headers.get('x-admin-pw');
+  if (!verifyAdminPassword(pw)) return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
+
+  const { data, error } = await supabaseAdmin
+    .from('api_plan_requests')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  return NextResponse.json(data);
+}
 
 export async function POST(request: NextRequest) {
   try {
@@ -64,6 +80,31 @@ export async function POST(request: NextRequest) {
     }
 
     return NextResponse.json({ success: true, id: data.id }, { status: 201 });
+  } catch (e: any) {
+    return NextResponse.json({ error: e.message }, { status: 500 });
+  }
+}
+
+export async function PATCH(request: NextRequest) {
+  if (!supabaseAdmin) return NextResponse.json({ error: 'No disponible' }, { status: 500 });
+
+  const pw = request.headers.get('x-admin-pw');
+  if (!verifyAdminPassword(pw)) return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
+
+  try {
+    const { id, status } = await request.json();
+    if (!id || !status) return NextResponse.json({ error: 'id and status required' }, { status: 400 });
+    if (!['pending', 'contacted', 'converted', 'rejected'].includes(status)) {
+      return NextResponse.json({ error: 'Invalid status' }, { status: 400 });
+    }
+
+    const { error } = await supabaseAdmin
+      .from('api_plan_requests')
+      .update({ status, updated_at: new Date().toISOString() })
+      .eq('id', id);
+
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ success: true });
   } catch (e: any) {
     return NextResponse.json({ error: e.message }, { status: 500 });
   }
