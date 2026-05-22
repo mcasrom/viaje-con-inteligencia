@@ -40,9 +40,9 @@ async function loadPesosFromDB(): Promise<typeof DEFAULT_PESOS> {
 
 export const RIESGO_SCORE: Record<NivelRiesgo, number> = {
   'sin-riesgo': 100,
-  'bajo': 75,
+  'bajo': 85,
   'medio': 50,
-  'alto': 25,
+  'alto': 15,
   'muy-alto': 0,
 };
 
@@ -91,7 +91,7 @@ export async function calcularScore(
 
   const seasonData = SEASONALITY_MAP[countryCode];
   const seasonIndex = seasonData?.[String(month)] ?? 100;
-  const seasonScore = seasonIndex < 60 ? 100 : seasonIndex < 90 ? 75 : seasonIndex < 120 ? 50 : 25;
+  const seasonScore = seasonIndex < 60 ? 100 : seasonIndex < 90 ? 67 : seasonIndex < 120 ? 33 : 0;
 
   const costeBase = CONTINENT_COST[pais?.continente ?? ''] ?? 50;
   const budgetMultiplier = budget === 'bajo' ? 1.3 : budget === 'medio' ? 1 : budget === 'alto' ? 0.7 : 0.5;
@@ -126,7 +126,8 @@ export async function calcularScore(
   const pesos = (await loadPesosFromDB())[profile] || (await loadPesosFromDB()).default;
 
   const rawScore = riesgoBase * pesos.riesgo + seasonScore * pesos.season + costeScore * pesos.coste + perfilScore * pesos.perfil;
-  const score = Math.round(Math.max(0, Math.min(100, rawScore)));
+  const clamped = Math.max(0, Math.min(100, rawScore));
+  const score = Math.round(clamped >= 50 ? 50 + (clamped - 50) * 1.5 : clamped);
 
   return {
     score,

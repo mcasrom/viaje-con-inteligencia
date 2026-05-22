@@ -62,7 +62,10 @@ interface Signal {
 }
 
 function timeAgo(dateStr: string): string {
-  const diff = Date.now() - new Date(dateStr).getTime();
+  const t = new Date(dateStr).getTime();
+  if (isNaN(t)) return 'Fecha desconocida';
+  const diff = Date.now() - t;
+  if (diff < 0) return 'Recién actualizado';
   const mins = Math.floor(diff / 60000);
   if (mins < 1) return 'Ahora';
   if (mins < 60) return `Hace ${mins}min`;

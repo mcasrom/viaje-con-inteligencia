@@ -6,6 +6,7 @@ import ClusteringClient from './ClusteringClient';
 export const metadata: Metadata = {
   title: 'Análisis de Destinos | IA para Viajes - Viaje con Inteligencia',
   description: 'Destinos agrupados por inteligencia artificial según seguridad, coste y preferencias. Descubre tu destino ideal con análisis inteligente.',
+  robots: { index: false, follow: true },
   alternates: {
     canonical: 'https://www.viajeinteligencia.com/clustering',
   },

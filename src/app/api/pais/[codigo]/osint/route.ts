@@ -33,6 +33,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
   const name = getCountryName(codigo) || '';
   const enName = EN_NAMES[codigo] || '';
   const terms = [name, enName].filter(Boolean);
+  if (terms.length === 0) return NextResponse.json({ signals: [], count: 0 });
   const filters = terms.map(t => `title.ilike.%${t}%,summary.ilike.%${t}%,location_name.ilike.%${t}%`).join(',');
 
   const { data: signals, error } = await supabase
@@ -66,7 +67,10 @@ function sourceIcon(source: string): string {
 }
 
 function timeAgo(dateStr: string): string {
-  const diff = Date.now() - new Date(dateStr).getTime();
+  const ts = new Date(dateStr).getTime();
+  if (isNaN(ts)) return 'Fecha desconocida';
+  const diff = Date.now() - ts;
+  if (diff < 0) return 'Recién actualizado';
   const hours = Math.floor(diff / (1000 * 60 * 60));
   if (hours < 1) return `${Math.floor(diff / (1000 * 60))} min`;
   if (hours < 24) return `${hours}h`;

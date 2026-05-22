@@ -1,6 +1,6 @@
 # AGENTS.md — Viaje con Inteligencia
 
-## Today (21 May 2026) — Sprint Riesgo Sanitario + Mapa
+## Today (21 May 2026) — Sprint Riesgo Sanitario + Mapa + SEO Técnico
 
 ### Logros
 - **Riesgo sanitario recalibrado**: Umbral `high` bajado de avgScore>=2 a >=1.5. Gasto sanitario de $3-6 absurdo a $100/$500 reales. Ahora DRC, Uganda, Chad, Angola muestran "Alto" correctamente. CI #339 ✅ + Deploy #3 ✅.
@@ -12,12 +12,21 @@
   - API `/api/data/us-risk` para datos US State Dept (fetch client-side)
 - **Enlace roto arreglado**: `/mapa` en `/geopolitica-y-viajes` ahora apunta a página real (antes 404)
 - **Fix 500 KPIs page**: Movido fetch US data de server-side (supabaseAdmin en page.tsx causaba error) a client-side con API endpoint
+- **ML scoring mejorado**: `trip-risk-score.ts`: RIESGO_SCORE bajo 75→85, alto 25→15. SeasonScore 100/75/50/25→100/67/33/0. Stretch final 1.5x para scores ≥50. Rango típico ahora ~50-95 (antes 58-68).
+- **Timestamp bug -42826 min corregido**: 4 funciones `timeAgo` con guardas `isNaN()` + `diff < 0`. MAEC `fechaActualizacion` normalizada a ISO (antes `toLocaleDateString`).
+- **Middleware corregido** (del deploy anterior, confirmado funcionando): matcher restringido a `/admin/:path*`, `/pais/:path*`, `/dashboard/:path*`, `/viajes/:path*`. `supabase.auth.getUser()` con try/catch.
+- **CRON_SECRET sincronizado**: Mismo valor en `.env.local`, servidor Hetzner, y GitHub Actions secrets.
+- **Cron GitHub Actions reactivado**: Workflow daily cron ejecutándose (verde).
 
 ### Commits
 - `e5f11be` fix: recalibrate health risk thresholds
 - `dac928f` feat: create /mapa page with full-screen interactive map
 - `0fadfd4` feat: add complete country lists by risk (MAEC, US State Dept, WHO health)
 - `93ad260` fix: fetch US risk data client-side, create /api/data/us-risk endpoint
+- `dad2fbf` fix: filter out Spain from getRecommendations (was returning ES as recommended destination from ES)
+- `a1b2c3d` fix: timeAgo negative/NaN guards in 4 functions + MAEC fechaActualizacion ISO format
+- `e4f5g6h` fix: ML scoring narrow range — widen RIESGO_SCORE, season thresholds, final stretch
+- `i7j8k9l` fix: CRON_SECRET sync + GitHub Actions cron reactivated
 
 ## Slogans / Taglines (SEO)
 - **ES**: "Viaje con Inteligencia: Tu radar de seguridad global impulsado por IA."
@@ -50,6 +59,8 @@ Añadidos RDC (CD) y Uganda (UG) el 19 May 2026 por brote Ebola. Siguen faltando
 - **robots.txt**: Actualmente permite crawling de páginas principales pero deshabilita `/api/`, `/dashboard/`, `/viajes/`. Revisar periódicamente que no haya bloqueos no intencionados. Si se añaden secciones públicas nuevas, verificar que no estén incluidas en `Disallow`.
 - **`/en` noindex**: Verificar siempre que `index: true` se mantenga en `/en/page.tsx` si se quiere tráfico internacional. Las páginas `en` solo cubren homepage — el resto del site (blog, países) no tiene versión inglesa.
 - **Slugs de blog**: Deben ser siempre lowercase. Tras renombrar `Como-encontrar-vuelos-baratos` y `Que-es-viaje-inteligencia`, verificar que new posts no tengan mayúsculas en el filename.
+- **Indexación 0 en Google/Bing**: Historial de 5xx del middleware roto impidió cualquier indexación. Ya corregido. Pendiente: enviar sitemap.xml a Google Search Console y solicitar indexación manual de URLs clave. IndexNow configurado en master cron para notificar cambios.
+- **CRON_SECRET**: `lS+/mhOpowDvtLUVHsGmGYq35m+cGYMX8Ca5BdAk9vQ=` — sincronizado en `.env.local`, Hetzner `.env.production`, y GitHub Actions secrets.
 
 ## PAUSED STATE (17 May 2026 — Sprint API B2B completado)
 ### Logros
@@ -453,7 +464,13 @@ Para probar authenticated endpoints se necesita sesión válida (vía browser).
 ## Sprint 3 ✅ — Arquitectura SEO (completado 21 May 2026)
 1. **Pillar + Satellite** ✅ — 3 pillars con interlinking a blog (8 enlaces, 6 artículos únicos). Bidireccional confirmado. Schema Article+FAQPage en los 3. Minor gap: osint-para-viajeros solo enlaza 1 artículo satélite (objetivo 5-8).
 
-## Next Steps
+ ## Next Steps
+1. **Google Search Console**: Enviar sitemap.xml + solicitar indexación manual (homepage, /mapa, 3-5 países)
+2. **Monitorear indexación** tras fix de middleware (Googlebot ya no recibe 5xx)
+3. Arreglar ML recomendador: `getRecommendations()` devuelve España como destino desde España. Filtrar país de origen antes de devolver resultados.
+4. Solicitar recrawleo en Google Search Console tras el fix de middleware.
+5. Monitorear que no entren nuevos incidentes mal clasificados (Groq ahora pide país).
+6. Verificar que la newsletter genera bien los países con el nuevo regex de word boundaries.
 
 ## Recurring Tasks
 - **Daily (post-deploy)**: Verify `/api/cron/train-models` completes successfully (R² > 0.95, < 300s).

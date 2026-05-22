@@ -42,6 +42,16 @@ const nextConfig: NextConfig = {
         destination: '/blog/que-es-viaje-inteligencia',
         permanent: true,
       },
+      {
+        source: '/viaje-coste/:codigo',
+        destination: '/coste/:codigo',
+        permanent: true,
+      },
+      {
+        source: '/viaje-coste',
+        destination: '/coste',
+        permanent: true,
+      },
     ];
   },
   async headers() {

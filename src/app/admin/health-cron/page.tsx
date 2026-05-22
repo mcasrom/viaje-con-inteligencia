@@ -29,7 +29,10 @@ export default function AdminCronHealth() {
   };
 
   const timeAgo = (ts: string) => {
-    const diff = Date.now() - new Date(ts).getTime();
+    const t = new Date(ts).getTime();
+    if (isNaN(t)) return 'Fecha desconocida';
+    const diff = Date.now() - t;
+    if (diff < 0) return 'Recién actualizado';
     const hours = Math.floor(diff / (1000 * 60 * 60));
     if (hours < 1) return `${Math.floor(diff / (1000 * 60))} min`;
     return `${hours}h`;

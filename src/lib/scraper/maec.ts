@@ -156,9 +156,10 @@ export async function getMAECData(countryCode: string): Promise<MAECCountryData 
       else if (nivel.includes('verde')) nivelRiesgo = 'bajo';
     }
 
-    const fechaMatch = html.match(/actualizaci[óo]n[:\s]*(\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4})/i);
+    const fechaMatch = html.match(/actualizaci[óo]n[:\s]*(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{2,4})/i);
     if (fechaMatch) {
-      fechaActualizacion = fechaMatch[1];
+      const [, day, month, year] = fechaMatch;
+      fechaActualizacion = `${year.padStart(4, '20')}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
     }
 
     const alertMatch = html.match(/<h3[^>]*>(?:Alertas?|Avisos?)[^<]*<\/h3>([\s\S]*?)(?=<h3|<div[^>]*class)/i);
@@ -171,7 +172,7 @@ export async function getMAECData(countryCode: string): Promise<MAECCountryData 
     const data: MAECCountryData = {
       pais: countryName,
       nivelRiesgo,
-      fechaActualizacion: fechaActualizacion || new Date().toLocaleDateString('es-ES'),
+      fechaActualizacion: fechaActualizacion || new Date().toISOString().split('T')[0],
       enlaces: {
         fichaPdf: `${MAEC_BASE}/Documents/FichasPais/${countryName.toUpperCase()}_FICHA%20PAIS.pdf`,
         recomendaciones: recomendacionesUrl,
