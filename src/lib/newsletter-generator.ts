@@ -44,6 +44,17 @@ export interface NewsletterIssue {
   weeklyQuestion: WeeklyQA | null;
   // Telegram alerts
   recentIncidents: RecentIncident[];
+  // Sentiment
+  sentimentByCountry: SentimentByCountry[];
+}
+
+export interface SentimentByCountry {
+  country_code: string;
+  country_name: string;
+  avg_tone: number;
+  signal_count: number;
+  direction: 'positivo' | 'negativo' | 'neutral';
+  risk_level: string;
 }
 
 export interface CountryAlert {
@@ -143,6 +154,39 @@ export async function collectNewsletterData(): Promise<NewsletterIssue> {
       detected_at: i.detected_at,
     }));
 
+  // Sentiment by country
+  const { data: sentimentRaw } = await supabaseAdmin
+    .from('osint_signals')
+    .select('country_code, tone_score')
+    .gte('post_timestamp', weekAgo)
+    .not('tone_score', 'is', null);
+
+  const sentimentMap = new Map<string, { sum: number; count: number }>();
+  for (const s of (sentimentRaw || []) as { country_code?: string; tone_score?: number }[]) {
+    if (!s.country_code || s.tone_score === undefined || s.tone_score === null) continue;
+    const entry = sentimentMap.get(s.country_code) || { sum: 0, count: 0 };
+    entry.sum += s.tone_score;
+    entry.count++;
+    sentimentMap.set(s.country_code, entry);
+  }
+
+  const sentimentByCountry: SentimentByCountry[] = [];
+  for (const [code, val] of sentimentMap) {
+    const pais = allPaisesData[code];
+    if (!pais || val.count < 2) continue;
+    const avg = val.sum / val.count;
+    sentimentByCountry.push({
+      country_code: code,
+      country_name: pais.nombre,
+      avg_tone: Math.round(avg * 10) / 10,
+      signal_count: val.count,
+      direction: avg > 1 ? 'positivo' : avg < -1 ? 'negativo' : 'neutral',
+      risk_level: riesgoLabels[pais.nivelRiesgo] || pais.nivelRiesgo,
+    });
+  }
+  sentimentByCountry.sort((a, b) => a.avg_tone - b.avg_tone);
+  const topSentiment = sentimentByCountry.slice(0, 5);
+
   const totalCountries = Object.keys(allPaisesData).length;
   const countriesWithAlerts = new Set(countryAlerts.map(a => a.country_code)).size;
 
@@ -157,6 +201,7 @@ export async function collectNewsletterData(): Promise<NewsletterIssue> {
     destinationSpotlight,
     weeklyQuestion,
     recentIncidents,
+    sentimentByCountry: topSentiment,
   };
 }
 
@@ -519,6 +564,29 @@ export async function buildWeeklyEmailHtml(issue: NewsletterIssue): Promise<stri
 
         <!-- Stats -->
         ${statsHtml}
+
+        <!-- Section: Sentiment -->
+        ${issue.sentimentByCountry.length > 0 ? `
+        <tr><td style="background:#ffffff;padding:16px 24px;border-top:1px solid #e2e8f0;">
+          <h2 style="font-size:13px;font-weight:bold;color:#64748b;text-transform:uppercase;letter-spacing:0.05em;margin:0 0 10px;">📊 Sentimiento OSINT · países con tono más negativo esta semana</h2>
+          ${issue.sentimentByCountry.map(s => {
+            const toneColor = s.avg_tone < -3 ? '#dc2626' : s.avg_tone < 0 ? '#f59e0b' : '#22c55e';
+            const barPct = Math.min(100, Math.max(5, Math.abs(s.avg_tone) * 12 + 50));
+            const barColor = s.avg_tone < 0 ? '#fee2e2' : '#dcfce7';
+            return `
+            <div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid #f1f5f9;">
+              <span style="width:100px;font-size:13px;font-weight:600;color:#0f172a;">${s.country_name}</span>
+              <div style="flex:1;height:6px;background:#f1f5f9;border-radius:3px;overflow:hidden;">
+                <div style="width:${s.avg_tone < 0 ? 100 - barPct : barPct}%;margin-left:${s.avg_tone < 0 ? 0 : 50}%;height:100%;background:${barColor};border-radius:3px;"></div>
+              </div>
+              <span style="width:40px;text-align:right;font-size:13px;font-weight:bold;color:${toneColor};">${s.avg_tone.toFixed(1)}</span>
+              <span style="font-size:11px;color:#94a3b8;">· ${s.signal_count} señales · riesgo ${s.risk_level.toLowerCase()}</span>
+            </div>`;
+          }).join('')}
+          <p style="font-size:11px;color:#94a3b8;margin:8px 0 0;text-align:center;">
+            Escala −10 a +10 · cada punto = desviación estándar del tono medio en señales OSINT esta semana
+          </p>
+        </td></tr>` : ''}
 
         <!-- Section: What changed -->
         <tr><td style="background:#ffffff;padding:16px 24px 8px;border-top:1px solid #e2e8f0;">
