@@ -34,7 +34,7 @@ async function runMaecScrape(): Promise<any> {
     const alerts = await getAllMAECAlerts();
 
     // getAllMAECAlerts already scrapes 26 priority countries and caches them.
-    // No need to scrape all 120 countries — paisesData provides hardcoded fallback.
+    // No need to scrape all 136 countries — paisesData provides hardcoded fallback.
     // Just log the scrape result.
     await supabase.from('scraper_logs').insert({
       source: 'maec_full_scrape', status: 'success',

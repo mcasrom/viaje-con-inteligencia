@@ -26,7 +26,6 @@ export async function POST(request: NextRequest) {
       key_prefix: prefix,
       tier: 'free',
       monthly_limit: limits.free,
-      metadata: { registered_email: email, source: 'self-service' },
     });
 
     if (error) {

@@ -47,7 +47,7 @@ function email1Html(name: string): string {
     <tr><td style="background:#ffffff;padding:24px;">
       <p style="font-size:14px;color:#334155;line-height:1.7;margin:0 0 16px;">
         Acabas de registrarte en Viaje con Inteligencia. Tienes acceso a un radar de seguridad global con
-        <strong>137 países monitorizados</strong> en tiempo real.
+        <strong>136 países monitorizados</strong> en tiempo real.
       </p>
       <h2 style="font-size:16px;font-weight:bold;color:#0f172a;margin:0 0 12px;">Primer paso: configura tu radar</h2>
       <p style="font-size:14px;color:#334155;line-height:1.7;margin:0 0 16px;">

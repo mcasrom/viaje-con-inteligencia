@@ -3,8 +3,8 @@ import { estimateAllModes } from '@/lib/routes/fallback'
 import { getRouteRecommendation } from '@/lib/routes'
 
 describe('haversine engine', () => {
-  it('returns 3 modes for ES to FR', () => {
-    const routes = estimateAllModes('es', 'fr')
+  it('returns 3 modes for ES to FR', async () => {
+    const routes = await estimateAllModes('es', 'fr')
     expect(routes).toHaveLength(3)
     const modes = routes.map(r => r.mode)
     expect(modes).toContain('driving')
@@ -12,8 +12,8 @@ describe('haversine engine', () => {
     expect(modes).toContain('flight')
   })
 
-  it('all modes have positive duration and cost', () => {
-    const routes = estimateAllModes('es', 'fr')
+  it('all modes have positive duration and cost', async () => {
+    const routes = await estimateAllModes('es', 'fr')
     for (const r of routes) {
       expect(r.durationMinutes).toBeGreaterThan(0)
       expect(r.distanceKm).toBeGreaterThan(0)
@@ -22,23 +22,23 @@ describe('haversine engine', () => {
     }
   })
 
-  it('flight is faster than driving and transit', () => {
-    const routes = estimateAllModes('es', 'fr')
+  it('flight is faster than driving and transit', async () => {
+    const routes = await estimateAllModes('es', 'fr')
     const flight = routes.find(r => r.mode === 'flight')!
     expect(flight.durationMinutes).toBeLessThan(routes.find(r => r.mode === 'driving')!.durationMinutes)
     expect(flight.durationMinutes).toBeLessThan(routes.find(r => r.mode === 'transit')!.durationMinutes)
   })
 
-  it('handles unknown country code gracefully', () => {
-    const routes = estimateAllModes('xx', 'yy')
+  it('handles unknown country code gracefully', async () => {
+    const routes = await estimateAllModes('xx', 'yy')
     for (const r of routes) {
       expect(r.distanceKm).toBeGreaterThanOrEqual(0)
       expect(r.estimatedCostEur).toBeGreaterThanOrEqual(0)
     }
   })
 
-  it('returns empty for same country', () => {
-    const routes = estimateAllModes('es', 'es')
+  it('returns empty for same country', async () => {
+    const routes = await estimateAllModes('es', 'es')
     expect(routes).toHaveLength(0)
   })
 })

@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { X, MapPin, Route, Heart, Star, ArrowRight, ArrowLeft, Sparkles, Shield, Compass, UserCheck } from 'lucide-react';
 import Link from 'next/link';
+import { TOTAL_PAISES } from '@/lib/constants';
 
 const steps = [
   {
@@ -20,7 +21,7 @@ const steps = [
     emoji: '🗺️',
     title: 'Mapa de Riesgos Global',
     subtitle: 'Datos oficiales MAEC + fuentes internacionales',
-    description: 'Consulta el nivel de riesgo de 120+ países con datos actualizados. Incluye índices de paz, salud, desarrollo y alertas en tiempo real.',
+    description: 'Consulta el nivel de riesgo de {TOTAL_PAISES} países con datos actualizados. Incluye índices de paz, salud, desarrollo y alertas en tiempo real.',
     color: 'from-emerald-500 to-green-600',
     iconBg: 'bg-emerald-500/20',
     iconColor: 'text-emerald-400',
@@ -142,7 +143,7 @@ export default function Onboarding() {
           {currentStep === 0 && (
             <div className="space-y-3 mb-6">
               {[
-                { icon: <MapPin className="w-4 h-4" />, text: '120+ países con datos de riesgo actualizados' },
+                { icon: <MapPin className="w-4 h-4" />, text: '{TOTAL_PAISES} países con datos de riesgo actualizados' },
                 { icon: <Sparkles className="w-4 h-4" />, text: 'Rutas generadas por IA personalizadas' },
                 { icon: <UserCheck className="w-4 h-4" />, text: 'Sistema de niveles y recompensas' },
               ].map((item, i) => (

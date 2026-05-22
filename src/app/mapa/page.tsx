@@ -1,6 +1,7 @@
 'use client';
 
 import dynamic from 'next/dynamic';
+import { TOTAL_PAISES } from '@/lib/constants';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 
@@ -30,7 +31,7 @@ export default function MapaPage() {
       </div>
       <div className="absolute top-4 right-4 z-[1000]">
         <div className="px-4 py-2 bg-slate-900/80 backdrop-blur-sm rounded-lg text-sm text-slate-400 border border-slate-700/50">
-          Riesgo país actualizado · 137 países
+          Riesgo país actualizado · {TOTAL_PAISES} países
         </div>
       </div>
       <MapaInteractivo fullScreen />

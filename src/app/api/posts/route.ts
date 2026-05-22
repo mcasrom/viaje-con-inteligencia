@@ -27,7 +27,7 @@ async function fetchInfografiasAsPosts(page: number, perPage: number) {
     readTime: '3 min',
     image: inf.image_url || '/og-infografias.png',
     keywords: [...(inf.top_risk_countries || []).map((c: string) => c.toLowerCase()), 'infografía semanal', 'riesgo global', 'GWI'],
-    excerpt: `Edición #${inf.edition} — GWI: ${inf.gwi_score?.toFixed(1) || '—'}. ${inf.country_count || 120} países monitoreados.`,
+    excerpt: `Edición #${inf.edition} — GWI: ${inf.gwi_score?.toFixed(1) || '—'}. ${inf.country_count || 136} países monitoreados.`,
     description: `Infografía semanal de riesgos globales. GWI: ${inf.gwi_score?.toFixed(1) || '—'}. Semana del ${inf.week_start}.`,
     tags: ['infografía', 'riesgo global', 'GWI', `edición-${inf.edition}`],
     featured: false,

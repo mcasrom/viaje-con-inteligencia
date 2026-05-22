@@ -4,7 +4,7 @@ import { ArrowLeft, Globe, Newspaper, Shield, AlertTriangle, Database, TrendingU
 
 export const metadata: Metadata = {
   title: 'OSINT para Viajeros | Cómo Usar Fuentes Abiertas para Viajar Seguro',
-  description: 'Guía completa de OSINT aplicado a viajes: cómo monitorizar riesgos geopolíticos, desastres naturales, brotes sanitarios y seguridad con fuentes abiertas y análisis por IA. 137 países, 14 fuentes.',
+  description: 'Guía completa de OSINT aplicado a viajes: cómo monitorizar riesgos geopolíticos, desastres naturales, brotes sanitarios y seguridad con fuentes abiertas y análisis por IA. 136 países, 14 fuentes.',
   openGraph: {
     title: 'OSINT para Viajeros | Viaje con Inteligencia',
     description: 'Aprende a usar fuentes abiertas para monitorizar riesgos, incidentes y seguridad en tus destinos de viaje. 14 fuentes OSINT, alertas y análisis predictivo.',

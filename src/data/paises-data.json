@@ -12182,7 +12182,7 @@
       },
       "voltaje": "230V / 50Hz",
       "prefijoTelefono": "+260",
-      "nivelRiesgo": "bajo",
+      "nivelRiesgo": "medio",
       "ultimoInforme": "Mayo 2026",
       "contactos": [
         {
@@ -12274,7 +12274,7 @@
       },
       "voltaje": "220V / 50Hz",
       "prefijoTelefono": "+263",
-      "nivelRiesgo": "medio",
+      "nivelRiesgo": "alto",
       "ultimoInforme": "Mayo 2026",
       "contactos": [
         {
@@ -12535,7 +12535,7 @@
     "bi": {
       "codigo": "bi",
       "nombre": "Burundi",
-      "capital": "Guitega",
+      "capital": "Gitega",
       "continente": "África",
       "idioma": "Kirundi, Francés, Inglés",
       "moneda": "Franco burundés (BIF)",
@@ -12627,7 +12627,7 @@
     "mw": {
       "codigo": "mw",
       "nombre": "Malawi",
-      "capital": "Lilongwe",
+      "capital": "Lilongüe",
       "continente": "África",
       "idioma": "Chichewa, Inglés",
       "moneda": "Kwacha malauí (MWK)",
@@ -12918,7 +12918,7 @@
       },
       "voltaje": "120V / 60Hz",
       "prefijoTelefono": "+231",
-      "nivelRiesgo": "medio",
+      "nivelRiesgo": "alto",
       "ultimoInforme": "Mayo 2026",
       "contactos": [
         {
@@ -13010,7 +13010,7 @@
       },
       "voltaje": "220V / 50Hz",
       "prefijoTelefono": "+253",
-      "nivelRiesgo": "medio",
+      "nivelRiesgo": "alto",
       "ultimoInforme": "Mayo 2026",
       "contactos": [
         {
@@ -13102,7 +13102,7 @@
       },
       "voltaje": "230V / 50Hz",
       "prefijoTelefono": "+291",
-      "nivelRiesgo": "alto",
+      "nivelRiesgo": "muy-alto",
       "ultimoInforme": "Mayo 2026",
       "contactos": [
         {
@@ -13765,6 +13765,108 @@
       "policia": "999",
       "bomberos": "998",
       "ambulancia": "995"
+    },
+    "ga": {
+      "general": "1300",
+      "policia": "1730",
+      "bomberos": "18",
+      "ambulancia": "1300"
+    },
+    "gq": {
+      "general": "114",
+      "policia": "114",
+      "bomberos": "115",
+      "ambulancia": "112"
+    },
+    "mg": {
+      "general": "117",
+      "policia": "117",
+      "bomberos": "118",
+      "ambulancia": "124"
+    },
+    "ml": {
+      "general": "17",
+      "policia": "17",
+      "bomberos": "18",
+      "ambulancia": "15"
+    },
+    "ne": {
+      "general": "17",
+      "policia": "17",
+      "bomberos": "18",
+      "ambulancia": "15"
+    },
+    "td": {
+      "general": "17",
+      "policia": "17",
+      "bomberos": "18",
+      "ambulancia": "2251-42"
+    },
+    "zm": {
+      "general": "911",
+      "policia": "911",
+      "bomberos": "993",
+      "ambulancia": "992"
+    },
+    "zw": {
+      "general": "999",
+      "policia": "999",
+      "bomberos": "993",
+      "ambulancia": "994"
+    },
+    "bj": {
+      "general": "117",
+      "policia": "117",
+      "bomberos": "118",
+      "ambulancia": "112"
+    },
+    "bf": {
+      "general": "17",
+      "policia": "17",
+      "bomberos": "18",
+      "ambulancia": "15"
+    },
+    "bi": {
+      "general": "117",
+      "policia": "117",
+      "bomberos": "118",
+      "ambulancia": "112"
+    },
+    "mw": {
+      "general": "997",
+      "policia": "997",
+      "bomberos": "998",
+      "ambulancia": "999"
+    },
+    "na": {
+      "general": "112",
+      "policia": "112",
+      "bomberos": "112",
+      "ambulancia": "112"
+    },
+    "sl": {
+      "general": "999",
+      "policia": "999",
+      "bomberos": "999",
+      "ambulancia": "999"
+    },
+    "lr": {
+      "general": "911",
+      "policia": "911",
+      "bomberos": "911",
+      "ambulancia": "911"
+    },
+    "dj": {
+      "general": "17",
+      "policia": "17",
+      "bomberos": "18",
+      "ambulancia": "19"
+    },
+    "er": {
+      "general": "113",
+      "policia": "113",
+      "bomberos": "116",
+      "ambulancia": "114"
     }
   }
 }

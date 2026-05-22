@@ -6,7 +6,7 @@ import { ArrowLeft, Check, Loader2, Percent, Globe, Users, TrendingUp, DollarSig
 
 const BENEFITS = [
   { icon: Percent, label: '20% de comisión recurrente los primeros 12 meses' },
-  { icon: Globe, label: 'Audiencia global: viajeros de 137 países' },
+  { icon: Globe, label: 'Audiencia global: viajeros de 136 países' },
   { icon: Users, label: 'Material promocional (banners, textos, widgets)' },
   { icon: TrendingUp, label: 'Cookie de 30 días — una vez registrado, es tuyo' },
 ];

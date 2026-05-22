@@ -196,7 +196,7 @@ async function fetchInfografiasAsPosts(): Promise<(PostMeta & { isInfografia: bo
       readTime: '3 min',
       image: inf.image_url || '',
       keywords: [...(inf.top_risk_countries || []).slice(0, 3).map((c: string) => c.toLowerCase()), 'infografía semanal', 'riesgo global'],
-      excerpt: `GWI: ${inf.gwi_score?.toFixed(1) || '—'} · ${inf.country_count || 120} países · Edición #${inf.edition}`,
+      excerpt: `GWI: ${inf.gwi_score?.toFixed(1) || '—'} · ${inf.country_count || 136} países · Edición #${inf.edition}`,
       description: `Infografía semanal de riesgos globales. Edición #${inf.edition}.`,
       tags: ['infografía', 'riesgo global', `edición-${inf.edition}`],
       featured: false,

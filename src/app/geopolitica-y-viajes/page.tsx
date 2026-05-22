@@ -4,10 +4,10 @@ import { ArrowLeft, Globe, Shield, AlertTriangle, TrendingUp, Map, Users, Plane,
 
 export const metadata: Metadata = {
   title: 'Geopolítica y Viajes | Cómo Afectan los Conflictos al Turismo',
-  description: 'Análisis del impacto geopolítico en viajes: conflictos activos, cierres de espacio aéreo, sanciones, GPI, GTI y cómo afectan a la seguridad y coste de tus destinos. 137 países monitorizados.',
+  description: 'Análisis del impacto geopolítico en viajes: conflictos activos, cierres de espacio aéreo, sanciones, GPI, GTI y cómo afectan a la seguridad y coste de tus destinos. 136 países monitorizados.',
   openGraph: {
     title: 'Geopolítica y Viajes | Viaje con Inteligencia',
-    description: 'Indicadores GPI, GTI, HDI, conflictos activos, cierres de espacio aéreo y alertas OSINT combinados en un análisis geopolítico para viajeros. 137 países monitorizados.',
+    description: 'Indicadores GPI, GTI, HDI, conflictos activos, cierres de espacio aéreo y alertas OSINT combinados en un análisis geopolítico para viajeros. 136 países monitorizados.',
     url: 'https://www.viajeinteligencia.com/geopolitica-y-viajes',
     type: 'website',
   },
@@ -121,7 +121,7 @@ const RELATED = [
   { href: '/predicciones', label: 'Predicciones de riesgo', desc: 'Probabilidad de cambio por país' },
   { href: '/alertas', label: 'Alertas geopolíticas', desc: 'Notificaciones de cambios de riesgo' },
   { href: '/pulso-global', label: 'Pulso Global', desc: 'Sentimiento GDELT por país' },
-  { href: '/mapa', label: 'Mapa de riesgos', desc: '137 países con nivel MAEC actualizado' },
+  { href: '/mapa', label: 'Mapa de riesgos', desc: '136 países con nivel MAEC actualizado' },
   { href: '/transparencia', label: 'Centro de transparencia', desc: 'Fuentes y metodología' },
   { href: '/osint-para-viajeros', label: 'OSINT para Viajeros', desc: 'Monitorización de fuentes abiertas' },
   { href: '/travel-risk-intelligence', label: 'Travel Risk Intelligence', desc: 'Visión global de inteligencia de viaje' },
