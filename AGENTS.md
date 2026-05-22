@@ -1,5 +1,18 @@
 # AGENTS.md — Viaje con Inteligencia
 
+## Today (22 May 2026) — Sprint Indexación + RRSS
+
+### Logros
+- **Fix 500s bloqueantes**: `/viaje-coste/lk` → 308 redirect (antes 500), `/viaje-coste/` → 308, `/api/pais/xx/osint` → 200 con array vacío. Migradas redirects a `next.config.ts` para evitar el throw de `redirect()`.
+- **noindex premium pages**: `/clustering` e `/itinerario` ahora con `robots: { index: false }` — evitaban redirects 307 a `/premium` que confundían a Google.
+- **Deploy + IndexNow**: Commit `2c6bd29`, deploy verificado. IndexNow enviado con 8 URLs clave.
+- **Lanzamiento RRSS 22 May**: Publicado post sobre inteligencia de riesgo para viajeros en:
+  - Bluesky: @viajeinteligencia.bsky.social ✅
+  - Mastodon: @viajeinteligencia@mastodon.social ([post](https://mastodon.social/@viajeinteligencia/116615944949530246)) ✅
+  - Telegram: @ViajeConInteligenciaBot ✅
+  - X: pendiente publicación manual
+- **Admin calendar**: Nota registrada en editor_notes (Mayo 2026).
+
 ## Today (21 May 2026) — Sprint Riesgo Sanitario + Mapa + SEO Técnico
 
 ### Logros

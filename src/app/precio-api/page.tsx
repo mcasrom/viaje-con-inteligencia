@@ -16,31 +16,13 @@ const TIERS = [
     needsRequest: false,
   },
   {
-    name: 'Starter',
-    price: '29',
+    name: 'Pro',
+    price: '4.99',
     requests: '10,000',
     cta: 'Quiero esto para aquí',
     href: '#',
     featured: true,
     features: ['5 API keys', 'Todos los endpoints', '90 días histórico', 'Email support', 'Alertas en tiempo real'],
-    needsRequest: true,
-  },
-  {
-    name: 'Pro',
-    price: '99',
-    requests: '50,000',
-    cta: 'Quiero esto para aquí',
-    href: '#',
-    features: ['API keys ilimitadas', 'Todos los endpoints', '1 año histórico', 'SLA 99.9%', 'Support prioritario', 'Webhooks personalizados'],
-    needsRequest: true,
-  },
-  {
-    name: 'Enterprise',
-    price: 'Personalizado',
-    requests: 'Ilimitadas',
-    cta: 'Quiero esto para aquí',
-    href: '#',
-    features: ['Volumen personalizado', 'Endpoints dedicados', 'Histórico completo', 'SLA 99.99%', 'Support dedicado', 'Onboarding asistido', 'Contrato anual'],
     needsRequest: true,
   },
 ];
@@ -72,7 +54,7 @@ export default function PrecioApiPage() {
         </div>
 
         {/* Cards */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid md:grid-cols-2 max-w-2xl mx-auto gap-6">
           {TIERS.map((tier) => (
             <div
               key={tier.name}
@@ -85,14 +67,8 @@ export default function PrecioApiPage() {
               )}
               <h3 className="text-lg font-bold text-white">{tier.name}</h3>
               <div className="mt-3 flex items-baseline gap-1">
-                {tier.price !== 'Personalizado' ? (
-                  <>
-                    <span className="text-3xl font-bold text-white">{tier.price}€</span>
-                    <span className="text-slate-500 text-sm">/mes</span>
-                  </>
-                ) : (
-                  <span className="text-xl font-bold text-white">Personalizado</span>
-                )}
+                <span className="text-3xl font-bold text-white">{tier.price}€</span>
+                <span className="text-slate-500 text-sm">/mes</span>
               </div>
               <p className="text-slate-400 text-sm mt-1">Hasta {tier.requests} req/mes</p>
               <ul className="mt-6 space-y-3 flex-1">
