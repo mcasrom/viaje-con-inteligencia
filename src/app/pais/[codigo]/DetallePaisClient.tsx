@@ -28,9 +28,10 @@ import ScoreBadge from '@/components/ScoreBadge';
 interface DetallePaisClientProps {
   pais: DatoPais;
   relatedPosts?: PostMeta[];
+  serverRenderedHero?: boolean;
 }
 
-export default function DetallePaisClient({ pais, relatedPosts = [] }: DetallePaisClientProps) {
+export default function DetallePaisClient({ pais, relatedPosts = [], serverRenderedHero = false }: DetallePaisClientProps) {
   const params = useParams();
   const router = useRouter();
   const codigo = params.codigo as string;
@@ -247,6 +248,7 @@ export default function DetallePaisClient({ pais, relatedPosts = [] }: DetallePa
       </header>
 
       <main className="max-w-6xl mx-auto px-6 py-8">
+        {!serverRenderedHero && (
         <div className={`bg-gradient-to-r from-slate-800 to-slate-800/50 rounded-2xl p-8 mb-8 border-2 ${config.border}`}>
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
             <div className="flex items-center gap-4">
@@ -337,6 +339,7 @@ export default function DetallePaisClient({ pais, relatedPosts = [] }: DetallePa
             </div>
           </div>
         </div>
+        )}
 
         {usRiskData ? (
           <div className="mt-4 flex items-center gap-4">
