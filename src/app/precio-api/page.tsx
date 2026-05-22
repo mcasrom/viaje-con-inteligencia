@@ -8,9 +8,9 @@ const TIERS = [
   {
     name: 'Free',
     price: '0',
-    requests: '3,000',
-    cta: 'Empieza gratis',
-    href: '/admin/api-keys',
+    requests: '100',
+    cta: 'Ver documentación',
+    href: '/api-endpoints',
     features: ['1 API key', 'Risk endpoint', 'TCI endpoint', 'Incidents endpoint', 'Countries list', 'Actualizaciones diarias'],
     needsRequest: false,
   },

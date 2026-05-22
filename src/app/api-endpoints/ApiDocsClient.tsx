@@ -95,9 +95,8 @@ const ENDPOINTS = [
 ];
 
 const PRICING = [
-  { tier: 'Free', price: '0€', requests: '100/mes', features: ['1 API key', 'Risk endpoint', 'Countries list'] },
-  { tier: 'Starter', price: '29€', requests: '10,000/mes', features: ['5 API keys', 'Todos endpoints', '90d histórico', 'Email support'] },
-  { tier: 'Business', price: '99€', requests: '100,000/mes', features: ['API keys ilimitadas', 'Todos endpoints', '1 año histórico', 'SLA 99.9%', 'Support prioritario'] },
+  { tier: 'Free', price: '0€', requests: '100/mes', features: ['1 API key', 'Risk endpoint', 'TCI endpoint', 'Incidents endpoint', 'Countries list'] },
+  { tier: 'Pro', price: '4.99€', requests: '10,000/mes', features: ['5 API keys', 'Todos los endpoints', '90 días histórico', 'Email support', 'Alertas en tiempo real'] },
 ];
 
 export default function ApiDocsClient() {
@@ -209,17 +208,71 @@ export default function ApiDocsClient() {
           </div>
         </div>
 
+        {/* Get your free key */}
+        <div className="mt-10 bg-slate-800 rounded-xl border border-green-500/30 p-6">
+          <div className="flex items-center gap-3 mb-4">
+            <Key className="w-5 h-5 text-green-400" />
+            <h2 className="text-lg font-bold text-white">Consigue tu API Key gratis</h2>
+          </div>
+          <p className="text-slate-300 text-sm mb-4">Introduce tu email y recibe al instante una API Key gratuita (100 requests/mes). Sin registro, sin tarjeta.</p>
+          <form onSubmit={async (e) => {
+            e.preventDefault();
+            const form = e.target as HTMLFormElement;
+            const input = form.elements.namedItem('email') as HTMLInputElement;
+            const btn = form.querySelector('button') as HTMLButtonElement;
+            const msg = form.querySelector('.msg') as HTMLElement;
+            btn.disabled = true;
+            btn.textContent = 'Generando...';
+            try {
+              const res = await fetch('/api/v1/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: input.value }),
+              });
+              const data = await res.json();
+              if (data.key) {
+                msg.innerHTML = `<div class="bg-slate-900 rounded-lg p-4 mt-3">
+                  <p class="text-green-400 text-sm font-bold mb-2">✅ Tu API Key:</p>
+                  <code class="text-amber-400 text-sm break-all">${data.key}</code>
+                  <p class="text-slate-500 text-xs mt-2">Guárdala. Solo la verás una vez.</p>
+                  <p class="text-slate-400 text-xs mt-2 font-mono">${data.usage}</p>
+                </div>`;
+                input.value = '';
+              } else {
+                msg.innerHTML = `<p class="text-red-400 text-sm mt-2">${data.error || 'Error'}</p>`;
+              }
+            } catch {
+              msg.innerHTML = '<p class="text-red-400 text-sm mt-2">Error de conexión</p>';
+            }
+            btn.disabled = false;
+            btn.textContent = 'Obtener API Key';
+          }}>
+            <div className="flex gap-3">
+              <input
+                type="email"
+                name="email"
+                required
+                placeholder="tu@email.com"
+                className="flex-1 px-4 py-2.5 bg-slate-700/50 border border-slate-600/50 rounded-lg text-white text-sm placeholder:text-slate-500"
+              />
+              <button type="submit" className="px-6 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium text-sm whitespace-nowrap">
+                Obtener API Key
+              </button>
+            </div>
+            <div className="msg"></div>
+          </form>
+        </div>
+
         {/* Pricing */}
-        <div className="mt-12">
+        <div className="mt-10">
           <div className="flex items-center gap-3 mb-4">
             <h2 className="text-lg font-bold text-white">Planes</h2>
-            <span className="px-2.5 py-0.5 bg-amber-500/20 text-amber-400 text-xs font-bold rounded-full border border-amber-500/30">Próximamente</span>
+            <a href="/precio-api" className="text-xs text-blue-400 hover:underline">Ver detalles →</a>
           </div>
-          <p className="text-slate-500 text-sm mb-6">Los planes de pago aún no están disponibles. Por ahora, todos los endpoints son accesibles gratis con un API Key.</p>
-          <div className="grid md:grid-cols-3 gap-4 opacity-60">
+          <div className="grid md:grid-cols-2 max-w-2xl gap-4">
             {PRICING.map((p, i) => (
-              <div key={i} className={`bg-slate-800 rounded-xl border p-6 ${i === 1 ? 'border-green-500 relative' : 'border-slate-700'}`}>
-                {i === 1 && <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 bg-green-500 text-slate-900 text-xs font-bold rounded-full">Recomendado</div>}
+              <div key={i} className={`bg-slate-800 rounded-xl border p-6 ${i === 1 ? 'border-blue-500 relative' : 'border-slate-700'}`}>
+                {i === 1 && <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 bg-blue-500 text-white text-xs font-bold rounded-full">Recomendado</div>}
                 <h3 className="text-white font-bold text-lg">{p.tier}</h3>
                 <p className="text-3xl font-bold text-white mt-2">{p.price}<span className="text-slate-500 text-sm font-normal">/mes</span></p>
                 <p className="text-slate-400 text-sm mt-1">{p.requests}</p>
@@ -231,9 +284,15 @@ export default function ApiDocsClient() {
                     </li>
                   ))}
                 </ul>
-                <button disabled className="w-full mt-6 py-3 bg-slate-700/50 text-slate-500 rounded-lg text-sm font-medium cursor-not-allowed">
-                  Próximamente
-                </button>
+                {i === 0 ? (
+                  <a href="/api-endpoints" className="mt-6 block w-full text-center py-3 bg-slate-700 text-slate-300 rounded-xl text-sm font-medium hover:bg-slate-600 transition-colors">
+                    Empezar gratis
+                  </a>
+                ) : (
+                  <a href="/precio-api" className="mt-6 block w-full text-center py-3 bg-blue-600 text-white rounded-xl text-sm font-medium hover:bg-blue-700 transition-colors">
+                    Ver plan Pro
+                  </a>
+                )}
               </div>
             ))}
           </div>
