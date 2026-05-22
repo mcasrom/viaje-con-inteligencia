@@ -8,6 +8,9 @@ export const dynamic = 'force-dynamic';
 export const metadata: Metadata = {
   title: 'Itinerarios destacados | Viaje con Inteligencia',
   description: 'Descubre itinerarios de viaje creados con IA. Inspírate para tu próximo viaje con rutas personalizadas por destino, presupuesto e intereses.',
+  alternates: {
+    canonical: 'https://www.viajeinteligencia.com/viajes/destacados',
+  },
   openGraph: {
     title: 'Itinerarios destacados | Viaje con Inteligencia',
     description: 'Explora itinerarios de viaje generados con IA. Encuentra inspiración para tu próxima aventura.',

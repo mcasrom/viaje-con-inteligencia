@@ -18,6 +18,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return {
     title: `${infografia.title} | Viaje con Inteligencia`,
     description: `Edición #${infografia.edition} — GWI: ${gwi}. Países de mayor riesgo: ${countries}. Análisis semanal OSINT de riesgos globales de viaje.`,
+    alternates: {
+      canonical: `https://www.viajeinteligencia.com/infografias/${id}`,
+    },
     keywords: [
       `infografía ${infografia.edition}`,
       'riesgo global viajes',

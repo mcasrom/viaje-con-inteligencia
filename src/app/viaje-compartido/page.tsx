@@ -1,7 +1,16 @@
 import { Suspense } from 'react';
+import type { Metadata } from 'next';
 import { createSupabaseServerClient } from '@/lib/supabase-server';
 import { supabaseAdmin } from '@/lib/supabase-admin';
 import SharedTripClient from './SharedTripClient';
+
+export const metadata: Metadata = {
+  title: 'Viaje Compartido | Viaje con Inteligencia',
+  description: 'Viaje compartido de forma segura con Viaje con Inteligencia.',
+  alternates: {
+    canonical: 'https://www.viajeinteligencia.com/viaje-compartido',
+  },
+};
 
 export const dynamic = 'force-dynamic';
 

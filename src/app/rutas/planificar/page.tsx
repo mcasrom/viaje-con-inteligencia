@@ -4,6 +4,9 @@ import RoutePlannerClient from '@/components/RoutePlanner/RoutePlannerClient'
 export const metadata: Metadata = {
   title: 'Planificar Ruta — Viaje con Inteligencia',
   description: 'Planifica tu ruta entre cualquier par de países con información de coste, duración, riesgo y modos de transporte disponibles.',
+  alternates: {
+    canonical: 'https://www.viajeinteligencia.com/rutas/planificar',
+  },
   openGraph: {
     title: 'Planificar Ruta — Viaje con Inteligencia',
     description: 'Compara rutas en coche, transporte público o vuelo entre cualquier par de países con scoring de riesgo integrado.',

@@ -11,13 +11,6 @@ export default function robots(): MetadataRoute.Robots {
           '/dashboard/',
           '/admin/',
           '/test-leaflet',
-          '/api-endpoints',
-          '/kpi',
-          '/radius',
-          '/relojes',
-          '/lead-magnet',
-          '/precio-api',
-          '/reclamaciones',
         ],
       },
       {

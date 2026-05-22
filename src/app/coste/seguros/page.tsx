@@ -1,5 +1,14 @@
 import { Suspense } from 'react';
+import type { Metadata } from 'next';
 import SegurosForm from './SegurosForm';
+
+export const metadata: Metadata = {
+  title: 'Comparador de Seguros de Viaje | Viaje con Inteligencia',
+  description: 'Compara seguros de viaje según el riesgo real del destino. IATI, Chapka, AXA y más.',
+  alternates: {
+    canonical: 'https://www.viajeinteligencia.com/coste/seguros',
+  },
+};
 
 export default function SegurosPage() {
   return (

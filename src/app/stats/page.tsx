@@ -6,6 +6,9 @@ import { getTodosLosPaises, getLabelRiesgo, NivelRiesgo } from '@/data/paises';
 export const metadata: Metadata = {
   title: 'Estadísticas Globales | Viaje con Inteligencia',
   description: 'Estadísticas de riesgos por países, continentes y más. Datos actualizados del MAEC español.',
+  alternates: {
+    canonical: 'https://www.viajeinteligencia.com/stats',
+  },
 };
 
 export default async function StatsPage() {

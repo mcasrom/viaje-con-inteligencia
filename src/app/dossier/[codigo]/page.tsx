@@ -80,6 +80,9 @@ export async function generateMetadata({ params }: { params: Promise<{ codigo: s
   return {
     title: `Dossier Premium: ${codigo.toUpperCase()} | Viaje con Inteligencia`,
     description: 'Informe completo de inteligencia de viaje para este destino.',
+    alternates: {
+      canonical: `https://www.viajeinteligencia.com/dossier/${codigo}`,
+    },
   };
 }
 

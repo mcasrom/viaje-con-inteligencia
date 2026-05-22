@@ -3,6 +3,9 @@ import { ArrowLeft, Smartphone, Download, Globe, CheckCircle } from 'lucide-reac
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
+  alternates: {
+    canonical: 'https://www.viajeinteligencia.com/pwa',
+  },
   robots: { index: false, follow: true },
 };
 

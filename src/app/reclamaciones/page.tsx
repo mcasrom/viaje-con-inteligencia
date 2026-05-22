@@ -5,6 +5,9 @@ export const metadata: Metadata = {
   title: 'Generador de Reclamaciones de Viaje | Retrasos, Cancelaciones, Incumplimientos',
   description: 'Genera tu reclamación formal para aerolíneas, hoteles o agencias. Plantilla gratuita o documento personalizado Premium con referencias legales completas.',
   keywords: 'reclamación vuelo retrasado, reclamación cancelación vuelo, compensación aerolínea, Reglamento 261/2004, reclamación hotel, reclamación viaje',
+  alternates: {
+    canonical: 'https://www.viajeinteligencia.com/reclamaciones',
+  },
   openGraph: {
     title: 'Generador de Reclamaciones de Viaje',
     description: 'Genera tu reclamación formal para aerolíneas, hoteles o agencias. Plantilla gratuita o documento personalizado Premium.',
