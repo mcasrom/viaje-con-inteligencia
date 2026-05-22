@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
 
     if (error) {
       log.error('Error creating API key', error.message);
-      return NextResponse.json({ error: `Error al generar la key: ${error.message}` }, { status: 500 });
+      return NextResponse.json({ error: 'Error al generar la key' }, { status: 500 });
     }
 
     return NextResponse.json({
