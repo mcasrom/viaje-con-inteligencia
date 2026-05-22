@@ -1,19 +1,18 @@
 # Way Ahead
 
-## Última sesión: 21 May 2026 — Homepage EN + Incident boost OSINT
+## Última sesión: 22 May 2026 — RRSS + Risk History API + Retention Policy
 
-> **Último deploy verificado:** OK ✅ (commit `02fa0e0`)
+> **Último deploy verificado:** OK ✅ (commit `440d4a0`)
 >
-> **Sprint activo:** Captación — ver `captacion/README.md`
+> **Sprint activo:** Indexación Google + Estabilización
 >
 > **Logros día:**
-> - ✅ **Homepage EN (`/en`)** — refactor completo con I18n. ~80 keys de traducción. `t()` soporta params. `/en` renderiza homepage moderna.
-> - ✅ **SentimentClimate bug fix** — `location_name` siempre `null` para 4/6 fuentes. Filtro JS por nombre español fallaba para casi todos los países. Fix: filter por `countryCode` vía `ilike` en Supabase.
-> - ✅ **Health risk outbreak integration** — incidentes `health_outbreak` activos elevan riesgo sanitario a 'alto' automáticamente (commit `64ad82c`).
-> - ✅ **Incident boost general (`useIncidentBoost`)** — nuevo hook que consulta incidentes activos (`conflict`, `terrorism`, `security_threat`, `protest`, `health_outbreak`) y escala `nivelRiesgo` mostrado en mapa y sidepanel. Nunca baja el riesgo, solo sube.
-> - ✅ **English page refactor** — item #9 de prioridades (baja) movido a completado.
-
----
+> - ✅ **RRSS publicado (22 May)**: Bluesky, Mastodon, Telegram, X (manual). Tono OSINT/data-driven.
+> - ✅ **Admin calendario registrado**: Nota "Lanzamiento RRSS — 22 May 2026" en editor_notes.
+> - ✅ **OSINT boost eliminado completamente**: Borrado `useIncidentBoost.ts` + todas referencias `applyBoost`. Badges usan `pais.nivelRiesgo` directamente. OSINT solo contextual (banner, timeline).
+> - ✅ **Outbreak override eliminado**: Borrada `fetchActiveOutbreakCountries()`. Riesgo sanitario solo WHO.
+> - ✅ **Risk history endpoint** — `/api/v1/risk/{country}/history` con ventana 30-90 días. Documentado en `/api-endpoints`.
+> - ✅ **Retention policy 90 días**: Auto-cleanup en cron (fase 7c/8). Documentado en `/metodologia`, `/transparencia`, `/ecosistema`.
 
 ## 🔐 SERVIDOR HETZNER — Acceso SSH
 
@@ -227,15 +226,31 @@ curl -s http://178.105.80.193:3001/api/health
 | 6 | **RLS fix** | 4 tablas sin RLS (`osint_word_trends`, `seguros_catalog`, `seguros_perfiles`, `user_watchlist`) ahora con policies. Resuelto aviso crítico Supabase |
 | 7 | **Extras día 1** | Sitemap fix (route handler dinámico), robots.txt limpiado, queHacer 3 países (CF, SO, SS), analytics gráficos admin |
 
-### Lo conseguido en esta sesión (21 May — Homepage EN + Incident boost OSINT)
+### Lo conseguido en esta sesión (22 May — RRSS + Risk History API + Retention)
+
+| # | Entregable | Detalle |
+|---|------------|---------|
+| 1 | **RRSS lanzamiento** | Bluesky, Mastodon, Telegram, X. Tono OSINT/data-driven. Admin calendario actualizado. |
+| 2 | **OSINT boost eliminado** | `useIncidentBoost.ts` borrado. `applyBoost` eliminado de todas las referencias. OSINT solo contextual (banner, timeline). |
+| 3 | **Outbreak override eliminado** | `fetchActiveOutbreakCountries()` borrado. Riesgo sanitario exclusivamente WHO. |
+| 4 | **Risk history endpoint** | `/api/v1/risk/{country}/history`, parámetro `?days=30-90`. Auth via API Key. |
+| 5 | **Retention policy 90 días** | `cleanupOldRecords()` en master cron. Documentado en metodología, transparencia y ecosistema. |
+| 6 | **Deploy** | Commits `acfce27`, `440d4a0` → main. Build OK. CI verde. |
+
+### Lo conseguido en la sesión anterior (21 May — Homepage EN + Incident boost OSINT)
 
 | # | Entregable | Detalle |
 |---|------------|---------|
 | 1 | **Homepage EN (`/en`)** | Refactor i18n completo. ~80 keys, `t()` con params. `/en` renderiza homepage moderna. |
 | 2 | **SentimentClimate bug fix** | `location_name` null para 4/6 fuentes. Filter por countryCode vía `ilike` en Supabase. |
-| 3 | **Health outbreak integration** | Incidentes `health_outbreak` activos → riesgo sanitario 'alto'. Patrón: fetchActiveOutbreakCountries() + override. |
-| 4 | **Incident boost general** | Hook `useIncidentBoost` + `applyBoost`. Conflict→alto, terrorism→alto, security_threat→medio, protest→medio. Aplica en MapaInteractivo, SidePanel, HomeClient. |
-| 5 | **Deploy** | Commits `f96bcf9`, `64ad82c`, `02fa0e0` → main. |
+| 3 | **ML scoring corregido** | RIESGO_SCORE bajo 85/alto 15, seasonScore 100/67/33/0, stretch 1.5x. Rango típico ~50-95. |
+| 4 | **Timestamp bug -42826 min** | 4 funciones `timeAgo` con guardas `isNaN()` + `diff < 0`. MAEC fecha normalizada a ISO. |
+| 5 | **España filtrada clustering** | `filter(d.code !== 'es')` en `getRecommendations()`. |
+| 6 | **Middleware fix** | Matcher restringido, try/catch en getUser(). Googlebot ya no recibe 5xx. |
+| 7 | **Fix 500 /viaje-coste** | Migrado a next.config.ts redirect (308). Pages eliminados. |
+| 8 | **Fix 500 /api/pais/xx/osint** | Early return con array vacío para códigos inválidos. |
+| 9 | **noindex premium pages** | /clustering e /itinerario con `robots: { index: false }`. |
+| 10 | **Deploy** | Commits `896b866` → main. CI verde.
 
 ### Lo conseguido en la sesión anterior (19 May — sesión 4)
 
@@ -313,8 +328,10 @@ curl -s http://178.105.80.193:3001/api/health
 | 25 | Deploy con swap | `.github/workflows/` | ✅ OOM fix Hetzner CX22 |
 | 26 | Homepage EN | `/en` | ✅ Refactor i18n, ~80 keys, `t()` con params |
 | 27 | SentimentClimate country filter | `sentiment-climate/route.ts` | ✅ Filter por countryCode vía `ilike` |
-| 28 | Health outbreak override | `kpis/health/route.ts` | ✅ Incidentes health_outbreak → riesgo 'alto' |
-| 29 | Incident boost hook | `lib/useIncidentBoost.ts` | ✅ OSINT activo escala riesgo general en mapa |
+| 28 | Risk History API | `/api/v1/risk/{country}/history` | ✅ 30-90d histórico MAEC via API Key |
+| 29 | Retention policy 90d | `cron/master/route.ts` | ✅ Auto-cleanup, docs en metodologia/transparencia |
+| 30 | RRSS lanzado | Bluesky, Mastodon, Telegram, X | ✅ Tono OSINT/data-driven |
+| 31 | Admin AI Assistant | `/admin/ai-assistant` | ✅ 4 modos (SEO, posts, meta, free) con Groq |
 
 ---
 
@@ -562,14 +579,26 @@ git add -A && git commit -m "msg" && git push
 
 ---
 
-## PENDIENTES REALES (verificado 21 May 2026)
+## PENDIENTES REALES (verificado 22 May 2026)
+
+### 🔴 Indexación Google
+- [ ] Esperar 3-7 días tras deploy de fixes 500 (middleware) para ver primeras URLs en Google
+- [ ] Verificar `site:www.viajeinteligencia.com` diariamente
+- [ ] Googlebot activo (17 hits/24h) pero 0 URLs indexadas por historial 5xx
+
+### 🔴 Stripe / Monetización API
+- [ ] Stripe webhook para API Pro — auto-provisionar API key tras pago de 4.99€
+- [ ] Webhook existente solo maneja site premium (profiles.is_premium). API Pro requiere handler nuevo.
 
 ### 🟡 Admin / Infra
-- [ ] Admin API Leads page — interfaz para gestionar solicitudes entrantes de `api_plan_requests`
-- [ ] `spatial_ref_sys` RLS alert — silenciar en Supabase Dashboard (tabla de sistema PostGIS, no requiere RLS)
+- [ ] Admin API Leads page — gestionar solicitudes entrantes de `api_plan_requests`
+- [ ] Migrar `paisesData` hardcodeado a Supabase para edición desde admin
+- [ ] Monitorear que no entren incidentes mal clasificados (Groq ahora pide country_code)
 
 ### 🟡 Content / SEO
-- [ ] Versión EN de pillar pages ES (`/en/osint-para-viajeros`, `/en/geopolitica-y-viajes`)
+- [ ] Solicitar recrawleo en Google Search Console
+- [ ] Enviar sitemap.xml a Google Search Console manualmente
+- [ ] Version EN de pillar pages ES (`/en/osint-para-viajeros`, `/en/geopolitica-y-viajes`)
 - [ ] Newsletter con sentimiento semanal — integrar `tone_score` en el HTML del digest
 
 ### 🟡 Marketing
@@ -579,6 +608,9 @@ git add -A && git commit -m "msg" && git push
 ### 🟡 ML / Data
 - [ ] Validación temporal CV (~25 días de datos acumulados) — monitorizar
 - [ ] Aumentar cobertura OSINT: backfill de `tone_score` vía Groq en señales existentes sin sentiment
+
+### 🟢 África — 17 países pendientes
+- [ ] GA, GQ, MG, ML, NE, TD, ZM, ZW, BJ, BF, BI, MW, NA, SL, LR, DJ, ER
 
 ---
 
