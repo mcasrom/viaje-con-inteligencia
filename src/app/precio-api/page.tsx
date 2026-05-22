@@ -39,7 +39,7 @@ export default function PrecioApiPage() {
       const res = await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ priceId: API_PRO_PRICE_ID, trialDays: 7 }),
+        body: JSON.stringify({ priceId: API_PRO_PRICE_ID, trialDays: 7, type: 'api_pro' }),
       });
       const data = await res.json();
       if (data.url) {

@@ -1,11 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { stripe } from '@/lib/stripe';
 
+const API_PRO_PRICE_ID = 'price_1TZjOo1yXjIoL1LjQf4rIc65';
+
 export const dynamic = 'force-dynamic';
 
 export async function POST(req: NextRequest) {
   try {
-    const { priceId, email, trialDays } = await req.json();
+    const { priceId, email, trialDays, type } = await req.json();
 
     if (!priceId) {
       return NextResponse.json({ error: 'Precio no configurado' }, { status: 400 });
@@ -15,6 +17,8 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Stripe no configurado' }, { status: 500 });
     }
 
+    const isApiPro = type === 'api_pro' || priceId === API_PRO_PRICE_ID;
+
     const sessionConfig: any = {
       mode: 'subscription',
       payment_method_types: ['card'],
@@ -22,9 +26,17 @@ export async function POST(req: NextRequest) {
         price: priceId, 
         quantity: 1 
       }],
-      success_url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://www.viajeinteligencia.com'}/dashboard?success=true&trial=true`,
-      cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://www.viajeinteligencia.com'}/premium?canceled=true`,
+      success_url: isApiPro
+        ? `${process.env.NEXT_PUBLIC_SITE_URL || 'https://www.viajeinteligencia.com'}/api-endpoints?pro=true`
+        : `${process.env.NEXT_PUBLIC_SITE_URL || 'https://www.viajeinteligencia.com'}/dashboard?success=true&trial=true`,
+      cancel_url: isApiPro
+        ? `${process.env.NEXT_PUBLIC_SITE_URL || 'https://www.viajeinteligencia.com'}/precio-api?canceled=true`
+        : `${process.env.NEXT_PUBLIC_SITE_URL || 'https://www.viajeinteligencia.com'}/premium?canceled=true`,
     };
+
+    if (isApiPro) {
+      sessionConfig.metadata = { type: 'api_pro', price_id: priceId };
+    }
 
     if (email) {
       sessionConfig.customer_email = email;
