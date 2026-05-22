@@ -16,6 +16,8 @@ jobs:
           SSH_PORT: '22'
           SSH_USER: 'deploy'
           SSH_KEY: ${{ secrets.HETZNER_SSH_KEY }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ZONE_ID: ${{ secrets.CLOUDFLARE_ZONE_ID }}
         run: |
           mkdir -p ~/.ssh
           echo "$SSH_KEY" > ~/.ssh/id_rsa
@@ -28,9 +30,17 @@ jobs:
             --exclude '.env*' \
             --exclude 'logs' \
             ./ $SSH_USER@$SSH_HOST:/var/www/viajeinteligencia/
-          ssh -p $SSH_PORT $SSH_USER@$SSH_HOST << 'ENDSSH'
+          ssh -p $SSH_PORT $SSH_USER@$SSH_HOST << ENDSSH
             set -e
             cd /var/www/viajeinteligencia
+            # Write Cloudflare env vars to .env.production (preserve existing if any)
+            touch .env.production
+            grep -q '^CLOUDFLARE_API_TOKEN=' .env.production && \
+              sed -i 's|^CLOUDFLARE_API_TOKEN=.*|CLOUDFLARE_API_TOKEN=$CLOUDFLARE_API_TOKEN|' .env.production || \
+              echo "CLOUDFLARE_API_TOKEN=$CLOUDFLARE_API_TOKEN" >> .env.production
+            grep -q '^CLOUDFLARE_ZONE_ID=' .env.production && \
+              sed -i 's|^CLOUDFLARE_ZONE_ID=.*|CLOUDFLARE_ZONE_ID=$CLOUDFLARE_ZONE_ID|' .env.production || \
+              echo "CLOUDFLARE_ZONE_ID=$CLOUDFLARE_ZONE_ID" >> .env.production
             if ! swapon --show | grep -q /swapfile; then
               fallocate -l 2G /swapfile && chmod 600 /swapfile && mkswap /swapfile && swapon /swapfile
               echo "Swap created"
