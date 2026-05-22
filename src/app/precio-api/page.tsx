@@ -2,8 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Check, HelpCircle, Mail, Shield, Zap, Users, BarChart3, AlertTriangle } from 'lucide-react';
-import RequestApiPlanModal from '@/components/RequestApiPlanModal';
+import { ArrowLeft, Check, HelpCircle, Mail, Shield, Zap, Users, BarChart3, AlertTriangle, Loader2 } from 'lucide-react';
 
 const TIERS = [
   {
@@ -27,8 +26,33 @@ const TIERS = [
   },
 ];
 
+const API_PRO_PRICE_ID = 'price_1TZjOo1yXjIoL1LjQf4rIc65';
+
 export default function PrecioApiPage() {
-  const [requestTier, setRequestTier] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleProCheckout = async () => {
+    setLoading(true);
+    setError('');
+    try {
+      const res = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ priceId: API_PRO_PRICE_ID, trialDays: 7 }),
+      });
+      const data = await res.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        setError(data.error || 'Error al conectar con Stripe');
+      }
+    } catch {
+      setError('Error de conexión');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-slate-900">
@@ -79,29 +103,23 @@ export default function PrecioApiPage() {
                   </li>
                 ))}
               </ul>
-              {tier.needsRequest ? (
-                <button
-                  onClick={() => setRequestTier(tier.name)}
-                  className={`mt-8 block w-full text-center py-3 rounded-xl text-sm font-medium transition-colors ${
-                    tier.featured
-                      ? 'bg-blue-600 text-white hover:bg-blue-700'
-                      : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
-                  }`}
-                >
-                  {tier.cta}
-                </button>
-              ) : (
+              {tier.name === 'Free' ? (
                 <Link
                   href={tier.href}
-                  className={`mt-8 block w-full text-center py-3 rounded-xl text-sm font-medium transition-colors ${
-                    tier.featured
-                      ? 'bg-blue-600 text-white hover:bg-blue-700'
-                      : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
-                  }`}
+                  className="mt-8 block w-full text-center py-3 rounded-xl text-sm font-medium transition-colors bg-slate-700 text-slate-300 hover:bg-slate-600"
                 >
                   {tier.cta}
                 </Link>
+              ) : (
+                <button
+                  onClick={handleProCheckout}
+                  disabled={loading}
+                  className="mt-8 flex items-center justify-center gap-2 w-full text-center py-3 rounded-xl text-sm font-medium transition-colors bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50"
+                >
+                  {loading ? <><Loader2 className="w-4 h-4 animate-spin" /> Procesando...</> : tier.cta}
+                </button>
               )}
+              {error && <p className="text-red-400 text-xs text-center mt-2">{error}</p>}
             </div>
           ))}
         </div>
@@ -145,13 +163,6 @@ export default function PrecioApiPage() {
           </Link>
         </div>
       </main>
-
-      {requestTier && (
-        <RequestApiPlanModal
-          planTier={TIERS.find(t => t.name === requestTier)?.name.toLowerCase() || requestTier.toLowerCase()}
-          onClose={() => setRequestTier(null)}
-        />
-      )}
     </div>
   );
 }
