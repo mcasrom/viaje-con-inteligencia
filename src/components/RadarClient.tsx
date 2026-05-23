@@ -4,8 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { Plus, Trash2, MapPin, Calendar, AlertTriangle, Plane, Loader2, Search, X, Globe } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
-import dynamic from 'next/dynamic';
-const RadarTimelineChart = dynamic(() => import('./RadarTimelineChart'), { ssr: false });
+import RadarTimelineChart from './RadarTimelineChart';
 
 interface WatchlistEntry {
   id: number;

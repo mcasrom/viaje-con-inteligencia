@@ -47,7 +47,17 @@ export default function RadarTimelineChart() {
       .finally(() => setLoading(false));
   }, []);
 
-  if (loading || data.length === 0) return null;
+  if (loading) return (
+    <div className="bg-slate-800 border border-slate-700 rounded-xl p-6 mb-8">
+      <div className="animate-pulse">
+        <div className="h-5 w-48 bg-slate-700 rounded mb-1" />
+        <div className="h-3 w-64 bg-slate-700 rounded mb-4" />
+        <div className="h-[300px] bg-slate-700/50 rounded" />
+      </div>
+    </div>
+  );
+
+  if (data.length === 0) return null;
 
   const chartData = data[0].projection.map((_, i) => {
     const point: Record<string, any> = {
