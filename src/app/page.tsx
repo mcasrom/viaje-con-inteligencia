@@ -127,6 +127,11 @@ function TopBar() {
               <span className="text-[10px] font-medium">{t('topbar.decide')}</span>
             </Link>
             <div className="w-px h-5 bg-slate-700" />
+            <Link href="/mapa" className="group flex flex-col items-center gap-0.5 px-4 py-1.5 text-slate-400 hover:text-white rounded-xl hover:bg-slate-800/80 transition-all">
+              <Globe className="w-4 h-4 text-emerald-400 group-hover:scale-110 transition-transform" />
+              <span className="text-[10px] font-medium">{t('topbar.map')}</span>
+            </Link>
+            <div className="w-px h-5 bg-slate-700" />
             <Link href="/blog" className="group flex flex-col items-center gap-0.5 px-4 py-1.5 text-slate-400 hover:text-white rounded-xl hover:bg-slate-800/80 transition-all">
               <Newspaper className="w-4 h-4 text-cyan-400 group-hover:scale-110 transition-transform" />
               <span className="text-[10px] font-medium">{t('topbar.blog')}</span>
@@ -554,7 +559,7 @@ function HeroOverlay() {
         {results.length === 0 && (
           <div className="flex items-center justify-center gap-3 mt-5">
             <Link
-            href="/paises"
+            href="/mapa"
             className="inline-flex items-center gap-2 px-5 py-2.5 bg-white/10 backdrop-blur-sm text-white rounded-xl hover:bg-white/20 transition-all text-sm font-medium border border-white/10"
           >
             <Globe className="w-4 h-4" />

@@ -241,6 +241,10 @@ const translations: Translation = {
     es: 'Decidir',
     en: 'Decide',
   },
+  'topbar.map': {
+    es: 'Mapa',
+    en: 'Map',
+  },
   'topbar.blog': {
     es: 'Blog',
     en: 'Blog',
