@@ -431,6 +431,28 @@ const translations: Translation = {
     en: 'Decide your trip in 30 seconds',
   },
 
+  // Hero
+  'hero.title': {
+    es: '¿Es seguro viajar a...?',
+    en: 'Is it safe to travel to...?',
+  },
+  'hero.subtitle': {
+    es: 'Riesgo país en tiempo real + alertas OSINT + fuentes oficiales.',
+    en: 'Real-time country risk + OSINT alerts + official sources.',
+  },
+  'hero.searchPlaceholder': {
+    es: 'Busca un país...',
+    en: 'Search a country...',
+  },
+  'hero.viewMap': {
+    es: 'Ver mapa global',
+    en: 'View global map',
+  },
+  'hero.alerts': {
+    es: 'Recibir alertas gratis',
+    en: 'Get free alerts',
+  },
+
   // Trust band
   'trust.title': {
     es: 'Cómo funciona Viaje Inteligencia',

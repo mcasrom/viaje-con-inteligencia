@@ -491,20 +491,83 @@ function SidePanel() {
 }
 
 // ============================================================
-// SINGLE CTA BUTTON — visible during loading & after map loads
+// HERO OVERLAY — search + CTA on top of map
 // ============================================================
-function PrimaryCTA() {
+function HeroOverlay() {
   const { t } = useI18n();
+  const [query, setQuery] = useState('');
+  const [results, setResults] = useState<typeof paisesData[keyof typeof paisesData][]>([]);
+
+  useEffect(() => {
+    if (query.length < 2) { setResults([]); return; }
+    const q = query.toLowerCase();
+    setResults(
+      Object.values(paisesData)
+        .filter(p => p.nombre.toLowerCase().includes(q) || p.codigo.includes(q))
+        .slice(0, 6)
+    );
+  }, [query]);
+
   return (
-    <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-[1020]">
-      <Link
-        href="/decidir"
-        className="flex items-center gap-2 sm:gap-3 px-5 sm:px-6 py-2.5 sm:py-3 bg-gradient-to-r from-purple-600 to-violet-600 text-white rounded-xl sm:rounded-2xl hover:opacity-90 transition-all shadow-2xl shadow-purple-500/25 text-sm sm:text-base font-semibold group"
-      >
-        <Sparkles className="w-5 h-5 group-hover:scale-110 transition-transform" />
-        {t('cta.decide')}
-        <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-      </Link>
+    <div className="absolute inset-0 z-[1015] flex flex-col items-center justify-center pointer-events-none">
+      <div className="w-full max-w-2xl mx-auto px-4 pointer-events-auto">
+        <h1 className="text-3xl md:text-5xl font-bold text-white text-center mb-2 drop-shadow-lg leading-tight">
+          {t('hero.title')}
+        </h1>
+        <p className="text-slate-300 text-base md:text-lg text-center mb-6 drop-shadow-md">
+          {t('hero.subtitle')}
+        </p>
+
+        <div className="relative max-w-lg mx-auto">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+          <input
+            type="text"
+            placeholder={t('hero.searchPlaceholder')}
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            className="w-full bg-slate-900/90 backdrop-blur-md border border-slate-600 rounded-2xl pl-12 pr-5 py-4 text-base text-white placeholder-slate-400 focus:border-blue-500 focus:outline-none shadow-2xl"
+            autoComplete="off"
+          />
+
+          {results.length > 0 && (
+            <div className="absolute top-full mt-2 left-0 right-0 bg-slate-900/95 backdrop-blur-md rounded-xl border border-slate-700/50 shadow-2xl overflow-hidden">
+              {results.map(p => (
+                <Link
+                  key={p.codigo}
+                  href={`/pais/${p.codigo}`}
+                  className="flex items-center gap-3 px-4 py-3 text-slate-200 hover:bg-slate-800 transition-colors border-b border-slate-700/30 last:border-0"
+                >
+                  <span className="text-lg">{p.bandera}</span>
+                  <span className="text-sm font-medium">{p.nombre}</span>
+                  <span className={`ml-auto w-2.5 h-2.5 rounded-full ${
+                    p.nivelRiesgo === 'sin-riesgo' ? 'bg-green-500' :
+                    p.nivelRiesgo === 'bajo' ? 'bg-emerald-500' :
+                    p.nivelRiesgo === 'medio' ? 'bg-orange-500' :
+                    p.nivelRiesgo === 'alto' ? 'bg-red-500' : 'bg-red-700'
+                  }`} />
+                </Link>
+              ))}
+            </div>
+          )}
+        </div>
+
+        <div className="flex items-center justify-center gap-3 mt-5">
+          <Link
+            href="/paises"
+            className="inline-flex items-center gap-2 px-5 py-2.5 bg-white/10 backdrop-blur-sm text-white rounded-xl hover:bg-white/20 transition-all text-sm font-medium border border-white/10"
+          >
+            <Globe className="w-4 h-4" />
+            {t('hero.viewMap')}
+          </Link>
+          <Link
+            href="/alertas"
+            className="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 text-white rounded-xl hover:bg-blue-500 transition-all text-sm font-medium shadow-lg shadow-blue-600/30"
+          >
+            <Bell className="w-4 h-4" />
+            {t('hero.alerts')}
+          </Link>
+        </div>
+      </div>
     </div>
   );
 }
@@ -526,7 +589,7 @@ export default function HomeClient() {
 
       <div className="relative w-full h-[70vh] pt-24 pb-24">
         <MapaInteractivo fullScreen />
-        <PrimaryCTA />
+        <HeroOverlay />
       </div>
 
       {/* Trust Band — Cómo funciona */}
