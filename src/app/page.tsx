@@ -589,6 +589,7 @@ export default function HomeClient() {
 
       <div className="relative w-full h-[70vh] pt-24 pb-24">
         <MapaInteractivo fullScreen />
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/50 to-slate-950/30 z-[1010]" />
         <HeroOverlay />
       </div>
 
