@@ -900,7 +900,7 @@ async function runCronAsync() {
   // Phase 1: Independent tasks (run in parallel)
   // All tasks execute concurrently with individual timeouts.
   // Phase 1 also has a global timeout to prevent total hang.
-  const PHASE1_TIMEOUT_MS = 300000;
+  const PHASE1_TIMEOUT_MS = 360000;
 
   const settledPromises = Promise.allSettled([
     withTimeout(() => runMaecScrape(), 90000, '1/8 MAEC scrape'),
@@ -908,7 +908,7 @@ async function runCronAsync() {
     withTimeout(() => runAirspaceOsint(), 30000, '4/8 Airspace OSINT'),
     withTimeout(() => runOilPrice(), 15000, '6/8 Oil price'),
     withTimeout(() => runModelTraining(), 5000, '6/8 Model training'),
-    withTimeout(() => runEventsFetch(), 180000, 'Events fetch'),
+    withTimeout(() => runEventsFetch(), 300000, 'Events fetch'),
   ]);
 
   const phase1Result = await Promise.race([
@@ -944,7 +944,7 @@ async function runCronAsync() {
 
   // Phase 3: News sentiment (most variable, isolated timeout)
   log.info('5/8 News sentiment...');
-  results.news_sentiment = await withTimeout(() => runNewsSentiment(), 90000, '5/8 News sentiment');
+  results.news_sentiment = await withTimeout(() => runNewsSentiment(), 180000, '5/8 News sentiment');
 
   // Phase 3b: Incident detection (clusters signals → actionable incidents)
   log.info('5b/8 Incident detection...');
