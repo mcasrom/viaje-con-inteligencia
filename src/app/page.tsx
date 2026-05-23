@@ -514,12 +514,12 @@ function HeroOverlay() {
   }, [query]);
 
   return (
-    <div className="absolute inset-0 z-[1015] flex flex-col items-center justify-center pointer-events-none">
-      <div className="w-full max-w-2xl mx-auto px-4 pointer-events-auto">
-        <h1 className="text-3xl md:text-5xl font-bold text-white text-center mb-2 drop-shadow-lg leading-tight">
+    <div className="flex flex-col items-center justify-center py-20 px-4">
+      <div className="w-full max-w-2xl mx-auto">
+        <h1 className="text-3xl md:text-5xl font-bold text-white text-center mb-2 leading-tight">
           {t('hero.title')}
         </h1>
-        <p className="text-slate-300 text-base md:text-lg text-center mb-6 drop-shadow-md">
+        <p className="text-slate-300 text-base md:text-lg text-center mb-6">
           {t('hero.subtitle')}
         </p>
 
@@ -559,7 +559,7 @@ function HeroOverlay() {
         {results.length === 0 && (
           <div className="flex items-center justify-center gap-3 mt-5">
             <Link
-            href="/mapa"
+            href="#mapa-global"
             className="inline-flex items-center gap-2 px-5 py-2.5 bg-white/10 backdrop-blur-sm text-white rounded-xl hover:bg-white/20 transition-all text-sm font-medium border border-white/10"
           >
             <Globe className="w-4 h-4" />
@@ -580,7 +580,7 @@ function HeroOverlay() {
 }
 
 // ============================================================
-// HOME (Mapa 70vh dominante + contenido debajo)
+// HOME (Hero + mapa separados)
 // ============================================================
 export default function HomeClient() {
   const { t } = useI18n();
@@ -594,10 +594,14 @@ export default function HomeClient() {
       <TopBar />
       <SidePanel />
 
-      <div className="relative w-full h-[70vh] pt-24 pb-24">
-        <MapaInteractivo fullScreen />
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-950/40 via-slate-950/20 to-transparent z-[1010]" />
+      {/* Hero section */}
+      <div className="w-full bg-slate-950">
         <HeroOverlay />
+      </div>
+
+      {/* Map section */}
+      <div id="mapa-global" className="relative w-full h-[70vh]">
+        <MapaInteractivo fullScreen />
       </div>
 
       {/* Trust Band — Cómo funciona */}
