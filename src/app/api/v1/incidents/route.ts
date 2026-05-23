@@ -22,7 +22,7 @@ export async function GET(request: NextRequest) {
     .from('incidents')
     .select(`
       id, title, description, type, severity, country_code,
-      coordinates, url, source, created_at, tone_score
+      url, source, created_at, tone_score
     `)
     .gte('created_at', new Date(Date.now() - days * 86400000).toISOString())
     .order('created_at', { ascending: false })
