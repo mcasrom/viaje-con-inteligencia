@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { X, Mail, Loader2, Check, Download } from 'lucide-react';
 
 const DISMISS_KEY = 'newsletter-popup-dismissed';
@@ -42,8 +43,8 @@ export default function NewsletterPopup() {
       if (res.ok) {
         setStatus('success');
         setTimeout(() => {
-          window.open('/reporte-riesgo', '_blank');
-        }, 500);
+          window.location.href = '/reporte-riesgo';
+        }, 800);
       } else {
         setStatus('error');
         setMessage(data.error || 'Error al procesar');
@@ -68,8 +69,14 @@ export default function NewsletterPopup() {
             <div className="w-12 h-12 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-3">
               <Check className="w-6 h-6 text-green-400" />
             </div>
-            <p className="text-white font-semibold text-sm">Reporte enviado</p>
-            <p className="text-slate-400 text-xs mt-1">Revisa tu email y tu bandeja de entrada</p>
+            <p className="text-white font-semibold text-sm">¡Suscrito!</p>
+            <p className="text-slate-400 text-xs mt-1">Te llegará cada lunes a tu email</p>
+            <Link
+              href="/reporte-riesgo"
+              className="inline-flex items-center gap-2 mt-3 px-4 py-2 bg-amber-600 hover:bg-amber-500 text-white rounded-lg text-xs font-medium transition-colors"
+            >
+              <Download className="w-3.5 h-3.5" /> Ver reporte ahora
+            </Link>
           </div>
         ) : (
           <>
