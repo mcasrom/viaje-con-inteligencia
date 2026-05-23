@@ -70,9 +70,9 @@ export async function notifySubscribers(
   const { data: recentIncidents } = await supabaseAdmin
     .from('incidents')
     .select('*')
-    .gte('created_at', recentWindow.toISOString())
+    .gte('detected_at', recentWindow.toISOString())
     .eq('is_active', true)
-    .order('created_at', { ascending: false });
+    .order('detected_at', { ascending: false });
 
   if (!recentIncidents || recentIncidents.length === 0) {
     log.info('No recent incidents to notify about');

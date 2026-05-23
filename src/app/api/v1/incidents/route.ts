@@ -22,10 +22,10 @@ export async function GET(request: NextRequest) {
     .from('incidents')
     .select(`
       id, title, description, type, severity, country_code,
-      source, created_at, tone_score
+      source, detected_at, tone_score
     `)
-    .gte('created_at', new Date(Date.now() - days * 86400000).toISOString())
-    .order('created_at', { ascending: false })
+    .gte('detected_at', new Date(Date.now() - days * 86400000).toISOString())
+    .order('detected_at', { ascending: false })
     .limit(limit);
 
   if (country) query = query.eq('country_code', country);
