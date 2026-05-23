@@ -55,6 +55,30 @@ export async function publishToMastodon(
   }
 }
 
+export async function postToMastodon(status: string): Promise<MastodonPostResult> {
+  if (!ACCESS_TOKEN) {
+    return { success: false, error: 'Mastodon token not configured' };
+  }
+  try {
+    const response = await fetch(`https://${MASTODON_URL}/api/v1/statuses`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${ACCESS_TOKEN}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ status, visibility: 'public' }),
+    });
+    if (!response.ok) {
+      const error = await response.text();
+      return { success: false, error };
+    }
+    const data = await response.json();
+    return { success: true, id: data.id, url: data.url };
+  } catch (error) {
+    return { success: false, error: String(error) };
+  }
+}
+
 export async function publishRouteToMastodon(
   routeName: string,
   description: string,

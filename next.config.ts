@@ -33,16 +33,6 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       {
-        source: '/blog/Como-encontrar-vuelos-baratos',
-        destination: '/blog/como-encontrar-vuelos-baratos',
-        permanent: true,
-      },
-      {
-        source: '/blog/Que-es-viaje-inteligencia',
-        destination: '/blog/que-es-viaje-inteligencia',
-        permanent: true,
-      },
-      {
         source: '/viaje-coste/:codigo',
         destination: '/coste/:codigo',
         permanent: true,

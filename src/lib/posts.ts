@@ -69,9 +69,15 @@ export function getPostBySlug(slug: string): Post | null {
       data = result.data;
       content = result.content;
     } else {
-      const fileName = getSlugFromSlug(slug);
-      if (!fileName) return null;
-      fullPath = path.join(postsDirectory, `${fileName}.md`);
+      const fileNames = fs.readdirSync(postsDirectory);
+      const match = fileNames.find(f => f.toLowerCase() === `${slug}.md`.toLowerCase());
+      if (match) {
+        fullPath = path.join(postsDirectory, match);
+      } else {
+        const fileName = getSlugFromSlug(slug);
+        if (!fileName) return null;
+        fullPath = path.join(postsDirectory, `${fileName}.md`);
+      }
       const fc = fs.readFileSync(fullPath, 'utf8');
       const result = matter(fc);
       data = result.data;

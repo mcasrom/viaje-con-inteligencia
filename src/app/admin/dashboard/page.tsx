@@ -13,6 +13,10 @@ export default function AdminDashboard() {
   const [actionLoading, setActionLoading] = useState<string | null>(null);
   const [trackingStats, setTrackingStats] = useState<any[] | null>(null);
   const [trackingLoading, setTrackingLoading] = useState(false);
+  const [socialText, setSocialText] = useState('');
+  const [socialPosting, setSocialPosting] = useState(false);
+  const [socialResult, setSocialResult] = useState<any>(null);
+  const [socialError, setSocialError] = useState('');
 
   useEffect(() => {
     fetchStats();
@@ -37,6 +41,31 @@ export default function AdminDashboard() {
       setActionResult({ action, error: e.message });
     } finally {
       setActionLoading(null);
+    }
+  };
+
+  const postSocial = async () => {
+    if (!socialText.trim()) return;
+    setSocialPosting(true);
+    setSocialResult(null);
+    setSocialError('');
+    try {
+      const res = await fetch('/api/admin/social-post', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: socialText.trim() }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setSocialError(data.error || 'Error al publicar');
+      } else {
+        setSocialResult(data.results);
+        setSocialText('');
+      }
+    } catch (err) {
+      setSocialError(String(err));
+    } finally {
+      setSocialPosting(false);
     }
   };
 
@@ -862,6 +891,45 @@ export default function AdminDashboard() {
               ))}
             </div>
           )}
+        </section>
+
+        {/* Post rápido a redes */}
+        <section className="bg-slate-800 rounded-2xl border border-slate-700 p-6">
+          <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+            <Send className="w-5 h-5 text-green-400" />
+            Post Rápido
+          </h2>
+          <p className="text-slate-400 text-sm mb-4">Escribe y publica al instante en Telegram, Mastodon y Bluesky.</p>
+          <textarea
+            value={socialText}
+            onChange={(e) => setSocialText(e.target.value)}
+            placeholder="Escribe tu mensaje..."
+            rows={4}
+            className="w-full bg-slate-700 text-white rounded-xl p-4 text-sm border border-slate-600 focus:border-green-500 focus:outline-none resize-none mb-4"
+          />
+          <div className="flex items-center gap-3">
+            <button
+              onClick={postSocial}
+              disabled={socialPosting || !socialText.trim()}
+              className="flex items-center gap-2 px-6 py-3 bg-green-600 hover:bg-green-700 disabled:opacity-50 rounded-xl transition-colors text-sm font-medium"
+            >
+              {socialPosting ? 'Publicando...' : 'Publicar en redes'}
+            </button>
+            {socialResult && (
+              <div className="flex gap-3 text-xs">
+                <span className={socialResult.mastodon?.success ? 'text-green-400' : 'text-red-400'}>
+                  {socialResult.mastodon?.success ? '✅ Mastodon' : '❌ Mastodon'}
+                </span>
+                <span className={socialResult.bluesky?.success ? 'text-green-400' : 'text-red-400'}>
+                  {socialResult.bluesky?.success ? '✅ Bluesky' : '❌ Bluesky'}
+                </span>
+                <span className={socialResult.telegram?.success ? 'text-green-400' : 'text-red-400'}>
+                  {socialResult.telegram?.success ? '✅ Telegram' : '❌ Telegram'}
+                </span>
+              </div>
+            )}
+          </div>
+          {socialError && <p className="text-red-400 text-xs mt-2">{socialError}</p>}
         </section>
 
         {/* Action Result */}

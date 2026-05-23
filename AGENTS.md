@@ -10,8 +10,11 @@
   - Bluesky: @viajeinteligencia.bsky.social ✅
   - Mastodon: @viajeinteligencia@mastodon.social ([post](https://mastodon.social/@viajeinteligencia/116615944949530246)) ✅
   - Telegram: @ViajeConInteligenciaBot ✅
-  - X: pendiente publicación manual
-- **Admin calendar**: Nota registrada en editor_notes (Mayo 2026).
+  - X: post generado pendiente de publicación manual
+- **Fix API register**: tabla `api_keys` no existía en Supabase → SQL ejecutado. Formulario API Key funcionando.
+- **Canonical tags**: 13 pages + ecosistema con canonical propio (antes heredaban homepage).
+- **Server-render país SEO**: Contenido clave (H1, riesgo, requisitos, contactos) movido de client component a server component para que Googlebot lo vea como HTML, no RSC.
+- **robots.ts**: Revertido a estado original (no tocado).
 
 ## Today (21 May 2026) — Sprint Riesgo Sanitario + Mapa + SEO Técnico
 
@@ -468,6 +471,29 @@ Para probar authenticated endpoints se necesita sesión válida (vía browser).
 5. **Caja de autor**: Sección "Sobre el proyecto" en homepage con bio de Miguel Castillo, stack, enlaces
 6. **Footer**: Enlace a Centro de Transparencia añadido
 7. **SOS fix**: Proxy server-side `/api/geocode` elimina dependencia directa de Nominatim desde el cliente (CORS/adblockers)
+
+## Sprint 22 May 2026 — SEO Técnico + Contenido visible para Googlebot
+
+### Logros del día
+- **Fix API register**: tabla `api_keys` creada en Supabase. Error "Could not find table api_keys in schema cache" solucionado.
+- **Server-render país SEO**: Contenido de páginas país (H1, riesgo, requisitos, contacto, datos clave) movido de client component a server component. Googlebot ahora ve texto HTML real, no RSC payload.
+- **Canonical tags**: 14 pages añadidas con canonical propio (chat, coste/seguros, dossier, infografias, pulso-global, pwa, reclamaciones, rutas, stats, test-leaflet, viaje-compartido, viajes/destacados, ecosistema). 11 client components omitidos.
+- **robots.ts**: Revertido a estado original (el usuario lo gestiona).
+- **X post**: Generado para publicación manual.
+
+## Sprint 23 May 2026 — Esperar indexación + Contenido visible
+
+### Plan
+1. **Monitorear Google Search Console** tras deploy del server-render país (cambio más impactante).
+2. **Verificar que Googlebot ve texto real** en páginas país: `site:viajeinteligencia.com/pais/es`
+3. **Publicar X post** manualmente con el texto generado.
+4. **Si Google no indexa en 3-5 días**: Revisar Google Search Console para manual actions / sandboxing.
+5. **Páginas cliente sin canonical** (11 client components): evaluar si mover canonical a layout padre o rediseñar como server components.
+
+### Pendientes medio plazo
+- EN pillar pages (`/en/osint-para-viajeros`, `/en/geopolitica-y-viajes`)
+- Reddit/Facebook outreach drafts
+- Monitorear Googlebot crawl rate (actual: ~17 hits/día)
 
 ## Sprint 2 ✅ — Madurez de plataforma (completado 21 May 2026)
 1. **Eliminar apariencia experimental** ✅ — Sin rastro de "beta/experimental/prototipo" en páginas públicas. "clustering" 3 menciones como término técnico en `/osint-para-viajeros` (aceptable).
