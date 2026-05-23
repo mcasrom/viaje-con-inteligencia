@@ -3,6 +3,21 @@ import { NextResponse } from 'next/server';
 const FLIGHTLABS_API_KEY = process.env.FLIGHTLABS_API_KEY || '';
 const FLIGHTSTATS_API_KEY = process.env.FLIGHTSTATS_API_KEY || '';
 
+// In-memory cache with TTL
+const apiCache = new Map<string, { data: any; expiry: number }>();
+const CACHE_TTL_MS = 60 * 60 * 1000; // 1 hour
+
+function getCached<T>(key: string): T | null {
+  const entry = apiCache.get(key);
+  if (entry && entry.expiry > Date.now()) return entry.data as T;
+  apiCache.delete(key);
+  return null;
+}
+
+function setCache(key: string, data: any): void {
+  apiCache.set(key, { data, expiry: Date.now() + CACHE_TTL_MS });
+}
+
 const AIRPORT_NAMES_ES: Record<string, string> = {
   'MAD': 'Adolfo Suarez Madrid-Barajas',
   'BCN': 'Barcelona-El Prat',
@@ -115,7 +130,11 @@ interface DelayData {
 
 async function fetchAeroDataBox(airportCode: string): Promise<DelayData | null> {
   if (!FLIGHTLABS_API_KEY) return null;
-  
+
+  const cacheKey = `aerodatabox:${airportCode}`;
+  const cached = getCached<DelayData>(cacheKey);
+  if (cached) return cached;
+
   try {
     const response = await fetch(
       `https://aerodatabox.p.rapidapi.com/airports/${airportCode}/onPerformance?startDate=${new Date().toISOString().split('T')[0]}&endDate=${new Date().toISOString().split('T')[0]}`,
@@ -133,7 +152,7 @@ async function fetchAeroDataBox(airportCode: string): Promise<DelayData | null> 
       const onTimePercent = data.onTimePerformance?.percent || 85;
       const avgDelay = data.onTimePerformance?.delayAvg || 0;
       
-      return {
+      const result: DelayData = {
         code: airportCode,
         iata: airportCode,
         name: getAirportName(airportCode),
@@ -143,6 +162,8 @@ async function fetchAeroDataBox(airportCode: string): Promise<DelayData | null> 
         lastUpdated: new Date().toISOString(),
         source: 'AeroDataBox',
       };
+      setCache(cacheKey, result);
+      return result;
     }
   } catch (e) {
     console.log('[AeroDataBox] Error fetching data:', e);
