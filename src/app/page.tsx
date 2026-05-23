@@ -551,8 +551,9 @@ function HeroOverlay() {
           )}
         </div>
 
-        <div className="flex items-center justify-center gap-3 mt-5">
-          <Link
+        {results.length === 0 && (
+          <div className="flex items-center justify-center gap-3 mt-5">
+            <Link
             href="/paises"
             className="inline-flex items-center gap-2 px-5 py-2.5 bg-white/10 backdrop-blur-sm text-white rounded-xl hover:bg-white/20 transition-all text-sm font-medium border border-white/10"
           >
@@ -567,6 +568,7 @@ function HeroOverlay() {
             {t('hero.alerts')}
           </Link>
         </div>
+        )}
       </div>
     </div>
   );
