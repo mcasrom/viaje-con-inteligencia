@@ -890,7 +890,7 @@ async function runCronAsync() {
   // Phase 1: Independent tasks (run in parallel)
   // All tasks execute concurrently with individual timeouts.
   // Phase 1 also has a global timeout to prevent total hang.
-  const PHASE1_TIMEOUT_MS = 240000;
+  const PHASE1_TIMEOUT_MS = 300000;
 
   const settledPromises = Promise.allSettled([
     withTimeout(() => runMaecScrape(), 90000, '1/8 MAEC scrape'),
