@@ -65,7 +65,28 @@ export async function getWeeklyRiskChanges(): Promise<{
 
   changes.sort((a, b) => b.severity - a.severity);
 
-  const top10 = changes.slice(0, 10);
+  let top10 = changes.slice(0, 10);
+
+  // Fallback: if no changes, show current highest-risk countries
+  if (top10.length === 0) {
+    const highRisk = Object.entries(paisesData as Record<string, any>)
+      .filter(([, p]) => ['alto', 'muy-alto'].includes(p.nivelRiesgo))
+      .slice(0, 10)
+      .map(([code, p]) => ({
+        country_code: code.toUpperCase(),
+        country_name: p.nombre || code.toUpperCase(),
+        bandera: p.bandera || '',
+        old_risk: p.nivelRiesgo,
+        new_risk: p.nivelRiesgo,
+        old_label: riesgoLabels[p.nivelRiesgo] || p.nivelRiesgo,
+        new_label: riesgoLabels[p.nivelRiesgo] || p.nivelRiesgo,
+        direction: 'up' as const,
+        severity: p.nivelRiesgo === 'muy-alto' ? 2 : 1,
+        created_at: new Date().toISOString(),
+        incidents: [],
+      }));
+    top10 = highRisk;
+  }
 
   for (const change of top10) {
     const { data: incs } = await supabaseAdmin
