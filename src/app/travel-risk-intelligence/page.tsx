@@ -154,7 +154,7 @@ export default function TravelRiskIntelligencePage() {
             <ArrowLeft className="w-5 h-5" />
           </Link>
           <Globe className="w-5 h-5 text-blue-400" />
-          <h1 className="text-xl font-bold text-white">Travel Risk Intelligence</h1>
+          <span className="text-xl font-bold text-white">Travel Risk Intelligence</span>
         </div>
       </header>
 

@@ -20,6 +20,7 @@ const MapaInteractivo = dynamic(
 export default function MapaPage() {
   return (
     <div className="h-screen w-full relative bg-slate-900">
+      <h1 className="sr-only">Mapa de Riesgo Global</h1>
       <div className="absolute top-4 left-4 z-[1000]">
         <Link
           href="/"

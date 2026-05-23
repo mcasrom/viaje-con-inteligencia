@@ -159,7 +159,7 @@ export default function OsintParaViajerosPage() {
             <ArrowLeft className="w-5 h-5" />
           </Link>
           <Radio className="w-5 h-5 text-emerald-400" />
-          <h1 className="text-xl font-bold text-white">OSINT para Viajeros</h1>
+          <span className="text-xl font-bold text-white">OSINT para Viajeros</span>
         </div>
       </header>
 

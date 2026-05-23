@@ -29,7 +29,7 @@ export default function FreeTrialPage() {
             <Link href="/" className="flex items-center gap-3">
               <span className="text-3xl">🌍</span>
               <div>
-                <h1 className="text-xl font-bold text-white">Viaje con Inteligencia</h1>
+                <span className="text-xl font-bold text-white">Viaje con Inteligencia</span>
                 <p className="text-purple-400 text-sm">Prueba Premium</p>
               </div>
             </Link>
@@ -47,9 +47,9 @@ export default function FreeTrialPage() {
           <span className="inline-block px-4 py-1 bg-green-500/20 text-green-300 rounded-full text-sm font-medium mb-4">
             Prueba Premium Gratis
           </span>
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
+          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
             7 días Premium <span className="text-yellow-400">gratis</span>
-          </h2>
+          </h1>
           <p className="text-xl text-slate-400 max-w-2xl mx-auto">
             Desbloquea todas las funciones Premium y transforma la manera de planificar tus viajes.
           </p>

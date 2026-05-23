@@ -140,7 +140,7 @@ export default function GeopoliticaYViajesPage() {
             <ArrowLeft className="w-5 h-5" />
           </Link>
           <Globe className="w-5 h-5 text-rose-400" />
-          <h1 className="text-xl font-bold text-white">Geopolítica y Viajes</h1>
+          <span className="text-xl font-bold text-white">Geopolítica y Viajes</span>
         </div>
       </header>
 

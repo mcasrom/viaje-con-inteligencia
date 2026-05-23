@@ -165,7 +165,7 @@ export default function DiagnosticoPage() {
             <Link href="/" className="flex items-center gap-3">
               <span className="text-3xl">🌍</span>
               <div>
-                <h1 className="text-xl font-bold text-white">Viaje con Inteligencia</h1>
+                <span className="text-xl font-bold text-white">Viaje con Inteligencia</span>
                 <p className="text-blue-400 text-sm">Diagnóstico del sistema</p>
               </div>
             </Link>
@@ -178,10 +178,10 @@ export default function DiagnosticoPage() {
 
       <main className="max-w-4xl mx-auto px-6 py-8">
         <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold text-white mb-2">
+          <h1 className="text-3xl font-bold text-white mb-2">
             <Shield className="w-8 h-8 inline mr-2 text-blue-400" />
             Diagnóstico del Sistema
-          </h2>
+          </h1>
           <p className="text-slate-400">
             Verifica el estado de tu suscripción y configuración
           </p>
