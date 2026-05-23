@@ -517,6 +517,15 @@ async function runDailyDigest(results: any): Promise<any> {
     const { count: totalSubs } = await supabaseAdmin.from('newsletter_subscribers').select('*', { count: 'exact', head: true });
     const { count: alertsToday } = await supabaseAdmin.from('risk_alerts').select('*', { count: 'exact', head: true }).gte('created_at', new Date().toISOString().split('T')[0]);
 
+    // Health check rápido
+    let health = '✅ ok';
+    try {
+      for (const table of ['incidents', 'countries', 'api_keys', 'newsletter_subscribers']) {
+        const { error } = await supabaseAdmin.from(table).select('id', { count: 'exact', head: true }).limit(1);
+        if (error) { health = `⚠️ ${table}: ${error.message}`; break; }
+      }
+    } catch { health = '⚠️ health check failed'; }
+
     const summary = `📊 Daily Digest - Viaje con Inteligencia
 🕐 ${new Date().toISOString().split('T')[0]}
 
@@ -530,6 +539,7 @@ ${Object.entries(results).filter(([k, v]) => v && (v as any).status !== 'skipped
 👤 USUARIOS: ${totalUsers || 0}
 📧 NEWSLETTER: ${totalSubs || 0}
 🔔 ALERTAS HOY: ${alertsToday || 0}
+🩺 HEALTH: ${health}
 `;
 
     // Telegram
