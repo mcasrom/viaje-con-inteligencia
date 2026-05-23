@@ -67,24 +67,45 @@ export async function getWeeklyRiskChanges(): Promise<{
 
   let top10 = changes.slice(0, 10);
 
-  // Fallback: if no changes, show current highest-risk countries
+  // Fallback: if no changes, show countries with active incidents this week
   if (top10.length === 0) {
-    const highRisk = Object.entries(paisesData as Record<string, any>)
-      .filter(([, p]) => ['alto', 'muy-alto'].includes(p.nivelRiesgo))
+    const weekAgoIncidents = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+    const { data: activeIncidents } = await supabaseAdmin
+      .from('incidents')
+      .select('country_code, title, type, severity')
+      .gte('detected_at', weekAgoIncidents)
+      .not('country_code', 'is', null)
+      .order('severity', { ascending: false })
+      .limit(50);
+
+    const countriesWithIncidents = new Map<string, any[]>();
+    for (const inc of activeIncidents || []) {
+      const cc = inc.country_code?.toLowerCase();
+      if (!cc) continue;
+      if (!countriesWithIncidents.has(cc)) countriesWithIncidents.set(cc, []);
+      if (countriesWithIncidents.get(cc)!.length < 3) {
+        countriesWithIncidents.get(cc)!.push({ title: inc.title, type: inc.type, severity: inc.severity });
+      }
+    }
+
+    const highRisk = Array.from(countriesWithIncidents.entries())
       .slice(0, 10)
-      .map(([code, p]) => ({
-        country_code: code.toUpperCase(),
-        country_name: p.nombre || code.toUpperCase(),
-        bandera: p.bandera || '',
-        old_risk: p.nivelRiesgo,
-        new_risk: p.nivelRiesgo,
-        old_label: riesgoLabels[p.nivelRiesgo] || p.nivelRiesgo,
-        new_label: riesgoLabels[p.nivelRiesgo] || p.nivelRiesgo,
-        direction: 'up' as const,
-        severity: p.nivelRiesgo === 'muy-alto' ? 2 : 1,
-        created_at: new Date().toISOString(),
-        incidents: [],
-      }));
+      .map(([cc, incs]) => {
+        const pais = (paisesData as any)[cc] || {};
+        return {
+          country_code: cc.toUpperCase(),
+          country_name: pais.nombre || cc.toUpperCase(),
+          bandera: pais.bandera || '',
+          old_risk: pais.nivelRiesgo || 'medio',
+          new_risk: pais.nivelRiesgo || 'medio',
+          old_label: riesgoLabels[pais.nivelRiesgo] || 'Medio',
+          new_label: riesgoLabels[pais.nivelRiesgo] || 'Medio',
+          direction: 'up' as const,
+          severity: incs.some(i => i.severity === 'critical') ? 2 : 1,
+          created_at: new Date().toISOString(),
+          incidents: incs,
+        };
+      });
     top10 = highRisk;
   }
 
