@@ -42,7 +42,7 @@ export default function NewsletterPopup() {
       if (res.ok) {
         setStatus('success');
         setTimeout(() => {
-          window.open('/api/checklist-pdf?' + new URLSearchParams({ email }), '_blank');
+          window.open('/reporte-riesgo', '_blank');
         }, 500);
       } else {
         setStatus('error');
@@ -68,18 +68,18 @@ export default function NewsletterPopup() {
             <div className="w-12 h-12 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-3">
               <Check className="w-6 h-6 text-green-400" />
             </div>
-            <p className="text-white font-semibold text-sm">Checklist enviada</p>
-            <p className="text-slate-400 text-xs mt-1">Revisa tu bandeja de entrada</p>
+            <p className="text-white font-semibold text-sm">Reporte enviado</p>
+            <p className="text-slate-400 text-xs mt-1">Revisa tu email y tu bandeja de entrada</p>
           </div>
         ) : (
           <>
             <div className="flex items-center gap-3 mb-3">
-              <div className="w-10 h-10 bg-purple-500/20 rounded-xl flex items-center justify-center">
-                <Download className="w-5 h-5 text-purple-400" />
+              <div className="w-10 h-10 bg-amber-500/20 rounded-xl flex items-center justify-center">
+                <Download className="w-5 h-5 text-amber-400" />
               </div>
               <div>
-                <p className="text-white font-semibold text-sm">Checklist de Viaje</p>
-                <p className="text-slate-400 text-[11px]">80+ items en PDF gratis</p>
+                <p className="text-white font-semibold text-sm">Reporte Semanal de Riesgo</p>
+                <p className="text-slate-400 text-[11px]">Top 10 países con cambios de riesgo</p>
               </div>
             </div>
 
@@ -90,19 +90,19 @@ export default function NewsletterPopup() {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="tu@email.com"
                 required
-                className="w-full bg-slate-700 border border-slate-600 rounded-lg px-3 py-2.5 text-sm text-white placeholder-slate-500 focus:border-purple-500 focus:outline-none"
+                className="w-full bg-slate-700 border border-slate-600 rounded-lg px-3 py-2.5 text-sm text-white placeholder-slate-500 focus:border-amber-500 focus:outline-none"
               />
               <button
                 type="submit"
                 disabled={status === 'loading'}
-                className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-purple-600 to-violet-600 text-white rounded-lg px-4 py-2.5 text-sm font-medium hover:opacity-90 transition-all disabled:opacity-50"
+                className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-amber-600 to-orange-600 text-white rounded-lg px-4 py-2.5 text-sm font-medium hover:opacity-90 transition-all disabled:opacity-50"
               >
                 {status === 'loading' ? (
                   <Loader2 className="w-4 h-4 animate-spin" />
                 ) : (
                   <>
                     <Mail className="w-4 h-4" />
-                    Descargar gratis
+                    Recibir reporte gratis
                   </>
                 )}
               </button>
