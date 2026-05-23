@@ -5,6 +5,7 @@ import { Resend } from 'resend';
 import { createLogger } from '@/lib/logger';
 import { apiError } from '@/lib/api-schemas';
 import { TOTAL_PAISES } from '@/lib/constants';
+import { getWeeklyRiskChanges } from '@/lib/weekly-risk-report';
 
 const log = createLogger('Newsletter');
 
@@ -191,6 +192,95 @@ async function sendWelcomeEmail(email: string, name: string) {
   });
 }
 
+async function sendRiskReportEmail(email: string, name: string) {
+  if (!resend) return;
+
+  try {
+    const report = await getWeeklyRiskChanges();
+    if (!report.topChanges.length) return;
+
+    const greeting = name ? `Hola ${name},` : 'Hola,';
+
+    const countryRows = report.topChanges.map((c, i) => `
+      <tr>
+        <td style="padding:10px 12px;border-bottom:1px solid #e2e8f0;font-size:13px;color:#334155;">${i + 1}</td>
+        <td style="padding:10px 12px;border-bottom:1px solid #e2e8f0;font-size:14px;color:#0f172a;font-weight:600;">${c.bandera || '🌍'} ${c.country_name}</td>
+        <td style="padding:10px 12px;border-bottom:1px solid #e2e8f0;font-size:13px;color:#64748b;">${c.old_label}</td>
+        <td style="padding:10px 12px;border-bottom:1px solid #e2e8f0;font-size:13px;color:#64748b;">${c.direction === 'up' ? '⬆' : '⬇'} ${c.new_label}</td>
+      </tr>
+    `).join('');
+
+    await resend.emails.send({
+      from: 'Miguel Castillo <reporte@viajeinteligencia.com>',
+      to: email,
+      subject: `📊 Reporte Semanal de Riesgo — ${report.weekRange}`,
+      html: `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <style>:root{color-scheme:light;supported-color-schemes:light;}</style>
+</head>
+<body style="margin:0;padding:0;background:#f8fafc !important;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#0f172a !important;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f8fafc;padding:24px 0;">
+    <tr><td align="center">
+      <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;border-radius:12px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+        <tr><td style="background:#0f172a;padding:24px;">
+          <div style="font-size:12px;color:#60a5fa;font-weight:600;margin-bottom:4px;">Viaje con Inteligencia</div>
+          <h1 style="color:#ffffff;font-size:20px;margin:8px 0 4px;">Reporte Semanal de Riesgo</h1>
+          <p style="color:#94a3b8;font-size:13px;margin:0;">${report.weekRange}</p>
+        </td></tr>
+
+        ${report.summary ? `
+        <tr><td style="background:#fefce8;padding:20px 24px;border-bottom:1px solid #e2e8f0;">
+          <p style="font-size:14px;color:#92400e;line-height:1.6;margin:0;font-style:italic;">"${report.summary}"</p>
+        </td></tr>
+        ` : ''}
+
+        <tr><td style="background:#ffffff;padding:24px;">
+          <h2 style="font-size:16px;font-weight:700;color:#0f172a;margin:0 0 12px;">Top países con cambios de riesgo</h2>
+          <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;">
+            <thead>
+              <tr style="background:#f1f5f9;">
+                <th style="padding:10px 12px;text-align:left;font-size:12px;color:#64748b;font-weight:600;">#</th>
+                <th style="padding:10px 12px;text-align:left;font-size:12px;color:#64748b;font-weight:600;">País</th>
+                <th style="padding:10px 12px;text-align:left;font-size:12px;color:#64748b;font-weight:600;">Anterior</th>
+                <th style="padding:10px 12px;text-align:left;font-size:12px;color:#64748b;font-weight:600;">Actual</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${countryRows}
+            </tbody>
+          </table>
+        </td></tr>
+
+        <tr><td style="background:#ffffff;padding:0 24px 24px;text-align:center;">
+          <a href="https://www.viajeinteligencia.com/reporte-riesgo" style="display:inline-block;background:#3b82f6;color:#fff;padding:12px 32px;border-radius:10px;text-decoration:none;font-weight:600;font-size:14px;">
+            Ver reporte completo
+          </a>
+        </td></tr>
+
+        <tr><td style="background:#f1f5f9;padding:20px;text-align:center;border-top:1px solid #e2e8f0;">
+          <p style="color:#64748b;font-size:12px;margin:0 0 4px;">Recibes esto por activar tu suscripcion a Viaje con Inteligencia</p>
+          <p style="margin:0;">
+            <a href="https://www.viajeinteligencia.com" style="color:#3b82f6;text-decoration:none;font-size:12px;">Web</a>
+            <span style="color:#cbd5e1;margin:0 6px;">·</span>
+            <a href="https://www.viajeinteligencia.com/api/newsletter/subscribe?action=unsubscribe&email=${encodeURIComponent(email)}" style="color:#64748b;text-decoration:underline;font-size:12px;">Cancelar suscripcion</a>
+          </p>
+        </td></tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>
+      `,
+    });
+  } catch (err) {
+    log.warn('Error sending risk report email', err);
+  }
+}
+
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const DISPOSABLE_DOMAINS = new Set([
   'mailinator.com', 'guerrillamail.com', 'tempmail.com', 'tempmail.net',
@@ -290,6 +380,7 @@ export async function GET(request: NextRequest) {
         .eq('email', data.email);
 
       await sendWelcomeEmail(data.email, data.name || '');
+      await sendRiskReportEmail(data.email, data.name || '');
     }
 
     return NextResponse.redirect(new URL('/?newsletter=verified', request.url));

@@ -1,5 +1,9 @@
 import { supabaseAdmin, isSupabaseAdminConfigured } from './supabase-admin';
 import { getPaisesData } from '@/lib/paises-db';
+import { groqClient } from './groq-ai';
+import { createLogger } from '@/lib/logger';
+
+const log = createLogger('WeeklyRisk');
 
 const riesgoLabels: Record<string, string> = {
   'sin-riesgo': 'Bajo', 'bajo': 'Bajo', 'medio': 'Medio',
@@ -24,6 +28,7 @@ export async function getWeeklyRiskChanges(): Promise<{
   weekRange: string;
   totalChanges: number;
   topChanges: RiskChange[];
+  summary: string;
 }> {
   const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
   const paisesData = await getPaisesData();
@@ -123,5 +128,25 @@ export async function getWeeklyRiskChanges(): Promise<{
   const weekEnd = new Date();
   const weekRange = `${weekStart.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' })} - ${weekEnd.toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' })}`;
 
-  return { weekRange, totalChanges: changes.length, topChanges: top10 };
+  // Generate AI summary of the risk landscape
+  let summary = '';
+  try {
+    const topList = top10.map(c =>
+      `${c.country_name} (${c.new_label})${c.incidents.length ? ` — incidentes: ${c.incidents.map(i => i.title).join(', ')}` : ''}`
+    ).join('\n');
+    const totalWithChanges = changes.length;
+
+    const prompt = `Eres un analista de seguridad internacional especializado en viajes. Genera un resumen MUY CONCISO (máximo 3 frases, 60 palabras) del panorama de riesgo semanal para viajeros. Datos de la semana (${weekRange}):\n\nPaíses con cambios de riesgo MAEC: ${totalWithChanges}\n\nTop 10:\n${topList}\n\nResumen en español, tono objetivo e informativo, sin introducciones.`;
+    const completion = await groqClient.chat.completions.create({
+      model: 'llama-3.1-8b-instant',
+      messages: [{ role: 'user', content: prompt }],
+      max_tokens: 150,
+      temperature: 0.5,
+    });
+    summary = completion.choices?.[0]?.message?.content?.trim() || '';
+  } catch (err) {
+    log.warn('Error generating AI summary', err);
+  }
+
+  return { weekRange, totalChanges: changes.length, topChanges: top10, summary };
 }

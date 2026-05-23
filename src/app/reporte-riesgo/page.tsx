@@ -25,8 +25,15 @@ const severityColor: Record<string, string> = {
   'muy-alto': 'bg-red-500/20 text-red-400',
 };
 
+interface ApiResponse {
+  weekRange: string;
+  totalChanges: number;
+  topChanges: RiskChange[];
+  summary: string;
+}
+
 export default function ReporteRiesgoPage() {
-  const [data, setData] = useState<{ weekRange: string; topChanges: RiskChange[] } | null>(null);
+  const [data, setData] = useState<ApiResponse | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -68,6 +75,12 @@ export default function ReporteRiesgoPage() {
               </h1>
               <p className="text-slate-400 text-sm">{data.weekRange}</p>
             </div>
+
+            {data.summary && (
+              <div className="bg-slate-800/80 border border-slate-600 rounded-xl p-5 mb-6">
+                <p className="text-slate-200 text-sm leading-relaxed">{data.summary}</p>
+              </div>
+            )}
 
             <div className="bg-slate-800/50 border border-slate-700 rounded-xl p-4 mb-6 text-center">
               <p className="text-slate-300 text-sm">
