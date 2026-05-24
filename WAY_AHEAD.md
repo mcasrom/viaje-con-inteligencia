@@ -618,4 +618,81 @@ git add -A && git commit -m "msg" && git push
 
 ---
 
-*Actualizado: 21 May 2026 — revisión completa: 14 items verificados, 8 hechos, 6 pendientes reales*
+## VALORACIÓN DE MADUREZ DEL PROYECTO (24 May 2026)
+
+Evaluación honesta del estado actual del proyecto en cada dimensión:
+
+### 🟡 Producto — Beta temprana
+- Core funcional (mapa riesgo 136 países, fichas país, radar viajero, comparador, chat IA, blog)
+- Lead magnet semanal operativo con resumen AI + email automático
+- Stripe Live integrado (checkout, webhooks, provision API keys) pero 0 clientes conocidos
+- UX mejorando (hero server-rendered, LCP ~2.5s, topbar optimizada)
+- **Problema**: sin usuarios reales dando feedback, no hay validación de producto-mercado
+
+### 🟠 ML — Prototipo / Académico
+- 4 Random Forest models, 136 países, 25 features, entrenamiento diario (~157s)
+- R² riskScore MAE 0.56, probUp7d 0.0018, max deviation 5.89 (2 países desviados)
+- **⚠️ Estas métricas son sobre training data, no test set**. Sin validación temporal CV (solo ~11 días de datos)
+- Sin backtesting contra cambios MAEC reales — no sabemos si predice algo útil
+- Transparencia operativa en blog post publicado (métricas reales, no infladas)
+
+### 🔴 SEO / Indexación — Etapa temprana crítica
+- Dominio ~32 días con histórico de 5xx del middleware (corregido)
+- GSC: 187 indexed, 216 not indexed, 481 discovered-but-not-indexed
+- Googlebot activo (~17 hits/día) pero tasa de indexación baja
+- IndexNow configurado, sitemap dinámico
+- Contenido server-rendered para Googlebot implementado
+- **Riesgo**: sandboxing de Google para dominios jóvenes. No hay atajo técnico — toca esperar
+
+### 🟡 Contenido — Bueno para la edad del proyecto
+- 3+ blog posts/semana (alertas, guías OSINT, ML transparency)
+- 3 pillar pages SEO (travel-risk-intelligence, osint-para-viajeros, geopolitica-y-viajes)
+- Lead magnet semanal con Groq AI
+- Newsletter con doble opt-in y reporte automático
+- **Falta**: versión EN del contenido (solo homepage traducida), más posts satélite por pillar
+
+### 🟠 Presencia Social — Construyendo desde cero
+- Telegram canal activo (contenido diario automático)
+- Bluesky + Mastodon publicando (posts semanales automáticos vía admin)
+- X/Twitter manual (OAuth no disponible para plan gratis)
+- Reddit drafts listos pero sin publicar
+- Facebook bloqueado
+- **Realidad**: seguidores cercanos a 0 en todas las plataformas. Outreach orgánico tomará meses
+
+### 🟢 Estabilidad Técnica — Sólida
+- CI verde en cada push, deploy automático Hetzner VPS
+- Sin 5xx en producción (middleware corregido)
+- Cache AeroDataBox en memoria reduce llamadas API ~85→<10%
+- Caché correcta de navegador en reporte-riesgo (fix applied)
+- Healthcheck endpoint monitorea 4 tablas
+- Load VPS ~0.10, RAM 754M/3.7G, uptime 7d+
+
+### 🟠 Monetización — MVP sin tracción
+- Stripe Live: checkout, webhooks, provision API keys Pro funcional
+- API pública v1 con 4 endpoints (risk, tci, incidents, countries) y rate limiting por tier
+- 0 transacciones conocidas. Sin métricas de conversión porque no hay tráfico
+
+### 🟡 Datos / Pipeline OSINT — Construyendo base sólida
+- 73 fuentes OSINT (GDELT, USGS, GDACS, ReliefWeb, WHO, RSS, Reddit)
+- Pipeline diario: señales → clasificación Groq → detección incidentes → alertas
+- ~11 días de datos diarios acumulados, creciendo
+- Backfill de tone_score pendiente para señales históricas sin sentimiento
+- **Para ML útil**: necesitamos 30+ días de datos para validación temporal CV
+
+### Resumen
+| Dimensión | Estado | Confianza |
+|-----------|--------|-----------|
+| Producto | 🟡 Beta temprana | Media |
+| ML | 🟠 Prototipo | Baja (sin validación real) |
+| SEO/Indexación | 🔴 Crítica | Baja (dominio joven) |
+| Contenido | 🟡 Bueno | Alta |
+| Social | 🟠 Construyendo | Baja |
+| Técnica | 🟢 Sólida | Alta |
+| Monetización | 🟠 MVP sin tracción | Baja |
+| Datos/OSINT | 🟡 Construyendo | Media-Alta |
+
+**Veredicto:** Proyecto con base técnica sólida y contenido decente, pero atrapado en el hueco del dominio joven + 0 tracción. El ML promete pero no está validado. La prioridad real debería ser conseguir tráfico orgánico (blog + outreach) para empezar a tener usuarios que validen el producto. Sin indexación de Google ni tracción social, el resto es irrelevante.
+
+---
+
+*Actualizado: 24 May 2026 — revisión completa*
