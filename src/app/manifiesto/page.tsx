@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowLeft, Shield, Eye, TrendingUp, Zap, Target, Users } from 'lucide-react';
 import { TOTAL_PAISES } from '@/lib/constants';
@@ -22,8 +23,10 @@ export default function ManifiestoPage() {
         {/* Hero */}
         <div className="mb-12">
           <div className="flex items-center gap-4 mb-6">
-            <div className="w-16 h-16 rounded-2xl bg-blue-500/20 border border-blue-500/30 flex items-center justify-center">
-              <span className="text-3xl font-bold text-blue-400">M</span>
+            <div className="w-16 h-16 rounded-full overflow-hidden flex-shrink-0 bg-slate-700 ring-2 ring-blue-500/30">
+              <Image src="/foto-autor.jpg" alt="Miguel Castillo" width={64} height={64}
+                className="object-cover w-full h-full"
+                style={{ objectPosition: 'center 20%' }} />
             </div>
             <div>
               <h1 className="text-3xl font-bold text-white">Miguel Castillo</h1>
