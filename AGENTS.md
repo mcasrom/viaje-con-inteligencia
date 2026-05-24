@@ -17,6 +17,12 @@
 - **Fix gradiente mapa**: Opacidad reducida 90%→40%.
 - **Fix Onboarding**: `{TOTAL_PAISES}` renderizado como variable (era string literal).
 - **Deploy CI/CD**: 6 deploys exitosos. 1 fallo (NewsletterPopup) corregido en commit siguiente.
+- **Fix /reporte-riesgo cache**: API ya envía `Cache-Control: no-cache, no-store` + fetch del cliente con `cache: 'no-store'`. Arreglado bug "solo funciona en private window".
+- **Hero inglés /en**: Server-rendered con H1 "Is it safe to travel to...?" + CTAs en inglés. `/en/page.tsx` ya no importa hero español hardcodeado.
+- **Sync paises a Supabase**: Somalia (SO), RCA (CF), Sudán del Sur (SS) sincronizados con `queHacer` correcto (antes mostraban "Países sin queHacer" en admin dashboard por copia desactualizada en DB).
+
+### Commits
+- `5fc73dc` fix: /reporte-riesgo cache headers + /en hero translation + paises sync
 
 ## Today (22 May 2026) — Sprint Indexación + RRSS
 
@@ -524,10 +530,16 @@ Para probar authenticated endpoints se necesita sesión válida (vía browser).
  ## Next Steps
 1. **Google Search Console**: Enviar sitemap.xml + solicitar indexación manual (homepage, /mapa, 3-5 países)
 2. **Monitorear indexación** tras fix de middleware (Googlebot ya no recibe 5xx)
-3. Arreglar ML recomendador: `getRecommendations()` devuelve España como destino desde España. Filtrar país de origen antes de devolver resultados.
-4. Solicitar recrawleo en Google Search Console tras el fix de middleware.
-5. Monitorear que no entren nuevos incidentes mal clasificados (Groq ahora pide país).
-6. Verificar que la newsletter genera bien los países con el nuevo regex de word boundaries.
+3. **Publicar X post** manualmente con texto generado (OAuth pendiente)
+4. **Monitorear Cloudflare Analytics** primer domingo (24 May) en `/admin/analytics`
+5. **Lunes newsletter automática** + revisar GSC tras nueva semana
+6. **Seguir con blog posts semanales** para contenido fresco
+7. **Reddit/Facebook outreach** desde drafts en `content/outreach/`
+
+## Done (24 May 2026)
+- Fix cache reporte-riesgo (private window bug)
+- Hero inglés server-rendered en `/en`
+- Sync paises a Supabase (SO, CF, SS con queHacer)
 
 ## Recurring Tasks
 - **Daily (post-deploy)**: Verify `/api/cron/train-models` completes successfully (R² > 0.95, < 300s).

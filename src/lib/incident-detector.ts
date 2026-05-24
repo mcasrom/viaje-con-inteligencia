@@ -354,6 +354,7 @@ export async function detectAndCreateIncidents(): Promise<{ created: number; upd
           action_verb: typeConfig.verb,
           source,
           signal_count: clusterSignals.length,
+          detected_at: new Date().toISOString(),
           expires_at: expiresAt.toISOString(),
           is_active: true,
           tone_score: avgTone,

@@ -12,6 +12,7 @@ CREATE TABLE IF NOT EXISTS incidents (
   source text DEFAULT 'osint',
   signal_count integer DEFAULT 1,
   tone_score float,
+  detected_at timestamptz DEFAULT now(),
   is_active boolean DEFAULT true,
   expires_at timestamptz,
   resolved_at timestamptz,
