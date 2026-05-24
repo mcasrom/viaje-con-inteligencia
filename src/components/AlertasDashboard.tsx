@@ -31,6 +31,7 @@ export default function AlertasDashboard() {
   const [subscriptions, setSubscriptions] = useState<AlertSub[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [telegramLinked, setTelegramLinked] = useState(false);
 
   const fetchOpts: RequestInit = { credentials: 'include' };
 
@@ -44,6 +45,9 @@ export default function AlertasDashboard() {
         setSubscriptions(data.subscriptions);
       } else if (data.alerts) {
         setSubscriptions(data.alerts);
+      }
+      if (data.telegram_linked !== undefined) {
+        setTelegramLinked(data.telegram_linked);
       }
     } catch {
       setError('Error al cargar');
@@ -110,6 +114,13 @@ export default function AlertasDashboard() {
       <div className="flex items-center gap-3 mb-4">
         <Bell className="w-5 h-5 text-blue-400" />
         <h3 className="font-bold text-white">Alertas activas ({subscriptions.length})</h3>
+        {telegramLinked ? (
+          <span className="text-xs bg-green-500/20 text-green-400 px-2 py-0.5 rounded-full">Telegram vinculado ✓</span>
+        ) : (
+          <a href="https://t.me/ViajeConInteligenciaBot" target="_blank" rel="noopener noreferrer" className="text-xs bg-slate-700 text-slate-300 hover:text-white px-2 py-0.5 rounded-full transition-colors">
+            Vincular Telegram
+          </a>
+        )}
       </div>
       <div className="space-y-3">
         {subscriptions.map(sub => {

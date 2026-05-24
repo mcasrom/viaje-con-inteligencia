@@ -106,6 +106,7 @@ const translations = {
 /checklist - Preview checklist
 /premium - Info premium
 /vincular - Vincular con tu cuenta web
+/desvincular - Desvincular cuenta web
 /help - Esta ayuda
 
 💡 *Ejemplos:* /suscribir ES, /cancelar-alerta FR`,
@@ -361,6 +362,38 @@ export async function POST(request: NextRequest) {
         `⏳ Válido por 5 minutos.\n\n` +
         `Una vez vinculado, tus alertas del bot aparecerán en el dashboard y podrás gestionarlas desde la web.`
       );
+      return NextResponse.json({ ok: true });
+    }
+
+// Handle /desvincular — unlink web account
+    if (textLower === '/desvincular' || textLower === '/unlink') {
+      if (!isSupabaseAdminConfigured()) {
+        await sendMessage(chatId, '❌ Sistema de vinculación no disponible.');
+        return NextResponse.json({ ok: true });
+      }
+      const { data: profile, error: findError } = await supabaseAdmin
+        .from('profiles')
+        .select('id')
+        .eq('telegram_id', chatId)
+        .single();
+
+      if (findError || !profile) {
+        await sendMessage(chatId, '❌ No tienes ninguna cuenta vinculada.');
+        return NextResponse.json({ ok: true });
+      }
+
+      const { error: updateError } = await supabaseAdmin
+        .from('profiles')
+        .update({ telegram_id: null })
+        .eq('id', profile.id);
+
+      if (updateError) {
+        log.error('Error al desvincular', updateError);
+        await sendMessage(chatId, '❌ Error al desvincular. Intenta de nuevo.');
+        return NextResponse.json({ ok: true });
+      }
+
+      await sendMessage(chatId, '✅ Cuenta desvinculada correctamente. Ya no recibirás alertas personalizadas aquí.');
       return NextResponse.json({ ok: true });
     }
 

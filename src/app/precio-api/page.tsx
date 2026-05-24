@@ -15,31 +15,51 @@ const TIERS = [
     needsRequest: false,
   },
   {
+    name: 'Starter',
+    price: '9.99',
+    requests: '1,000',
+    cta: 'Suscribirse',
+    href: '#',
+    features: ['3 API keys', 'Todos los endpoints', '30 días histórico', 'Email support', 'Alertas en tiempo real', 'SLA 99.5%'],
+    needsRequest: false,
+    priceId: 'price_starter',
+  },
+  {
     name: 'Pro',
-    price: '4.99',
+    price: '29.99',
     requests: '10,000',
-    cta: 'Quiero esto para aquí',
+    cta: 'Suscribirse',
     href: '#',
     featured: true,
-    features: ['5 API keys', 'Todos los endpoints', '90 días histórico', 'Email support', 'Alertas en tiempo real'],
+    features: ['10 API keys', 'Todos los endpoints', '90 días histórico', 'Priority email support', 'Alertas en tiempo real', 'SLA 99.9%'],
+    needsRequest: false,
+    priceId: 'price_1TZjOo1yXjIoL1LjQf4rIc65',
+  },
+  {
+    name: 'Enterprise',
+    price: 'Custom',
+    requests: 'Ilimitadas',
+    cta: 'Contactar',
+    href: 'mailto:info@viajeinteligencia.com',
+    features: ['API keys ilimitadas', 'Endpoints personalizados', 'Histórico completo', 'Soporte dedicado', 'Onboarding asistido', 'SLA personalizado'],
     needsRequest: true,
   },
 ];
-
-const API_PRO_PRICE_ID = 'price_1TZjOo1yXjIoL1LjQf4rIc65';
 
 export default function PrecioApiPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const handleProCheckout = async () => {
+  const handleCheckout = async (priceId: string) => {
     setLoading(true);
     setError('');
+    const tier = TIERS.find(t => t.priceId === priceId);
+    const type = tier?.name === 'Starter' ? 'api_starter' : 'api_pro';
     try {
       const res = await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ priceId: API_PRO_PRICE_ID, trialDays: 7, type: 'api_pro' }),
+        body: JSON.stringify({ priceId, trialDays: 7, type }),
       });
       const data = await res.json();
       if (data.url) {
@@ -78,7 +98,7 @@ export default function PrecioApiPage() {
         </div>
 
         {/* Cards */}
-        <div className="grid md:grid-cols-2 max-w-2xl mx-auto gap-6">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 max-w-5xl mx-auto gap-6 items-start">
           {TIERS.map((tier) => (
             <div
               key={tier.name}
@@ -91,10 +111,10 @@ export default function PrecioApiPage() {
               )}
               <h3 className="text-lg font-bold text-white">{tier.name}</h3>
               <div className="mt-3 flex items-baseline gap-1">
-                <span className="text-3xl font-bold text-white">{tier.price}€</span>
-                <span className="text-slate-500 text-sm">/mes</span>
+                <span className="text-3xl font-bold text-white">{tier.price}{tier.name !== 'Enterprise' ? '€' : ''}</span>
+                {tier.name !== 'Enterprise' && <span className="text-slate-500 text-sm">/mes</span>}
               </div>
-              <p className="text-slate-400 text-sm mt-1">Hasta {tier.requests} req/mes</p>
+              <p className="text-slate-400 text-sm mt-1">{tier.name === 'Enterprise' ? 'Volumen personalizado' : `Hasta ${tier.requests} req/mes`}</p>
               <ul className="mt-6 space-y-3 flex-1">
                 {tier.features.map((f) => (
                   <li key={f} className="flex items-start gap-2 text-slate-300 text-sm">
@@ -110,9 +130,16 @@ export default function PrecioApiPage() {
                 >
                   {tier.cta}
                 </Link>
+              ) : tier.name === 'Enterprise' ? (
+                <a
+                  href={tier.href}
+                  className="mt-8 flex items-center justify-center gap-2 w-full text-center py-3 rounded-xl text-sm font-medium transition-colors bg-slate-700 text-slate-300 hover:bg-slate-600"
+                >
+                  {tier.cta}
+                </a>
               ) : (
                 <button
-                  onClick={handleProCheckout}
+                  onClick={() => handleCheckout(tier.priceId!)}
                   disabled={loading}
                   className="mt-8 flex items-center justify-center gap-2 w-full text-center py-3 rounded-xl text-sm font-medium transition-colors bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50"
                 >

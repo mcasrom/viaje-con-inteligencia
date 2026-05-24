@@ -42,6 +42,7 @@ export function getMainKeyboard() {
         [{ text: '🌤️ Clima' }, { text: '🤖 Chat IA' }],
         [{ text: '⚠️ Alertas de riesgo' }, { text: '✈️🛤️ Alertas viaje' }],
         [{ text: '📋 Checklist viaje' }, { text: '⭐ Premium' }],
+        [{ text: '🔗 Vincular cuenta' }],
       ],
       resize_keyboard: true,
     },

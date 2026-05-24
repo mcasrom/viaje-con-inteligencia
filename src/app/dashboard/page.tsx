@@ -660,6 +660,17 @@ export default function DashboardPage() {
         {/* USER LEVEL / GAMIFICATION */}
         <UserLevelBadge />
 
+        {/* TELEGRAM LINKED STATUS */}
+        {authUser?.user_metadata?.telegram_id && (
+          <div className="flex items-center gap-2 bg-green-500/10 border border-green-500/20 rounded-lg px-4 py-2 text-sm">
+            <span className="text-green-400">✓</span>
+            <span className="text-green-300">Telegram vinculado</span>
+            <a href="https://t.me/ViajeConInteligenciaBot" target="_blank" rel="noopener noreferrer" className="ml-auto text-xs text-slate-400 hover:text-white transition-colors">
+              Abrir bot
+            </a>
+          </div>
+        )}
+
         {/* KPIs personalizados del viajero */}
         {favorites.length > 0 && (() => {
           const riskLevels = ['sin-riesgo', 'bajo', 'medio', 'alto', 'muy-alto'];
