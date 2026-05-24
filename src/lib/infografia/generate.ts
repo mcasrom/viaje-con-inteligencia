@@ -2,6 +2,7 @@ import sharp from 'sharp';
 import { supabaseAdmin, isSupabaseAdminConfigured } from '@/lib/supabase-admin';
 import { collectInfografiaData } from './data';
 import { generateInfografiaSVG } from './template';
+import { withGroqRetry } from '@/lib/groq-retry';
 
 const BUCKET = 'infografias';
 const MAX_SIZE_BYTES = 400 * 1024; // ~400KB
@@ -217,14 +218,14 @@ export async function generatePremiumInfografia(id: string): Promise<GenResult> 
     try {
       const Groq = (await import('groq-sdk')).default;
       const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
-      const completion = await groq.chat.completions.create({
+      const completion = await withGroqRetry(() => groq.chat.completions.create({
         model: 'llama-3.3-70b-versatile',
         messages: [
           { role: 'system', content: 'Eres un analista de inteligencia de viajes. Genera un análisis breve y preciso de la semana en riesgos globales basado en los datos proporcionados. Máximo 150 palabras.' },
           { role: 'user', content: `GWI: ${data.gwi?.total}, Países alto riesgo: ${data.stats?.altoOMuyAlto}, Incidentes: ${data.incidentsThisWeek}, Cambios: ${JSON.stringify(data.countriesChanged)}. Genera un análisis semanal.` },
         ],
         max_tokens: 300,
-      });
+      }));
       aiAnalysis = completion.choices?.[0]?.message?.content || '';
     } catch {
       aiAnalysis = 'Análisis premium no disponible en este momento.';

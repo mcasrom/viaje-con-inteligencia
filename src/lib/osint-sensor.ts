@@ -1,4 +1,5 @@
 import { groqClient } from './groq-ai';
+import { withGroqRetry } from '@/lib/groq-retry';
 import { createLogger } from '@/lib/logger';
 
 const log = createLogger('OSINT');
@@ -462,21 +463,23 @@ Mensaje:`;
 export async function classifySignal(post: RawPost): Promise<ClassifiedSignal> {
   try {
     const text = `${post.title} ${post.content}`.substring(0, 2000);
-    const response = await groqClient.chat.completions.create({
-      messages: [
-        {
-          role: 'system',
-          content: `${CLASSIFICATION_PROMPT}`,
-        },
-        {
-          role: 'user',
-          content: text,
-        },
-      ],
-      model: 'llama-3.1-8b-instant',
-      temperature: 0.1,
-      max_tokens: 256,
-    });
+    const response = await withGroqRetry(() =>
+      groqClient.chat.completions.create({
+        messages: [
+          {
+            role: 'system',
+            content: `${CLASSIFICATION_PROMPT}`,
+          },
+          {
+            role: 'user',
+            content: text,
+          },
+        ],
+        model: 'llama-3.1-8b-instant',
+        temperature: 0.1,
+        max_tokens: 256,
+      })
+    );
 
     const raw = response.choices[0]?.message?.content || '{}';
     const parsed = JSON.parse(raw);

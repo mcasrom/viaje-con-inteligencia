@@ -1,3 +1,5 @@
+import { withGroqRetry } from '@/lib/groq-retry';
+
 const GROQ_API = 'https://api.groq.com/openai/v1/chat/completions';
 
 export interface EnrichedEvent {
@@ -13,7 +15,7 @@ export async function enrichEvent(title: string, description: string): Promise<E
   }
 
   try {
-    const res = await fetch(GROQ_API, {
+    const res = await withGroqRetry(() => fetch(GROQ_API, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -42,7 +44,7 @@ Ejemplo: {"impact_traveler":"high","impact_note":"Protestas pueden cerrar calles
         temperature: 0.1,
         max_tokens: 200,
       }),
-    });
+    }));
 
     if (!res.ok) {
       return { impact_traveler: 'low', impact_note: '', category: 'other', subcategory: 'other' };
