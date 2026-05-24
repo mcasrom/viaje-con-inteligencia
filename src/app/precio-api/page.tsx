@@ -2,13 +2,13 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Check, HelpCircle, Mail, Shield, Zap, Users, BarChart3, AlertTriangle, Loader2 } from 'lucide-react';
+import { ArrowLeft, Check, HelpCircle, Mail, Shield, Zap, Users, BarChart3, AlertTriangle, Loader2, Copy, CheckCircle2 } from 'lucide-react';
 
 const TIERS = [
   {
     name: 'Free',
     price: '0',
-    requests: '100',
+    requests: '1,000',
     cta: 'Ver documentación',
     href: '/api-endpoints',
     features: ['1 API key', 'Risk endpoint', 'TCI endpoint', 'Incidents endpoint', 'Countries list', 'Actualizaciones diarias'],
@@ -36,6 +36,39 @@ const TIERS = [
 export default function PrecioApiPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [email, setEmail] = useState('');
+  const [apiKey, setApiKey] = useState('');
+  const [copied, setCopied] = useState(false);
+
+  const handleFreeKey = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+    setApiKey('');
+    try {
+      const res = await fetch('/api/v1/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+      const data = await res.json();
+      if (data.key) {
+        setApiKey(data.key);
+      } else {
+        setError(data.error || 'Error al generar key');
+      }
+    } catch {
+      setError('Error de conexión');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const copyKey = () => {
+    navigator.clipboard.writeText(apiKey);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   const handleCheckout = async (priceId: string) => {
     setLoading(true);
@@ -109,12 +142,40 @@ export default function PrecioApiPage() {
                 ))}
               </ul>
               {tier.name === 'Free' ? (
-                <Link
-                  href={tier.href}
-                  className="mt-8 block w-full text-center py-3 rounded-xl text-sm font-medium transition-colors bg-slate-700 text-slate-300 hover:bg-slate-600"
-                >
-                  {tier.cta}
-                </Link>
+                apiKey ? (
+                  <div className="mt-8">
+                    <div className="flex items-center gap-2 bg-green-500/10 border border-green-500/20 rounded-lg px-3 py-2 mb-2">
+                      <CheckCircle2 className="w-4 h-4 text-green-400 shrink-0" />
+                      <span className="text-green-300 text-xs font-medium">Key generada</span>
+                    </div>
+                    <div className="flex items-center gap-1 bg-slate-900 rounded-lg px-3 py-2 border border-slate-600">
+                      <code className="text-amber-400 text-xs truncate flex-1 font-mono">{apiKey}</code>
+                      <button onClick={copyKey} className="text-slate-400 hover:text-white shrink-0">
+                        {copied ? <CheckCircle2 className="w-4 h-4 text-green-400" /> : <Copy className="w-4 h-4" />}
+                      </button>
+                    </div>
+                    <p className="text-slate-500 text-xs mt-2">Guárdala, solo la verás una vez.</p>
+                  </div>
+                ) : (
+                  <form onSubmit={handleFreeKey} className="mt-8 space-y-2">
+                    <input
+                      type="email"
+                      placeholder="tu@email.com"
+                      value={email}
+                      onChange={e => setEmail(e.target.value)}
+                      required
+                      className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white text-sm placeholder-slate-400 focus:outline-none focus:border-blue-500"
+                    />
+                    <button
+                      type="submit"
+                      disabled={loading}
+                      className="w-full text-center py-3 rounded-xl text-sm font-medium transition-colors bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50"
+                    >
+                      {loading ? <><Loader2 className="w-4 h-4 animate-spin inline" /> Generando...</> : 'Obtener API Key gratis'}
+                    </button>
+                    {error && <p className="text-red-400 text-xs text-center">{error}</p>}
+                  </form>
+                )
               ) : tier.name === 'Enterprise' ? (
                 <a
                   href={tier.href}
