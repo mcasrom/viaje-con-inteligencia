@@ -793,15 +793,20 @@ async function runInfografiaGenerator(): Promise<any> {
       publishToTelegramChannel(longText),
     ]);
 
+    const social = {
+      bluesky: blueskyRes.status === 'fulfilled' ? blueskyRes.value : false,
+      mastodon: mastodonRes.status === 'fulfilled' ? mastodonRes.value : false,
+      telegram: telegramRes.status === 'fulfilled' ? telegramRes.value : false,
+    };
+
+    log.info(`[InfografiaSocial] Bluesky: ${social.bluesky}, Mastodon: ${social.mastodon}, Telegram: ${social.telegram}`);
+
     return {
       status: 'ok', ...result,
-      social: {
-        bluesky: blueskyRes.status === 'fulfilled' ? blueskyRes.value : false,
-        mastodon: mastodonRes.status === 'fulfilled' ? mastodonRes.value : false,
-        telegram: telegramRes.status === 'fulfilled' ? telegramRes.value : false,
-      },
+      social,
     };
   } catch (e: any) {
+    log.error(`[Infografia] Error: ${e.message}`);
     return { status: 'error', error: e.message };
   }
 }

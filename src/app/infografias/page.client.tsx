@@ -119,6 +119,15 @@ export default function InfografiasClient() {
                     <Download className="w-4 h-4" />
                     Ver detalle
                   </Link>
+                  {latest.image_url && (
+                    <a
+                      href={latest.image_url}
+                      download={`infografia-${latest.edition}.webp`}
+                      className="inline-flex items-center gap-2 px-4 py-2 bg-slate-700 text-white rounded-lg hover:bg-slate-600 text-sm font-medium transition-colors"
+                    >
+                      Descargar
+                    </a>
+                  )}
                 </div>
               </div>
               <div className="flex items-center justify-center">

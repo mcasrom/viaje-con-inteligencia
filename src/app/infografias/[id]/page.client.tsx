@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { ArrowLeft, Download, Crown, Share2, FileText, Map, Brain, TrendingUp, Calendar, AlertTriangle, Shield, Check } from 'lucide-react';
+import { ArrowLeft, Download, Crown, Share2, FileText, Map, Brain, TrendingUp, Calendar, AlertTriangle, Shield, Check, ImageIcon } from 'lucide-react';
 import { useState, useCallback } from 'react';
 import PremiumRiskMap from '@/components/PremiumRiskMap';
 
@@ -110,6 +110,16 @@ export default function InfografiaDetailClient({ infografia }: { infografia: Inf
               {copied ? <Check className="w-4 h-4 text-green-400" /> : <Share2 className="w-4 h-4" />}
               {copied ? 'Copiado' : 'Compartir'}
             </button>
+            {infografia.image_url && (
+              <a
+                href={infografia.image_url}
+                download={`infografia-${infografia.edition}.webp`}
+                className="flex items-center gap-2 px-3 py-1.5 bg-blue-600 rounded-lg text-white hover:bg-blue-700 text-sm transition-colors"
+              >
+                <ImageIcon className="w-4 h-4" />
+                Descargar
+              </a>
+            )}
           </div>
         </div>
 
