@@ -1,28 +1,22 @@
 # Way Ahead
 
-## Última sesión: 23 May 2026 — Sprint UX + Lead Magnet + Estabilidad
+## Última sesión: 24 May 2026 — Sprint UX + Lead Magnet + ML Post + Estabilidad
 
-> **Último deploy verificado:** OK ✅ (commit `aecc9ea`)
+> **Último deploy verificado:** OK ✅ (commit `5e44123`)
 >
-> **Sprint activo:** UX + Lead Magnet + Indexación Google
+> **Sprint activo:** UX + Lead Magnet + Indexación Google + Contenido
 >
-> **Logros día:**
-> - ✅ **Hero nuevo homepage**: "¿Es seguro viajar a...?" + buscador + CTAs "Ver mapa global" y "Recibir alertas gratis". Mapa separado debajo del hero.
-> - ✅ **TopBar**: Enlace "Mapa" añadido entre "Decidir" y "Blog".
-> - ✅ **Lead magnet semanal**: `/reporte-riesgo` con top 10 países con cambios/incidentes. Fallback dinámico con incidentes activos reales (no datos estáticos).
-> - ✅ **Newsletter popup**: Cambiado a "Reporte Semanal de Riesgo". Mensaje de éxito claro con enlace al reporte.
-> - ✅ **Cache AeroDataBox**: Caché en memoria 1h para `/api/airport-delays` y `/api/flights/verify-delay`. Reducción API esperada de ~85% a <10%.
-> - ✅ **Fix timeouts cron**: events 180→300s, news_sentiment 90→180s, Phase 1 global 300→360s.
-> - ✅ **Fix incidents API**: `created_at`→`detected_at` (columna real en Supabase).
-> - ✅ **Fix Radar TimelineChart**: `dynamic()` → import directo + loading skeleton.
-> - ✅ **Fix Onboarding**: `{TOTAL_PAISES}` corregido a template literal.
-> - ✅ **3 blog posts publicados (22-24 May)**: alertas Mayo 2026, guía OSINT, checklist fuentes.
-> - ✅ **10 posts a RRSS** vía admin: Telegram, Mastodon, Bluesky.
-> - ✅ **Seed países ejecutado**: Somalia, RCA, Sudán del Sur corregidos.
-> - ✅ **GSC validación**: 247 páginas validadas como corregidas.
-> - ✅ **Fix middleware 5xx + server-render + canonical**: confirmado funcional.
-> - ✅ **SEO audit H1**: script `scripts/seo_audit.py`. H1 faltantes/duplicados arreglados.
-> - ✅ **Reporte semanal fallback**: Ahora usa incidentes activos de la tabla `incidents` (dinámico), no datos estáticos de `paisesData`.
+> **Logros día (24 May):**
+> - ✅ **Hero inglés `/en`**: Server-rendered con H1 "Is it safe to travel to...?" + CTAs en inglés
+> - ✅ **Fix `/reporte-riesgo` cache**: Cache-Control no-cache + fetch no-store. Bug "solo private window" corregido
+> - ✅ **Sync paises a Supabase**: Somalia, RCA, Sudán del Sur con `queHacer` correcto
+> - ✅ **Fix esquema SQL incidents**: Añadido `detected_at` a schemas canónicos + explícito en incident-detector
+> - ✅ **Footer iconos**: Telegram, GitHub, Email (Mail), RSS añadidos. Columna Comunidad reordenada con iconos consistentes
+> - ✅ **Fix comparador seguros**: Zod schema rechazaba nombres de país (exigía código ISO 2 chars). Relajado min(2).max(50)
+> - ✅ **Blog post ML**: Publicado "Cómo entrenamos una IA para predecir riesgos de viaje en 136 países"
+> - ✅ **RRSS automatizado**: Post del ML blog a Mastodon, Bluesky y Telegram
+> - ✅ **X/Twitter**: Post manual del ML blog ✅
+> - ✅ **Outreach calendar**: X/Twitter marcado como completado
 
 ## 🔐 SERVIDOR HETZNER — Acceso SSH
 
