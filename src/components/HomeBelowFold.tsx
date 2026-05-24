@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import {
@@ -539,7 +540,11 @@ export default function HomeBelowFold() {
 
         <div className="max-w-3xl mx-auto mt-8 bg-gradient-to-r from-slate-800/50 to-slate-800/20 rounded-xl border border-slate-700/30 p-6">
           <div className="flex items-start gap-4">
-            <div className="w-14 h-14 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white text-xl font-bold flex-shrink-0">MC</div>
+            <div className="w-14 h-14 rounded-full overflow-hidden flex-shrink-0 bg-slate-700">
+              <Image src="/foto-autor.jpg" alt="Miguel Castillo" width={56} height={56}
+                className="object-cover w-full h-full"
+                style={{ objectPosition: 'center 20%' }} />
+            </div>
             <div className="min-w-0">
               <h3 className="text-white font-semibold text-sm">{t('about.title')}</h3>
               <p className="text-slate-400 text-xs mt-1 leading-relaxed">{t('about.text')}</p>
