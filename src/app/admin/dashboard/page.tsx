@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Shield, Clock, Mail, Globe, Users, AlertTriangle, CheckCircle, XCircle, FileText, Database, MessageSquare, ExternalLink, RefreshCw, Play, Send, Radio, Bot, LogOut, DollarSign, Key, Download, Eye, Calendar as CalendarIcon, TrendingUp, Euro, Activity, GitBranch } from 'lucide-react';
+import { Shield, Clock, Mail, Globe, Users, AlertTriangle, CheckCircle, XCircle, FileText, Database, MessageSquare, ExternalLink, RefreshCw, Play, Send, Radio, Bot, LogOut, DollarSign, Key, Download, Eye, Calendar as CalendarIcon, TrendingUp, Euro, Activity, GitBranch, Search } from 'lucide-react';
 
 export default function AdminDashboard() {
   const router = useRouter();
@@ -848,6 +848,20 @@ export default function AdminDashboard() {
           <div className="flex gap-3">
             <a href="/admin/analytics" className="inline-flex items-center gap-2 px-4 py-2 bg-orange-600/20 border border-orange-500/30 text-orange-400 rounded-lg hover:bg-orange-600/30 transition-colors text-sm font-medium">
               Ver tráfico <Activity className="w-4 h-4" />
+            </a>
+          </div>
+        </section>
+
+        {/* SEO Check */}
+        <section className="bg-slate-800 rounded-2xl border border-slate-700 p-6">
+          <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+            <Search className="w-5 h-5 text-blue-400" />
+            SEO Check
+          </h2>
+          <p className="text-slate-400 text-sm mb-4">Simula Googlebot en URLs del sitemap, verifica indexabilidad, caché de Google y actividad de crawlers en Cloudflare.</p>
+          <div className="flex gap-3">
+            <a href="/admin/seo-check" className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600/20 border border-blue-500/30 text-blue-400 rounded-lg hover:bg-blue-600/30 transition-colors text-sm font-medium">
+              Analizar ahora <Search className="w-4 h-4" />
             </a>
           </div>
         </section>
