@@ -12,27 +12,15 @@ const TIERS = [
     cta: 'Ver documentación',
     href: '/api-endpoints',
     features: ['1 API key', 'Risk endpoint', 'TCI endpoint', 'Incidents endpoint', 'Countries list', 'Actualizaciones diarias'],
-    needsRequest: false,
-  },
-  {
-    name: 'Starter',
-    price: '9.99',
-    requests: '1,000',
-    cta: 'Suscribirse',
-    href: '#',
-    features: ['3 API keys', 'Todos los endpoints', '30 días histórico', 'Email support', 'Alertas en tiempo real', 'SLA 99.5%'],
-    needsRequest: false,
-    priceId: 'price_starter',
   },
   {
     name: 'Pro',
-    price: '29.99',
+    price: '4.99',
     requests: '10,000',
     cta: 'Suscribirse',
     href: '#',
     featured: true,
-    features: ['10 API keys', 'Todos los endpoints', '90 días histórico', 'Priority email support', 'Alertas en tiempo real', 'SLA 99.9%'],
-    needsRequest: false,
+    features: ['5 API keys', 'Todos los endpoints', '90 días histórico', 'Email support', 'Alertas en tiempo real'],
     priceId: 'price_1TZjOo1yXjIoL1LjQf4rIc65',
   },
   {
@@ -42,7 +30,6 @@ const TIERS = [
     cta: 'Contactar',
     href: 'mailto:info@viajeinteligencia.com',
     features: ['API keys ilimitadas', 'Endpoints personalizados', 'Histórico completo', 'Soporte dedicado', 'Onboarding asistido', 'SLA personalizado'],
-    needsRequest: true,
   },
 ];
 
@@ -53,13 +40,11 @@ export default function PrecioApiPage() {
   const handleCheckout = async (priceId: string) => {
     setLoading(true);
     setError('');
-    const tier = TIERS.find(t => t.priceId === priceId);
-    const type = tier?.name === 'Starter' ? 'api_starter' : 'api_pro';
     try {
       const res = await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ priceId, trialDays: 7, type }),
+        body: JSON.stringify({ priceId, trialDays: 7, type: 'api_pro' }),
       });
       const data = await res.json();
       if (data.url) {
@@ -98,7 +83,7 @@ export default function PrecioApiPage() {
         </div>
 
         {/* Cards */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 max-w-5xl mx-auto gap-6 items-start">
+        <div className="grid md:grid-cols-3 max-w-3xl mx-auto gap-6 items-start">
           {TIERS.map((tier) => (
             <div
               key={tier.name}
