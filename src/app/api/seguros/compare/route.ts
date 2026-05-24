@@ -9,7 +9,7 @@ const log = createLogger('Seguros');
 export const dynamic = 'force-dynamic';
 
 const CompareRequestSchema = z.object({
-  destino: z.string().length(2, 'El código de país debe tener 2 caracteres'),
+  destino: z.string().min(2, 'Destino inválido').max(50),
   edades: z.array(z.number().int().min(0).max(120)).min(1, 'Al menos un viajero'),
   fechaIda: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Formato de fecha: YYYY-MM-DD').optional(),
   fechaVuelta: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Formato de fecha: YYYY-MM-DD').optional(),
