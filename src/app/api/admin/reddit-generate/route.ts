@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { groqClient } from '@/lib/groq-ai';
+import { withGroqRetry } from '@/lib/groq-retry';
 import { createLogger } from '@/lib/logger';
 import { supabase } from '@/lib/supabase';
 import { extractCountryCodes, getCountryName } from '@/lib/country-name-map';
@@ -163,7 +164,7 @@ Responde SOLO con JSON: { "title": "...", "body": "..." }`,
     const p = prompts[modeKey];
     const userPrompt = contextData ? p.userWithData : p.userEmpty;
 
-    const response = await groqClient.chat.completions.create({
+    const response = await withGroqRetry(() => groqClient.chat.completions.create({
       messages: [
         { role: 'system', content: p.system },
         { role: 'user', content: userPrompt },
@@ -171,7 +172,7 @@ Responde SOLO con JSON: { "title": "...", "body": "..." }`,
       model: 'llama-3.3-70b-versatile',
       temperature: 0.7,
       max_tokens: 600,
-    });
+    }));
 
     const parseGroqJson = (text: string): any => {
       let cleaned = text.replace(/```json|```/g, '').trim();

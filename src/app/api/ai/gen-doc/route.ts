@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { checkPremium } from '@/lib/premium-check';
 import { groqClient } from '@/lib/groq-ai';
+import { withGroqRetry } from '@/lib/groq-retry';
 import { getPaisesData } from '@/lib/paises-db';
 import { formatTourismStats } from '@/data/tourism';
 import { getTourismStats } from '@/lib/tourism-db';
@@ -85,7 +86,7 @@ Incluye:
 Formato: Markdown estructurado. Sé conciso pero útil.`;
 
   try {
-    const chatCompletion = await groqClient.chat.completions.create({
+    const chatCompletion = await withGroqRetry(() => groqClient.chat.completions.create({
       messages: [
         {
           role: 'system',
@@ -96,7 +97,7 @@ Formato: Markdown estructurado. Sé conciso pero útil.`;
       model: 'llama-3.1-8b-instant',
       temperature: 0.5,
       max_tokens: 2048,
-    });
+    }));
 
     return {
       pais: paisData,
@@ -141,7 +142,7 @@ Incluye:
 Formato: Markdown. Sé muy conciso.`;
 
   try {
-    const chatCompletion = await groqClient.chat.completions.create({
+    const chatCompletion = await withGroqRetry(() => groqClient.chat.completions.create({
       messages: [
         {
           role: 'system',
@@ -152,7 +153,7 @@ Formato: Markdown. Sé muy conciso.`;
       model: 'llama-3.1-8b-instant',
       temperature: 0.6,
       max_tokens: 2048,
-    });
+    }));
 
     return {
       pais: paisData,
@@ -204,7 +205,7 @@ Proporciona:
 Formato: Markdown limpio. Responde en español.`;
 
   try {
-    const chatCompletion = await groqClient.chat.completions.create({
+    const chatCompletion = await withGroqRetry(() => groqClient.chat.completions.create({
       messages: [
         {
           role: 'system',
@@ -215,7 +216,7 @@ Formato: Markdown limpio. Responde en español.`;
       model: 'llama-3.1-8b-instant',
       temperature: 0.6,
       max_tokens: 2048,
-    });
+    }));
 
     return {
       paises: paisesDataList,

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createLogger } from '@/lib/logger';
+import { withGroqRetry } from '@/lib/groq-retry';
 import { supabase, isSupabaseConfigured } from '@/lib/supabase';
 import { supabaseAdmin, isSupabaseAdminConfigured } from '@/lib/supabase-admin';
 import { paisesData } from '@/data/paises';
@@ -202,28 +203,36 @@ Respond in English, clearly and helpfully. Max 500 characters.`
 Responde en español, de forma clara y útil. Máximo 500 caracteres.`;
 
   try {
-    const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${process.env.GROQ_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'llama-3.1-8b-instant',
-        messages: [
-          { role: 'system', content: systemPrompt },
-          ...chatHistory.slice(-10).map((h: any) => ({ role: h.role, content: h.content })),
-          { role: 'user', content: message }
-        ],
-        temperature: 0.7,
-        max_tokens: 500,
-      }),
+    const response = await withGroqRetry(async () => {
+      const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${process.env.GROQ_API_KEY}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: 'llama-3.1-8b-instant',
+          messages: [
+            { role: 'system', content: systemPrompt },
+            ...chatHistory.slice(-10).map((h: any) => ({ role: h.role, content: h.content })),
+            { role: 'user', content: message }
+          ],
+          temperature: 0.7,
+          max_tokens: 500,
+        }),
+      });
+
+      if (!res.ok) {
+        const errText = await res.text();
+        if (res.status === 429) throw new Error(`Groq 429 rate limit: ${errText}`);
+        log.error('Groq error', errText);
+        return null;
+      }
+
+      return res;
     });
 
-    if (!response.ok) {
-      log.error('Groq error', await response.text());
-      return translations[lang].aiError();
-    }
+    if (!response) return translations[lang].aiError();
 
     const data = await response.json();
     return data.choices?.[0]?.message?.content || 'No pude procesar tu mensaje.';

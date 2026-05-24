@@ -1,6 +1,7 @@
 import { supabaseAdmin, isSupabaseAdminConfigured } from './supabase-admin';
 import { getPaisesData } from '@/lib/paises-db';
 import { groqClient } from './groq-ai';
+import { withGroqRetry } from '@/lib/groq-retry';
 import { createLogger } from '@/lib/logger';
 
 const log = createLogger('WeeklyRisk');
@@ -137,12 +138,12 @@ export async function getWeeklyRiskChanges(): Promise<{
     const totalWithChanges = changes.length;
 
     const prompt = `Eres un analista de seguridad internacional especializado en viajes. Genera un resumen MUY CONCISO (máximo 3 frases, 60 palabras) del panorama de riesgo semanal para viajeros. Datos de la semana (${weekRange}):\n\nPaíses con cambios de riesgo MAEC: ${totalWithChanges}\n\nTop 10:\n${topList}\n\nResumen en español, tono objetivo e informativo, sin introducciones.`;
-    const completion = await groqClient.chat.completions.create({
+    const completion = await withGroqRetry(() => groqClient.chat.completions.create({
       model: 'llama-3.1-8b-instant',
       messages: [{ role: 'user', content: prompt }],
       max_tokens: 150,
       temperature: 0.5,
-    });
+    }));
     summary = completion.choices?.[0]?.message?.content?.trim() || '';
   } catch (err) {
     log.warn('Error generating AI summary', err);

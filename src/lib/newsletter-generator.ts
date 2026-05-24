@@ -1,5 +1,6 @@
 import { createLogger } from '@/lib/logger';
 import { groqClient } from './groq-ai';
+import { withGroqRetry } from '@/lib/groq-retry';
 import { supabaseAdmin, isSupabaseAdminConfigured } from './supabase-admin';
 import { getPaisesData } from '@/lib/paises-db';
 import { calculateTCI } from '@/data/tci-engine';
@@ -359,7 +360,7 @@ async function generateWeeklyQA(alerts: CountryAlert[]): Promise<WeeklyQA | null
   const seg = Math.max(30, Math.min(100, irv - riskPenalty + 5));
 
   try {
-    const res = await groqClient.chat.completions.create({
+    const res = await withGroqRetry(() => groqClient.chat.completions.create({
       messages: [
         {
           role: 'system',
@@ -375,7 +376,7 @@ Sé directo, sin frases genéricas. Usa datos, no opiniones.`,
       model: 'llama-3.1-8b-instant',
       temperature: 0.3,
       max_tokens: 250,
-    });
+    }));
 
     return {
       question: `¿Es seguro viajar a ${pick.nombre} este verano?`,

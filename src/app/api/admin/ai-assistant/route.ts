@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { groqClient } from '@/lib/groq-ai';
+import { withGroqRetry } from '@/lib/groq-retry';
 import { createLogger } from '@/lib/logger';
 
 const log = createLogger('AiAssistant');
@@ -56,12 +57,12 @@ export async function POST(request: NextRequest) {
       messages.push({ role: 'user', content: prompt });
     }
 
-    const completion = await groqClient.chat.completions.create({
+    const completion = await withGroqRetry(() => groqClient.chat.completions.create({
       model: 'llama-3.1-8b-instant',
       messages,
       temperature: 0.7,
       max_tokens: 2048,
-    });
+    }));
 
     const response = completion.choices[0]?.message?.content || 'No se pudo generar respuesta.';
 

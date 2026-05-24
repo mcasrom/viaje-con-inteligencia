@@ -949,7 +949,7 @@ async function runCronAsync() {
 
   // Phase 3: News sentiment (most variable, isolated timeout)
   log.info('5/8 News sentiment...');
-  results.news_sentiment = await withTimeout(() => runNewsSentiment(), 180000, '5/8 News sentiment');
+  results.news_sentiment = await withTimeout(() => runNewsSentiment(), 300000, '5/8 News sentiment');
 
   // Phase 3b: Incident detection (clusters signals → actionable incidents)
   log.info('5b/8 Incident detection...');
