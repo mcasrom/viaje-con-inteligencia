@@ -132,8 +132,7 @@ export default async function RootLayout({
         <link rel="preconnect" href="https://tile.thunderforest.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" />
         <link rel="preconnect" href="https://nczkvsnuafkwtmgokiuo.supabase.co" />
-        <link rel="dns-prefetch" href="https://unpkg.com" />
-        <link rel="dns-prefetch" href="https://tile.openstreetmap.org" />
+        <link rel="preload" as="image" href="/logo.webp" fetchPriority="high" />
         <style id="leaflet-critical">{`.leaflet-pane,.leaflet-tile,.leaflet-marker-icon,.leaflet-marker-shadow,.leaflet-tile-container,.leaflet-pane>svg,.leaflet-pane>canvas,.leaflet-zoom-box,.leaflet-image-layer,.leaflet-layer{position:absolute;left:0;top:0}.leaflet-container{overflow:hidden}.leaflet-tile{position:absolute;width:256px;height:256px;max-width:none!important;pointer-events:none}.leaflet-tile-container{position:absolute;left:0;top:0}.leaflet-pane>svg{position:absolute;left:0;top:0}`}</style>
       </head>
       <body className={`${geistSans.variable} antialiased`}>
