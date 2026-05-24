@@ -7,7 +7,7 @@ date: "2026-05-22"
 author: "M. Castillo"
 category: "Seguridad"
 readTime: "7 min"
-image: https://images.unsplash.com/photo-1584036561584-b03c19da874c?w=800
+image: https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800
 keywords: "alertas viaje mayo 2026, seguridad viajeros oriente medio, iran israel viaje, cuba alerta viaje, reino unido seguridad, osint viaje, monitoreo seguridad global"
 excerpt: "Panorama actual de alertas de seguridad global para viajeros basadas en cruce de fuentes OSINT. Irán, Israel, Cuba y Reino Unido concentran la actividad."
 ---
