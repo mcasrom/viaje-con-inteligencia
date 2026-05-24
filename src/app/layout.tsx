@@ -12,6 +12,7 @@ import { initClusteringData } from "@/lib/clustering-init";
 import { initIndicesData } from "@/lib/indices-init";
 import { initSeasonalityData } from "@/lib/seasonality-init";
 import { initSegurosData } from "@/lib/seguros-init";
+import { checkCronCatchup } from "@/lib/cron-catchup";
 
 const QuickAccess = dynamic(() => import("@/components/QuickAccess"));
 const AITravelAssistant = dynamic(() => import("@/components/AITravelAssistant"));
@@ -104,7 +105,8 @@ export default async function RootLayout({
     initClusteringData(), 
     initIndicesData(), 
     initSeasonalityData(), 
-    initSegurosData()
+    initSegurosData(),
+    checkCronCatchup(),
   ]);
   
   return (
