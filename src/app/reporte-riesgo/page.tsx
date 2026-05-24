@@ -37,7 +37,7 @@ export default function ReporteRiesgoPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('/api/lead-magnet/weekly-risk')
+    fetch('/api/lead-magnet/weekly-risk', { cache: 'no-store' })
       .then(r => r.json())
       .then(d => setData(d))
       .catch(() => {})

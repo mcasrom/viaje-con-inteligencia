@@ -1,18 +1,28 @@
 # Way Ahead
 
-## Última sesión: 22 May 2026 — RRSS + Risk History API + Retention Policy
+## Última sesión: 23 May 2026 — Sprint UX + Lead Magnet + Estabilidad
 
-> **Último deploy verificado:** OK ✅ (commit `440d4a0`)
+> **Último deploy verificado:** OK ✅ (commit `aecc9ea`)
 >
-> **Sprint activo:** Indexación Google + Estabilización
+> **Sprint activo:** UX + Lead Magnet + Indexación Google
 >
 > **Logros día:**
-> - ✅ **RRSS publicado (22 May)**: Bluesky, Mastodon, Telegram, X (manual). Tono OSINT/data-driven.
-> - ✅ **Admin calendario registrado**: Nota "Lanzamiento RRSS — 22 May 2026" en editor_notes.
-> - ✅ **OSINT boost eliminado completamente**: Borrado `useIncidentBoost.ts` + todas referencias `applyBoost`. Badges usan `pais.nivelRiesgo` directamente. OSINT solo contextual (banner, timeline).
-> - ✅ **Outbreak override eliminado**: Borrada `fetchActiveOutbreakCountries()`. Riesgo sanitario solo WHO.
-> - ✅ **Risk history endpoint** — `/api/v1/risk/{country}/history` con ventana 30-90 días. Documentado en `/api-endpoints`.
-> - ✅ **Retention policy 90 días**: Auto-cleanup en cron (fase 7c/8). Documentado en `/metodologia`, `/transparencia`, `/ecosistema`.
+> - ✅ **Hero nuevo homepage**: "¿Es seguro viajar a...?" + buscador + CTAs "Ver mapa global" y "Recibir alertas gratis". Mapa separado debajo del hero.
+> - ✅ **TopBar**: Enlace "Mapa" añadido entre "Decidir" y "Blog".
+> - ✅ **Lead magnet semanal**: `/reporte-riesgo` con top 10 países con cambios/incidentes. Fallback dinámico con incidentes activos reales (no datos estáticos).
+> - ✅ **Newsletter popup**: Cambiado a "Reporte Semanal de Riesgo". Mensaje de éxito claro con enlace al reporte.
+> - ✅ **Cache AeroDataBox**: Caché en memoria 1h para `/api/airport-delays` y `/api/flights/verify-delay`. Reducción API esperada de ~85% a <10%.
+> - ✅ **Fix timeouts cron**: events 180→300s, news_sentiment 90→180s, Phase 1 global 300→360s.
+> - ✅ **Fix incidents API**: `created_at`→`detected_at` (columna real en Supabase).
+> - ✅ **Fix Radar TimelineChart**: `dynamic()` → import directo + loading skeleton.
+> - ✅ **Fix Onboarding**: `{TOTAL_PAISES}` corregido a template literal.
+> - ✅ **3 blog posts publicados (22-24 May)**: alertas Mayo 2026, guía OSINT, checklist fuentes.
+> - ✅ **10 posts a RRSS** vía admin: Telegram, Mastodon, Bluesky.
+> - ✅ **Seed países ejecutado**: Somalia, RCA, Sudán del Sur corregidos.
+> - ✅ **GSC validación**: 247 páginas validadas como corregidas.
+> - ✅ **Fix middleware 5xx + server-render + canonical**: confirmado funcional.
+> - ✅ **SEO audit H1**: script `scripts/seo_audit.py`. H1 faltantes/duplicados arreglados.
+> - ✅ **Reporte semanal fallback**: Ahora usa incidentes activos de la tabla `incidents` (dinámico), no datos estáticos de `paisesData`.
 
 ## 🔐 SERVIDOR HETZNER — Acceso SSH
 

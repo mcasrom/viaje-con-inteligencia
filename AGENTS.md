@@ -1,5 +1,23 @@
 # AGENTS.md — Viaje con Inteligencia
 
+## Today (23 May 2026) — Sprint UX + Lead Magnet + Estabilidad
+
+### Logros
+- **Hero nuevo homepage**: "¿Es seguro viajar a...?" + buscador + CTAs. Mapa separado debajo del hero (sin overlay oscuro). Complexity técnica oculta bajo el fold.
+- **TopBar**: Enlace "Mapa" añadido entre "Decidir" y "Blog" (icono globo verde). CTA "Ver mapa global" hace scroll suave al mapa `#mapa-global`.
+- **Lead magnet semanal**: `/reporte-riesgo` con top 10 países con cambios/incidentes de la semana. Botón "Guardar PDF" (window.print). Fallback dinámico con incidentes activos si no hay cambios MAEC.
+- **Reporte riesgo mejorado**: Ahora genera un resumen AI del panorama de riesgo semanal vía Groq (llama-3.1-8b-instant) al inicio del reporte — visible en web y en el email.
+- **Email reporte riesgo automático**: Al verificar la suscripción (doble opt-in), se envía automáticamente el reporte semanal de riesgo por email, no solo la bienvenida genérica. Email con tabla de 10 países, resumen AI, CTA al reporte completo.
+- **SEO Check en admin**: Nueva página `/admin/seo-check` que simula Googlebot en todas las URLs del sitemap, verifica indexabilidad (200, noindex, canonical), consulta caché de Google, y muestra actividad de crawlers desde Cloudflare Analytics + logs PM2. Sin API keys de Google.
+- **Newsletter popup**: Cambiado lead magnet de "Checklist de Viaje" a "Reporte Semanal de Riesgo". Mensaje de éxito claro con enlace directo al reporte.
+- **Cache AeroDataBox**: Caché en memoria 1h para `/api/airport-delays` y `/api/flights/verify-delay`. Reduce uso API de ~85% a <10%.
+- **Fix timeouts cron**: `events` 180→300s, `news_sentiment` 90→180s, Phase 1 global 300→360s.
+- **Fix incidents API**: Columna `created_at`→`detected_at` en `/api/v1/incidents`. Error "column does not exist" corregido.
+- **Fix Radar TimelineChart**: Cambiado de `dynamic()` import (fallaba silenciosamente) a import directo + loading skeleton.
+- **Fix gradiente mapa**: Opacidad reducida 90%→40%.
+- **Fix Onboarding**: `{TOTAL_PAISES}` renderizado como variable (era string literal).
+- **Deploy CI/CD**: 6 deploys exitosos. 1 fallo (NewsletterPopup) corregido en commit siguiente.
+
 ## Today (22 May 2026) — Sprint Indexación + RRSS
 
 ### Logros
