@@ -16,23 +16,7 @@ export default function Footer() {
   return (
     <footer className="bg-slate-900 border-t border-slate-800 py-12 mt-16">
       <div className="max-w-7xl mx-auto px-6">
-        <div className="bg-slate-800/50 rounded-xl p-6 mb-8 border border-slate-700">
-          <h4 className="font-semibold text-white mb-3 flex items-center gap-2">
-            <span className="text-2xl">👤</span>
-            {t('footer.aboutProject')}
-          </h4>
-          <p className="text-slate-300 text-sm leading-relaxed">
-            {t('footer.bio.p1')}
-          </p>
-          <p className="text-slate-400 text-sm leading-relaxed mt-2">
-            {t('footer.bio.p2')}
-          </p>
-          <p className="text-slate-400 text-sm leading-relaxed mt-2">
-            {t('footer.bio.p3')}
-          </p>
-        </div>
-
-        <div className="grid md:grid-cols-6 gap-8 mb-8">
+<div className="grid md:grid-cols-6 gap-8 mb-8">
           <div>
             <h3 className="text-lg font-bold text-white mb-1">Viaje con Inteligencia</h3>
             <p className="text-blue-400/70 text-xs font-medium tracking-wide mb-2">{t('slogan.tagline')}</p>
