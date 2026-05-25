@@ -1,31 +1,40 @@
 # Way Ahead
 
-## Última sesión: 25 May 2026 (noche) — Post Ebola + Fact-checking OMS + Server Rescue
+## Última sesión: 25 May 2026 — Post Ebola + Server Stability (FIX DEFINITIVO)
 
-> **Último deploy verificado:** OK ✅ (commit `101e2fa`)
+> **Último deploy verificado:** OK ✅ (commit `b45ddf9`, deploy GH Actions funcional)
 >
 > **Sprint activo:** Contenido editorial verificado + Server stability
 >
-> **Logros día (25 May noche):**
+> **Logros día (25 May):**
 >
-> - ✅ **Post Ebola creado**: `content/posts/ebola-turismo-internacional-crisis-sanitaria-africa.md` — 430 líneas, 1500+ palabras. Formato .md con SEO, frontmatter, enlaces a ecosistema. Commit `eb2682a`
-> - ✅ **Fact-checking contra OSINT y fuentes OMS**: Verificadas todas las afirmaciones contra WHO DON oficial, CDC HAN, RSS. PHEIC confirmada por DG Tedros el 16 Mayo 2026. Datos corregidos: "130 muertes" → 8 casos confirmados, 246 sospechosos, 80 muertes sospechosas (fuente WHO DON). Commit `eb2682a`
-> - ✅ **Imagen ecosistema añadida**: Screenshot del mapa de riesgo sanitario OMS → `public/screenshot-oms-riesgos-2026.png`. Referenciada al inicio del post. Commit `101e2fa`
-> - ✅ **Ebola data en paises-data.json actualizada**: 3 referencias en CD, CG, UG cambiadas de "Brote activo de Ebola" a "Riesgo sanitario" para reflejar estado actual. Commit `eb2682a`
-> - ✅ **Nota editor insertada**: Newsletter #39 + Posts RRSS via Supabase REST API directamente en `editor_notes`
-> - ✅ **Server rescue #2**: viajeinteligencia (id 13) en estado `errored` con 18 reinicios. Error: PM2 tenía config cacheada obsoleta (`script: /usr/bin/npm` en vez de `node_modules/next/dist/bin/next`). Causa raíz: PM2 no recargaba config del `ecosystem.config.cjs` tras deploy. Fix: `pm2 delete viajeinteligencia` + `pm2 start ecosystem.config.cjs --only viajeinteligencia` desde `/var/www/viajeinteligencia`. `pm2 save`
-> - ✅ **Commit + Push**: `eb2682a` (post + paises-data + WAY_AHEAD) y `101e2fa` (imagen post)
+> ### Contenido
+> - ✅ **Post Ebola creado**: `content/posts/ebola-turismo-internacional-crisis-sanitaria-africa.md` — 430+ líneas con SEO, frontmatter, enlaces ecosistema. Commit `eb2682a`
+> - ✅ **Fact-checking OSINT + OMS**: Verificadas todas las afirmaciones vs WHO DON, CDC HAN. PHEIC confirmada DG Tedros 16 Mayo. Datos corregidos: 8 confirmados, 246 sospechosos, 80 muertes. Commit `eb2682a`
+> - ✅ **Cronología Ebola virus mayo 2026**: Tabla con hitos reales 5-25 May (en vez de cronología del ecosistema). Commit `b1e5713`
+> - ✅ **Imagen mapa riesgo OMS**: `public/screenshot-oms-riesgos-2026.png` al inicio del post. Commit `101e2fa`
+> - ✅ **Ebola data en paises-data.json**: 3 referencias CD/CG/UG actualizadas. Commit `eb2682a`
+> - ✅ **Nota editor insertada**: Newsletter #39 + Posts RRSS via Supabase REST
+>
+> ### Server stability — FIX DEFINITIVO
+> - ✅ **Causa raíz #1**: `cron-catchup.ts` hardcodeaba `localhost:3001` → ECONNREFUSED en cada request SSR. Eliminado del layout (commit `abceeb7`)
+> - ✅ **Causa raíz #2**: `deploy.yml` usaba `pm2 startOrReload` que NO relee config del archivo si el proceso ya existe en `dump.pm2`. Cambiado a `pm2 delete + pm2 start` (commit `abceeb7`)
+> - ✅ **Causa raíz #3**: `ecosystem.config.js` con `args: "start -- --port 3000"` incorrecto. Sincronizado con `.cjs` (commit `abceeb7`)
+> - ✅ **Build corrupto**: `.next` de solo 1.9MB tras deploy previo (build falló silenciosamente). Rebuildeado manualmente: 676 rutas, 80s
+> - ✅ **Deploy GH Actions verificado**: Push dummy `b45ddf9` → build + delete + start + save → PID 192494, 0 reinicios, todas las rutas 200
+> - ✅ **PM2 save**: Config persistida tras cada deploy
 >
 > ### SSH
 > - **Usuario/IP**: `deploy@178.105.80.193`
 > - **CWD**: `/var/www/viajeinteligencia`
-> - **PM2**: Recargar config con `pm2 delete <app> && pm2 start ecosystem.config.cjs --only <app> && pm2 save`
-> - **Causa raíz caídas recurrentes**: PM2 cachea la config del proceso al hacer `pm2 save`. Cuando el deploy de GH Actions rsync los archivos, PM2 no relee el `ecosystem.config.cjs` automáticamente. Si la config cambió en git, PM2 sigue usando la vieja. Solución: siempre hacer `pm2 delete` + `pm2 start ecosystem.config.cjs` + `pm2 save` tras cada deploy que toque la config.
+> - **PM2**: `pm2 delete <app> && pm2 start ecosystem.config.cjs --only <app> && pm2 save`
+> - **Regla**: Si se toca `ecosystem.config.cjs` en git, el deploy workflow ya forza delete+start automáticamente. No tocar manualmente.
 >
 > ### Observaciones
-> - Post editorial verificado contra datos OMS reales (no inventado). Incluye referencias directas a WHO DON, PHEIC, CDC HAN
-> - La PHEIC fue declarada bajo art. 12 RSI (nueva clasificación pandemia). Primera vez que un DG declara PHEIC antes de convocar al Comité de Emergencia
-> - No hay vacuna ni tratamiento aprobado para cepa Bundibugyo — diferencia crítica con brotes de Ebola-Zaire previos
+> - Post editorial verificado contra datos OMS reales. Cronología del virus (no del ecosistema) en el post
+> - PHEIC declarada bajo art. 12 RSI (nueva clasificación pandemia). 1ª vez que DG declara PHEIC antes de convocar al Comité de Emergencia
+> - No hay vacuna ni tratamiento aprobado para cepa Bundibugyo
+> - Server estable tras los 4 fixes. Último deploy automático verificado funcional
 
 ## 25 May 2026 — Sprint Rendimiento + Cloudflare Analytics + Stripe Audit + Outreach
 
