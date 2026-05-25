@@ -1,12 +1,14 @@
 # Way Ahead
 
-## Última sesión: 24 May 2026 — Sprint UX + Lead Magnet + ML Post + Estabilidad
+## Última sesión: 24 May 2026 — Sprint UX + Lead Magnet + ML Post + Estabilidad + Groq Retry + Telegram Vincular + API Self-Service
 
-> **Último deploy verificado:** OK ✅ (commit `5e44123`)
+> **Último deploy verificado:** OK ✅ (commit `b52df69`)
 >
-> **Sprint activo:** UX + Lead Magnet + Indexación Google + Contenido
+> **Sprint activo:** UX + Lead Magnet + Indexación Google + Contenido + Estabilización Groq
 >
 > **Logros día (24 May):**
+>
+> **Mañana:**
 > - ✅ **Hero inglés `/en`**: Server-rendered con H1 "Is it safe to travel to...?" + CTAs en inglés
 > - ✅ **Fix `/reporte-riesgo` cache**: Cache-Control no-cache + fetch no-store. Bug "solo private window" corregido
 > - ✅ **Sync paises a Supabase**: Somalia, RCA, Sudán del Sur con `queHacer` correcto
@@ -15,8 +17,18 @@
 > - ✅ **Fix comparador seguros**: Zod schema rechazaba nombres de país (exigía código ISO 2 chars). Relajado min(2).max(50)
 > - ✅ **Blog post ML**: Publicado "Cómo entrenamos una IA para predecir riesgos de viaje en 136 países"
 > - ✅ **RRSS automatizado**: Post del ML blog a Mastodon, Bluesky y Telegram
-> - ✅ **X/Twitter**: Post manual del ML blog ✅
+> - ✅ **X/Twitter**: Post manual del ML blog
 > - ✅ **Outreach calendar**: X/Twitter marcado como completado
+>
+> **Tarde (sprint técnico):**
+> - ✅ **Crontab servidor + catchup**: Crontab Hetzner verificado + catchup al startup (si pasó 06:00 UTC, lanza cron automáticamente). Infografía #20 generada y publicada a RRSS
+> - ✅ **Descarga infografía**: Botón "Descargar" en detalle y listado de infografías (enlace directo a WebP en Supabase Storage)
+> - ✅ **Foto autor en manifiesto**: Círculo "M" reemplazado por `foto-autor.jpg` en `/manifiesto` (mismo estilo que homepage)
+> - ✅ **Groq retry con backoff**: Utilidad `withGroqRetry()` aplicada a los 9 módulos con llamadas a Groq (osint-sensor, events-groq, infografia, weekly-risk, newsletter, gen-doc, ai-assistant, reddit-generate, telegram). Backoff 1s→16s, 5 retries, jitter ±20%
+> - ✅ **Timeout news sentiment**: 180s→300s
+> - ✅ **Telegram vincular mejorado**: Botón "🔗 Vincular cuenta" en menú principal del bot, comando `/desvincular` (elimina `telegram_id` de profiles), badge "Telegram vinculado ✓" en dashboard y alertas
+> - ✅ **API self-service**: Formulario email → API Key gratis al instante en `/precio-api` (1.000 req/mes, sin Stripe, sin registro). Tier Free actualizado de 100→1.000 req/mes
+> - ✅ **Stripe sin cambios**: Se descarta crear nuevos productos en Stripe. API Pro (4.99€) funciona con checkout existente. Enterprise solo contacto email. Stripe no se toca más
 
 ## 🔐 SERVIDOR HETZNER — Acceso SSH
 

@@ -1,7 +1,9 @@
 import { Globe, Bell } from 'lucide-react';
 import Link from 'next/link';
-import HeroSearch from '@/components/HeroSearch';
-import HomeBelowFold from '@/components/HomeBelowFold';
+import dynamic from 'next/dynamic';
+
+const HeroSearch = dynamic(() => import('@/components/HeroSearch'), { ssr: true });
+const HomeBelowFold = dynamic(() => import('@/components/HomeBelowFold'), { ssr: true });
 
 export default function HomePage() {
   return (

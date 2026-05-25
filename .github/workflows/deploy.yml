@@ -9,6 +9,15 @@ jobs:
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # needed for changelog
+
+      - name: Generate daily changelog
+        run: |
+          SINCE=$(date -u -d '06:00 UTC' '+%Y-%m-%d %H:%M')
+          git log --since="$SINCE" --format="- \`%h\` %s" > CAMBIOS_HOY.md
+          echo -e "\n---\nGenerado: $(date -u '+%Y-%m-%d %H:%M UTC') | Periodo: desde $SINCE" >> CAMBIOS_HOY.md
+          echo "✅ CAMBIOS_HOY.md generado ($(wc -l < CAMBIOS_HOY.md) líneas)"
 
       - name: Deploy to Hetzner
         env:

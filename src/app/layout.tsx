@@ -5,7 +5,7 @@ import dynamic from "next/dynamic";
 import { headers } from "next/headers";
 import Providers from "@/components/Providers";
 import TopBar from "@/components/TopBar";
-import Footer from "@/components/Footer";
+const Footer = dynamic(() => import("@/components/Footer"), { ssr: true });
 import { initPaisesData } from "@/lib/paises-init";
 import { initRutasData } from "@/lib/rutas-init";
 import { initClusteringData } from "@/lib/clustering-init";
@@ -99,7 +99,7 @@ export default async function RootLayout({
   const userAgent = headersList.get('user-agent') || '';
   const isBot = BOT_PATTERNS.test(userAgent);
 
-  await Promise.all([
+  Promise.all([
     initPaisesData(), 
     initRutasData(), 
     initClusteringData(), 
@@ -107,7 +107,7 @@ export default async function RootLayout({
     initSeasonalityData(), 
     initSegurosData(),
     checkCronCatchup(),
-  ]);
+  ]).catch(() => {});
   
   return (
     <html lang="es">

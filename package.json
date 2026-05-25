@@ -11,6 +11,7 @@
     "test": "npm run test:unit && npm run test:smoke",
     "test:unit": "jest",
     "test:smoke": "node --import tsx src/test-smoke.ts",
+    "changelog": "bash scripts/changelog-diario.sh",
     "predeploy": "npm run check"
   },
   "dependencies": {

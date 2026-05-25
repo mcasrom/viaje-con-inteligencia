@@ -57,3 +57,5 @@ scripts/
 supabase/.temp/
 train-rf*
 Foto_autor.png
+https*.zip
+https*

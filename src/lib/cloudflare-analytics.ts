@@ -85,25 +85,11 @@ function buildCsv(rows: Record<string, string | number>[]): string {
 }
 
 async function fetchGraphql(): Promise<{ totals: CfTotals; countries: CfCountry[]; topPaths: CfTopPath[] } | null> {
-  const since = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
-  const until = new Date().toISOString();
   const sinceDay = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+
   const query = {
     query: `{
-      hourly: viewer {
-        zones(filter: {zoneTag: "${CF_ZONE_ID}"}) {
-          httpRequests1hGroups(
-            limit: 168
-            filter: {datetime_gt: "${since}", datetime_lt: "${until}"}
-            orderBy: [datetime_DESC]
-          ) {
-            dimensions { datetime }
-            sum { requests bytes threats pageViews cachedRequests encryptedRequests }
-            uniq { uniques }
-          }
-        }
-      }
-      daily: viewer {
+      viewer {
         zones(filter: {zoneTag: "${CF_ZONE_ID}"}) {
           httpRequests1dGroups(
             limit: 7
@@ -111,25 +97,8 @@ async function fetchGraphql(): Promise<{ totals: CfTotals; countries: CfCountry[
             orderBy: [date_DESC]
           ) {
             dimensions { date }
-            sum {
-              requests
-              countryMap {
-                clientCountryName
-                requests
-              }
-            }
-          }
-        }
-      }
-      paths: viewer {
-        zones(filter: {zoneTag: "${CF_ZONE_ID}"}) {
-          httpRequests1hGroups(
-            limit: 168
-            filter: {datetime_gt: "${since}", datetime_lt: "${until}"}
-            orderBy: [datetime_DESC]
-          ) {
-            dimensions { datetime clientRequestPath }
-            sum { requests }
+            sum { requests bytes threats pageViews cachedRequests encryptedRequests countryMap { clientCountryName requests } }
+            uniq { uniques }
           }
         }
       }
@@ -150,28 +119,21 @@ async function fetchGraphql(): Promise<{ totals: CfTotals; countries: CfCountry[
       log.warn('GraphQL API errors', json.errors);
       return null;
     }
-    const hourly = json.data?.hourly?.zones?.[0]?.httpRequests1hGroups || [];
-    const daily = json.data?.daily?.zones?.[0]?.httpRequests1dGroups || [];
-    const pathGroups = json.data?.paths?.zones?.[0]?.httpRequests1hGroups || [];
-    if (!hourly.length) {
-      log.warn('GraphQL returned empty hourly data');
+    const groups = json.data?.viewer?.zones?.[0]?.httpRequests1dGroups || [];
+    if (!groups.length) {
+      log.warn('GraphQL returned empty daily data');
       return null;
     }
     let totalRequests = 0, totalBytes = 0, totalThreats = 0, totalPageViews = 0, totalUniques = 0, totalEncrypted = 0, totalCached = 0;
-    hourly.forEach((g: any) => {
+    const countryAgg = new Map<string, number>();
+    for (const g of groups) {
       totalRequests += g.sum?.requests || 0;
       totalBytes += g.sum?.bytes || 0;
       totalThreats += g.sum?.threats || 0;
       totalPageViews += g.sum?.pageViews || 0;
       totalEncrypted += g.sum?.encryptedRequests || 0;
       totalCached += g.sum?.cachedRequests || 0;
-    });
-    const uniqueHrs = hourly.filter((g: any) => g.uniq?.uniques).length || 1;
-    totalUniques = Math.round(hourly.reduce((a: number, g: any) => a + (g.uniq?.uniques || 0), 0) / uniqueHrs * 24);
-
-    // Aggregate countryMap across days
-    const countryAgg = new Map<string, number>();
-    for (const g of daily) {
+      totalUniques += g.uniq?.uniques || 0;
       for (const c of g.sum?.countryMap || []) {
         const name = c.clientCountryName || 'ZZ';
         countryAgg.set(name, (countryAgg.get(name) || 0) + c.requests);
@@ -182,16 +144,8 @@ async function fetchGraphql(): Promise<{ totals: CfTotals; countries: CfCountry[
       .map(([country, requests]) => ({ country, requests, pct: totalCountry > 0 ? Math.round((requests / totalCountry) * 1000) / 10 : 0 }))
       .sort((a, b) => b.requests - a.requests);
 
-    // Aggregate paths
-    const pathAgg = new Map<string, number>();
-    for (const g of pathGroups) {
-      const path = g.dimensions?.clientRequestPath || '(unknown)';
-      pathAgg.set(path, (pathAgg.get(path) || 0) + (g.sum?.requests || 0));
-    }
-    const topPaths: CfTopPath[] = [...pathAgg.entries()]
-      .map(([path, requests]) => ({ path, requests }))
-      .sort((a, b) => b.requests - a.requests)
-      .slice(0, 20);
+    // Top paths not available in free Cloudflare plan (clientRequestPath field not supported)
+    const topPaths: CfTopPath[] = [];
 
     return {
       totals: {
@@ -331,6 +285,19 @@ export async function runCloudflareAnalytics(): Promise<{ stored: boolean; summa
   } catch (err) {
     log.error('Supabase insert failed', err);
     return { stored: false, summary };
+  }
+}
+
+export async function hasWeeklyAnalytics(weekStart: string): Promise<boolean> {
+  try {
+    const { data, error } = await supabaseAdmin
+      .from('cloudflare_analytics')
+      .select('id')
+      .eq('week_start', weekStart)
+      .maybeSingle();
+    return !!(!error && data);
+  } catch {
+    return false;
   }
 }
 

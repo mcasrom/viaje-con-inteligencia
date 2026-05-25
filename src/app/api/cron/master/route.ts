@@ -811,13 +811,14 @@ async function runInfografiaGenerator(): Promise<any> {
   }
 }
 
-// ===== CLOUDFLARE ANALYTICS (weekly on Sundays) =====
+// ===== CLOUDFLARE ANALYTICS (runs when no data for current week) =====
 async function runCloudflareAnalytics(): Promise<any> {
-  const day = new Date().getDay();
-  if (day !== 0) return { status: 'skipped', reason: 'Not Sunday' };
-
   try {
-    const { runCloudflareAnalytics: cfRun } = await import('@/lib/cloudflare-analytics');
+    const { runCloudflareAnalytics: cfRun, hasWeeklyAnalytics } = await import('@/lib/cloudflare-analytics');
+    const weekStart = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+    const existing = await hasWeeklyAnalytics(weekStart);
+    if (existing) return { status: 'skipped', reason: 'Already have data for this week' };
+
     const result = await cfRun();
 
     if (result.stored) {
