@@ -70,6 +70,19 @@ const nextConfig: NextConfig = {
         source: '/_next/static/:path*',
         headers: [
           { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
+          { key: 'X-Robots-Tag', value: 'noindex' },
+        ],
+      },
+      {
+        source: '/feed.xml',
+        headers: [
+          { key: 'X-Robots-Tag', value: 'noindex' },
+        ],
+      },
+      {
+        source: '/sitemap.xml',
+        headers: [
+          { key: 'X-Robots-Tag', value: 'noindex' },
         ],
       },
       {
