@@ -41,6 +41,7 @@ export default function Footer() {
             <ul className="space-y-2 text-sm">
               <li><Link href="/lead-magnet" className="text-slate-400 hover:text-white transition-colors">Checklist Premium</Link></li>
               <li><Link href="/premium" className="text-slate-400 hover:text-white transition-colors">Premium</Link></li>
+              <li><Link href="/newsletter" className="text-slate-400 hover:text-white transition-colors">Newsletter Semanal</Link></li>
               <li><Link href="/infografias" className="text-slate-400 hover:text-white transition-colors">Infografías Semanales</Link></li>
               <li><Link href="/api-endpoints" className="text-slate-400 hover:text-white transition-colors">API Pública</Link></li>
               <li><Link href="/coste/seguros" className="text-slate-400 hover:text-white transition-colors">Seguro Viaje</Link></li>
