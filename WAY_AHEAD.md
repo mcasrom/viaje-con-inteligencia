@@ -1,6 +1,26 @@
 # Way Ahead
 
-## Última sesión: 25 May 2026 — Sprint Rendimiento + Cloudflare Analytics + Stripe Audit + Outreach
+## Última sesión: 25 May 2026 (tarde) — Sprint Newsletter Pública + Estabilidad Server
+
+> **Último deploy verificado:** OK ✅ (commit `1e12977`)
+>
+> **Sprint activo:** Newsletter pública + Server stability
+>
+> **Logros día (25 May tarde):**
+>
+> - ✅ **Página `/newsletter` pública**: Creada en `src/app/newsletter/page.tsx`. Muestra la última newsletter desde Supabase `newsletter_history` + formulario de suscripción (`NewsletterSignup`). Metadata OG. Commit `151f156`
+> - ✅ **Onboarding chunk fix**: Build stale — faltaba chunk de `Onboarding.tsx` en `.next/`. Página daba `ChunkLoadError`. Solución: `npm run build` en servidor
+> - ✅ **Fix raíz server instability**: El deploy de GitHub Actions usa `ecosystem.config.cjs` (no `.js`). Tenía `PORT: 3001`. Cada deploy reseteaba el puerto → 502 tras cada push. Corregido: `ecosystem.config.cjs` con `PORT: 3000` + `args: 'start --port 3000'`. Commit `1e12977`
+> - ✅ **PM2 rescue**: `pm2 delete viajeinteligencia` + `pm2 start ecosystem.config.js` desde cwd correcto (`--cwd /var/www/viajeinteligencia`). `pm2 save --force`
+> - ✅ **Rebuild completo**: `.next` eliminado, build fresco con 674 rutas (incluye `/newsletter`)
+> - ✅ **Auto-heal cron** existente verificado: `scripts/health-check.sh` cada 10 min en crontab, corrige 502/port mismatch automáticamente
+>
+> ### Observaciones
+> - Los newsletter frontend pages creados server-side se borraron con `rsync --delete` del deploy workflow. Ahora `page.tsx` está en git, sobrevive deploys
+> - Newsletter API routes (`/api/newsletter/*`) existen en git y funcionan (preview: 200, latest: 200, subscribe: 200)
+> - El `ecosystem.config.cjs` y `.js` ahora sincronizados: ambos usan PORT 3000. Deploy workflow usa `.cjs`
+
+## 25 May 2026 — Sprint Rendimiento + Cloudflare Analytics + Stripe Audit + Outreach
 
 > **Último deploy verificado:** OK ✅ (commit `7b42309`)
 >
@@ -734,4 +754,4 @@ Evaluación honesta del estado actual del proyecto en cada dimensión:
 
 ---
 
-*Actualizado: 24 May 2026 — revisión completa*
+*Actualizado: 25 May 2026 (tarde) — newsletter pública + estabilidad server*

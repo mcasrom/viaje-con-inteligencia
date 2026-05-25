@@ -1502,7 +1502,7 @@
           "categoria": "Seguridad",
           "icon": "⚠️",
           "items": [
-            "Brote activo de Ebola Bundibugyo (PHEIC)",
+            "Riesgo sanitario: Ebola — brotes esporádicos en regiones remotas",
             "Conflicto armado en Ituri y Kivu del Norte",
             "No viajar salvo extrema necesidad",
             "Embajada con capacidad limitada"
@@ -1683,7 +1683,7 @@
           "categoria": "Seguridad",
           "icon": "⚠️",
           "items": [
-            "Posibles brotes de Ebola en zonas fronterizas",
+            "Riesgo sanitario: Ebola — vigilancia en frontera con RDC",
             "Criminalidad urbana en Brazzaville",
             "Evitar viajes nocturnos"
           ]
@@ -10854,7 +10854,7 @@
           "categoria": "Seguridad",
           "icon": "⚠️",
           "items": [
-            "Casos confirmados de Ebola Bundibugyo",
+            "Riesgo sanitario: Ebola — brotes históricos, vigilancia activa",
             "Frontera con RDC en alerta sanitaria",
             "Evitar zonas fronterizas con RDC y Sudán del Sur",
             "Seguridad urbana vigilante"
