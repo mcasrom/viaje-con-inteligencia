@@ -22,9 +22,12 @@ const EXCLUIR = new Set([
   '/radius',
   '/relojes',
   '/lead-magnet',
-  '/precio-api',
-  '/reclamaciones',
 ]);
+
+// Cache en memoria para el sitemap (se regenera cada 6h)
+let cachedXml: string | null = null;
+let cacheTimestamp = 0;
+const CACHE_TTL = 6 * 60 * 60 * 1000; // 6 horas
 
 // Prioridad por ruta
 function getPriority(ruta: string): string {
@@ -78,6 +81,19 @@ function getStaticRoutes(): string[] {
 }
 
 export async function GET() {
+  const now = Date.now();
+
+  // Servir cache si está fresco
+  if (cachedXml && (now - cacheTimestamp) < CACHE_TTL) {
+    return new NextResponse(cachedXml, {
+      status: 200,
+      headers: {
+        'Content-Type': 'application/xml',
+        'Cache-Control': 'public, max-age=86400, stale-while-revalidate=604800',
+      },
+    });
+  }
+
   const today = new Date().toISOString().split('T')[0];
 
   try {
@@ -105,18 +121,22 @@ export async function GET() {
 
     const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}</urlset>`;
 
+    // Guardar en cache
+    cachedXml = xml;
+    cacheTimestamp = now;
+
     return new NextResponse(xml, {
       status: 200,
       headers: {
         'Content-Type': 'application/xml',
-        'Cache-Control': 'public, max-age=3600, stale-while-revalidate=86400',
+        'Cache-Control': 'public, max-age=86400, stale-while-revalidate=604800',
       },
     });
   } catch (error) {
     console.error('Sitemap error:', error);
     return new NextResponse(
       `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n  <url>\n    <loc>${BASE_URL}</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>1.0</priority>\n  </url>\n</urlset>`,
-      { status: 200, headers: { 'Content-Type': 'application/xml' } }
+      { status: 200, headers: { 'Content-Type': 'application/xml', 'Cache-Control': 'public, max-age=3600' } }
     );
   }
 }
