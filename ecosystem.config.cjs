@@ -2,11 +2,11 @@ module.exports = {
   apps: [{
     name: 'viajeinteligencia',
     script: 'node_modules/next/dist/bin/next',
-    args: 'start',
+    args: 'start --port 3000',
     cwd: '/var/www/viajeinteligencia',
     env: {
       NODE_ENV: 'production',
-      PORT: 3001,
+      PORT: 3000,
     },
     instances: 1,
     exec_mode: 'fork',
