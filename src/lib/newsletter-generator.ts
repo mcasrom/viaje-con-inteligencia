@@ -160,7 +160,8 @@ export async function collectNewsletterData(): Promise<NewsletterIssue> {
     .from('osint_signals')
     .select('country_code, tone_score')
     .gte('post_timestamp', weekAgo)
-    .not('tone_score', 'is', null);
+    .not('tone_score', 'is', null)
+    .limit(500);
 
   const sentimentMap = new Map<string, { sum: number; count: number }>();
   for (const s of (sentimentRaw || []) as { country_code?: string; tone_score?: number }[]) {
