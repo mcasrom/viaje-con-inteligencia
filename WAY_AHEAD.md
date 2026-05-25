@@ -1,24 +1,31 @@
 # Way Ahead
 
-## Última sesión: 25 May 2026 (tarde) — Sprint Newsletter Pública + Estabilidad Server
+## Última sesión: 25 May 2026 (noche) — Post Ebola + Fact-checking OMS + Server Rescue
 
-> **Último deploy verificado:** OK ✅ (commit `1e12977`)
+> **Último deploy verificado:** OK ✅ (commit `101e2fa`)
 >
-> **Sprint activo:** Newsletter pública + Server stability
+> **Sprint activo:** Contenido editorial verificado + Server stability
 >
-> **Logros día (25 May tarde):**
+> **Logros día (25 May noche):**
 >
-> - ✅ **Página `/newsletter` pública**: Creada en `src/app/newsletter/page.tsx`. Muestra la última newsletter desde Supabase `newsletter_history` + formulario de suscripción (`NewsletterSignup`). Metadata OG. Commit `151f156`
-> - ✅ **Onboarding chunk fix**: Build stale — faltaba chunk de `Onboarding.tsx` en `.next/`. Página daba `ChunkLoadError`. Solución: `npm run build` en servidor
-> - ✅ **Fix raíz server instability**: El deploy de GitHub Actions usa `ecosystem.config.cjs` (no `.js`). Tenía `PORT: 3001`. Cada deploy reseteaba el puerto → 502 tras cada push. Corregido: `ecosystem.config.cjs` con `PORT: 3000` + `args: 'start --port 3000'`. Commit `1e12977`
-> - ✅ **PM2 rescue**: `pm2 delete viajeinteligencia` + `pm2 start ecosystem.config.js` desde cwd correcto (`--cwd /var/www/viajeinteligencia`). `pm2 save --force`
-> - ✅ **Rebuild completo**: `.next` eliminado, build fresco con 674 rutas (incluye `/newsletter`)
-> - ✅ **Auto-heal cron** existente verificado: `scripts/health-check.sh` cada 10 min en crontab, corrige 502/port mismatch automáticamente
+> - ✅ **Post Ebola creado**: `content/posts/ebola-turismo-internacional-crisis-sanitaria-africa.md` — 430 líneas, 1500+ palabras. Formato .md con SEO, frontmatter, enlaces a ecosistema. Commit `eb2682a`
+> - ✅ **Fact-checking contra OSINT y fuentes OMS**: Verificadas todas las afirmaciones contra WHO DON oficial, CDC HAN, RSS. PHEIC confirmada por DG Tedros el 16 Mayo 2026. Datos corregidos: "130 muertes" → 8 casos confirmados, 246 sospechosos, 80 muertes sospechosas (fuente WHO DON). Commit `eb2682a`
+> - ✅ **Imagen ecosistema añadida**: Screenshot del mapa de riesgo sanitario OMS → `public/screenshot-oms-riesgos-2026.png`. Referenciada al inicio del post. Commit `101e2fa`
+> - ✅ **Ebola data en paises-data.json actualizada**: 3 referencias en CD, CG, UG cambiadas de "Brote activo de Ebola" a "Riesgo sanitario" para reflejar estado actual. Commit `eb2682a`
+> - ✅ **Nota editor insertada**: Newsletter #39 + Posts RRSS via Supabase REST API directamente en `editor_notes`
+> - ✅ **Server rescue #2**: viajeinteligencia (id 13) en estado `errored` con 18 reinicios. Error: PM2 tenía config cacheada obsoleta (`script: /usr/bin/npm` en vez de `node_modules/next/dist/bin/next`). Causa raíz: PM2 no recargaba config del `ecosystem.config.cjs` tras deploy. Fix: `pm2 delete viajeinteligencia` + `pm2 start ecosystem.config.cjs --only viajeinteligencia` desde `/var/www/viajeinteligencia`. `pm2 save`
+> - ✅ **Commit + Push**: `eb2682a` (post + paises-data + WAY_AHEAD) y `101e2fa` (imagen post)
+>
+> ### SSH
+> - **Usuario/IP**: `deploy@178.105.80.193`
+> - **CWD**: `/var/www/viajeinteligencia`
+> - **PM2**: Recargar config con `pm2 delete <app> && pm2 start ecosystem.config.cjs --only <app> && pm2 save`
+> - **Causa raíz caídas recurrentes**: PM2 cachea la config del proceso al hacer `pm2 save`. Cuando el deploy de GH Actions rsync los archivos, PM2 no relee el `ecosystem.config.cjs` automáticamente. Si la config cambió en git, PM2 sigue usando la vieja. Solución: siempre hacer `pm2 delete` + `pm2 start ecosystem.config.cjs` + `pm2 save` tras cada deploy que toque la config.
 >
 > ### Observaciones
-> - Los newsletter frontend pages creados server-side se borraron con `rsync --delete` del deploy workflow. Ahora `page.tsx` está en git, sobrevive deploys
-> - Newsletter API routes (`/api/newsletter/*`) existen en git y funcionan (preview: 200, latest: 200, subscribe: 200)
-> - El `ecosystem.config.cjs` y `.js` ahora sincronizados: ambos usan PORT 3000. Deploy workflow usa `.cjs`
+> - Post editorial verificado contra datos OMS reales (no inventado). Incluye referencias directas a WHO DON, PHEIC, CDC HAN
+> - La PHEIC fue declarada bajo art. 12 RSI (nueva clasificación pandemia). Primera vez que un DG declara PHEIC antes de convocar al Comité de Emergencia
+> - No hay vacuna ni tratamiento aprobado para cepa Bundibugyo — diferencia crítica con brotes de Ebola-Zaire previos
 
 ## 25 May 2026 — Sprint Rendimiento + Cloudflare Analytics + Stripe Audit + Outreach
 
