@@ -36,6 +36,12 @@
 > - No hay vacuna ni tratamiento aprobado para cepa Bundibugyo
 > - Server estable tras los 4 fixes. Último deploy automático verificado funcional
 
+## Próximo sprint (26 May) — Newsletter link + Comparaciones erróneas + Infografías
+
+- [ ] **Enlace a newsletter**: Añadir link a `/newsletter` en footer, TopBar, o landing page. Pendiente desde que se creó la página.
+- [ ] **Comparaciones erróneas**: Revisar página de comparación de países — probablemente datos incorrectos o rotos tras cambios en paises-data.json.
+- [ ] **Infografías**: Página `/infografias` existe pero puede tener datos desactualizados o rotos tras los cambios de riesgo sanitario y Ebola.
+
 ## 25 May 2026 — Sprint Rendimiento + Cloudflare Analytics + Stripe Audit + Outreach
 
 > **Último deploy verificado:** OK ✅ (commit `7b42309`)
