@@ -15,6 +15,8 @@ canonical: "https://www.viajeinteligencia.com/blog/ebola-turismo-internacional-c
 
 # Ébola y turismo internacional: cómo afecta la crisis sanitaria en África a los viajeros, al turismo global y a la geopolítica sanitaria
 
+![Mapa de riesgo sanitario OMS — Mayo 2026. Captura de nuestro ecosistema ViajeInteligencia mostrando los niveles de riesgo sanitario por país según la clasificación de la Organización Mundial de la Salud.](/screenshot-oms-riesgos-2026.png)
+
 > El turismo internacional del futuro estará cada vez más condicionado no solo por guerras o crisis económicas, sino también por amenazas biológicas, resiliencia sanitaria y capacidad de respuesta global.
 
 El resurgimiento del ébola en África Central vuelve a poner sobre la mesa una cuestión crítica para el turismo internacional: ¿cómo impacta una crisis sanitaria de alta mortalidad en la movilidad global, en los viajeros y en la percepción de seguridad internacional?
