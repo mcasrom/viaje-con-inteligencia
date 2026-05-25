@@ -1,22 +1,10 @@
 import { NextResponse } from 'next/server';
+import { getCached, setCache } from '@/lib/aerodatabox-cache';
 
 const FLIGHTLABS_API_KEY = process.env.FLIGHTLABS_API_KEY || '';
 const FLIGHTSTATS_API_KEY = process.env.FLIGHTSTATS_API_KEY || '';
 
-// In-memory cache with TTL
-const apiCache = new Map<string, { data: any; expiry: number }>();
-const CACHE_TTL_MS = 60 * 60 * 1000; // 1 hour
-
-function getCached<T>(key: string): T | null {
-  const entry = apiCache.get(key);
-  if (entry && entry.expiry > Date.now()) return entry.data as T;
-  apiCache.delete(key);
-  return null;
-}
-
-function setCache(key: string, data: any): void {
-  apiCache.set(key, { data, expiry: Date.now() + CACHE_TTL_MS });
-}
+const CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
 
 const AIRPORT_NAMES_ES: Record<string, string> = {
   'MAD': 'Adolfo Suarez Madrid-Barajas',
@@ -131,8 +119,8 @@ interface DelayData {
 async function fetchAeroDataBox(airportCode: string): Promise<DelayData | null> {
   if (!FLIGHTLABS_API_KEY) return null;
 
-  const cacheKey = `aerodatabox:${airportCode}`;
-  const cached = getCached<DelayData>(cacheKey);
+  const cacheKey = `airport:${airportCode}`;
+  const cached = await getCached<DelayData>(cacheKey, CACHE_TTL_MS);
   if (cached) return cached;
 
   try {
@@ -162,7 +150,7 @@ async function fetchAeroDataBox(airportCode: string): Promise<DelayData | null> 
         lastUpdated: new Date().toISOString(),
         source: 'AeroDataBox',
       };
-      setCache(cacheKey, result);
+      await setCache(cacheKey, result, CACHE_TTL_MS);
       return result;
     }
   } catch (e) {

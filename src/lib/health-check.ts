@@ -95,17 +95,6 @@ export async function runHealthChecks(): Promise<HealthResult[]> {
     }).then(r => r.status < 500);
   });
 
-  await check('FlightLabs / AeroDataBox', () => {
-    if (!process.env.FLIGHTLABS_API_KEY) return Promise.resolve(false);
-    return fetch('https://aerodatabox.p.rapidapi.com/flights/Number/IB3456/2026-05-15', {
-      headers: {
-        'x-rapidapi-key': process.env.FLIGHTLABS_API_KEY,
-        'x-rapidapi-host': 'aerodatabox.p.rapidapi.com',
-      },
-      signal: AbortSignal.timeout(10000),
-    }).then(r => r.status !== 503 && r.status !== 403);
-  });
-
   await check('OpenSky Network', () =>
     fetch('https://opensky-network.org/api/states/all?lamin=40&lamax=45&lomin=-10&lomax=5', {
       signal: AbortSignal.timeout(10000),

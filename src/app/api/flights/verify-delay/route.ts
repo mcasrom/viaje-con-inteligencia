@@ -1,24 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createLogger } from '@/lib/logger';
+import { getCached, setCache } from '@/lib/aerodatabox-cache';
 
 const log = createLogger('VerifyDelay');
 const FLIGHTLABS_API_KEY = process.env.FLIGHTLABS_API_KEY || '';
 const AERODATABOX_URL = 'https://aerodatabox.p.rapidapi.com';
 
-// In-memory cache with TTL
-const apiCache = new Map<string, { data: any; expiry: number }>();
-const CACHE_TTL_MS = 60 * 60 * 1000; // 1 hour
-
-function getCached<T>(key: string): T | null {
-  const entry = apiCache.get(key);
-  if (entry && entry.expiry > Date.now()) return entry.data as T;
-  apiCache.delete(key);
-  return null;
-}
-
-function setCache(key: string, data: any): void {
-  apiCache.set(key, { data, expiry: Date.now() + CACHE_TTL_MS });
-}
+const CACHE_TTL_MS = 6 * 60 * 60 * 1000; // 6 hours
 
 export const dynamic = 'force-dynamic';
 
@@ -85,7 +73,7 @@ export async function GET(request: NextRequest) {
   try {
     const flightNumber = parseFlightNumber(flight);
     const cacheKey = `verify:${flightNumber}:${date}`;
-    const cached = getCached<VerifyResult>(cacheKey);
+    const cached = await getCached<VerifyResult>(cacheKey, CACHE_TTL_MS);
     if (cached) return NextResponse.json(cached);
 
     const url = `${AERODATABOX_URL}/flights/Number/${encodeURIComponent(flightNumber)}/${date}?dateLocalRole=Departure`;
@@ -98,7 +86,7 @@ export async function GET(request: NextRequest) {
     });
 
     if (res.status === 204) {
-      setCache(cacheKey, { ...result, found: false, success: true });
+      await setCache(cacheKey, { ...result, found: false, success: true }, CACHE_TTL_MS);
       return NextResponse.json({ ...result, found: false, success: true });
     }
 
@@ -109,7 +97,7 @@ export async function GET(request: NextRequest) {
     const data: any[] = await res.json();
 
     if (!data || data.length === 0) {
-      setCache(cacheKey, { ...result, found: false, success: true });
+      await setCache(cacheKey, { ...result, found: false, success: true }, CACHE_TTL_MS);
       return NextResponse.json({ ...result, found: false, success: true });
     }
 
@@ -142,7 +130,7 @@ export async function GET(request: NextRequest) {
 
     result.delayMinutes = result.departure.delay ?? result.arrival.delay ?? null;
 
-    setCache(cacheKey, result);
+    await setCache(cacheKey, result, CACHE_TTL_MS);
     return NextResponse.json(result);
   } catch (error: any) {
     log.error('Error verifying flight delay', error);

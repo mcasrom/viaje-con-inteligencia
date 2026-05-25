@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Geist } from "next/font/google";
 import "./globals.css";
+import Script from "next/script";
 import dynamic from "next/dynamic";
 import { headers } from "next/headers";
 import Providers from "@/components/Providers";
@@ -150,6 +151,13 @@ export default async function RootLayout({
           <AITravelAssistant />
           <Footer />
         </Providers>
+        <Script src={`https://www.googletagmanager.com/gtag/js?id=G-8JH6BXK1JG`} strategy="afterInteractive" />
+        <Script id="ga-init" strategy="afterInteractive">{`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-8JH6BXK1JG', { page_path: window.location.pathname });
+        `}</Script>
       </body>
     </html>
   );
