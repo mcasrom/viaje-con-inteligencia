@@ -129,7 +129,7 @@ export default function PremiumRiskMap({ infografiaId }: { infografiaId: string 
   return (
     <div className="bg-slate-900/50 border border-slate-700/50 rounded-xl overflow-hidden">
       {/* Toolbar */}
-      <div className="bg-slate-800/50 border-b border-slate-700/50 p-4">
+      <div className="bg-slate-800/50 border-b border-slate-700/50 p-4 relative z-10">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <Layers className="w-5 h-5 text-amber-400" />
@@ -236,7 +236,7 @@ export default function PremiumRiskMap({ infografiaId }: { infografiaId: string 
       </div>
 
       {/* Map */}
-      <div className="relative">
+      <div className="relative overflow-hidden">
         {error && (
           <div className="p-8 text-center">
             <AlertTriangle className="w-8 h-8 text-red-400 mx-auto mb-2" />
