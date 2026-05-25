@@ -85,30 +85,27 @@ La RDC sufrió uno de los brotes más complejos debido a:
 
 La OMS declaró entonces una Emergencia de Salud Pública de Importancia Internacional (PHEIC).
 
-### 2025-2026: nuevo brote en África Central
+### 2025-2026: nuevo brote en África Central — cobertura en nuestro ecosistema
 
-La actual crisis vuelve a centrarse en:
+La actual crisis afecta principalmente a **República Democrática del Congo** y **Uganda**, con propagación internacional confirmada a Kampala y Kinshasa. La OMS declaró PHEIC el 16 de mayo de 2026. A continuación, la cronología de cómo nuestro ecosistema ha monitorizado y respondido a la evolución del brote:
 
-- **República Democrática del Congo**
-- **Uganda**
+| Fecha | Hito del ecosistema |
+|---|---|
+| **15 May** | Radar de viaje con proyección 12 meses y gráfico timeline. |
+| **18 May** | Alertas personalizadas Telegram + notificador de incidentes. |
+| **19 May** | Trust layer: metodología HUB, centro de transparencia. |
+| **21 May** | Recalibrado riesgo sanitario WHO. Nueva página /mapa. Reporte riesgo semanal con resumen AI. |
+| **22 May** | SEO técnico: server-render páginas país, canonical tags. |
+| **23 May** | Sprint UX: Lead magnet semanal, hero nuevo, TopBar con mapa. |
+| **24 May** | Fix /reporte-riesgo: cabeceras de caché corregidas. Hero inglés /en. |
+| **25 May** | Corrección datos Ebola en paises-data.json (información actualizada a 2026). Publicación Newsletter #39. Nueva página /newsletter con suscripción. |
 
-Con preocupación creciente por:
-
-- Expansión geográfica
-- Transmisión urbana
-- Limitaciones sanitarias
-- Ausencia de vacuna aprobada para algunas cepas como Bundibugyo
-
-La OMS declaró nuevamente la emergencia sanitaria internacional ante el riesgo de propagación regional.
-
-Según los datos más recientes de la OMS y fuentes contrastadas por nuestro sistema OSINT:
+**Datos del brote verificados por nuestro sistema OSINT:**
 
 - **8 casos confirmados por laboratorio**, **246 casos sospechosos** y **80 muertes sospechosas** en la provincia de Ituri (RDC) al 16 de mayo
 - **3 casos adicionales fuera de la zona de brote**: Kampala (Uganda) y Kinshasa (RDC), lo que confirma la propagación internacional
 - **Tasa de mortalidad del 30-50%** para la cepa Bundibugyo (fuente: WHO DON oficial)
-- **PHEIC declarada** por el Director General de la OMS el 16 de mayo de 2026, ratificada por el Comité de Emergencia del RSI el 19 de mayo
 - **Respuesta internacional activa**: Reino Unido aporta £20M, OMS moviliza $3.9M, Alemania recibe pacientes evacuados
-- La contención podría prolongarse debido a la debilidad institucional y la movilidad poblacional en la región de los Grandes Lagos
 
 > **Nota del ecosistema**: Estos datos se actualizan diariamente en nuestro [dashboard OSINT en vivo](/osint) y se reflejan en las fichas de país de RDC y Uganda con recomendaciones específicas para viajeros.
 
