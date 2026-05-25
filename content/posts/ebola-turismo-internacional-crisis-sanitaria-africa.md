@@ -87,18 +87,19 @@ La OMS declaró entonces una Emergencia de Salud Pública de Importancia Interna
 
 ### 2025-2026: nuevo brote en África Central — cobertura en nuestro ecosistema
 
-La actual crisis afecta principalmente a **República Democrática del Congo** y **Uganda**, con propagación internacional confirmada a Kampala y Kinshasa. La OMS declaró PHEIC el 16 de mayo de 2026. A continuación, la cronología de cómo nuestro ecosistema ha monitorizado y respondido a la evolución del brote:
+La actual crisis afecta principalmente a **República Democrática del Congo** y **Uganda**, con propagación internacional confirmada a Kampala y Kinshasa. La OMS declaró PHEIC el 16 de mayo de 2026. A continuación, la cronología del brote activo de Ebola Bundibugyo en mayo de 2026, elaborada a partir de datos oficiales de la OMS y nuestro sistema OSINT:
 
-| Fecha | Hito del ecosistema |
+| Fecha | Hito del brote |
 |---|---|
-| **15 May** | Radar de viaje con proyección 12 meses y gráfico timeline. |
-| **18 May** | Alertas personalizadas Telegram + notificador de incidentes. |
-| **19 May** | Trust layer: metodología HUB, centro de transparencia. |
-| **21 May** | Recalibrado riesgo sanitario WHO. Nueva página /mapa. Reporte riesgo semanal con resumen AI. |
-| **22 May** | SEO técnico: server-render páginas país, canonical tags. |
-| **23 May** | Sprint UX: Lead magnet semanal, hero nuevo, TopBar con mapa. |
-| **24 May** | Fix /reporte-riesgo: cabeceras de caché corregidas. Hero inglés /en. |
-| **25 May** | Corrección datos Ebola en paises-data.json (información actualizada a 2026). Publicación Newsletter #39. Nueva página /newsletter con suscripción. |
+| **5 May** | OMS alertada de un brote de alta mortalidad por enfermedad desconocida en Mongbwalu, provincia de Ituri (RDC). Se reportan 4 trabajadores sanitarios fallecidos en 4 días. |
+| **14 May** | El INRB Kinshasa analiza 13 muestras de sangre de la zona sanitaria de Rwampara (Ituri). |
+| **15 May** | **Confirmación**: 8 de 13 muestras positivas para virus Bundibugyo (cepa de Ebola). El Ministerio de Salud de RDC declara oficialmente el 17º brote de Ebola en el país. Uganda confirma su primer caso importado en Kampala (varón congoleño fallecido). |
+| **16 May** | **PHEIC declarada**: El Director General de la OMS determina que el brote constituye una Emergencia de Salud Pública de Importancia Internacional (art. 12 RSI). Se confirma un segundo caso en Kampala y un caso en Kinshasa (viajero procedente de Ituri). |
+| **17 May** | La OMS publica la declaración oficial de PHEIC. CDC de EE.UU. emite alerta sanitaria (HAN) para clínicos y viajeros. |
+| **19 May** | Se reúne por primera vez el Comité de Emergencia del RSI para asesorar sobre recomendaciones temporales a los Estados Parte. |
+| **20 May** | El DG de la OMS comparece en rueda de prensa: confirma 246 casos sospechosos y 80 muertes. Aprueba $3.9M adicionales del Fondo de Contingencia para Emergencias. Avisa de que no hay vacuna ni tratamiento aprobado para Bundibugyo. |
+| **22 May** | El Comité de Emergencia emite las recomendaciones temporales oficiales para los Estados Parte. La OMS publica el primer informe semanal de situación. |
+| **25 May** | El brote continúa activo. La OMS mantiene la evaluación de riesgo como "alto" a nivel nacional y regional, "bajo" a nivel global. Sin vacuna ni tratamiento específico aprobado para la cepa Bundibugyo. |
 
 **Datos del brote verificados por nuestro sistema OSINT:**
 
