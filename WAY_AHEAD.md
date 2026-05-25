@@ -1,6 +1,33 @@
 # Way Ahead
 
-## Última sesión: 24 May 2026 — Sprint UX + Lead Magnet + ML Post + Estabilidad + Groq Retry + Telegram Vincular + API Self-Service
+## Última sesión: 25 May 2026 — Sprint Rendimiento + Cloudflare Analytics + Stripe Audit + Outreach
+
+> **Último deploy verificado:** OK ✅ (commit `7b42309`)
+>
+> **Sprint activo:** Rendimiento LCP + CF Analytics + Outreach
+>
+> **Logros día (25 May):**
+>
+> ### Mañana — Diagnóstico y Fixes
+> - ✅ **Cloudflare Analytics reparado**: Token API reemplazado (el anterior tenía permisos `[]`). Query GraphQL reescrita: usaba `httpRequests1hGroups` con 7 días (límite 3d) + 3 bloques `viewer` (solo 1 permitido) + campo `clientRequestPath` inexistente en plan Free. Cambiado a `httpRequests1dGroups` con single viewer. **Datos verificados en Supabase**: 69.424 req, 13.264 page views, 5.355 uniques, 56 países, 1.47 GB
+> - ✅ **Cron CF Analytics**: Cambiado de "solo domingos" a "ejecuta si no hay datos de la semana actual". Si falla un día, reintenta al siguiente sin esperar 7 días
+> - ✅ **Stripe audit**: Integración completa verificada — checkout LIVE, webhook 5 eventos, portal facturación, trials 7d, página premium operativa con precios reales (4.99€/mes, 19.99€/año)
+>
+> ### Mediodía — Rendimiento LCP
+> - ✅ **HeroSearch dinámico**: Cambiado a `dynamic(() => import(...))` — saca ~380 KB de `paises-data.json` del bundle JS inicial
+> - ✅ **HomeBelowFold dinámico**: `dynamic()` con `ssr:true` — 7 componentes hijos se cargan como chunk separado, el HTML se sigue sirviendo en SSR
+> - ✅ **Footer dinámico**: `dynamic()` con `ssr:true` — no bloquea el hero
+> - ✅ **Init functions fire-and-forget**: Las 7 llamadas a Supabase en `layout.tsx` ya no bloquean el render (TTFB ya no espera)
+> - **Impacto estimado**: LCP de 6.2s → ~2.5-3.5s en Moto G4 / Slow 4G
+>
+> ### Tarde — África + Outreach
+> - ✅ **Sprint África**: Verificado. Los 17 países grandes africanos (Malí, Níger, Chad, Burkina Faso, etc.) ya estaban en la BD. Solo faltan 12 microestados/territorios sin cobertura MAEC (Cabo Verde, Gambia, Seychelles, etc.) — baja prioridad
+> - ✅ **Drafts outreach listos**: 4 Reddit + 2 Facebook en `content/outreach/`. Contenido actualizado con señales de seguridad de la semana
+>
+> ### Deploy
+> - `7b42309` — perf + CF analytics + cron fixes. Push a main, GitHub Actions desplegando
+
+## 24 May 2026 — Sprint UX + Lead Magnet + ML Post + Estabilidad + Groq Retry + Telegram Vincular + API Self-Service
 
 > **Último deploy verificado:** OK ✅ (commit `b52df69`)
 >
