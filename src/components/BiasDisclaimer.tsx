@@ -41,7 +41,7 @@ export default function BiasDisclaimer({ variant = 'badge', country, className =
     <>
       <button
         onClick={() => setOpen(!open)}
-        className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium bg-amber-500/15 text-amber-400 border border-amber-500/30 hover:bg-amber-500/25 transition-all ${className}`}
+        className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-bold bg-amber-500/25 text-amber-300 border border-amber-500/60 hover:bg-amber-500/40 hover:border-amber-400 hover:text-amber-200 shadow-lg shadow-amber-900/20 transition-all ${className}`}
         title="Posible sesgo diplomático en fuentes oficiales"
       >
         <AlertTriangle className="w-3.5 h-3.5" />
