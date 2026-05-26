@@ -368,7 +368,7 @@ export async function GET(request: NextRequest) {
 
   if (action === 'verify' && token) {
     if (!isSupabaseAdminConfigured()) {
-      return NextResponse.redirect(new URL('/?newsletter=error', request.url));
+      return NextResponse.redirect(new URL('/?newsletter=error', BASE_URL));
     }
 
     const { data, error } = await supabaseAdmin
@@ -379,12 +379,12 @@ export async function GET(request: NextRequest) {
 
     if (error) {
       log.error('Error al buscar token de verificación', error);
-      return NextResponse.redirect(new URL('/?newsletter=error', request.url));
+      return NextResponse.redirect(new URL('/?newsletter=error', BASE_URL));
     }
 
     if (!data) {
       log.warn('Token de verificación no encontrado', { token: token.slice(0, 8) + '...' });
-      return NextResponse.redirect(new URL('/?newsletter=invalid_token', request.url));
+      return NextResponse.redirect(new URL('/?newsletter=invalid_token', BASE_URL));
     }
 
     if (!data.verified) {
@@ -401,7 +401,7 @@ export async function GET(request: NextRequest) {
       await sendRiskReportEmail(data.email, data.name || '');
     }
 
-    return NextResponse.redirect(new URL('/?newsletter=verified', request.url));
+    return NextResponse.redirect(new URL('/?newsletter=verified', BASE_URL));
   }
 
   if (action === 'unsubscribe') {
@@ -412,8 +412,8 @@ export async function GET(request: NextRequest) {
         .update({ verified: false, unsubscribed_at: new Date().toISOString() })
         .eq('email', email.toLowerCase());
     }
-    return NextResponse.redirect(new URL('/?newsletter=unsubscribed', request.url));
+    return NextResponse.redirect(new URL('/?newsletter=unsubscribed', BASE_URL));
   }
 
-  return NextResponse.redirect(new URL('/', request.url));
+  return NextResponse.redirect(new URL('/', BASE_URL));
 }
