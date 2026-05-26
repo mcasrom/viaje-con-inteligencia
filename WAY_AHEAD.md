@@ -180,6 +180,24 @@ curl -s http://178.105.80.193:3001/api/health
 
 **Regla:** `.env*` está excluido del rsync por seguridad. Cualquier cambio en vars de entorno requiere `scp` manual + `pm2 restart --update-env`.
 
+## 📊 MONITOREO — Uptime Kuma
+
+| Dato | Valor |
+|------|-------|
+| URL | `https://status.viajeinteligencia.com/dashboard` |
+| Puerto | `3002` (localhost) |
+| Contenedor | Docker: `louislam/uptime-kuma:latest` |
+| Estado | ✅ Healthy (up 19h+) |
+| Monitores | 6 (viajeinteligencia, georisk, georisk-api, georisk-next, gc-motors, kuma propio) |
+
+```bash
+# Ver estado
+curl -sS -o /dev/null -w "%{http_code}" "https://status.viajeinteligencia.com/dashboard"
+
+# Ver contenedor
+sudo docker ps | grep uptime-kuma
+```
+
 ---
 
 ## ⚠️ LECCIÓN CRÍTICA — DEPLOY OOM HETZNER (20 May 2026)
