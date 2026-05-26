@@ -536,10 +536,10 @@ Para probar authenticated endpoints se necesita sesión válida (vía browser).
 6. **Seguir con blog posts semanales** para contenido fresco
 7. **Reddit/Facebook outreach** desde drafts en `content/outreach/`
 
-## Done (24 May 2026)
-- Fix cache reporte-riesgo (private window bug)
-- Hero inglés server-rendered en `/en`
-- Sync paises a Supabase (SO, CF, SS con queHacer)
+## Done (26 May 2026) — Manifiesto + Reporte→Informe
+- **Manifiesto actualizado**: Reemplazado contenido español por nuevo manifiesto en inglés "Travel Intelligence: A New Phase for Viaje Inteligencia". Preservada foto de perfil.
+- **Reporte→Informe**: Sustituido "Reporte" por "Informe" en todos los textos visibles (NewsletterPopup, NewsletterToast, subscribe email, reporte-riesgo page, admin analytics).
+- Commits: `1876074` (manifiesto), `e34fd31` (reporte→informe)
 
 ## Recurring Tasks
 - **Daily (post-deploy)**: Verify `/api/cron/train-models` completes successfully (R² > 0.95, < 300s).
