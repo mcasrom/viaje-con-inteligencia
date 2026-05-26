@@ -889,6 +889,7 @@ El build de Next.js 16.2.6 en el VPS (Node v22.22.2, 3.7GB RAM) falla con SIGBUS
 | Commit | Descripción |
 |--------|-------------|
 | `c223f21` | Bias disclaimer + mobile zoom + geopolitical context (27 countries) |
+| `6f81813` | Fix: badge sesgo más visible (bold, borde grueso, sombra, ambar claro) |
 
 ### Técnico
 - Deploy: rsync directo al VPS + build con swap 8GB + PM2 restart
