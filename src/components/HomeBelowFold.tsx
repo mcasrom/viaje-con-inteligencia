@@ -18,6 +18,7 @@ import OilPriceWidget from '@/components/OilPriceWidget';
 import AirportDelaysWidget from '@/components/AirportDelaysWidget';
 import PreferencesSelector from '@/components/PreferencesSelector';
 import NewsletterPopup from '@/components/NewsletterPopup';
+import NewsletterToast from '@/components/NewsletterToast';
 import SloganPopup from '@/components/SloganPopup';
 import InfografiaHomeCard from '@/components/InfografiaHomeCard';
 
@@ -559,6 +560,7 @@ export default function HomeBelowFold() {
         </div>
       </section>
       <SloganPopup />
+      <NewsletterToast />
       <NewsletterPopup />
     </>
   );
