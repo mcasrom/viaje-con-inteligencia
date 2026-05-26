@@ -91,7 +91,7 @@ export default function AdminAnalyticsPage() {
           </h1>
           <div className="bg-slate-800 rounded-2xl border border-slate-700 p-12 text-center">
             <p className="text-slate-400 text-lg mb-4">No hay datos de Cloudflare Analytics aún</p>
-            <p className="text-slate-500 text-sm">El cron dominical (8f/8) genera el primer reporte. Si hoy es domingo, ejecuta el master cron manualmente.</p>
+            <p className="text-slate-500 text-sm">El cron dominical (8f/8) genera el primer informe. Si hoy es domingo, ejecuta el master cron manualmente.</p>
           </div>
         </div>
       </div>

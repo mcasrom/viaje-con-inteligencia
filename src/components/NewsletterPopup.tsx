@@ -75,7 +75,7 @@ export default function NewsletterPopup() {
               href="/reporte-riesgo"
               className="inline-flex items-center gap-2 mt-3 px-4 py-2 bg-amber-600 hover:bg-amber-500 text-white rounded-lg text-xs font-medium transition-colors"
             >
-              <Download className="w-3.5 h-3.5" /> Ver reporte ahora
+              <Download className="w-3.5 h-3.5" /> Ver informe ahora
             </Link>
           </div>
         ) : (
@@ -85,7 +85,7 @@ export default function NewsletterPopup() {
                 <Download className="w-5 h-5 text-amber-400" />
               </div>
               <div>
-                <p className="text-white font-semibold text-sm">Reporte Semanal de Riesgo</p>
+                <p className="text-white font-semibold text-sm">Informe Semanal de Riesgo</p>
                 <p className="text-slate-400 text-[11px]">Top 10 países con cambios de riesgo</p>
               </div>
             </div>
@@ -109,7 +109,7 @@ export default function NewsletterPopup() {
                 ) : (
                   <>
                     <Mail className="w-4 h-4" />
-                    Recibir reporte gratis
+                    Recibir informe gratis
                   </>
                 )}
               </button>

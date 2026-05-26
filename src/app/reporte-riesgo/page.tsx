@@ -32,7 +32,7 @@ interface ApiResponse {
   summary: string;
 }
 
-export default function ReporteRiesgoPage() {
+export default function InformeRiesgoPage() {
   const [data, setData] = useState<ApiResponse | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -71,7 +71,7 @@ export default function ReporteRiesgoPage() {
           <>
             <div className="text-center mb-8">
               <h1 className="text-2xl md:text-3xl font-bold text-white mb-1">
-                Reporte Semanal de Riesgo
+                Informe Semanal de Riesgo
               </h1>
               <p className="text-slate-400 text-sm">{data.weekRange}</p>
             </div>

@@ -8,7 +8,7 @@ const TOAST_MESSAGES: Record<string, { type: 'success' | 'error' | 'warning' | '
   verified: {
     type: 'success',
     title: 'Suscripción confirmada correctamente',
-    description: 'Ya recibirás el reporte semanal de riesgo en tu correo.',
+    description: 'Ya recibirás el informe semanal de riesgo en tu correo.',
   },
   invalid_token: {
     type: 'warning',

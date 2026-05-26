@@ -213,7 +213,7 @@ async function sendRiskReportEmail(email: string, name: string) {
     await resend.emails.send({
       from: 'Miguel Castillo <reporte@viajeinteligencia.com>',
       to: email,
-      subject: `📊 Reporte Semanal de Riesgo — ${report.weekRange}`,
+      subject: `📊 Informe Semanal de Riesgo — ${report.weekRange}`,
       html: `
 <!DOCTYPE html>
 <html>
@@ -228,7 +228,7 @@ async function sendRiskReportEmail(email: string, name: string) {
       <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;border-radius:12px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.1);">
         <tr><td style="background:#0f172a;padding:24px;">
           <div style="font-size:12px;color:#60a5fa;font-weight:600;margin-bottom:4px;">Viaje con Inteligencia</div>
-          <h1 style="color:#ffffff;font-size:20px;margin:8px 0 4px;">Reporte Semanal de Riesgo</h1>
+          <h1 style="color:#ffffff;font-size:20px;margin:8px 0 4px;">Informe Semanal de Riesgo</h1>
           <p style="color:#94a3b8;font-size:13px;margin:0;">${report.weekRange}</p>
         </td></tr>
 
@@ -257,7 +257,7 @@ async function sendRiskReportEmail(email: string, name: string) {
 
         <tr><td style="background:#ffffff;padding:0 24px 24px;text-align:center;">
           <a href="https://www.viajeinteligencia.com/reporte-riesgo" style="display:inline-block;background:#3b82f6;color:#fff;padding:12px 32px;border-radius:10px;text-decoration:none;font-weight:600;font-size:14px;">
-            Ver reporte completo
+            Ver informe completo
           </a>
         </td></tr>
 
