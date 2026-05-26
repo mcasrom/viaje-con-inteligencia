@@ -190,6 +190,14 @@ curl -s http://178.105.80.193:3001/api/health
 | Estado | ✅ Healthy (up 19h+) |
 | Monitores | 6 (viajeinteligencia, georisk, georisk-api, georisk-next, gc-motors, kuma propio) |
 
+## 📈 TRÁFICO — GoAccess
+
+| Dato | Valor |
+|------|-------|
+| URL | `https://status.viajeinteligencia.com/trafico.html` |
+| Actualización | Cada 15 min (cron) |
+| Datos | Visitantes únicos, páginas, países, rutas, user agents, códigos HTTP |
+
 ```bash
 # Ver estado
 curl -sS -o /dev/null -w "%{http_code}" "https://status.viajeinteligencia.com/dashboard"
