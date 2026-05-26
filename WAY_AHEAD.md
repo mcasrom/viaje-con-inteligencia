@@ -36,11 +36,63 @@
 > - No hay vacuna ni tratamiento aprobado para cepa Bundibugyo
 > - Server estable tras los 4 fixes. Último deploy automático verificado funcional
 
-## Próximo sprint (26 May) — Newsletter link + Comparaciones erróneas + Infografías
+## Sesión actual (25 May tarde/noche) — GSC Fixes + Server stability consolidación
 
-- [ ] **Enlace a newsletter**: Añadir link a `/newsletter` en footer, TopBar, o landing page. Pendiente desde que se creó la página.
-- [ ] **Comparaciones erróneas**: Revisar página de comparación de países — probablemente datos incorrectos o rotos tras cambios en paises-data.json.
-- [ ] **Infografías**: Página `/infografias` existe pero puede tener datos desactualizados o rotos tras los cambios de riesgo sanitario y Ebola.
+> **Último deploy verificado:** ✅ (commit `18162af`, PID 198785, port 3000)
+
+### Logros adicionales del día
+
+#### Newsletter link
+- ✅ Enlace `/newsletter` añadido a Footer (sección Recursos) y TopBar (entre Radar y LanguageSelector). Commits `b7005f7`
+
+#### Fix overflow mapa interactivo PremiumRiskMap
+- ✅ El mapa funcionaba pero los tiles Leaflet se desbordaban del contenedor y tapaban la toolbar de selección/comparación
+- **Fix:** `overflow-hidden` en wrapper del mapa + `relative z-10` en toolbar. Commit `f0bb0dd`
+
+#### Google Search Console — Diagnóstico + Fixes
+- ✅ **9 Page with redirect** (Failed): Cloudflare Page Rule creada para redirect único HTTP→HTTPS+WWW (antes doble redirect 301→308). Commit vía API Cloudflare
+- ✅ **2 Redirect error** (Failed): Causa = middleware 500 previo. URLs `/blog/como-encontrar-vuelos-baratos` y `viajeinteligencia.com/blog` ya funcionan OK hoy
+- ✅ **45 Alternative canonical** (Not Started): Fix principal — `/viajes/clima/{code}` tenía canonical al homepage por herencia del layout raíz. Creado `layout.tsx` en `[codigo]/` con canonical a `/pais/{code}`. Commit `b63cc83`
+- ✅ **1 Blocked by robots.txt**: Dato de 13 May — robots.txt actual NO lo bloquea. Sin acción
+- ✅ **5 Crawled not indexed**: 3/5 son XML/assets (no aplica), 2/5 son contenido real que necesita tiempo. Sin acción urgente
+- ✅ **44 Excluded by noindex**: Intencional (blog filters/pagination). Correcto
+- ✅ **198 Discovered not indexed**: Normal para site de 2 semanas. IndexNow ya activo, 488 URLs enviadas
+
+#### X-Robots-Tag noindex
+- ✅ Añadido `X-Robots-Tag: noindex` vía `next.config.ts` para `/feed.xml`, `/sitemap.xml`, `/_next/static/*`. Commit `18162af`
+- **Motivo:** Google crawleaba el RSS feed y fuentes .woff2 como si fueran páginas
+
+#### PM2 verificado
+- ✅ 0 reinicios, port 3000, script directo a next/bin, args correctos
+
+### Commits del día
+| Commit | Descripción |
+|--------|-------------|
+| `abceeb7` | Fixes server stability (cron-catchup, deploy.yml pm2 delete+start, ecosystem.config sync) |
+| `eb2682a` | Post Ebola + fact-checking OMS + paises-data.json |
+| `b1e5713` | Cronología real virus Ebola (no del ecosistema) |
+| `101e2fa` | Screenshot mapa riesgo OMS |
+| `b7005f7` | Newsletter link footer + TopBar |
+| `f0bb0dd` | Fix overflow mapa + z-index toolbar |
+| `b63cc83` | Canonical viajes/clima/{code} → /pais/{code} |
+| `18162af` | X-Robots-Tag noindex for feed/sitemap/static |
+
+### Estado GSC post-fixes
+| Categoría | Antes | Ahora | Acción |
+|-----------|-------|-------|--------|
+| Page with redirect | 9 (Failed) | ✅ Fix deployado | Esperar recrawleo |
+| Redirect error | 2 (Failed) | ✅ URLs OK | Esperar recrawleo |
+| Alternative canonical | 45 (Not Started) | ✅ Fix deployado | Esperar recrawleo |
+| Blocked by robots.txt | 1 | ✅ Ya no bloqueado | Esperar recrawleo |
+| Crawled not indexed | 5 | ⏳ 3 normales + 2 tiempo | Esperar |
+| noindex | 44 | ✅ Intencional | Sin acción |
+| Discovered not indexed | 198 | ⏳ Normal site nuevo | IndexNow + tiempo |
+| Server error (5xx) | 0 | ✅ 0 | Confirmado estable |
+
+### Técnico
+- Cloudflare Page Rule creada: redirect `viajeinteligencia.com/*` → `https://www.viajeinteligencia.com/$1` (301). Eliminadas 3 reglas disabled previas (cache .jpg/.webp/_next/static)
+- Always Use HTTPS ON + SSL Strict
+- Host redirect en `next.config.ts` se mantiene como fallback para accesos directos HTTPS sin WWW
 
 ## 25 May 2026 — Sprint Rendimiento + Cloudflare Analytics + Stripe Audit + Outreach
 
@@ -717,13 +769,13 @@ Evaluación honesta del estado actual del proyecto en cada dimensión:
 - Sin backtesting contra cambios MAEC reales — no sabemos si predice algo útil
 - Transparencia operativa en blog post publicado (métricas reales, no infladas)
 
-### 🔴 SEO / Indexación — Etapa temprana crítica
-- Dominio ~32 días con histórico de 5xx del middleware (corregido)
-- GSC: 187 indexed, 216 not indexed, 481 discovered-but-not-indexed
-- Googlebot activo (~17 hits/día) pero tasa de indexación baja
-- IndexNow configurado, sitemap dinámico
+### 🟡 SEO / Indexación — En mejora (post-fixes)
+- Dominio ~34 días, servidor estable desde 24 May (sin 5xx)
+- GSC: 304 not indexed (de los cuales 198 discovered-waiting, normal), 0 5xx
+- Fixes aplicados: canonical /viajes/clima, redirect único HTTP→WWW, X-Robots-Tag en assets
+- IndexNow configurado (488 URLs enviadas), sitemap dinámico
 - Contenido server-rendered para Googlebot implementado
-- **Riesgo**: sandboxing de Google para dominios jóvenes. No hay atajo técnico — toca esperar
+- **Riesgo**: sandboxing de Google para dominios jóvenes. Indexación llegará con contenido nuevo semanal + tiempo
 
 ### 🟡 Contenido — Bueno para la edad del proyecto
 - 3+ blog posts/semana (alertas, guías OSINT, ML transparency)

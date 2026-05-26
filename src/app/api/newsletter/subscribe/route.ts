@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
-import { supabase } from '@/lib/supabase';
+import { supabaseAdmin, isSupabaseAdminConfigured } from '@/lib/supabase-admin';
 import { Resend } from 'resend';
 import { createLogger } from '@/lib/logger';
 import { apiError } from '@/lib/api-schemas';
@@ -317,8 +317,8 @@ export async function POST(request: NextRequest) {
 
     const emailLower = email.toLowerCase();
 
-    if (supabase) {
-      const { data: existing } = await supabase
+    if (isSupabaseAdminConfigured()) {
+      const { data: existing } = await supabaseAdmin
         .from('newsletter_subscribers')
         .select('verified')
         .eq('email', emailLower)
@@ -335,13 +335,17 @@ export async function POST(request: NextRequest) {
 
     const verifyToken = crypto.randomUUID();
 
-    if (supabase) {
-      await supabase
+    if (isSupabaseAdminConfigured()) {
+      const { error: upsertError } = await supabaseAdmin
         .from('newsletter_subscribers')
         .upsert(
           { email: emailLower, name: nombre, verify_token: verifyToken, verified: false, source: source || 'web', subscribed_at: new Date().toISOString() },
           { onConflict: 'email' }
         );
+
+      if (upsertError) {
+        log.error('Error al guardar suscriptor', upsertError);
+      }
     }
 
     await sendConfirmationEmail(emailLower, nombre || '', verifyToken);
@@ -362,22 +366,36 @@ export async function GET(request: NextRequest) {
   const action = searchParams.get('action');
   const token = searchParams.get('token');
 
-  if (action === 'verify' && token && supabase) {
-    const { data, error } = await supabase
+  if (action === 'verify' && token) {
+    if (!isSupabaseAdminConfigured()) {
+      return NextResponse.redirect(new URL('/?newsletter=error', request.url));
+    }
+
+    const { data, error } = await supabaseAdmin
       .from('newsletter_subscribers')
       .select('email, name, verified')
       .eq('verify_token', token)
       .maybeSingle();
 
+    if (error) {
+      log.error('Error al buscar token de verificación', error);
+      return NextResponse.redirect(new URL('/?newsletter=error', request.url));
+    }
+
     if (!data) {
+      log.warn('Token de verificación no encontrado', { token: token.slice(0, 8) + '...' });
       return NextResponse.redirect(new URL('/?newsletter=invalid_token', request.url));
     }
 
     if (!data.verified) {
-      await supabase
+      const { error: updateError } = await supabaseAdmin
         .from('newsletter_subscribers')
         .update({ verified: true, verify_token: null })
         .eq('email', data.email);
+
+      if (updateError) {
+        log.error('Error al verificar suscriptor', updateError);
+      }
 
       await sendWelcomeEmail(data.email, data.name || '');
       await sendRiskReportEmail(data.email, data.name || '');
@@ -386,10 +404,10 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(new URL('/?newsletter=verified', request.url));
   }
 
-  if (action === 'unsubscribe' && supabase) {
+  if (action === 'unsubscribe') {
     const email = searchParams.get('email');
-    if (email) {
-      await supabase
+    if (email && isSupabaseAdminConfigured()) {
+      await supabaseAdmin
         .from('newsletter_subscribers')
         .update({ verified: false, unsubscribed_at: new Date().toISOString() })
         .eq('email', email.toLowerCase());
