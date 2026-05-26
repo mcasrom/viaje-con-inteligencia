@@ -845,10 +845,12 @@ El build de Next.js 16.2.6 en el VPS (Node v22.22.2, 3.7GB RAM) falla con SIGBUS
 - Toque manual para arreglar temporalmente (build en local + rsync + arranque) no funcionó
 - 92 reinicios del proceso viajeinteligencia en PM2 por el crash continuo
 
-### Próximo paso (pendiente)
-1. Aumentar swap en el VPS a 8GB
-2. O migrar a VPS con más RAM (mínimo 8GB)
-3. O downgradear Next.js a versión anterior que sí compilaba
-4. Una vez estable, sincronizar commits y desplegar los cambios pendientes
+### Resolución
+- ✅ Swap aumentado de 4GB a **8GB** (`sudo swapoff /swapfile && sudo fallocate -l 8G /swapfile && sudo mkswap /swapfile && sudo swapon /swapfile`)
+- ✅ Servicios no críticos parados temporalmente para liberar RAM durante el build
+- ✅ Build exitoso con `--experimental-build-mode=compile`
+- ✅ Todos los servicios restaurados: viajeinteligencia (40min uptime, 0 reinicios), georisk, georisk-api, georisk-next, gc-motors
+- ✅ Manifiesto nuevo sirviendo desde `viajeinteligencia.com/manifiesto` (200 OK)
+- ✅ Recursos finales: RAM 2.5GB disponible, Swap 8GB sin uso, CPU 87% idle, Disco 52%
 
-*Actualizado: 26 May 2026 (tarde) — crisis build server*
+*Actualizado: 26 May 2026 (tarde) — crisis resuelta, swap 8GB estable*
