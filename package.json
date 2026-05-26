@@ -32,6 +32,7 @@
     "html2canvas": "^1.4.1",
     "jspdf": "^4.2.1",
     "leaflet": "^1.9.4",
+    "leaflet-gesture-handling": "^1.2.2",
     "lucide-react": "^1.8.0",
     "mermaid": "^11.15.0",
     "ml-random-forest": "^2.1.0",

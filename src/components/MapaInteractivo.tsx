@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic';
 import { getTodosLosPaises, NivelRiesgo } from '@/data/paises';
 import { useI18n } from '@/lib/i18n';
 import TileAltFixer from '@/components/TileAltFixer';
+import BiasDisclaimer from '@/components/BiasDisclaimer';
 import { ensureLeafletCSS } from '@/lib/leaflet-css-loader';
 
 const riskColors: Record<NivelRiesgo, string> = {
@@ -111,6 +112,10 @@ export default function MapaInteractivo({ fullScreen = false }: { fullScreen?: b
             shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
           });
         }
+        // Gesture handling for mobile
+        import('leaflet-gesture-handling').then((mod) => {
+          (L as any).Map.mergeOptions({ gestureHandling: true });
+        }).catch(() => {});
       } catch {
         // Leaflet icon initialization is optional
       }
@@ -330,20 +335,23 @@ export default function MapaInteractivo({ fullScreen = false }: { fullScreen?: b
       </MapContainer>
 
       {/* Layer Switcher */}
-      <div className="absolute bottom-20 left-4 z-[1000] bg-slate-900/90 backdrop-blur-sm rounded-lg p-2 flex flex-col gap-1 shadow-xl">
-        {(['riesgo', 'sismos', 'conflictos', 'salud'] as const).map(l => (
-          <button
-            key={l}
-            onClick={() => setLayer(l)}
-            className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all whitespace-nowrap ${
-              layer === l
-                ? 'bg-blue-600 text-white'
-                : 'text-slate-400 hover:text-white hover:bg-slate-700/50'
-            }`}
-          >
-            {layerLabels[l]}
-          </button>
-        ))}
+      <div className="absolute bottom-20 left-4 z-[1000] flex flex-col gap-2">
+        <BiasDisclaimer className="self-start" />
+        <div className="bg-slate-900/90 backdrop-blur-sm rounded-lg p-2 flex flex-col gap-1 shadow-xl">
+          {(['riesgo', 'sismos', 'conflictos', 'salud'] as const).map(l => (
+            <button
+              key={l}
+              onClick={() => setLayer(l)}
+              className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all whitespace-nowrap ${
+                layer === l
+                  ? 'bg-blue-600 text-white'
+                  : 'text-slate-400 hover:text-white hover:bg-slate-700/50'
+              }`}
+            >
+              {layerLabels[l]}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Legend */}

@@ -24,6 +24,7 @@ import ShareButtons from '@/components/ShareButtons';
 import AddToRadarButton from '@/components/AddToRadarButton';
 import RiskTrendIndicator from '@/components/RiskTrendIndicator';
 import ScoreBadge from '@/components/ScoreBadge';
+import BiasDisclaimer from '@/components/BiasDisclaimer';
 
 interface DetallePaisClientProps {
   pais: DatoPais;
@@ -266,6 +267,14 @@ export default function DetallePaisClient({ pais, relatedPosts = [], serverRende
                 <AlertTriangle className="w-6 h-6" />
                 <span>{config.label}</span>
               </div>
+            </div>
+            <div className="flex flex-col items-center gap-1">
+              <BiasDisclaimer country={pais.nombre} />
+              {pais.contextoGeopolitico && (
+                <span className="text-[10px] text-amber-500/70 text-center max-w-[200px] leading-tight">
+                  {pais.contextoGeopolitico}
+                </span>
+              )}
             </div>
             <div className="flex flex-col items-end gap-2">
               <div className="flex items-center gap-2">
@@ -590,6 +599,9 @@ export default function DetallePaisClient({ pais, relatedPosts = [], serverRende
                     </span>
                   </div>
                 </div>
+                <div className="mt-2">
+                  <BiasDisclaimer country={pais.nombre} variant="inline" />
+                </div>
                 
                 {maecData.fechaActualizacion && (
                   <div className="flex items-center gap-2 text-slate-400 text-sm">
@@ -656,6 +668,9 @@ export default function DetallePaisClient({ pais, relatedPosts = [], serverRende
                     </span>
                     <RiskTrendIndicator countryCode={codigo} />
                   </div>
+                </div>
+                <div className="mt-2">
+                  <BiasDisclaimer country={pais.nombre} variant="inline" />
                 </div>
 
                 <div className="flex items-center gap-2 text-slate-400 text-sm">

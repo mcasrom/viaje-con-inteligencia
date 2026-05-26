@@ -4,6 +4,7 @@ import dynamic from 'next/dynamic';
 import { TOTAL_PAISES } from '@/lib/constants';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
+import BiasDisclaimer from '@/components/BiasDisclaimer';
 
 const MapaInteractivo = dynamic(
   () => import('@/components/MapaInteractivo'),
@@ -30,7 +31,8 @@ export default function MapaPage() {
           Volver al inicio
         </Link>
       </div>
-      <div className="absolute top-4 right-4 z-[1000]">
+      <div className="absolute top-4 right-4 z-[1000] flex items-center gap-2">
+        <BiasDisclaimer />
         <div className="px-4 py-2 bg-slate-900/80 backdrop-blur-sm rounded-lg text-sm text-slate-400 border border-slate-700/50">
           Riesgo país actualizado · {TOTAL_PAISES} países
         </div>

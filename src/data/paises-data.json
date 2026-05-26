@@ -97,7 +97,8 @@
       "mapaCoordenadas": [
         23.4241,
         53.8478
-      ]
+      ],
+      "contextoGeopolitico": "Emiratos Árabes: las alertas reflejan los fuertes lazos económicos y comerciales bilaterales, con un tratamiento favorable en temas de seguridad."
     },
     "af": {
       "codigo": "af",
@@ -858,7 +859,8 @@
       "mapaCoordenadas": [
         23.685,
         90.3563
-      ]
+      ],
+      "contextoGeopolitico": "Bangladesh: las alertas pueden tener cobertura limitada por menor presencia diplomática, pese a ser un destino de mochileros con riesgos reales."
     },
     "be": {
       "codigo": "be",
@@ -2191,7 +2193,8 @@
       "mapaCoordenadas": [
         35.8617,
         104.1954
-      ]
+      ],
+      "contextoGeopolitico": "China recibe alertas matizadas por las relaciones comerciales bilaterales España-China. Las alertas pueden no reflejar la seguridad real para viajeros."
     },
     "co": {
       "codigo": "co",
@@ -2290,7 +2293,8 @@
       "mapaCoordenadas": [
         4.5709,
         -74.2973
-      ]
+      ],
+      "contextoGeopolitico": "Colombia: las alertas MAEC reflejan los vínculos históricos y de cooperación bilateral, pudiendo atenuar ciertos riesgos de seguridad."
     },
     "cr": {
       "codigo": "cr",
@@ -2489,7 +2493,8 @@
       "mapaCoordenadas": [
         21.5218,
         -77.7812
-      ]
+      ],
+      "contextoGeopolitico": "Cuba recibe un tratamiento diplomático singular en las alertas MAEC debido a los vínculos históricos y políticos España-Cuba. El nivel de riesgo puede no reflejar la seguridad real sobre el terreno."
     },
     "cz": {
       "codigo": "cz",
@@ -3061,7 +3066,8 @@
       "mapaCoordenadas": [
         28.0339,
         1.6596
-      ]
+      ],
+      "contextoGeopolitico": "Las alertas pueden estar influenciadas por las tensiones diplomáticas periódicas entre España y Argelia (relaciones bilaterales, gas, Sáhara Occidental)."
     },
     "ec": {
       "codigo": "ec",
@@ -3358,7 +3364,8 @@
       "mapaCoordenadas": [
         26.8206,
         30.8025
-      ]
+      ],
+      "contextoGeopolitico": "Egipto recibe alertas relativamente moderadas pese a su historial de derechos humanos, reflejando los acuerdos de control migratorio y turismo."
     },
     "es": {
       "codigo": "es",
@@ -5122,7 +5129,8 @@
       "mapaCoordenadas": [
         31.0461,
         34.8516
-      ]
+      ],
+      "contextoGeopolitico": "Las alertas sobre Israel pueden reflejar la compleja relación diplomática bilateral, incluyendo el conflicto palestino-israelí y las posiciones de la UE."
     },
     "in": {
       "codigo": "in",
@@ -5329,7 +5337,8 @@
       "mapaCoordenadas": [
         32.4279,
         53.688
-      ]
+      ],
+      "contextoGeopolitico": "Irán está sujeto a una combinación de sanciones internacionales y tensiones diplomáticas que influyen en el tono de las alertas MAEC."
     },
     "is": {
       "codigo": "is",
@@ -6494,7 +6503,8 @@
       "mapaCoordenadas": [
         33.8547,
         35.8623
-      ]
+      ],
+      "contextoGeopolitico": "Líbano: las alertas reflejan la inestabilidad regional pero pueden estar moduladas por los vínculos diplomáticos España-Líbano."
     },
     "lk": {
       "codigo": "lk",
@@ -6880,7 +6890,8 @@
       "mapaCoordenadas": [
         32.8872,
         13.1913
-      ]
+      ],
+      "contextoGeopolitico": "Libia: las alertas están moldeadas tanto por la inestabilidad como por los intereses migratorios España-Libia."
     },
     "ma": {
       "codigo": "ma",
@@ -6979,7 +6990,8 @@
       "mapaCoordenadas": [
         31.7917,
         -7.0926
-      ]
+      ],
+      "contextoGeopolitico": "Las alertas del MAEC pueden reflejar los estrechos lazos bilaterales España-Marruecos (control migratorio, antiterrorismo, comercio). Se recomienda contrastar con fuentes independientes para zonas sensibles como el Sáhara Occidental."
     },
     "mm": {
       "codigo": "mm",
@@ -7078,7 +7090,8 @@
       "mapaCoordenadas": [
         21.9162,
         95.956
-      ]
+      ],
+      "contextoGeopolitico": "Myanmar: las alertas reflejan la condena internacional al golpe de estado y la crisis de derechos humanos, pero pueden tener sesgo por la cobertura mediática global."
     },
     "mn": {
       "codigo": "mn",
@@ -7417,7 +7430,8 @@
       "mapaCoordenadas": [
         23.6345,
         -102.5528
-      ]
+      ],
+      "contextoGeopolitico": "México: las alertas reflejan la cooperación bilateral en comercio y migración, con un tratamiento que puede suavizar la percepción de violencia criminal."
     },
     "my": {
       "codigo": "my",
@@ -9092,7 +9106,8 @@
       "mapaCoordenadas": [
         25.2854,
         51.531
-      ]
+      ],
+      "contextoGeopolitico": "Catar: las alertas están influenciadas por las relaciones diplomáticas y los intereses energéticos bilaterales."
     },
     "ru": {
       "codigo": "ru",
@@ -9211,7 +9226,8 @@
       "mapaCoordenadas": [
         61.524,
         105.3188
-      ]
+      ],
+      "contextoGeopolitico": "Las alertas sobre Rusia están fuertemente influenciadas por la guerra en Ucrania y las sanciones de la UE. La situación regional varía significativamente."
     },
     "rw": {
       "codigo": "rw",
@@ -9406,7 +9422,8 @@
       "mapaCoordenadas": [
         24.7136,
         46.6753
-      ]
+      ],
+      "contextoGeopolitico": "Arabia Saudí: las alertas están moduladas por las relaciones comerciales, inversiones y acuerdos de defensa España-Arabia Saudí."
     },
     "sd": {
       "codigo": "sd",
@@ -10163,7 +10180,8 @@
       "mapaCoordenadas": [
         33.5138,
         36.2765
-      ]
+      ],
+      "contextoGeopolitico": "Siria: las alertas MAEC reflejan el conflicto civil activo pero pueden estar influenciadas por la posición diplomática de España en Oriente Medio."
     },
     "th": {
       "codigo": "th",
@@ -10403,7 +10421,8 @@
       "mapaCoordenadas": [
         33.8869,
         9.5375
-      ]
+      ],
+      "contextoGeopolitico": "Túnez recibe alertas favorables impulsadas por el fuerte vínculo turístico y los acuerdos de cooperación migratoria."
     },
     "tr": {
       "codigo": "tr",
@@ -10502,7 +10521,8 @@
       "mapaCoordenadas": [
         38.9637,
         35.2433
-      ]
+      ],
+      "contextoGeopolitico": "Turquía recibe alertas que equilibran las tensiones geopolíticas regionales con los intereses turísticos y el acuerdo migratorio UE-Turquía."
     },
     "tt": {
       "codigo": "tt",
@@ -10799,7 +10819,8 @@
       "mapaCoordenadas": [
         48.3794,
         31.1656
-      ]
+      ],
+      "contextoGeopolitico": "Las alertas sobre Ucrania reflejan la condena diplomática española a la invasión rusa y el fuerte apoyo a la integridad territorial ucraniana."
     },
     "ug": {
       "codigo": "ug",
@@ -10991,7 +11012,8 @@
       "mapaCoordenadas": [
         37.0902,
         -95.7129
-      ]
+      ],
+      "contextoGeopolitico": "EE.UU. recibe alertas de riesgo bajo pese a tener índices de criminalidad violenta más altos que muchos países europeos, reflejando la alianza transatlántica."
     },
     "uy": {
       "codigo": "uy",
@@ -11227,7 +11249,8 @@
       "mapaCoordenadas": [
         10.4806,
         -66.9036
-      ]
+      ],
+      "contextoGeopolitico": "Las alertas MAEC sobre Venezuela reflejan tanto la crisis humanitaria como la posición diplomática del gobierno español. Contrastar con informes de la ONU y ONG."
     },
     "vn": {
       "codigo": "vn",
@@ -11610,7 +11633,8 @@
       "mapaCoordenadas": [
         -30.5595,
         22.9375
-      ]
+      ],
+      "contextoGeopolitico": "Sudáfrica: las alertas pueden reflejar relaciones bilaterales estables pero con menos profundidad analítica que países prioritarios."
     },
     "ga": {
       "codigo": "ga",
@@ -11978,7 +12002,8 @@
       "mapaCoordenadas": [
         12.6458,
         -7.9922
-      ]
+      ],
+      "contextoGeopolitico": "Malí: las alertas reflejan el conflicto del Sahel pero pueden estar moldeadas por la presencia militar francesa y la posición de la UE."
     },
     "ne": {
       "codigo": "ne",
@@ -12070,7 +12095,8 @@
       "mapaCoordenadas": [
         13.5167,
         2.1167
-      ]
+      ],
+      "contextoGeopolitico": "Níger: las alertas reflejan el golpe de estado y la inestabilidad del Sahel, influenciadas por la política exterior europea en la región."
     },
     "td": {
       "codigo": "td",
@@ -12530,7 +12556,8 @@
       "mapaCoordenadas": [
         12.3658,
         -1.5325
-      ]
+      ],
+      "contextoGeopolitico": "Burkina Faso: las alertas reflejan la crisis de seguridad del Sahel pero pueden tener cobertura menos detallada que países con mayor presencia diplomática."
     },
     "bi": {
       "codigo": "bi",
