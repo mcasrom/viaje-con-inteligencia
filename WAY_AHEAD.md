@@ -828,4 +828,27 @@ Evaluación honesta del estado actual del proyecto en cada dimensión:
 
 ---
 
-*Actualizado: 25 May 2026 (tarde) — newsletter pública + estabilidad server*
+## 26 May 2026 — 🔴 INCIDENTE CRÍTICO: Build roto en servidor
+
+> **⚠️ ESTAMOS ROMPIENDO EL TRABAJO DE UN MES**
+
+### Causa
+El build de Next.js 16.2.6 en el VPS (Node v22.22.2, 3.7GB RAM) falla con SIGBUS:
+- `npm run build` → SIGBUS en fase "Collecting page data"
+- `--experimental-build-mode=compile` → build OK, pero `next start` crashea con SIGBUS al servir
+- Build local (Node v24.15.0) funciona, pero rsync del `.next` al servidor también produce SIGBUS al arrancar
+- El servidor NO puede buildear ni servir el `.next` actual
+
+### Impacto
+- Deploy automático (GH Actions) roto — commit `f5d80c2` no desplegado
+- Servidor sirviendo commit antiguo `b36eb7f` (sin manifiesto, sin Reporte→Informe)
+- Toque manual para arreglar temporalmente (build en local + rsync + arranque) no funcionó
+- 92 reinicios del proceso viajeinteligencia en PM2 por el crash continuo
+
+### Próximo paso (pendiente)
+1. Aumentar swap en el VPS a 8GB
+2. O migrar a VPS con más RAM (mínimo 8GB)
+3. O downgradear Next.js a versión anterior que sí compilaba
+4. Una vez estable, sincronizar commits y desplegar los cambios pendientes
+
+*Actualizado: 26 May 2026 (tarde) — crisis build server*
