@@ -854,3 +854,43 @@ El build de Next.js 16.2.6 en el VPS (Node v22.22.2, 3.7GB RAM) falla con SIGBUS
 - ✅ Recursos finales: RAM 2.5GB disponible, Swap 8GB sin uso, CPU 87% idle, Disco 52%
 
 *Actualizado: 26 May 2026 (tarde) — crisis resuelta, swap 8GB estable*
+
+---
+
+## 26 May 2026 — Sprint Sesgo Diplomático + UX Móvil + Contexto Geopolítico
+
+> **Último deploy verificado:** ✅ (commit `c223f21`, PM2 PID 287813, port 3000)
+
+### Logros del día
+
+#### Opción 6 — Disclaimer visual de sesgo
+- ✅ **Componente `BiasDisclaimer.tsx`** creado: badge interactivo ⚠️ "Sesgo" que abre modal explicativo sobre posibles sesgos diplomáticos del MAEC
+- ✅ **Badge en mapa**: añadido a `MapaInteractivo.tsx` (junto al selector de capas) y `/mapa` (top bar)
+- ✅ **Badge en ficha país**: junto al nivel de riesgo en hero + versión inline en pestaña legal/MAEC
+- ✅ Enlace a `/transparencia#sesgos` desde el modal y badge
+
+#### Opción 4 — Zoom táctil preciso + gesture handling
+- ✅ **`leaflet-gesture-handling`** instalado: evita scroll accidental al hacer scroll sobre el mapa en móvil
+- ✅ **Zoom controls más grandes**: 40×40px en todos los dispositivos
+- ✅ **Margen inferior extra** en móvil (60px) para no solaparse con UI
+- ✅ CSS importado en `globals.css`
+
+#### Opción 2 — Contexto geopolítico
+- ✅ **27 países** con nota de contexto geopolítico en `paises-data.json`:
+  - Norte de África: MA, DZ, EG, TN, LY
+  - Oriente Medio: IL, IR, SY, LB, SA, AE, QA
+  - América: VE, CU, US, MX, CO
+  - Europa/Asia: RU, CN, TR, UA, BD, MM
+  - África subsahariana: ZA, ML, NE, BF
+- ✅ Cada nota explica posibles sesgos diplomáticos en las alertas MAEC
+- ✅ Visible en ficha país como texto informativo junto al badge de riesgo
+
+### Commits del día
+| Commit | Descripción |
+|--------|-------------|
+| `c223f21` | Bias disclaimer + mobile zoom + geopolitical context (27 countries) |
+
+### Técnico
+- Deploy: rsync directo al VPS + build con swap 8GB + PM2 restart
+- Build verificado: 676 rutas, OK
+- Todos los endpoints 200
