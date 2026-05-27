@@ -765,7 +765,7 @@ git add -A && git commit -m "msg" && git push
 ### 🔴 Stripe / Monetización API — ⚠️ Parcial
 - [x] Stripe webhook para API Pro: provisiona API key tras pago 4.99€ ✅
 - [x] Starter tier (€2.99, 3K req) en UI `/precio-api` + Stripe price creado + webhook ✅
-- [ ] Rate limiting per-second (hoy solo monthly caps: free=3K, starter=3K, pro=50K)
+- [x] Rate limiting per-second: sliding window 2/5/20/100 req/s por tier ✅
 - [ ] Stripe Enterprise flow — webhook no maneja tier enterprise
 
 ### 🟡 Admin / Infra
@@ -778,7 +778,7 @@ git add -A && git commit -m "msg" && git push
 - [ ] Newsletter con sentimiento semanal — integrar `tone_score` en el HTML del digest
 
 ### 🟡 Marketing
-- [ ] Publicar Reddit (4 drafts) + Facebook (2 drafts) desde `content/outreach/`
+- [ ] Publicar Reddit (4 drafts) + Facebook (2 drafts) desde `content/outreach/` — drafts listos, requiere login manual
 - [ ] Email outreach a bloggers/agencias (5-10 emails)
 
 ### 🟡 ML / Data — ⚠️ Parcial
