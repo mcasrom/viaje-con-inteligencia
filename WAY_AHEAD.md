@@ -40,6 +40,12 @@
 > | API Health | 200 — healthy |
 > | PM2 | online, 0 reinicios |
 > | Cloudflare WAF | solo bots bloqueados |
+>
+> ### Status subdomain protegido con password
+> - ✅ **Problema**: `status.viajeinteligencia.com/trafico.html` (GoAccess) y `/dashboard` (Uptime Kuma) accesibles públicamente sin autenticación
+> - ✅ **Fix**: nginx `auth_basic` con htpasswd en `/etc/nginx/sites-enabled/status`
+> - ✅ **Usuario:** `status` | **Password:** `ViajeIntel2026!Monitor` (guardar en password manager)
+> - ✅ **Verificación**: sin auth → 401, con auth → 200
 
 ## Sesión actual (25 May tarde/noche) — GSC Fixes + Server stability consolidación
 >
