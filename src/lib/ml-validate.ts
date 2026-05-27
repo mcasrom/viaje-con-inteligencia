@@ -135,38 +135,105 @@ export async function validateModels(): Promise<ValidationSummary> {
 
   // 3. Check recent predictions and whether outcome windows have passed
   const sevenDaysAgo = new Date(Date.now() - 7 * 86400000).toISOString();
+  const thirtyDaysAgo = new Date(Date.now() - 30 * 86400000).toISOString();
   const { data: predictions } = await supabaseAdmin
     .from('risk_predictions')
     .select('country_code, predicted_at, risk_score, probability_up_7d, probability_up_14d, probability_up_30d, current_risk')
-    .gte('predicted_at', sevenDaysAgo)
+    .gte('predicted_at', thirtyDaysAgo)
     .order('predicted_at', { ascending: true });
 
   // RF models were available starting from first training ~May 12 11:17 UTC
   const rfAvailableSince = Date.parse('2026-05-12T11:17:00Z');
   let withRf = 0, withHeuristic = 0;
 
-  if (predictions) {
+  // Outcome tracking: compare predictions against actual MAEC changes
+  let outcomes7d = 0, outcomes14d = 0, outcomes30d = 0;
+  let correctUp7d = 0, correctUp14d = 0, correctUp30d = 0;
+  const now = Date.now();
+
+  if (predictions && predictions.length > 0) {
+    // Fetch all relevant MAEC history for comparison
+    const { data: allHistory } = await supabaseAdmin
+      .from('maec_risk_history')
+      .select('country_code, nivel_riesgo, date')
+      .gte('date', new Date(now - 35 * 86400000).toISOString().split('T')[0]);
+
+    const historyByCountry: Record<string, { date: string; risk: string }[]> = {};
+    if (allHistory) {
+      for (const h of allHistory) {
+        if (!historyByCountry[h.country_code]) historyByCountry[h.country_code] = [];
+        historyByCountry[h.country_code].push({ date: h.date, risk: h.nivel_riesgo });
+      }
+    }
+
     for (const p of predictions) {
       if (Date.parse(p.predicted_at) >= rfAvailableSince) {
-        // Check if RF model actually loaded (predict_country falls back to heuristic)
-        // We can't know for sure without re-running, so approximate
         withRf++;
       } else {
         withHeuristic++;
+      }
+
+      const predTime = Date.parse(p.predicted_at);
+      const countryHistory = historyByCountry[p.country_code] || [];
+      const currentRiskNum = RISK_ORDER[p.current_risk] || 0;
+
+      // Check 7d outcome
+      if (now - predTime >= 7 * 86400000) {
+        outcomes7d++;
+        const windowEnd = new Date(predTime + 7 * 86400000).toISOString().split('T')[0];
+        for (const h of countryHistory) {
+          if (h.date >= p.predicted_at.split('T')[0] && h.date <= windowEnd) {
+            if ((RISK_ORDER[h.risk] || 0) > currentRiskNum) {
+              correctUp7d++;
+              break;
+            }
+          }
+        }
+      }
+
+      // Check 14d outcome
+      if (now - predTime >= 14 * 86400000) {
+        outcomes14d++;
+        const windowEnd = new Date(predTime + 14 * 86400000).toISOString().split('T')[0];
+        for (const h of countryHistory) {
+          if (h.date >= p.predicted_at.split('T')[0] && h.date <= windowEnd) {
+            if ((RISK_ORDER[h.risk] || 0) > currentRiskNum) {
+              correctUp14d++;
+              break;
+            }
+          }
+        }
+      }
+
+      // Check 30d outcome
+      if (now - predTime >= 30 * 86400000) {
+        outcomes30d++;
+        const windowEnd = new Date(predTime + 30 * 86400000).toISOString().split('T')[0];
+        for (const h of countryHistory) {
+          if (h.date >= p.predicted_at.split('T')[0] && h.date <= windowEnd) {
+            if ((RISK_ORDER[h.risk] || 0) > currentRiskNum) {
+              correctUp30d++;
+              break;
+            }
+          }
+        }
       }
     }
   }
 
   const elapsed = Date.now() - start;
   log.info(`Validation complete in ${elapsed}ms: ${predictions?.length || 0} predictions checked, ${recentChanges.length} changes`);
+  if (outcomes7d > 0) log.info(`Outcomes 7d: ${correctUp7d}/${outcomes7d} correct (${Math.round(correctUp7d/outcomes7d*100)}%)`);
+  if (outcomes14d > 0) log.info(`Outcomes 14d: ${correctUp14d}/${outcomes14d} correct (${Math.round(correctUp14d/outcomes14d*100)}%)`);
+  if (outcomes30d > 0) log.info(`Outcomes 30d: ${correctUp30d}/${outcomes30d} correct (${Math.round(correctUp30d/outcomes30d*100)}%)`);
 
   return {
     totalPredictions: predictions?.length || 0,
     withRf,
     withHeuristic,
-    outcomesAvailable7d: 0,
-    outcomesAvailable14d: 0,
-    outcomesAvailable30d: 0,
+    outcomesAvailable7d: outcomes7d,
+    outcomesAvailable14d: outcomes14d,
+    outcomesAvailable30d: outcomes30d,
     temporalCv,
     recentChanges,
   };
