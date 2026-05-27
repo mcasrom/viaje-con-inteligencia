@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { stripe } from '@/lib/stripe';
 
-const API_PRO_PRICE_ID = 'price_1TZjOo1yXjIoL1LjQf4rIc65';
-const API_STARTER_PRICE_ID = process.env.STRIPE_API_STARTER_PRICE_ID || '';
+const API_PRO_PRICE_ID = process.env.STRIPE_API_PRO_PRICE_ID || 'price_1TZjOo1yXjIoL1LjQf4rIc65';
+const API_STARTER_PRICE_ID = process.env.STRIPE_API_STARTER_PRICE_ID || 'price_1TbcHG1yXjIoL1LjI2Lnae1p';
 
 export const dynamic = 'force-dynamic';
 
