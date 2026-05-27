@@ -39,28 +39,25 @@ jobs:
             --exclude '.env*' \
             --exclude 'logs' \
             ./ $SSH_USER@$SSH_HOST:/var/www/viajeinteligencia/
-          ssh -p $SSH_PORT $SSH_USER@$SSH_HOST << ENDSSH
+          ssh -p $SSH_PORT $SSH_USER@$SSH_HOST << 'ENDSSH'
             set -e
             cd /var/www/viajeinteligencia
-            # Write Cloudflare env vars to .env.production (preserve existing if any)
-            touch .env.production
-            grep -q '^CLOUDFLARE_API_TOKEN=' .env.production && \
-              sed -i 's|^CLOUDFLARE_API_TOKEN=.*|CLOUDFLARE_API_TOKEN=$CLOUDFLARE_API_TOKEN|' .env.production || \
-              echo "CLOUDFLARE_API_TOKEN=$CLOUDFLARE_API_TOKEN" >> .env.production
-            grep -q '^CLOUDFLARE_ZONE_ID=' .env.production && \
-              sed -i 's|^CLOUDFLARE_ZONE_ID=.*|CLOUDFLARE_ZONE_ID=$CLOUDFLARE_ZONE_ID|' .env.production || \
-              echo "CLOUDFLARE_ZONE_ID=$CLOUDFLARE_ZONE_ID" >> .env.production
             if ! swapon --show | grep -q /swapfile; then
               fallocate -l 2G /swapfile && chmod 600 /swapfile && mkswap /swapfile && swapon /swapfile
               echo "Swap created"
             fi
             export NODE_OPTIONS="--max-old-space-size=1536"
-            npm install --omit=dev
+            npm install
+            echo "=== Build started ==="
             npm run build
+            echo "=== Build OK, pruning devDeps ==="
+            npm prune --omit=dev
+            echo "=== Restarting PM2 ==="
             pm2 delete viajeinteligencia || true
             pm2 start ecosystem.config.cjs --only viajeinteligencia --update-env
-            sleep 5
+            sleep 10
             pm2 save
+            echo "=== Deploy complete ==="
           ENDSSH
 
       - name: Health check
