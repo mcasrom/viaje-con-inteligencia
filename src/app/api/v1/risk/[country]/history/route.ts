@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase-admin';
-import { verifyApiKey } from '@/lib/api-auth';
+import { verifyApiKey, rateLimitResponse } from '@/lib/api-auth';
 import { getPaisData } from '@/lib/paises-db';
 import { createLogger } from '@/lib/logger';
 
@@ -20,7 +20,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 
   const authResult = await verifyApiKey(request);
   if (!authResult.valid) {
-    return NextResponse.json({ error: authResult.error || 'API Key inválida' }, { status: authResult.status });
+    return rateLimitResponse(authResult);
   }
 
   const pais = await getPaisData(code.toLowerCase());

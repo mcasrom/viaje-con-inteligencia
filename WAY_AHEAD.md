@@ -774,7 +774,7 @@ git add -A && git commit -m "msg" && git push
 - [ ] Monitorear que no entren incidentes mal clasificados (Groq ahora pide country_code)
 
 ### 🟡 Content / SEO
-- [ ] Version EN de pillar pages ES (`/en/osint-para-viajeros`, `/en/geopolitica-y-viajes`)
+- [x] Version EN de pillar pages ES — `/en/osint-para-viajeros` + `/en/geopolitica-y-viajes` ✅
 - [ ] Newsletter con sentimiento semanal — integrar `tone_score` en el HTML del digest
 
 ### 🟡 Marketing
@@ -783,7 +783,7 @@ git add -A && git commit -m "msg" && git push
 
 ### 🟡 ML / Data — ⚠️ Parcial
 - [x] Código validación temporal CV existe (`ml-validate.ts`) pero usa split 80/20 sintético, no walk-forward real
-- [ ] Backtesting contra cambios MAEC reales — las predicciones nunca se comparan contra outcomes reales (`outcomesAvailable7d` hardcodeado a 0)
+- [x] Backtesting contra cambios MAEC reales — `outcomesAvailable7d/14d/30d` ahora compara predicciones vs historial real ✅
 - [ ] Aumentar cobertura OSINT: backfill de `tone_score` vía Groq en señales existentes sin sentiment
 
 ### 🟢 África — 17 países ✅ COMPLETADO

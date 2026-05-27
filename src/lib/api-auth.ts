@@ -18,6 +18,7 @@ export interface VerifyResult {
   status: number;
   remaining?: number;
   limit?: number;
+  retryAfter?: number;
 }
 
 const TIER_LIMITS: Record<string, number> = {
@@ -26,6 +27,17 @@ const TIER_LIMITS: Record<string, number> = {
   pro: 50000,
   enterprise: 1000000,
 };
+
+const TIER_SECOND_LIMITS: Record<string, number> = {
+  free: 2,
+  starter: 5,
+  pro: 20,
+  enterprise: 100,
+};
+
+const SECOND_WINDOW_MS = 1000;
+
+const requestTimestamps = new Map<number, number[]>();
 
 export function hashApiKey(key: string): string {
   return createHash('sha256').update(key).digest('hex');
@@ -89,6 +101,24 @@ export async function verifyApiKey(request: Request): Promise<VerifyResult> {
     };
   }
 
+  // Per-second sliding window rate limit
+  const secLimit = TIER_SECOND_LIMITS[data.tier] || 2;
+  const tsNow = Date.now();
+  const timestamps = requestTimestamps.get(data.id) || [];
+  const windowStart = tsNow - SECOND_WINDOW_MS;
+  const recent = timestamps.filter(t => t > windowStart);
+  recent.push(tsNow);
+  requestTimestamps.set(data.id, recent);
+
+  if (recent.length > secLimit) {
+    const oldest = recent[0];
+    const retryAfter = Math.ceil((oldest + SECOND_WINDOW_MS - tsNow) / 1000);
+    return {
+      valid: false, error: `Rate limit exceeded: ${secLimit} req/s`, status: 429,
+      key: keyInfo, remaining: 0, limit: secLimit, retryAfter,
+    };
+  }
+
   await supabaseAdmin
     .from('api_keys')
     .update({ last_used_at: new Date().toISOString() })
@@ -99,6 +129,13 @@ export async function verifyApiKey(request: Request): Promise<VerifyResult> {
     remaining: limit - totalUsed, limit,
     status: 200,
   };
+}
+
+export function rateLimitResponse(auth: VerifyResult): Response {
+  return new Response(JSON.stringify({ error: auth.error, retryAfter: auth.retryAfter }), {
+    status: auth.status,
+    headers: auth.retryAfter ? { 'Retry-After': String(auth.retryAfter) } : {},
+  });
 }
 
 export async function logApiUsage(apiKeyId: number, endpoint: string): Promise<void> {

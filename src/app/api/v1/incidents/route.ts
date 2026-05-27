@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { verifyApiKey, logApiUsage } from '@/lib/api-auth';
+import { verifyApiKey, logApiUsage, rateLimitResponse } from '@/lib/api-auth';
 import { supabaseAdmin } from '@/lib/supabase-admin';
 
 export const dynamic = 'force-dynamic';
@@ -7,7 +7,7 @@ export const dynamic = 'force-dynamic';
 export async function GET(request: NextRequest) {
   const auth = await verifyApiKey(request);
   if (!auth.valid || !auth.key) {
-    return NextResponse.json({ error: auth.error }, { status: auth.status });
+    return rateLimitResponse(auth);
   }
 
   const searchParams = request.nextUrl.searchParams;

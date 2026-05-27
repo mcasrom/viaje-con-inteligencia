@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { verifyApiKey, logApiUsage } from '@/lib/api-auth';
+import { verifyApiKey, logApiUsage, rateLimitResponse } from '@/lib/api-auth';
 import { getPaisData } from '@/lib/paises-db';
 import { calculateTCI } from '@/data/tci-engine';
 import { getLiveSeasonality, getLiveAirspaceClosures } from '@/lib/tci-db';
@@ -12,7 +12,7 @@ export async function GET(
 ) {
   const auth = await verifyApiKey(request);
   if (!auth.valid || !auth.key) {
-    return NextResponse.json({ error: auth.error }, { status: auth.status });
+    return rateLimitResponse(auth);
   }
 
   const { country } = await params;
