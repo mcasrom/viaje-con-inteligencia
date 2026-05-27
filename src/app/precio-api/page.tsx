@@ -14,6 +14,16 @@ const TIERS = [
     features: ['1 API key', 'Risk endpoint', 'TCI endpoint', 'Incidents endpoint', 'Countries list', 'Actualizaciones diarias'],
   },
   {
+    name: 'Starter',
+    price: '2.99',
+    requests: '3,000',
+    cta: 'Suscribirse',
+    href: '#',
+    features: ['3 API keys', 'Todos los endpoints', '30 días histórico', 'Email support', 'Sin publicidad'],
+    priceId: 'price_1TbcHG1yXjIoL1LjI2Lnae1p',
+    type: 'api_starter',
+  },
+  {
     name: 'Pro',
     price: '4.99',
     requests: '10,000',
@@ -22,6 +32,7 @@ const TIERS = [
     featured: true,
     features: ['5 API keys', 'Todos los endpoints', '90 días histórico', 'Email support', 'Alertas en tiempo real'],
     priceId: 'price_1TZjOo1yXjIoL1LjQf4rIc65',
+    type: 'api_pro',
   },
   {
     name: 'Enterprise',
@@ -70,14 +81,14 @@ export default function PrecioApiPage() {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const handleCheckout = async (priceId: string) => {
+  const handleCheckout = async (priceId: string, type: string = 'api_pro') => {
     setLoading(true);
     setError('');
     try {
       const res = await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ priceId, trialDays: 7, type: 'api_pro' }),
+        body: JSON.stringify({ priceId, trialDays: 7, type }),
       });
       const data = await res.json();
       if (data.url) {
@@ -116,7 +127,7 @@ export default function PrecioApiPage() {
         </div>
 
         {/* Cards */}
-        <div className="grid md:grid-cols-3 max-w-3xl mx-auto gap-6 items-start">
+        <div className="grid md:grid-cols-4 max-w-5xl mx-auto gap-6 items-start">
           {TIERS.map((tier) => (
             <div
               key={tier.name}
@@ -176,6 +187,14 @@ export default function PrecioApiPage() {
                     {error && <p className="text-red-400 text-xs text-center">{error}</p>}
                   </form>
                 )
+              ) : tier.type === 'api_starter' ? (
+                <button
+                  onClick={() => handleCheckout(tier.priceId!, 'api_starter')}
+                  disabled={loading}
+                  className="mt-8 flex items-center justify-center gap-2 w-full text-center py-3 rounded-xl text-sm font-medium transition-colors bg-slate-700 text-slate-300 hover:bg-slate-600 disabled:opacity-50"
+                >
+                  {loading ? <><Loader2 className="w-4 h-4 animate-spin" /> Procesando...</> : tier.cta}
+                </button>
               ) : tier.name === 'Enterprise' ? (
                 <a
                   href={tier.href}
@@ -185,7 +204,7 @@ export default function PrecioApiPage() {
                 </a>
               ) : (
                 <button
-                  onClick={() => handleCheckout(tier.priceId!)}
+                  onClick={() => handleCheckout(tier.priceId!, tier.type || 'api_pro')}
                   disabled={loading}
                   className="mt-8 flex items-center justify-center gap-2 w-full text-center py-3 rounded-xl text-sm font-medium transition-colors bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50"
                 >
