@@ -1,6 +1,6 @@
 # Way Ahead
 
-## Última sesión: 25 May 2026 — Post Ebola + Server Stability (FIX DEFINITIVO)
+## Última sesión: 27 May 2026 — Auditoría de estado + WAYAHEAD actualizado
 
 > **Último deploy verificado:** OK ✅ (commit `b45ddf9`, deploy GH Actions funcional)
 >
@@ -495,6 +495,15 @@ sudo docker ps | grep uptime-kuma
 | 29 | Retention policy 90d | `cron/master/route.ts` | ✅ Auto-cleanup, docs en metodologia/transparencia |
 | 30 | RRSS lanzado | Bluesky, Mastodon, Telegram, X | ✅ Tono OSINT/data-driven |
 | 31 | Admin AI Assistant | `/admin/ai-assistant` | ✅ 4 modos (SEO, posts, meta, free) con Groq |
+| 32 | Manifiesto EN | `/manifiesto` | ✅ Travel Intelligence manifesto |
+| 33 | Bias disclaimer | `BiasDisclaimer.tsx` | ✅ Badge en mapa + fichas país |
+| 34 | Contexto geopolítico | 27 países en `paises-data.json` | ✅ Notas sesgo diplomático |
+| 35 | Zoom móvil + gesture | Leaflet gesture handling | ✅ Sin scroll accidental |
+| 36 | África 17 países | GA, GQ, MG, ML, NE, TD... | ✅ Todos en data + índices |
+| 37 | Stripe API Pro webhook | `/api/webhooks/stripe` | ✅ provisionApiProKey + email |
+| 38 | Admin API Leads | `/admin/api-leads` | ✅ CRUD + status badges |
+| 39 | GoAccess tráfico | `status.viajeinteligencia.com/trafico.html` | ✅ Cada 15min |
+| 40 | Uptime Kuma | `status.viajeinteligencia.com/dashboard` | ✅ 6 monitores |
 
 ---
 
@@ -688,18 +697,20 @@ Idea: reclutar colaboradores (redactores de contenido, traductores, community ma
 
 **Pendiente de diseñar en el sprint correspondiente.**
 
-### 🟢 Sprint API B2B Stripe (prioridad: media-alta)
-- Integrar checkout Stripe en tiers Starter/Pro/Enterprise
-- Webhook para actualizar `api_keys.tier` al confirmar pago
-- Rate limiting server-side por tier
+### 🟢 Sprint API B2B Stripe — ⚠️ Parcial (27 May 2026)
+- [x] Checkout Stripe en tiers Pro (4.99€/mes, 19.99€/año) — webhook `provisionApiProKey()` provisiona API key + email ✅
+- [x] Rate limiting server-side por tier (monthly caps: free=3K, starter=10K, pro=50K) ✅
+- [ ] Starter tier no visible en UI `/precio-api` — existe en SQL/webhook pero no como compra
+- [ ] Rate limiting per-second — hoy solo monthly aggregate, falta sliding window o token bucket
+- [ ] Enterprise flow: webhook no maneja tier enterprise
 
-### 🟢 Sprint África — 28 países pendientes (prioridad: alta)
+### 🟢 Sprint África — ✅ COMPLETADO (27 May 2026)
 **Motivación:** La página `/geopolitica-y-viajes` tiene un monitor de conflictos con 8 países para enlazar a fichas. Conflictos ya existen en paises-data.json.
 
-**Pendientes:**
-- África (17): GA, GQ, MG, ML, NE, TD, ZM, ZW, BJ, BF, BI, MW, NA, SL, LR, DJ, ER
-- LATAM/Asia (3): UY, PY, NP
-- **Completado (20 May):** RU, UA, IR, IL, LB, SY, YE, VE ya existen y links `<Link>` activos en conflict monitor
+**Completado:**
+- ✅ África (17): GA, GQ, MG, ML, NE, TD, ZM, ZW, BJ, BF, BI, MW, NA, SL, LR, DJ, ER — todos en `paises-data.json` + GPI/GTI/HDI/IPC
+- ✅ LATAM/Asia (3): UY, PY, NP
+- ✅ RU, UA, IR, IL, LB, SY, YE,VE — ya existen y links `<Link>` activos en conflict monitor
 
 ### 🟢 Sprint Performance Mobile — Lighthouse 74→90+ (prioridad: alta)
 **Motivación:** Lighthouse en Moto G Power da 74 rendimiento, LCP 5.9s. Urgente para Core Web Vitals y usuarios móviles.
@@ -742,25 +753,27 @@ git add -A && git commit -m "msg" && git push
 
 ---
 
-## PENDIENTES REALES (verificado 22 May 2026)
+## PENDIENTES REALES (verificado 27 May 2026 — auditoría)
 
 ### 🔴 Indexación Google
 - [ ] Esperar 3-7 días tras deploy de fixes 500 (middleware) para ver primeras URLs en Google
 - [ ] Verificar `site:www.viajeinteligencia.com` diariamente
 - [ ] Googlebot activo (17 hits/24h) pero 0 URLs indexadas por historial 5xx
+- [ ] Solicitar recrawleo en Google Search Console
+- [ ] Enviar sitemap.xml a Google Search Console manualmente
 
-### 🔴 Stripe / Monetización API
-- [ ] Stripe webhook para API Pro — auto-provisionar API key tras pago de 4.99€
-- [ ] Webhook existente solo maneja site premium (profiles.is_premium). API Pro requiere handler nuevo.
+### 🔴 Stripe / Monetización API — ⚠️ Parcial
+- [x] Stripe webhook para API Pro: provisiona API key tras pago 4.99€ ✅ (handler `provisionApiProKey()` en webhook)
+- [ ] Starter tier visible en UI `/precio-api` — existe en SQL/webhook pero no como opción de compra
+- [ ] Rate limiting per-second (hoy solo monthly caps: free=3K, starter=10K, pro=50K)
+- [ ] Stripe Enterprise flow — webhook no maneja tier enterprise
 
 ### 🟡 Admin / Infra
-- [ ] Admin API Leads page — gestionar solicitudes entrantes de `api_plan_requests`
+- [x] Admin API Leads page — `/admin/api-leads` con fetch + status badges + update ✅
 - [ ] Migrar `paisesData` hardcodeado a Supabase para edición desde admin
 - [ ] Monitorear que no entren incidentes mal clasificados (Groq ahora pide country_code)
 
 ### 🟡 Content / SEO
-- [ ] Solicitar recrawleo en Google Search Console
-- [ ] Enviar sitemap.xml a Google Search Console manualmente
 - [ ] Version EN de pillar pages ES (`/en/osint-para-viajeros`, `/en/geopolitica-y-viajes`)
 - [ ] Newsletter con sentimiento semanal — integrar `tone_score` en el HTML del digest
 
@@ -768,12 +781,13 @@ git add -A && git commit -m "msg" && git push
 - [ ] Publicar Reddit (4 drafts) + Facebook (2 drafts) desde `content/outreach/`
 - [ ] Email outreach a bloggers/agencias (5-10 emails)
 
-### 🟡 ML / Data
-- [ ] Validación temporal CV (~25 días de datos acumulados) — monitorizar
+### 🟡 ML / Data — ⚠️ Parcial
+- [x] Código validación temporal CV existe (`ml-validate.ts`) pero usa split 80/20 sintético, no walk-forward real
+- [ ] Backtesting contra cambios MAEC reales — las predicciones nunca se comparan contra outcomes reales (`outcomesAvailable7d` hardcodeado a 0)
 - [ ] Aumentar cobertura OSINT: backfill de `tone_score` vía Groq en señales existentes sin sentiment
 
-### 🟢 África — 17 países pendientes
-- [ ] GA, GQ, MG, ML, NE, TD, ZM, ZW, BJ, BF, BI, MW, NA, SL, LR, DJ, ER
+### 🟢 África — 17 países ✅ COMPLETADO
+- [x] GA, GQ, MG, ML, NE, TD, ZM, ZW, BJ, BF, BI, MW, NA, SL, LR, DJ, ER — todos en `paises-data.json` + GPI/GTI/HDI/IPC
 
 ---
 
@@ -791,8 +805,8 @@ Evaluación honesta del estado actual del proyecto en cada dimensión:
 ### 🟠 ML — Prototipo / Académico
 - 4 Random Forest models, 136 países, 25 features, entrenamiento diario (~157s)
 - R² riskScore MAE 0.56, probUp7d 0.0018, max deviation 5.89 (2 países desviados)
-- **⚠️ Estas métricas son sobre training data, no test set**. Sin validación temporal CV (solo ~11 días de datos)
-- Sin backtesting contra cambios MAEC reales — no sabemos si predice algo útil
+- **⚠️ Estas métricas son sobre training data, no test set**. Código de validación temporal CV existe (`ml-validate.ts`) pero usa split 80/20 sintético, no walk-forward real
+- **⚠️ Sin backtesting**: `outcomesAvailable7d` hardcodeado a 0 — las predicciones nunca se comparan contra cambios MAEC reales
 - Transparencia operativa en blog post publicado (métricas reales, no infladas)
 
 ### 🟡 SEO / Indexación — En mejora (post-fixes)
