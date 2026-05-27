@@ -46,7 +46,7 @@ export async function checkCronCatchup(): Promise<void> {
     }
 
     const res = await fetch(
-      `      http://localhost:3000/api/cron/master`,
+      `http://localhost:3000/api/cron/master`,
       { headers: { Authorization: `Bearer ${CRON_SECRET}` } }
     );
 

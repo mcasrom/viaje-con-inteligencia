@@ -65,7 +65,11 @@ async function getLastCronRun(table: string, column: string): Promise<string | n
   return (data as unknown as Record<string, string | null>)[column] ?? null;
 }
 
-export async function GET() {
+export async function GET(request: Request) {
+  const authHeader = request.headers.get('authorization');
+  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
   const now = new Date();
   
   const lastScrapeMaec = await getLastCronRun('scraper_logs', 'started_at');

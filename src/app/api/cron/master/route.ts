@@ -838,12 +838,14 @@ async function runModelTraining(): Promise<any> {
     const cronSecret = process.env.CRON_SECRET;
     if (!cronSecret) return { status: 'skipped', reason: 'No CRON_SECRET' };
     const baseUrl = process.env.APP_BASE_URL || 'https://www.viajeinteligencia.com';
-    fetch(`${baseUrl}/api/cron/train-models`, {
+    const res = await fetch(`${baseUrl}/api/cron/train-models`, {
       headers: { 'Authorization': `Bearer ${cronSecret}` },
-    }).catch(() => {});
-    return { status: 'fired', note: 'Training started asynchronously' };
-  } catch {
-    return { status: 'fired', note: 'Training triggered' };
+      signal: AbortSignal.timeout(240000),
+    });
+    const body = await res.text();
+    return { status: res.ok ? 'ok' : 'error', http: res.status, body: body.substring(0, 200) };
+  } catch (e: any) {
+    return { status: 'error', reason: e.message };
   }
 }
 
