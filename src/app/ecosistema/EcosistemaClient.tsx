@@ -327,7 +327,30 @@ export default function EcosistemaClient() {
           </div>
         </div>
 
-        {/* Marketing */}
+        {/* Pricing */}
+        <div className="mb-12">
+          <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">💰 Precios</h2>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {[
+              { name: 'Gratuito', price: '0€', desc: '1K req/mes · 1 API key', color: 'emerald' },
+              { name: 'Starter', price: '2,99€', desc: '3K req/mes · 3 API keys', color: 'blue' },
+              { name: 'Pro', price: '4,99€', desc: '10K req/mes · 10 API keys', color: 'amber' },
+              { name: 'Enterprise', price: 'Custom', desc: 'Volumen · SLA · Soporte', color: 'violet' },
+            ].map(t => {
+              const c = colorClasses[t.color] || colorClasses.slate;
+              return (
+                <div key={t.name} className={`${c.bg} ${c.border} border rounded-xl p-4 text-center hover:brightness-110 transition-all`}>
+                  <div className={`text-lg font-bold ${c.text} mb-1`}>{t.name}</div>
+                  <div className="text-2xl font-bold text-white mb-2">{t.price}</div>
+                  <div className="text-sm text-slate-400">{t.desc}</div>
+                </div>
+              );
+            })}
+          </div>
+          <p className="text-xs text-slate-500 text-center mt-4">Precios API. Premium usuario: 4,99€/mes o 19,99€/año.</p>
+        </div>
+
+      {/* Marketing */}
         <div className="mb-12">
           <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">📣 Claves del Ecosistema</h2>
           <div className="grid md:grid-cols-2 gap-4">

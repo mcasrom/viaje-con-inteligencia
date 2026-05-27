@@ -933,7 +933,7 @@ El build de Next.js 16.2.6 en el VPS (Node v22.22.2, 3.7GB RAM) falla con SIGBUS
 - ✅ Refactor: `rateLimitResponse()` helper + aplicado a 5 endpoints v1
 
 ### Incidencias
-- **Build Turbopack**: App router `/precio-api` daba 500 tras deploy vía GitHub Actions ("client reference manifest does not exist"). Solución: rebuild local en servidor (`rm -rf .next && npm run build`). Causa raíz: Turbopack no regenera correctamente los manifests al rsync desde build externo.
+- **Build Turbopack**: App router `/precio-api` daba 500 tras deploy vía GitHub Actions ("client reference manifest does not exist"). Solución: rebuild local en servidor (`rm -rf .next && npm run build`). **Causa raíz: no es Turbopack**, es que el workflow de deploy hacía `npm install --omit=dev` antes de `npm run build`, omitiendo TypeScript y tipos (devDependencies). Build fallaba silenciosamente → .next incompleto → 500 en app routes. Fijo cambiando a `npm install` + `npm prune --omit=dev` post-build.
 
 ### Commits del día
 | Commit | Descripción |
@@ -943,6 +943,18 @@ El build de Next.js 16.2.6 en el VPS (Node v22.22.2, 3.7GB RAM) falla con SIGBUS
 | `b742ff7` | ML backtesting contra cambios MAEC reales |
 | `bbe1f7f` | Per-second sliding window rate limit |
 | `4de6b1f` | WAYAHEAD updates |
+| `d5ba52c` | WAYAHEAD 27 May sprint log |
+| `f405efd` | Newsletter sentiment + sitemap priorities + Google ping + admin paises JSON editor/sync |
+| `051aaf9` | Ecosistema: rutas clicleables (LayerCard + freemium table) |
+| `e5182ea` | **fix: deploy workflow** — `npm install` (con devDeps) antes del build, `npm prune --omit=dev` después |
+
+### No-code changes
+- **Newsletter sentimiento**: Test enviado a info@viajeinteligencia.com (edición #39). Sección "📊 Sentimiento OSINT" ya incluida en HTML digest con avg_tone, barra colorizada, signal_count, risk_level.
+- **Sitemap priorities**: Añadidas prioridades 0.85-0.9 para /en/*, /travel-risk-intelligence, /osint-para-viajeros, /geopolitica-y-viajes, /ecosistema, /mapa, /reporte-riesgo, /infografias, /precio-api, /newsletter
+- **Google ping**: `GET /api/seo/ping-google` notifica Google + Bing IndexNow
+- **Admin paises**: Editor JSON completo por país (botón `</>`) + "Sync desde JSON" (recarga desde paises-data.json)
+- **Ecosistema precios**: Nueva sección "💰 Precios" con los 4 tiers (Gratuito/Starter/Pro/Enterprise) + nota Premium usuario
+- **Deploy workflow fix**: El build ahora incluye devDependencies; se eliminan post-build con `npm prune --omit=dev`. Los 2 workflows (CI + Deploy) pasan en verde.
 
 > **Último deploy verificado:** ✅ (commit `c223f21`, PM2 PID 287813, port 3000)
 
