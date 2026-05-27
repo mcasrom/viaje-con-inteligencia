@@ -150,17 +150,24 @@ function FlowArrow() {
   );
 }
 
+function isLinkable(route: string): boolean {
+  return route.startsWith('/') && !route.includes('[') && !route.includes('*') && !route.startsWith('/api/');
+}
+
 function LayerCard({ item: { name, desc, color } }: { item: { name: string; desc: string; color: string } }) {
   const c = colorClasses[color] || colorClasses.slate;
-  return (
-    <div className={`${c.bg} ${c.border} border rounded-lg px-3 py-2 text-sm hover:brightness-110 transition-all`}>
+  const linkable = isLinkable(name);
+  const content = (
+    <div className={`${c.bg} ${c.border} border rounded-lg px-3 py-2 text-sm hover:brightness-110 transition-all ${linkable ? 'hover:border-blue-500/50 cursor-pointer' : ''}`}>
       <div className="flex items-center gap-2">
         <span className={`w-2 h-2 rounded-full ${c.dot} shrink-0`} />
-        <span className={`font-semibold ${c.text}`}>{name}</span>
+        <span className={`font-semibold ${c.text} ${linkable ? 'hover:text-blue-400' : ''}`}>{name}</span>
       </div>
       <p className="text-slate-400 text-xs mt-0.5 leading-tight">{desc}</p>
     </div>
   );
+  if (linkable) return <a href={name}>{content}</a>;
+  return content;
 }
 
 function MetricCard({ label, value }: { label: string; value: string }) {
@@ -307,7 +314,11 @@ export default function EcosistemaClient() {
                       <td className="px-4 py-2.5 text-slate-200">{name}</td>
                       <td className={`px-4 py-2.5 text-center ${free === '✅' ? 'text-emerald-400' : free === '⚠️' ? 'text-amber-400' : 'text-slate-600'}`}>{free}</td>
                       <td className={`px-4 py-2.5 text-center ${premium === '✅' ? 'text-emerald-400' : premium === '⚠️' ? 'text-amber-400' : 'text-slate-600'}`}>{premium}</td>
-                      <td className="px-4 py-2.5 text-slate-400 text-xs font-mono">{route}</td>
+                      <td className="px-4 py-2.5 text-slate-400 text-xs font-mono">
+                        {isLinkable(route as string)
+                          ? <a href={route as string} className="hover:text-blue-400 transition-colors underline decoration-slate-700 hover:decoration-blue-500">{route}</a>
+                          : route}
+                      </td>
                     </tr>
                   ))}
                 </tbody>
