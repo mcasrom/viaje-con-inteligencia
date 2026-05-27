@@ -29,7 +29,7 @@ export async function generateMetadata({ params }: { params: Promise<{ codigo: s
       title: `${pais?.nombre} — Riesgo, Visado y Consejos`,
       description: `Ficha completa de ${pais?.nombre}: nivel de riesgo MAEC, visado, clima y recomendaciones.`,
       url: `https://www.viajeinteligencia.com/pais/${codigo}`,
-      type: 'place',
+      type: 'website',
     },
     twitter: {
       card: 'summary_large_image',
