@@ -897,7 +897,52 @@ El build de Next.js 16.2.6 en el VPS (Node v22.22.2, 3.7GB RAM) falla con SIGBUS
 
 ---
 
-## 26 May 2026 — Sprint Sesgo Diplomático + UX Móvil + Contexto Geopolítico
+## 27 May 2026 — Sprint Cambios acumulados (Starter tier + EN Pillars + ML backtesting + Rate limiting)
+
+> **Último deploy verificado:** ✅ (commit `4de6b1f`, PM2 PID 355323, port 3000)
+>
+> **Sprint activo:** Refuerzo monetización + contenido EN + ML + infra
+
+### Logros del día
+
+#### 1. Starter API tier (€2.99/mes)
+- ✅ Stripe price creado: `price_1TbcHG1yXjIoL1LjI2Lnae1p`
+- ✅ Añadido a UI `/precio-api` entre Free y Pro con 3,000 req/mes, 3 API keys
+- ✅ Webhook ya soportaba `api_starter` → solo faltaba UI
+- ✅ Env var `STRIPE_API_STARTER_PRICE_ID` añadida a `.env.local`, `.env.production`, `.env.example`
+
+#### 2. EN Pillar Pages
+- ✅ `/en/osint-para-viajeros` — traducción completa del contenido OSINT para viajeros
+- ✅ `/en/geopolitica-y-viajes` — traducción completa de geopolítica + viajes
+- ✅ FAQ schema en ambos, metadata, OG tags, interlinking a páginas EN existentes
+
+#### 3. ML Backtesting
+- ✅ `ml-validate.ts` ahora consulta `risk_predictions` de últimos 30 días
+- ✅ Compara `probability_up_7d/14d/30d` contra cambios reales en `maec_risk_history`
+- ✅ `outcomesAvailable7d/14d/30d` ya no hardcodeados a 0
+- ✅ Logging de precisión: "Outcomes 7d: X/Y correct (Z%)"
+
+#### 4. Outreach drafts
+- ✅ 6 drafts verificados listos en `content/outreach/` (4 Reddit + 2 Facebook)
+- ⏳ Pendiente publicación manual (requiere login a cuentas)
+
+#### 5. Per-second rate limiting
+- ✅ Sliding window en memoria por `api_key_id`
+- ✅ Límites: free=2, starter=5, pro=20, enterprise=100 req/s
+- ✅ `Retry-After` header en respuesta 429
+- ✅ Refactor: `rateLimitResponse()` helper + aplicado a 5 endpoints v1
+
+### Incidencias
+- **Build Turbopack**: App router `/precio-api` daba 500 tras deploy vía GitHub Actions ("client reference manifest does not exist"). Solución: rebuild local en servidor (`rm -rf .next && npm run build`). Causa raíz: Turbopack no regenera correctamente los manifests al rsync desde build externo.
+
+### Commits del día
+| Commit | Descripción |
+|--------|-------------|
+| `0f258a9` | Starter tier (€2.99, 3K req) + Stripe price |
+| `64f29a8` | EN pillar pages (OSINT + Geopolitics) |
+| `b742ff7` | ML backtesting contra cambios MAEC reales |
+| `bbe1f7f` | Per-second sliding window rate limit |
+| `4de6b1f` | WAYAHEAD updates |
 
 > **Último deploy verificado:** ✅ (commit `c223f21`, PM2 PID 287813, port 3000)
 
