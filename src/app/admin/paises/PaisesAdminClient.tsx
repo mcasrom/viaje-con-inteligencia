@@ -4,7 +4,8 @@ import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import {
   ArrowLeft, Search, Loader2, Globe, ChevronDown, ChevronUp,
-  Save, X, Check, AlertTriangle, Shield, ExternalLink,
+  Save, X, Check, AlertTriangle, Shield, ExternalLink, Code,
+  RefreshCw, FileJson,
 } from 'lucide-react';
 
 interface PaisRow {
@@ -38,6 +39,9 @@ export default function PaisesAdminClient() {
   const [saving, setSaving] = useState(false);
   const [notification, setNotification] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
   const [editForm, setEditForm] = useState<Partial<PaisRow>>({});
+  const [jsonEditor, setJsonEditor] = useState<string | null>(null);
+  const [jsonPais, setJsonPais] = useState<string | null>(null);
+  const [syncing, setSyncing] = useState(false);
 
   const fetchPaises = useCallback(async () => {
     const res = await fetch('/api/admin/paises');
@@ -109,6 +113,59 @@ export default function PaisesAdminClient() {
     await fetchPaises();
   };
 
+  const openJsonEditor = (pais: PaisRow) => {
+    setJsonPais(pais.codigo);
+    setJsonEditor(JSON.stringify(pais.data || {}, null, 2));
+  };
+
+  const saveJson = async () => {
+    if (!jsonPais || !jsonEditor) return;
+    setSaving(true);
+    try {
+      let parsed: any;
+      try { parsed = JSON.parse(jsonEditor); }
+      catch { showNotification('error', 'JSON inválido'); setSaving(false); return; }
+
+      const res = await fetch('/api/admin/paises', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ codigo: jsonPais, data: parsed }),
+      });
+      if (!res.ok) {
+        const err = await res.json();
+        showNotification('error', err.error || 'Error al guardar JSON');
+        return;
+      }
+      showNotification('success', 'Datos JSON guardados correctamente');
+      setJsonEditor(null);
+      setJsonPais(null);
+      await fetchPaises();
+    } catch {
+      showNotification('error', 'Error de red al guardar JSON');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const syncFromFile = async () => {
+    if (!confirm('¿Sobrescribir datos en Supabase desde paises-data.json? Esto actualizará los 137 países.')) return;
+    setSyncing(true);
+    try {
+      const res = await fetch('/api/admin/paises/sync', { method: 'POST' });
+      const data = await res.json();
+      if (res.ok) {
+        showNotification('success', `Sync completado: ${data.inserted} insertados, ${data.errors} errores`);
+        await fetchPaises();
+      } else {
+        showNotification('error', data.error || 'Error en sync');
+      }
+    } catch {
+      showNotification('error', 'Error de red al sincronizar');
+    } finally {
+      setSyncing(false);
+    }
+  };
+
   const filtered = paises.filter(p => {
     if (search) {
       const q = search.toLowerCase();
@@ -151,7 +208,17 @@ export default function PaisesAdminClient() {
       )}
 
       <main className="max-w-7xl mx-auto px-6 py-8">
-        <h1 className="text-2xl font-bold text-white mb-2">Gestión de Países</h1>
+        <div className="flex items-center justify-between mb-2">
+          <h1 className="text-2xl font-bold text-white">Gestión de Países</h1>
+          <button
+            onClick={syncFromFile}
+            disabled={syncing}
+            className="flex items-center gap-2 px-4 py-2 bg-blue-600/20 text-blue-400 rounded-lg hover:bg-blue-600/30 text-sm font-medium transition-colors disabled:opacity-50"
+          >
+            <RefreshCw className={`w-4 h-4 ${syncing ? 'animate-spin' : ''}`} />
+            {syncing ? 'Sincronizando...' : 'Sync desde JSON'}
+          </button>
+        </div>
         <p className="text-slate-400 mb-6">{paises.length} países en total · {paises.filter(p => p.visible).length} visibles · {paises.filter(p => !p.visible).length} ocultos</p>
 
         {/* Filters */}
@@ -302,6 +369,13 @@ export default function PaisesAdminClient() {
                           >
                             Editar
                           </button>
+                          <button
+                            onClick={() => openJsonEditor(pais)}
+                            className="p-1.5 bg-purple-600/20 text-purple-400 rounded-lg hover:bg-purple-600/30 transition-colors"
+                            title="Editar JSON completo"
+                          >
+                            <Code className="w-4 h-4" />
+                          </button>
                           <a
                             href={`/pais/${pais.codigo}`}
                             target="_blank"
@@ -327,6 +401,46 @@ export default function PaisesAdminClient() {
           </div>
         )}
       </main>
+
+      {jsonEditor !== null && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+          <div className="bg-slate-800 border border-slate-700 rounded-xl w-full max-w-3xl mx-4 max-h-[90vh] flex flex-col shadow-2xl">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-700">
+              <div className="flex items-center gap-2">
+                <FileJson className="w-5 h-5 text-purple-400" />
+                <span className="text-white font-medium">Editor JSON — {jsonPais}</span>
+              </div>
+              <button onClick={() => { setJsonEditor(null); setJsonPais(null); }} className="p-1.5 text-slate-500 hover:text-white transition-colors">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="flex-1 overflow-auto p-6">
+              <textarea
+                value={jsonEditor}
+                onChange={e => setJsonEditor(e.target.value)}
+                className="w-full h-[60vh] bg-slate-900 text-green-400 font-mono text-xs p-4 border border-slate-700 rounded-lg focus:outline-none focus:border-purple-500 resize-none"
+                spellCheck={false}
+              />
+            </div>
+            <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-slate-700">
+              <button
+                onClick={() => { setJsonEditor(null); setJsonPais(null); }}
+                className="px-4 py-2 text-slate-400 hover:text-white transition-colors text-sm"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={saveJson}
+                disabled={saving}
+                className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-500 text-sm font-medium transition-colors disabled:opacity-50"
+              >
+                <Save className="w-4 h-4" />
+                {saving ? 'Guardando...' : 'Guardar JSON'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

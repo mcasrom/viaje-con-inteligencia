@@ -32,9 +32,12 @@ const CACHE_TTL = 6 * 60 * 60 * 1000; // 6 horas
 // Prioridad por ruta
 function getPriority(ruta: string): string {
   if (ruta === '') return '1.0';
-  if (['/blog', '/alertas', '/analisis', '/paises'].includes(ruta)) return '0.9';
+  if (['/blog', '/alertas', '/analisis', '/paises', '/en'].includes(ruta)) return '0.9';
   if (ruta.startsWith('/pais/') || ruta.startsWith('/coste/') || ruta.startsWith('/blog/')) return '0.8';
-  if (['/premium', '/free-trial', '/rutas', '/destinos', '/viajes'].includes(ruta)) return '0.75';
+  if (['/travel-risk-intelligence', '/osint-para-viajeros', '/geopolitica-y-viajes'].includes(ruta)) return '0.9';
+  if (ruta.startsWith('/en/')) return '0.85';
+  if (['/ecosistema', '/mapa', '/reporte-riesgo', '/infografias'].includes(ruta)) return '0.8';
+  if (['/premium', '/free-trial', '/rutas', '/destinos', '/viajes', '/precio-api', '/newsletter'].includes(ruta)) return '0.75';
   if (['/legal', '/metodologia', '/manifiesto', '/afiliados', '/colaborar'].includes(ruta)) return '0.4';
   return '0.6';
 }
