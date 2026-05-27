@@ -1,12 +1,47 @@
 # Way Ahead
 
-## Última sesión: 27 May 2026 — Auditoría de estado + WAYAHEAD actualizado
+## Última sesión: 27 May 2026 — Deploy fix + OpenGraph + Cloudflare WAF
 
-> **Último deploy verificado:** OK ✅ (commit `b45ddf9`, deploy GH Actions funcional)
+> **Último deploy verificado:** OK ✅ (commit `ff23d30`, deploy GH Actions funcional)
 >
-> **Sprint activo:** Contenido editorial verificado + Server stability
+> **Sprint activo:** Server stability + UX fixes
 >
-> **Logros día (25 May):**
+> **Logros día (27 May):**
+>
+> ### Deploy fix — build corrupto
+> - ✅ **Causa**: Archivos untracked en servidor (`src/app/api/admin/paises/sync/`, `src/app/api/seo/ping-google/`, `src/app/en/geopolitica-y-viajes/`, `src/app/en/osint-para-viajeros/`) bloquearon `git pull`, `.next` quedó inconsistente con código
+> - ✅ **Fix**: `rm -rf` untracked + `git pull` + `rm -rf .next` + rebuild limpio + PM2 restart
+> - ✅ **Commit**: `6e9b84c` → deployado manualmente tras fallo de GH Actions
+>
+> ### OpenGraph `type: 'place'` invalid — fichas de país rotas
+> - ✅ **Bug**: `src/app/pais/[codigo]/page.tsx:32` usaba `openGraph.type: 'place'` — Next.js 16 rechaza este tipo, lanzaba `Error: Invalid OpenGraph type: place` (digest `1720759795@E237`)
+> - ✅ **Síntoma**: Fichas de país mostraban "Algo salió mal — Ha ocurrido un error al cargar la página del país"
+> - ✅ **Fix**: Cambiado `type: 'place'` → `type: 'website'`
+> - ✅ **Commit**: `ff23d30` — deployado manualmente tras fallo de GH Actions (mismo problema de untracked files)
+>
+> ### Cloudflare WAF — regla bloqueando usuarios reales
+> - ✅ **Bug**: Regla "Filtro Scrapers y Bots Streamlit" bloqueaba `Firefox/151.0 + Ubuntu` — patrón de usuario real muy común (2.85% del tráfico, 876 requests)
+> - ✅ **Síntoma**: 502 Bad Gateway para usuarios con Firefox en Ubuntu
+> - ✅ **Fix**: Eliminada regla antigua. Creada nueva WAF custom rule solo para bots reales: `TLM-Audit-Scanner`, `l9scan`, `/_stcore/` → managed_challenge
+> - ✅ **API**: Cloudflare rulesets API — PUT `http_request_firewall_custom` con expresión corregida
+>
+> ### Commits del día
+> | Commit | Descripción |
+> |--------|-------------|
+> | `ff23d30` | fix: opengraph type 'place' invalid en pais/[codigo]/page.tsx |
+> | `6e9b84c` | fix: cron catchup whitespace bug, model training await, early-bird dead cron, health check script, auth on cron endpoints |
+>
+> ### Estado post-fixes
+> | Página | Estado |
+> |--------|--------|
+> | Homepage | 200 |
+> | Ficha país (ES) | 200 |
+> | Blog | 200 |
+> | API Health | 200 — healthy |
+> | PM2 | online, 0 reinicios |
+> | Cloudflare WAF | solo bots bloqueados |
+
+## Sesión actual (25 May tarde/noche) — GSC Fixes + Server stability consolidación
 >
 > ### Contenido
 > - ✅ **Post Ebola creado**: `content/posts/ebola-turismo-internacional-crisis-sanitaria-africa.md` — 430+ líneas con SEO, frontmatter, enlaces ecosistema. Commit `eb2682a`
