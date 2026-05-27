@@ -594,6 +594,237 @@ const translations: Translation = {
     es: 'Transparencia →',
     en: 'Transparency →',
   },
+  // Tabs
+  'pais.tab.info': {
+    es: 'Info',
+    en: 'Overview',
+  },
+  'pais.tab.legal': {
+    es: 'MAEC',
+    en: 'MAEC',
+  },
+  'pais.tab.ist': {
+    es: 'IST',
+    en: 'IST',
+  },
+  'pais.tab.dinero': {
+    es: 'Dinero',
+    en: 'Money',
+  },
+  'pais.tab.pois': {
+    es: 'POIs',
+    en: 'POIs',
+  },
+  'pais.tab.noticias': {
+    es: 'Noticias',
+    en: 'News',
+  },
+  'pais.tab.fuentes': {
+    es: 'Fuentes',
+    en: 'Sources',
+  },
+  'pais.tab.emergencia': {
+    es: 'Emerg.',
+    en: 'Emergency',
+  },
+
+  // Profile & budget
+  'pais.profile': {
+    es: 'Perfil:',
+    en: 'Profile:',
+  },
+  'pais.budget': {
+    es: 'Presupuesto:',
+    en: 'Budget:',
+  },
+  'pais.budget.low': {
+    es: 'Bajo',
+    en: 'Low',
+  },
+  'pais.budget.medium': {
+    es: 'Medio',
+    en: 'Medium',
+  },
+  'pais.budget.high': {
+    es: 'Alto',
+    en: 'High',
+  },
+  'pais.budget.luxury': {
+    es: 'Lujo',
+    en: 'Luxury',
+  },
+
+  // Info section
+  'pais.info.general': {
+    es: 'Información General',
+    en: 'General Info',
+  },
+  'pais.info.language': {
+    es: 'Idioma',
+    en: 'Language',
+  },
+  'pais.info.population': {
+    es: 'Población',
+    en: 'Population',
+  },
+  'pais.info.gdp': {
+    es: 'PIB',
+    en: 'GDP',
+  },
+  'pais.info.economy': {
+    es: 'Economía',
+    en: 'Economy',
+  },
+  'pais.info.currency': {
+    es: 'Moneda',
+    en: 'Currency',
+  },
+  'pais.info.exchange': {
+    es: 'Tipo cambio',
+    en: 'Exchange rate',
+  },
+  'pais.info.cpi': {
+    es: 'IPC',
+    en: 'CPI',
+  },
+  'pais.info.priceIndex': {
+    es: 'Índice precios',
+    en: 'Price index',
+  },
+  'pais.info.location': {
+    es: 'Localización',
+    en: 'Location',
+  },
+  'pais.info.timezone': {
+    es: 'Zona horaria',
+    en: 'Timezone',
+  },
+  'pais.info.prefix': {
+    es: 'Prefijo',
+    en: 'Prefix',
+  },
+  'pais.info.driving': {
+    es: 'Conducción',
+    en: 'Driving',
+  },
+  'pais.info.drivingRight': {
+    es: '↱ Derecha',
+    en: '↱ Right',
+  },
+  'pais.info.drivingLeft': {
+    es: '↰ Izquierda',
+    en: '↰ Left',
+  },
+  'pais.info.voltage': {
+    es: 'Voltaje',
+    en: 'Voltage',
+  },
+
+  // MAEC section
+  'pais.maec.riskLevel': {
+    es: 'Nivel de riesgo',
+    en: 'Risk level',
+  },
+  'pais.maec.downloadPdf': {
+    es: 'Descargar Ficha PDF',
+    en: 'Download PDF',
+  },
+  'pais.maec.recommendations': {
+    es: 'Recomendaciones MAEC',
+    en: 'MAEC Recommendations',
+  },
+  'pais.maec.alerts': {
+    es: 'Alertas activas',
+    en: 'Active alerts',
+  },
+  'pais.maec.lastUpdate': {
+    es: 'Última actualización',
+    en: 'Last updated',
+  },
+  'pais.maec.updated': {
+    es: 'actualizado',
+    en: 'updated',
+  },
+
+  // Emergency
+  'pais.emergency.title': {
+    es: 'Emergencia',
+    en: 'Emergency',
+  },
+  'pais.emergency.phone': {
+    es: 'Teléfono',
+    en: 'Phone',
+  },
+  'pais.emergency.address': {
+    es: 'Dirección',
+    en: 'Address',
+  },
+
+  // Reviews
+  'pais.reviews.title': {
+    es: 'Reviews de viajeros',
+    en: 'Traveler reviews',
+  },
+  'pais.reviews.empty': {
+    es: 'Sé el primero en dejar una review',
+    en: 'Be the first to leave a review',
+  },
+  'pais.reviews.write': {
+    es: 'Escribir review',
+    en: 'Write a review',
+  },
+  'pais.reviews.loginPrompt': {
+    es: 'Inicia sesión para escribir una review',
+    en: 'Sign in to write a review',
+  },
+
+  // IST section
+  'pais.ist.title': {
+    es: 'Índice de Saturación Turística',
+    en: 'Tourist Saturation Index',
+  },
+  'pais.ist.loading': {
+    es: 'Calculando saturación...',
+    en: 'Calculating saturation...',
+  },
+  'pais.ist.factorSeason': {
+    es: 'Temporada',
+    en: 'Season',
+  },
+  'pais.ist.factorPrices': {
+    es: 'Precios',
+    en: 'Prices',
+  },
+  'pais.ist.factorEvents': {
+    es: 'Eventos',
+    en: 'Events',
+  },
+  'pais.ist.factorDay': {
+    es: 'Día',
+    en: 'Day',
+  },
+
+  // Risk descriptions
+  'pais.riskDesc.noRisk': {
+    es: 'No existen riesgos específicos. Puede viajarse con normalidad.',
+    en: 'No specific risks. Travel with normal precautions.',
+  },
+  'pais.riskDesc.low': {
+    es: 'Riesgo bajo. Se recomienda tomar precauciones normales.',
+    en: 'Low risk. Normal precautions recommended.',
+  },
+  'pais.riskDesc.medium': {
+    es: 'Riesgo moderado. Se recomienda extremar precauciones.',
+    en: 'Moderate risk. Exercise increased caution.',
+  },
+  'pais.riskDesc.high': {
+    es: 'Riesgo alto. Se desaconsejan los viajes no esenciales.',
+    en: 'High risk. Non-essential travel discouraged.',
+  },
+  'pais.riskDesc.veryHigh': {
+    es: 'Riesgo muy alto. Se desaconsejan todos los viajes.',
+    en: 'Very high risk. All travel advised against.',
+  },
 };
 
 interface I18nContextType {

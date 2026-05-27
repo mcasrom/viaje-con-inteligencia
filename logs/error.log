@@ -1,0 +1,762 @@
+2026-05-26 22:00:24: The width(-1) and height(-1) of chart should be greater than 0,
+2026-05-26 22:00:24:        please check the style of container, or the props width(100%) and height(100%),
+2026-05-26 22:00:24:        or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+2026-05-26 22:00:24:        height and width.
+2026-05-26 22:24:53: The width(-1) and height(-1) of chart should be greater than 0,
+2026-05-26 22:24:53:        please check the style of container, or the props width(100%) and height(100%),
+2026-05-26 22:24:53:        or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+2026-05-26 22:24:53:        height and width.
+2026-05-26 22:44:05: The width(-1) and height(-1) of chart should be greater than 0,
+2026-05-26 22:44:05:        please check the style of container, or the props width(100%) and height(100%),
+2026-05-26 22:44:05:        or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+2026-05-26 22:44:05:        height and width.
+2026-05-26 23:44:48: The width(-1) and height(-1) of chart should be greater than 0,
+2026-05-26 23:44:48:        please check the style of container, or the props width(100%) and height(100%),
+2026-05-26 23:44:48:        or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+2026-05-26 23:44:48:        height and width.
+2026-05-26 23:59:24: The width(-1) and height(-1) of chart should be greater than 0,
+2026-05-26 23:59:24:        please check the style of container, or the props width(100%) and height(100%),
+2026-05-26 23:59:24:        or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+2026-05-26 23:59:24:        height and width.
+2026-05-27 00:09:35: 2026-05-27 00:09:35 [ERROR] [UserPrefs] Invalid query params: [
+2026-05-27 00:09:35:   {
+2026-05-27 00:09:35:     "code": "invalid_value",
+2026-05-27 00:09:35:     "values": [
+2026-05-27 00:09:35:       "mochilero",
+2026-05-27 00:09:35:       "lujo",
+2026-05-27 00:09:35:       "familiar",
+2026-05-27 00:09:35:       "aventura",
+2026-05-27 00:09:35:       "negocios"
+2026-05-27 00:09:35:     ],
+2026-05-27 00:09:35:     "path": [
+2026-05-27 00:09:35:       "viajero_tipo"
+2026-05-27 00:09:35:     ],
+2026-05-27 00:09:35:     "message": "Invalid option: expected one of \"mochilero\"|\"lujo\"|\"familiar\"|\"aventura\"|\"negocios\""
+2026-05-27 00:09:35:   },
+2026-05-27 00:09:35:   {
+2026-05-27 00:09:35:     "code": "invalid_value",
+2026-05-27 00:09:35:     "values": [
+2026-05-27 00:09:35:       "baja",
+2026-05-27 00:09:35:       "media",
+2026-05-27 00:09:35:       "alta"
+2026-05-27 00:09:35:     ],
+2026-05-27 00:09:35:     "path": [
+2026-05-27 00:09:35:       "tolerancia_riesgo"
+2026-05-27 00:09:35:     ],
+2026-05-27 00:09:35:     "message": "Invalid option: expected one of \"baja\"|\"media\"|\"alta\""
+2026-05-27 00:09:35:   },
+2026-05-27 00:09:35:   {
+2026-05-27 00:09:35:     "code": "invalid_value",
+2026-05-27 00:09:35:     "values": [
+2026-05-27 00:09:35:       "bajo",
+2026-05-27 00:09:35:       "medio",
+2026-05-27 00:09:35:       "alto"
+2026-05-27 00:09:35:     ],
+2026-05-27 00:09:35:     "path": [
+2026-05-27 00:09:35:       "presupuesto"
+2026-05-27 00:09:35:     ],
+2026-05-27 00:09:35:     "message": "Invalid option: expected one of \"bajo\"|\"medio\"|\"alto\""
+2026-05-27 00:09:35:   }
+2026-05-27 00:09:35: ] ZodError: [
+2026-05-27 00:09:35:   {
+2026-05-27 00:09:35:     "code": "invalid_value",
+2026-05-27 00:09:35:     "values": [
+2026-05-27 00:09:35:       "mochilero",
+2026-05-27 00:09:35:       "lujo",
+2026-05-27 00:09:35:       "familiar",
+2026-05-27 00:09:35:       "aventura",
+2026-05-27 00:09:35:       "negocios"
+2026-05-27 00:09:35:     ],
+2026-05-27 00:09:35:     "path": [
+2026-05-27 00:09:35:       "viajero_tipo"
+2026-05-27 00:09:35:     ],
+2026-05-27 00:09:35:     "message": "Invalid option: expected one of \"mochilero\"|\"lujo\"|\"familiar\"|\"aventura\"|\"negocios\""
+2026-05-27 00:09:35:   },
+2026-05-27 00:09:35:   {
+2026-05-27 00:09:35:     "code": "invalid_value",
+2026-05-27 00:09:35:     "values": [
+2026-05-27 00:09:35:       "baja",
+2026-05-27 00:09:35:       "media",
+2026-05-27 00:09:35:       "alta"
+2026-05-27 00:09:35:     ],
+2026-05-27 00:09:35:     "path": [
+2026-05-27 00:09:35:       "tolerancia_riesgo"
+2026-05-27 00:09:35:     ],
+2026-05-27 00:09:35:     "message": "Invalid option: expected one of \"baja\"|\"media\"|\"alta\""
+2026-05-27 00:09:35:   },
+2026-05-27 00:09:35:   {
+2026-05-27 00:09:35:     "code": "invalid_value",
+2026-05-27 00:09:35:     "values": [
+2026-05-27 00:09:35:       "bajo",
+2026-05-27 00:09:35:       "medio",
+2026-05-27 00:09:35:       "alto"
+2026-05-27 00:09:35:     ],
+2026-05-27 00:09:35:     "path": [
+2026-05-27 00:09:35:       "presupuesto"
+2026-05-27 00:09:35:     ],
+2026-05-27 00:09:35:     "message": "Invalid option: expected one of \"bajo\"|\"medio\"|\"alto\""
+2026-05-27 00:09:35:   }
+2026-05-27 00:09:35: ]
+2026-05-27 00:09:35:     at new ZodError (/var/www/viajeinteligencia/.next/server/chunks/node_modules_zod_v4_classic_external_131y~ke.js:1:450)
+2026-05-27 00:09:35:     at /var/www/viajeinteligencia/.next/server/chunks/node_modules_zod_v4_classic_external_131y~ke.js:1:17126
+2026-05-27 00:09:35:     at e.safeParse (/var/www/viajeinteligencia/.next/server/chunks/node_modules_zod_v4_classic_external_131y~ke.js:62:23628)
+2026-05-27 00:09:35:     at A (/var/www/viajeinteligencia/.next/server/chunks/[root-of-the-server]__0tbzr4p._.js:1:3988)
+2026-05-27 00:09:35:     at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+2026-05-27 00:09:35:     at async rW.do (/var/www/viajeinteligencia/node_modules/next/dist/compiled/next-server/app-route-turbo.runtime.prod.js:5:20926)
+2026-05-27 00:09:35:     at async rW.handle (/var/www/viajeinteligencia/node_modules/next/dist/compiled/next-server/app-route-turbo.runtime.prod.js:5:25781)
+2026-05-27 00:09:35:     at async l (/var/www/viajeinteligencia/.next/server/chunks/[root-of-the-server]__0tbzr4p._.js:1:8895)
+2026-05-27 00:09:35:     at async rW.handleResponse (/var/www/viajeinteligencia/node_modules/next/dist/compiled/next-server/app-route-turbo.runtime.prod.js:1:119701)
+2026-05-27 00:09:35:     at async s (/var/www/viajeinteligencia/.next/server/chunks/[root-of-the-server]__0tbzr4p._.js:1:9936)
+2026-05-27 00:12:27: 2026-05-27 00:12:27 [ERROR] [UserPrefs] Invalid query params: [
+2026-05-27 00:12:27:   {
+2026-05-27 00:12:27:     "code": "invalid_value",
+2026-05-27 00:12:27:     "values": [
+2026-05-27 00:12:27:       "mochilero",
+2026-05-27 00:12:27:       "lujo",
+2026-05-27 00:12:27:       "familiar",
+2026-05-27 00:12:27:       "aventura",
+2026-05-27 00:12:27:       "negocios"
+2026-05-27 00:12:27:     ],
+2026-05-27 00:12:27:     "path": [
+2026-05-27 00:12:27:       "viajero_tipo"
+2026-05-27 00:12:27:     ],
+2026-05-27 00:12:27:     "message": "Invalid option: expected one of \"mochilero\"|\"lujo\"|\"familiar\"|\"aventura\"|\"negocios\""
+2026-05-27 00:12:27:   },
+2026-05-27 00:12:27:   {
+2026-05-27 00:12:27:     "code": "invalid_value",
+2026-05-27 00:12:27:     "values": [
+2026-05-27 00:12:27:       "baja",
+2026-05-27 00:12:27:       "media",
+2026-05-27 00:12:27:       "alta"
+2026-05-27 00:12:27:     ],
+2026-05-27 00:12:27:     "path": [
+2026-05-27 00:12:27:       "tolerancia_riesgo"
+2026-05-27 00:12:27:     ],
+2026-05-27 00:12:27:     "message": "Invalid option: expected one of \"baja\"|\"media\"|\"alta\""
+2026-05-27 00:12:27:   },
+2026-05-27 00:12:27:   {
+2026-05-27 00:12:27:     "code": "invalid_value",
+2026-05-27 00:12:27:     "values": [
+2026-05-27 00:12:27:       "bajo",
+2026-05-27 00:12:27:       "medio",
+2026-05-27 00:12:27:       "alto"
+2026-05-27 00:12:27:     ],
+2026-05-27 00:12:27:     "path": [
+2026-05-27 00:12:27:       "presupuesto"
+2026-05-27 00:12:27:     ],
+2026-05-27 00:12:27:     "message": "Invalid option: expected one of \"bajo\"|\"medio\"|\"alto\""
+2026-05-27 00:12:27:   }
+2026-05-27 00:12:27: ] ZodError: [
+2026-05-27 00:12:27:   {
+2026-05-27 00:12:27:     "code": "invalid_value",
+2026-05-27 00:12:27:     "values": [
+2026-05-27 00:12:27:       "mochilero",
+2026-05-27 00:12:27:       "lujo",
+2026-05-27 00:12:27:       "familiar",
+2026-05-27 00:12:27:       "aventura",
+2026-05-27 00:12:27:       "negocios"
+2026-05-27 00:12:27:     ],
+2026-05-27 00:12:27:     "path": [
+2026-05-27 00:12:27:       "viajero_tipo"
+2026-05-27 00:12:27:     ],
+2026-05-27 00:12:27:     "message": "Invalid option: expected one of \"mochilero\"|\"lujo\"|\"familiar\"|\"aventura\"|\"negocios\""
+2026-05-27 00:12:27:   },
+2026-05-27 00:12:27:   {
+2026-05-27 00:12:27:     "code": "invalid_value",
+2026-05-27 00:12:27:     "values": [
+2026-05-27 00:12:27:       "baja",
+2026-05-27 00:12:27:       "media",
+2026-05-27 00:12:27:       "alta"
+2026-05-27 00:12:27:     ],
+2026-05-27 00:12:27:     "path": [
+2026-05-27 00:12:27:       "tolerancia_riesgo"
+2026-05-27 00:12:27:     ],
+2026-05-27 00:12:27:     "message": "Invalid option: expected one of \"baja\"|\"media\"|\"alta\""
+2026-05-27 00:12:27:   },
+2026-05-27 00:12:27:   {
+2026-05-27 00:12:27:     "code": "invalid_value",
+2026-05-27 00:12:27:     "values": [
+2026-05-27 00:12:27:       "bajo",
+2026-05-27 00:12:27:       "medio",
+2026-05-27 00:12:27:       "alto"
+2026-05-27 00:12:27:     ],
+2026-05-27 00:12:27:     "path": [
+2026-05-27 00:12:27:       "presupuesto"
+2026-05-27 00:12:27:     ],
+2026-05-27 00:12:27:     "message": "Invalid option: expected one of \"bajo\"|\"medio\"|\"alto\""
+2026-05-27 00:12:27:   }
+2026-05-27 00:12:27: ]
+2026-05-27 00:12:27:     at new ZodError (/var/www/viajeinteligencia/.next/server/chunks/node_modules_zod_v4_classic_external_131y~ke.js:1:450)
+2026-05-27 00:12:27:     at /var/www/viajeinteligencia/.next/server/chunks/node_modules_zod_v4_classic_external_131y~ke.js:1:17126
+2026-05-27 00:12:27:     at e.safeParse (/var/www/viajeinteligencia/.next/server/chunks/node_modules_zod_v4_classic_external_131y~ke.js:62:23628)
+2026-05-27 00:12:27:     at A (/var/www/viajeinteligencia/.next/server/chunks/[root-of-the-server]__0tbzr4p._.js:1:3988)
+2026-05-27 00:12:27:     at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+2026-05-27 00:12:27:     at async rW.do (/var/www/viajeinteligencia/node_modules/next/dist/compiled/next-server/app-route-turbo.runtime.prod.js:5:20926)
+2026-05-27 00:12:27:     at async rW.handle (/var/www/viajeinteligencia/node_modules/next/dist/compiled/next-server/app-route-turbo.runtime.prod.js:5:25781)
+2026-05-27 00:12:27:     at async l (/var/www/viajeinteligencia/.next/server/chunks/[root-of-the-server]__0tbzr4p._.js:1:8895)
+2026-05-27 00:12:27:     at async rW.handleResponse (/var/www/viajeinteligencia/node_modules/next/dist/compiled/next-server/app-route-turbo.runtime.prod.js:1:119701)
+2026-05-27 00:12:27:     at async s (/var/www/viajeinteligencia/.next/server/chunks/[root-of-the-server]__0tbzr4p._.js:1:9936)
+2026-05-27 00:12:36: 2026-05-27 00:12:36 [ERROR] [UserPrefs] Invalid query params: [
+2026-05-27 00:12:36:   {
+2026-05-27 00:12:36:     "code": "invalid_value",
+2026-05-27 00:12:36:     "values": [
+2026-05-27 00:12:36:       "mochilero",
+2026-05-27 00:12:36:       "lujo",
+2026-05-27 00:12:36:       "familiar",
+2026-05-27 00:12:36:       "aventura",
+2026-05-27 00:12:36:       "negocios"
+2026-05-27 00:12:36:     ],
+2026-05-27 00:12:36:     "path": [
+2026-05-27 00:12:36:       "viajero_tipo"
+2026-05-27 00:12:36:     ],
+2026-05-27 00:12:36:     "message": "Invalid option: expected one of \"mochilero\"|\"lujo\"|\"familiar\"|\"aventura\"|\"negocios\""
+2026-05-27 00:12:36:   },
+2026-05-27 00:12:36:   {
+2026-05-27 00:12:36:     "code": "invalid_value",
+2026-05-27 00:12:36:     "values": [
+2026-05-27 00:12:36:       "baja",
+2026-05-27 00:12:36:       "media",
+2026-05-27 00:12:36:       "alta"
+2026-05-27 00:12:36:     ],
+2026-05-27 00:12:36:     "path": [
+2026-05-27 00:12:36:       "tolerancia_riesgo"
+2026-05-27 00:12:36:     ],
+2026-05-27 00:12:36:     "message": "Invalid option: expected one of \"baja\"|\"media\"|\"alta\""
+2026-05-27 00:12:36:   },
+2026-05-27 00:12:36:   {
+2026-05-27 00:12:36:     "code": "invalid_value",
+2026-05-27 00:12:36:     "values": [
+2026-05-27 00:12:36:       "bajo",
+2026-05-27 00:12:36:       "medio",
+2026-05-27 00:12:36:       "alto"
+2026-05-27 00:12:36:     ],
+2026-05-27 00:12:36:     "path": [
+2026-05-27 00:12:36:       "presupuesto"
+2026-05-27 00:12:36:     ],
+2026-05-27 00:12:36:     "message": "Invalid option: expected one of \"bajo\"|\"medio\"|\"alto\""
+2026-05-27 00:12:36:   }
+2026-05-27 00:12:36: ] ZodError: [
+2026-05-27 00:12:36:   {
+2026-05-27 00:12:36:     "code": "invalid_value",
+2026-05-27 00:12:36:     "values": [
+2026-05-27 00:12:36:       "mochilero",
+2026-05-27 00:12:36:       "lujo",
+2026-05-27 00:12:36:       "familiar",
+2026-05-27 00:12:36:       "aventura",
+2026-05-27 00:12:36:       "negocios"
+2026-05-27 00:12:36:     ],
+2026-05-27 00:12:36:     "path": [
+2026-05-27 00:12:36:       "viajero_tipo"
+2026-05-27 00:12:36:     ],
+2026-05-27 00:12:36:     "message": "Invalid option: expected one of \"mochilero\"|\"lujo\"|\"familiar\"|\"aventura\"|\"negocios\""
+2026-05-27 00:12:36:   },
+2026-05-27 00:12:36:   {
+2026-05-27 00:12:36:     "code": "invalid_value",
+2026-05-27 00:12:36:     "values": [
+2026-05-27 00:12:36:       "baja",
+2026-05-27 00:12:36:       "media",
+2026-05-27 00:12:36:       "alta"
+2026-05-27 00:12:36:     ],
+2026-05-27 00:12:36:     "path": [
+2026-05-27 00:12:36:       "tolerancia_riesgo"
+2026-05-27 00:12:36:     ],
+2026-05-27 00:12:36:     "message": "Invalid option: expected one of \"baja\"|\"media\"|\"alta\""
+2026-05-27 00:12:36:   },
+2026-05-27 00:12:36:   {
+2026-05-27 00:12:36:     "code": "invalid_value",
+2026-05-27 00:12:36:     "values": [
+2026-05-27 00:12:36:       "bajo",
+2026-05-27 00:12:36:       "medio",
+2026-05-27 00:12:36:       "alto"
+2026-05-27 00:12:36:     ],
+2026-05-27 00:12:36:     "path": [
+2026-05-27 00:12:36:       "presupuesto"
+2026-05-27 00:12:36:     ],
+2026-05-27 00:12:36:     "message": "Invalid option: expected one of \"bajo\"|\"medio\"|\"alto\""
+2026-05-27 00:12:36:   }
+2026-05-27 00:12:36: ]
+2026-05-27 00:12:36:     at new ZodError (/var/www/viajeinteligencia/.next/server/chunks/node_modules_zod_v4_classic_external_131y~ke.js:1:450)
+2026-05-27 00:12:36:     at /var/www/viajeinteligencia/.next/server/chunks/node_modules_zod_v4_classic_external_131y~ke.js:1:17126
+2026-05-27 00:12:36:     at e.safeParse (/var/www/viajeinteligencia/.next/server/chunks/node_modules_zod_v4_classic_external_131y~ke.js:62:23628)
+2026-05-27 00:12:36:     at A (/var/www/viajeinteligencia/.next/server/chunks/[root-of-the-server]__0tbzr4p._.js:1:3988)
+2026-05-27 00:12:36:     at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+2026-05-27 00:12:36:     at async rW.do (/var/www/viajeinteligencia/node_modules/next/dist/compiled/next-server/app-route-turbo.runtime.prod.js:5:20926)
+2026-05-27 00:12:36:     at async rW.handle (/var/www/viajeinteligencia/node_modules/next/dist/compiled/next-server/app-route-turbo.runtime.prod.js:5:25781)
+2026-05-27 00:12:36:     at async l (/var/www/viajeinteligencia/.next/server/chunks/[root-of-the-server]__0tbzr4p._.js:1:8895)
+2026-05-27 00:12:36:     at async rW.handleResponse (/var/www/viajeinteligencia/node_modules/next/dist/compiled/next-server/app-route-turbo.runtime.prod.js:1:119701)
+2026-05-27 00:12:36:     at async s (/var/www/viajeinteligencia/.next/server/chunks/[root-of-the-server]__0tbzr4p._.js:1:9936)
+2026-05-27 00:12:36: 2026-05-27 00:12:36 [ERROR] [UserPrefs] Invalid query params: [
+2026-05-27 00:12:36:   {
+2026-05-27 00:12:36:     "code": "invalid_value",
+2026-05-27 00:12:36:     "values": [
+2026-05-27 00:12:36:       "mochilero",
+2026-05-27 00:12:36:       "lujo",
+2026-05-27 00:12:36:       "familiar",
+2026-05-27 00:12:36:       "aventura",
+2026-05-27 00:12:36:       "negocios"
+2026-05-27 00:12:36:     ],
+2026-05-27 00:12:36:     "path": [
+2026-05-27 00:12:36:       "viajero_tipo"
+2026-05-27 00:12:36:     ],
+2026-05-27 00:12:36:     "message": "Invalid option: expected one of \"mochilero\"|\"lujo\"|\"familiar\"|\"aventura\"|\"negocios\""
+2026-05-27 00:12:36:   },
+2026-05-27 00:12:36:   {
+2026-05-27 00:12:36:     "code": "invalid_value",
+2026-05-27 00:12:36:     "values": [
+2026-05-27 00:12:36:       "baja",
+2026-05-27 00:12:36:       "media",
+2026-05-27 00:12:36:       "alta"
+2026-05-27 00:12:36:     ],
+2026-05-27 00:12:36:     "path": [
+2026-05-27 00:12:36:       "tolerancia_riesgo"
+2026-05-27 00:12:36:     ],
+2026-05-27 00:12:36:     "message": "Invalid option: expected one of \"baja\"|\"media\"|\"alta\""
+2026-05-27 00:12:36:   },
+2026-05-27 00:12:36:   {
+2026-05-27 00:12:36:     "code": "invalid_value",
+2026-05-27 00:12:36:     "values": [
+2026-05-27 00:12:36:       "bajo",
+2026-05-27 00:12:36:       "medio",
+2026-05-27 00:12:36:       "alto"
+2026-05-27 00:12:36:     ],
+2026-05-27 00:12:36:     "path": [
+2026-05-27 00:12:36:       "presupuesto"
+2026-05-27 00:12:36:     ],
+2026-05-27 00:12:36:     "message": "Invalid option: expected one of \"bajo\"|\"medio\"|\"alto\""
+2026-05-27 00:12:36:   }
+2026-05-27 00:12:36: ] ZodError: [
+2026-05-27 00:12:36:   {
+2026-05-27 00:12:36:     "code": "invalid_value",
+2026-05-27 00:12:36:     "values": [
+2026-05-27 00:12:36:       "mochilero",
+2026-05-27 00:12:36:       "lujo",
+2026-05-27 00:12:36:       "familiar",
+2026-05-27 00:12:36:       "aventura",
+2026-05-27 00:12:36:       "negocios"
+2026-05-27 00:12:36:     ],
+2026-05-27 00:12:36:     "path": [
+2026-05-27 00:12:36:       "viajero_tipo"
+2026-05-27 00:12:36:     ],
+2026-05-27 00:12:36:     "message": "Invalid option: expected one of \"mochilero\"|\"lujo\"|\"familiar\"|\"aventura\"|\"negocios\""
+2026-05-27 00:12:36:   },
+2026-05-27 00:12:36:   {
+2026-05-27 00:12:36:     "code": "invalid_value",
+2026-05-27 00:12:36:     "values": [
+2026-05-27 00:12:36:       "baja",
+2026-05-27 00:12:36:       "media",
+2026-05-27 00:12:36:       "alta"
+2026-05-27 00:12:36:     ],
+2026-05-27 00:12:36:     "path": [
+2026-05-27 00:12:36:       "tolerancia_riesgo"
+2026-05-27 00:12:36:     ],
+2026-05-27 00:12:36:     "message": "Invalid option: expected one of \"baja\"|\"media\"|\"alta\""
+2026-05-27 00:12:36:   },
+2026-05-27 00:12:36:   {
+2026-05-27 00:12:36:     "code": "invalid_value",
+2026-05-27 00:12:36:     "values": [
+2026-05-27 00:12:36:       "bajo",
+2026-05-27 00:12:36:       "medio",
+2026-05-27 00:12:36:       "alto"
+2026-05-27 00:12:36:     ],
+2026-05-27 00:12:36:     "path": [
+2026-05-27 00:12:36:       "presupuesto"
+2026-05-27 00:12:36:     ],
+2026-05-27 00:12:36:     "message": "Invalid option: expected one of \"bajo\"|\"medio\"|\"alto\""
+2026-05-27 00:12:36:   }
+2026-05-27 00:12:36: ]
+2026-05-27 00:12:36:     at new ZodError (/var/www/viajeinteligencia/.next/server/chunks/node_modules_zod_v4_classic_external_131y~ke.js:1:450)
+2026-05-27 00:12:36:     at /var/www/viajeinteligencia/.next/server/chunks/node_modules_zod_v4_classic_external_131y~ke.js:1:17126
+2026-05-27 00:12:36:     at e.safeParse (/var/www/viajeinteligencia/.next/server/chunks/node_modules_zod_v4_classic_external_131y~ke.js:62:23628)
+2026-05-27 00:12:36:     at A (/var/www/viajeinteligencia/.next/server/chunks/[root-of-the-server]__0tbzr4p._.js:1:3988)
+2026-05-27 00:12:36:     at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+2026-05-27 00:12:36:     at async rW.do (/var/www/viajeinteligencia/node_modules/next/dist/compiled/next-server/app-route-turbo.runtime.prod.js:5:20926)
+2026-05-27 00:12:36:     at async rW.handle (/var/www/viajeinteligencia/node_modules/next/dist/compiled/next-server/app-route-turbo.runtime.prod.js:5:25781)
+2026-05-27 00:12:36:     at async l (/var/www/viajeinteligencia/.next/server/chunks/[root-of-the-server]__0tbzr4p._.js:1:8895)
+2026-05-27 00:12:36:     at async rW.handleResponse (/var/www/viajeinteligencia/node_modules/next/dist/compiled/next-server/app-route-turbo.runtime.prod.js:1:119701)
+2026-05-27 00:12:36:     at async s (/var/www/viajeinteligencia/.next/server/chunks/[root-of-the-server]__0tbzr4p._.js:1:9936)
+2026-05-27 00:15:29: 2026-05-27 00:15:29 [WARN] [Newsletter] Token de verificación no encontrado { token: '7ad7e89c...' }
+2026-05-27 00:15:38: 2026-05-27 00:15:38 [WARN] [Newsletter] Token de verificación no encontrado { token: '7ad7e89c...' }
+2026-05-27 00:16:37: The width(-1) and height(-1) of chart should be greater than 0,
+2026-05-27 00:16:37:        please check the style of container, or the props width(100%) and height(100%),
+2026-05-27 00:16:37:        or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+2026-05-27 00:16:37:        height and width.
+2026-05-27 00:21:57: The width(-1) and height(-1) of chart should be greater than 0,
+2026-05-27 00:21:57:        please check the style of container, or the props width(100%) and height(100%),
+2026-05-27 00:21:57:        or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+2026-05-27 00:21:57:        height and width.
+2026-05-27 00:34:01: ⨯ Error: Failed to load external module sharp-20c6a5da84e2135f: Error: Cannot find module 'sharp-20c6a5da84e2135f'
+2026-05-27 00:34:01: Require stack:
+2026-05-27 00:34:01: - /var/www/viajeinteligencia/.next/server/chunks/ssr/[root-of-the-server]__08f_4mk._.js
+2026-05-27 00:34:01: - /var/www/viajeinteligencia/.next/server/chunks/ssr/[turbopack]_runtime.js
+2026-05-27 00:34:01: - /var/www/viajeinteligencia/.next/server/app/_global-error/page.js
+2026-05-27 00:34:01: - /var/www/viajeinteligencia/node_modules/next/dist/server/require.js
+2026-05-27 00:34:01: - /var/www/viajeinteligencia/node_modules/next/dist/server/next-server.js
+2026-05-27 00:34:01: - /var/www/viajeinteligencia/node_modules/next/dist/server/next.js
+2026-05-27 00:34:01: - /var/www/viajeinteligencia/node_modules/next/dist/server/lib/start-server.js
+2026-05-27 00:34:01: - /var/www/viajeinteligencia/node_modules/next/dist/cli/next-start.js
+2026-05-27 00:34:01:     at module evaluation (src/lib/supabase-admin.ts:47:1)
+2026-05-27 00:34:01:     at module evaluation (src/lib/infografia/generate.ts:1:1)
+2026-05-27 00:34:01:     at module evaluation (src/app/infografias/[id]/page.tsx:55:1)
+2026-05-27 00:34:01: ⨯ Error: Failed to load external module sharp-20c6a5da84e2135f: Error: Cannot find module 'sharp-20c6a5da84e2135f'
+2026-05-27 00:34:01: Require stack:
+2026-05-27 00:34:01: - /var/www/viajeinteligencia/.next/server/chunks/ssr/[root-of-the-server]__08f_4mk._.js
+2026-05-27 00:34:01: - /var/www/viajeinteligencia/.next/server/chunks/ssr/[turbopack]_runtime.js
+2026-05-27 00:34:01: - /var/www/viajeinteligencia/.next/server/app/_global-error/page.js
+2026-05-27 00:34:01: - /var/www/viajeinteligencia/node_modules/next/dist/server/require.js
+2026-05-27 00:34:01: - /var/www/viajeinteligencia/node_modules/next/dist/server/next-server.js
+2026-05-27 00:34:01: - /var/www/viajeinteligencia/node_modules/next/dist/server/next.js
+2026-05-27 00:34:01: - /var/www/viajeinteligencia/node_modules/next/dist/server/lib/start-server.js
+2026-05-27 00:34:01: - /var/www/viajeinteligencia/node_modules/next/dist/cli/next-start.js
+2026-05-27 00:34:01:     at module evaluation (src/lib/supabase-admin.ts:47:1)
+2026-05-27 00:34:01:     at module evaluation (src/lib/infografia/generate.ts:1:1)
+2026-05-27 00:34:01:     at module evaluation (src/app/infografias/[id]/page.tsx:55:1)
+2026-05-27 01:13:56: ⨯ Error: Invalid OpenGraph type: place
+2026-05-27 01:13:56:     at ignore-listed frames {
+2026-05-27 01:13:56:   digest: '1720759795@E237'
+2026-05-27 01:13:56: }
+2026-05-27 01:17:24: ⨯ Error: Invalid OpenGraph type: place
+2026-05-27 01:17:24:     at ignore-listed frames {
+2026-05-27 01:17:24:   digest: '1720759795@E237'
+2026-05-27 01:17:24: }
+2026-05-27 01:23:29: ⨯ Error: Could not find the module "[project]/node_modules/next/dist/esm/lib/framework/boundary-components.js#ViewportBoundary" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+2026-05-27 01:23:29:     at stringify (<anonymous>) {
+2026-05-27 01:23:29:   digest: '306792064'
+2026-05-27 01:23:29: }
+2026-05-27 01:23:29: ⨯ Error: Could not find the module "[project]/node_modules/next/dist/esm/lib/framework/boundary-components.js#MetadataBoundary" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+2026-05-27 01:23:29:     at stringify (<anonymous>) {
+2026-05-27 01:23:29:   digest: '2270730560'
+2026-05-27 01:23:29: }
+2026-05-27 01:23:30: ⨯ Error: Could not find the module "[project]/node_modules/next/dist/esm/lib/metadata/generate/icon-mark.js#IconMark" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+2026-05-27 01:23:30:     at stringify (<anonymous>) {
+2026-05-27 01:23:30:   digest: '207115154'
+2026-05-27 01:23:30: }
+2026-05-27 01:23:30: ⨯ Error: Could not find the module "[project]/node_modules/next/dist/esm/lib/framework/boundary-components.js#ViewportBoundary" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+2026-05-27 01:23:30:     at stringify (<anonymous>) {
+2026-05-27 01:23:30:   digest: '306792064'
+2026-05-27 01:23:30: }
+2026-05-27 01:23:31: ⨯ Error: Could not find the module "[project]/node_modules/next/dist/esm/lib/framework/boundary-components.js#MetadataBoundary" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+2026-05-27 01:23:31:     at stringify (<anonymous>) {
+2026-05-27 01:23:31:   digest: '2270730560'
+2026-05-27 01:23:31: }
+2026-05-27 01:23:31: ⨯ Error: Could not find the module "[project]/node_modules/next/dist/esm/lib/metadata/generate/icon-mark.js#IconMark" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+2026-05-27 01:23:31:     at stringify (<anonymous>) {
+2026-05-27 01:23:31:   digest: '207115154'
+2026-05-27 01:23:31: }
+2026-05-27 01:23:31: ⨯ Error: Could not find the module "[project]/node_modules/next/dist/esm/lib/framework/boundary-components.js#ViewportBoundary" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+2026-05-27 01:23:31:     at stringify (<anonymous>) {
+2026-05-27 01:23:31:   digest: '306792064'
+2026-05-27 01:23:31: }
+2026-05-27 01:23:32: ⨯ Error: Could not find the module "[project]/node_modules/next/dist/esm/lib/framework/boundary-components.js#MetadataBoundary" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+2026-05-27 01:23:32:     at stringify (<anonymous>) {
+2026-05-27 01:23:32:   digest: '2270730560'
+2026-05-27 01:23:32: }
+2026-05-27 01:23:32: ⨯ Error: Could not find the module "[project]/node_modules/next/dist/esm/lib/metadata/generate/icon-mark.js#IconMark" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+2026-05-27 01:23:32:     at stringify (<anonymous>) {
+2026-05-27 01:23:32:   digest: '207115154'
+2026-05-27 01:23:32: }
+2026-05-27 01:23:33: ⨯ Error: Could not find the module "[project]/node_modules/next/dist/esm/lib/framework/boundary-components.js#ViewportBoundary" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+2026-05-27 01:23:33:     at stringify (<anonymous>) {
+2026-05-27 01:23:33:   digest: '306792064'
+2026-05-27 01:23:33: }
+2026-05-27 01:23:33: ⨯ Error: Could not find the module "[project]/node_modules/next/dist/esm/lib/framework/boundary-components.js#MetadataBoundary" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+2026-05-27 01:23:33:     at stringify (<anonymous>) {
+2026-05-27 01:23:33:   digest: '2270730560'
+2026-05-27 01:23:33: }
+2026-05-27 01:23:33: ⨯ Error: Could not find the module "[project]/node_modules/next/dist/esm/lib/metadata/generate/icon-mark.js#IconMark" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+2026-05-27 01:23:33:     at stringify (<anonymous>) {
+2026-05-27 01:23:33:   digest: '207115154'
+2026-05-27 01:23:33: }
+2026-05-27 01:23:34: ⨯ Error: Could not find the module "[project]/node_modules/next/dist/esm/lib/framework/boundary-components.js#ViewportBoundary" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+2026-05-27 01:23:34:     at stringify (<anonymous>) {
+2026-05-27 01:23:34:   digest: '306792064'
+2026-05-27 01:23:34: }
+2026-05-27 01:23:34: ⨯ Error: Could not find the module "[project]/node_modules/next/dist/esm/lib/framework/boundary-components.js#MetadataBoundary" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+2026-05-27 01:23:34:     at stringify (<anonymous>) {
+2026-05-27 01:23:34:   digest: '2270730560'
+2026-05-27 01:23:34: }
+2026-05-27 01:23:35: ⨯ Error: Could not find the module "[project]/node_modules/next/dist/esm/lib/metadata/generate/icon-mark.js#IconMark" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+2026-05-27 01:23:35:     at stringify (<anonymous>) {
+2026-05-27 01:23:35:   digest: '207115154'
+2026-05-27 01:23:35: }
+2026-05-27 01:23:38: ⨯ Error: Failed to load external module sharp-20c6a5da84e2135f: Error: Cannot find module 'sharp-20c6a5da84e2135f'
+2026-05-27 01:23:38: Require stack:
+2026-05-27 01:23:38: - /var/www/viajeinteligencia/.next/server/chunks/ssr/[root-of-the-server]__0h4.qxe._.js
+2026-05-27 01:23:38: - /var/www/viajeinteligencia/.next/server/chunks/ssr/[turbopack]_runtime.js
+2026-05-27 01:23:38: - /var/www/viajeinteligencia/.next/server/app/_global-error/page.js
+2026-05-27 01:23:38: - /var/www/viajeinteligencia/node_modules/next/dist/server/require.js
+2026-05-27 01:23:38: - /var/www/viajeinteligencia/node_modules/next/dist/server/next-server.js
+2026-05-27 01:23:38: - /var/www/viajeinteligencia/node_modules/next/dist/server/next.js
+2026-05-27 01:23:38: - /var/www/viajeinteligencia/node_modules/next/dist/server/lib/start-server.js
+2026-05-27 01:23:38: - /var/www/viajeinteligencia/node_modules/next/dist/cli/next-start.js
+2026-05-27 01:23:38:     at module evaluation (src/lib/supabase-admin.ts:47:1)
+2026-05-27 01:23:38:     at module evaluation (src/lib/infografia/generate.ts:1:1)
+2026-05-27 01:23:38:     at module evaluation (src/app/infografias/[id]/page.tsx:55:1)
+2026-05-27 01:23:38: ⨯ Error: Failed to load external module sharp-20c6a5da84e2135f: Error: Cannot find module 'sharp-20c6a5da84e2135f'
+2026-05-27 01:23:38: Require stack:
+2026-05-27 01:23:38: - /var/www/viajeinteligencia/.next/server/chunks/ssr/[root-of-the-server]__0h4.qxe._.js
+2026-05-27 01:23:38: - /var/www/viajeinteligencia/.next/server/chunks/ssr/[turbopack]_runtime.js
+2026-05-27 01:23:38: - /var/www/viajeinteligencia/.next/server/app/_global-error/page.js
+2026-05-27 01:23:38: - /var/www/viajeinteligencia/node_modules/next/dist/server/require.js
+2026-05-27 01:23:38: - /var/www/viajeinteligencia/node_modules/next/dist/server/next-server.js
+2026-05-27 01:23:38: - /var/www/viajeinteligencia/node_modules/next/dist/server/next.js
+2026-05-27 01:23:38: - /var/www/viajeinteligencia/node_modules/next/dist/server/lib/start-server.js
+2026-05-27 01:23:38: - /var/www/viajeinteligencia/node_modules/next/dist/cli/next-start.js
+2026-05-27 01:23:38:     at module evaluation (src/lib/supabase-admin.ts:47:1)
+2026-05-27 01:23:38:     at module evaluation (src/lib/infografia/generate.ts:1:1)
+2026-05-27 01:23:38:     at module evaluation (src/app/infografias/[id]/page.tsx:55:1)
+2026-05-27 01:23:38: ⨯ Error: Failed to load static file for page: /500 ENOENT: no such file or directory, open '/var/www/viajeinteligencia/.next/server/pages/500.html'
+2026-05-27 01:23:38:     at ignore-listed frames
+2026-05-27 01:23:42: ⨯ Error: Could not find the module "[project]/node_modules/next/dist/esm/lib/framework/boundary-components.js#ViewportBoundary" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+2026-05-27 01:23:42:     at stringify (<anonymous>) {
+2026-05-27 01:23:42:   digest: '306792064'
+2026-05-27 01:23:42: }
+2026-05-27 01:23:43: ⨯ Error: Could not find the module "[project]/node_modules/next/dist/esm/lib/framework/boundary-components.js#MetadataBoundary" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+2026-05-27 01:23:43:     at stringify (<anonymous>) {
+2026-05-27 01:23:43:   digest: '2270730560'
+2026-05-27 01:23:43: }
+2026-05-27 01:23:43: ⨯ Error: Could not find the module "[project]/node_modules/next/dist/esm/lib/metadata/generate/icon-mark.js#IconMark" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+2026-05-27 01:23:43:     at stringify (<anonymous>) {
+2026-05-27 01:23:43:   digest: '207115154'
+2026-05-27 01:23:43: }
+2026-05-27 01:23:48: ⨯ Error: Could not find the module "[project]/node_modules/next/dist/esm/lib/framework/boundary-components.js#ViewportBoundary" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+2026-05-27 01:23:48:     at stringify (<anonymous>) {
+2026-05-27 01:23:48:   digest: '306792064'
+2026-05-27 01:23:48: }
+2026-05-27 01:23:48: ⨯ Error: Could not find the module "[project]/node_modules/next/dist/esm/lib/framework/boundary-components.js#MetadataBoundary" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+2026-05-27 01:23:48:     at stringify (<anonymous>) {
+2026-05-27 01:23:48:   digest: '2270730560'
+2026-05-27 01:23:48: }
+2026-05-27 01:23:49: ⨯ Error: Could not find the module "[project]/node_modules/next/dist/esm/lib/metadata/generate/icon-mark.js#IconMark" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+2026-05-27 01:23:49:     at stringify (<anonymous>) {
+2026-05-27 01:23:49:   digest: '207115154'
+2026-05-27 01:23:49: }
+2026-05-27 01:23:49: ⨯ Error: Could not find the module "[project]/node_modules/next/dist/esm/lib/framework/boundary-components.js#ViewportBoundary" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+2026-05-27 01:23:49:     at stringify (<anonymous>) {
+2026-05-27 01:23:49:   digest: '306792064'
+2026-05-27 01:23:49: }
+2026-05-27 01:23:49: ⨯ Error: Could not find the module "[project]/node_modules/next/dist/esm/lib/framework/boundary-components.js#MetadataBoundary" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+2026-05-27 01:23:49:     at stringify (<anonymous>) {
+2026-05-27 01:23:49:   digest: '2270730560'
+2026-05-27 01:23:49: }
+2026-05-27 01:23:50: ⨯ Error: Could not find the module "[project]/node_modules/next/dist/esm/lib/metadata/generate/icon-mark.js#IconMark" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+2026-05-27 01:23:50:     at stringify (<anonymous>) {
+2026-05-27 01:23:50:   digest: '207115154'
+2026-05-27 01:23:50: }
+2026-05-27 01:23:50: ⨯ Error: Could not find the module "[project]/node_modules/next/dist/esm/lib/framework/boundary-components.js#ViewportBoundary" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+2026-05-27 01:23:50:     at stringify (<anonymous>) {
+2026-05-27 01:23:50:   digest: '306792064'
+2026-05-27 01:23:50: }
+2026-05-27 01:23:51: ⨯ Error: Could not find the module "[project]/node_modules/next/dist/esm/lib/framework/boundary-components.js#MetadataBoundary" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+2026-05-27 01:23:51:     at stringify (<anonymous>) {
+2026-05-27 01:23:51:   digest: '2270730560'
+2026-05-27 01:23:51: }
+2026-05-27 01:23:51: ⨯ Error: Could not find the module "[project]/node_modules/next/dist/esm/lib/metadata/generate/icon-mark.js#IconMark" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+2026-05-27 01:23:51:     at stringify (<anonymous>) {
+2026-05-27 01:23:51:   digest: '207115154'
+2026-05-27 01:23:51: }
+2026-05-27 01:23:52: ⨯ Error [InvariantError]: Invariant: The client reference manifest for route "/infografias" does not exist. This is a bug in Next.js.
+2026-05-27 01:23:52:     at ignore-listed frames
+2026-05-27 01:23:52: ⨯ Error [InvariantError]: Invariant: The client reference manifest for route "/infografias" does not exist. This is a bug in Next.js.
+2026-05-27 01:23:52:     at ignore-listed frames
+2026-05-27 01:23:52: ⨯ Error: Failed to load static file for page: /500 ENOENT: no such file or directory, open '/var/www/viajeinteligencia/.next/server/pages/500.html'
+2026-05-27 01:23:52:     at ignore-listed frames
+2026-05-27 01:23:52: ⨯ Error: Could not find the module "[project]/node_modules/next/dist/esm/lib/framework/boundary-components.js#ViewportBoundary" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+2026-05-27 01:23:52:     at stringify (<anonymous>) {
+2026-05-27 01:23:52:   digest: '306792064'
+2026-05-27 01:23:52: }
+2026-05-27 01:23:53: ⨯ Error: Could not find the module "[project]/node_modules/next/dist/esm/lib/framework/boundary-components.js#MetadataBoundary" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+2026-05-27 01:23:53:     at stringify (<anonymous>) {
+2026-05-27 01:23:53:   digest: '2270730560'
+2026-05-27 01:23:53: }
+2026-05-27 01:23:53: ⨯ Error: Could not find the module "[project]/node_modules/next/dist/esm/lib/metadata/generate/icon-mark.js#IconMark" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+2026-05-27 01:23:53:     at stringify (<anonymous>) {
+2026-05-27 01:23:53:   digest: '207115154'
+2026-05-27 01:23:53: }
+2026-05-27 01:23:54: ⨯ Error: Could not find the module "[project]/node_modules/next/dist/esm/lib/framework/boundary-components.js#ViewportBoundary" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+2026-05-27 01:23:54:     at stringify (<anonymous>) {
+2026-05-27 01:23:54:   digest: '306792064'
+2026-05-27 01:23:54: }
+2026-05-27 01:23:54: ⨯ Error: Could not find the module "[project]/node_modules/next/dist/esm/lib/framework/boundary-components.js#MetadataBoundary" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+2026-05-27 01:23:54:     at stringify (<anonymous>) {
+2026-05-27 01:23:54:   digest: '2270730560'
+2026-05-27 01:23:54: }
+2026-05-27 01:23:54: ⨯ Error: Could not find the module "[project]/node_modules/next/dist/esm/lib/metadata/generate/icon-mark.js#IconMark" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+2026-05-27 01:23:54:     at stringify (<anonymous>) {
+2026-05-27 01:23:54:   digest: '207115154'
+2026-05-27 01:23:54: }
+2026-05-27 01:23:55: ⨯ Error [InvariantError]: Invariant: The client reference manifest for route "/infografias" does not exist. This is a bug in Next.js.
+2026-05-27 01:23:55:     at ignore-listed frames
+2026-05-27 01:23:56: ⨯ Error [InvariantError]: Invariant: The client reference manifest for route "/infografias" does not exist. This is a bug in Next.js.
+2026-05-27 01:23:56:     at ignore-listed frames
+2026-05-27 01:23:56: ⨯ Error: Failed to load static file for page: /500 ENOENT: no such file or directory, open '/var/www/viajeinteligencia/.next/server/pages/500.html'
+2026-05-27 01:23:56:     at ignore-listed frames
+2026-05-27 01:23:56: ⨯ Error [InvariantError]: Invariant: The client reference manifest for route "/infografias" does not exist. This is a bug in Next.js.
+2026-05-27 01:23:56:     at ignore-listed frames
+2026-05-27 01:23:56: ⨯ Error [InvariantError]: Invariant: The client reference manifest for route "/infografias" does not exist. This is a bug in Next.js.
+2026-05-27 01:23:56:     at ignore-listed frames
+2026-05-27 01:23:57: ⨯ Error: Failed to load static file for page: /500 ENOENT: no such file or directory, open '/var/www/viajeinteligencia/.next/server/pages/500.html'
+2026-05-27 01:23:57:     at ignore-listed frames
+2026-05-27 01:23:59: ⨯ Error [InvariantError]: Invariant: The client reference manifest for route "/infografias" does not exist. This is a bug in Next.js.
+2026-05-27 01:23:59:     at ignore-listed frames
+2026-05-27 01:24:00: ⨯ Error [InvariantError]: Invariant: The client reference manifest for route "/infografias" does not exist. This is a bug in Next.js.
+2026-05-27 01:24:00:     at ignore-listed frames
+2026-05-27 01:24:00: ⨯ Error: Failed to load static file for page: /500 ENOENT: no such file or directory, open '/var/www/viajeinteligencia/.next/server/pages/500.html'
+2026-05-27 01:24:00:     at ignore-listed frames
+2026-05-27 01:24:08: ⨯ Error [InvariantError]: Invariant: The client reference manifest for route "/infografias" does not exist. This is a bug in Next.js.
+2026-05-27 01:24:08:     at ignore-listed frames
+2026-05-27 01:24:09: ⨯ Error [InvariantError]: Invariant: The client reference manifest for route "/infografias" does not exist. This is a bug in Next.js.
+2026-05-27 01:24:09:     at ignore-listed frames
+2026-05-27 01:24:09: ⨯ Error: Failed to load static file for page: /500 ENOENT: no such file or directory, open '/var/www/viajeinteligencia/.next/server/pages/500.html'
+2026-05-27 01:24:09:     at ignore-listed frames
+2026-05-27 01:24:41: ⨯ Error [InvariantError]: Invariant: The client reference manifest for route "/infografias" does not exist. This is a bug in Next.js.
+2026-05-27 01:24:41:     at ignore-listed frames
+2026-05-27 01:24:42: ⨯ Error [InvariantError]: Invariant: The client reference manifest for route "/infografias" does not exist. This is a bug in Next.js.
+2026-05-27 01:24:42:     at ignore-listed frames
+2026-05-27 01:24:42: ⨯ Error: Failed to load static file for page: /500 ENOENT: no such file or directory, open '/var/www/viajeinteligencia/.next/server/pages/500.html'
+2026-05-27 01:24:42:     at ignore-listed frames
+2026-05-27 01:24:44: ⨯ Error [InvariantError]: Invariant: The client reference manifest for route "/infografias" does not exist. This is a bug in Next.js.
+2026-05-27 01:24:44:     at ignore-listed frames
+2026-05-27 01:24:45: ⨯ Error [InvariantError]: Invariant: The client reference manifest for route "/infografias" does not exist. This is a bug in Next.js.
+2026-05-27 01:24:45:     at ignore-listed frames
+2026-05-27 01:24:45: ⨯ Error: Failed to load static file for page: /500 ENOENT: no such file or directory, open '/var/www/viajeinteligencia/.next/server/pages/500.html'
+2026-05-27 01:24:45:     at ignore-listed frames
+2026-05-27 01:27:30: ⨯ Error: Invalid OpenGraph type: place
+2026-05-27 01:27:30:     at ignore-listed frames {
+2026-05-27 01:27:30:   digest: '1720759795@E237'
+2026-05-27 01:27:30: }
+2026-05-27 01:28:36: ⨯ Error: Invalid OpenGraph type: place
+2026-05-27 01:28:36:     at ignore-listed frames {
+2026-05-27 01:28:36:   digest: '1720759795@E237'
+2026-05-27 01:28:36: }
+2026-05-27 01:33:05: ⨯ Error: Invalid OpenGraph type: place
+2026-05-27 01:33:05:     at ignore-listed frames {
+2026-05-27 01:33:05:   digest: '1720759795@E237'
+2026-05-27 01:33:05: }
+2026-05-27 01:50:05: ⨯ Error: Invalid OpenGraph type: place
+2026-05-27 01:50:05:     at ignore-listed frames {
+2026-05-27 01:50:05:   digest: '1720759795@E237'
+2026-05-27 01:50:05: }
+2026-05-27 02:06:41: ⨯ Error: Could not find the module "[project]/node_modules/next/dist/esm/lib/framework/boundary-components.js#ViewportBoundary" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+2026-05-27 02:06:41:     at stringify (<anonymous>) {
+2026-05-27 02:06:41:   digest: '306792064'
+2026-05-27 02:06:41: }
+2026-05-27 02:06:42: ⨯ Error: Could not find the module "[project]/node_modules/next/dist/esm/lib/framework/boundary-components.js#MetadataBoundary" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+2026-05-27 02:06:42:     at stringify (<anonymous>) {
+2026-05-27 02:06:42:   digest: '2270730560'
+2026-05-27 02:06:42: }
+2026-05-27 02:06:42: ⨯ Error: Could not find the module "[project]/node_modules/next/dist/esm/lib/metadata/generate/icon-mark.js#IconMark" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+2026-05-27 02:06:42:     at stringify (<anonymous>) {
+2026-05-27 02:06:42:   digest: '207115154'
+2026-05-27 02:06:42: }
+2026-05-27 02:06:42: ⨯ Error: Could not find the module "[project]/node_modules/next/dist/esm/lib/framework/boundary-components.js#ViewportBoundary" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+2026-05-27 02:06:42:     at stringify (<anonymous>) {
+2026-05-27 02:06:42:   digest: '306792064'
+2026-05-27 02:06:42: }
+2026-05-27 02:06:43: ⨯ Error: Could not find the module "[project]/node_modules/next/dist/esm/lib/framework/boundary-components.js#MetadataBoundary" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+2026-05-27 02:06:43:     at stringify (<anonymous>) {
+2026-05-27 02:06:43:   digest: '2270730560'
+2026-05-27 02:06:43: }
+2026-05-27 02:06:43: ⨯ Error: Could not find the module "[project]/node_modules/next/dist/esm/lib/metadata/generate/icon-mark.js#IconMark" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+2026-05-27 02:06:43:     at stringify (<anonymous>) {
+2026-05-27 02:06:43:   digest: '207115154'
+2026-05-27 02:06:43: }
+2026-05-27 02:06:44: ⨯ Error: Could not find the module "[project]/node_modules/next/dist/esm/lib/framework/boundary-components.js#ViewportBoundary" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+2026-05-27 02:06:44:     at stringify (<anonymous>) {
+2026-05-27 02:06:44:   digest: '306792064'
+2026-05-27 02:06:44: }
+2026-05-27 02:06:44: ⨯ Error: Could not find the module "[project]/node_modules/next/dist/esm/lib/framework/boundary-components.js#MetadataBoundary" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+2026-05-27 02:06:44:     at stringify (<anonymous>) {
+2026-05-27 02:06:44:   digest: '2270730560'
+2026-05-27 02:06:44: }
+2026-05-27 02:06:45: ⨯ Error: Could not find the module "[project]/node_modules/next/dist/esm/lib/metadata/generate/icon-mark.js#IconMark" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+2026-05-27 02:06:45:     at stringify (<anonymous>) {
+2026-05-27 02:06:45:   digest: '207115154'
+2026-05-27 02:06:45: }
+2026-05-27 02:06:45: ⨯ Error: Could not find the module "[project]/node_modules/next/dist/esm/lib/framework/boundary-components.js#ViewportBoundary" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+2026-05-27 02:06:45:     at stringify (<anonymous>) {
+2026-05-27 02:06:45:   digest: '306792064'
+2026-05-27 02:06:45: }
+2026-05-27 02:06:45: ⨯ Error: Could not find the module "[project]/node_modules/next/dist/esm/lib/framework/boundary-components.js#MetadataBoundary" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+2026-05-27 02:06:45:     at stringify (<anonymous>) {
+2026-05-27 02:06:45:   digest: '2270730560'
+2026-05-27 02:06:45: }
+2026-05-27 02:06:46: ⨯ Error: Could not find the module "[project]/node_modules/next/dist/esm/lib/metadata/generate/icon-mark.js#IconMark" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+2026-05-27 02:06:46:     at stringify (<anonymous>) {
+2026-05-27 02:06:46:   digest: '207115154'
+2026-05-27 02:06:46: }
+2026-05-27 02:06:47: ⨯ Error: Could not find the module "[project]/node_modules/next/dist/esm/lib/framework/boundary-components.js#ViewportBoundary" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+2026-05-27 02:06:47:     at stringify (<anonymous>) {
+2026-05-27 02:06:47:   digest: '306792064'
+2026-05-27 02:06:47: }
+2026-05-27 02:06:47: ⨯ Error: Could not find the module "[project]/node_modules/next/dist/esm/lib/framework/boundary-components.js#MetadataBoundary" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+2026-05-27 02:06:47:     at stringify (<anonymous>) {
+2026-05-27 02:06:47:   digest: '2270730560'
+2026-05-27 02:06:47: }
+2026-05-27 02:06:48: ⨯ Error: Could not find the module "[project]/node_modules/next/dist/esm/lib/metadata/generate/icon-mark.js#IconMark" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+2026-05-27 02:06:48:     at stringify (<anonymous>) {
+2026-05-27 02:06:48:   digest: '207115154'
+2026-05-27 02:06:48: }
+2026-05-27 02:06:48: ⨯ Error: Could not find the module "[project]/node_modules/next/dist/esm/lib/framework/boundary-components.js#ViewportBoundary" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+2026-05-27 02:06:48:     at stringify (<anonymous>) {
+2026-05-27 02:06:48:   digest: '306792064'
+2026-05-27 02:06:48: }
+2026-05-27 02:06:48: ⨯ Error: Could not find the module "[project]/node_modules/next/dist/esm/lib/framework/boundary-components.js#MetadataBoundary" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+2026-05-27 02:06:48:     at stringify (<anonymous>) {
+2026-05-27 02:06:48:   digest: '2270730560'
+2026-05-27 02:06:48: }
+2026-05-27 02:06:49: ⨯ Error: Could not find the module "[project]/node_modules/next/dist/esm/lib/metadata/generate/icon-mark.js#IconMark" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+2026-05-27 02:06:49:     at stringify (<anonymous>) {
+2026-05-27 02:06:49:   digest: '207115154'
+2026-05-27 02:06:49: }
+2026-05-27 02:06:49: ⨯ Error: Could not find the module "[project]/node_modules/next/dist/esm/lib/framework/boundary-components.js#ViewportBoundary" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+2026-05-27 02:06:49:     at stringify (<anonymous>) {
+2026-05-27 02:06:49:   digest: '306792064'
+2026-05-27 02:06:49: }
+2026-05-27 02:06:50: ⨯ Error: Could not find the module "[project]/node_modules/next/dist/esm/lib/framework/boundary-components.js#MetadataBoundary" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+2026-05-27 02:06:50:     at stringify (<anonymous>) {
+2026-05-27 02:06:50:   digest: '2270730560'
+2026-05-27 02:06:50: }
+2026-05-27 02:06:50: ⨯ Error: Could not find the module "[project]/node_modules/next/dist/esm/lib/metadata/generate/icon-mark.js#IconMark" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+2026-05-27 02:06:50:     at stringify (<anonymous>) {
+2026-05-27 02:06:50:   digest: '207115154'
+2026-05-27 02:06:50: }
+2026-05-27 02:06:59: ⨯ Error: Could not find the module "[project]/node_modules/next/dist/esm/lib/framework/boundary-components.js#ViewportBoundary" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+2026-05-27 02:06:59:     at stringify (<anonymous>) {
+2026-05-27 02:06:59:   digest: '306792064'
+2026-05-27 02:06:59: }
+2026-05-27 02:06:59: ⨯ Error: Could not find the module "[project]/node_modules/next/dist/esm/lib/framework/boundary-components.js#MetadataBoundary" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+2026-05-27 02:06:59:     at stringify (<anonymous>) {
+2026-05-27 02:06:59:   digest: '2270730560'
+2026-05-27 02:06:59: }
+2026-05-27 02:07:00: ⨯ Error: Could not find the module "[project]/node_modules/next/dist/esm/lib/metadata/generate/icon-mark.js#IconMark" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+2026-05-27 02:07:00:     at stringify (<anonymous>) {
+2026-05-27 02:07:00:   digest: '207115154'
+2026-05-27 02:07:00: }
+2026-05-27 02:07:00: ⨯ Error: Could not find the module "[project]/node_modules/next/dist/esm/lib/framework/boundary-components.js#ViewportBoundary" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+2026-05-27 02:07:00:     at stringify (<anonymous>) {
+2026-05-27 02:07:00:   digest: '306792064'
+2026-05-27 02:07:00: }
+2026-05-27 02:07:01: ⨯ Error: Could not find the module "[project]/node_modules/next/dist/esm/lib/framework/boundary-components.js#MetadataBoundary" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+2026-05-27 02:07:01:     at stringify (<anonymous>) {
+2026-05-27 02:07:01:   digest: '2270730560'
+2026-05-27 02:07:01: }
+2026-05-27 02:07:01: ⨯ Error: Could not find the module "[project]/node_modules/next/dist/esm/lib/metadata/generate/icon-mark.js#IconMark" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+2026-05-27 02:07:01:     at stringify (<anonymous>) {
+2026-05-27 02:07:01:   digest: '207115154'
+2026-05-27 02:07:01: }
+2026-05-27 02:09:45: ⨯ Error: Invalid OpenGraph type: place
+2026-05-27 02:09:45:     at ignore-listed frames {
+2026-05-27 02:09:45:   digest: '1720759795@E237'
+2026-05-27 02:09:45: }
+2026-05-27 02:10:18: The width(-1) and height(-1) of chart should be greater than 0,
+2026-05-27 02:10:18:        please check the style of container, or the props width(100%) and height(100%),
+2026-05-27 02:10:18:        or add a minWidth(0) or minHeight(undefined) or use aspect(undefined) to control the
+2026-05-27 02:10:18:        height and width.
+2026-05-27 02:30:24: ⨯ Error: Invalid OpenGraph type: place
+2026-05-27 02:30:24:     at ignore-listed frames {
+2026-05-27 02:30:24:   digest: '1720759795@E237'
+2026-05-27 02:30:24: }
+2026-05-27 02:30:25: ⨯ Error: Invalid OpenGraph type: place
+2026-05-27 02:30:25:     at ignore-listed frames {
+2026-05-27 02:30:25:   digest: '1720759795@E237'
+2026-05-27 02:30:25: }

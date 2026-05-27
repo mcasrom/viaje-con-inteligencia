@@ -49,6 +49,10 @@ export const metadata: Metadata = {
   publisher: "Viaje con Inteligencia",
   alternates: {
     canonical: 'https://www.viajeinteligencia.com',
+    languages: {
+      'es': 'https://www.viajeinteligencia.com',
+      'en': 'https://www.viajeinteligencia.com/en',
+    },
   },
   openGraph: {
     title: "Viaje con Inteligencia | Riesgo Zero",
@@ -158,6 +162,26 @@ export default async function RootLayout({
           gtag('config', 'G-8JH6BXK1JG', { page_path: window.location.pathname });
         `}</Script>
       </body>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'WebSite',
+            name: 'Viaje con Inteligencia',
+            url: 'https://www.viajeinteligencia.com',
+            description: 'Recomendaciones de viaje, riesgos, visados y consejos basados en fuentes oficiales.',
+            potentialAction: {
+              '@type': 'SearchAction',
+              target: {
+                '@type': 'EntryPoint',
+                urlTemplate: 'https://www.viajeinteligencia.com/buscar?q={search_term_string}',
+              },
+              'query-input': 'required name=search_term_string',
+            },
+          }),
+        }}
+      />
     </html>
   );
 }

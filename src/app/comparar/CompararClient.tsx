@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, X, Search, TrendingUp, TrendingDown, Minus, Shield, Globe, DollarSign, Activity, Award, AlertTriangle, Sparkles, Loader2, SlidersHorizontal } from 'lucide-react';
 import { paisesData, getLabelRiesgo, NivelRiesgo } from '@/data/paises';
+import type { AdvisoryFuente } from '@/data/fuentes/types';
 import { calculateTCI } from '@/data/tci-engine';
 
 interface IndexEntry {
@@ -46,6 +47,16 @@ const RIESGO_COLORS: Record<string, string> = {
   'medio': 'bg-orange-500/20 text-orange-400 border-orange-500/30',
   'alto': 'bg-red-500/20 text-red-400 border-red-500/30',
   'muy-alto': 'bg-red-900/40 text-red-300 border-red-800/50',
+};
+
+const FUENTE_ORDER = ['maec', 'us-state-dept', 'uk-fcdo', 'canada', 'australia'];
+
+const FUENTE_LABELS: Record<string, string> = {
+  'maec': 'MAEC',
+  'us-state-dept': 'US',
+  'uk-fcdo': 'UK',
+  'canada': 'CA',
+  'australia': 'AU',
 };
 
 const IPC_COLORS: Record<string, string> = {
@@ -104,6 +115,22 @@ export default function CompararClient() {
     };
     fetchData();
   }, []);
+
+  const [advisoryData, setAdvisoryData] = useState<Record<string, AdvisoryFuente[]>>({});
+  useEffect(() => {
+    const fetchAdvisories = async () => {
+      const results: Record<string, AdvisoryFuente[]> = {};
+      for (const code of selectedCodes) {
+        try {
+          const res = await fetch('/api/advisories/' + code);
+          const data = await res.json();
+          if (data.fuentes) results[code] = data.fuentes;
+        } catch {}
+      }
+      setAdvisoryData(results);
+    };
+    if (selectedCodes.length > 0) fetchAdvisories();
+  }, [selectedCodes]);
 
   function getCountryData(code: string): CountryData | null {
     const pais = paisesData[code];
@@ -487,6 +514,24 @@ export default function CompararClient() {
                       ) : (
                         <span className="text-slate-600 text-sm">Sin datos</span>
                       )}
+                    </div>
+                    <div>
+                      <div className="text-slate-500 text-xs uppercase tracking-wider mb-2">Fuentes</div>
+                      <div className="flex flex-wrap gap-1">
+                        {advisoryData[c.code] ? (
+                          FUENTE_ORDER.map(fid => {
+                            const f = advisoryData[c.code].find((a: AdvisoryFuente) => a.id === fid);
+                            if (!f || !f.nivelRiesgo) return null;
+                            return (
+                              <span key={fid} className={'inline-block px-1.5 py-0.5 rounded text-[10px] font-medium border ' + (RIESGO_COLORS[f.nivelRiesgo] || 'text-slate-500')}>
+                                {FUENTE_LABELS[fid]}
+                              </span>
+                            );
+                          })
+                        ) : (
+                          <span className="text-slate-600 text-xs">Cargando...</span>
+                        )}
+                      </div>
                     </div>
                   </div>
                 ))}

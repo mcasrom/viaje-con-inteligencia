@@ -921,3 +921,34 @@ El build de Next.js 16.2.6 en el VPS (Node v22.22.2, 3.7GB RAM) falla con SIGBUS
 - Deploy: rsync directo al VPS + build con swap 8GB + PM2 restart
 - Build verificado: 676 rutas, OK
 - Todos los endpoints 200
+## 27 May 2026 — Sprint EN Phase 1 & 2 (i18n + Rutas EN + Middleware + hreflang)
+
+> **Último deploy verificado:** ✅ (commit pendiente, PM2 PID 316494, port 3000)
+
+### Logros del día
+
+#### Phase 1 — Ruta EN multi-país + i18n UI
+- ✅ **`src/data/nombres-en.ts`**: 137 nombres de país en inglés (auto-generado de `paises-data.json`)
+- ✅ **`/en/pais/[codigo]/page.tsx`**: Ruta EN completa con SEO, Schema.org TouristDestination, Twitter cards y Open Graph en inglés
+- ✅ **`DetallePaisClient.tsx`**: tabs, labels de secciones (Info/Economía/Localización), campos (Idioma/Población/PIB/Moneda/etc.), riesgos, presupuesto, perfiles → todo traducido vía `useI18n().t()`
+- ✅ **`src/lib/i18n/index.tsx`**: 54 nuevas claves de traducción (`pais.tab.*`, `pais.budget.*`, `pais.info.*`, `pais.maec.*`, `pais.emergency.*`, `pais.reviews.*`, `pais.ist.*`, `pais.riskDesc.*`)
+
+#### Phase 2 — Middleware + SEO i18n
+- ✅ **`src/middleware.ts`**: Detecta `Accept-Language: en` en primera visita sin cookie → redirige a `/en`. Fija cookie `locale=en` al navegar por `/en`. Cookie tiene prioridad sobre Accept-Language.
+- ✅ **hreflang alternates**: `alternates.languages` con `es`/`en` añadido a root layout, `/pais/[codigo]`, y `/en/pais/[codigo]`
+- ✅ **Matcher expandido**: de 4 rutas específicas a patrón universal excluyendo assets estáticos
+
+### Build
+- Compilación limpia (sin errores TS), 676+ rutas, middleware compilado como Proxy
+- Todas las rutas 200 OK: `/`, `/en`, `/pais/es`, `/en/pais/es`
+
+### Commits del día
+| Commit | Descripción |
+|--------|-------------|
+| (pendiente) | EN Phase 1: ruta /en/pais/[codigo] + i18n pais keys + English country names |
+| (pendiente) | EN Phase 2: middleware i18n + hreflang alternates |
+
+### Técnico
+- Build: 72s + 69s (dos builds), sin errores
+- Deploy: PM2 restart, PID 316494, 0 reinicios
+- Todos los endpoints 200

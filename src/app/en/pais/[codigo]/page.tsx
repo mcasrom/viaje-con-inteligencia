@@ -1,7 +1,8 @@
 import Link from 'next/link';
 import { getTodosLosPaises } from '@/data/paises';
 import { getPostsPagination } from '@/lib/posts';
-import DetallePaisClient from './DetallePaisClient';
+import { NOMBRES_EN } from '@/data/nombres-en';
+import DetallePaisClient from '@/app/pais/[codigo]/DetallePaisClient';
 import OsintSignalsWidget from '@/components/OsintSignalsWidget';
 
 export const revalidate = 86400;
@@ -13,51 +14,53 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: { params: Promise<{ codigo: string }> }) {
   const { codigo } = await params;
   const pais = getTodosLosPaises().find(p => p.codigo === codigo);
+  const nombreEn = NOMBRES_EN[codigo] || pais?.nombre || codigo;
   return {
-    title: `${pais?.nombre || codigo} — Riesgo, Visado y Consejos | Viaje Inteligencia`,
-    description: `Ficha completa de ${pais?.nombre}: nivel de riesgo MAEC, visado, clima, transporte, POIs y recomendaciones IA.`,
-    keywords: `viajar a ${pais?.nombre}, riesgo ${pais?.nombre}, visado ${pais?.nombre}, consejos viaje ${pais?.nombre}, seguridad ${pais?.nombre}, embajada ${pais?.nombre}, turismo ${pais?.nombre}`,
+    title: `${nombreEn} — Travel Risk, Visa & Tips | Viaje Inteligencia`,
+    description: `Complete travel guide for ${nombreEn}: MAEC risk level, visa requirements, climate, transportation, POIs and AI recommendations.`,
+    keywords: `travel to ${nombreEn}, ${nombreEn} risk, ${nombreEn} visa, travel tips ${nombreEn}, ${nombreEn} safety, ${nombreEn} embassy, tourism ${nombreEn}`,
     alternates: {
-      canonical: `https://www.viajeinteligencia.com/pais/${codigo}`,
+      canonical: `https://www.viajeinteligencia.com/en/pais/${codigo}`,
       languages: {
         'es': 'https://www.viajeinteligencia.com/pais/' + codigo,
         'en': 'https://www.viajeinteligencia.com/en/pais/' + codigo,
       },
     },
     openGraph: {
-    images: [{ url: '/preview_favicon.jpg', width: 1200, height: 630 }],
-      title: `${pais?.nombre} — Riesgo, Visado y Consejos`,
-      description: `Ficha completa de ${pais?.nombre}: nivel de riesgo MAEC, visado, clima y recomendaciones.`,
-      url: `https://www.viajeinteligencia.com/pais/${codigo}`,
+      images: [{ url: '/preview_favicon.jpg', width: 1200, height: 630 }],
+      title: `${nombreEn} — Travel Risk, Visa & Tips`,
+      description: `Complete travel guide for ${nombreEn}: MAEC risk level, visa requirements, climate and recommendations.`,
+      url: `https://www.viajeinteligencia.com/en/pais/${codigo}`,
       type: 'place',
     },
     twitter: {
       card: 'summary_large_image',
-      title: `${pais?.nombre} — Riesgo, Visado y Consejos | Viaje Inteligencia`,
-      description: `Ficha completa de ${pais?.nombre}: nivel de riesgo MAEC, visado, clima y recomendaciones.`,
+      title: `${nombreEn} — Travel Risk, Visa & Tips | Viaje Inteligencia`,
+      description: `Complete travel guide for ${nombreEn}: MAEC risk level, visa requirements, climate and recommendations.`,
       creator: '@ViajeIntel2026',
     },
   };
 }
 
 const riesgoConfig: Record<string, { label: string; description: string }> = {
-  'sin-riesgo': { label: 'Sin riesgo', description: 'No existen riesgos específicos. Puede viajarse con normalidad.' },
-  'bajo': { label: 'Riesgo bajo', description: 'Riesgo bajo. Se recomienda tomar precauciones normales.' },
-  'medio': { label: 'Riesgo medio', description: 'Riesgo moderado. Se recomienda extremar precauciones.' },
-  'alto': { label: 'Riesgo alto', description: 'Riesgo alto. Se desaconsejan los viajes no esenciales.' },
-  'muy-alto': { label: 'Riesgo muy alto', description: 'Riesgo muy alto. Se desaconsejan todos los viajes.' },
+  'sin-riesgo': { label: 'No risk', description: 'No specific risks. Travel with normal precautions.' },
+  'bajo': { label: 'Low risk', description: 'Low risk. Normal precautions recommended.' },
+  'medio': { label: 'Medium risk', description: 'Moderate risk. Exercise increased caution.' },
+  'alto': { label: 'High risk', description: 'High risk. Non-essential travel discouraged.' },
+  'muy-alto': { label: 'Very high risk', description: 'Very high risk. All travel advised against.' },
 };
 
-export default async function PaisPage({ params }: { params: Promise<{ codigo: string }> }) {
+export default async function EnPaisPage({ params }: { params: Promise<{ codigo: string }> }) {
   const { codigo } = await params;
   const pais = getTodosLosPaises().find(p => p.codigo === codigo);
+  const nombreEn = NOMBRES_EN[codigo] || pais?.nombre || codigo;
 
   if (!pais) {
     return (
       <div className="min-h-screen bg-slate-900 flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-white mb-2">País no encontrado</h1>
-          <Link href="/" className="text-blue-400 hover:underline">Volver al mapa →</Link>
+          <h1 className="text-2xl font-bold text-white mb-2">Country not found</h1>
+          <Link href="/en" className="text-blue-400 hover:underline">Back to map →</Link>
         </div>
       </div>
     );
@@ -68,9 +71,9 @@ export default async function PaisPage({ params }: { params: Promise<{ codigo: s
   const schema = {
     '@context': 'https://schema.org',
     '@type': 'TouristDestination',
-    name: pais.nombre,
-    description: `Guía completa de viaje a ${pais.nombre}: nivel de riesgo MAEC ${pais.nivelRiesgo}, visado, clima, transporte, POIs y recomendaciones IA para viajeros.`,
-    url: `https://www.viajeinteligencia.com/pais/${codigo}`,
+    name: nombreEn,
+    description: `Complete travel guide for ${nombreEn}: MAEC risk level, visa, climate, transport, POIs and AI recommendations.`,
+    url: `https://www.viajeinteligencia.com/en/pais/${codigo}`,
     ...(pais.bandera ? { photo: pais.bandera } : {}),
   };
 
@@ -88,7 +91,7 @@ export default async function PaisPage({ params }: { params: Promise<{ codigo: s
             <div className="flex items-center gap-4 mb-4">
               <span className="text-7xl">{pais.bandera}</span>
               <div>
-                <h1 className="text-4xl font-bold text-white mb-1">Guía de {pais.nombre}: riesgo MAEC, visado y consejos</h1>
+                <h1 className="text-4xl font-bold text-white mb-1">{nombreEn}: travel risk, visa & tips</h1>
                 <p className="text-slate-400">Capital: {pais.capital} • {pais.continente}</p>
               </div>
             </div>
@@ -96,23 +99,23 @@ export default async function PaisPage({ params }: { params: Promise<{ codigo: s
               <span className="px-4 py-2 rounded-xl bg-yellow-500 text-white font-bold text-sm">{config.label}</span>
             </div>
             <p className="text-slate-300 text-sm mb-4">{config.description}</p>
-            <p className="text-slate-500 text-xs">Datos MAEC: {pais.ultimoInforme}</p>
+            <p className="text-slate-500 text-xs">MAEC data: {pais.ultimoInforme}</p>
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-            {pais.idioma && <div className="bg-slate-800/50 rounded-xl p-4"><p className="text-xs text-slate-500 mb-1">Idioma</p><p className="text-white font-medium">{pais.idioma}</p></div>}
-            {pais.moneda && <div className="bg-slate-800/50 rounded-xl p-4"><p className="text-xs text-slate-500 mb-1">Moneda</p><p className="text-white font-medium">{pais.moneda}</p></div>}
-            {pais.poblacion && <div className="bg-slate-800/50 rounded-xl p-4"><p className="text-xs text-slate-500 mb-1">Población</p><p className="text-white font-medium">{pais.poblacion}</p></div>}
-            {pais.zonaHoraria && <div className="bg-slate-800/50 rounded-xl p-4"><p className="text-xs text-slate-500 mb-1">Zona horaria</p><p className="text-white font-medium">{pais.zonaHoraria}</p></div>}
+            {pais.idioma && <div className="bg-slate-800/50 rounded-xl p-4"><p className="text-xs text-slate-500 mb-1">Language</p><p className="text-white font-medium">{pais.idioma}</p></div>}
+            {pais.moneda && <div className="bg-slate-800/50 rounded-xl p-4"><p className="text-xs text-slate-500 mb-1">Currency</p><p className="text-white font-medium">{pais.moneda}</p></div>}
+            {pais.poblacion && <div className="bg-slate-800/50 rounded-xl p-4"><p className="text-xs text-slate-500 mb-1">Population</p><p className="text-white font-medium">{pais.poblacion}</p></div>}
+            {pais.zonaHoraria && <div className="bg-slate-800/50 rounded-xl p-4"><p className="text-xs text-slate-500 mb-1">Timezone</p><p className="text-white font-medium">{pais.zonaHoraria}</p></div>}
           </div>
 
           {pais.requerimientos && pais.requerimientos.length > 0 && (
             <div className="bg-slate-800/50 rounded-xl p-6 mb-8">
-              <h2 className="text-lg font-semibold text-white mb-3">Requisitos de entrada</h2>
-              {pais.requerimientos.slice(0, 3).map((req, i) => (
+              <h2 className="text-lg font-semibold text-white mb-3">Entry requirements</h2>
+              {pais.requerimientos.slice(0, 3).map((req: any, i: number) => (
                 <div key={i} className="mb-3">
                   <p className="text-amber-400 font-medium text-sm mb-1">{req.icon} {req.categoria}</p>
-                  {req.items.slice(0, 3).map((item, j) => (
+                  {req.items.slice(0, 3).map((item: string, j: number) => (
                     <p key={j} className="text-slate-300 text-sm ml-5">• {item}</p>
                   ))}
                 </div>
@@ -122,7 +125,7 @@ export default async function PaisPage({ params }: { params: Promise<{ codigo: s
 
           {pais.contactos && pais.contactos.length > 0 && (
             <div className="bg-slate-800/50 rounded-xl p-6 mb-8">
-              <h2 className="text-lg font-semibold text-white mb-3">Consulado / Embajada</h2>
+              <h2 className="text-lg font-semibold text-white mb-3">Consulate / Embassy</h2>
               <div className="text-slate-300 text-sm">
                 <p className="font-medium text-white">{pais.contactos[0].nombre}</p>
                 {pais.contactos[0].direccion && <p className="mt-1">{pais.contactos[0].direccion}</p>}
@@ -133,9 +136,9 @@ export default async function PaisPage({ params }: { params: Promise<{ codigo: s
 
           {pais.queHacer && pais.queHacer.length > 0 && (
             <div className="bg-slate-800/50 rounded-xl p-6 mb-8">
-              <h2 className="text-lg font-semibold text-white mb-3">Qué hacer en {pais.nombre}</h2>
+              <h2 className="text-lg font-semibold text-white mb-3">What to do in {nombreEn}</h2>
               <ul className="space-y-1">
-                {pais.queHacer.slice(0, 5).map((item, i) => (
+                {pais.queHacer.slice(0, 5).map((item: string, i: number) => (
                   <li key={i} className="text-slate-300 text-sm flex items-start gap-2">
                     <span className="text-green-400 mt-0.5">✓</span>
                     {item}
@@ -147,7 +150,7 @@ export default async function PaisPage({ params }: { params: Promise<{ codigo: s
         </div>
 
         <DetallePaisClient pais={pais} relatedPosts={relatedPosts} serverRenderedHero />
-        <OsintSignalsWidget countryCode={codigo} countryName={pais.nombre} />
+        <OsintSignalsWidget countryCode={codigo} countryName={nombreEn} />
       </div>
     </>
   );

@@ -20,11 +20,14 @@ import OsintAlertsBanner from '@/components/OsintAlertsBanner';
 import SentimentClimate from '@/components/SentimentClimate';
 import EventTimeline from '@/components/EventTimeline';
 import { useAuth } from '@/contexts/AuthContext';
+import { useI18n } from '@/lib/i18n';
 import ShareButtons from '@/components/ShareButtons';
 import AddToRadarButton from '@/components/AddToRadarButton';
 import RiskTrendIndicator from '@/components/RiskTrendIndicator';
 import ScoreBadge from '@/components/ScoreBadge';
 import BiasDisclaimer from '@/components/BiasDisclaimer';
+import FuentesComparativa from '@/components/FuentesComparativa';
+import NoticiasFeed from '@/components/NoticiasFeed';
 
 interface DetallePaisClientProps {
   pais: DatoPais;
@@ -37,9 +40,10 @@ export default function DetallePaisClient({ pais, relatedPosts = [], serverRende
   const router = useRouter();
   const codigo = params.codigo as string;
   const { user, loading: authLoading } = useAuth();
+  const { t } = useI18n();
   const [isFavorite, setIsFavorite] = useState(false);
   const [favLoading, setFavLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState<'info' | 'legal' | 'saturacion' | 'dinero' | 'emergencia' | 'pois'>('info');
+  const [activeTab, setActiveTab] = useState<'info' | 'legal' | 'saturacion' | 'dinero' | 'emergencia' | 'pois' | 'comparativa' | 'noticias'>('info');
   const [maecData, setMaecData] = useState<any>(null);
   const [maecLoading, setMaecLoading] = useState(false);
   const [usRiskData, setUsRiskData] = useState<{ level: number; label: string; summary: string | null; updatedAt: string } | null>(null);
@@ -198,11 +202,11 @@ export default function DetallePaisClient({ pais, relatedPosts = [], serverRende
   };
 
   const riesgoConfig = {
-    'sin-riesgo': { bg: 'bg-green-500', text: 'text-green-400', border: 'border-green-500', label: 'Sin riesgo', description: 'No existen riesgos específicos. Puede viajarse con normalidad.' },
-    'bajo': { bg: 'bg-yellow-500', text: 'text-yellow-400', border: 'border-yellow-500', label: 'Riesgo bajo', description: 'Riesgo bajo. Se recomienda tomar precauciones normales.' },
-    'medio': { bg: 'bg-orange-500', text: 'text-orange-400', border: 'border-orange-500', label: 'Riesgo medio', description: 'Riesgo moderado. Se recomienda extremar precauciones.' },
-    'alto': { bg: 'bg-red-500', text: 'text-red-400', border: 'border-red-500', label: 'Riesgo alto', description: 'Riesgo alto. Se desaconsejan los viajes no esenciales.' },
-    'muy-alto': { bg: 'bg-red-900', text: 'text-red-400', border: 'border-red-900', label: 'Riesgo muy alto', description: 'Riesgo muy alto. Se desaconsejan todos los viajes.' }
+    'sin-riesgo': { bg: 'bg-green-500', text: 'text-green-400', border: 'border-green-500', label: t('risk.noRisk'), description: t('pais.riskDesc.noRisk') },
+    'bajo': { bg: 'bg-yellow-500', text: 'text-yellow-400', border: 'border-yellow-500', label: t('risk.low'), description: t('pais.riskDesc.low') },
+    'medio': { bg: 'bg-orange-500', text: 'text-orange-400', border: 'border-orange-500', label: t('risk.medium'), description: t('pais.riskDesc.medium') },
+    'alto': { bg: 'bg-red-500', text: 'text-red-400', border: 'border-red-500', label: t('risk.high'), description: t('pais.riskDesc.high') },
+    'muy-alto': { bg: 'bg-red-900', text: 'text-red-400', border: 'border-red-900', label: t('risk.veryHigh'), description: t('pais.riskDesc.veryHigh') }
   };
 
   const config = riesgoConfig[pais.nivelRiesgo] || riesgoConfig['bajo'];
@@ -282,7 +286,7 @@ export default function DetallePaisClient({ pais, relatedPosts = [], serverRende
                 <SentimentClimate countryName={pais.nombre} countryCode={pais.codigo} compact />
               </div>
               <div className="flex flex-wrap items-center justify-end gap-1">
-                <span className="text-[10px] text-slate-500 mr-0.5">Perfil:</span>
+                <span className="text-[10px] text-slate-500 mr-0.5">{t('pais.profile')}</span>
                 {[
                   { id: 'mochilero', label: '🎒' },
                   { id: 'lujo', label: '💎' },
@@ -305,12 +309,12 @@ export default function DetallePaisClient({ pais, relatedPosts = [], serverRende
                 ))}
               </div>
               <div className="flex flex-wrap items-center justify-end gap-1">
-                <span className="text-[10px] text-slate-500 mr-0.5">Presupuesto:</span>
+                <span className="text-[10px] text-slate-500 mr-0.5">{t('pais.budget')}</span>
                 {[
-                  { id: 'bajo', label: 'Bajo' },
-                  { id: 'medio', label: 'Medio' },
-                  { id: 'alto', label: 'Alto' },
-                  { id: 'lujo', label: 'Lujo' },
+                  { id: 'bajo', label: t('pais.budget.low') },
+                  { id: 'medio', label: t('pais.budget.medium') },
+                  { id: 'alto', label: t('pais.budget.high') },
+                  { id: 'lujo', label: t('pais.budget.luxury') },
                 ].map(b => (
                   <button
                     key={b.id}
@@ -378,19 +382,19 @@ export default function DetallePaisClient({ pais, relatedPosts = [], serverRende
           <div className="bg-slate-800 rounded-xl p-6 border border-slate-700">
             <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
               <MapPinned className="w-5 h-5 text-blue-400" />
-              Información General
+              {t('pais.info.general')}
             </h3>
             <div className="space-y-3">
               <div className="flex justify-between text-sm">
-                <span className="text-slate-400 flex items-center gap-2"><Flag className="w-4 h-4" />Idioma</span>
+                <span className="text-slate-400 flex items-center gap-2"><Flag className="w-4 h-4" />{t('pais.info.language')}</span>
                 <span className="text-white">{pais.idioma}</span>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="text-slate-400 flex items-center gap-2"><Users className="w-4 h-4" />Población</span>
+                <span className="text-slate-400 flex items-center gap-2"><Users className="w-4 h-4" />{t('pais.info.population')}</span>
                 <span className="text-white">{pais.poblacion}</span>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="text-slate-400 flex items-center gap-2"><DollarSign className="w-4 h-4" />PIB</span>
+                <span className="text-slate-400 flex items-center gap-2"><DollarSign className="w-4 h-4" />{t('pais.info.gdp')}</span>
                 <span className="text-white">{pais.pib}</span>
               </div>
             </div>
@@ -399,23 +403,23 @@ export default function DetallePaisClient({ pais, relatedPosts = [], serverRende
           <div className="bg-slate-800 rounded-xl p-6 border border-slate-700">
             <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
               <DollarSign className="w-5 h-5 text-green-400" />
-              Economía
+              {t('pais.info.economy')}
             </h3>
             <div className="space-y-3">
               <div className="flex justify-between text-sm">
-                <span className="text-slate-400">Moneda</span>
+                <span className="text-slate-400">{t('pais.info.currency')}</span>
                 <span className="text-white">{pais.moneda}</span>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="text-slate-400">Tipo cambio</span>
+                <span className="text-slate-400">{t('pais.info.exchange')}</span>
                 <span className="text-white">{pais.tipoCambio}</span>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="text-slate-400">IPC</span>
+                <span className="text-slate-400">{t('pais.info.cpi')}</span>
                 <span className="text-white">{pais.indicadores.ipc}</span>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="text-slate-400">Índice precios</span>
+                <span className="text-slate-400">{t('pais.info.priceIndex')}</span>
                 <span className="text-white">{pais.indicadores.indicePrecios}</span>
               </div>
             </div>
@@ -424,23 +428,23 @@ export default function DetallePaisClient({ pais, relatedPosts = [], serverRende
           <div className="bg-slate-800 rounded-xl p-6 border border-slate-700">
             <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
               <Globe className="w-5 h-5 text-purple-400" />
-              Localización
+              {t('pais.info.location')}
             </h3>
             <div className="space-y-3">
               <div className="flex justify-between text-sm">
-                <span className="text-slate-400 flex items-center gap-2"><Clock3 className="w-4 h-4" />Zona horaria</span>
+                <span className="text-slate-400 flex items-center gap-2"><Clock3 className="w-4 h-4" />{t('pais.info.timezone')}</span>
                 <span className="text-white">{pais.zonaHoraria}</span>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="text-slate-400">Prefijo</span>
+                <span className="text-slate-400">{t('pais.info.prefix')}</span>
                 <span className="text-white">{pais.prefijoTelefono}</span>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="text-slate-400 flex items-center gap-2"><Car className="w-4 h-4" />Conducción</span>
-                <span className="text-white">{pais.conduccion === 'derecha' ? '↱ Derecha' : '↰ Izquierda'}</span>
+                <span className="text-slate-400 flex items-center gap-2"><Car className="w-4 h-4" />{t('pais.info.driving')}</span>
+                <span className="text-white">{pais.conduccion === 'derecha' ? t('pais.info.drivingRight') : t('pais.info.drivingLeft')}</span>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="text-slate-400 flex items-center gap-2"><Zap className="w-4 h-4" />Voltaje</span>
+                <span className="text-slate-400 flex items-center gap-2"><Zap className="w-4 h-4" />{t('pais.info.voltage')}</span>
                 <span className="text-white">{pais.voltaje}</span>
               </div>
             </div>
@@ -449,12 +453,14 @@ export default function DetallePaisClient({ pais, relatedPosts = [], serverRende
 
         <div className="flex flex-wrap gap-2 mb-6">
           {[
-            { id: 'info', label: 'Info', icon: <Info className="w-4 h-4" /> },
-            { id: 'legal', label: 'MAEC', icon: <Shield className="w-4 h-4" /> },
-            { id: 'saturacion', label: 'IST', icon: <Users className="w-4 h-4" /> },
-            { id: 'dinero', label: 'Dinero', icon: <Wallet className="w-4 h-4" /> },
-            { id: 'pois', label: 'POIs', icon: <MapPinned className="w-4 h-4" /> },
-            { id: 'emergencia', label: 'Emerg.', icon: <Siren className="w-4 h-4" /> },
+            { id: 'info', label: t('pais.tab.info'), icon: <Info className="w-4 h-4" /> },
+            { id: 'legal', label: t('pais.tab.legal'), icon: <Shield className="w-4 h-4" /> },
+            { id: 'saturacion', label: t('pais.tab.ist'), icon: <Users className="w-4 h-4" /> },
+            { id: 'dinero', label: t('pais.tab.dinero'), icon: <Wallet className="w-4 h-4" /> },
+            { id: 'pois', label: t('pais.tab.pois'), icon: <MapPinned className="w-4 h-4" /> },
+            { id: 'noticias', label: t('pais.tab.noticias'), icon: <Newspaper className="w-4 h-4" /> },
+            { id: 'comparativa', label: t('pais.tab.fuentes'), icon: <span>⚖️</span> },
+            { id: 'emergencia', label: t('pais.tab.emergencia'), icon: <Siren className="w-4 h-4" /> },
           ].map(tab => (
             <button
               key={tab.id}
@@ -475,7 +481,7 @@ export default function DetallePaisClient({ pais, relatedPosts = [], serverRende
           <div className="bg-slate-800 rounded-xl p-6 border border-slate-700 mb-6">
             <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
               <Users className="w-5 h-5 text-cyan-400" />
-              Índice de Saturación Turística (IST)
+              {t('pais.ist.title')} (IST)
             </h3>
             
             {!istData && !istLoading && (
@@ -508,7 +514,7 @@ export default function DetallePaisClient({ pais, relatedPosts = [], serverRende
             {istLoading && (
               <div className="flex items-center gap-2 text-slate-400 justify-center py-8">
                 <Loader2 className="w-5 h-5 animate-spin" />
-                <span>Calculando índice...</span>
+                <span>{t('pais.ist.loading')}</span>
               </div>
             )}
             
@@ -540,19 +546,19 @@ export default function DetallePaisClient({ pais, relatedPosts = [], serverRende
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   <div className="bg-slate-700/50 p-4 rounded-lg text-center">
                     <div className="text-2xl font-bold text-cyan-400">{istData.factors?.season || 0}</div>
-                    <div className="text-xs text-slate-400">Temporada</div>
+                    <div className="text-xs text-slate-400">{t('pais.ist.factorSeason')}</div>
                   </div>
                   <div className="bg-slate-700/50 p-4 rounded-lg text-center">
                     <div className="text-2xl font-bold text-green-400">{istData.factors?.price || 0}</div>
-                    <div className="text-xs text-slate-400">Precios</div>
+                    <div className="text-xs text-slate-400">{t('pais.ist.factorPrices')}</div>
                   </div>
                   <div className="bg-slate-700/50 p-4 rounded-lg text-center">
                     <div className="text-2xl font-bold text-purple-400">{istData.factors?.events || 0}</div>
-                    <div className="text-xs text-slate-400">Eventos</div>
+                    <div className="text-xs text-slate-400">{t('pais.ist.factorEvents')}</div>
                   </div>
                   <div className="bg-slate-700/50 p-4 rounded-lg text-center">
                     <div className="text-2xl font-bold text-orange-400">{istData.factors?.weekday || 0}</div>
-                    <div className="text-xs text-slate-400">Día</div>
+                    <div className="text-xs text-slate-400">{t('pais.ist.factorDay')}</div>
                   </div>
                 </div>
                 
@@ -568,19 +574,19 @@ export default function DetallePaisClient({ pais, relatedPosts = [], serverRende
           <div className="bg-slate-800 rounded-xl p-6 border border-slate-700 mb-6">
             <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
               <Shield className="w-5 h-5 text-yellow-400" />
-              Datos Oficiales MAEC
+              {t('pais.maec.recommendations')}
             </h3>
             
             {maecLoading ? (
               <div className="flex items-center gap-2 text-slate-400">
                 <Loader2 className="w-5 h-5 animate-spin" />
-                <span>Verificando última actualización MAEC...</span>
+                <span>{t('pais.maec.lastUpdate')}...</span>
               </div>
             ) : maecData ? (
               <div className="space-y-4">
                 <div className="flex items-center justify-between p-3 bg-slate-700/50 rounded-lg">
                   <div className="flex items-center gap-2">
-                    <span className="text-slate-300">Nivel de riesgo</span>
+                    <span className="text-slate-300">{t('pais.maec.riskLevel')}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <span className={`px-3 py-1 rounded-full text-sm font-medium ${
@@ -606,7 +612,7 @@ export default function DetallePaisClient({ pais, relatedPosts = [], serverRende
                 {maecData.fechaActualizacion && (
                   <div className="flex items-center gap-2 text-slate-400 text-sm">
                     <Clock className="w-4 h-4" />
-                    <span>Actualizado: {maecData.fechaActualizacion}</span>
+                    <span>{t('pais.maec.updated')}: {maecData.fechaActualizacion}</span>
                   </div>
                 )}
 
@@ -614,7 +620,7 @@ export default function DetallePaisClient({ pais, relatedPosts = [], serverRende
                   <div className="mt-4">
                     <h4 className="text-white font-medium mb-2 flex items-center gap-2">
                       <Bell className="w-4 h-4 text-orange-400" />
-                      Alertas activas
+                      {t('pais.maec.alerts')}
                     </h4>
                     <ul className="space-y-2">
                       {maecData.alertas.map((alerta: string, i: number) => (
@@ -634,7 +640,7 @@ export default function DetallePaisClient({ pais, relatedPosts = [], serverRende
                     className="flex items-center gap-2 p-3 bg-blue-500/20 hover:bg-blue-500/30 rounded-lg text-blue-400 transition-colors"
                   >
                     <Download className="w-4 h-4" />
-                    <span className="text-sm">Descargar Ficha PDF</span>
+                    <span className="text-sm">{t('pais.maec.downloadPdf')}</span>
                   </a>
                   <a
                     href={maecData.enlaces?.recomendaciones}
@@ -643,7 +649,7 @@ export default function DetallePaisClient({ pais, relatedPosts = [], serverRende
                     className="flex items-center gap-2 p-3 bg-purple-500/20 hover:bg-purple-500/30 rounded-lg text-purple-400 transition-colors"
                   >
                     <ExternalLink className="w-4 h-4" />
-                    <span className="text-sm">Recomendaciones MAEC</span>
+                    <span className="text-sm">{t('pais.maec.recommendations')}</span>
                   </a>
                 </div>
               </div>
@@ -675,7 +681,7 @@ export default function DetallePaisClient({ pais, relatedPosts = [], serverRende
 
                 <div className="flex items-center gap-2 text-slate-400 text-sm">
                   <Clock className="w-4 h-4" />
-                  <span>Último informe: {pais.ultimoInforme}</span>
+                  <span>{t('pais.maec.lastUpdate')}: {pais.ultimoInforme}</span>
                 </div>
 
                 <p className="text-slate-400 text-sm">
@@ -908,6 +914,14 @@ export default function DetallePaisClient({ pais, relatedPosts = [], serverRende
               </div>
             )}
           </div>
+        )}
+
+        {activeTab === 'comparativa' && (
+          <FuentesComparativa countryCode={codigo} />
+        )}
+
+        {activeTab === 'noticias' && (
+          <NoticiasFeed countryCode={codigo} countryName={pais.nombre} />
         )}
 
         {activeTab === 'emergencia' && (() => {
