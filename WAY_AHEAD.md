@@ -763,9 +763,9 @@ git add -A && git commit -m "msg" && git push
 - [ ] Enviar sitemap.xml a Google Search Console manualmente
 
 ### 🔴 Stripe / Monetización API — ⚠️ Parcial
-- [x] Stripe webhook para API Pro: provisiona API key tras pago 4.99€ ✅ (handler `provisionApiProKey()` en webhook)
-- [ ] Starter tier visible en UI `/precio-api` — existe en SQL/webhook pero no como opción de compra
-- [ ] Rate limiting per-second (hoy solo monthly caps: free=3K, starter=10K, pro=50K)
+- [x] Stripe webhook para API Pro: provisiona API key tras pago 4.99€ ✅
+- [x] Starter tier (€2.99, 3K req) en UI `/precio-api` + Stripe price creado + webhook ✅
+- [ ] Rate limiting per-second (hoy solo monthly caps: free=3K, starter=3K, pro=50K)
 - [ ] Stripe Enterprise flow — webhook no maneja tier enterprise
 
 ### 🟡 Admin / Infra
