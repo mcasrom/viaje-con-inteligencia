@@ -1,4 +1,7 @@
-# ESTADO DEL PROYECTO — 07 May 2026
+# ESTADO DEL PROYECTO — 07 May 2026 (📌 STALE — ver WAY_AHEAD.md para estado actual)
+
+> **⚠️ Este documento está desactualizado.** Consultar `WAY_AHEAD.md` para el estado real verificado (última auditoría: 27 May 2026).
+> Cambios desde 07 May: manifiesto EN, bias disclaimer, contexto geopolítico 27 países, África 17 países completado, Stripe API Pro webhook, Admin API Leads, Uptime Kuma, GoAccess, build crisis resuelta (swap 8GB).
 
 ---
 
