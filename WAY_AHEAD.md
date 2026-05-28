@@ -1,5 +1,21 @@
 # Way Ahead
 
+## Última sesión: 28 May 2026 — Early Bird v2 + Chat IA Itinerarios
+
+> **Último deploy verificado:** OK ✅ (commit `57d05da`, itinerarios funcionales)
+>
+> **Sprint activo:** AI features
+>
+> **Logros día (28 May noche):**
+>
+> ### Chat IA — Generador de itinerarios estructurados
+> - ✅ **`generateStructuredItinerary()`** en `groq-ai.ts`: Genera JSON estructurado con destino, resumen, packing list, plan día a día (actividades con hora/título/descripción/ubicación), consejos, coste estimado, contactos de emergencia.
+> - ✅ **Modo itinerario en `/api/ai/chat`**: Parámetro `itinerary: { destination, days, interests, budget }` genera itinerario estructurado en vez de chat normal. Inyecta datos de riesgo del país.
+> - ✅ **UI en ChatClient**: Botón "Generar itinerario de viaje" en pantalla de bienvenida. Formulario con destino, días, presupuesto, selector de intereses (cultura, naturaleza, gastronomía, aventura, playa, historia, fotografía, vida nocturna).
+> - ✅ **Renderizado día a día**: Cards visuales por día con timeline de actividades, badges de coste, sección de consejos, contactos de emergencia. Header con gradiente emerald/teal.
+> - ✅ **Persistencia**: Itinerarios se guardan en conversaciones de chat (historial recuperable).
+> - ✅ **Commits**: `11d9977` + `57d05da` — deployado y funcional.
+
 ## Última sesión: 28 May 2026 — Early Bird v2 + Admin Panel
 
 > **Último deploy verificado:** OK ✅ (commit `a4cab2a`, early bird v2 funcional)
@@ -640,6 +656,7 @@ sudo docker ps | grep uptime-kuma
 | 40 | Uptime Kuma | `status.viajeinteligencia.com/dashboard` | ✅ 6 monitores |
 | 41 | Early Bird digest | `/api/cron/early-bird` | ✅ Daily 07:00 UTC, Telegram + Email admin |
 | 42 | Early Bird v2 + Admin | `/admin/early-bird` | ✅ Health checks, traffic stats, subscriber count, history panel with charts |
+| 43 | Chat IA itinerarios | `/chat` | ✅ Structured day-by-day plans, packing, tips, emergency contacts, interest selector |
 
 ---
 
