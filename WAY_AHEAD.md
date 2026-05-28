@@ -1,10 +1,40 @@
 # Way Ahead
 
+## Última sesión: 28 May 2026 — Actualización páginas públicas + Deploy
+
+> **Último deploy verificado:** OK ✅ (commit `0443409`, 5 archivos, 65 insertaciones)
+>
+> **Sprint activo:** Public page accuracy
+>
+> **Logros día (28 May tarde):**
+>
+> ### Páginas públicas — Actualización completa
+> - ✅ **`/transparencia`**: Vercel → Hetzner, cron diario 06:00 UTC (no cada hora), Early Bird digest documentado, Chat IA con contexto personalizado + itinerarios estructurados, fuentes OSINT ampliadas (ReliefWeb, WHO DON), fuentes listadas correctamente
+> - ✅ **`/premium`**: Modelo corregido `llama-3.3-70b-versatile` (antes `llama-3.1-70b`), features de chat actualizadas (historial, contexto, itinerarios)
+> - ✅ **`/ecosistema`**: Nuevo testimonial Chat IA, footer con Early Bird + Itinerarios IA, 43 funcionalidades
+> - ✅ **`/fuentes-osint`**: Ajustes previos (ReliefWeb, Wikidata, recuentos corregidos)
+> - ✅ **`/metodologia`**: Ajustes previos (pipeline, fuentes, TCI)
+>
+> ### Deploy
+> - SSH como `deploy@178.105.80.193` → git pull → build (818 páginas, 72s) → PM2 restart → health 200
+> - Commit `0443409` — push a main, deploy manual vía SSH exitoso
+
 ## Última sesión: 28 May 2026 — Early Bird v2 + Chat IA Itinerarios
 
 > **Último deploy verificado:** OK ✅ (commit `57d05da`, itinerarios funcionales)
 >
 > **Sprint activo:** AI features
+>
+> ### Lo conseguido en esta sesión (28 May tarde) — Public pages update
+>
+> | # | Entregable | Detalle |
+> |---|------------|---------|
+> | 1 | **`/transparencia` actualizada** | Hetzner (no Vercel), cron 06:00 UTC diario, Early Bird digest, Chat IA contexto + itinerarios, ReliefWeb + WHO DON |
+> | 2 | **`/premium` corregida** | Modelo `llama-3.3-70b-versatile`, features chat actualizadas |
+> | 3 | **`/ecosistema` ampliada** | Testimonial Chat IA, footer Early Bird + Itinerarios, 43 funcionalidades |
+> | 4 | **`/fuentes-osint` ajustada** | ReliefWeb, Wikidata, recuentos corregidos |
+> | 5 | **`/metodologia` ajustada** | Pipeline, fuentes, TCI |
+> | 6 | **Deploy manual SSH** | `deploy@178.105.80.193` → build 818 páginas, PM2 restart, health 200 |
 >
 > **Logros día (28 May noche):**
 >
@@ -309,7 +339,7 @@ sudo nginx -t && sudo systemctl reload nginx
 | IPv6 | `2a01:4f8:1c1e:92d2::/64` |
 | Usuario | `deploy` |
 | Puerto | `22` |
-| Clave | `~/.ssh/id_rsa` (local) |
+| Clave | `~/.ssh/id_rsa` (local) — **funciona desde sesión local con `sudo -i`** |
 | Path app | `/var/www/viajeinteligencia` |
 | PM2 | `pm2 startOrReload ecosystem.config.cjs --update-env` |
 
@@ -525,7 +555,30 @@ sudo docker ps | grep uptime-kuma
 
 ## RESUMEN EJECUTIVO
 
-**Fase 1 completada.** 21 funcionalidades entregadas, coste operativo ~€0/mes, deploy automatico en cada push a main.
+**Fase 1 completada.** 53 funcionalidades entregadas, coste operativo ~€0/mes, deploy automatico en cada push a main.
+
+### Lo conseguido en esta sesión (28 May — Full day summary)
+
+| # | Entregable | Detalle |
+|---|------------|---------|
+| 1 | **Early Bird v2** | Health checks 14 servicios, tráfico semanal Cloudflare, subscriber count, DB persistence |
+| 2 | **Early Bird admin** | `/admin/early-bird` con historial 30 digests, gráficos Recharts, badges estado |
+| 3 | **Chat IA itinerarios** | `generateStructuredItinerary()` JSON estructurado, modo itinerary en API, UI form con 8 intereses |
+| 4 | **Itinerario export/share** | Download MD + public trip link con OG tags |
+| 5 | **Chat IA fixes** | Delete conversation, contexto activo indicator, dailyCount fix |
+| 6 | **Public pages update** | `/transparencia`, `/premium`, `/ecosistema`, `/fuentes-osint`, `/metodologia` |
+| 7 | **Deploy** | Commit `0443409`, build 818 páginas, PM2 restart, health 200 |
+
+### Lo conseguido en esta sesión (28 May — Public pages update)
+
+| # | Entregable | Detalle |
+|---|------------|---------|
+| 1 | **`/transparencia` actualizada** | Hetzner (no Vercel), cron 06:00 UTC diario, Early Bird digest, Chat IA contexto + itinerarios, ReliefWeb + WHO DON |
+| 2 | **`/premium` corregida** | Modelo `llama-3.3-70b-versatile`, features chat actualizadas |
+| 3 | **`/ecosistema` ampliada** | Testimonial Chat IA, footer Early Bird + Itinerarios, 43 funcionalidades |
+| 4 | **`/fuentes-osint` ajustada** | ReliefWeb, Wikidata, recuentos corregidos |
+| 5 | **`/metodologia` ajustada** | Pipeline, fuentes, TCI |
+| 6 | **Deploy manual SSH** | `deploy@178.105.80.193` → build 818 páginas, PM2 restart, health 200 |
 
 ### Lo conseguido en esta sesión (20 May — Sprint Captación día 1 + infra/ML)
 
@@ -579,6 +632,13 @@ sudo docker ps | grep uptime-kuma
 - **Fase 2 (dependencias)**: Risk alerts (30s) + Flight costs/TCI 120 paises (60s)
 - **Fase 3 (OSINT)**: News sentiment 73 fuentes (90s) + Incident detection (15s)
 - **Fase 4 (comunicacion)**: Daily digest Telegram/email (30s) + Weekly digest lunes (30s)
+
+### Early Bird (cron separado)
+- **Horario**: 07:00 UTC diario (1h después del master cron)
+- **Contenido**: Incidentes 24h, cambios MAEC 48h, sentimiento, health 14 servicios, tráfico semanal Cloudflare, newsletter subscribers
+- **Envío**: Telegram canal admin + Email Resend a `info@viajeinteligencia.com`
+- **Persistencia**: Tabla `early_bird_digests` con métricas extraídas
+- **Admin**: `/admin/early-bird` con historial 30 digests + gráficos Recharts
 
 ### Fuentes de datos activas
 | Fuente | Tipo | Frecuencia | Uso |
@@ -657,6 +717,16 @@ sudo docker ps | grep uptime-kuma
 | 41 | Early Bird digest | `/api/cron/early-bird` | ✅ Daily 07:00 UTC, Telegram + Email admin |
 | 42 | Early Bird v2 + Admin | `/admin/early-bird` | ✅ Health checks, traffic stats, subscriber count, history panel with charts |
 | 43 | Chat IA itinerarios | `/chat` | ✅ Structured day-by-day plans, packing, tips, emergency contacts, interest selector |
+| 44 | Itinerario export MD | `/chat` | ✅ Download itinerary as Markdown file |
+| 45 | Itinerario share public | `/viajes/destacados/[slug]` | ✅ Public trip link with OG tags |
+| 46 | Early Bird health checks | `/api/cron/early-bird` | ✅ 14 services monitored |
+| 47 | Early Bird traffic stats | `/api/cron/early-bird` | ✅ Weekly Cloudflare analytics |
+| 48 | Early Bird subscriber count | `/api/cron/early-bird` | ✅ Verified newsletter count from DB |
+| 49 | Early Bird DB persistence | `early_bird_digests` table | ✅ Each digest saved with metrics |
+| 50 | Early Bird admin history | `/admin/early-bird` | ✅ 30 digests, Recharts graphs, status badges |
+| 51 | Chat IA delete conversation | `/chat` | ✅ Delete button in sidebar |
+| 52 | Chat IA contexto indicator | `/chat` | ✅ Visual "Contexto activo" badge |
+| 53 | Chat IA dailyCount fix | `/api/subscription/check` | ✅ Added dailyCount to response |
 
 ---
 
@@ -672,9 +742,14 @@ sudo docker ps | grep uptime-kuma
 
 #### 2. Chat IA — Mejoras criticas
 - [ ] Rate limit server-side (actual localStorage, facil de burlar)
-- [ ] Historial conversaciones (guardar en Supabase)
-- [ ] Contexto personalizado (favoritos, trips, alertas activas)
-- [ ] Generador itinerarios (output estructurado dia a dia)
+- [x] Historial conversaciones (guardar en Supabase)
+- [x] Contexto personalizado (favoritos, trips, alertas activas)
+- [x] Generador itinerarios (output estructurado dia a dia)
+- [x] Export itinerario a Markdown
+- [x] Compartir itinerario como trip publico
+- [x] Delete conversation button
+- [x] Contexto activo indicator visual
+- [x] dailyCount fix en subscription check
 - [ ] Tool use (consultar mapa, calculadora, OSINT en tiempo real)
 - [ ] Voz (speech-to-text + text-to-speech)
 **Tiempo**: 1-2 sprints
