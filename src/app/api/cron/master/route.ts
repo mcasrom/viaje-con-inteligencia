@@ -873,6 +873,32 @@ async function runOnboardingQueue(): Promise<any> {
   }
 }
 
+async function runTrendPredictions(): Promise<any> {
+  try {
+    const { predictTrend, logTrendPrediction } = await import('@/lib/trend-predictor');
+    const { getPaisesData } = await import('@/lib/paises-db');
+    const paises = await getPaisesData();
+    const countries = Object.keys(paises).filter(c => c !== 'cu');
+
+    let ok = 0, errors = 0;
+    for (const code of countries) {
+      try {
+        const prediction = await predictTrend(code);
+        if (prediction) {
+          await logTrendPrediction(prediction);
+          ok++;
+        }
+      } catch {
+        errors++;
+      }
+    }
+
+    return { status: 'ok', predicted: ok, errors };
+  } catch (e: any) {
+    return { status: 'error', error: e.message };
+  }
+}
+
 // ===== MASTER CRON =====
 async function withTimeout<T>(fn: () => Promise<T>, ms: number, label: string): Promise<T | { status: 'error'; error: string }> {
   try {
@@ -1025,6 +1051,9 @@ results.heatmap = await withTimeout(() => runHeatmapDetection(), 30000, '8e/8 He
 
 log.info('8g/8 Onboarding queue...');
 results.onboarding = await withTimeout(() => runOnboardingQueue(), 30000, '8g/8 Onboarding queue');
+
+log.info('8h/8 Trend predictions...');
+results.trend_predictions = await withTimeout(() => runTrendPredictions(), 120000, '8h/8 Trend predictions');
 
   const elapsed = Date.now() - startTime;
 
