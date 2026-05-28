@@ -59,6 +59,10 @@ export default function ChatClient() {
   const [shareLoading, setShareLoading] = useState(false);
   const [shareResult, setShareResult] = useState<string | null>(null);
   const [shareCopied, setShareCopied] = useState(false);
+  const [itineraryExportIdx, setItineraryExportIdx] = useState<number | null>(null);
+  const [itineraryShareIdx, setItineraryShareIdx] = useState<number | null>(null);
+  const [itineraryShareResult, setItineraryShareResult] = useState<string | null>(null);
+  const [itineraryShareLoading, setItineraryShareLoading] = useState(false);
   const [showItineraryForm, setShowItineraryForm] = useState(false);
   const [itineraryForm, setItineraryForm] = useState({
     destination: '',
@@ -321,6 +325,80 @@ export default function ChatClient() {
         ? prev.interests.filter(i => i !== interest)
         : [...prev.interests, interest],
     }));
+  };
+
+  const exportItinerary = (data: any) => {
+    let md = `# Itinerario: ${data.destination}\n\n`;
+    md += `${data.summary}\n\n`;
+    md += `**Días:** ${data.days} | **Presupuesto:** ${data.budget}\n\n`;
+
+    if (data.packing && data.packing.length > 0) {
+      md += `## Qué llevar\n`;
+      data.packing.forEach((item: string) => { md += `- ${item}\n`; });
+      md += `\n`;
+    }
+
+    data.days_plan.forEach((day: any) => {
+      md += `## Día ${day.day}: ${day.title}\n`;
+      md += `*Coste estimado: ${day.estimatedCost}*\n\n`;
+      day.activities.forEach((act: any) => {
+        md += `### ${act.time} — ${act.title}\n`;
+        if (act.description) md += `${act.description}\n`;
+        if (act.location) md += `📍 ${act.location}\n`;
+        md += `\n`;
+      });
+      if (day.tips && day.tips.length > 0) {
+        md += `**Consejos:**\n`;
+        day.tips.forEach((tip: string) => { md += `- ${tip}\n`; });
+        md += `\n`;
+      }
+    });
+
+    if (data.emergency_contacts && data.emergency_contacts.length > 0) {
+      md += `## Contactos de emergencia\n`;
+      data.emergency_contacts.forEach((c: string) => { md += `- ${c}\n`; });
+    }
+
+    const blob = new Blob([md], { type: 'text/markdown' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `itinerario-${data.destination.toLowerCase().replace(/\s+/g, '-')}.md`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const shareItinerary = async (data: any) => {
+    setItineraryShareLoading(true);
+    setItineraryShareResult(null);
+    try {
+      const res = await fetch('/api/trips', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: `Itinerario ${data.destination} (${data.days} días)`,
+          destination: data.destination,
+          days: data.days,
+          budget: data.budget,
+          interests: data.days_plan?.flatMap((d: any) => d.activities?.map((a: any) => a.title)) || [],
+          itinerary_raw: JSON.stringify(data),
+          is_public: true,
+          status: 'draft',
+        }),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        setItineraryShareResult(`error:${err.error || 'Error al guardar'}`);
+        return;
+      }
+      const tripData = await res.json();
+      const link = `${window.location.origin}/viajes/destacados/${tripData.trip.slug}`;
+      setItineraryShareResult(link);
+    } catch {
+      setItineraryShareResult('error:Error de conexión');
+    } finally {
+      setItineraryShareLoading(false);
+    }
   };
 
   return (
@@ -716,6 +794,55 @@ export default function ChatClient() {
                             ))}
                           </div>
                         )}
+
+                        {/* Action buttons */}
+                        <div className="px-4 py-3 border-t border-slate-700 bg-slate-800/50 flex gap-2">
+                          <button
+                            onClick={() => exportItinerary(itineraryData)}
+                            className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-700 hover:bg-slate-600 text-slate-300 rounded-lg text-xs transition-colors"
+                          >
+                            <Download className="w-3 h-3" />
+                            Exportar MD
+                          </button>
+                          {itineraryShareIdx === i ? (
+                            itineraryShareResult ? (
+                              itineraryShareResult.startsWith('error:') ? (
+                                <div className="flex items-center gap-2 text-xs text-red-400 flex-1">
+                                  <AlertTriangle className="w-3 h-3" />
+                                  <span>{itineraryShareResult.replace('error:', '')}</span>
+                                  <button onClick={() => { setItineraryShareIdx(null); setItineraryShareResult(null); }} className="ml-auto text-slate-400 hover:text-white">Cerrar</button>
+                                </div>
+                              ) : (
+                                <div className="flex items-center gap-2 text-xs flex-1">
+                                  <Globe className="w-3 h-3 text-green-400" />
+                                  <a href={itineraryShareResult} target="_blank" rel="noopener noreferrer" className="text-green-400 hover:text-green-300 underline truncate max-w-[200px]">
+                                    {itineraryShareResult.replace('https://', '')}
+                                  </a>
+                                  <button
+                                    onClick={() => { navigator.clipboard.writeText(itineraryShareResult); setShareCopied(true); setTimeout(() => setShareCopied(false), 2000); }}
+                                    className="p-1 hover:bg-slate-700 rounded transition-colors"
+                                  >
+                                    {shareCopied ? <Check className="w-3 h-3 text-green-400" /> : <Copy className="w-3 h-3 text-slate-400" />}
+                                  </button>
+                                </div>
+                              )
+                            ) : (
+                              <div className="flex items-center gap-2 text-xs text-slate-400 flex-1">
+                                <Loader2 className="w-3 h-3 animate-spin" />
+                                <span>Guardando...</span>
+                              </div>
+                            )
+                          ) : (
+                            <button
+                              onClick={() => { setItineraryShareIdx(i); setItineraryShareResult(null); }}
+                              disabled={itineraryShareLoading}
+                              className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-400 rounded-lg text-xs transition-colors disabled:opacity-50"
+                            >
+                              <Share2 className="w-3 h-3" />
+                              Compartir
+                            </button>
+                          )}
+                        </div>
                       </div>
                     </div>
                   );
