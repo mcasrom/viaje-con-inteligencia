@@ -48,6 +48,7 @@ jobs:
             fi
             export NODE_OPTIONS="--max-old-space-size=1536"
             npm install
+            npm install sharp --os=linux --cpu=x64
             echo "=== Build started ==="
             npm run build
             echo "=== Build OK, pruning devDeps ==="
