@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Send, Loader2, Bot, Sparkles, Crown, Zap, AlertTriangle, Lock, Plus, MessageSquare, Trash2, History, Share2, Check, Copy, Globe, Download, UserPlus } from 'lucide-react';
+import { ArrowLeft, Send, Loader2, Bot, Sparkles, Crown, Zap, AlertTriangle, Lock, Plus, MessageSquare, Trash2, History, Share2, Check, Copy, Globe, Download, UserPlus, MapPin, Calendar, DollarSign, AlertCircle, Utensils, Camera, Mountain, Shield } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import remarkGfm from 'remark-gfm';
 
@@ -59,6 +59,14 @@ export default function ChatClient() {
   const [shareLoading, setShareLoading] = useState(false);
   const [shareResult, setShareResult] = useState<string | null>(null);
   const [shareCopied, setShareCopied] = useState(false);
+  const [showItineraryForm, setShowItineraryForm] = useState(false);
+  const [itineraryForm, setItineraryForm] = useState({
+    destination: '',
+    days: '7',
+    interests: [] as string[],
+    budget: 'moderado',
+  });
+  const [itineraryLoading, setItineraryLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const canUsePremium = sub.premium;
@@ -263,6 +271,58 @@ export default function ChatClient() {
     URL.revokeObjectURL(url);
   };
 
+  const handleGenerateItinerary = async () => {
+    if (!itineraryForm.destination.trim() || itineraryLoading) return;
+    setItineraryLoading(true);
+    setShowItineraryForm(false);
+
+    const msgText = `Genera un itinerario de ${itineraryForm.days} días en ${itineraryForm.destination}`;
+    setMessages(prev => [...prev, { role: 'user', content: msgText }]);
+
+    try {
+      const response = await fetch('/api/ai/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message: msgText,
+          model: model === 'premium' && canUsePremium ? PREMIUM_MODEL : FREE_MODEL,
+          conversationId: activeConversationId,
+          itinerary: {
+            destination: itineraryForm.destination.trim(),
+            days: parseInt(itineraryForm.days) || 7,
+            interests: itineraryForm.interests,
+            budget: itineraryForm.budget,
+          },
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.itinerary) {
+        setMessages(prev => [...prev, { role: 'assistant', content: JSON.stringify(data.itinerary) }]);
+        if (data.conversationId && data.conversationId !== activeConversationId) {
+          setActiveConversationId(data.conversationId);
+          loadConversations();
+        }
+      } else {
+        setMessages(prev => [...prev, { role: 'assistant', content: 'Error al generar el itinerario. Intenta de nuevo.' }]);
+      }
+    } catch {
+      setMessages(prev => [...prev, { role: 'assistant', content: 'Error de conexión. Verifica tu conexión e intenta de nuevo.' }]);
+    } finally {
+      setItineraryLoading(false);
+    }
+  };
+
+  const toggleInterest = (interest: string) => {
+    setItineraryForm(prev => ({
+      ...prev,
+      interests: prev.interests.includes(interest)
+        ? prev.interests.filter(i => i !== interest)
+        : [...prev.interests, interest],
+    }));
+  };
+
   return (
     <div className="min-h-screen bg-slate-900 flex flex-col">
       {/* Header */}
@@ -425,6 +485,99 @@ export default function ChatClient() {
                 ))}
               </div>
 
+              {/* Itinerary generator button */}
+              <button
+                onClick={() => setShowItineraryForm(!showItineraryForm)}
+                className="mt-4 flex items-center gap-2 px-5 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white rounded-xl text-sm font-medium transition-all border border-emerald-500/30 shadow-lg shadow-emerald-500/10"
+              >
+                <MapPin className="w-4 h-4" />
+                Generar itinerario de viaje
+              </button>
+
+              {/* Itinerary form */}
+              {showItineraryForm && (
+                <div className="mt-4 bg-slate-800 rounded-xl p-4 border border-slate-700 w-full max-w-sm space-y-3">
+                  <div>
+                    <label className="text-xs text-slate-400 mb-1 block">Destino</label>
+                    <input
+                      value={itineraryForm.destination}
+                      onChange={e => setItineraryForm(f => ({ ...f, destination: e.target.value }))}
+                      placeholder="Ej: Japon, Tailandia, Peru..."
+                      className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white text-sm placeholder-slate-500 focus:outline-none focus:border-emerald-500"
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div>
+                      <label className="text-xs text-slate-400 mb-1 block">Días</label>
+                      <input
+                        type="number"
+                        value={itineraryForm.days}
+                        onChange={e => setItineraryForm(f => ({ ...f, days: e.target.value }))}
+                        min="1"
+                        max="30"
+                        className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white text-sm focus:outline-none focus:border-emerald-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-xs text-slate-400 mb-1 block">Presupuesto</label>
+                      <select
+                        value={itineraryForm.budget}
+                        onChange={e => setItineraryForm(f => ({ ...f, budget: e.target.value }))}
+                        className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white text-sm focus:outline-none focus:border-emerald-500"
+                      >
+                        <option value="economico">Económico</option>
+                        <option value="moderado">Moderado</option>
+                        <option value="alto">Alto</option>
+                        <option value="lujo">Lujo</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div>
+                    <label className="text-xs text-slate-400 mb-1 block">Intereses</label>
+                    <div className="flex flex-wrap gap-1.5">
+                      {[
+                        { id: 'cultura', icon: '🏛️' },
+                        { id: 'naturaleza', icon: '🌿' },
+                        { id: 'gastronomia', icon: '🍜' },
+                        { id: 'aventura', icon: '🧗' },
+                        { id: 'playa', icon: '🏖️' },
+                        { id: 'historia', icon: '📜' },
+                        { id: 'fotografia', icon: '📸' },
+                        { id: 'vida-nocturna', icon: '🌙' },
+                      ].map(opt => (
+                        <button
+                          key={opt.id}
+                          onClick={() => toggleInterest(opt.id)}
+                          className={`px-2 py-1 rounded text-xs transition-colors ${
+                            itineraryForm.interests.includes(opt.id)
+                              ? 'bg-emerald-600 text-white'
+                              : 'bg-slate-700 text-slate-400 hover:bg-slate-600'
+                          }`}
+                        >
+                          {opt.icon} {opt.id}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="flex gap-2 pt-1">
+                    <button
+                      onClick={handleGenerateItinerary}
+                      disabled={!itineraryForm.destination.trim() || itineraryLoading}
+                      className="flex-1 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2"
+                    >
+                      {itineraryLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Calendar className="w-4 h-4" />}
+                      {itineraryLoading ? 'Generando...' : 'Generar itinerario'}
+                    </button>
+                    <button
+                      onClick={() => setShowItineraryForm(false)}
+                      className="px-4 py-2 text-slate-400 hover:text-white transition-colors text-sm"
+                    >
+                      Cancelar
+                    </button>
+                  </div>
+                </div>
+              )}
+
               {/* Context indicator */}
               {!isAnonymous && (
                 <div className="mt-6 bg-slate-800/50 rounded-xl p-3 border border-slate-700/50 max-w-sm">
@@ -479,13 +632,102 @@ export default function ChatClient() {
           {/* Messages */}
           {messages.length > 0 && (
             <div className="flex-1 overflow-y-auto p-4 space-y-4">
-              {messages.map((msg, i) => (
-                <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                  <div className={`max-w-[85%] md:max-w-[75%] px-4 py-3 rounded-2xl text-sm ${
-                    msg.role === 'user'
-                      ? 'bg-blue-600 text-white rounded-br-sm'
-                      : 'bg-slate-800 text-slate-200 border border-slate-700 rounded-bl-sm'
-                  }`}>
+              {messages.map((msg, i) => {
+                // Try to parse as itinerary
+                let itineraryData: any = null;
+                if (msg.role === 'assistant') {
+                  try {
+                    const parsed = JSON.parse(msg.content);
+                    if (parsed.days_plan && Array.isArray(parsed.days_plan)) {
+                      itineraryData = parsed;
+                    }
+                  } catch {}
+                }
+
+                if (itineraryData) {
+                  return (
+                    <div key={i} className="flex justify-start w-full">
+                      <div className="max-w-[95%] md:max-w-[85%] bg-slate-800 border border-slate-700 rounded-2xl rounded-bl-sm overflow-hidden">
+                        {/* Itinerary header */}
+                        <div className="bg-gradient-to-r from-emerald-600 to-teal-600 p-4">
+                          <div className="flex items-center gap-2 mb-1">
+                            <MapPin className="w-4 h-4 text-white" />
+                            <h3 className="text-white font-bold text-lg">{itineraryData.destination}</h3>
+                          </div>
+                          <p className="text-emerald-100 text-sm">{itineraryData.summary}</p>
+                          <div className="flex gap-3 mt-2 text-xs text-emerald-100">
+                            <span className="flex items-center gap-1"><Calendar className="w-3 h-3" /> {itineraryData.days} días</span>
+                            <span className="flex items-center gap-1"><DollarSign className="w-3 h-3" /> {itineraryData.budget}</span>
+                          </div>
+                        </div>
+
+                        {/* Packing list */}
+                        {itineraryData.packing && itineraryData.packing.length > 0 && (
+                          <div className="px-4 py-3 border-b border-slate-700 bg-slate-800/50">
+                            <p className="text-xs text-slate-400 uppercase tracking-wider mb-2">Qué llevar</p>
+                            <div className="flex flex-wrap gap-1.5">
+                              {itineraryData.packing.map((item: string, idx: number) => (
+                                <span key={idx} className="px-2 py-0.5 bg-slate-700 text-slate-300 rounded text-xs">{item}</span>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Day cards */}
+                        <div className="p-4 space-y-4 max-h-[60vh] overflow-y-auto">
+                          {itineraryData.days_plan.map((day: any) => (
+                            <div key={day.day} className="bg-slate-700/50 rounded-xl p-4 border border-slate-600/50">
+                              <div className="flex items-center justify-between mb-3">
+                                <h4 className="text-white font-semibold text-sm">
+                                  Día {day.day}: {day.title}
+                                </h4>
+                                <span className="text-xs text-emerald-400 font-medium">{day.estimatedCost}</span>
+                              </div>
+                              <div className="space-y-2">
+                                {day.activities.map((act: any, idx: number) => (
+                                  <div key={idx} className="flex gap-3 items-start">
+                                    <span className="text-xs text-slate-500 font-mono w-12 shrink-0 pt-0.5">{act.time}</span>
+                                    <div className="flex-1">
+                                      <p className="text-white text-sm font-medium">{act.title}</p>
+                                      {act.description && <p className="text-slate-400 text-xs mt-0.5">{act.description}</p>}
+                                      {act.location && <p className="text-slate-500 text-[10px] mt-0.5 flex items-center gap-1"><MapPin className="w-2.5 h-2.5" /> {act.location}</p>}
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                              {day.tips && day.tips.length > 0 && (
+                                <div className="mt-3 pt-3 border-t border-slate-600/50">
+                                  <p className="text-xs text-amber-400 flex items-center gap-1 mb-1"><AlertCircle className="w-3 h-3" /> Consejos</p>
+                                  {day.tips.map((tip: string, idx: number) => (
+                                    <p key={idx} className="text-slate-400 text-xs ml-4">• {tip}</p>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+
+                        {/* Emergency contacts */}
+                        {itineraryData.emergency_contacts && itineraryData.emergency_contacts.length > 0 && (
+                          <div className="px-4 py-3 border-t border-slate-700 bg-red-500/5">
+                            <p className="text-xs text-red-400 flex items-center gap-1 mb-1"><Shield className="w-3 h-3" /> Emergencias</p>
+                            {itineraryData.emergency_contacts.map((c: string, idx: number) => (
+                              <p key={idx} className="text-slate-400 text-xs ml-4">• {c}</p>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  );
+                }
+
+                return (
+                  <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                    <div className={`max-w-[85%] md:max-w-[75%] px-4 py-3 rounded-2xl text-sm ${
+                      msg.role === 'user'
+                        ? 'bg-blue-600 text-white rounded-br-sm'
+                        : 'bg-slate-800 text-slate-200 border border-slate-700 rounded-bl-sm'
+                    }`}>
                     {msg.role === 'assistant' ? (
                       <div>
                         <div className="prose prose-sm prose-invert max-w-none">

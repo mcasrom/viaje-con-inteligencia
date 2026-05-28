@@ -152,6 +152,108 @@ Responde en español, en formato markdown. Sé conciso pero útil.`;
   }
 }
 
+export interface ItineraryDay {
+  day: number;
+  title: string;
+  activities: { time: string; title: string; description: string; location?: string }[];
+  tips: string[];
+  estimatedCost: string;
+}
+
+export interface StructuredItinerary {
+  destination: string;
+  days: number;
+  summary: string;
+  budget: string;
+  packing: string[];
+  days_plan: ItineraryDay[];
+  emergency_contacts: string[];
+}
+
+export async function generateStructuredItinerary(
+  destination: string,
+  days: number,
+  interests: string[],
+  budget: string,
+  riskInfo: string
+): Promise<StructuredItinerary | null> {
+  const interestsStr = interests.length > 0 ? interests.join(', ') : 'general, cultura, gastronomia';
+  const budgetStr = budget || 'moderado';
+
+  const prompt = `Genera un itinerario estructurado para ${days} días en ${destination}.
+
+Presupuesto: ${budgetStr}
+Intereses: ${interestsStr}
+
+${riskInfo ? `DATOS DE RIESGO:\n${riskInfo}\n\n` : ''}
+
+Responde EXCLUSIVAMENTE con JSON válido siguiendo este schema:
+{
+  "destination": "${destination}",
+  "days": ${days},
+  "summary": "Resumen del viaje en 2-3 frases",
+  "budget": "${budgetStr}",
+  "packing": ["item1", "item2", "item3", "item4", "item5"],
+  "days_plan": [
+    {
+      "day": 1,
+      "title": "Titulo del dia",
+      "activities": [
+        {"time": "08:00", "title": "Actividad", "description": "Detalle", "location": "Lugar"}
+      ],
+      "tips": ["consejo1", "consejo2"],
+      "estimatedCost": "~XX EUR"
+    }
+  ],
+  "emergency_contacts": ["telefono1", "telefono2", "web1"]
+}
+
+Reglas:
+- Cada dia debe tener 3-5 actividades
+- Los horarios deben ser realistas
+- Incluye consejos de seguridad si hay riesgo
+- Los contactos de emergencia deben ser reales (embajada, emergencias local)
+- NO incluyas markdown, solo JSON puro
+`;
+
+  if (isCircuitOpen(CB_NAME)) {
+    log.warn('Circuit open, skipping structured itinerary');
+    return null;
+  }
+
+  const groqLimitMsg = checkGlobalGroq();
+  if (groqLimitMsg) return null;
+
+  try {
+    const chatCompletion = await groqClient.chat.completions.create({
+      messages: [
+        {
+          role: 'system',
+          content: 'Eres un asistente de viajes experto. Respondes SOLO con JSON válido, sin markdown ni explicaciones.',
+        },
+        {
+          role: 'user',
+          content: prompt,
+        },
+      ],
+      model: 'llama-3.1-8b-instant',
+      temperature: 0.7,
+      max_tokens: 4096,
+    });
+
+    recordSuccess(CB_NAME);
+    trackSuccess(CB_NAME);
+    const raw = chatCompletion.choices[0]?.message?.content || '';
+    const jsonStr = raw.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim();
+    return JSON.parse(jsonStr) as StructuredItinerary;
+  } catch (error) {
+    log.error('Structured itinerary error:', error);
+    recordFailure(CB_NAME);
+    trackFailure(CB_NAME, 'generateStructuredItinerary failed');
+    return null;
+  }
+}
+
 export async function analyzeRisk(
   country: string,
   recentEvents: string[]

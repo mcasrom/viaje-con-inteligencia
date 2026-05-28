@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { chatWithAI, chatWithAIStream } from '@/lib/groq-ai';
+import { chatWithAI, chatWithAIStream, generateStructuredItinerary, getCountryRiskInfo } from '@/lib/groq-ai';
 import { checkPremium } from '@/lib/premium-check';
 import { supabaseAdmin } from '@/lib/supabase-admin';
 import { createSupabaseServerClient } from '@/lib/supabase-server';
@@ -187,7 +187,7 @@ export async function POST(request: NextRequest) {
       }, { status: 429, headers: { 'Retry-After': String(Math.ceil((burstLimit.resetAt - Date.now()) / 1000)) } });
     }
 
-    const { message, country, conversationId, model, stream } = await request.json();
+    const { message, country, conversationId, model, stream, itinerary } = await request.json();
 
     if (!message || typeof message !== 'string') {
       return NextResponse.json({ error: 'Message is required' }, { status: 400 });
@@ -210,6 +210,50 @@ export async function POST(request: NextRequest) {
           message: 'El modelo 70b requiere suscripcion Premium. Actualiza tu plan para desbloquearlo.',
         }, { status: 403 });
       }
+    }
+
+    // Itinerary mode — uses structured JSON output
+    if (itinerary) {
+      const { destination, days, interests, budget } = itinerary;
+      if (!destination) {
+        return NextResponse.json({ error: 'Destination required for itinerary' }, { status: 400 });
+      }
+
+      const riskInfo = country ? await getCountryRiskInfo(country) : '';
+      const structured = await generateStructuredItinerary(
+        destination,
+        days || 7,
+        interests || [],
+        budget || 'moderado',
+        riskInfo
+      );
+
+      if (!structured) {
+        return NextResponse.json({ error: 'Failed to generate itinerary' }, { status: 500 });
+      }
+
+      // Save to DB if user is authenticated
+      if (userId) {
+        try {
+          const summary = structured.summary || `Itinerario ${days || 7} días en ${destination}`;
+          let newConvId = conversationId;
+          newConvId = await saveConversation(conversationId, userId, 'user', sanitized, requestedModel);
+          await saveConversation(newConvId, userId, 'assistant', JSON.stringify(structured), requestedModel);
+          if (!isPremiumModel) {
+            await incrementDailyUsage(userId, requestedModel);
+          }
+          return NextResponse.json({
+            itinerary: structured,
+            conversationId: newConvId,
+            model: requestedModel,
+            timestamp: new Date().toISOString(),
+          });
+        } catch {
+          return NextResponse.json({ itinerary: structured, conversationId: null });
+        }
+      }
+
+      return NextResponse.json({ itinerary: structured, conversationId: null });
     }
 
     // Server-side daily rate limit for free users
