@@ -41,10 +41,40 @@
 > | PM2 | online, 0 reinicios |
 > | Cloudflare WAF | solo bots bloqueados |
 >
-> ### Status subdomain protegido con password
+> ### 🔐 Credenciales consolidadas — Todos los sistemas protegidos
+
+**Fuente única:** `/etc/nginx/.htpasswd` (compartido por todos los subdominios protegidos)
+
+| Subdominio | Servicio | Auth |
+|---|---|---|
+| `status.viajeinteligencia.com` | Uptime Kuma + GoAccess | ✅ htpasswd |
+| `security.viajeinteligencia.com` | SIEG Security (fail2ban) | ✅ htpasswd |
+| `viajeinteligencia.com` | App principal | ❌ público |
+| `gc.motors.viajeinteligencia.com` | GC Motors | ❌ público |
+| `georisk.viajeinteligencia.com` | GeoRisk | ❌ público |
+
+**Credenciales únicas:**
+- **Usuario:** `status`
+- **Password:** `ViajeIntel2026!Monitor`
+
+**Gestión:**
+```bash
+# Cambiar password
+sudo htpasswd /etc/nginx/.htpasswd status
+
+# Añadir nuevo usuario
+sudo htpasswd /etc/nginx/.htpasswd <usuario>
+
+# Eliminar usuario
+sudo htpasswd -D /etc/nginx/.htpasswd <usuario>
+
+# Recargar nginx tras cambio
+sudo nginx -t && sudo systemctl reload nginx
+```
+
+### Status subdomain protegido con password
 > - ✅ **Problema**: `status.viajeinteligencia.com/trafico.html` (GoAccess) y `/dashboard` (Uptime Kuma) accesibles públicamente sin autenticación
 > - ✅ **Fix**: nginx `auth_basic` con htpasswd en `/etc/nginx/sites-enabled/status`
-> - ✅ **Usuario:** `status` | **Password:** `ViajeIntel2026!Monitor` (guardar en password manager)
 > - ✅ **Verificación**: sin auth → 401, con auth → 200
 
 ## Sesión actual (25 May tarde/noche) — GSC Fixes + Server stability consolidación
