@@ -33,7 +33,7 @@ const riesgoLabels: Record<string, string> = {
   'muy-alto': '🔴 Riesgo muy alto',
 };
 
-async function getCountryRiskInfo(countryCode: string): Promise<string> {
+export async function getCountryRiskInfo(countryCode: string): Promise<string> {
   const allPaises = await getPaisesData();
   const pais = allPaises[countryCode];
   if (!pais) return '';

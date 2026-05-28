@@ -817,7 +817,8 @@ export default function ChatClient() {
                     )}
                   </div>
                 </div>
-              ))}
+              );
+              })}
               {loading && (
                 <div className="flex justify-start">
                   <div className="bg-slate-800 border border-slate-700 rounded-2xl rounded-bl-sm px-4 py-3">
