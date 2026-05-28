@@ -40,7 +40,7 @@ const SECTIONS = [
     content: [
       'La IA analiza, no decide. Groq (modelo de lenguaje) clasifica señales OSINT por categoría, urgencia y sentimiento. El modelo Random Forest predice cambios de riesgo basándose en 25 features históricas.',
       'Ninguna alerta o recomendación se genera automáticamente sin pasar por el pipeline de validación: fuente original → normalización → clasificación → revisión.',
-      'El Chat IA responde preguntas de viajeros usando Groq, pero siempre advertimos que sus respuestas son orientativas y deben contrastarse con fuentes oficiales.',
+      'El Chat IA responde preguntas de viajeros usando Groq, pero siempre advertimos que sus respuestas son orientativas y deben contrastarse con fuentes oficiales. El chat incluye historial de conversaciones, contexto personalizado (favoritos, viajes guardados, alertas OSINT en vivo) y generador de itinerarios estructurados.',
       'No usamos IA para: decidir niveles de riesgo MAEC, modificar datos oficiales, generar contenido sin supervisión, ni tomar decisiones en nombre del usuario.',
     ],
   },
@@ -82,7 +82,7 @@ const SECTIONS = [
     title: 'Seguridad',
     content: [
       'Todas las conexiones son HTTPS (TLS 1.3). La autenticación se gestiona mediante Supabase Auth con magic links — no manejamos contraseñas.',
-      'Las API keys de servicios externos (Groq, Resend, Supabase) se almacenan como variables de entorno en Vercel, nunca en el código fuente.',
+      'Las API keys de servicios externos (Groq, Resend, Supabase) se almacenan como variables de entorno en el servidor Hetzner, nunca en el código fuente.',
       'El dashboard admin requiere autenticación y solo el administrador (email verificado) tiene acceso a funcionalidades sensibles.',
       'Realizamos auditorías periódicas de dependencias con npm audit y mantenemos las librerías actualizadas.',
     ],
@@ -95,10 +95,11 @@ const SECTIONS = [
     border: 'border-cyan-500/20',
     title: 'Cómo se actualizan los datos',
     content: [
-      'El riesgo MAEC se actualiza automáticamente cada hora mediante scraping de las recomendaciones oficiales. El US State Department se refresca cada 6 horas.',
-      'Las señales OSINT (GDELT, Reddit, RSS, GDACS, USGS) se procesan cada 6 horas en el cron maestro. Los incidentes se clusterizan y actualizan en el mismo ciclo.',
+      'El riesgo MAEC se actualiza automáticamente cada día a las 06:00 UTC mediante scraping de las recomendaciones oficiales. El US State Department se refresca en el mismo ciclo.',
+      'Las señales OSINT (GDELT, Reddit, RSS, GDACS, USGS, WHO DON, ReliefWeb) se procesan diariamente en el cron maestro. Los incidentes se clusterizan y actualizan en el mismo ciclo.',
       'El modelo ML se reentrena diariamente con los últimos datos de riesgo, sentimiento y features históricas. Las predicciones se comparan con el modelo heurístico para detectar desviaciones.',
-      'Los precios del petróleo y tipos de cambio se actualizan cada hora. Los índices globales (GPI, GTI, HDI) se actualizan anualmente según publicación de sus fuentes.',
+      'Los precios del petróleo y tipos de cambio se actualizan diariamente. Los índices globales (GPI, GTI, HDI) se actualizan anualmente según publicación de sus fuentes.',
+      'Early Bird digest: a las 07:00 UTC, 1h después del master cron, se genera un resumen matutino para el administrador con incidentes, cambios MAEC, sentimiento, health del sistema y tráfico.',
       'Política de retención: el histórico de riesgo MAEC se conserva 90 días en maec_risk_history. Los registros anteriores se eliminan automáticamente cada ciclo diario del cron. El modelo ML y las predicciones actuales mantienen sus datos de entrenamiento históricos.',
     ],
   },

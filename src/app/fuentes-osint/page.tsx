@@ -38,6 +38,7 @@ const SOURCES = [
       { name: 'UN Tourism (UNWTO)', desc: 'Estadísticas internacionales de turismo', url: 'https://www.unwto.org' },
       { name: 'Open-Meteo', desc: 'Pronóstico meteorológico gratuito y en vivo para cualquier destino', url: 'https://open-meteo.com' },
       { name: 'OpenStreetMap Overpass API', desc: 'Puntos de interés (POIs): hoteles, restaurantes, atracciones por país', url: 'https://overpass-api.de' },
+      { name: 'Wikidata', desc: 'Datos estructurados para eventos disruptivos y POIs enriquecidos', url: 'https://www.wikidata.org' },
     ],
   },
   {
@@ -58,8 +59,19 @@ const SOURCES = [
     bg: 'bg-orange-500/10',
     items: [
       { name: 'ACLED', desc: 'Armed Conflict Location & Event Data - Conflictos en tiempo real', url: 'https://acleddata.com' },
-      { name: 'Aviation Safety Network', desc: 'Datos de seguridad aérea y accidentes', url: 'https://aviation-safety.net' },
+      { name: 'ReliefWeb', desc: 'Emergencias humanitarias y desastres naturales (ONU/OCHA)', url: 'https://reliefweb.int' },
       { name: 'GDACS', desc: 'Global Disaster Alert and Coordination System', url: 'https://www.gdacs.org' },
+    ],
+  },
+  {
+    category: 'Noticias y Sentimiento',
+    icon: Newspaper,
+    color: 'text-purple-400',
+    bg: 'bg-purple-500/10',
+    items: [
+      { name: 'GDELT Project', desc: 'Monitor de noticias globales en 100+ idiomas. Análisis de sentimiento automático (tone_score)', url: 'https://www.gdeltproject.org' },
+      { name: 'RSS (10 fuentes)', desc: 'AP, BBC Breaking, Sky News, Reuters, Al Jazeera y más — filtrado por keywords de viaje', url: 'https://feeds.bbci.co.uk/news/rss.xml' },
+      { name: 'Reddit (r/travel, r/solotravel, r/digitalnomad)', desc: 'Experiencias de viajeros en primera persona. Clasificación semántica con Groq AI', url: 'https://www.reddit.com' },
     ],
   },
   {
@@ -68,9 +80,8 @@ const SOURCES = [
     color: 'text-cyan-400',
     bg: 'bg-cyan-500/10',
     items: [
-      { name: 'OpenSky Network', desc: 'Datos de tráfico aéreo en tiempo real', url: 'https://opensky-network.org' },
-      { name: 'Oil Price APIs', desc: 'Precios del petróleo Brent y WTI (impacto en coste de vuelos)', url: 'https://oilpriceapi.com' },
-      { name: 'Eurostat Transport', desc: 'Datos de transporte y turismo europeo', url: 'https://ec.europa.eu/eurostat' },
+      { name: 'OpenSky Network', desc: 'Datos de tráfico aéreo en tiempo real — detección de cierres de espacio aéreo en zonas de conflicto', url: 'https://opensky-network.org' },
+      { name: 'Oil Price APIs', desc: 'Precios del petróleo Brent y WTI (impacto directo en coste de vuelos y TCI)', url: 'https://oilpriceapi.com' },
     ],
   },
 ];
@@ -138,13 +149,18 @@ export default function FuentesOSINTPage() {
           </p>
           <div className="space-y-3">
             {[
-              'Scraping automatizado de recomendaciones MAEC cada hora',
-              'Scraping de alertas US State Dept (doble validación de riesgo)',
-              'Ingesta de APIs públicas de WHO, USGS, World Bank y Open-Meteo',
-              'Puntos de interés vía OpenStreetMap Overpass API',
-              'Normalización de códigos ISO2 para cruce de datos',
+              'Scraping automatizado de recomendaciones MAEC + US State Dept (diario, 06:00 UTC)',
+              'Ingesta de APIs públicas: WHO DON, WHO GHO, USGS, World Bank, Open-Meteo, OpenSky',
+              'OSINT sensor: GDELT, RSS (10 fuentes), Reddit — clasificación con Groq AI',
+              'Detección de incidentes: clusterización de señales por tipo + ubicación',
+              'Puntos de interés vía OpenStreetMap Overpass API + Wikidata',
+              'Normalización de códigos ISO2 para cruce de datos entre fuentes',
               'Cálculo del índice TCI con datos vivos (petróleo, estacionalidad, espacio aéreo)',
-              'Generación de alertas automáticas por cambios de riesgo',
+              'Análisis de sentimiento: tone_score propagado a incidentes y modelo ML',
+              'Early Bird digest: resumen matutino (07:00 UTC) con health, tráfico, incidentes',
+              'Publicación social: Telegram, Mastodon, Bluesky, newsletter semanal',
+              'Infografías semanales de riesgo generadas por IA',
+              'Retención automática: histórico MAEC purgado a 90 días',
             ].map((step, i) => (
               <div key={i} className="flex items-center gap-3 text-slate-400 text-sm">
                 <div className="w-6 h-6 bg-emerald-600/20 rounded-full flex items-center justify-center text-emerald-400 text-xs font-bold flex-shrink-0">

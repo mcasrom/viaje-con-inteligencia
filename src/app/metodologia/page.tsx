@@ -91,11 +91,11 @@ export default function MetodologiaPage() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
             {[
-              { step: '1', title: 'Ingesta de datos', desc: 'MAEC · USGS · WHO · OpenStreetMap · Open-Meteo · GDELT · RSS · Reddit · GDACS', icon: Database, color: 'text-blue-400' },
+              { step: '1', title: 'Ingesta de datos', desc: 'MAEC · US State Dept · WHO DON · ReliefWeb · USGS · GDACS · GDELT · RSS · Reddit · OpenSky · ACLED · Open-Meteo · OSM', icon: Database, color: 'text-blue-400' },
               { step: '2', title: 'Normalización', desc: 'Estandarizamos formatos, códigos ISO, coordenadas y categorías de todas las fuentes', icon: FileText, color: 'text-indigo-400' },
               { step: '3', title: 'IA y análisis', desc: 'Groq clasifica señales OSINT. ML Random Forest predice cambios de riesgo', icon: Brain, color: 'text-purple-400' },
-              { step: '4', title: 'Alertas', desc: 'Detección de incidentes, clusterización, sentimiento, notificaciones Telegram', icon: Bell, color: 'text-amber-400' },
-              { step: '5', title: 'Para el viajero', desc: 'Mapa interactivo, fichas de país, radar, chat IA, dashboard, newsletter', icon: Globe, color: 'text-green-400' },
+              { step: '4', title: 'Alertas', desc: 'Detección de incidentes, clusterización, sentimiento, Early Bird digest, notificaciones Telegram', icon: Bell, color: 'text-amber-400' },
+              { step: '5', title: 'Para el viajero', desc: 'Mapa interactivo, fichas de país, radar, chat IA con itinerarios, dashboard, newsletter, infografías', icon: Globe, color: 'text-green-400' },
             ].map((item, i) => (
               <div key={i} className="relative">
                 <div className="bg-slate-700/30 rounded-xl p-4 h-full border border-slate-600/30">
@@ -196,8 +196,8 @@ export default function MetodologiaPage() {
               { step: '1', title: 'Recopilación de datos', desc: 'Se scrapean las recomendaciones oficiales del MAEC para cada país, incluyendo nivel de riesgo, alertas activas y fecha de actualización.' },
               { step: '2', title: 'Clasificación automática', desc: 'Los países se clasifican en 5 niveles de riesgo según el texto oficial. Se mapean códigos ISO2 para compatibilidad con datos internacionales.' },
               { step: '3', title: 'Análisis complementario', desc: 'Se cruzan datos de índices globales (GPI, GTI, HDI) y datos OSINT para ofrecer contexto adicional al nivel de riesgo.' },
-              { step: '4', title: 'Índice TCI', desc: 'Se calcula el Travel Cost Index combinando demanda, precio del petróleo, estacionalidad, inflación e índice de riesgo.' },
-              { step: '5', title: 'Actualización continua', desc: 'Los datos se refrescan automáticamente cada hora. Las alertas se publican en el canal de Telegram para notificaciones en tiempo real.' },
+              { step: '4', title: 'Índice TCI', desc: 'Se calcula el Travel Cost Index combinando demanda, precio del petróleo, estacionalidad, inflación, índice de riesgo y cierres de espacio aéreo.' },
+              { step: '5', title: 'Actualización continua', desc: 'Los datos se refrescan diariamente a las 06:00 UTC mediante cron maestro. Las alertas se publican en Telegram. El digest "Early Bird" se envía a las 07:00 UTC.' },
             ].map(item => (
               <div key={item.step} className="flex gap-4">
                 <div className="flex-shrink-0 w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-sm">
@@ -341,7 +341,7 @@ export default function MetodologiaPage() {
               <div className="space-y-3">
                 <div className="flex gap-3">
                   <span className="text-purple-400 font-bold text-sm flex-shrink-0 w-14">GDELT</span>
-                  <p className="text-slate-400 text-xs">El motor GKG de GDELT asigna un <em>tone</em> automático mediante análisis de sentimiento por bolsa de palabras (diccionario emocional) a cada artículo de noticias globales.</p>
+                  <p className="text-slate-400 text-xs">El motor GKG de GDELT asigna un <em>tone</em> automático mediante análisis de sentimiento por bolsa de palabras. Además, Groq (LLaMA 3.1 8B) clasifica semánticamente cada señal para mayor precisión.</p>
                 </div>
                 <div className="flex gap-3">
                   <span className="text-purple-400 font-bold text-sm flex-shrink-0 w-14">Reddit/RSS</span>

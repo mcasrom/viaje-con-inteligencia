@@ -8,7 +8,7 @@ import { ArrowLeft, Check, X, Sparkles, Shield, Bell, MessageSquare, FileCheck, 
 import { TOTAL_PAISES } from '@/lib/constants';
 
 const FEATURES = [
-  { icon: <MessageSquare className="w-5 h-5" />, title: 'Chat IA de Viajes', desc: '5 mensajes/día gratis con llama-3.1-8b. Premium: ilimitado con llama-3.1-70b (9x más inteligente).' },
+  { icon: <MessageSquare className="w-5 h-5" />, title: 'Chat IA de Viajes', desc: '5 mensajes/día gratis con llama-3.1-8b. Premium: ilimitado con llama-3.3-70b-versatile (modelo avanzado). Historial de conversaciones + contexto personalizado.' },
   { icon: <Plane className="w-5 h-5" />, title: 'Planificador IA', desc: 'Genera itinerarios personalizados por destino, días e intereses.' },
   { icon: <Bell className="w-5 h-5" />, title: 'Alertas en Tiempo Real', desc: 'Cambios de riesgo, conflictos naturales y recomendaciones MAEC.' },
   { icon: <Map className="w-5 h-5" />, title: 'Mapa de Sismos (USGS)', desc: 'Terremotos en vivo con magnitud, ubicación y alertas de tsunami.' },

@@ -28,10 +28,11 @@ const items: Record<LayerKey, { name: string; desc: string; color: string }[]> =
     { name: 'USGS', desc: 'Terremotos en tiempo real', color: 'yellow' },
     { name: 'GDACS', desc: 'Desastres naturales (ONU)', color: 'red' },
     { name: 'OpenSky', desc: 'Vuelos activos · Espacio aéreo', color: 'cyan' },
-    { name: 'OpenWeather', desc: 'Datos climáticos globales', color: 'sky' },
+    { name: 'Open-Meteo', desc: 'Datos climáticos globales', color: 'sky' },
     { name: 'Oil Price', desc: 'Precio Brent crudo (Yahoo)', color: 'amber' },
     { name: 'FlightLabs', desc: 'Retrasos y estado de vuelos', color: 'pink' },
     { name: 'WHO', desc: 'Salud · Gasto sanitario por país', color: 'rose' },
+    { name: 'ReliefWeb', desc: 'Emergencias humanitarias (ONU/OCHA)', color: 'red' },
     { name: 'Wikidata', desc: 'Puntos de interés mundiales', color: 'teal' },
     { name: 'OpenStreetMap', desc: 'POIs geolocalizados', color: 'lime' },
   ],
@@ -46,8 +47,9 @@ const items: Record<LayerKey, { name: string; desc: string; color: string }[]> =
     { name: 'Risk Predictions', desc: 'Score + probUp 7/14/30 días', color: 'red' },
     { name: 'Social Publisher', desc: 'Telegram + Bluesky + Mastodon', color: 'orange' },
     { name: 'Newsletter', desc: 'Digest semanal vía Resend', color: 'pink' },
+    { name: 'Early Bird', desc: 'Digest matutino admin (07:00 UTC) · Telegram + Email', color: 'amber' },
     { name: 'Infografía Semanal', desc: 'Visualización riesgo dominical', color: 'teal' },
-    { name: 'Health Check', desc: '15 endpoints verificados diariamente', color: 'slate' },
+    { name: 'Health Check', desc: '14 endpoints verificados diariamente', color: 'slate' },
   ],
   storage: [
     { name: 'osint_signals', desc: 'Señales OSINT clasificadas por Groq', color: 'violet' },
@@ -82,7 +84,7 @@ const items: Record<LayerKey, { name: string; desc: string; color: string }[]> =
     { name: '/api/pais/[codigo]', desc: 'Datos completos país', color: 'slate' },
     { name: '/api/trips/*', desc: 'CRUD viajes + comparador', color: 'cyan' },
     { name: '/api/user/*', desc: 'Preferencias + watchlist', color: 'sky' },
-    { name: '/api/ai/*', desc: 'Chat + itinerario + riesgo', color: 'emerald' },
+    { name: '/ai/chat', desc: 'Chat IA + itinerarios + contexto personalizado', color: 'emerald' },
     { name: '/api/admin/*', desc: 'Health, cron, trends, paises', color: 'orange' },
     { name: '/api/aviation/*', desc: 'Airspace + estado vuelos', color: 'pink' },
     { name: '/api/alternatives', desc: 'Destinos alternativos ML', color: 'yellow' },
@@ -90,12 +92,12 @@ const items: Record<LayerKey, { name: string; desc: string; color: string }[]> =
   frontend: [
     { name: '/', desc: 'Home · Mapa · KPIs globales', color: 'slate' },
     { name: '/pais/[codigo]', desc: 'Fichas país (riesgo, clima, POIs, OSINT)', color: 'blue' },
-    { name: '/blog', desc: '112+ artículos SEO países', color: 'emerald' },
+    { name: '/blog', desc: '60+ artículos SEO países', color: 'emerald' },
     { name: '/dashboard', desc: 'KPIs · Alertas · ML', color: 'indigo' },
     { name: '/dashboard/radar', desc: 'Monitor viajes · Timeline proyección', color: 'cyan' },
     { name: '/pulso-global', desc: 'Sentimiento global tiempo real', color: 'violet' },
     { name: '/osint', desc: 'Feed OSINT con filtros', color: 'rose' },
-    { name: '/admin/*', desc: 'Panel administración completo', color: 'orange' },
+    { name: '/admin/*', desc: 'Panel administración completo + Early Bird', color: 'orange' },
     { name: '/viajes/*', desc: 'Itinerarios · Comparador · Públicos', color: 'teal' },
     { name: '/infografias', desc: 'Visualizaciones semanales riesgo', color: 'pink' },
     { name: '/comparar', desc: 'Comparador países side-by-side', color: 'amber' },
@@ -106,7 +108,7 @@ const items: Record<LayerKey, { name: string; desc: string; color: string }[]> =
     { name: 'Bluesky', desc: 'Posts resumen automáticos', color: 'sky' },
     { name: 'Mastodon', desc: 'Posts resumen automáticos', color: 'violet' },
     { name: 'Reddit', desc: 'Semi-auto (Groq genera · Admin revisa)', color: 'orange' },
-    { name: 'Email', desc: 'Newsletter semanal vía Resend', color: 'pink' },
+    { name: 'Email', desc: 'Newsletter semanal + Early Bird diario (admin)', color: 'pink' },
     { name: 'RSS Feed', desc: 'Blog + alertas sindicadas', color: 'amber' },
     { name: 'Bing IndexNow', desc: 'Indexación inmediata post-deploy', color: 'indigo' },
   ],
@@ -114,10 +116,9 @@ const items: Record<LayerKey, { name: string; desc: string; color: string }[]> =
     { name: 'Groq API', desc: 'Modelo llama-3.3-70b · Clasificación + generación', color: 'emerald' },
     { name: 'Supabase', desc: 'Base de datos + Auth · Hobby (gratis)', color: 'emerald' },
     { name: 'Resend', desc: 'Email transaccional · 3000/mes gratis', color: 'red' },
-    { name: 'Hetzner', desc: 'Servidor dedicado CX42 · 8 vCPU 16GB RAM', color: 'slate' },
-    { name: 'GitHub Actions', desc: 'Cron diario 06:00 UTC', color: 'slate' },
-    { name: 'FlightLabs', desc: 'Datos vuelos · RapidAPI', color: 'pink' },
-    { name: 'OpenWeather', desc: 'Clima global · Gratuito', color: 'sky' },
+    { name: 'Hetzner', desc: 'VPS dedicado · 2 vCPU 2GB RAM · Ubuntu 24.04', color: 'slate' },
+    { name: 'GitHub Actions', desc: 'CI/CD + Cron diario 06:00 UTC', color: 'slate' },
+    { name: 'Open-Meteo', desc: 'Clima global · Gratuito', color: 'sky' },
     { name: 'Bing IndexNow', desc: 'Indexación rápida · Gratuito', color: 'indigo' },
   ],
 };
@@ -199,7 +200,7 @@ export default function EcosistemaClient() {
           <MetricCard label="Fuentes activas" value="14" />
           <MetricCard label="Features ML" value="25" />
           <MetricCard label="Modelos RF" value="4" />
-          <MetricCard label="Health Checks" value="15" />
+          <MetricCard label="Health Checks" value="14" />
         </div>
 
         {/* Flow Diagram */}
@@ -290,8 +291,9 @@ export default function EcosistemaClient() {
                     ['Blog SEO viajes', '✅', '✅', '/blog'],
                     ['Pulso Global sentimiento', '✅', '✅', '/pulso-global'],
                     ['Feed OSINT público', '✅', '✅', '/osint'],
-                    ['Chat IA viajes', '✅ llama-3.1-8b', '✅ llama-3.3-70b', '/chat'],
-                    ['Radar de Viaje', '✅ 10 países', '✅ 20 países', '/dashboard/radar'],
+                    ['Chat IA viajes', '✅ llama-3.1-8b · 5/día · historial', '✅ llama-3.3-70b · ilimitado · contexto', '/chat'],
+                    ['Generador itinerarios', '✅ básico', '✅ estructurado + export + compartir', '/chat'],
+                    ['Radar de Viaje', '✅ 10 países', '✅ 20 países + timeline', '/dashboard/radar'],
                     ['ScoreBadge ML', '⚠️ score básico', '✅ score + probs', 'Fichas país'],
                     ['Infografías semanales', '✅ 7d delay', '✅ tiempo real', '/infografias'],
                     ['Newsletter semanal', '✅', '✅', 'Footer'],
@@ -359,10 +361,12 @@ export default function EcosistemaClient() {
               <ul className="space-y-2 text-sm text-slate-300">
                 <li className="flex gap-2"><span className="text-blue-400 shrink-0">1.</span> 14 fuentes de datos vivas combinadas — MAEC + US State Dept + GDELT + OSINT en tiempo real</li>
                 <li className="flex gap-2"><span className="text-blue-400 shrink-0">2.</span> IA de riesgo con sentimiento — 25 features, 4 modelos RF, actualización diaria</li>
-                <li className="flex gap-2"><span className="text-blue-400 shrink-0">3.</span> 5 features de sentimiento — tono emocional de noticias como señal temprana</li>
-                <li className="flex gap-2"><span className="text-blue-400 shrink-0">4.</span> Radar de Viaje con timeline — proyección ajustada por estacionalidad</li>
-                <li className="flex gap-2"><span className="text-blue-400 shrink-0">5.</span> 15 health checks diarios — transparencia total del sistema</li>
-                <li className="flex gap-2"><span className="text-blue-400 shrink-0">6.</span> 100% gratuito sostenible — sin anuncios, sin muros de pago agresivos</li>
+                <li className="flex gap-2"><span className="text-blue-400 shrink-0">3.</span> Chat IA con contexto personalizado — favoritos, viajes guardados, alertas OSINT en vivo</li>
+                <li className="flex gap-2"><span className="text-blue-400 shrink-0">4.</span> Generador de itinerarios estructurados — día a día, packing, consejos, emergencias</li>
+                <li className="flex gap-2"><span className="text-blue-400 shrink-0">5.</span> Early Bird digest — resumen matutino admin con health, tráfico, incidentes</li>
+                <li className="flex gap-2"><span className="text-blue-400 shrink-0">6.</span> Radar de Viaje con timeline — proyección ajustada por estacionalidad</li>
+                <li className="flex gap-2"><span className="text-blue-400 shrink-0">7.</span> 14 health checks diarios — transparencia total del sistema</li>
+                <li className="flex gap-2"><span className="text-blue-400 shrink-0">8.</span> 100% gratuito sostenible — sin anuncios, sin muros de pago agresivos</li>
               </ul>
             </div>
             <div className="bg-slate-900/80 border border-slate-700/50 rounded-xl p-5">
@@ -375,9 +379,12 @@ export default function EcosistemaClient() {
                   📊 &ldquo;25 variables por país, 4 modelos ML, actualización diaria.&rdquo;
                 </div>
                 <div className="bg-amber-900/20 border border-amber-700/30 rounded-lg p-3 text-amber-200">
-                  🆓 &ldquo;Todo gratis. Premium solo para IA predictiva avanzada.&rdquo;
+                  🤖 &ldquo;Chat IA con contexto personalizado + generador de itinerarios estructurados.&rdquo;
                 </div>
                 <div className="bg-violet-900/20 border border-violet-700/30 rounded-lg p-3 text-violet-200">
+                  🆓 &ldquo;Todo gratis. Premium solo para IA predictiva avanzada.&rdquo;
+                </div>
+                <div className="bg-cyan-900/20 border border-cyan-700/30 rounded-lg p-3 text-cyan-200">
                   🔗 &ldquo;viajeinteligencia.com/ecosistema — arquitectura pública y transparente.&rdquo;
                 </div>
               </div>
@@ -387,7 +394,7 @@ export default function EcosistemaClient() {
 
         {/* Version */}
         <div className="text-center text-sm text-slate-500">
-          Versión: Mayo 2026 · 25 features · 14 fuentes · 4 modelos RF · 24 funcionalidades
+          Versión: Mayo 2026 · 25 features · 14 fuentes activas · 4 modelos RF · 43 funcionalidades · Early Bird · Itinerarios IA
         </div>
       </div>
     </div>
