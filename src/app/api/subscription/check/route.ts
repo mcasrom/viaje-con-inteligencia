@@ -31,11 +31,21 @@ export async function GET() {
     let status = isTrialActive ? 'trialing' : (profile?.subscription_status || 'none');
     if (!isTrialActive && trialEnd) status = 'trial_expired';
 
+    // Daily usage count
+    const today = new Date().toISOString().split('T')[0];
+    const { data: usage } = await supabaseAdmin
+      .from('chat_usage')
+      .select('free_count')
+      .eq('user_id', user.id)
+      .eq('date', today)
+      .single();
+
     return NextResponse.json({
       premium: isPremium,
       status,
       trialEnd,
       email: user.email,
+      dailyCount: usage?.free_count || 0,
     });
   } catch (err) {
     return NextResponse.json({ premium: false, status: 'error' });

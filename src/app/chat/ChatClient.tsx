@@ -112,6 +112,18 @@ export default function ChatClient() {
     setShowSidebar(false);
   };
 
+  const deleteConversation = async (convId: number, e: React.MouseEvent) => {
+    e.stopPropagation();
+    try {
+      await fetch(`/api/ai/chat?conversationId=${convId}&delete=true`, { method: 'DELETE' });
+      setConversations(prev => prev.filter(c => c.id !== convId));
+      if (activeConversationId === convId) {
+        setActiveConversationId(null);
+        setMessages([]);
+      }
+    } catch {}
+  };
+
   const handleSend = useCallback(async (text?: string) => {
     const messageText = text || input.trim();
     if (!messageText || loading) return;
@@ -326,15 +338,24 @@ export default function ChatClient() {
                   <button
                     key={conv.id}
                     onClick={() => loadConversation(conv.id)}
-                    className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${
+                    className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors group ${
                       activeConversationId === conv.id
                         ? 'bg-purple-600/20 text-purple-300 border border-purple-500/30'
                         : 'text-slate-300 hover:bg-slate-700'
                     }`}
                   >
-                    <div className="flex items-center gap-2">
-                      <MessageSquare className="w-3 h-3 shrink-0" />
-                      <span className="truncate text-xs">{conv.title}</span>
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="flex items-center gap-2 min-w-0">
+                        <MessageSquare className="w-3 h-3 shrink-0" />
+                        <span className="truncate text-xs">{conv.title}</span>
+                      </div>
+                      <button
+                        onClick={(e) => deleteConversation(conv.id, e)}
+                        className="opacity-0 group-hover:opacity-100 p-1 text-slate-500 hover:text-red-400 transition-all"
+                        title="Eliminar"
+                      >
+                        <Trash2 className="w-3 h-3" />
+                      </button>
                     </div>
                     <p className="text-slate-500 text-[10px] mt-0.5">
                       {conv.message_count} msgs · {new Date(conv.updated_at).toLocaleDateString('es-ES')}
@@ -403,6 +424,19 @@ export default function ChatClient() {
                   </button>
                 ))}
               </div>
+
+              {/* Context indicator */}
+              {!isAnonymous && (
+                <div className="mt-6 bg-slate-800/50 rounded-xl p-3 border border-slate-700/50 max-w-sm">
+                  <p className="text-slate-500 text-[10px] uppercase tracking-wider mb-1">Contexto activo</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    <span className="px-2 py-0.5 bg-blue-500/10 text-blue-400 rounded text-[10px]">Favoritos</span>
+                    <span className="px-2 py-0.5 bg-green-500/10 text-green-400 rounded text-[10px]">Viajes guardados</span>
+                    <span className="px-2 py-0.5 bg-amber-500/10 text-amber-400 rounded text-[10px]">Alertas OSINT</span>
+                    <span className="px-2 py-0.5 bg-purple-500/10 text-purple-400 rounded text-[10px]">Datos MAEC en vivo</span>
+                  </div>
+                </div>
+              )}
             </div>
           )}
 

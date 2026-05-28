@@ -326,6 +326,7 @@ export async function POST(request: NextRequest) {
 
 // GET /api/ai/chat?conversations=true → list user conversations
 // GET /api/ai/chat?conversationId=123 → get conversation messages
+// DELETE /api/ai/chat?conversationId=123&delete=true → delete conversation
 export async function GET(request: NextRequest) {
   try {
     const supabase = await createSupabaseServerClient();
@@ -363,6 +364,39 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ conversations: [] });
   } catch (err: any) {
     console.error('Chat GET error:', err);
+    return NextResponse.json({ error: err.message }, { status: 500 });
+  }
+}
+
+export async function DELETE(request: NextRequest) {
+  try {
+    const supabase = await createSupabaseServerClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+    const { searchParams } = new URL(request.url);
+    const convId = searchParams.get('conversationId');
+    const isDelete = searchParams.get('delete') === 'true';
+
+    if (!convId || !isDelete) {
+      return NextResponse.json({ error: 'conversationId required' }, { status: 400 });
+    }
+
+    // Verify ownership
+    const { data: conv } = await supabaseAdmin
+      .from('chat_conversations')
+      .select('id')
+      .eq('id', parseInt(convId))
+      .eq('user_id', user.id)
+      .single();
+
+    if (!conv) return NextResponse.json({ error: 'Not found' }, { status: 404 });
+
+    await supabaseAdmin.from('chat_messages').delete().eq('conversation_id', parseInt(convId));
+    await supabaseAdmin.from('chat_conversations').delete().eq('id', parseInt(convId));
+
+    return NextResponse.json({ deleted: true });
+  } catch (err: any) {
     return NextResponse.json({ error: err.message }, { status: 500 });
   }
 }
