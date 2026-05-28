@@ -1,5 +1,31 @@
 # Way Ahead
 
+## Última sesión: 28 May 2026 — Early Bird Daily Admin Digest
+
+> **Último deploy verificado:** OK ✅ (commit `920505d`, early bird endpoint funcional)
+>
+> **Sprint activo:** Admin awareness tools
+>
+> **Logros día (28 May):**
+>
+> ### Early Bird — Resumen diario para admin
+> - ✅ **Librería `src/lib/early-bird.ts`**: Construye digest con incidentes (24h), cambios MAEC (48h), alertas sentimiento (24h). Formato markdown con emojis por severidad.
+> - ✅ **Route `/api/cron/early-bird`**: Endpoint protegido con `CRON_SECRET`, importa y ejecuta `buildEarlyBirdDigest` + `sendEarlyBirdDigest`.
+> - ✅ **Envío dual**: Telegram (canal admin) + Email (Resend a `info@viajeinteligencia.com`).
+> - ✅ **Cron servidor**: `0 7 * * *` UTC — se ejecuta 1h después del master cron (06:00) para tener datos frescos.
+> - ✅ **Test live verificado**: `{"status":"ok","message":"Early bird digest sent"}` — digest enviado correctamente.
+> - ✅ **Commit**: `920505d` — deployado y funcional.
+>
+> ### Estado post-deploy
+> | Componente | Estado |
+> |------------|--------|
+> | Early Bird lib | ✅ `src/lib/early-bird.ts` |
+> | Early Bird route | ✅ `/api/cron/early-bird` |
+> | Cron servidor | ✅ 07:00 UTC |
+> | Telegram | ✅ Enviado |
+> | Email | ✅ Enviado (Resend) |
+> | PM2 | online, 0 reinicios |
+
 ## Última sesión: 27 May 2026 — Deploy fix + OpenGraph + Cloudflare WAF
 
 > **Último deploy verificado:** OK ✅ (commit `ff23d30`, deploy GH Actions funcional)
@@ -575,6 +601,7 @@ sudo docker ps | grep uptime-kuma
 | 38 | Admin API Leads | `/admin/api-leads` | ✅ CRUD + status badges |
 | 39 | GoAccess tráfico | `status.viajeinteligencia.com/trafico.html` | ✅ Cada 15min |
 | 40 | Uptime Kuma | `status.viajeinteligencia.com/dashboard` | ✅ 6 monitores |
+| 41 | Early Bird digest | `/api/cron/early-bird` | ✅ Daily 07:00 UTC, Telegram + Email admin |
 
 ---
 
@@ -657,7 +684,8 @@ sudo docker ps | grep uptime-kuma
 - Telegram: Bot alertas
 
 ### Reglas arquitectonicas
-- **NUNCA crear nuevos endpoints cron** — añadir tareas a `master/route.ts`
+- **NUNCA crear nuevos endpoints cron para tareas del pipeline principal** — añadir tareas a `master/route.ts`
+- **Excepción**: Endpoints cron separados OK para herramientas admin independientes (ej. `early-bird` a las 07:00, 1h después del master)
 - **Clasificacion OSINT con keywords** para GDELT/RSS (0 coste API)
 - **Groq solo para Reddit** (first-person detection necesita contexto)
 - **Server pages** = `page.tsx` con metadata + wrap client component
