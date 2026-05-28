@@ -41,9 +41,9 @@ La plataforma implementa un **algoritmo K-Means** desde cero en TypeScript (sin 
 
 ### Páginas públicas
 
-- **[/clustering](https://viaje-con-inteligencia.vercel.app/clustering)**: Visualización interactiva de clusters
-- **[/api/ai/clustering](https://viaje-con-inteligencia.vercel.app/api/ai/clustering)**: API que devuelve clusters y destinos
-- **[/api/ai/similar](https://viaje-con-inteligencia.vercel.app/api/ai/similar)**: Encuentra destinos similares a uno dado
+- **[/clustering](https://www.viajeinteligencia.com/clustering)**: Visualización interactiva de clusters
+- **[/api/ai/clustering](https://www.viajeinteligencia.com/api/ai/clustering)**: API que devuelve clusters y destinos
+- **[/api/ai/similar](https://www.viajeinteligencia.com/api/ai/similar)**: Encuentra destinos similares a uno dado
 
 ### Código fuente
 
@@ -142,26 +142,18 @@ npm run lint         # Verificar código
 
 ## 🚢 Despliegue
 
-### Opción 1: Vercel (Más fácil)
-
-1. Fork este repositorio en GitHub
-2. Ir a [vercel.com](https://vercel.com)
-3. "Import Project" → seleccionar repo
-4. Añadir variables entorno
-5. Deploy automático en cada push
-
-### Opción 2: DigitalOcean VPS
+### Hetzner VPS (Ubuntu 24.04)
 
 ```bash
 # Conectar por SSH
-ssh root@tu-ip
+ssh deploy@tu-ip
 
 # Instalar Node.js
-curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
 sudo apt-get install -y nodejs
 
 # Clonar y desplegar
-git clone https://github.com/tu-user/viaje-con-inteligencia.git
+git clone https://github.com/mcasrom/viaje-con-inteligencia.git
 cd viaje-con-inteligencia
 npm install
 npm run build
