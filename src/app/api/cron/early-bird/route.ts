@@ -39,7 +39,8 @@ export async function GET(request: Request) {
     const maecChangesCount = maecMatch ? parseInt(maecMatch.match(/\d+/)?.[0] || '0') : 0;
     const sentimentAlertsCount = sentimentMatch ? parseInt(sentimentMatch.match(/\d+/)?.[0] || '0') : 0;
     const healthOk = healthMatch ? parseInt(healthMatch.match(/(\d+)\/\d+/)?.[1] || '0') : 0;
-    const healthFail = healthMatch ? parseInt(healthMatch.match(/\/(\d+)/)?.[1] || '0') : 0;
+    const healthTotal = healthMatch ? parseInt(healthMatch.match(/\/(\d+)/)?.[1] || '0') : 0;
+    const healthFail = Math.max(0, healthTotal - healthOk);
     const trafficPageViews = trafficPvMatch ? parseInt(trafficPvMatch.match(/[\d.]+/)?.[0]?.replace('.', '') || '0') : null;
     const trafficUniques = trafficUniqMatch ? parseInt(trafficUniqMatch.match(/[\d.]+/)?.[0]?.replace('.', '') || '0') : null;
     const newsletterSubscribers = subsMatch ? parseInt(subsMatch.match(/\d+/)?.[0] || '0') : 0;
