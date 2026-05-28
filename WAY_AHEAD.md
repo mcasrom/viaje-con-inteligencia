@@ -1,5 +1,42 @@
 # Way Ahead
 
+## Última sesión: 28 May 2026 — Early Bird v2 + Admin Panel
+
+> **Último deploy verificado:** OK ✅ (commit `a4cab2a`, early bird v2 funcional)
+>
+> **Sprint activo:** Admin awareness tools
+>
+> **Logros día (28 May):**
+>
+> ### Early Bird v2 — Digest enriquecido + historial admin
+> - ✅ **System health checks**: Cada digest ejecuta `runHealthChecks()` (14 servicios: páginas, APIs, Telegram, Mastodon, Bluesky, Supabase, Groq, Resend, OpenSky, US State Dept, Bing IndexNow). Muestra fallos en el digest.
+> - ✅ **Tráfico semanal**: Extrae page views, visitantes únicos y requests de `cloudflare_analytics` (última semana).
+> - ✅ **Newsletter subscribers**: Cuenta suscriptores verificados de `newsletter_subscribers`.
+> - ✅ **Persistencia en DB**: Cada digest se guarda en `early_bird_digests` con métricas extraídas (incidentes, MAEC, sentimiento, health, tráfico, subs).
+> - ✅ **Admin panel `/admin/early-bird`**: Historial de 30 digests con gráficos de tendencia (Recharts), tabla expandible con contenido completo, badges de estado (incidents, MAEC, system health, Telegram/Email sent).
+> - ✅ **API `/api/admin/early-bird`**: GET retorna últimos 30 digests ordenados por fecha.
+> - ✅ **Dashboard link**: Sección "Early Bird — Resumen Diario" añadida al admin dashboard con enlace al historial.
+> - ✅ **SQL migration**: `supabase/early_bird_digests.sql` — crear tabla con RLS policies.
+> - ✅ **Commits**: `a4cab2a` — deployado y funcional.
+>
+> ### ⚠️ Pendiente: Ejecutar SQL migration
+> - Ir a Supabase Dashboard → SQL Editor → ejecutar `supabase/early_bird_digests.sql`
+> - Sin esto, el historial admin no muestra datos (el digest se envía pero no se persiste)
+>
+> ### Estado post-deploy
+> | Componente | Estado |
+> |------------|--------|
+> | Early Bird lib v2 | ✅ `src/lib/early-bird.ts` |
+> | Early Bird route | ✅ `/api/cron/early-bird` |
+> | Admin page | ✅ `/admin/early-bird` |
+> | Admin API | ✅ `/api/admin/early-bird` |
+> | Dashboard link | ✅ Added |
+> | Cron servidor | ✅ 07:00 UTC |
+> | Telegram | ✅ Enviado |
+> | Email | ✅ Enviado (Resend) |
+> | DB table | ⏳ Pending SQL migration |
+> | PM2 | online, 0 reinicios |
+
 ## Última sesión: 28 May 2026 — Early Bird Daily Admin Digest
 
 > **Último deploy verificado:** OK ✅ (commit `920505d`, early bird endpoint funcional)
@@ -602,6 +639,7 @@ sudo docker ps | grep uptime-kuma
 | 39 | GoAccess tráfico | `status.viajeinteligencia.com/trafico.html` | ✅ Cada 15min |
 | 40 | Uptime Kuma | `status.viajeinteligencia.com/dashboard` | ✅ 6 monitores |
 | 41 | Early Bird digest | `/api/cron/early-bird` | ✅ Daily 07:00 UTC, Telegram + Email admin |
+| 42 | Early Bird v2 + Admin | `/admin/early-bird` | ✅ Health checks, traffic stats, subscriber count, history panel with charts |
 
 ---
 
