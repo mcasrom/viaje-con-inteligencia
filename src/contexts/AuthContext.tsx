@@ -70,7 +70,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (!supabase) return { error: 'Supabase no configurado' };
     const { error } = await supabase.auth.signInWithOtp({
       email,
-      options: { emailRedirectTo: `${window.location.origin}/auth/callback?next=/dashboard` },
+      options: { emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback?next=/dashboard` },
     });
     return { error: error?.message };
   };
@@ -86,7 +86,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const { error } = await supabase.auth.signUp({
       email,
       password,
-      options: { emailRedirectTo: `${window.location.origin}/auth/callback?next=/dashboard` },
+      options: { emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback?next=/dashboard` },
     });
     return { error: error?.message };
   };
@@ -94,7 +94,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const resetPassword = async (email: string) => {
     if (!supabase) return { error: 'Supabase no configurado' };
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/auth/callback?next=/dashboard&reset=true`,
+      redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback?next=/dashboard&reset=true`,
     });
     return { error: error?.message };
   };
@@ -119,7 +119,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const { error } = await supabase.auth.resend({
       type: 'signup',
       email: user.email,
-      options: { emailRedirectTo: `${window.location.origin}/auth/callback?next=/dashboard` },
+      options: { emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback?next=/dashboard` },
     });
     return { error: error?.message };
   };
