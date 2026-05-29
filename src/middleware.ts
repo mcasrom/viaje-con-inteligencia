@@ -71,6 +71,16 @@ export async function middleware(request: NextRequest) {
     }
   }
 
+  // /en/* catch-all: redirect missing English pages to Spanish version
+  if (pathname.startsWith('/en/')) {
+    const enSlug = pathname.replace(/^\/en/, '');
+    const knownEnPages = ['/blog', '/geopolitica-y-viajes', '/osint-para-viajeros', '/pais/'];
+    const isKnown = knownEnPages.some(p => enSlug.startsWith(p));
+    if (!isKnown) {
+      return NextResponse.redirect(new URL(enSlug, request.url));
+    }
+  }
+
   // i18n: redirect first-time visitors based on Accept-Language (no locale cookie yet)
   if (!pathname.startsWith('/en') && !pathname.startsWith('/api/') && !pathname.startsWith('/_next/') && !pathname.startsWith('/admin')) {
     const preferred = getPreferredLocale(request);
