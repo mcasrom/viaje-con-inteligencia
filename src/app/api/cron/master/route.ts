@@ -1065,7 +1065,7 @@ results.trend_predictions = await withTimeout(() => runTrendPredictions(), 12000
   const cronStatus = errorSteps === 0 ? 'success' : errorSteps === totalSteps ? 'error' : 'partial';
 
   try {
-    await supabase.from('cron_history').insert({
+    await supabaseAdmin.from('cron_history').insert({
       started_at: new Date(startTime).toISOString(),
       completed_at: new Date().toISOString(),
       duration_ms: elapsed,
