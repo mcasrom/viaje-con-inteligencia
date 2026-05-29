@@ -52,7 +52,7 @@ export default function ManifiestoPage() {
           </p>
           <div className="bg-blue-500/10 border border-blue-500/20 rounded-xl p-6 mt-6">
             <p className="text-white text-lg font-semibold leading-relaxed">
-              We are transitioning into a travel intelligence platform focused on real-time situational awareness for travelers.
+              Viaje Inteligencia is transitioning into a travel intelligence platform focused on real-time situational awareness for travelers.
             </p>
           </div>
         </div>
@@ -80,7 +80,7 @@ export default function ManifiestoPage() {
         <section className="mb-12">
           <h2 className="text-2xl font-bold text-white mb-6">What this means</h2>
           <p className="text-slate-300 leading-relaxed mb-6">
-            Instead of only publishing travel content, we now aim to provide:
+            Instead of only publishing travel content, Viaje Inteligencia now aims to provide:
           </p>
           <div className="space-y-3">
             {[
@@ -113,9 +113,9 @@ export default function ManifiestoPage() {
         {/* Our direction */}
         <section className="mb-12">
           <div className="bg-gradient-to-r from-blue-500/10 to-purple-500/10 rounded-2xl p-8 border border-blue-500/20">
-            <h2 className="text-2xl font-bold text-white mb-4">Our direction</h2>
+            <h2 className="text-2xl font-bold text-white mb-4">The direction</h2>
             <p className="text-slate-300 text-lg leading-relaxed mb-4">
-              We are building a system that helps travelers understand risk before they travel, not after problems appear.
+              The objective is to help travelers understand risk before they travel, not after problems appear.
             </p>
             <p className="text-slate-400 leading-relaxed mb-4">
               This is not about fear.
@@ -128,10 +128,10 @@ export default function ManifiestoPage() {
 
         {/* Next step */}
         <section className="mb-12">
-          <h2 className="text-2xl font-bold text-white mb-6">Next step</h2>
+          <h2 className="text-2xl font-bold text-white mb-6">Next steps</h2>
           <div className="bg-slate-800/50 rounded-2xl p-8 border border-slate-700">
             <p className="text-slate-300 text-lg leading-relaxed mb-4">
-              Starting this week, we will publish:
+              Starting this week:
             </p>
             <ul className="space-y-3">
               {[
