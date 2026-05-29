@@ -141,6 +141,13 @@ export default function LoginButton({ variant = 'button', size = 'md', showEmail
                 </div>
               )}
 
+              {mode === 'password' && (
+                <div className="text-right">
+                  <button type="button" onClick={() => { setMode('magic'); setMessage({ type: 'success', text: '¿Sin contraseña? Usa el magic link para acceder y luego establece tu contraseña desde el dashboard.' }); }} className="text-xs text-slate-500 hover:text-blue-400 transition-colors">
+                    ¿Olvidaste tu contraseña? Usa magic link
+                  </button>
+                </div>
+              )}
               {message && (
                 <div className={`p-3 rounded-lg text-sm ${message.type === 'success' ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}`}>
                   {message.text}
