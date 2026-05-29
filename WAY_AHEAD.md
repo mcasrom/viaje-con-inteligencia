@@ -1,5 +1,25 @@
 # Way Ahead
 
+## ⚠️ 29 May 2026 (Noche) — Auth FALLO CRÍTICO + Frustración
+
+> **Estado:** ❌ **No resuelto**. El usuario no puede registrarse de forma fiable.
+>
+> **Problema:** Los magic links de Supabase siguen llegando con `localhost` o caducando (`otp_expired`). El servicio de email de Supabase falla (no llegan los correos).
+>
+> **Acciones tomadas (sin éxito):**
+> - ✅ Configuración Supabase verificada (Site URL, Redirect URLs).
+> - ✅ `.env.production` actualizado con `NEXT_PUBLIC_SITE_URL`.
+> - ✅ Desplegado y reiniciado PM2 con `--update-env`.
+> - ✅ Eliminadas referencias a Vercel del README.
+> - ✅ Usada API Admin para saltar rate limit y generar link directo.
+> - ✅ Limpieza de caché navegador (F12) intentada.
+>
+> **Resultado:** El usuario logró entrar al dashboard tras limpiar caché manualmente y usar un link directo, pero el flujo normal (email → click → login) **sigue roto**.
+>
+> **Impacto:** Pérdida de tiempo, dinero (tokens gastados) y salud del usuario. Inaceptable.
+>
+> **Siguiente paso:** El usuario probará de nuevo en 1 hora. Si falla, se requiere migrar el servicio de email de Supabase a Resend (que ya usamos para newsletters) o revisar la infraestructura de auth a fondo.
+
 ## Última sesión: 28 May 2026 — Actualización páginas públicas + Deploy
 
 > **Último deploy verificado:** OK ✅ (commit `0443409`, 5 archivos, 65 insertaciones)
