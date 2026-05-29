@@ -22,6 +22,13 @@ const EXCLUIR = new Set([
   '/radius',
   '/relojes',
   '/lead-magnet',
+  '/clustering',
+  '/diagnostico',
+  '/stats',
+  '/precio-api',
+  '/feed',
+  '/viajes/clima',
+  '/viaje-compartido',
 ]);
 
 // Cache en memoria para el sitemap (se regenera cada 6h)

@@ -16,6 +16,11 @@ export default function robots(): MetadataRoute.Robots {
           '/radius',
           '/relojes',
           '/lead-magnet',
+          '/diagnostico',
+          '/clustering',
+          '/stats',
+          '/precio-api',
+          '/viaje-compartido',
         ],
       },
       {
