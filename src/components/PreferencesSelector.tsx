@@ -56,9 +56,9 @@ export default function PreferencesSelector() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          traveler_type: travelerType,
-          risk_tolerance: riskTolerance,
-          budget_range: budgetRange,
+          viajero_tipo: travelerType,
+          tolerancia_riesgo: riskTolerance,
+          presupuesto: budgetRange,
         }),
       });
       setSaved(true);

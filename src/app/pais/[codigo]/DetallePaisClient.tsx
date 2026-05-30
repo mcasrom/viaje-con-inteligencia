@@ -159,7 +159,7 @@ export default function DetallePaisClient({ pais, relatedPosts = [], serverRende
       fetch('/api/user/preferences', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ traveler_type: profile, budget_range: budget }),
+        body: JSON.stringify({ viajero_tipo: profile, presupuesto: budget }),
       }).catch(() => {});
     }
   };

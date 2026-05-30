@@ -11,21 +11,27 @@ export const dynamic = 'force-dynamic';
 const UserPreferencesSchema = z.object({
   viajero_tipo: z.enum(['mochilero', 'lujo', 'familiar', 'aventura', 'negocios']).optional(),
   tolerancia_riesgo: z.enum(['baja', 'media', 'alta']).optional(),
-  presupuesto: z.enum(['bajo', 'medio', 'alto']).optional(),
+  presupuesto: z.enum(['bajo', 'medio', 'alto', 'lujo', 'low', 'moderate', 'high']).optional(),
   preferred_categories: z.array(z.string()).optional(),
 });
 
 const QuerySchema = z.object({
   viajero_tipo: z.enum(['mochilero', 'lujo', 'familiar', 'aventura', 'negocios']).optional(),
   tolerancia_riesgo: z.enum(['baja', 'media', 'alta']).optional(),
-  presupuesto: z.enum(['bajo', 'medio', 'alto']).optional(),
+  presupuesto: z.enum(['bajo', 'medio', 'alto', 'lujo', 'low', 'moderate', 'high']).optional(),
 });
+
+function normalizeBudget(val: string | undefined): string | undefined {
+  if (!val) return val;
+  const map: Record<string, string> = { low: 'bajo', moderate: 'medio', high: 'alto' };
+  return map[val] || val;
+}
 
 function mapPrefsToDb(body: z.infer<typeof UserPreferencesSchema>) {
   const db: Record<string, unknown> = {};
   if (body.viajero_tipo) db.traveler_type = body.viajero_tipo;
   if (body.tolerancia_riesgo) db.risk_tolerance = body.tolerancia_riesgo;
-  if (body.presupuesto) db.budget_range = body.presupuesto;
+  if (body.presupuesto) db.budget_range = normalizeBudget(body.presupuesto);
   if (body.preferred_categories !== undefined) db.preferred_categories = body.preferred_categories;
   return db;
 }
