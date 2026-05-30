@@ -1,4 +1,3 @@
-import sharp from 'sharp';
 import { supabaseAdmin, isSupabaseAdminConfigured } from '@/lib/supabase-admin';
 import { collectInfografiaData } from './data';
 import { generateInfografiaSVG } from './template';
@@ -33,6 +32,7 @@ async function truncateSVGLabels(svg: string): Promise<string> {
 
 export async function generateInfografia(edition?: number): Promise<GenResult> {
   try {
+    const sharp = (await import('sharp')).default;
     const data = await collectInfografiaData(edition);
 
     let svg = generateInfografiaSVG(data);
