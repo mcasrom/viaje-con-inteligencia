@@ -31,7 +31,7 @@ export async function generateMetadata({ params }: { params: Promise<{ codigo: s
       title: `${nombreEn} — Travel Risk, Visa & Tips`,
       description: `Complete travel guide for ${nombreEn}: MAEC risk level, visa requirements, climate and recommendations.`,
       url: `https://www.viajeinteligencia.com/en/pais/${codigo}`,
-      type: 'place',
+      type: 'website',
     },
     twitter: {
       card: 'summary_large_image',
