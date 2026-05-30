@@ -50,7 +50,7 @@ export default function LoginButton({ variant = 'button', size = 'md', showEmail
       if (result.error) {
         setMessage({ type: 'error', text: result.error });
       } else {
-        setMessage({ type: 'success', text: '¡Cuenta creada! Revisa tu email para confirmar.' });
+        setMessage({ type: 'success', text: '¡Cuenta creada! Ya puedes iniciar sesión.' });
       }
     } else {
       if (!password) { setSubmitting(false); return; }

@@ -118,10 +118,7 @@ export async function POST(request: NextRequest) {
       await logAuditEvent({ action: 'register', entityType: 'user', email: cleanEmail, ip });
       return NextResponse.json({
         success: true,
-        message: 'Cuenta creada correctamente.',
-        needsVerification: true,
-        email: cleanEmail,
-        verificationNote: 'Se ha enviado un email de verificación a tu dirección. Debes hacer clic en el enlace de confirmación antes de poder iniciar sesión.',
+        message: 'Cuenta creada correctamente. Ya puedes iniciar sesión.',
       });
     }
 
