@@ -121,17 +121,31 @@ export default async function DestacadosPage() {
                   {(() => {
                     const risk = riskMap[trip.id];
                     const nivel = risk?.nivelRiesgo;
+                    const sanitario = risk?.riesgoSanitario;
                     const rc = nivel ? (riesgoColors[nivel] || riesgoColors['medio']) : null;
                     return (
-                      <div className={`flex items-center gap-2 px-3 py-2 rounded-xl mb-3 border ${
+                      <div className={`flex flex-col gap-1.5 px-3 py-2.5 rounded-xl mb-3 border ${
                         rc ? `${rc.bg} ${rc.border}` : 'bg-slate-700/30 border-slate-600/30'
                       }`}>
-                        <Shield className={`w-4 h-4 ${rc ? rc.text : 'text-slate-400'}`} />
-                        <span className={`text-sm font-semibold ${rc ? rc.text : 'text-slate-400'}`}>
-                          {nivel ? `MAEC: ${nivel.replace('-', ' ')}` : 'Riesgo: consultar ficha'}
-                        </span>
-                        {risk?.riesgoSanitario && (
-                          <span className="text-slate-400 text-sm">· Sanitario: {risk.riesgoSanitario}</span>
+                        <div className="flex items-center gap-2">
+                          <Shield className={`w-4 h-4 ${rc ? rc.text : 'text-slate-400'}`} />
+                          <span className={`text-sm font-bold ${rc ? rc.text : 'text-slate-400'}`}>
+                            {nivel ? nivel.replace('-', ' ').toUpperCase() : 'SIN DATOS'}
+                          </span>
+                          {sanitario && (
+                            <span className="text-xs px-2 py-0.5 rounded-full bg-slate-600/50 text-slate-300">
+                              Sanitario: {sanitario}
+                            </span>
+                          )}
+                        </div>
+                        {nivel && (
+                          <p className="text-xs text-slate-500 pl-6">
+                            {nivel === 'sin-riesgo' && 'Destino seguro. Precauciones normales.'}
+                            {nivel === 'bajo' && 'Precauciones habituales reforzadas.'}
+                            {nivel === 'medio' && 'Riesgo significativo. Extremar precauciones.'}
+                            {nivel === 'alto' && 'Viajes no esenciales desaconsejados.'}
+                            {nivel === 'muy-alto' && 'NO viajar. Riesgo extremo.'}
+                          </p>
                         )}
                       </div>
                     );
