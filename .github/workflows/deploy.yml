@@ -4,7 +4,7 @@ on:
     branches: [main]
   workflow_dispatch:
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
@@ -19,21 +19,6 @@ jobs:
           echo -e "\n---\nGenerado: $(date -u '+%Y-%m-%d %H:%M UTC') | Periodo: desde $SINCE" >> CAMBIOS_HOY.md
           echo "✅ CAMBIOS_HOY.md generado ($(wc -l < CAMBIOS_HOY.md) líneas)"
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Install sharp for linux-x64
-        run: npm install sharp --os=linux --cpu=x64
-
-      - name: Build production
-        run: npm run build
-
       - name: Deploy to Hetzner
         env:
           SSH_HOST: ${{ secrets.HETZNER_HOST }}
@@ -45,18 +30,28 @@ jobs:
           echo "$SSH_KEY" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -p $SSH_PORT $SSH_HOST >> ~/.ssh/known_hosts
-
-          # Sync everything including .next (built on GitHub Actions)
           RSYNC_RSH="ssh -p $SSH_PORT" rsync -az --delete \
             --exclude '.git' \
+            --exclude 'node_modules' \
+            --exclude '.next' \
             --exclude '.env*' \
             --exclude 'logs' \
             ./ $SSH_USER@$SSH_HOST:/var/www/viajeinteligencia/
-
-          # VPS: just restart PM2, no build needed
           ssh -p $SSH_PORT $SSH_USER@$SSH_HOST << 'ENDSSH'
             set -e
             cd /var/www/viajeinteligencia
+            if ! swapon --show | grep -q /swapfile; then
+              fallocate -l 2G /swapfile && chmod 600 /swapfile && mkswap /swapfile && swapon /swapfile
+              echo "Swap created"
+            fi
+            export NODE_OPTIONS="--max-old-space-size=3072"
+            npm install
+            npm install sharp --os=linux --cpu=x64
+            echo "=== Build started ==="
+            npm run build
+            echo "=== Build OK, pruning devDeps ==="
+            npm prune --omit=dev
+            echo "=== Restarting PM2 ==="
             pm2 delete viajeinteligencia || true
             pm2 start ecosystem.config.cjs --only viajeinteligencia --update-env
             sleep 10
