@@ -118,6 +118,25 @@ export default async function DestacadosPage() {
                     </h2>
                   </div>
 
+                  {(() => {
+                    const risk = riskMap[trip.id];
+                    const nivel = risk?.nivelRiesgo;
+                    const rc = nivel ? (riesgoColors[nivel] || riesgoColors['medio']) : null;
+                    return (
+                      <div className={`flex items-center gap-2 px-3 py-2 rounded-xl mb-3 border ${
+                        rc ? `${rc.bg} ${rc.border}` : 'bg-slate-700/30 border-slate-600/30'
+                      }`}>
+                        <Shield className={`w-4 h-4 ${rc ? rc.text : 'text-slate-400'}`} />
+                        <span className={`text-sm font-semibold ${rc ? rc.text : 'text-slate-400'}`}>
+                          {nivel ? `MAEC: ${nivel.replace('-', ' ')}` : 'Riesgo: consultar ficha'}
+                        </span>
+                        {risk?.riesgoSanitario && (
+                          <span className="text-slate-400 text-sm">· Sanitario: {risk.riesgoSanitario}</span>
+                        )}
+                      </div>
+                    );
+                  })()}
+
                   <div className="flex flex-wrap gap-3 text-sm text-slate-400 mb-3">
                     <span className="flex items-center gap-1">
                       <MapPin className="w-3.5 h-3.5" />
@@ -132,19 +151,6 @@ export default async function DestacadosPage() {
                       {budgetLabels[trip.budget] || trip.budget}
                     </span>
                   </div>
-
-                  {trip.country_code && riskMap[trip.id]?.nivelRiesgo && (() => {
-                    const rc = riesgoColors[riskMap[trip.id].nivelRiesgo!] || riesgoColors['medio'];
-                    return (
-                      <div className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium mb-3 ${rc.bg} ${rc.border} border`}>
-                        <Shield className={`w-3 h-3 ${rc.text}`} />
-                        <span className={rc.text}>MAEC: {riskMap[trip.id].nivelRiesgo!.replace('-', ' ')}</span>
-                        {riskMap[trip.id].riesgoSanitario && (
-                          <span className="text-slate-500 ml-1">· Sanitario: {riskMap[trip.id].riesgoSanitario}</span>
-                        )}
-                      </div>
-                    );
-                  })()}
 
                   {trip.interests && trip.interests.length > 0 && (
                     <div className="flex flex-wrap gap-1.5 mb-3">
