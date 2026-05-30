@@ -46,7 +46,7 @@ jobs:
               fallocate -l 2G /swapfile && chmod 600 /swapfile && mkswap /swapfile && swapon /swapfile
               echo "Swap created"
             fi
-            export NODE_OPTIONS="--max-old-space-size=1536"
+            export NODE_OPTIONS="--max-old-space-size=3072"
             npm install
             npm install sharp --os=linux --cpu=x64
             echo "=== Build started ==="

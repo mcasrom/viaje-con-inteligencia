@@ -1197,6 +1197,58 @@ async function runBingPing() {
   }
 }
 
+// ===== EARLY BIRD (07:00 UTC) =====
+async function runEarlyBird(): Promise<any> {
+  try {
+    const { buildEarlyBirdDigest, sendEarlyBirdDigest, saveEarlyBirdDigest } = await import('@/lib/early-bird');
+
+    log.info('Building early bird digest...');
+    const digest = await buildEarlyBirdDigest();
+    if (!digest) return { status: 'skipped', reason: 'No content generated' };
+
+    log.info('Sending early bird digest via email...');
+    const ok = await sendEarlyBirdDigest(digest);
+
+    const lines = digest.split('\n');
+    const incidentsMatch = lines.find(l => l.includes('• Incidentes:'));
+    const maecMatch = lines.find(l => l.includes('• Cambios MAEC:'));
+    const sentimentMatch = lines.find(l => l.includes('• Sentimiento negativo:'));
+    const healthMatch = lines.find(l => l.includes('• Sistema:'));
+    const trafficPvMatch = lines.find(l => l.includes('👁 Page views:'));
+    const trafficUniqMatch = lines.find(l => l.includes('👤 Visitantes únicos:'));
+    const subsMatch = lines.find(l => l.includes('suscriptores verificados'));
+
+    const incidentsCount = incidentsMatch ? parseInt(incidentsMatch.match(/\d+/)?.[0] || '0') : 0;
+    const maecChangesCount = maecMatch ? parseInt(maecMatch.match(/\d+/)?.[0] || '0') : 0;
+    const sentimentAlertsCount = sentimentMatch ? parseInt(sentimentMatch.match(/\d+/)?.[0] || '0') : 0;
+    const healthOk = healthMatch ? parseInt(healthMatch.match(/(\d+)\/\d+/)?.[1] || '0') : 0;
+    const healthTotal = healthMatch ? parseInt(healthMatch.match(/\/(\d+)/)?.[1] || '0') : 0;
+    const healthFail = Math.max(0, healthTotal - healthOk);
+    const trafficPageViews = trafficPvMatch ? parseInt(trafficPvMatch.match(/[\d.]+/)?.[0]?.replace('.', '') || '0') : null;
+    const trafficUniques = trafficUniqMatch ? parseInt(trafficUniqMatch.match(/[\d.]+/)?.[0]?.replace('.', '') || '0') : null;
+    const newsletterSubscribers = subsMatch ? parseInt(subsMatch.match(/\d+/)?.[0] || '0') : 0;
+
+    await saveEarlyBirdDigest({
+      created_at: new Date().toISOString(),
+      digest_text: digest,
+      incidents_count: incidentsCount,
+      maec_changes_count: maecChangesCount,
+      sentiment_alerts_count: sentimentAlertsCount,
+      health_ok: healthOk,
+      health_fail: healthFail,
+      traffic_page_views: trafficPageViews,
+      traffic_uniques: trafficUniques,
+      newsletter_subscribers: newsletterSubscribers,
+      sent_telegram: false,
+      sent_email: ok,
+    });
+
+    return { status: ok ? 'ok' : 'error', sent_email: ok };
+  } catch (e: any) {
+    return { status: 'error', error: e.message };
+  }
+}
+
 async function cleanupOldRecords() {
   try {
     const cutoff = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString();

@@ -56,13 +56,13 @@ export async function GET(request: Request) {
       traffic_page_views: trafficPageViews,
       traffic_uniques: trafficUniques,
       newsletter_subscribers: newsletterSubscribers,
-      sent_telegram: true,
-      sent_email: true,
+      sent_telegram: false,
+      sent_email: ok,
     });
 
     return NextResponse.json({
       status: ok ? 'ok' : 'error',
-      message: ok ? 'Early bird digest sent & saved' : 'Failed to send, but saved to DB',
+      message: ok ? 'Early bird digest sent to admin email & saved' : 'Failed to send email, but saved to DB',
       preview: digest.slice(0, 200) + '...',
     });
   } catch (e: any) {

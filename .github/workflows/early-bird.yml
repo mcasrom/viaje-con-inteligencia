@@ -1,0 +1,21 @@
+name: Early Bird Daily
+
+on:
+  schedule:
+    - cron: '0 7 * * *'
+  workflow_dispatch:
+
+jobs:
+  early-bird:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Run /api/cron/early-bird
+        run: |
+          status=$(curl -sS -o /tmp/earlybird_response.txt -w "%{http_code}" \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            "https://www.viajeinteligencia.com/api/cron/early-bird")
+          echo "HTTP $status"
+          cat /tmp/earlybird_response.txt | head -c 500
+          echo ""
+          [ "$status" = "200" ] || [ "$status" = "202" ] || exit 1
