@@ -27,6 +27,15 @@ function normalizeBudget(val: string | undefined): string | undefined {
   return map[val] || val;
 }
 
+function normalizeIncomingBody(raw: Record<string, unknown>) {
+  return {
+    viajero_tipo: (raw.viajero_tipo || raw.traveler_type || raw.profile) as string | undefined,
+    tolerancia_riesgo: (raw.tolerancia_riesgo || raw.risk_tolerance) as string | undefined,
+    presupuesto: normalizeBudget((raw.presupuesto || raw.budget_range || raw.budget) as string | undefined),
+    preferred_categories: raw.preferred_categories as string[] | undefined,
+  };
+}
+
 function mapPrefsToDb(body: z.infer<typeof UserPreferencesSchema>) {
   const db: Record<string, unknown> = {};
   if (body.viajero_tipo) db.traveler_type = body.viajero_tipo;
@@ -91,9 +100,10 @@ export async function POST(request: NextRequest) {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return apiError('No autenticado', undefined, 401);
 
-    const body = await request.json();
+    const bodyRaw = await request.json();
+    const normalized = normalizeIncomingBody(bodyRaw);
 
-    const parsed = UserPreferencesSchema.safeParse(body);
+    const parsed = UserPreferencesSchema.safeParse(normalized);
     if (!parsed.success) {
       log.error('Invalid preferences body:', parsed.error);
       return apiError('Datos de preferencias inválidos');
