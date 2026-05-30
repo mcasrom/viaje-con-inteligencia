@@ -98,11 +98,19 @@ export default function DashboardPage() {
         if (authMode === 'login' && password) {
           setNotification({ type: 'success', message: data.message });
           setTimeout(() => window.location.reload(), 500);
+        } else if (data.needsVerification) {
+          setNotification({
+            type: 'error',
+            message: data.message,
+          });
+          setPendingVerificationEmail(data.email);
+          setEmail('');
+          setPassword('');
         } else {
           setNotification({ type: 'success', message: data.message });
+          setEmail('');
+          setPassword('');
         }
-        setEmail('');
-        setPassword('');
       } else if (data.needsVerification) {
         setNotification({
           type: 'error',
@@ -491,9 +499,20 @@ export default function DashboardPage() {
 
                 {/* Resend verification email */}
                 {pendingVerificationEmail && (
-                  <div className="mt-4 p-3 bg-amber-500/10 border border-amber-500/30 rounded-lg">
-                    <p className="text-amber-300 text-sm font-medium mb-2">Email no verificado</p>
-                    <p className="text-amber-200/60 text-xs mb-3">Revisa tu bandeja de entrada (y spam) y haz clic en el enlace de verificación.</p>
+                  <div className="mt-4 p-4 bg-amber-500/10 border border-amber-500/30 rounded-lg">
+                    <div className="flex items-start gap-3 mb-3">
+                      <AlertTriangle className="w-5 h-5 text-amber-400 flex-shrink-0 mt-0.5" />
+                      <div>
+                        <p className="text-amber-300 text-sm font-semibold">Verificación de email pendiente</p>
+                        <p className="text-amber-200/70 text-xs mt-1">
+                          Se ha enviado un email de verificación a <strong className="text-amber-200">{pendingVerificationEmail}</strong>.
+                          Debes hacer clic en el enlace de confirmación para activar tu cuenta.
+                        </p>
+                        <p className="text-amber-200/50 text-xs mt-2">
+                          Si no lo recibes en 2 minutos, revisa la carpeta de spam o solicita un reenvío.
+                        </p>
+                      </div>
+                    </div>
                     <button
                       type="button"
                       onClick={async () => {
@@ -505,7 +524,7 @@ export default function DashboardPage() {
                         const data = await res.json();
                         setNotification({ type: res.ok ? 'success' : 'error', message: data.message || data.error });
                       }}
-                      className="text-blue-400 text-xs hover:text-blue-300 underline"
+                      className="w-full py-2 bg-amber-500/20 border border-amber-500/30 text-amber-300 rounded-lg text-sm font-medium hover:bg-amber-500/30 transition-colors"
                     >
                       Reenviar email de verificación
                     </button>
