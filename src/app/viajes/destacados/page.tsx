@@ -1,7 +1,8 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { supabaseAdmin, isSupabaseAdminConfigured } from '@/lib/supabase-admin';
-import { MapPin, Clock, Sparkles, DollarSign, Users } from 'lucide-react';
+import { MapPin, Clock, Sparkles, DollarSign, Users, Shield } from 'lucide-react';
+import { getPaisData } from '@/lib/paises-db';
 
 export const dynamic = 'force-dynamic';
 
@@ -58,6 +59,31 @@ export default async function DestacadosPage() {
     trips = (data || []) as PublicTrip[];
   }
 
+  const tripRisks = await Promise.all(
+    trips.map(async (trip) => {
+      if (!trip.country_code) return null;
+      const pais = await getPaisData(trip.country_code.toLowerCase());
+      return {
+        tripId: trip.id,
+        nivelRiesgo: pais?.nivelRiesgo || null,
+        riesgoSanitario: (pais as any)?.riesgoSanitario || null,
+      };
+    })
+  );
+
+  const riskMap: Record<string, { nivelRiesgo: string | null; riesgoSanitario: string | null }> = {};
+  tripRisks.forEach(r => {
+    if (r) riskMap[r.tripId] = { nivelRiesgo: r.nivelRiesgo, riesgoSanitario: r.riesgoSanitario };
+  });
+
+  const riesgoColors: Record<string, { bg: string; text: string; border: string }> = {
+    'sin-riesgo': { bg: 'bg-green-500/10', text: 'text-green-400', border: 'border-green-500/30' },
+    'bajo': { bg: 'bg-yellow-500/10', text: 'text-yellow-400', border: 'border-yellow-500/30' },
+    'medio': { bg: 'bg-orange-500/10', text: 'text-orange-400', border: 'border-orange-500/30' },
+    'alto': { bg: 'bg-red-500/10', text: 'text-red-400', border: 'border-red-500/30' },
+    'muy-alto': { bg: 'bg-red-900/30', text: 'text-red-300', border: 'border-red-700/50' },
+  };
+
   return (
     <div className="min-h-screen bg-slate-900">
       <div className="max-w-6xl mx-auto px-6 py-12">
@@ -106,6 +132,19 @@ export default async function DestacadosPage() {
                       {budgetLabels[trip.budget] || trip.budget}
                     </span>
                   </div>
+
+                  {trip.country_code && riskMap[trip.id]?.nivelRiesgo && (() => {
+                    const rc = riesgoColors[riskMap[trip.id].nivelRiesgo!] || riesgoColors['medio'];
+                    return (
+                      <div className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium mb-3 ${rc.bg} ${rc.border} border`}>
+                        <Shield className={`w-3 h-3 ${rc.text}`} />
+                        <span className={rc.text}>MAEC: {riskMap[trip.id].nivelRiesgo!.replace('-', ' ')}</span>
+                        {riskMap[trip.id].riesgoSanitario && (
+                          <span className="text-slate-500 ml-1">· Sanitario: {riskMap[trip.id].riesgoSanitario}</span>
+                        )}
+                      </div>
+                    );
+                  })()}
 
                   {trip.interests && trip.interests.length > 0 && (
                     <div className="flex flex-wrap gap-1.5 mb-3">
