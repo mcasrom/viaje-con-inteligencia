@@ -95,7 +95,7 @@ export default function MetodologiaPage() {
               { step: '2', title: 'Normalización', desc: 'Estandarizamos formatos, códigos ISO, coordenadas y categorías de todas las fuentes', icon: FileText, color: 'text-indigo-400' },
               { step: '3', title: 'IA y análisis', desc: 'Groq clasifica señales OSINT. ML Random Forest predice cambios de riesgo', icon: Brain, color: 'text-purple-400' },
               { step: '4', title: 'Alertas', desc: 'Detección de incidentes, clusterización, sentimiento, Early Bird digest, notificaciones Telegram', icon: Bell, color: 'text-amber-400' },
-              { step: '5', title: 'Para el viajero', desc: 'Mapa interactivo, fichas de país, radar, chat IA con itinerarios, dashboard, newsletter, infografías', icon: Globe, color: 'text-green-400' },
+              { step: '5', title: 'Para el viajero', desc: 'Mapa interactivo, fichas de país, radar, chat IA con itinerarios + análisis de riesgo integrado, dashboard, newsletter, infografías', icon: Globe, color: 'text-green-400' },
             ].map((item, i) => (
               <div key={i} className="relative">
                 <div className="bg-slate-700/30 rounded-xl p-4 h-full border border-slate-600/30">

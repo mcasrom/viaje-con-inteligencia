@@ -191,8 +191,8 @@ export default function NuevoViajePage() {
       <main className="max-w-2xl mx-auto px-6 py-8">
         <div className="text-center mb-8">
           <Plane className="w-10 h-10 mx-auto text-blue-500 mb-2" />
-          <h1 className="text-2xl font-bold text-white">Nuevo Viaje Personalizado</h1>
-          <p className="text-slate-400 mt-1">Paso {step} de 3</p>
+          <h1 className="text-2xl font-bold text-white">Nuevo Viaje con IA</h1>
+          <p className="text-slate-400 mt-1">Perfil de viajero + tipo de viaje + radio máximo + análisis de riesgo automático</p>
         </div>
 
         <div className="flex justify-center gap-2 mb-8">

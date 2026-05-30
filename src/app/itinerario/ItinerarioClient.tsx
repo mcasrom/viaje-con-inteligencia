@@ -177,7 +177,7 @@ export default function ItinerarioClient() {
             Generador de Itinerarios IA
           </h1>
           <p className="text-slate-400 text-lg">
-            Crea tu viaje perfecto con inteligencia artificial
+            Crea tu viaje perfecto con inteligencia artificial: perfil de viajero, tipo de viaje, radio máximo y análisis de riesgo integrado
           </p>
         </div>
 

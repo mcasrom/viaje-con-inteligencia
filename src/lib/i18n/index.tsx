@@ -557,12 +557,12 @@ const translations: Translation = {
     en: 'Viaje Inteligencia is the first platform combining the Spanish MAEC risk index with Machine Learning analysis for {n} countries. The IRV index (Travel Risk Indicator) cross-references 16 KPIs — from security and terrorism to cost of living and inflation — giving you a unique, up-to-date score.',
   },
   'home.seoP2': {
-    es: 'El motor de análisis inteligente agrupa destinos según tu perfil: presupuesto, tipo de viaje y preferencias. El Chat IA con Groq te da recomendaciones personalizadas en segundos. El sistema OSINT monitoriza 73+ fuentes en tiempo real: GDELT, USGS, GDACS, Reddit y RSS.',
-    en: 'The smart analysis engine groups destinations by your profile: budget, trip type and preferences. The AI Chat with Groq gives personalized recommendations in seconds. The OSINT system monitors 73+ real-time sources: GDELT, USGS, GDACS, Reddit and RSS.',
+    es: 'El motor de análisis inteligente agrupa destinos según tu perfil: presupuesto, tipo de viaje y preferencias. El Chat IA con Groq te da recomendaciones personalizadas en segundos. El sistema OSINT monitoriza 73+ fuentes en tiempo real: GDELT, USGS, GDACS, Reddit y RSS. El generador de itinerarios incluye perfiles de viajero, tipos de viaje, radio máximo y análisis de riesgo automático.',
+    en: 'The smart analysis engine groups destinations by your profile: budget, trip type and preferences. The AI Chat with Groq gives personalized recommendations in seconds. The OSINT system monitors 73+ real-time sources: GDELT, USGS, GDACS, Reddit and RSS. The itinerary generator includes traveler profiles, trip types, max radius and automatic risk analysis.',
   },
   'home.seoP3': {
-    es: 'Herramientas adicionales: calculadora de coste de viaje ajustada al petróleo, rutas temáticas de España, alertas de cambio de riesgo MAEC, generador de reclamaciones para aerolíneas y dashboard con KPIs globales de 6 índices internacionales.',
-    en: 'Additional tools: oil-adjusted trip cost calculator, Spanish thematic routes, MAEC risk change alerts, airline claims generator and global KPIs dashboard from 6 international indices.',
+    es: 'Herramientas adicionales: calculadora de coste de viaje ajustada al petróleo, rutas temáticas de España, alertas de cambio de riesgo MAEC, generador de reclamaciones para aerolíneas y dashboard con KPIs globales de 6 índices internacionales. Cada itinerario generado incluye análisis de riesgo automático: MAEC, US State Dept, índices GPI/GTI/HDI, clima, alertas OSINT y precauciones.',
+    en: 'Additional tools: oil-adjusted trip cost calculator, Spanish thematic routes, MAEC risk change alerts, airline claims generator and global KPIs dashboard from 6 international indices. Every generated itinerary includes automatic risk analysis: MAEC, US State Dept, GPI/GTI/HDI indices, weather, OSINT alerts and precautions.',
   },
   'home.riskSummary': {
     es: '{riskCount} países en riesgo alto o muy alto — consulta las alertas activas antes de viajar',

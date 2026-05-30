@@ -242,7 +242,7 @@ export default function ViajesPage() {
           <div className="text-center py-16">
             <Plane className="w-16 h-16 mx-auto text-slate-600 mb-4" />
             <h2 className="text-2xl font-bold text-white mb-2">Sin viajes todavía</h2>
-            <p className="text-slate-400 mb-6">Crea tu primer viaje personalizado con IA</p>
+            <p className="text-slate-400 mb-6">Crea tu primer viaje con IA: elige perfil de viajero, tipo de viaje, radio máximo y obtén un itinerario con análisis de riesgo completo</p>
             <Link
               href="/viajes/nuevo"
               className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg transition-colors"

@@ -7,7 +7,7 @@ export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   title: 'Itinerarios destacados | Viaje con Inteligencia',
-  description: 'Descubre itinerarios de viaje creados con IA. Inspírate para tu próximo viaje con rutas personalizadas por destino, perfil de viajero, tipo de viaje, presupuesto e intereses.',
+  description: 'Descubre itinerarios de viaje creados con IA con análisis de riesgo integrado. Inspírate para tu próximo viaje con rutas personalizadas por destino, perfil de viajero, tipo de viaje, presupuesto e intereses.',
   alternates: {
     canonical: 'https://www.viajeinteligencia.com/viajes/destacados',
   },
@@ -67,7 +67,7 @@ export default async function DestacadosPage() {
           </div>
           <h1 className="text-3xl font-bold text-white mb-3">Itinerarios destacados</h1>
           <p className="text-slate-400 max-w-xl mx-auto">
-            Rutas generadas con IA para inspirar tu próximo viaje. Cada itinerario está personalizado por destino, perfil de viajero, tipo de viaje, presupuesto e intereses.
+             Rutas generadas con IA para inspirar tu próximo viaje. Cada itinerario incluye perfil de viajero, tipo de viaje, radio máximo y análisis de riesgo completo (MAEC, US State Dept, índices, clima, alertas OSINT).
           </p>
         </div>
 

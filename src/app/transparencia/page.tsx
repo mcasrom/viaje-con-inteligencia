@@ -40,7 +40,7 @@ const SECTIONS = [
     content: [
       'La IA analiza, no decide. Groq (modelo de lenguaje) clasifica señales OSINT por categoría, urgencia y sentimiento. El modelo Random Forest predice cambios de riesgo basándose en 25 features históricas.',
       'Ninguna alerta o recomendación se genera automáticamente sin pasar por el pipeline de validación: fuente original → normalización → clasificación → revisión.',
-      'El Chat IA responde preguntas de viajeros usando Groq, pero siempre advertimos que sus respuestas son orientativas y deben contrastarse con fuentes oficiales. El chat incluye historial de conversaciones, contexto personalizado (favoritos, viajes guardados, alertas OSINT en vivo) y generador de itinerarios estructurados.',
+      'El Chat IA responde preguntas de viajeros usando Groq, pero siempre advertimos que sus respuestas son orientativas y deben contrastarse con fuentes oficiales. El chat incluye historial de conversaciones, contexto personalizado (favoritos, viajes guardados, alertas OSINT en vivo) y generador de itinerarios estructurados. Cada itinerario generado incluye automáticamente un análisis de riesgo completo: nivel MAEC, US State Dept, riesgo sanitario, índices GPI/GTI/HDI, clima actual, alertas OSINT activas y precauciones clave del país.',
       'No usamos IA para: decidir niveles de riesgo MAEC, modificar datos oficiales, generar contenido sin supervisión, ni tomar decisiones en nombre del usuario.',
     ],
   },

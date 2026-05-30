@@ -160,6 +160,7 @@ export default async function DestacadoSlugPage({ params }: PageProps) {
             <Sparkles className="w-5 h-5" />
             Crear mi propio itinerario con IA
           </Link>
+          <p className="text-slate-500 text-xs mt-2">Con perfil de viajero, tipo de viaje, radio máximo y análisis de riesgo completo</p>
         </div>
       </main>
     </div>

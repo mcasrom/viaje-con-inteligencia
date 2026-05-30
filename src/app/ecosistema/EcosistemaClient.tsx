@@ -72,7 +72,8 @@ const items: Record<LayerKey, { name: string; desc: string; color: string }[]> =
     { name: 'prob_up_7d_rf', desc: 'Probabilidad subida 7 días', color: 'amber' },
     { name: 'prob_up_14d_rf', desc: 'Probabilidad subida 14 días', color: 'yellow' },
     { name: 'prob_up_30d_rf', desc: 'Probabilidad subida 30 días', color: 'lime' },
-    { name: 'Trip Risk Score', desc: 'Scoring por país + mes + perfil', color: 'teal' },
+    { name: 'Trip Risk Score', desc: 'Scoring por país + mes + perfil de viajero', color: 'teal' },
+    { name: 'ItineraryRiskCard', desc: 'Análisis de riesgo automático tras generar itinerario', color: 'indigo' },
     { name: 'ScoreBadge', desc: 'Badge visual de riesgo IA', color: 'indigo' },
   ],
   apis: [
@@ -98,7 +99,7 @@ const items: Record<LayerKey, { name: string; desc: string; color: string }[]> =
     { name: '/pulso-global', desc: 'Sentimiento global tiempo real', color: 'violet' },
     { name: '/osint', desc: 'Feed OSINT con filtros', color: 'rose' },
     { name: '/admin/*', desc: 'Panel administración completo + Early Bird', color: 'orange' },
-    { name: '/viajes/*', desc: 'Itinerarios · Comparador · Públicos', color: 'teal' },
+    { name: '/viajes/*', desc: 'Itinerarios con perfiles de viajero, tipos de viaje, radio máximo + análisis de riesgo integrado (MAEC, US State Dept, índices, clima, alertas OSINT)', color: 'teal' },
     { name: '/infografias', desc: 'Visualizaciones semanales riesgo', color: 'pink' },
     { name: '/comparar', desc: 'Comparador países side-by-side', color: 'amber' },
     { name: '/transparencia', desc: 'Estado fuentes + health', color: 'slate' },
@@ -292,14 +293,14 @@ export default function EcosistemaClient() {
                     ['Pulso Global sentimiento', '✅', '✅', '/pulso-global'],
                     ['Feed OSINT público', '✅', '✅', '/osint'],
                     ['Chat IA viajes', '✅ llama-3.1-8b · 5/día · historial', '✅ llama-3.3-70b · ilimitado · contexto', '/chat'],
-                    ['Generador itinerarios', '✅ básico', '✅ estructurado + export + compartir', '/chat'],
+                    ['Generador itinerarios', '✅ básico (destino + días)', '✅ perfil viajero + tipo + radio + análisis riesgo', '/viajes/nuevo'],
                     ['Radar de Viaje', '✅ 10 países', '✅ 20 países + timeline', '/dashboard/radar'],
                     ['ScoreBadge ML', '⚠️ score básico', '✅ score + probs', 'Fichas país'],
                     ['Infografías semanales', '✅ 7d delay', '✅ tiempo real', '/infografias'],
                     ['Newsletter semanal', '✅', '✅', 'Footer'],
                     ['Alertas personalizadas', '✅ web', '✅ web + Telegram', 'Dashboard'],
                     ['Comparador países', '✅', '✅', '/comparar'],
-                    ['Itinerarios IA', '✅ 1 activo', '✅ ilimitados', '/viajes'],
+                    ['Itinerarios IA', '✅ 1 activo con análisis riesgo', '✅ ilimitados + perfiles + tipos + radio', '/viajes'],
                     ['Check-list viaje', '✅ básico', '✅ completo', '/checklist'],
                     ['Predicciones de riesgo IA', '❌', '✅', 'Dashboard premium'],
                     ['Score por perfil viajero', '❌', '✅', 'Fichas país'],
@@ -362,7 +363,7 @@ export default function EcosistemaClient() {
                 <li className="flex gap-2"><span className="text-blue-400 shrink-0">1.</span> 14 fuentes de datos vivas combinadas — MAEC + US State Dept + GDELT + OSINT en tiempo real</li>
                 <li className="flex gap-2"><span className="text-blue-400 shrink-0">2.</span> IA de riesgo con sentimiento — 25 features, 4 modelos RF, actualización diaria</li>
                 <li className="flex gap-2"><span className="text-blue-400 shrink-0">3.</span> Chat IA con contexto personalizado — favoritos, viajes guardados, alertas OSINT en vivo</li>
-                <li className="flex gap-2"><span className="text-blue-400 shrink-0">4.</span> Generador de itinerarios estructurados — día a día, packing, consejos, emergencias</li>
+                <li className="flex gap-2"><span className="text-blue-400 shrink-0">4.</span> Generador de itinerarios con perfiles de viajero, tipos de viaje y radio máximo + análisis de riesgo automático (MAEC, US State Dept, índices, clima, alertas OSINT, precauciones)</li>
                 <li className="flex gap-2"><span className="text-blue-400 shrink-0">5.</span> Early Bird digest — resumen matutino admin con health, tráfico, incidentes</li>
                 <li className="flex gap-2"><span className="text-blue-400 shrink-0">6.</span> Radar de Viaje con timeline — proyección ajustada por estacionalidad</li>
                 <li className="flex gap-2"><span className="text-blue-400 shrink-0">7.</span> 14 health checks diarios — transparencia total del sistema</li>
@@ -379,7 +380,7 @@ export default function EcosistemaClient() {
                   📊 &ldquo;25 variables por país, 4 modelos ML, actualización diaria.&rdquo;
                 </div>
                 <div className="bg-amber-900/20 border border-amber-700/30 rounded-lg p-3 text-amber-200">
-                  🤖 &ldquo;Chat IA con contexto personalizado + generador de itinerarios estructurados.&rdquo;
+                  🤖 &ldquo;Chat IA con contexto personalizado + generador de itinerarios con perfiles de viajero y análisis de riesgo automático.&rdquo;
                 </div>
                 <div className="bg-violet-900/20 border border-violet-700/30 rounded-lg p-3 text-violet-200">
                   🆓 &ldquo;Todo gratis. Premium solo para IA predictiva avanzada.&rdquo;
@@ -394,7 +395,7 @@ export default function EcosistemaClient() {
 
         {/* Version */}
         <div className="text-center text-sm text-slate-500">
-          Versión: Mayo 2026 · 25 features · 14 fuentes activas · 4 modelos RF · 43 funcionalidades · Early Bird · Itinerarios IA
+          Versión: Mayo 2026 · 25 features · 14 fuentes activas · 4 modelos RF · 43 funcionalidades · Early Bird · Itinerarios IA con perfiles y análisis riesgo
         </div>
       </div>
     </div>
