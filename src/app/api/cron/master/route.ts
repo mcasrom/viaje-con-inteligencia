@@ -184,12 +184,10 @@ async function runFlightCosts(): Promise<any> {
       }, { onConflict: 'date' });
     }
 
-    const { syncIPCToSupabase } = await import('@/lib/ipc-db');
     const { syncAllIndicesToSupabase } = await import('@/lib/indices-db');
     const { syncAirportsToSupabase, syncEventsFallbackToSupabase, syncTravelAttributesToSupabase, syncCountryNameMapToSupabase, syncOpenSkyBoundsToSupabase, syncDisposableEmailsToSupabase } = await import('@/lib/data-sync');
     const { syncPaisesToSupabase } = await import('@/lib/paises-db');
     await Promise.all([
-      syncIPCToSupabase(),
       syncAllIndicesToSupabase(),
       syncAirportsToSupabase(),
       syncEventsFallbackToSupabase(),
