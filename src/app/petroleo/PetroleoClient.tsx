@@ -139,7 +139,7 @@ export default function PetroleoClient() {
         <div className="bg-slate-800/60 border border-slate-700/50 rounded-xl p-5 mb-6">
           <h3 className="text-lg font-bold text-white mb-4">Evolución + Proyección ML</h3>
           <div className="h-64">
-            <ResponsiveContainer width="100%" height="100%">
+            <ResponsiveContainer width="100%" height={256}>
               <AreaChart data={chartData}>
                 <defs>
                   <linearGradient id="priceGrad" x1="0" y1="0" x2="0" y2="1">

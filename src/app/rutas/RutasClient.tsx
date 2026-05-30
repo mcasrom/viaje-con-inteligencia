@@ -676,7 +676,7 @@ function RouteDetail({ route, onBack }: { route: any; onBack: () => void }) {
           <div className="bg-slate-800/50 rounded-lg p-4 mb-4">
             <h4 className="text-sm font-bold text-white mb-4">📈 Precio vs Afluencia Mensual</h4>
             <div className="h-64">
-              <ResponsiveContainer width="100%" height="100%">
+              <ResponsiveContainer width="100%" height={256}>
                 <ComposedChart data={ROUTE_PREDICTIONS[route.id] || ROUTE_PREDICTIONS['molinos']}>
                   <defs>
                     <linearGradient id="priceGradient" x1="0" y1="0" x2="0" y2="1">
@@ -730,7 +730,7 @@ function RouteDetail({ route, onBack }: { route: any; onBack: () => void }) {
           <div className="bg-slate-800/50 rounded-lg p-4">
             <h4 className="text-sm font-bold text-white mb-4">🌤️ Clima Mensual (Índice 0-100)</h4>
             <div className="h-48">
-              <ResponsiveContainer width="100%" height="100%">
+              <ResponsiveContainer width="100%" height={192}>
                 <BarChart data={ROUTE_PREDICTIONS[route.id] || ROUTE_PREDICTIONS['molinos']}>
                   <defs>
                     <linearGradient id="weatherGradient" x1="0" y1="0" x2="0" y2="1">

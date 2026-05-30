@@ -215,7 +215,7 @@ export default function ViajeCosteClient({
             </div>
 
             <div className="h-52">
-              <ResponsiveContainer width="100%" height="100%">
+              <ResponsiveContainer width="100%" height={208}>
                 <LineChart data={mlAnalysis.weeklyData}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
                   <XAxis dataKey="week" stroke="#64748b" fontSize={11} tickLine={false} />

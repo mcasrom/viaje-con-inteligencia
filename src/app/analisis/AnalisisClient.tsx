@@ -145,7 +145,7 @@ export default function AnalisisClient() {
             <div className="bg-slate-800/60 rounded-xl border border-slate-700/50 p-6">
               <h3 className="text-lg font-bold text-white mb-4">Histórico del Brent y su Impacto en TCI</h3>
               <div className="h-64">
-                <ResponsiveContainer width="100%" height="100%">
+                <ResponsiveContainer width="100%" height={256}>
                   <LineChart data={oilImpact.months}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
                     <XAxis dataKey="month" stroke="#64748b" fontSize={11} tickLine={false} />
@@ -181,7 +181,7 @@ export default function AnalisisClient() {
             <div className="bg-slate-800/60 rounded-xl border border-slate-700/50 p-6">
               <h3 className="text-lg font-bold text-white mb-4">Rutas Más Afectadas por Conflictos</h3>
               <div className="h-64">
-                <ResponsiveContainer width="100%" height="100%">
+                <ResponsiveContainer width="100%" height={256}>
                   <BarChart data={conflictImpact.worstAffected}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
                     <XAxis dataKey="country" stroke="#64748b" fontSize={11} tickLine={false} />
