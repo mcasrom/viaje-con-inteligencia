@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { supabaseAdmin, isSupabaseAdminConfigured } from '@/lib/supabase-admin';
 import { ArrowLeft, MapPin, Clock, DollarSign, Sparkles, Calendar } from 'lucide-react';
+import TripStarRating from '@/components/TripStarRating';
 
 export const dynamic = 'force-dynamic';
 
@@ -126,6 +127,11 @@ export default async function DestacadoSlugPage({ params }: PageProps) {
               </div>
             </div>
           )}
+
+          <div className="mt-4 pt-4 border-t border-slate-700">
+            <p className="text-slate-400 text-sm mb-2">Valoración</p>
+            <TripStarRating tripId={trip.id} />
+          </div>
         </div>
 
         {trip.itinerary_raw ? (

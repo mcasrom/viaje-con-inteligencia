@@ -1,61 +1,40 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Star } from 'lucide-react';
 
-interface RatingProps {
+interface StarRatingProps {
   initialRating?: number;
-  readonly?: boolean;
   onRate?: (rating: number) => void;
   size?: 'sm' | 'md' | 'lg';
 }
 
-export default function StarRating({ initialRating = 0, readonly = false, onRate, size = 'md' }: RatingProps) {
-  const [rating, setRating] = useState(initialRating);
+const sizeMap = { sm: 'w-4 h-4', md: 'w-5 h-5', lg: 'w-6 h-6' };
+
+export default function StarRating({ initialRating = 0, onRate, size = 'md' }: StarRatingProps) {
   const [hover, setHover] = useState(0);
 
-  useEffect(() => {
-    setRating(initialRating);
-  }, [initialRating]);
-
-  const sizes = {
-    sm: 14,
-    md: 20,
-    lg: 28,
-  };
-
-  const handleRate = async (value: number) => {
-    if (readonly) return;
-    setRating(value);
-    onRate?.(value);
-  };
-
   return (
-    <div className="flex items-center gap-1">
-      {[1, 2, 3, 4, 5].map((star) => (
-        <button
-          key={star}
-          type="button"
-          disabled={readonly}
-          className={`${readonly ? 'cursor-default' : 'cursor-pointer hover:scale-110'} transition-transform p-0.5`}
-          onClick={() => handleRate(star)}
-          onMouseEnter={() => !readonly && setHover(star)}
-          onMouseLeave={() => !readonly && setHover(0)}
-        >
-          <Star
-            size={sizes[size]}
-            className={
-              star <= (hover || rating)
-                ? 'fill-yellow-400 text-yellow-400'
-                : 'text-slate-600'
-            }
-          />
-        </button>
-      ))}
+    <div className="flex gap-0.5">
+      {[1, 2, 3, 4, 5].map((i) => {
+        const filled = (hover || initialRating) >= i;
+        return (
+          <button
+            key={i}
+            type="button"
+            onClick={() => onRate?.(i)}
+            onMouseEnter={() => setHover(i)}
+            onMouseLeave={() => setHover(0)}
+            className={`${onRate ? 'cursor-pointer hover:scale-110' : 'cursor-default'} transition-transform`}
+          >
+            <Star
+              className={`${sizeMap[size]} ${filled ? 'text-amber-400' : 'text-slate-600'} transition-colors`}
+              fill={filled ? 'currentColor' : 'none'}
+              strokeWidth={1.5}
+            />
+          </button>
+        );
+      })}
     </div>
   );
-}
-
-export function RatingDisplay({ rating }: { rating: number }) {
-  return <StarRating initialRating={rating} readonly size="sm" />;
 }
