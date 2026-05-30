@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { supabaseAdmin, isSupabaseAdminConfigured } from '@/lib/supabase-admin';
-import { MapPin, Clock, Sparkles, DollarSign, Users, Shield } from 'lucide-react';
+import { MapPin, Clock, Sparkles, DollarSign, Users, Shield, AlertTriangle, Thermometer, TrendingUp, Bell } from 'lucide-react';
 import { getPaisData } from '@/lib/paises-db';
 
 export const dynamic = 'force-dynamic';
@@ -45,6 +45,16 @@ function getExcerpt(itinerary: string | undefined, maxLength = 200): string {
   return cleaned.length > maxLength ? cleaned.slice(0, maxLength) + '...' : cleaned;
 }
 
+const riesgoColors: Record<string, { bg: string; text: string; border: string; dot: string }> = {
+  'sin-riesgo': { bg: 'bg-green-500/10', text: 'text-green-400', border: 'border-green-500/30', dot: 'bg-green-500' },
+  'bajo': { bg: 'bg-yellow-500/10', text: 'text-yellow-400', border: 'border-yellow-500/30', dot: 'bg-yellow-500' },
+  'medio': { bg: 'bg-orange-500/10', text: 'text-orange-400', border: 'border-orange-500/30', dot: 'bg-orange-500' },
+  'alto': { bg: 'bg-red-500/10', text: 'text-red-400', border: 'border-red-500/30', dot: 'bg-red-500' },
+  'muy-alto': { bg: 'bg-red-900/30', text: 'text-red-300', border: 'border-red-700/50', dot: 'bg-red-700' },
+};
+
+const usRiskColors = ['text-green-400', 'text-yellow-400', 'text-orange-400', 'text-red-400'];
+
 export default async function DestacadosPage() {
   let trips: PublicTrip[] = [];
 
@@ -59,30 +69,47 @@ export default async function DestacadosPage() {
     trips = (data || []) as PublicTrip[];
   }
 
-  const tripRisks = await Promise.all(
+  const tripRiskData = await Promise.all(
     trips.map(async (trip) => {
       if (!trip.country_code) return null;
-      const pais = await getPaisData(trip.country_code.toLowerCase());
+      const code = trip.country_code.toLowerCase();
+      const pais = await getPaisData(code);
+
+      let usRisk = null;
+      let incidents: any[] = [];
+      let indices: any[] = [];
+
+      if (isSupabaseAdminConfigured()) {
+        const [{ data: usData }, { data: incData }, { data: idxData }] = await Promise.all([
+          supabaseAdmin.from('us_state_dept').select('level').eq('country_code', code).single(),
+          supabaseAdmin.from('incidents').select('severity').eq('country_code', code).gte('detected_at', new Date(Date.now() - 7 * 86400000).toISOString()).limit(5),
+          supabaseAdmin.from('indices').select('tipo, valor').eq('codigo_pais', code),
+        ]);
+        usRisk = usData;
+        incidents = incData || [];
+        indices = idxData || [];
+      }
+
+      const gpi = indices.find((i: any) => i.tipo === 'gpi')?.valor;
+      const gti = indices.find((i: any) => i.tipo === 'gti')?.valor;
+      const hdi = indices.find((i: any) => i.tipo === 'hdi')?.valor;
+
       return {
         tripId: trip.id,
         nivelRiesgo: pais?.nivelRiesgo || null,
         riesgoSanitario: (pais as any)?.riesgoSanitario || null,
+        usRiskLevel: usRisk?.level || null,
+        gpi: gpi ?? null,
+        gti: gti ?? null,
+        hdi: hdi ?? null,
+        alertCount: incidents.length,
+        alertHigh: incidents.filter((i: any) => i.severity === 'high').length,
       };
     })
   );
 
-  const riskMap: Record<string, { nivelRiesgo: string | null; riesgoSanitario: string | null }> = {};
-  tripRisks.forEach(r => {
-    if (r) riskMap[r.tripId] = { nivelRiesgo: r.nivelRiesgo, riesgoSanitario: r.riesgoSanitario };
-  });
-
-  const riesgoColors: Record<string, { bg: string; text: string; border: string }> = {
-    'sin-riesgo': { bg: 'bg-green-500/10', text: 'text-green-400', border: 'border-green-500/30' },
-    'bajo': { bg: 'bg-yellow-500/10', text: 'text-yellow-400', border: 'border-yellow-500/30' },
-    'medio': { bg: 'bg-orange-500/10', text: 'text-orange-400', border: 'border-orange-500/30' },
-    'alto': { bg: 'bg-red-500/10', text: 'text-red-400', border: 'border-red-500/30' },
-    'muy-alto': { bg: 'bg-red-900/30', text: 'text-red-300', border: 'border-red-700/50' },
-  };
+  const riskMap: Record<string, NonNullable<typeof tripRiskData[number]>> = {};
+  tripRiskData.forEach(r => { if (r) riskMap[r.tripId] = r; });
 
   return (
     <div className="min-h-screen bg-slate-900">
@@ -93,7 +120,7 @@ export default async function DestacadosPage() {
           </div>
           <h1 className="text-3xl font-bold text-white mb-3">Itinerarios destacados</h1>
           <p className="text-slate-400 max-w-xl mx-auto">
-             Rutas generadas con IA para inspirar tu próximo viaje. Cada itinerario incluye perfil de viajero, tipo de viaje, radio máximo y análisis de riesgo completo (MAEC, US State Dept, índices, clima, alertas OSINT).
+            Rutas generadas con IA para inspirar tu próximo viaje. Cada itinerario incluye perfil de viajero, tipo de viaje, radio máximo y análisis de riesgo completo.
           </p>
         </div>
 
@@ -105,83 +132,112 @@ export default async function DestacadosPage() {
           </div>
         ) : (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {trips.map((trip) => (
-              <Link
-                key={trip.id}
-                href={`/viajes/destacados/${trip.slug}`}
-                className="group bg-slate-800 rounded-xl border border-slate-700 hover:border-purple-500 transition-all hover:shadow-lg hover:shadow-purple-500/10 block"
-              >
-                <div className="p-6">
-                  <div className="flex items-start justify-between mb-3">
-                    <h2 className="text-lg font-bold text-white group-hover:text-purple-400 transition-colors">
-                      {trip.name}
-                    </h2>
-                  </div>
+            {trips.map((trip) => {
+              const risk = riskMap[trip.id];
+              const nivel = risk?.nivelRiesgo;
+              const rc = nivel ? (riesgoColors[nivel] || riesgoColors['medio']) : null;
 
-                  {(() => {
-                    const risk = riskMap[trip.id];
-                    const nivel = risk?.nivelRiesgo;
-                    const sanitario = risk?.riesgoSanitario;
-                    const rc = nivel ? (riesgoColors[nivel] || riesgoColors['medio']) : null;
-                    return (
-                      <div className={`flex flex-col gap-1.5 px-3 py-2.5 rounded-xl mb-3 border ${
-                        rc ? `${rc.bg} ${rc.border}` : 'bg-slate-700/30 border-slate-600/30'
-                      }`}>
-                        <div className="flex items-center gap-2">
-                          <Shield className={`w-4 h-4 ${rc ? rc.text : 'text-slate-400'}`} />
-                          <span className={`text-sm font-bold ${rc ? rc.text : 'text-slate-400'}`}>
-                            {nivel ? nivel.replace('-', ' ').toUpperCase() : 'SIN DATOS'}
-                          </span>
-                          {sanitario && (
-                            <span className="text-xs px-2 py-0.5 rounded-full bg-slate-600/50 text-slate-300">
-                              Sanitario: {sanitario}
+              return (
+                <Link
+                  key={trip.id}
+                  href={`/viajes/destacados/${trip.slug}`}
+                  className="group bg-slate-800 rounded-xl border border-slate-700 hover:border-purple-500 transition-all hover:shadow-lg hover:shadow-purple-500/10 block"
+                >
+                  <div className="p-6">
+                    <div className="flex items-start justify-between mb-3">
+                      <h2 className="text-lg font-bold text-white group-hover:text-purple-400 transition-colors">
+                        {trip.name}
+                      </h2>
+                    </div>
+
+                    {risk && (
+                      <div className={`rounded-xl border mb-3 overflow-hidden ${rc ? `${rc.bg} ${rc.border}` : 'bg-slate-700/30 border-slate-600/30'}`}>
+                        <div className={`px-3 py-2.5 border-b ${rc ? rc.border : 'border-slate-600/30'}`}>
+                          <div className="flex items-center gap-2">
+                            <Shield className={`w-4 h-4 ${rc ? rc.text : 'text-slate-400'}`} />
+                            <span className={`text-sm font-bold ${rc ? rc.text : 'text-slate-400'}`}>
+                              {nivel ? nivel.replace('-', ' ').toUpperCase() : 'SIN DATOS'}
                             </span>
-                          )}
+                            <span className={`w-2 h-2 rounded-full ${rc ? rc.dot : 'bg-slate-500'}`} />
+                          </div>
                         </div>
-                        {nivel && (
-                          <p className="text-xs text-slate-500 pl-6">
-                            {nivel === 'sin-riesgo' && 'Destino seguro. Precauciones normales.'}
-                            {nivel === 'bajo' && 'Precauciones habituales reforzadas.'}
-                            {nivel === 'medio' && 'Riesgo significativo. Extremar precauciones.'}
-                            {nivel === 'alto' && 'Viajes no esenciales desaconsejados.'}
-                            {nivel === 'muy-alto' && 'NO viajar. Riesgo extremo.'}
-                          </p>
+
+                        <div className="px-3 py-2.5 grid grid-cols-2 gap-2 text-xs">
+                          <div className="flex items-center gap-1.5">
+                            <AlertTriangle className="w-3 h-3 text-blue-400" />
+                            <span className="text-slate-400">US:</span>
+                            <span className={risk.usRiskLevel ? usRiskColors[(risk.usRiskLevel || 1) - 1] : 'text-slate-600'}>
+                              {risk.usRiskLevel ? `Nivel ${risk.usRiskLevel}` : 'N/A'}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-1.5">
+                            <Thermometer className="w-3 h-3 text-red-400" />
+                            <span className="text-slate-400">Sanitario:</span>
+                            <span className={
+                              risk.riesgoSanitario === 'alto' ? 'text-red-400' :
+                              risk.riesgoSanitario === 'medio' ? 'text-yellow-400' : 'text-green-400'
+                            }>
+                              {risk.riesgoSanitario || 'N/A'}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-1.5">
+                            <TrendingUp className="w-3 h-3 text-teal-400" />
+                            <span className="text-slate-400">GPI:</span>
+                            <span className="text-white">{risk.gpi ?? '—'}</span>
+                          </div>
+                          <div className="flex items-center gap-1.5">
+                            <TrendingUp className="w-3 h-3 text-amber-400" />
+                            <span className="text-slate-400">GTI:</span>
+                            <span className="text-white">{risk.gti ?? '—'}</span>
+                          </div>
+                        </div>
+
+                        {risk.alertCount > 0 && (
+                          <div className={`px-3 py-2 border-t ${rc ? rc.border : 'border-slate-600/30'} bg-red-500/5`}>
+                            <div className="flex items-center gap-1.5">
+                              <Bell className="w-3 h-3 text-red-400" />
+                              <span className="text-red-300 text-xs font-medium">
+                                {risk.alertCount} alerta{risk.alertCount > 1 ? 's' : ''} activa{risk.alertCount > 1 ? 's' : ''}
+                                {risk.alertHigh > 0 && ` (${risk.alertHigh} crítica${risk.alertHigh > 1 ? 's' : ''})`}
+                              </span>
+                            </div>
+                          </div>
                         )}
                       </div>
-                    );
-                  })()}
+                    )}
 
-                  <div className="flex flex-wrap gap-3 text-sm text-slate-400 mb-3">
-                    <span className="flex items-center gap-1">
-                      <MapPin className="w-3.5 h-3.5" />
-                      {trip.destination}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <Clock className="w-3.5 h-3.5" />
-                      {trip.days} {trip.days === 1 ? 'día' : 'días'}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <DollarSign className="w-3.5 h-3.5" />
-                      {budgetLabels[trip.budget] || trip.budget}
-                    </span>
-                  </div>
-
-                  {trip.interests && trip.interests.length > 0 && (
-                    <div className="flex flex-wrap gap-1.5 mb-3">
-                      {trip.interests.map((i) => (
-                        <span key={i} className="text-xs bg-slate-700 text-slate-300 px-2 py-0.5 rounded-full">
-                          {i}
-                        </span>
-                      ))}
+                    <div className="flex flex-wrap gap-3 text-sm text-slate-400 mb-3">
+                      <span className="flex items-center gap-1">
+                        <MapPin className="w-3.5 h-3.5" />
+                        {trip.destination}
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <Clock className="w-3.5 h-3.5" />
+                        {trip.days} {trip.days === 1 ? 'día' : 'días'}
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <DollarSign className="w-3.5 h-3.5" />
+                        {budgetLabels[trip.budget] || trip.budget}
+                      </span>
                     </div>
-                  )}
 
-                  <p className="text-slate-500 text-sm leading-relaxed">
-                    {getExcerpt(trip.itinerary_raw)}
-                  </p>
-                </div>
-              </Link>
-            ))}
+                    {trip.interests && trip.interests.length > 0 && (
+                      <div className="flex flex-wrap gap-1.5 mb-3">
+                        {trip.interests.map((i) => (
+                          <span key={i} className="text-xs bg-slate-700 text-slate-300 px-2 py-0.5 rounded-full">
+                            {i}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+
+                    <p className="text-slate-500 text-sm leading-relaxed">
+                      {getExcerpt(trip.itinerary_raw)}
+                    </p>
+                  </div>
+                </Link>
+              );
+            })}
           </div>
         )}
       </div>
