@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { ArrowLeft, MapPin, Calendar, DollarSign, Sparkles, Loader2, Plane, Plus, X } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { getTodosLosPaises } from '@/data/paises';
+import ItineraryRiskCard from '@/components/ItineraryRiskCard';
 
 const paises = getTodosLosPaises();
 
@@ -460,8 +461,18 @@ export default function NuevoViajePage() {
               )}
 
               {itinerary && (
-                <div className="bg-slate-700 rounded-xl p-4 max-h-96 overflow-y-auto">
-                  <pre className="text-slate-300 whitespace-pre-wrap text-sm">{itinerary}</pre>
+                <div className="space-y-6">
+                  <div className="bg-slate-700 rounded-xl p-4 max-h-96 overflow-y-auto">
+                    <pre className="text-slate-300 whitespace-pre-wrap text-sm">{itinerary}</pre>
+                  </div>
+
+                  {countryCode && (
+                    <ItineraryRiskCard
+                      countryCode={countryCode}
+                      profile={travelerProfile}
+                      budget={budget}
+                    />
+                  )}
                 </div>
               )}
 

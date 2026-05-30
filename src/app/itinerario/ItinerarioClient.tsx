@@ -6,6 +6,7 @@ import { ArrowLeft, MapPin, Calendar, DollarSign, Sparkles, Loader2, Send, Crown
 import { getTodosLosPaises } from '@/data/paises';
 import { useRequirePremium } from '@/hooks/useRequirePremium';
 import { useAuth } from '@/contexts/AuthContext';
+import ItineraryRiskCard from '@/components/ItineraryRiskCard';
 
 const paises = getTodosLosPaises();
 
@@ -45,6 +46,7 @@ export default function ItinerarioClient() {
   const router = useRouter();
   const { isPremium, loading: premiumLoading } = useRequirePremium();
   const [destination, setDestination] = useState('');
+  const [countryCode, setCountryCode] = useState('');
   const [days, setDays] = useState(7);
   const [budget, setBudget] = useState('moderate');
   const [travelerProfile, setTravelerProfile] = useState('mochilero');
@@ -187,7 +189,11 @@ export default function ItinerarioClient() {
             </label>
             <select
               value={destination}
-              onChange={(e) => setDestination(e.target.value)}
+              onChange={(e) => {
+                setDestination(e.target.value);
+                const pais = paises.find(p => p.nombre === e.target.value);
+                setCountryCode(pais?.codigo || '');
+              }}
               className="w-full bg-slate-700 text-white rounded-xl px-4 py-3 border border-slate-600 
                          focus:border-blue-500 focus:outline-none"
             >
@@ -352,11 +358,21 @@ export default function ItinerarioClient() {
         </form>
 
         {itinerary && (
-          <div className="mt-10 bg-slate-800 rounded-2xl p-6">
-            <h2 className="text-xl font-bold text-white mb-4">Tu Itinerario</h2>
-            <div className="prose prose-invert max-w-none">
-              <div className="text-slate-300 whitespace-pre-wrap">{itinerary}</div>
+          <div className="mt-10 space-y-8">
+            <div className="bg-slate-800 rounded-2xl p-6">
+              <h2 className="text-xl font-bold text-white mb-4">Tu Itinerario</h2>
+              <div className="prose prose-invert max-w-none">
+                <div className="text-slate-300 whitespace-pre-wrap">{itinerary}</div>
+              </div>
             </div>
+
+            {countryCode && (
+              <ItineraryRiskCard
+                countryCode={countryCode}
+                profile={travelerProfile}
+                budget={budget}
+              />
+            )}
           </div>
         )}
       </main>
