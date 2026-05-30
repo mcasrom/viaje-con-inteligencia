@@ -20,6 +20,26 @@ const budgetOptions = [
   { value: 'high', label: 'Alto (>150€/día)' },
 ];
 
+const travelerProfiles = [
+  { value: 'mochilero', label: 'Mochilero', icon: '🎒' },
+  { value: 'familiar', label: 'Familiar', icon: '👨‍👩‍👧‍👦' },
+  { value: 'solo', label: 'Solo', icon: '🧳' },
+  { value: 'pareja', label: 'Pareja', icon: '💑' },
+  { value: 'lujo', label: 'Lujo', icon: '✨' },
+];
+
+const tripTypes = [
+  'Cultural', 'Playa', 'Montaña', 'Naturaleza', 'Gastronómico',
+  'Aventura', 'Urbano', 'Ruta', 'Relax', 'Road trip'
+];
+
+const maxKmOptions = [
+  { value: 50, label: '50 km' },
+  { value: 100, label: '100 km' },
+  { value: 200, label: '200 km' },
+  { value: 500, label: 'Sin límite' },
+];
+
 export default function ItinerarioClient() {
   const { user } = useAuth();
   const router = useRouter();
@@ -27,6 +47,9 @@ export default function ItinerarioClient() {
   const [destination, setDestination] = useState('');
   const [days, setDays] = useState(7);
   const [budget, setBudget] = useState('moderate');
+  const [travelerProfile, setTravelerProfile] = useState('mochilero');
+  const [selectedTripTypes, setSelectedTripTypes] = useState<string[]>([]);
+  const [maxKm, setMaxKm] = useState(200);
   const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
   const [itinerary, setItinerary] = useState('');
   const [loading, setLoading] = useState(false);
@@ -86,6 +109,9 @@ export default function ItinerarioClient() {
           days,
           interests: selectedInterests,
           budget,
+          travelerProfile,
+          tripTypes: selectedTripTypes,
+          maxKm,
         }),
       });
 
@@ -109,6 +135,9 @@ export default function ItinerarioClient() {
             interests: selectedInterests,
             itinerary_raw: itineraryText,
             status: 'draft',
+            traveler_profile: travelerProfile,
+            trip_types: selectedTripTypes,
+            max_km: maxKm,
           }),
         });
 
@@ -228,6 +257,69 @@ export default function ItinerarioClient() {
                   }`}
                 >
                   {interest}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-white font-medium mb-2">Perfil de viajero</label>
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
+              {travelerProfiles.map(p => (
+                <button
+                  key={p.value}
+                  type="button"
+                  onClick={() => setTravelerProfile(p.value)}
+                  className={`px-3 py-2.5 rounded-xl border transition-colors text-sm ${
+                    travelerProfile === p.value
+                      ? 'bg-blue-600 border-blue-500 text-white'
+                      : 'bg-slate-700 border-slate-600 text-slate-300 hover:border-slate-500'
+                  }`}
+                >
+                  <span className="text-lg">{p.icon}</span>
+                  <div className="mt-0.5">{p.label}</div>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-white font-medium mb-2">Tipo de viaje</label>
+            <div className="flex flex-wrap gap-2">
+              {tripTypes.map(t => (
+                <button
+                  key={t}
+                  type="button"
+                  onClick={() => setSelectedTripTypes(prev =>
+                    prev.includes(t) ? prev.filter(x => x !== t) : [...prev, t]
+                  )}
+                  className={`px-3 py-1.5 rounded-full text-sm transition-colors ${
+                    selectedTripTypes.includes(t)
+                      ? 'bg-teal-500 text-white font-medium'
+                      : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
+                  }`}
+                >
+                  {t}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-white font-medium mb-2">Radio máximo: {maxKm} km</label>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+              {maxKmOptions.map(opt => (
+                <button
+                  key={opt.value}
+                  type="button"
+                  onClick={() => setMaxKm(opt.value)}
+                  className={`px-3 py-2 rounded-xl border transition-colors text-sm ${
+                    maxKm === opt.value
+                      ? 'bg-blue-600 border-blue-500 text-white'
+                      : 'bg-slate-700 border-slate-600 text-slate-300 hover:border-slate-500'
+                  }`}
+                >
+                  {opt.label}
                 </button>
               ))}
             </div>

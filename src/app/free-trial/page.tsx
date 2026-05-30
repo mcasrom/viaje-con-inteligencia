@@ -16,7 +16,7 @@ const BENEFITS = [
   { icon: '📊', title: 'Análisis de Riesgo', desc: 'Datos oficiales MAEC actualizados' },
   { icon: '🗺️', title: 'Mapas Interactivos', desc: 'Visualiza riesgos por país' },
   { icon: '🔔', title: 'Alertas en Tiempo Real', desc: 'Sé el primero en saber' },
-  { icon: '✈️', title: 'Planificador IA', desc: 'Itinerarios personalizados' },
+  { icon: '✈️', title: 'Planificador IA Avanzado', desc: 'Itinerarios con perfil de viajero, tipo de viaje y radio máximo' },
   { icon: '📄', title: 'Reclamaciones PDF', desc: 'Genera documentos oficiales' },
 ];
 
@@ -85,7 +85,7 @@ export default function FreeTrialPage() {
               </div>
               <div className="flex items-start gap-3">
                 <CheckCircle className="w-5 h-5 text-green-400 mt-0.5" />
-                <span className="text-white">Generador de itinerarios IA</span>
+                <span className="text-white">Generador de itinerarios IA con perfiles de viajero</span>
               </div>
               <div className="flex items-start gap-3">
                 <CheckCircle className="w-5 h-5 text-green-400 mt-0.5" />

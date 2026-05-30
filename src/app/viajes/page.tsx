@@ -113,7 +113,7 @@ export default function ViajesPage() {
             La opción <span className="text-white font-semibold">Mis Viajes</span> está disponible solo para usuarios registrados.
           </p>
           <p className="text-slate-500 text-sm mb-6">
-            Regístrate gratis para crear y gestionar tus itinerarios de viaje con IA.
+            Regístrate gratis para crear y gestionar tus viajes con IA: perfiles de viajero, tipos de viaje, radio máximo e itinerarios personalizados.
           </p>
           
           {loginSent ? (

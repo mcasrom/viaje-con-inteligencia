@@ -9,7 +9,7 @@ import { TOTAL_PAISES } from '@/lib/constants';
 
 const FEATURES = [
   { icon: <MessageSquare className="w-5 h-5" />, title: 'Chat IA de Viajes', desc: '5 mensajes/día gratis con llama-3.1-8b. Premium: ilimitado con llama-3.3-70b-versatile (modelo avanzado). Historial de conversaciones + contexto personalizado.' },
-  { icon: <Plane className="w-5 h-5" />, title: 'Planificador IA', desc: 'Genera itinerarios personalizados por destino, días e intereses.' },
+  { icon: <Plane className="w-5 h-5" />, title: 'Planificador IA Avanzado', desc: 'Genera itinerarios personalizados por destino, perfil de viajero, tipo de viaje, intereses y radio máximo de desplazamiento. 5 perfiles (mochilero, familiar, solo, pareja, lujo) + 10 tipos de viaje.' },
   { icon: <Bell className="w-5 h-5" />, title: 'Alertas en Tiempo Real', desc: 'Cambios de riesgo, conflictos naturales y recomendaciones MAEC.' },
   { icon: <Map className="w-5 h-5" />, title: 'Mapa de Sismos (USGS)', desc: 'Terremotos en vivo con magnitud, ubicación y alertas de tsunami.' },
   { icon: <Shield className="w-5 h-5" />, title: 'Análisis de Riesgo', desc: 'Fichas completas por país: seguridad, costes, contactos y visados.' },
@@ -31,6 +31,8 @@ const COMPARISON = [
   { feature: 'Chat IA (5 mensajes/día)', free: true, premium: true },
   { feature: 'Chat IA ilimitado + modelo 70b', free: false, premium: true },
   { feature: 'Planificador de itinerarios IA', free: false, premium: true },
+  { feature: 'Perfiles de viajero (mochilero, familiar, solo, pareja, lujo)', free: false, premium: true },
+  { feature: 'Tipos de viaje y radio máximo de desplazamiento', free: false, premium: true },
   { feature: 'Alertas en tiempo real', free: false, premium: true },
   { feature: 'Mapa de sismos USGS', free: false, premium: true },
   { feature: 'Monitor de conflictos activo', free: false, premium: true },
@@ -317,7 +319,8 @@ export default function PremiumClient() {
                <ul className="space-y-3 mb-6">
                 {[
                   'Chat IA ilimitado con modelo 70b',
-                  'Planificador de itinerarios',
+                  'Planificador de itinerarios con perfiles de viajero',
+                  'Tipos de viaje y radio máximo de desplazamiento',
                   'Alertas de riesgo en tiempo real',
                   'Mapa de sismos USGS en vivo',
                   'Monitor de conflictos activo',
