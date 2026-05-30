@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Shield, Clock, Mail, Globe, Users, AlertTriangle, CheckCircle, XCircle, FileText, Database, MessageSquare, ExternalLink, RefreshCw, Play, Send, Radio, Bot, LogOut, DollarSign, Key, Download, Eye, Calendar as CalendarIcon, TrendingUp, Euro, Activity, GitBranch, Search, Sunrise } from 'lucide-react';
+import { Shield, Clock, Mail, Globe, Users, AlertTriangle, CheckCircle, XCircle, FileText, Database, MessageSquare, ExternalLink, RefreshCw, Play, Send, Radio, Bot, LogOut, DollarSign, Key, Download, Eye, Calendar as CalendarIcon, TrendingUp, Euro, Activity, GitBranch, Search, Sunrise, Brain } from 'lucide-react';
 
 export default function AdminDashboard() {
   const router = useRouter();
@@ -588,6 +588,20 @@ export default function AdminDashboard() {
           <div className="flex gap-3">
             <a href="/admin/ai-assistant" className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600/20 border border-blue-500/30 text-blue-400 rounded-lg hover:bg-blue-600/30 transition-colors text-sm font-medium">
               Abrir asistente <Bot className="w-4 h-4" />
+            </a>
+          </div>
+        </section>
+
+        {/* ML Status */}
+        <section className="bg-slate-800 rounded-2xl border border-purple-500/30 p-6">
+          <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+            <Brain className="w-5 h-5 text-purple-400" />
+            Estado ML — Evolución IA
+          </h2>
+          <p className="text-slate-400 text-sm mb-4">MAE, desviaciones RF vs heurístico, madurez de datos, observaciones automáticas y arquitectura del modelo.</p>
+          <div className="flex gap-3">
+            <a href="/admin/ml" className="inline-flex items-center gap-2 px-4 py-2 bg-purple-600/20 border border-purple-500/30 text-purple-400 rounded-lg hover:bg-purple-600/30 transition-colors text-sm font-medium">
+              Ver estado ML <Brain className="w-4 h-4" />
             </a>
           </div>
         </section>
