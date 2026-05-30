@@ -4,7 +4,7 @@ import { generateItinerary } from '@/lib/groq-ai';
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { destination, days, interests, budget } = body;
+    const { destination, days, interests, budget, travelerProfile, tripTypes, maxKm } = body;
 
     if (!destination || !days) {
       return NextResponse.json(
@@ -17,7 +17,10 @@ export async function POST(request: NextRequest) {
       destination,
       days,
       interests || [],
-      budget || 'moderate'
+      budget || 'moderate',
+      travelerProfile,
+      tripTypes,
+      maxKm
     );
 
     return NextResponse.json({ itinerary });

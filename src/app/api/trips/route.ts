@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
   if (!user) return NextResponse.json({ error: 'No autenticado' }, { status: 401 });
 
   const body = await request.json();
-  const { name, destination, country_code, start_date, end_date, days, budget, interests, itinerary_raw, status, notes, is_public } = body;
+  const { name, destination, country_code, start_date, end_date, days, budget, interests, itinerary_raw, status, notes, is_public, traveler_profile, trip_types, max_km } = body;
 
   if (!name || !destination) {
     return NextResponse.json({ error: 'Nombre y destino son requeridos' }, { status: 400 });
@@ -43,7 +43,7 @@ export async function POST(request: NextRequest) {
 
   const { data, error } = await supabase
     .from('trips')
-    .insert([{ user_id: user.id, name, destination, country_code, start_date, end_date, days: days || 7, budget: budget || 'moderate', interests: interests || [], itinerary_raw, status: status || 'draft', notes, is_public: is_public || false, slug }])
+    .insert([{ user_id: user.id, name, destination, country_code, start_date, end_date, days: days || 7, budget: budget || 'moderate', interests: interests || [], itinerary_raw, status: status || 'draft', notes, is_public: is_public || false, slug, traveler_profile: traveler_profile || 'mochilero', trip_types: trip_types || [], max_km: max_km || 200 }])
     .select()
     .single();
 

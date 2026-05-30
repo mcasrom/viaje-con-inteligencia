@@ -98,12 +98,32 @@ export async function generateItinerary(
   destination: string,
   days: number,
   interests: string[],
-  budget: string
+  budget: string,
+  travelerProfile?: string,
+  tripTypes?: string[],
+  maxKm?: number
 ): Promise<string> {
+  const profileLabels: Record<string, string> = {
+    mochilero: 'mochilero (económico, auténtico, transporte público)',
+    familiar: 'viaje familiar (seguro, niños, ritmo tranquilo)',
+    solo: 'viajero solo (social, flexible, seguro)',
+    pareja: 'pareja (romántico, experiencias compartidas)',
+    lujo: 'lujo (premium, confort, exclusivo)',
+  };
+
+  const typeContext = tripTypes && tripTypes.length > 0
+    ? `\nTipo de viaje: ${tripTypes.join(', ')}`
+    : '';
+  const kmContext = maxKm
+    ? `\nRadio máximo de desplazamiento: ${maxKm} km desde el alojamiento. No sugieras actividades más allá de este radio.`
+    : '';
+
   const prompt = `Eres un experto asesor de viajes. Crea un itinerario detallado para ${days} días en ${destination}.
 
+Perfil del viajero: ${profileLabels[travelerProfile || ''] || 'general'}
+Presupuesto: ${budget || 'moderado'}${typeContext}${kmContext}
+
 Intereses del viajero: ${interests.join(', ') || 'general'}
-Presupuesto: ${budget || 'moderado'}
 
 Incluye:
 - Un resumen del viaje
@@ -113,6 +133,7 @@ Incluye:
   - Consejos de seguridad específicos
   - Restaurantes o comida local recomendada
   - Enlaces a recursos útiles
+  - Distancias aproximadas entre actividades
 
 Responde en español, en formato markdown. Sé conciso pero útil.`;
 

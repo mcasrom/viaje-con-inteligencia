@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { useRouter, useParams } from 'next/navigation';
-import { ArrowLeft, MapPin, Calendar, DollarSign, Sparkles, Loader2, Send, Plane, Plus, X } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { ArrowLeft, MapPin, Calendar, DollarSign, Sparkles, Loader2, Plane, Plus, X } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { getTodosLosPaises } from '@/data/paises';
 
@@ -20,6 +20,26 @@ const budgetOptions = [
   { value: 'high', label: 'Alto (>150€/día)' },
 ];
 
+const travelerProfiles = [
+  { value: 'mochilero', label: 'Mochilero', icon: '🎒' },
+  { value: 'familiar', label: 'Familiar', icon: '👨‍👩‍👧‍👦' },
+  { value: 'solo', label: 'Solo', icon: '🧳' },
+  { value: 'pareja', label: 'Pareja', icon: '💑' },
+  { value: 'lujo', label: 'Lujo', icon: '✨' },
+];
+
+const tripTypes = [
+  'Cultural', 'Playa', 'Montaña', 'Naturaleza', 'Gastronómico',
+  'Aventura', 'Urbano', 'Ruta', 'Relax', 'Road trip'
+];
+
+const maxKmOptions = [
+  { value: 50, label: '50 km (muy local)' },
+  { value: 100, label: '100 km (regional)' },
+  { value: 200, label: '200 km (provincia)' },
+  { value: 500, label: '500 km (sin límite)' },
+];
+
 export default function NuevoViajePage() {
   const { user, loading: authLoading } = useAuth();
   const router = useRouter();
@@ -32,6 +52,9 @@ export default function NuevoViajePage() {
   const [endDate, setEndDate] = useState('');
   const [days, setDays] = useState(7);
   const [budget, setBudget] = useState('moderate');
+  const [travelerProfile, setTravelerProfile] = useState('mochilero');
+  const [selectedTripTypes, setSelectedTripTypes] = useState<string[]>([]);
+  const [maxKm, setMaxKm] = useState(200);
   const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
   const [customInterest, setCustomInterest] = useState('');
   const [itineraryLoading, setItineraryLoading] = useState(false);
@@ -85,6 +108,10 @@ export default function NuevoViajePage() {
           destination,
           days,
           interests: selectedInterests,
+          budget,
+          travelerProfile,
+          tripTypes: selectedTripTypes,
+          maxKm,
         }),
       });
 
@@ -122,6 +149,9 @@ export default function NuevoViajePage() {
           interests: selectedInterests,
           itinerary_raw: itinerary || null,
           status: 'draft',
+          traveler_profile: travelerProfile,
+          trip_types: selectedTripTypes,
+          max_km: maxKm,
         }),
       });
 
@@ -261,6 +291,71 @@ export default function NuevoViajePage() {
               </div>
 
               <div>
+                <label className="block text-white font-medium mb-2">Perfil de viajero</label>
+                <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
+                  {travelerProfiles.map(p => (
+                    <button
+                      key={p.value}
+                      type="button"
+                      onClick={() => setTravelerProfile(p.value)}
+                      className={`px-3 py-2.5 rounded-xl border transition-colors text-sm ${
+                        travelerProfile === p.value
+                          ? 'bg-blue-600 border-blue-500 text-white'
+                          : 'bg-slate-700 border-slate-600 text-slate-300 hover:border-slate-500'
+                      }`}
+                    >
+                      <span className="text-lg">{p.icon}</span>
+                      <div className="mt-0.5">{p.label}</div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-white font-medium mb-2">Tipo de viaje</label>
+                <div className="flex flex-wrap gap-2">
+                  {tripTypes.map(t => (
+                    <button
+                      key={t}
+                      type="button"
+                      onClick={() => setSelectedTripTypes(prev =>
+                        prev.includes(t) ? prev.filter(x => x !== t) : [...prev, t]
+                      )}
+                      className={`px-3 py-1.5 rounded-full text-sm transition-colors ${
+                        selectedTripTypes.includes(t)
+                          ? 'bg-teal-500 text-white font-medium'
+                          : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
+                      }`}
+                    >
+                      {t}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-white font-medium mb-2">
+                  Radio máximo: {maxKm} km
+                </label>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                  {maxKmOptions.map(opt => (
+                    <button
+                      key={opt.value}
+                      type="button"
+                      onClick={() => setMaxKm(opt.value)}
+                      className={`px-3 py-2 rounded-xl border transition-colors text-sm ${
+                        maxKm === opt.value
+                          ? 'bg-blue-600 border-blue-500 text-white'
+                          : 'bg-slate-700 border-slate-600 text-slate-300 hover:border-slate-500'
+                      }`}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div>
                 <label className="block text-white font-medium mb-2">Intereses</label>
                 <div className="flex flex-wrap gap-2 mb-3">
                   {interestsList.map(interest => (
@@ -284,7 +379,7 @@ export default function NuevoViajePage() {
                     value={customInterest}
                     onChange={e => setCustomInterest(e.target.value)}
                     onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addCustomInterest(); } }}
-                    placeholder="Añade intereses personalizados (ej: Buceo, Queensland)..."
+                    placeholder="Añade intereses personalizados..."
                     className="flex-1 bg-slate-700 text-white rounded-xl px-4 py-2.5 text-sm border border-slate-600 focus:border-purple-500 focus:outline-none placeholder-slate-500"
                   />
                   <button
@@ -375,9 +470,14 @@ export default function NuevoViajePage() {
                 <div className="text-white space-y-1">
                   <p><strong>{name || 'Sin nombre'}</strong> - {destination || 'Sin destino'}</p>
                   <p className="text-slate-400">{days} días · {budgetOptions.find(b => b.value === budget)?.label}</p>
-                  {selectedInterests.length > 0 && (
-                    <p className="text-slate-400">{selectedInterests.join(', ')}</p>
+                  <p className="text-slate-400">{travelerProfiles.find(p => p.value === travelerProfile)?.icon} {travelerProfiles.find(p => p.value === travelerProfile)?.label}</p>
+                  {selectedTripTypes.length > 0 && (
+                    <p className="text-slate-400">Tipo: {selectedTripTypes.join(', ')}</p>
                   )}
+                  {selectedInterests.length > 0 && (
+                    <p className="text-slate-400">Intereses: {selectedInterests.join(', ')}</p>
+                  )}
+                  <p className="text-slate-400">Radio: {maxKm} km</p>
                 </div>
               </div>
             </>
