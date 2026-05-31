@@ -1,5 +1,64 @@
 # Way Ahead
 
+## ⚠️ A OBSERVAR — Next.js RSC Crash (31 May 2026)
+
+> **Síntoma**: A las 07:03:37 UTC, 17 requests con `?_rsc=` fallaron simultáneamente con 502.
+>
+> **Error en logs**: `Could not find the module "[project]/node_modules/next/dist/esm/lib/framework/boundary-components.js#MetadataBoundary" in the React Client Manifest. This is probably a bug in the React Server Components bundler.`
+>
+> **Causa probable**: Bug conocido de Next.js 16 con Turbopack en producción — el React Client Manifest se corrompe o no se carga correctamente tras un restart/rebuild.
+>
+> **Impacto**: Todas las rutas que usan RSC payloads (Cloudflare edge requests con `?_rsc=`) fallaron durante ~1 segundo. Se recuperó automáticamente.
+>
+> **Rutas afectadas**: `/pulso-global`, `/legal`, `/lead-magnet`, `/dashboard`, `/viajes`, `/seguridad`, `/documentos`, `/fuentes-osint`, `/checklist`, `/infografias`, `/metodologia`, `/coste`, `/kpi`, `/api-endpoints`, `/relojes`, `/indices`, `/comparar`, `/stats`, `/colaborar`, `/eventos`, `/transparencia`
+>
+> **Qué observar**:
+> - Si se repite tras un `pm2 restart` o deploy
+> - Si la frecuencia aumenta (actual: 1 evento/día)
+> - Si afecta a usuarios reales (no solo Cloudflare edge)
+>
+> **Posibles fixes si se vuelve recurrente**:
+> 1. Cambiar de `fork` a `cluster` mode con 2 workers en `ecosystem.config.cjs`
+> 2. Aumentar `max_memory_restart` de `2G` a `2500M` para evitar OOM restarts
+> 3. Añadir health check que detecte el crash y fuerce restart automático
+> 4. Si persiste, considerar desactivar Turbopack en producción (`next build` sin TURBOPACK)
+
+## ✅ 31 May 2026 — UK FCDO Integration + Multi-Source Narrative
+
+> **Último deploy verificado:** OK ✅ (commit `d63b26f`, 6 archivos, 354 insertaciones)
+>
+> **Sprint activo:** Multi-source risk intelligence
+>
+> ### Logros del día (31 May)
+>
+> #### UK FCDO — Nueva fuente de riesgo gubernamental
+> - ✅ **`src/lib/scraper/uk-fcdo.ts`**: Scraper completo de `gov.uk/foreign-travel-advice`. Extrae país, código ISO, nivel riesgo (1-4), label, summary, URL y fecha. Mapeo por keywords: "do not travel"→4, "all but essential"→3, "caution"→2, normal→1.
+> - ✅ **`src/lib/scraper/risk-mapper.ts`**: Actualizado para merge US State Dept + UK FCDO. FCDO rellena huecos donde US no tiene datos. Ambos normalizados a esquema idéntico (`source`, `country_code`, `risk_level` INT, `risk_label`, `summary`, `raw_data` JSONB, `fetched_at`).
+> - ✅ **`src/app/api/cron/master/route.ts`**: Nueva fase `runUKFCDO()` ejecutada en paralelo con US State Dept. Logging en `scraper_logs` con source `uk_fcdo`.
+> - ✅ **Schema `external_risk` verificado**: Ambas fuentes usan campos y tipos idénticos. `risk_level` es INTEGER (1-4), `source` es TEXT (`'us_state_dept'` o `'uk_fcdo'`).
+>
+> #### Narrativa pública — Actualización multi-fuente
+> - ✅ **`/ecosistema`**: UK FCDO añadido en Fuentes de Datos, Pipelines (nuevo scraper) y Storage (`external_risk` → "multi-fuente"). Social Publisher actualizado con "rotación ES/EN".
+> - ✅ **`/metodologia`**: Sección "Fuentes secundarias" expandida a US State Dept + UK FCDO con layout 2-columnas. Triple validación de riesgo. Pipeline paso 1 y 3 actualizados para reflejar las 3 fuentes (MAEC, US, UK).
+> - ✅ **`/fuentes-osint`**: UK FCDO añadido a categoría "Riesgo y Seguridad" con enlace a `gov.uk/foreign-travel-advice`.
+>
+> ### Deploy
+> - Commit `d63b26f` — push a main, deploy manual vía SSH
+> - Build: 819 páginas, 84s compile + 56s TypeScript + 14s SSG
+> - PM2 restart → health 200 en `/ecosistema`, `/metodologia`, `/fuentes-osint`
+>
+> ### Estado post-deploy
+> | Componente | Estado |
+> |------------|--------|
+> | UK FCDO scraper | ✅ `src/lib/scraper/uk-fcdo.ts` |
+> | Risk mapper merge | ✅ US + UK, fallback logic |
+> | Cron master | ✅ 9 tareas (antes 8) |
+> | Schema external_risk | ✅ idéntico campos/tipos |
+> | /ecosistema | ✅ 200, FCDO visible |
+> | /metodologia | ✅ 200, triple validación |
+> | /fuentes-osint | ✅ 200, FCDO listado |
+> | PM2 | online, 0 reinicios |
+
 ## ✅ 30 May 2026 — Auth RESUELTO + Status Final
 
 > **Estado:** ✅ **FUNCIONAL**. El sistema de autenticación (Magic Link) funciona correctamente.

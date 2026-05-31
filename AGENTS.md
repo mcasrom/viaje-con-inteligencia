@@ -1,6 +1,25 @@
 # AGENTS.md — Viaje con Inteligencia
 
-## Today (23 May 2026) — Sprint UX + Lead Magnet + Estabilidad
+## Today (31 May 2026) — UK FCDO Integration + Multi-Source OSINT + RRSS
+
+### Logros
+- **UK FCDO scraper**: `src/lib/scraper/uk-fcdo.ts` — scrape gov.uk/foreign-travel-advice, mapeo keywords a niveles 1-4
+- **Risk mapper merge**: `risk-mapper.ts` actualizado para US + UK FCDO, FCDO rellena huecos
+- **Cron master**: Nueva tarea `runUKFCDO()` en paralelo, 9 tareas totales
+- **Schema external_risk**: Verificado idéntico campos/tipos para ambas fuentes (INT risk_level, TEXT source)
+- **Narrativa pública**: `/ecosistema`, `/metodologia`, `/fuentes-osint` actualizadas con triple validación
+- **Deploy**: Commit `d63b26f`, 819 páginas, 0 errores, health 200
+- **RRSS posts**: Telegram ✅, Mastodon ✅, Bluesky ✅, X/Twitter ✅ (manual) — todos en inglés
+- **Bluesky creds**: Añadidas a `.env.production` en servidor (faltaban)
+- **WAY_AHEAD.md**: Nueva entrada 31 May con detalles completos
+- **AGENTS.md**: Outreach Calendar actualizado con posts 31 May
+
+### Commits
+- `d63b26f` feat: UK FCDO integration + multi-source narrative updates (ecosistema, metodologia, fuentes-osint)
+
+### Pendientes
+- Verificar 404s y broken links pendientes
+- Documentar nuevas fuentes y método de cálculo
 
 ### Logros
 - **Hero nuevo homepage**: "¿Es seguro viajar a...?" + buscador + CTAs. Mapa separado debajo del hero (sin overlay oscuro). Complexity técnica oculta bajo el fold.
@@ -486,6 +505,15 @@ Para probar authenticated endpoints se necesita sesión válida (vía browser).
 | Día 4 | Facebook Gurú de Viaje | Versión español | ✅ (draft en content/outreach/facebook-guru-viaje.mdx) |
 | Día 4 | Facebook Comunidad Viajeros | Versión español | ✅ (draft en content/outreach/facebook-comunidad-viajeros.mdx) |
 | Día 5 | Email bloggers/agencias | Outreach 5-10 | ⏳ |
+
+## RRSS Posts — 31 May 2026 (UK FCDO Integration)
+
+| Fecha | Plataforma | Tema | Estado | Link/ID |
+|-------|-----------|------|--------|---------|
+| 31 May | Telegram canal | UK FCDO triple validation (EN) | ✅ | Channel post |
+| 31 May | Bluesky | UK FCDO integration (EN) | ✅ | `at://did:plc:5rlrbcezqpp5veypjutqi6kp/app.bsky.feed.post/3mn54x6yqxl2i` |
+| 31 May | Mastodon | UK FCDO multi-source (EN) | ✅ | `https://mastodon.social/@viajeinteligencia/116668200220800795` |
+| 31 May | X/Twitter | UK FCDO short (EN) | ✅ Manual post | Draft in `content/social/uk-fcdo-posts.md` |
 
 ## Sprint 1 ✅ — Trust Layer (19 May 2026)
 1. **Banda "Cómo funciona" en Homepage** (`page.tsx:517-556`): 5 pilares visuales (datos oficiales, IA asistida, metodología abierta, privacidad, proyecto independiente) + CTAs a `/metodologia`, `/transparencia`, `/fuentes-osint`, `/seguridad`

@@ -27,6 +27,7 @@ export interface MlFeatures {
   cluster_label: string | null;
   model_version: string | null;
   us_risk_score: number | null;
+  uk_risk_score: number | null;
   avg_tone_7d: number | null;
   avg_tone_30d: number | null;
   tone_trend_7d: number;
@@ -136,6 +137,12 @@ export async function computeAndStoreFeatures(code: string, riskLevel: string): 
     usRiskLevel = (usData as { risk_level: number } | null)?.risk_level ?? null;
   } catch {}
 
+  let ukRiskLevel: number | null = null;
+  try {
+    const { data: ukData } = await admin.from('external_risk').select('risk_level').eq('source', 'uk_fcdo').eq('country_code', code).maybeSingle();
+    ukRiskLevel = (ukData as { risk_level: number } | null)?.risk_level ?? null;
+  } catch {}
+
   const events30d = eventsRes.count ?? 0;
   const highImpactEvents30d = highImpactRes.count ?? 0;
   const signalCount7d = signalsRes.count ?? 0;
@@ -205,6 +212,7 @@ export async function computeAndStoreFeatures(code: string, riskLevel: string): 
     airspace_closure_active: airspaceActive,
     route_disruption_active: routesDisrupted,
     us_risk_score: usRiskLevel,
+    uk_risk_score: ukRiskLevel,
     avg_tone_7d: avgTone7d,
     avg_tone_30d: avgTone30d,
     tone_trend_7d: toneTrend7d,

@@ -19,7 +19,7 @@ export const FEATURE_NAMES = [
   'signalCount', 'incidentHighCount', 'incidentMediumCount', 'incidentCount',
   'changes30d', 'seasonalMult', 'gpi_score', 'gti_score', 'hdi_score',
   'ipc_score', 'tci_score', 'events30d', 'highImpactEvents30d',
-  'usRiskScore', 'trend7d', 'trend30d',
+  'usRiskScore', 'ukRiskScore', 'trend7d', 'trend30d',
   'avgTone7d', 'avgTone30d', 'toneTrend7d', 'negativeRatio7d', 'toneVolatility7d',
 ];
 
@@ -40,6 +40,19 @@ async function buildTrainingRow(
     getFeaturesByCountry(code.toLowerCase()).catch(() => null),
   ]);
 
+  // Fetch UK FCDO risk score (new third government source)
+  let ukRiskLevel: number | null = null;
+  try {
+    const { supabaseAdmin } = await import('./supabase-admin');
+    const { data: ukData } = await supabaseAdmin
+      .from('external_risk')
+      .select('risk_level')
+      .eq('source', 'uk_fcdo')
+      .eq('country_code', code)
+      .maybeSingle();
+    ukRiskLevel = (ukData as { risk_level: number } | null)?.risk_level ?? null;
+  } catch {}
+
   const seasonalMult = getSeasonalRiskMultiplier(code);
   const riskScore = computeRiskScore(riskNum, signals, incidents, features);
   const transitionProb = getUpProbability(matrix, riskNum);
@@ -53,8 +66,9 @@ async function buildTrainingRow(
       changes30d, seasonalMult,
       features?.gpi_score ?? 0, features?.gti_score ?? 0, features?.hdi_score ?? 0,
       features?.ipc_score ?? 0, features?.tci_score ?? 0,
-      features?.events_30d ?? 0, features?.high_impact_events_30d ?? 0,
+      features?.events_30d ?? 0, features?.high_impact_events30d ?? 0,
       features?.us_risk_score ?? 0,
+      ukRiskLevel ?? 0,
       features?.risk_trend_7d ?? 0, features?.risk_trend_30d ?? 0,
       features?.avg_tone_7d ?? 0, features?.avg_tone_30d ?? 0,
       features?.tone_trend_7d ?? 0, features?.negative_ratio_7d ?? 0,
