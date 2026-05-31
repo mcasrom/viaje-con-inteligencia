@@ -540,17 +540,7 @@ ${Object.entries(results).filter(([k, v]) => v && (v as any).status !== 'skipped
 🩺 HEALTH: ${health}
 `;
 
-    // Telegram
-    if (TELEGRAM_BOT_TOKEN && TELEGRAM_CHANNEL_ID) {
-      try {
-        await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
-          method: 'POST', headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ chat_id: TELEGRAM_CHANNEL_ID, text: summary, parse_mode: 'Markdown' }),
-        });
-      } catch {}
-    }
-
-    // Email
+    // Email only (no Telegram — admin internal report)
     if (resend) {
       try {
         await resend.emails.send({
@@ -820,8 +810,17 @@ async function runCloudflareAnalytics(): Promise<any> {
     const result = await cfRun();
 
     if (result.stored) {
-      const { publishToTelegramChannel } = await import('@/lib/social-publisher');
-      await publishToTelegramChannel(result.summary);
+      // Email only (admin internal report)
+      if (resend) {
+        try {
+          await resend.emails.send({
+            from: 'Viaje con Inteligencia <analytics@viajeinteligencia.com>',
+            to: ADMIN_EMAIL,
+            subject: `Cloudflare Analytics — Week of ${weekStart}`,
+            html: `<pre style="background:#1e293b;padding:16px;border-radius:8px;color:#cbd5e1;font-size:13px;">${result.summary}</pre>`,
+          });
+        } catch {}
+      }
     }
 
     return result;
@@ -847,14 +846,21 @@ async function runModelTraining(): Promise<any> {
   }
 }
 
-// ===== DAILY TELEGRAM CONTENT =====
+// ===== DAILY CONTENT (Telegram + BlueSky + Mastodon) =====
 async function runDailyTelegramContent(): Promise<any> {
   try {
     const { buildDailyPost, publishDailyPost } = await import('@/lib/daily-tg-content');
     const post = await buildDailyPost();
     if (!post) return { status: 'skipped', reason: 'No content generated' };
-    const ok = await publishDailyPost(post);
-    return { status: ok ? 'ok' : 'error', country: post.countryName };
+
+    const tgOk = await publishDailyPost(post);
+
+    // Also publish to BlueSky + Mastodon
+    const { publishToBlueSky, publishToMastodon } = await import('@/lib/social-publisher');
+    const bsOk = await publishToBlueSky(post.text);
+    const msOk = await publishToMastodon(post.text);
+
+    return { status: tgOk ? 'ok' : 'error', country: post.countryName, telegram: tgOk, bluesky: bsOk, mastodon: msOk };
   } catch (e: any) {
     return { status: 'error', error: e.message };
   }
@@ -1090,13 +1096,15 @@ async function runWordTrends(): Promise<any> {
 
     const critical = anomalies.filter(a => a.z_score >= 3 || a.ratio >= 5);
     if (critical.length > 0) {
-      const { publishToTelegramChannel } = await import('@/lib/social-publisher');
+      const { publishToTelegramChannel, publishToBlueSky, publishToMastodon } = await import('@/lib/social-publisher');
       const msg = `🔍 *Detección temprana — palabras anómalas*\n\n` +
         critical.slice(0, 8).map(a =>
           `• *${a.word}*: x${a.ratio} (z=${a.z_score.toFixed(1)})` +
           (a.country_codes.length > 0 ? ` — ${a.country_codes.map(c => `#${c.toUpperCase()}`).join(' ')}` : '')
         ).join('\n');
       await publishToTelegramChannel(msg);
+      await publishToBlueSky(msg.replace(/\*/g, ''));
+      await publishToMastodon(msg.replace(/\*/g, ''));
     }
 
     return { status: 'ok', anomalies: anomalies.length, critical: critical.length };
@@ -1119,8 +1127,10 @@ async function runHeatmapDetection() {
           `  ${h.country}: ${h.reasons.join('; ')}`
         ).join('\n');
 
-      const { publishToTelegramChannel } = await import('@/lib/social-publisher');
+      const { publishToTelegramChannel, publishToBlueSky, publishToMastodon } = await import('@/lib/social-publisher');
       await publishToTelegramChannel(msg);
+      await publishToBlueSky(msg);
+      await publishToMastodon(msg);
     }
 
     return {
@@ -1145,8 +1155,17 @@ async function runSystemHealth() {
       const failedList = summary.failed.map(f => `  ❌ ${f.service} (${f.error || 'timeout'})`).join('\n');
       const msg = `🔴 Health Check — ${summary.fail}/${summary.total} fallos\n\n${failedList}`;
 
-      const { publishToTelegramChannel } = await import('@/lib/social-publisher');
-      await publishToTelegramChannel(msg);
+      // Email only (admin internal alert)
+      if (resend) {
+        try {
+          await resend.emails.send({
+            from: 'Viaje con Inteligencia <alerts@viajeinteligencia.com>',
+            to: ADMIN_EMAIL,
+            subject: `Health Check Alert — ${summary.fail}/${summary.total} services down`,
+            html: `<pre style="background:#1e293b;padding:16px;border-radius:8px;color:#cbd5e1;font-size:13px;">${msg}</pre>`,
+          });
+        } catch {}
+      }
     }
 
     return { ok: summary.ok, fail: summary.fail, total: summary.total, failures: summary.failed.map(f => f.service) };
