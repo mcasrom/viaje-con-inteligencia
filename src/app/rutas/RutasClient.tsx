@@ -769,7 +769,7 @@ function RouteDetail({ route, onBack }: { route: any; onBack: () => void }) {
             });
             const insight = `🤖 La IA recomienda ir en ${bestMonth.month} (mejor precio/clima)`;
             const text = encodeURIComponent(`🛣️ ${route.title}\n\n${route.desc}\n\n${insight}\n\nDescúbrelo en Viaje con Inteligencia:`);
-            const url = encodeURIComponent(window.location.href);
+            const url = encodeURIComponent(typeof window !== 'undefined' ? window.location.href : 'https://www.viajeinteligencia.com/rutas');
             
             return (
               <>
