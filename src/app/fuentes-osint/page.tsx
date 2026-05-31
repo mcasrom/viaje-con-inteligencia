@@ -22,9 +22,10 @@ const SOURCES = [
     bg: 'bg-red-500/10',
     items: [
       { name: 'MAEC España', desc: 'Recomendaciones de viaje oficiales del Ministerio de Asuntos Exteriores', url: 'https://www.exteriores.gob.es' },
+      { name: 'US State Dept Travel Advisories', desc: 'Alertas de viaje del Departamento de Estado de EE.UU. (niveles 1-4)', url: 'https://travel.state.gov' },
+      { name: 'UK FCDO Foreign Travel Advice', desc: 'Consejos de viaje del gobierno británico — triple validación de riesgo', url: 'https://www.gov.uk/foreign-travel-advice' },
       { name: 'Global Peace Index (IEP)', desc: 'Índice de paz global por país y región', url: 'https://www.visionofhumanity.org' },
       { name: 'Global Terrorism Index', desc: 'Impacto del terrorismo mundial', url: 'https://www.visionofhumanity.org' },
-      { name: 'US State Dept Travel Advisories', desc: 'Alertas de viaje del Departamento de Estado de EE.UU. (doble validación)', url: 'https://travel.state.gov' },
     ],
   },
   {

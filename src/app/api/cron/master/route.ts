@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getAllMAECAlerts, getMAECData } from '@/lib/scraper/maec';
 import { scrapeUSAdvisories } from '@/lib/scraper/us-state-dept';
+import { scrapeFCDOAdvisories } from '@/lib/scraper/uk-fcdo';
 import { getCurrentLiveRiskLevels } from '@/lib/scraper/risk-mapper';
 import { supabase } from '@/lib/supabase';
 import { supabaseAdmin, isSupabaseAdminConfigured } from '@/lib/supabase-admin';
@@ -78,6 +79,25 @@ async function runUSStateDept(): Promise<any> {
   } catch (e: any) {
     await supabase.from('scraper_logs').insert({
       source: 'us_state_dept', status: 'error', error_message: e.message,
+      completed_at: new Date().toISOString(),
+    });
+    return { status: 'error', error: e.message };
+  }
+}
+
+// ===== UK FCDO SCRAPE =====
+async function runUKFCDO(): Promise<any> {
+  try {
+    const result = await withRetry(() => scrapeFCDOAdvisories(), 'UK FCDO');
+    await supabase.from('scraper_logs').insert({
+      source: 'uk_fcdo', status: result.errors > 0 ? 'partial' : 'success',
+      items_scraped: result.stored, items_failed: result.errors,
+      completed_at: new Date().toISOString(),
+    });
+    return { status: 'ok', stored: result.stored, errors: result.errors, total: result.total };
+  } catch (e: any) {
+    await supabase.from('scraper_logs').insert({
+      source: 'uk_fcdo', status: 'error', error_message: e.message,
       completed_at: new Date().toISOString(),
     });
     return { status: 'error', error: e.message };
@@ -949,12 +969,13 @@ async function runCronAsync() {
   const PHASE1_TIMEOUT_MS = 360000;
 
   const settledPromises = Promise.allSettled([
-    withTimeout(() => runMaecScrape(), 90000, '1/8 MAEC scrape'),
-    withTimeout(() => runUSStateDept(), 30000, '1b/8 US State Dept'),
-    withTimeout(() => runAirspaceOsint(), 30000, '4/8 Airspace OSINT'),
-    withTimeout(() => runOilPrice(), 15000, '6/8 Oil price'),
-    withTimeout(() => runModelTraining(), 5000, '6/8 Model training'),
-    withTimeout(() => runEventsFetch(), 300000, 'Events fetch'),
+    withTimeout(() => runMaecScrape(), 90000, '1/9 MAEC scrape'),
+    withTimeout(() => runUSStateDept(), 30000, '2/9 US State Dept'),
+    withTimeout(() => runUKFCDO(), 30000, '3/9 UK FCDO'),
+    withTimeout(() => runAirspaceOsint(), 30000, '4/9 Airspace OSINT'),
+    withTimeout(() => runOilPrice(), 15000, '5/9 Oil price'),
+    withTimeout(() => runModelTraining(), 5000, '6/9 Model training'),
+    withTimeout(() => runEventsFetch(), 300000, '7/9 Events fetch'),
   ]);
 
   const phase1Result = await Promise.race([

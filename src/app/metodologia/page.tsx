@@ -91,7 +91,7 @@ export default function MetodologiaPage() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
             {[
-              { step: '1', title: 'Ingesta de datos', desc: 'MAEC · US State Dept · WHO DON · ReliefWeb · USGS · GDACS · GDELT · RSS · Reddit · OpenSky · ACLED · Open-Meteo · OSM', icon: Database, color: 'text-blue-400' },
+              { step: '1', title: 'Ingesta de datos', desc: 'MAEC · US State Dept · UK FCDO · WHO DON · ReliefWeb · USGS · GDACS · GDELT · RSS · Reddit · OpenSky · ACLED · Open-Meteo · OSM', icon: Database, color: 'text-blue-400' },
               { step: '2', title: 'Normalización', desc: 'Estandarizamos formatos, códigos ISO, coordenadas y categorías de todas las fuentes', icon: FileText, color: 'text-indigo-400' },
               { step: '3', title: 'IA y análisis', desc: 'Groq clasifica señales OSINT. ML Random Forest predice cambios de riesgo', icon: Brain, color: 'text-purple-400' },
               { step: '4', title: 'Alertas', desc: 'Detección de incidentes, clusterización, sentimiento, Early Bird digest, notificaciones Telegram', icon: Bell, color: 'text-amber-400' },
@@ -139,27 +139,46 @@ export default function MetodologiaPage() {
           </div>
         </div>
 
-        {/* US State Dept */}
+        {/* Fuentes Secundarias: US State Dept + UK FCDO */}
         <div className="bg-slate-800/60 rounded-xl border border-slate-700/50 p-6 mb-8">
           <div className="flex items-center gap-3 mb-4">
             <Globe className="w-6 h-6 text-blue-400" />
-            <h2 className="text-xl font-bold text-white">Fuente secundaria: US State Department</h2>
+            <h2 className="text-xl font-bold text-white">Fuentes secundarias: US State Dept + UK FCDO</h2>
           </div>
           <p className="text-slate-300 leading-relaxed">
-            Complementamos los datos del MAEC con los <strong>Travel Advisories</strong> del Departamento de Estado de EE.UU. 
-            Esta fuente asigna niveles de riesgo del 1 al 4 a cada país desde la perspectiva estadounidense, 
-            permitiendo una <strong>doble validación</strong> del nivel de riesgo.
+            Complementamos los datos del MAEC con dos fuentes gubernamentales internacionales para una <strong>triple validación</strong> del nivel de riesgo:
           </p>
-          <div className="mt-4">
-            <a
-              href="https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories.html"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 text-sm"
-            >
-              <Globe className="w-4 h-4" />
-              Ver Travel Advisories oficiales →
-            </a>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+            <div className="bg-slate-700/20 rounded-lg p-4">
+              <h3 className="text-white font-semibold text-sm mb-2">🇺🇸 US State Department</h3>
+              <p className="text-slate-400 text-xs leading-relaxed">
+                <strong>Travel Advisories</strong> con niveles numéricos 1-4 desde la perspectiva estadounidense. 
+                Permite cruzar datos y detectar divergencias con la valoración europea.
+              </p>
+              <a
+                href="https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories.html"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 text-blue-400 hover:text-blue-300 text-xs mt-2"
+              >
+                <Globe className="w-3 h-3" /> Ver advisories →
+              </a>
+            </div>
+            <div className="bg-slate-700/20 rounded-lg p-4">
+              <h3 className="text-white font-semibold text-sm mb-2">🇬🇧 UK FCDO</h3>
+              <p className="text-slate-400 text-xs leading-relaxed">
+                <strong>Foreign Travel Advice</strong> del gobierno británico. Cubre países donde el MAEC o US no tienen datos actualizados, 
+                rellenando huecos y añadiendo una tercera perspectiva al análisis de riesgo.
+              </p>
+              <a
+                href="https://www.gov.uk/foreign-travel-advice"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 text-blue-400 hover:text-blue-300 text-xs mt-2"
+              >
+                <Globe className="w-3 h-3" /> Ver FCDO advice →
+              </a>
+            </div>
           </div>
         </div>
 
@@ -193,9 +212,9 @@ export default function MetodologiaPage() {
           </div>
           <div className="space-y-4">
             {[
-              { step: '1', title: 'Recopilación de datos', desc: 'Se scrapean las recomendaciones oficiales del MAEC para cada país, incluyendo nivel de riesgo, alertas activas y fecha de actualización.' },
+              { step: '1', title: 'Recopilación de datos', desc: 'Se scrapean las recomendaciones oficiales del MAEC, US State Dept y UK FCDO para cada país. Los tres fuentes se normalizan a un esquema común (source, country_code, risk_level 1-4, risk_label, summary, raw_data JSONB).' },
               { step: '2', title: 'Clasificación automática', desc: 'Los países se clasifican en 5 niveles de riesgo según el texto oficial. Se mapean códigos ISO2 para compatibilidad con datos internacionales.' },
-              { step: '3', title: 'Análisis complementario', desc: 'Se cruzan datos de índices globales (GPI, GTI, HDI) y datos OSINT para ofrecer contexto adicional al nivel de riesgo.' },
+              { step: '3', title: 'Análisis complementario', desc: 'Se cruzan datos de índices globales (GPI, GTI, HDI), fuentes OSINT y las tres fuentes gubernamentales para ofrecer contexto adicional. Si una fuente no tiene datos, otra puede cubrir el hueco.' },
               { step: '4', title: 'Índice TCI', desc: 'Se calcula el Travel Cost Index combinando demanda, precio del petróleo, estacionalidad, inflación, índice de riesgo y cierres de espacio aéreo.' },
               { step: '5', title: 'Actualización continua', desc: 'Los datos se refrescan diariamente a las 06:00 UTC mediante cron maestro. Las alertas se publican en Telegram. El digest "Early Bird" se envía a las 07:00 UTC.' },
             ].map(item => (
