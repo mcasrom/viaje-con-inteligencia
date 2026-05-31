@@ -283,7 +283,7 @@ function generateHTML(data, pm2, server) {
   </div>
 
   <div class="footer">
-    Generado automáticamente · <a href="/trafico.html">Ver dashboard completo</a> · ${dateStr} ${timeStr}
+    Generado automáticamente · Datos actualizados cada hora vía cron · <a href="/trafico.html">Ver dashboard completo</a> · ${dateStr} ${timeStr}
   </div>
 </div>
 </body>
