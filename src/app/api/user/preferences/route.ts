@@ -28,10 +28,18 @@ function normalizeBudget(val: string | undefined): string | undefined {
 }
 
 function normalizeIncomingBody(raw: Record<string, unknown>) {
+  const travelerRaw = (raw.viajero_tipo || raw.traveler_type || raw.profile) as string | undefined;
+  const riskRaw = (raw.tolerancia_riesgo || raw.risk_tolerance) as string | undefined;
+  const budgetRaw = normalizeBudget((raw.presupuesto || raw.budget_range || raw.budget) as string | undefined);
+
+  const validTraveler = ['mochilero', 'lujo', 'familiar', 'aventura', 'negocios'].includes(travelerRaw || '') ? travelerRaw : undefined;
+  const validRisk = ['baja', 'media', 'alta'].includes(riskRaw || '') ? riskRaw : undefined;
+  const validBudget = ['bajo', 'medio', 'alto', 'lujo'].includes(budgetRaw || '') ? budgetRaw : undefined;
+
   return {
-    viajero_tipo: (raw.viajero_tipo || raw.traveler_type || raw.profile) as string | undefined,
-    tolerancia_riesgo: (raw.tolerancia_riesgo || raw.risk_tolerance) as string | undefined,
-    presupuesto: normalizeBudget((raw.presupuesto || raw.budget_range || raw.budget) as string | undefined),
+    viajero_tipo: validTraveler,
+    tolerancia_riesgo: validRisk,
+    presupuesto: validBudget,
     preferred_categories: raw.preferred_categories as string[] | undefined,
   };
 }
@@ -52,10 +60,18 @@ export async function GET(request: NextRequest) {
     if (!user) return apiError('No autenticado', undefined, 401);
 
     const { searchParams } = new URL(request.url);
+    const rawTraveler = searchParams.get('viajero_tipo');
+    const rawRisk = searchParams.get('tolerancia_riesgo');
+    const rawBudget = normalizeBudget(searchParams.get('presupuesto') || undefined);
+
+    const validTraveler = ['mochilero', 'lujo', 'familiar', 'aventura', 'negocios'].includes(rawTraveler || '') ? rawTraveler : undefined;
+    const validRisk = ['baja', 'media', 'alta'].includes(rawRisk || '') ? rawRisk : undefined;
+    const validBudget = ['bajo', 'medio', 'alto', 'lujo'].includes(rawBudget || '') ? rawBudget : undefined;
+
     const queryResult = QuerySchema.safeParse({
-      viajero_tipo: searchParams.get('viajero_tipo'),
-      tolerancia_riesgo: searchParams.get('tolerancia_riesgo'),
-      presupuesto: searchParams.get('presupuesto'),
+      viajero_tipo: validTraveler,
+      tolerancia_riesgo: validRisk,
+      presupuesto: validBudget,
     });
 
     if (!queryResult.success) {
