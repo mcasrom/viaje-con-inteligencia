@@ -610,20 +610,21 @@ async function runWeeklyDigest(): Promise<any> {
       results.email = { skipped: 'No resend API key' };
     }
 
-    // 2. Social channels
-    const { buildNewsletterSummary, publishToTelegramChannel, publishToMastodon, publishToBlueSky, publishToTelegramSubscribers } = await import('@/lib/social-publisher');
-    const { full, short, mastodonThread } = await buildNewsletterSummary(issue);
+    // 2. Social channels (language rotation: ES/EN alternating daily)
+    const { buildNewsletterSummary, publishToTelegramChannel, publishToMastodon, publishToBlueSky, publishToTelegramSubscribers, getDayLanguage } = await import('@/lib/social-publisher');
+    const lang = getDayLanguage();
+    const { full, short, mastodonThread } = await buildNewsletterSummary(issue, lang);
 
     results.telegram_channel = await publishToTelegramChannel(full);
-    results.mastodon = { posted: false, threads: 0 };
+    results.mastodon = { posted: false, threads: 0, lang };
     for (const toot of mastodonThread) {
-      const ok = await publishToMastodon(toot);
+      const ok = await publishToMastodon(toot, lang);
       if (ok) {
         results.mastodon.posted = true;
         results.mastodon.threads++;
       }
     }
-    results.bluesky = await publishToBlueSky(short);
+    results.bluesky = await publishToBlueSky(short, lang);
     results.telegram_subscribers = await publishToTelegramSubscribers(full);
 
     return { status: 'ok', ...results };
@@ -769,15 +770,20 @@ async function runInfografiaGenerator(): Promise<any> {
 
     const infografiaUrl = `${BASE_URL}/infografias`;
 
-    const { publishToTelegramChannel, publishToMastodon, publishToBlueSky } = await import('@/lib/social-publisher');
+    const { publishToTelegramChannel, publishToMastodon, publishToBlueSky, getDayLanguage } = await import('@/lib/social-publisher');
+    const lang = getDayLanguage();
 
-    const shortText = `📊 Global Travel Risk Index — nuevo informe semanal\n\n🌍 Mapa interactivo + análisis por regiones + Top 5 países en alerta\n\n🔗 ${infografiaUrl}`;
+    const shortText = lang === 'en'
+      ? `📊 Global Travel Risk Index — new weekly report\n\n🌍 Interactive map + regional analysis + Top 5 alert countries\n\n🔗 ${infografiaUrl}`
+      : `📊 Global Travel Risk Index — nuevo informe semanal\n\n🌍 Mapa interactivo + análisis por regiones + Top 5 países en alerta\n\n🔗 ${infografiaUrl}`;
 
-    const longText = `📊 Global Travel Risk Index — nuevo informe semanal\n\nAnálisis completo de riesgo global con mapa interactivo, panorama por regiones, top países en alerta y métricas clave.\n\n🔗 ${infografiaUrl}\n\n#TravelRisk #ViajeInteligente #GlobalSecurity`;
+    const longText = lang === 'en'
+      ? `📊 Global Travel Risk Index — new weekly report\n\nComplete global risk analysis with interactive map, regional overview, top alert countries and key metrics.\n\n🔗 ${infografiaUrl}\n\n#TravelRisk #TravelIntelligence #GlobalSecurity`
+      : `📊 Global Travel Risk Index — nuevo informe semanal\n\nAnálisis completo de riesgo global con mapa interactivo, panorama por regiones, top países en alerta y métricas clave.\n\n🔗 ${infografiaUrl}\n\n#TravelRisk #ViajeInteligente #GlobalSecurity`;
 
     const [blueskyRes, mastodonRes, telegramRes] = await Promise.allSettled([
-      publishToBlueSky(shortText),
-      publishToMastodon(longText),
+      publishToBlueSky(shortText, lang),
+      publishToMastodon(longText, lang),
       publishToTelegramChannel(longText),
     ]);
 
@@ -817,7 +823,7 @@ async function runCloudflareAnalytics(): Promise<any> {
             from: 'Viaje con Inteligencia <analytics@viajeinteligencia.com>',
             to: ADMIN_EMAIL,
             subject: `Cloudflare Analytics — Week of ${weekStart}`,
-            html: `<pre style="background:#1e293b;padding:16px;border-radius:8px;color:#cbd5e1;font-size:13px;">${result.summary}</pre>`,
+            html: result.html || `<pre style="background:#1e293b;padding:16px;border-radius:8px;color:#cbd5e1;font-size:13px;">${result.summary}</pre>`,
           });
         } catch {}
       }
@@ -850,17 +856,19 @@ async function runModelTraining(): Promise<any> {
 async function runDailyTelegramContent(): Promise<any> {
   try {
     const { buildDailyPost, publishDailyPost } = await import('@/lib/daily-tg-content');
-    const post = await buildDailyPost();
+    const { getDayLanguage } = await import('@/lib/social-publisher');
+    const lang = getDayLanguage();
+    const post = await buildDailyPost(lang);
     if (!post) return { status: 'skipped', reason: 'No content generated' };
 
     const tgOk = await publishDailyPost(post);
 
-    // Also publish to BlueSky + Mastodon
+    // Also publish to BlueSky + Mastodon with language rotation
     const { publishToBlueSky, publishToMastodon } = await import('@/lib/social-publisher');
-    const bsOk = await publishToBlueSky(post.text);
-    const msOk = await publishToMastodon(post.text);
+    const bsOk = await publishToBlueSky(post.text, lang);
+    const msOk = await publishToMastodon(post.text, lang);
 
-    return { status: tgOk ? 'ok' : 'error', country: post.countryName, telegram: tgOk, bluesky: bsOk, mastodon: msOk };
+    return { status: tgOk ? 'ok' : 'error', country: post.countryName, telegram: tgOk, bluesky: bsOk, mastodon: msOk, lang };
   } catch (e: any) {
     return { status: 'error', error: e.message };
   }
@@ -1096,15 +1104,22 @@ async function runWordTrends(): Promise<any> {
 
     const critical = anomalies.filter(a => a.z_score >= 3 || a.ratio >= 5);
     if (critical.length > 0) {
-      const { publishToTelegramChannel, publishToBlueSky, publishToMastodon } = await import('@/lib/social-publisher');
-      const msg = `🔍 *Detección temprana — palabras anómalas*\n\n` +
-        critical.slice(0, 8).map(a =>
-          `• *${a.word}*: x${a.ratio} (z=${a.z_score.toFixed(1)})` +
-          (a.country_codes.length > 0 ? ` — ${a.country_codes.map(c => `#${c.toUpperCase()}`).join(' ')}` : '')
-        ).join('\n');
+      const { publishToTelegramChannel, publishToBlueSky, publishToMastodon, getDayLanguage } = await import('@/lib/social-publisher');
+      const lang = getDayLanguage();
+      const msg = lang === 'en'
+        ? `🔍 Early detection — anomalous words\n\n` +
+          critical.slice(0, 8).map(a =>
+            `• *${a.word}*: x${a.ratio} (z=${a.z_score.toFixed(1)})` +
+            (a.country_codes.length > 0 ? ` — ${a.country_codes.map(c => `#${c.toUpperCase()}`).join(' ')}` : '')
+          ).join('\n')
+        : `🔍 *Detección temprana — palabras anómalas*\n\n` +
+          critical.slice(0, 8).map(a =>
+            `• *${a.word}*: x${a.ratio} (z=${a.z_score.toFixed(1)})` +
+            (a.country_codes.length > 0 ? ` — ${a.country_codes.map(c => `#${c.toUpperCase()}`).join(' ')}` : '')
+          ).join('\n');
       await publishToTelegramChannel(msg);
-      await publishToBlueSky(msg.replace(/\*/g, ''));
-      await publishToMastodon(msg.replace(/\*/g, ''));
+      await publishToBlueSky(msg.replace(/\*/g, ''), lang);
+      await publishToMastodon(msg.replace(/\*/g, ''), lang);
     }
 
     return { status: 'ok', anomalies: anomalies.length, critical: critical.length };
@@ -1122,15 +1137,21 @@ async function runHeatmapDetection() {
     const warning = heatmap.filter(h => h.level === 2);
 
     if (critical.length > 0) {
-      const msg = `🔴 Mapa de Calor — ${critical.length} alertas tempranas\n\n` +
-        critical.map(h =>
-          `  ${h.country}: ${h.reasons.join('; ')}`
-        ).join('\n');
+      const { publishToTelegramChannel, publishToBlueSky, publishToMastodon, getDayLanguage } = await import('@/lib/social-publisher');
+      const lang = getDayLanguage();
+      const msg = lang === 'en'
+        ? `🔴 Heatmap — ${critical.length} early warnings\n\n` +
+          critical.map(h =>
+            `  ${h.country}: ${h.reasons.join('; ')}`
+          ).join('\n')
+        : `🔴 Mapa de Calor — ${critical.length} alertas tempranas\n\n` +
+          critical.map(h =>
+            `  ${h.country}: ${h.reasons.join('; ')}`
+          ).join('\n');
 
-      const { publishToTelegramChannel, publishToBlueSky, publishToMastodon } = await import('@/lib/social-publisher');
       await publishToTelegramChannel(msg);
-      await publishToBlueSky(msg);
-      await publishToMastodon(msg);
+      await publishToBlueSky(msg, lang);
+      await publishToMastodon(msg, lang);
     }
 
     return {

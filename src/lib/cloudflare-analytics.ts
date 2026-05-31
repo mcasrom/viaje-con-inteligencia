@@ -165,6 +165,78 @@ async function fetchGraphql(): Promise<{ totals: CfTotals; countries: CfCountry[
   }
 }
 
+function buildHtmlSummary(result: CfAnalyticsResult, weekStart: string, weekEnd: string): string {
+  const days = 7;
+  const avgDaily = Math.round(result.totals.uniqueVisitors / days);
+  const avgPageViews = Math.round(result.totals.pageViews / days);
+  const topPath = result.topPaths[0];
+  const seoIssues = result.statusCodes['404'] || 0;
+
+  const countryRows = result.countries.slice(0, 10).map((c, i) => {
+    const name = countryName(c.country);
+    const note = i === 0 && c.country === 'AU' ? ' (desarrollo)' :
+                 c.country === 'US' ? ' (crawlers)' :
+                 c.country === 'ES' ? ' (residencia)' : '';
+    return `<tr>
+      <td style="padding: 6px 12px; border-bottom: 1px solid #334155;">${c.country} ${name}${note}</td>
+      <td style="padding: 6px 12px; border-bottom: 1px solid #334155; text-align: right;">${c.requests.toLocaleString()}</td>
+      <td style="padding: 6px 12px; border-bottom: 1px solid #334155; text-align: right;">${c.pct}%</td>
+    </tr>`;
+  }).join('');
+
+  return `
+    <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0f172a; color: #e2e8f0; padding: 20px; border-radius: 8px; max-width: 600px; margin: 0 auto;">
+      <h2 style="color: #f59e0b; margin-top: 0;">📊 Cloudflare Analytics — ${weekStart} a ${weekEnd}</h2>
+      
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px;">
+        <div style="background: #1e293b; padding: 12px; border-radius: 6px;">
+          <div style="font-size: 0.75rem; color: #94a3b8; text-transform: uppercase;">Visitas Totales</div>
+          <div style="font-size: 1.25rem; font-weight: bold;">${result.totals.uniqueVisitors.toLocaleString()}</div>
+        </div>
+        <div style="background: #1e293b; padding: 12px; border-radius: 6px;">
+          <div style="font-size: 0.75rem; color: #94a3b8; text-transform: uppercase;">Páginas Vistas</div>
+          <div style="font-size: 1.25rem; font-weight: bold;">${result.totals.pageViews.toLocaleString()}</div>
+        </div>
+        <div style="background: #1e293b; padding: 12px; border-radius: 6px;">
+          <div style="font-size: 0.75rem; color: #94a3b8; text-transform: uppercase;">Media Diaria</div>
+          <div style="font-size: 1.25rem; font-weight: bold;">${avgDaily} visitas</div>
+        </div>
+        <div style="background: #1e293b; padding: 12px; border-radius: 6px;">
+          <div style="font-size: 0.75rem; color: #94a3b8; text-transform: uppercase;">Ancho de Banda</div>
+          <div style="font-size: 1.25rem; font-weight: bold;">${formatBytes(result.totals.bandwidthBytes)}</div>
+        </div>
+      </div>
+
+      <div style="background: #1e293b; padding: 12px; border-radius: 6px; margin-bottom: 20px;">
+        <div style="font-size: 0.75rem; color: #94a3b8; text-transform: uppercase; margin-bottom: 4px;">Métricas de Seguridad</div>
+        <div style="display: flex; justify-content: space-between; gap: 12px;">
+          <span>🔒 SSL: ${result.totals.sslPct}%</span>
+          <span>⚠️ Amenazas: ${result.totals.threats}</span>
+          <span>🤖 Crawlers: ~${result.crawlerRequests}</span>
+        </div>
+      </div>
+
+      <h3 style="color: #cbd5e1; border-bottom: 1px solid #334155; padding-bottom: 8px;">🌍 Tráfico por País (Top 10)</h3>
+      <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+        <thead>
+          <tr style="background: #1e293b; color: #94a3b8; text-align: left;">
+            <th style="padding: 8px 12px; border-bottom: 2px solid #334155;">País</th>
+            <th style="padding: 8px 12px; border-bottom: 2px solid #334155; text-align: right;">Peticiones</th>
+            <th style="padding: 8px 12px; border-bottom: 2px solid #334155; text-align: right;">%</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${countryRows}
+        </tbody>
+      </table>
+
+      <div style="font-size: 0.75rem; color: #64748b; text-align: center; margin-top: 20px;">
+        Generado automáticamente · ${new Date().toLocaleDateString('es-ES')}
+      </div>
+    </div>
+  `;
+}
+
 function buildSummary(result: CfAnalyticsResult, weekStart: string, weekEnd: string): string {
   const days = 7;
   const avgDaily = Math.round(result.totals.uniqueVisitors / days);
@@ -205,15 +277,15 @@ function buildSummary(result: CfAnalyticsResult, weekStart: string, weekEnd: str
   ].join('\n');
 }
 
-export async function runCloudflareAnalytics(): Promise<{ stored: boolean; summary: string }> {
+export async function runCloudflareAnalytics(): Promise<{ stored: boolean; summary: string; html: string }> {
   if (!isConfigured()) {
     log.warn('Cloudflare not configured — missing CLOUDFLARE_API_TOKEN or CLOUDFLARE_ZONE_ID');
-    return { stored: false, summary: '❌ Cloudflare Analytics no configurado (faltan tokens)' };
+    return { stored: false, summary: '❌ Cloudflare Analytics no configurado (faltan tokens)', html: '' };
   }
 
   const fetched = await fetchGraphql();
   if (!fetched) {
-    return { stored: false, summary: '❌ Error al consultar Cloudflare Analytics API' };
+    return { stored: false, summary: '❌ Error al consultar Cloudflare Analytics API', html: '' };
   }
 
   const result: CfAnalyticsResult = {
@@ -257,6 +329,7 @@ export async function runCloudflareAnalytics(): Promise<{ stored: boolean; summa
   };
 
   const summary = buildSummary(result, weekStart, weekEnd);
+  const html = buildHtmlSummary(result, weekStart, weekEnd);
 
   try {
     const { error } = await supabaseAdmin.from('cloudflare_analytics').insert({
@@ -278,13 +351,13 @@ export async function runCloudflareAnalytics(): Promise<{ stored: boolean; summa
     });
     if (error) {
       log.error('Error storing analytics', error);
-      return { stored: false, summary };
+      return { stored: false, summary, html };
     }
     log.info(`Analytics stored for week ${weekStart}–${weekEnd}`);
-    return { stored: true, summary };
+    return { stored: true, summary, html };
   } catch (err) {
     log.error('Supabase insert failed', err);
-    return { stored: false, summary };
+    return { stored: false, summary, html };
   }
 }
 

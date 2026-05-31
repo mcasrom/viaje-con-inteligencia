@@ -1271,3 +1271,49 @@ El build de Next.js 16.2.6 en el VPS (Node v22.22.2, 3.7GB RAM) falla con SIGBUS
 - Build: 72s + 69s (dos builds), sin errores
 - Deploy: PM2 restart, PID 316494, 0 reinicios
 - Todos los endpoints 200
+
+## 31 May 2026 — Rotación de idioma ES/EN en RRSS
+
+> **Último deploy verificado:** ✅ (build OK)
+
+### Logros del día
+
+#### Rotación automática de idioma en publicaciones sociales
+- ✅ **`getDayLanguage()`** en `social-publisher.ts`: alterna entre `es` e `en` según día par/impar del año
+- ✅ **`buildNewsletterSummary(issue, lang)`**: traduce títulos, etiquetas, hashtags y severidad según idioma del día
+- ✅ **`publishToMastodon(text, lang)`** y **`publishToBlueSky(text, lang)`**: pasan idioma correcto a metadatos API
+- ✅ **Master cron actualizado**: 5 funciones usan rotación (weekly digest, infografía social, daily content, word trends, heatmap)
+- ✅ **Telegram canal**: mantiene contenido bilingüe o sigue idioma del día según función
+
+### Arquitectura
+| Función | Idioma | Canales |
+|---------|--------|---------|
+| Weekly Digest | Rotación ES/EN | Telegram, Mastodon, Bluesky, Email |
+| Infografía Social | Rotación ES/EN | Telegram, Mastodon, Bluesky |
+| Daily Content | Rotación ES/EN | Telegram, Mastodon, Bluesky |
+| Word Trends | Rotación ES/EN | Telegram, Mastodon, Bluesky |
+| Heatmap | Rotación ES/EN | Telegram, Mastodon, Bluesky |
+
+### I18N implementado
+- Títulos: "Briefing Semanal" / "Weekly Briefing"
+- Etiquetas: "Alertas activas" / "Active alerts", "Cambios IRV" / "IRV changes"
+- Severidad: "Leve/Moderado/Alto/Crítico" / "Low/Moderate/High/Critical"
+- Hashtags: `#ViajeInteligente #TravelRisk #SeguridadViaje` / `#TravelIntelligence #TravelRisk #SmartTravel`
+- Nombres de países en incidentes usan `NOMBRES_EN` para traducción EN
+- Daily content (`buildDailyPost`) traducido: tips, riesgo, continente, header
+- Newsletter subject traducido según idioma del día
+
+### Technical Debt resuelto
+- ✅ **logo.png**: Comprimido a WebP (1.8MB → 46KB, 97% reducción)
+- ✅ **Fotos**: Ya usan `<Image>` de Next.js (sin referencias raw a `/public/photos/`)
+- ✅ **INE API 404**: Usa Supabase `ine_tourism_history` como fuente primaria + fallback para 31 países
+- ✅ **Chat IA rate limiting**: Ya tiene server-side (`checkIpRateLimit` + `checkBurstRateLimit`) + tracking diario en `chat_usage`
+
+### Pendiente
+- [ ] Ejecutar SQL migrations: `supabase/early_bird_digests.sql` + `supabase/add_newsletter_language.sql`
+
+### Commits del día
+| Commit | Descripción |
+|--------|-------------|
+| (pendiente) | feat: language rotation ES/EN + i18n daily content + logo WebP compression |
+

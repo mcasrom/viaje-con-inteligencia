@@ -6,6 +6,7 @@ import { createLogger } from '@/lib/logger';
 import { getAllPosts } from '@/lib/posts';
 import { sendTelegramMessage } from '@/lib/telegram-channel';
 import { collectNewsletterData, buildWeeklyEmailHtml } from '@/lib/newsletter-generator';
+import { getDayLanguage } from '@/lib/social-publisher';
 
 const log = createLogger('Newsletter');
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
@@ -29,7 +30,10 @@ export async function GET(request: NextRequest) {
   // ===== GENERATE professional newsletter =====
   const issue = await collectNewsletterData();
   const html = await buildWeeklyEmailHtml(issue);
-  const subject = `Briefing Semanal #${issue.edition} — ${issue.weekDate}`;
+  const lang = getDayLanguage();
+  const subject = lang === 'en'
+    ? `Weekly Briefing #${issue.edition} — ${issue.weekDate}`
+    : `Briefing Semanal #${issue.edition} — ${issue.weekDate}`;
 
   // ===== FETCH verified subscribers =====
   const { data: subscribers } = isSupabaseAdminConfigured()
@@ -79,6 +83,7 @@ export async function GET(request: NextRequest) {
       content: html,
       recipients_count: totalRecipients,
       resend_ids: resendIds,
+      language: lang,
     }).select('id').single();
     historyId = histData?.id || null;
   }
