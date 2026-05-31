@@ -66,7 +66,7 @@ async function buildTrainingRow(
       changes30d, seasonalMult,
       features?.gpi_score ?? 0, features?.gti_score ?? 0, features?.hdi_score ?? 0,
       features?.ipc_score ?? 0, features?.tci_score ?? 0,
-      features?.events_30d ?? 0, features?.high_impact_events30d ?? 0,
+      features?.events_30d ?? 0, features?.high_impact_events_30d ?? 0,
       features?.us_risk_score ?? 0,
       ukRiskLevel ?? 0,
       features?.risk_trend_7d ?? 0, features?.risk_trend_30d ?? 0,
