@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import TrialStatusBanner from '@/components/TrialStatusBanner';
+import SubscriptionStatusBlock from '@/components/SubscriptionStatusBlock';
 import RecommendationsList from '@/components/RecommendationsList';
 import SmartFeed from '@/components/SmartFeed';
 import OneClickRecommendations from '@/components/OneClickRecommendations';
@@ -675,6 +676,7 @@ export default function DashboardPage() {
 
         {/* TRIAL STATUS */}
         <TrialStatusBanner />
+        <SubscriptionStatusBlock />
 
         {/* USER LEVEL / GAMIFICATION */}
         <UserLevelBadge />
