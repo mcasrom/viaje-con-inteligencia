@@ -194,6 +194,13 @@ export default function PremiumClient() {
             ))}
           </div>
         </div>
+        {/* CTA post-tabla */}
+        <div className="mt-8 text-center">
+          <Link href="/free-trial" className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-amber-500 to-orange-500 text-slate-900 font-bold rounded-xl hover:from-amber-400 hover:to-orange-400 transition-all shadow-lg shadow-amber-500/25 text-sm">
+            Empezar 7 días gratis — sin tarjeta
+          </Link>
+          <p className="text-slate-500 text-xs mt-3">Cancela cuando quieras · Acceso completo inmediato</p>
+        </div>
 
         {/* Chat IA: Free vs Premium explainer */}
         <div className="mb-16">
