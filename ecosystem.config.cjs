@@ -10,7 +10,7 @@ module.exports = {
     },
     instances: 1,
     exec_mode: 'fork',
-    max_memory_restart: '2G',
+    max_memory_restart: '2500M',
     log_date_format: 'YYYY-MM-DD HH:mm:ss',
     error_file: '/var/www/viajeinteligencia/logs/error.log',
     out_file: '/var/www/viajeinteligencia/logs/out.log',
