@@ -39,6 +39,15 @@ export default function HomePage() {
         </div>
       </div>
 
+      {/* CTA registro */}
+      <div className="flex flex-col items-center justify-center py-6 px-4 bg-gradient-to-r from-blue-600/10 to-purple-600/10 border-y border-white/5">
+        <p className="text-white text-sm md:text-base font-medium mb-3 text-center">
+          🎯 Accede a análisis premium, alertas personalizadas y 107 países — <span className="text-blue-400">7 días gratis sin tarjeta</span>
+        </p>
+        <a href="/free-trial" className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-semibold text-sm transition-all shadow-lg shadow-blue-600/30">
+          Crear cuenta gratis →
+        </a>
+      </div>
       {/* Interactive content — client-side hydration */}
       <HomeBelowFold />
     </div>
