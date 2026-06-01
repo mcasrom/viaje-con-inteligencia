@@ -1,5 +1,58 @@
 # AGENTS.md — Viaje con Inteligencia
 
+## 🎯 Sprint Semana 02-08 Jun 2026 — CAPTACIÓN DE USUARIOS
+
+> **Prioridad #1**: Menos código, más usuarios. La plataforma está funcional y estable.
+> **Objetivo**: +100 registros activos esta semana.
+> **Regla**: NO tocar código salvo bugs críticos. Todo el tiempo en outreach y conversión.
+
+### Plan de Acción
+
+| Día | Canal | Acción | Estado |
+|-----|-------|--------|--------|
+| Lun | Reddit r/travel | Publicar draft "smart travel hacks" (ya existe en content/outreach/) | ⏳ |
+| Lun | Reddit r/solotravel | Mismo post adaptado | ⏳ |
+| Lun | Reddit r/digitalnomad | Participar en megathread semanal | ⏳ |
+| Mar | Facebook "Gurú de Viaje" | Publicar draft (ya existe) | ⏳ |
+| Mar | Facebook "Comunidad Viajeros" | Publicar draft (ya existe) | ⏳ |
+| Mar | LosViajeros.com | Crear cuenta + post presentación + firma con link | ⏳ |
+| Mié | Foro de Viajeros | Crear cuenta + post + firma | ⏳ |
+| Mié | Email outreach | 5-10 emails a bloggers de viajes españoles | ⏳ |
+| Jue | Reddit r/TravelHacks | Post "How I built a free travel risk checker" | ⏳ |
+| Jue | X/Twitter | 3 posts esta semana (lun/mié/vie) | ⏳ |
+| Vie | Bluesky | Post sobre feature destacada (Radar de Viaje) | ⏳ |
+| Vie | Mastodon | Post sobre feature destacada | ⏳ |
+| Vie | Newsletter | Enviar informe semanal a suscriptores | ⏳ |
+
+### Métricas a seguir esta semana
+- Registros nuevos (Supabase `profiles` count)
+- Suscriptores newsletter (Supabase `newsletter_subscribers` verified count)
+- Visitas a `/dashboard` (Cloudflare Analytics)
+- Posts publicados en Reddit/FB/foros (trackear engagement: upvotes, comments, clicks)
+
+### Posts ya preparados (listos para publicar)
+- `content/outreach/reddit-general-travel.mdx` — r/travel (ES)
+- `content/outreach/reddit-osint-global.mdx` — r/osinttools (EN)
+- `content/outreach/reddit-rv-living.mdx` — r/RVLiving (EN)
+- `content/outreach/reddit-smarttravelhacks.md` — r/TravelHacks (EN)
+- `content/outreach/facebook-guru-viaje.mdx`
+- `content/outreach/facebook-comunidad-viajeros.mdx`
+
+### Cuentas existentes
+- Reddit: u/OSINTTraveler ✅
+- Bluesky: @viajeinteligencia.bsky.social ✅
+- Mastodon: @viajeinteligencia@mastodon.social ✅
+- Telegram: @ViajeConInteligenciaBot ✅
+- X/Twitter: pendiente OAuth manual
+
+### Reglas del sprint
+1. **NO nuevo código** salvo bugs que afecten conversión
+2. **NO deploys** salvo corrección urgente
+3. **TODO el tiempo** en publicar, responder comentarios, medir resultados
+4. **Viernes**: revisar métricas y ajustar estrategia semana siguiente
+
+---
+
 ## Today (31 May 2026) — UK FCDO Integration + Multi-Source OSINT + RRSS
 
 ### Logros
@@ -639,13 +692,10 @@ Para probar authenticated endpoints se necesita sesión válida (vía browser).
 1. **Pillar + Satellite** ✅ — 3 pillars con interlinking a blog (8 enlaces, 6 artículos únicos). Bidireccional confirmado. Schema Article+FAQPage en los 3. Minor gap: osint-para-viajeros solo enlaza 1 artículo satélite (objetivo 5-8).
 
  ## Next Steps
-1. **Google Search Console**: Enviar sitemap.xml + solicitar indexación manual (homepage, /mapa, 3-5 países)
-2. **Monitorear indexación** tras fix de middleware (Googlebot ya no recibe 5xx)
-3. **Publicar X post** manualmente con texto generado (OAuth pendiente)
-4. **Monitorear Cloudflare Analytics** primer domingo (24 May) en `/admin/analytics`
-5. **Lunes newsletter automática** + revisar GSC tras nueva semana
-6. **Seguir con blog posts semanales** para contenido fresco
-7. **Reddit/Facebook outreach** desde drafts en `content/outreach/`
+ 1. **Sprint captación usuarios** (02-08 Jun) — ejecutar plan de outreach completo
+ 2. **Google Search Console**: Enviar sitemap.xml + solicitar indexación manual
+ 3. **Lunes newsletter automática** + revisar métricas tras nueva semana
+ 4. **Viernes**: revisar resultados de outreach y ajustar estrategia
 
 ## Done (26 May 2026) — Manifiesto + Reporte→Informe
 - **Manifiesto actualizado**: Reemplazado contenido español por nuevo manifiesto en inglés "Travel Intelligence: A New Phase for Viaje Inteligencia". Preservada foto de perfil.
@@ -653,10 +703,10 @@ Para probar authenticated endpoints se necesita sesión válida (vía browser).
 - Commits: `1876074` (manifiesto), `e34fd31` (reporte→informe)
 
 ## Recurring Tasks
-- **Daily (post-deploy)**: Verify `/api/cron/train-models` completes successfully (R² > 0.95, < 300s).
-- **Daily (post-deploy)**: Verify `/api/cron/compare-models` — check no new countries with large RF vs heuristic deviation (>5 points riskScore, >5% probUp).
-- **Weekly**: Review `maec_risk_history` data accumulation. Once 30+ days of history exist, run temporal CV on `/api/cron/validate-models` and compare RF predictions against actual risk changes.
-- **Weekly**: Update AGENTS.md ML summary with latest comparison/validation metrics.
+- **Daily (sprint captación)**: Publicar/responder en al menos 1 canal (Reddit, FB, foros, X)
+- **Daily (sprint captación)**: Registrar métricas (registros, suscriptores, visitas)
+- **Weekly (viernes)**: Revisar resultados de outreach y ajustar estrategia
+- **Weekly**: Newsletter automática lunes 06:00 UTC
 
 ## False Positives (Audit Tools)
 - `@mybloggingnotes` links — old cached content, removed from live site

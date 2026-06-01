@@ -1,5 +1,36 @@
 # Way Ahead
 
+## 🎯 Sprint Semana 02-08 Jun 2026 — CAPTACIÓN DE USUARIOS
+
+> **Prioridad**: Menos código, más usuarios. Plataforma estable y funcional.
+> **Objetivo**: +100 registros activos esta semana.
+> **Regla**: NO tocar código salvo bugs críticos.
+
+### Plan
+| Día | Acción |
+|-----|--------|
+| Lun | Reddit r/travel + r/solotravel + r/digitalnomad |
+| Mar | Facebook Gurú de Viaje + Comunidad Viajeros |
+| Mié | LosViajeros + Foro de Viajeros + Email outreach 5-10 bloggers |
+| Jue | Reddit r/TravelHacks + X/Twitter |
+| Vie | Bluesky + Mastodon + Newsletter semanal |
+
+### Métricas
+- Registros nuevos (Supabase `profiles`)
+- Suscriptores newsletter (`newsletter_subscribers` verified)
+- Visitas `/dashboard` (Cloudflare Analytics)
+- Engagement Reddit/FB (upvotes, comments, clicks)
+
+### Posts listos para publicar
+- `content/outreach/reddit-general-travel.mdx`
+- `content/outreach/reddit-osint-global.mdx`
+- `content/outreach/reddit-rv-living.mdx`
+- `content/outreach/reddit-smarttravelhacks.md`
+- `content/outreach/facebook-guru-viaje.mdx`
+- `content/outreach/facebook-comunidad-viajeros.mdx`
+
+---
+
 ## 🔄 Deploy v2.6 — Leaflet CSS Fix (02 Jun 2026)
 
 > **Estado actual:** ✅ **FUNCIONAL**. Leaflet CSS preload en layout.tsx + cdnjs fallback en loader.
