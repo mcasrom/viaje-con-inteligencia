@@ -1,5 +1,45 @@
 # Way Ahead
 
+## 🔄 Deploy v2.6 — Leaflet CSS Fix (02 Jun 2026)
+
+> **Estado actual:** ✅ **FUNCIONAL**. Leaflet CSS preload en layout.tsx + cdnjs fallback en loader.
+>
+> **Comando único:** `bash ~/viaje-con-inteligencia/deploy.sh`
+>
+> **Flujo en orden:**
+> 1. `git push` — sube código a GitHub
+> 2. `npm run build` — construye en laptop (sin bug `_ssgManifest.js`, 16GB RAM)
+> 3. `rsync .next/` → servidor Hetzner (solo assets compilados)
+> 4. `ssh` → `git pull` + `pm2 restart` en Hetzner
+> 5. Purga caché Cloudflare automática
+>
+> **Tags estables:**
+> | Tag | Descripción |
+> |-----|-------------|
+> | `v2.1-estable-cta-rrss` | CTA + RRSS |
+> | `v2.2-premium-cta` | Premium CTA |
+> | `v2.3-seo-noindex` | SEO noindex |
+> | `v2.4-deploy-cf` | Deploy + Cloudflare |
+> | `v2.5-build-local` | Build local + rsync |
+> | `v2.6-leaflet-css` | ← **Estado actual** |
+>
+> **Revertir a cualquier punto:** `git checkout v2.X-nombre`
+
+## ✅ 02 Jun 2026 — Leaflet CSS Fix para Incognito Mode
+
+> **Deploy verificado:** OK ✅ (commit `13219ab`)
+>
+> **Sprint activo:** Fix de renderizado de mapa en Firefox/Chromium Incognito
+>
+> ### Logros del día
+> - ✅ **Leaflet CSS preload en layout.tsx**: `<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" crossOrigin="anonymous" />` añadido al `<head>` server-side
+> - ✅ **cdnjs como CDN primario**: Más fiable que unpkg para incognito mode (sin caché previo)
+> - ✅ **Fallback en leaflet-css-loader.ts**: Si cdnjs falla, intenta unpkg automáticamente
+> - ✅ **preconnect añadido**: `<link rel="preconnect" href="https://cdnjs.cloudflare.com" />` para reducir latencia
+> - ✅ **Health check**: 200 OK, PM2 online, 819 páginas generadas sin errores
+
+---
+
 ## 🔄 Deploy v2.5 — Build Local + rsync (31 May 2026)
 
 > **Estado actual:** ✅ **FUNCIONAL**. Build en laptop (16GB RAM) → rsync `.next/` → Hetzner → PM2 restart → Cloudflare purge.
@@ -59,6 +99,26 @@
 > 2. Aumentar `max_memory_restart` de `2G` a `2500M` para evitar OOM restarts
 > 3. Añadir health check que detecte el crash y fuerce restart automático
 > 4. Si persiste, considerar desactivar Turbopack en producción (`next build` sin TURBOPACK)
+
+## ⚠️ RESUELTO — Newsletter Duplicate Sends (01 Jun 2026)
+
+> **Síntoma**: 15 emails recibidos de la edición #40 en el mismo buzón (11:48-11:57 UTC).
+>
+> **Causa raíz**: Sin idempotencia — cada trigger del lunes dispara `runWeeklyDigest()` sin verificar si ya se envió hoy.
+>
+> **3 triggers ejecutados**:
+> - 09:43 UTC — cron master manual #1
+> - 09:46 UTC — cron master manual #2
+> - 09:48 UTC — `/api/newsletter/announcement` manual
+>
+> **Amplificación**: 5 emails verificados del mismo usuario → mismo buzón = 15 mails totales.
+>
+> **Fix aplicado** (commit `558533f`):
+> - `runWeeklyDigest()` en master cron: check en `newsletter_history` antes de enviar — si la edición ya existe hoy, retorna `skipped`
+> - `/api/newsletter/announcement/route.ts`: mismo check idempotente
+> - Query: `ilike('subject', '%#<edition>%')` + `gte('sent_at', '<today>T00:00:00')`
+>
+> **Lección**: Nunca ejecutar cron master manualmente en lunes sin verificar si ya corrió a las 06:00 UTC. El fix previene re-envío aunque se dispare múltiples veces.
 
 ## ✅ 31 May 2026 — UK FCDO Integration + Multi-Source Narrative
 
