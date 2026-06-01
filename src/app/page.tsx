@@ -39,26 +39,6 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* CTA registro */}
-      <div className="flex flex-col items-center justify-center py-6 px-4 bg-gradient-to-r from-blue-600/10 to-purple-600/10 border-y border-white/5">
-        <p className="text-white text-sm md:text-base font-medium mb-3 text-center">
-          🎯 Accede a análisis premium, alertas personalizadas y 107 países — <span className="text-blue-400">7 días gratis sin tarjeta</span>
-        </p>
-        <div className="flex items-center gap-3 flex-wrap justify-center">
-          <a href="/free-trial" className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-semibold text-sm transition-all shadow-lg shadow-blue-600/30">
-            Crear cuenta gratis →
-          </a>
-          <a href="https://t.me/ViajeConInteligencia" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-4 py-3 bg-white/5 hover:bg-white/10 text-slate-300 rounded-xl text-sm transition-all border border-white/10">
-            ✈️ Telegram
-          </a>
-          <a href="https://x.com/ViajeIntel2026" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-4 py-3 bg-white/5 hover:bg-white/10 text-slate-300 rounded-xl text-sm transition-all border border-white/10">
-            𝕏 Twitter
-          </a>
-          <a href="https://bsky.app/profile/viajeinteligencia.bsky.social" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-4 py-3 bg-white/5 hover:bg-white/10 text-slate-300 rounded-xl text-sm transition-all border border-white/10">
-            🦋 Bluesky
-          </a>
-        </div>
-      </div>
       {/* Interactive content — client-side hydration */}
       <HomeBelowFold />
     </div>
