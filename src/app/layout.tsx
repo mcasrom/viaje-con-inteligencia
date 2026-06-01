@@ -134,11 +134,13 @@ export default async function RootLayout({
         <link rel="sitemap" type="application/xml" href="https://www.viajeinteligencia.com/sitemap.xml" />
         <meta name="thumbnail" content="/preview_favicon.jpg" />
         <link rel="preconnect" href="https://unpkg.com" />
+        <link rel="preconnect" href="https://cdnjs.cloudflare.com" />
         <link rel="preconnect" href="https://tile.openstreetmap.org" />
         <link rel="preconnect" href="https://tile.thunderforest.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" />
         <link rel="preconnect" href="https://nczkvsnuafkwtmgokiuo.supabase.co" />
         <link rel="preload" as="image" href="/logo.webp" fetchPriority="high" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" crossOrigin="anonymous" />
         <style id="leaflet-critical">{`.leaflet-pane,.leaflet-tile,.leaflet-marker-icon,.leaflet-marker-shadow,.leaflet-tile-container,.leaflet-pane>svg,.leaflet-pane>canvas,.leaflet-zoom-box,.leaflet-image-layer,.leaflet-layer{position:absolute;left:0;top:0}.leaflet-container{overflow:hidden}.leaflet-tile{position:absolute;width:256px;height:256px;max-width:none!important;pointer-events:none}.leaflet-tile-container{position:absolute;left:0;top:0}.leaflet-pane>svg{position:absolute;left:0;top:0}`}</style>
       </head>
       <body className={`${geistSans.variable} antialiased`}>

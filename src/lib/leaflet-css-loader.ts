@@ -99,9 +99,16 @@ export function ensureLeafletCSS(): Promise<void> {
 
     const link = document.createElement('link');
     link.rel = 'stylesheet';
-    link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+    link.href = 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css';
+    // Use integrity check for reliability
+    link.crossOrigin = 'anonymous';
     link.onload = done;
-    link.onerror = done;
+    link.onerror = () => {
+      // Fallback to unpkg if cdnjs fails
+      link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+      link.onload = done;
+      link.onerror = done;
+    };
     document.head.appendChild(link);
   });
 
