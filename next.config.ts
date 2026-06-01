@@ -15,7 +15,7 @@ const CSP = [
 ].join('; ');
 
 const nextConfig: NextConfig = {
-  turbopack: false,
+
   images: {
     minimumCacheTTL: 60 * 60 * 24,
     remotePatterns: [
