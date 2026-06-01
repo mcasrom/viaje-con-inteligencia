@@ -1,4 +1,3 @@
-import { thematicRoutes, ThematicRoute } from '@/data/rutas-espanas';
 import RutasClient from './RutasClient';
 import { Suspense } from 'react';
 import type { Metadata } from 'next';
@@ -26,7 +25,7 @@ export const revalidate = 3600;
 export default function RutasPage() {
   return (
     <Suspense>
-      <RutasClient routes={thematicRoutes} />
+      <RutasClient />
     </Suspense>
   );
 }
