@@ -1,20 +1,17 @@
 #!/bin/bash
 set -e
-cd /var/www/viajeinteligencia
-git reset --hard HEAD
-git pull
-rm -rf .next
-for i in 1 2 3; do
-  NODE_OPTIONS="--max-old-space-size=4096" npx next build && break
-  echo "Build intento $i fallido, reintentando..."
-  rm -rf .next
-  sleep 5
-done
-pm2 restart viajeinteligencia
-source ~/.bash_profile 2>/dev/null
+source ~/.cf_env
+cd ~/viaje-con-inteligencia
+echo ">>> Build local..."
+npm run build
+echo ">>> Subiendo .next al servidor..."
+rsync -az --delete -e "ssh -p 22" .next/ deploy@178.105.80.193:/var/www/viajeinteligencia/.next/
+echo ">>> Reiniciando PM2..."
+ssh deploy@178.105.80.193 "cd /var/www/viajeinteligencia && git pull && pm2 restart viajeinteligencia"
+echo ">>> Purgando Cloudflare..."
 curl -s -X POST "https://api.cloudflare.com/client/v4/zones/${CF_ZONE_ID}/purge_cache" \
   -H "X-Auth-Email: ${CF_EMAIL}" \
   -H "X-Auth-Key: ${CF_API_KEY}" \
   -H "Content-Type: application/json" \
   --data '{"purge_everything":true}' && echo "Cache purgado OK"
-echo Deploy completado OK
+echo ">>> Deploy completado OK"
