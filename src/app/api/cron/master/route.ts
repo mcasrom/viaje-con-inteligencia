@@ -598,6 +598,19 @@ async function runWeeklyDigest(): Promise<any> {
     const { collectNewsletterData, buildWeeklyEmailHtml } = await import('@/lib/newsletter-generator');
 
     const issue = await collectNewsletterData();
+
+    // Prevent duplicate sends: check if this edition was already sent today
+    const today = new Date().toISOString().split('T')[0];
+    const { data: alreadySent } = await supabaseAdmin
+      .from('newsletter_history')
+      .select('id')
+      .ilike('subject', `%#${issue.edition}%`)
+      .gte('sent_at', `${today}T00:00:00`)
+      .limit(1);
+    if (alreadySent && alreadySent.length > 0) {
+      return { status: 'skipped', reason: `Edition #${issue.edition} already sent today`, edition: issue.edition };
+    }
+
     const baseHtml = await buildWeeklyEmailHtml(issue);
 
     const results: any = { edition: issue.edition };

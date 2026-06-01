@@ -29,6 +29,19 @@ export async function GET(request: NextRequest) {
 
   // ===== GENERATE professional newsletter =====
   const issue = await collectNewsletterData();
+
+  // Prevent duplicate sends: check if this edition was already sent today
+  const today = new Date().toISOString().split('T')[0];
+  const { data: alreadySent } = await supabaseAdmin
+    .from('newsletter_history')
+    .select('id')
+    .ilike('subject', `%#${issue.edition}%`)
+    .gte('sent_at', `${today}T00:00:00`)
+    .limit(1);
+  if (alreadySent && alreadySent.length > 0) {
+    return NextResponse.json({ status: 'skipped', reason: `Edition #${issue.edition} already sent today` });
+  }
+
   const html = await buildWeeklyEmailHtml(issue);
   const lang = getDayLanguage();
   const subject = lang === 'en'

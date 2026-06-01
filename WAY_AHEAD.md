@@ -1,5 +1,42 @@
 # Way Ahead
 
+## 🔄 Deploy v2.5 — Build Local + rsync (31 May 2026)
+
+> **Estado actual:** ✅ **FUNCIONAL**. Build en laptop (16GB RAM) → rsync `.next/` → Hetzner → PM2 restart → Cloudflare purge.
+>
+> **Comando único:** `bash ~/viaje-con-inteligencia/deploy.sh`
+>
+> **Flujo en orden:**
+> 1. `git push` — sube código a GitHub
+> 2. `npm run build` — construye en laptop (sin bug `_ssgManifest.js`, 16GB RAM)
+> 3. `rsync .next/` → servidor Hetzner (solo assets compilados)
+> 4. `ssh` → `git pull` + `pm2 restart` en Hetzner
+> 5. Purga caché Cloudflare automática
+>
+> **Tags estables:**
+> | Tag | Descripción |
+> |-----|-------------|
+> | `v2.1-estable-cta-rrss` | CTA + RRSS |
+> | `v2.2-premium-cta` | Premium CTA |
+> | `v2.3-seo-noindex` | SEO noindex |
+> | `v2.4-deploy-cf` | Deploy + Cloudflare |
+> | `v2.5-build-local` | ← **Estado actual** |
+>
+> **Revertir a cualquier punto:** `git checkout v2.X-nombre`
+
+## ✅ 31 May 2026 — Registro CTA Banner en Homepage
+
+> **Deploy verificado:** OK ✅ (commit `9f67782`, CI #534, Deploy #199)
+>
+> **Sprint activo:** Captación de usuarios
+>
+> ### Logros del día
+> - ✅ **Banner CTA de registro en homepage**: Nuevo banner visible en la página principal para incentivar el registro de nuevos usuarios.
+> - ✅ **CI #534**: Build OK (2m 42s), Deploy #199 exitoso (2m 59s)
+> - ✅ **PM2**: Online, salud verificada
+
+---
+
 ## ⚠️ A OBSERVAR — Next.js RSC Crash (31 May 2026)
 
 > **Síntoma**: A las 07:03:37 UTC, 17 requests con `?_rsc=` fallaron simultáneamente con 502.

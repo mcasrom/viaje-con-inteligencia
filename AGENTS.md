@@ -14,12 +14,51 @@
 - **WAY_AHEAD.md**: Nueva entrada 31 May con detalles completos
 - **AGENTS.md**: Outreach Calendar actualizado con posts 31 May
 
+## Today (01 Jun 2026) — Health Check + ML Migration + Server Hardening
+
+### Logros
+- **SQL migration ejecutada**: `alter_ml_features_add_uk_risk.sql` — columna `uk_risk_score` añadida a `ml_features` ✅
+- **`health-check.sh` creado y desplegado**: 4 checks (PM2, HTTP, RSC crash detection incremental, memory)
+  - RSC detection ahora usa marker file (`.rsc-last-check`) para solo detectar errores NUEVOS desde último check
+  - Evita restarts en bucle por errores históricos en `error.log`
+  - Desplegado en `/var/www/viajeinteligencia/scripts/health-check.sh`
+  - Cron cada 10min ya funcionando
+- **`ecosystem.config.cjs`**: `max_memory_restart` actualizado de `2G` → `2500M` (2621440000 bytes)
+- **PM2 reiniciado**: Nueva config activa, viajeinteligencia id 31
+
 ### Commits
-- `d63b26f` feat: UK FCDO integration + multi-source narrative updates (ecosistema, metodologia, fuentes-osint)
+- Pendiente: `health-check.sh` + `ecosystem.config.cjs`
+
+### Server status
+- PM2: viajeinteligencia online, 6 restarts (RSC histórico limpiado)
+- HTTP: 200 OK
+- Memory: 306MB (bien bajo 2500M threshold)
+- RSC: 0 nuevos errores tras marker reset
+
+### Pendientes
+- Commit + deploy de health-check.sh + ecosystem.config.cjs
+- Verificar newsletter delivery (Resend API key solo permite send, no read logs)
+
+### Commits
+- `d63b26f` feat: UK FCDO integration + multi-source narrative updates
+- `e5eca9f` feat: add UK FCDO risk score to ML training features (25→26 features)
+- `ad63551` fix: typo high_impact_events30d → high_impact_events_30d
+- `9f67782` feat: add registro CTA banner in home (CI #534, Deploy #199)
+
+### Server fixes
+- **`generate-resumen.js`**: Fix NaN bug — GoAccess JSON cambió estructura (`hits` es ahora objeto `{count: N}`)
+- **Análisis 502**: Sección añadida a `/resumen.html` con stacked bar + desglose por categoría
+- **Acciones recomendadas**: Sección añadida a `/resumen.html` con prioridad por color
+- **`max_memory_restart`**: Aumentado de `2G` a `2500M` en `ecosystem.config.cjs`
+- **`health-check.sh`**: Creado con 4 checks (PM2 status, HTTP health, RSC crash detection, pre-emptive memory restart)
+- **RSC crash**: Documentado en WAY_AHEAD.md como "A OBSERVAR"
+
+### ML Training
+- **UK FCDO añadido**: Nueva feature `ukRiskScore` (26ª feature) en `ml-trainer-rf.ts` y `ml-features.ts`
+- **SQL migration**: ✅ Ejecutada 01 Jun 2026 — columna `uk_risk_score` creada en `ml_features`
 
 ### Pendientes
 - Verificar 404s y broken links pendientes
-- Documentar nuevas fuentes y método de cálculo
 
 ### Logros
 - **Hero nuevo homepage**: "¿Es seguro viajar a...?" + buscador + CTAs. Mapa separado debajo del hero (sin overlay oscuro). Complexity técnica oculta bajo el fold.
@@ -288,6 +327,50 @@ Añadidos RDC (CD) y Uganda (UG) el 19 May 2026 por brote Ebola. Siguen faltando
 - **Payments**: Stripe (not fully integrated yet)
 - **Email**: Resend
 - **Bot**: Telegram
+
+## ⚙️ Deploy v2.5 — Build Local + rsync (ACTUAL)
+
+**Servidor**: `deploy@178.105.80.193` puerto 22
+**Script local**: `bash ~/viaje-con-inteligencia/deploy.sh`
+
+### Procedimiento (OBLIGATORIO)
+1. `git push origin main`
+2. `bash ~/viaje-con-inteligencia/deploy.sh`
+
+### El script hace en orden:
+- `git push` → GitHub
+- `npm run build` → build local en laptop (16GB RAM, sin bug `_ssgManifest.js`)
+- `rsync .next/` → servidor Hetzner (solo assets compilados)
+- `ssh` → `git pull` + `pm2 restart` en Hetzner
+- Purga caché Cloudflare automática
+
+### ⛔ REGLAS CRÍTICAS
+- **NUNCA** usar `npm run build` directamente en el servidor — fallará con `_ssgManifest.js`
+- **NUNCA** tocar puertos SSH ni fail2ban
+- **Siempre** usar el deploy script local tras `git push`
+
+### Cloudflare cache purge
+```bash
+curl -X POST https://api.cloudflare.com/client/v4/zones/a56f7c002b1db64082f0813b839db412/purge_cache \
+  -H "Authorization: Bearer <CLOUDFLARE_API_TOKEN>" \
+  --data '{"purge_everything":true}'
+```
+
+### Git tags para snapshots estables
+```bash
+git tag -a vX.X-descripcion -m "descripcion" && git push origin --tags
+```
+
+### Tags actuales
+| Tag | Descripción |
+|-----|-------------|
+| `v2.1-estable-cta-rrss` | CTA + RRSS |
+| `v2.2-premium-cta` | Premium CTA |
+| `v2.3-seo-noindex` | SEO noindex |
+| `v2.4-deploy-cf` | Deploy + Cloudflare |
+| `v2.5-build-local` | ← **Estado actual** |
+
+**Revertir:** `git checkout v2.X-nombre`
 
 ## Key Commands
 ```bash
