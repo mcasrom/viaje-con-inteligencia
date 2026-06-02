@@ -7,13 +7,13 @@
 > **Regla**: NO tocar código salvo bugs críticos.
 
 ### Plan
-| Día | Acción |
-|-----|--------|
-| Lun | Reddit r/travel + r/solotravel + r/digitalnomad |
-| Mar | Facebook Gurú de Viaje + Comunidad Viajeros |
-| Mié | LosViajeros + Foro de Viajeros + Email outreach 5-10 bloggers |
-| Jue | Reddit r/TravelHacks + X/Twitter |
-| Vie | Bluesky + Mastodon + Newsletter semanal |
+| Día | Acción | Estado |
+|-----|--------|--------|
+| Lun | Reddit r/travel + r/solotravel + r/digitalnomad | ✅ Publicado todo (US + UK en 6 canales) |
+| Mar | Facebook Gurú de Viaje + Comunidad Viajeros | ✅ Publicado |
+| Mié | LosViajeros + Foro de Viajeros + Email outreach 5-10 bloggers | ⏳ Pendiente |
+| Jue | Reddit r/TravelHacks + X/Twitter | ⏳ Pendiente |
+| Vie | Bluesky + Mastodon + Newsletter semanal | ⏳ Pendiente |
 
 ### Métricas
 - Registros nuevos (Supabase `profiles`)
@@ -28,6 +28,35 @@
 - `content/outreach/reddit-smarttravelhacks.md`
 - `content/outreach/facebook-guru-viaje.mdx`
 - `content/outreach/facebook-comunidad-viajeros.mdx`
+
+---
+
+## ✅ 02 Jun 2026 — Deploy v2.7: Freemium model — alertas 3 países gratis
+
+> **Cambios:**
+> - Alertas en tiempo real movidas a free tier (límite 3 países)
+> - Premium: alertas ilimitadas + Telegram
+> - Límite enforced en `/api/alerts/subscribe`
+> - Todos los posts del sprint actualizados con "alertas gratis 3 países" como gancho
+
+---
+
+## ✅ 02 Jun 2026 — SEO Blog: BlogPosting schema + sitemap + internal linking
+
+> **Deploy v2.8** (commit `c8db6e8`)
+>
+> **Cambios:**
+> - Schema `Article` → `BlogPosting` en `/blog/[slug]/page.tsx`
+> - Nuevo `/blog/sitemap.xml` dedicado con todos los posts
+> - Botón "Blog OSINT" añadido en homepage hero (3 botones ahora)
+> - Link "Blog OSINT" añadido en 3 pillar pages
+> - Google Search Console: URL indexada, canonical OK, h1 fix pendiente re-crawl
+> - IndexNow enviado a Bing/Yandex
+>
+> **Estado indexación:**
+> - Google: ✅ Indexed successfully (GSC)
+> - Bing/Yandex: ✅ IndexNow notificado
+> - Pendiente: Google re-crawl para detectar fix h1
 
 ---
 
