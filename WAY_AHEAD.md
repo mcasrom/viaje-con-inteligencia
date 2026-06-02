@@ -31,7 +31,33 @@
 
 ---
 
+## 🚀 Sprint CRO — Conversión de Tráfico (Próximo)
+
+> **Problema**: 5.193 visitas → 3 registros (0.05% conversión). El mapa es "one-and-done".
+> **Objetivo**: Subir conversión a 1% (+50 registros/semana solo con tráfico actual).
+> **Estrategia**: Convertir curiosidad en intención de viaje.
+
+### Opciones a implementar
+1. **Teaser de Incidentes**: Contador de alertas borroso en ficha de país → Login para ver detalle.
+2. **Lead Magnet Dinámico**: Popup contextual "¿Viajas a [País]? Descarga Guía de Seguridad".
+3. **Hook de Intención**: Hero cambia a "¿A dónde vas y cuándo?" → Input email para avisos.
+
+### Prioridad
+Empezar por **Opción 2 (Lead Magnet Dinámico)** — bajo esfuerzo, alta relevancia.
+
+---
+
 ## ✅ 02 Jun 2026 — Deploy v2.7: Freemium model — alertas 3 países gratis
+
+> **Cambios:**
+> - Alertas en tiempo real movidas a free tier (límite 3 países)
+> - Premium: alertas ilimitadas + Telegram
+> - Límite enforced en `/api/alerts/subscribe`
+> - Todos los posts del sprint actualizados con "alertas gratis 3 países" como gancho
+
+---
+
+## ✅ 02 Jun 2026 — Deploy v2.8: Blog SEO + Internal Linking
 
 > **Cambios:**
 > - Alertas en tiempo real movidas a free tier (límite 3 países)

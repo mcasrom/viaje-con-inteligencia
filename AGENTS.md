@@ -1,5 +1,21 @@
 # AGENTS.md — Viaje con Inteligencia
 
+## 🚀 Sprint CRO — Conversión de Tráfico (Próximo)
+
+> **Problema**: 5.193 visitas → 3 registros (0.05% conversión). El mapa es "one-and-done".
+> **Objetivo**: Subir conversión a 1% (+50 registros/semana solo con tráfico actual).
+> **Estrategia**: Convertir curiosidad en intención de viaje.
+
+### Opciones a implementar
+1. **Teaser de Incidentes**: Contador de alertas borroso en ficha de país → Login para ver detalle.
+2. **Lead Magnet Dinámico**: Popup contextual "¿Viajas a [País]? Descarga Guía de Seguridad".
+3. **Hook de Intención**: Hero cambia a "¿A dónde vas y cuándo?" → Input email para avisos.
+
+### Prioridad
+Empezar por **Opción 2 (Lead Magnet Dinámico)** — bajo esfuerzo, alta relevancia.
+
+---
+
 ## 🎯 Sprint Semana 02-08 Jun 2026 — CAPTACIÓN DE USUARIOS
 
 > **Prioridad #1**: Menos código, más usuarios. La plataforma está funcional y estable.
