@@ -15,7 +15,7 @@ Viaje con Inteligencia aggregates official risk data from:
 
 Plus real-time OSINT monitoring (news, earthquakes, protests), embassy contacts, visa requirements, and an emergency mode with local numbers.
 
-No tracking, no account required for basic features. Open source data, transparent methodology.
+Register free → set alerts for up to 3 countries. No tracking, no credit card.
 
 viajeinteligencia.com
 

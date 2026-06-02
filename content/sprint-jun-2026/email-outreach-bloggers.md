@@ -16,11 +16,11 @@ He desarrollado una herramienta gratuita que agrega datos de riesgo de viaje de 
 
 No es un producto comercial — es algo que construí para mi propio uso y mantengo abierto.
 
-Pensé que podría ser útil para tus lectores/viajeros porque:
-- Es gratuita y sin registro para funciones básicas
-- Usa fuentes oficiales, no opiniones
-- Tiene herramientas prácticas (verificación de vuelos, reclamaciones EU261)
-- El modo emergencia funciona sin cuenta
+Lo que puede interesar a tus lectores:
+- Registro gratuito con alertas para hasta 3 países (te avisa si cambia el riesgo)
+- Sin tarjeta de crédito ni trial que se caduca
+- Herramientas prácticas (verificación de vuelos, reclamaciones EU261)
+- Modo emergencia funciona sin cuenta
 
 Si te interesa, puedo enviarte un tour rápido de las funciones o compartir el link directamente.
 

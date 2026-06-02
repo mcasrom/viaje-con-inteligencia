@@ -13,6 +13,8 @@ Os lo pregunto porque acabo de descubrir que hay diferencias importantes entre l
 
 Monté una página que junta las 3 fuentes y añade monitorización de incidentes en tiempo real (protestas, desastres, seguridad). También tiene contactos de embajadas, requisitos de visado, y un modo emergencia con teléfonos locales.
 
-Es gratis y no hace falta registrarse para lo básico: viajeinteligencia.com
+Puedes registrarte gratis y activar alertas para hasta 3 países — si cambia el nivel de riesgo te avisa. Sin tarjeta ni compromiso.
+
+Es gratis para lo básico: viajeinteligencia.com
 
 ¿Alguien usa alguna herramienta similar? Me interesa saber qué miráis vosotros.

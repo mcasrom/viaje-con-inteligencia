@@ -13,6 +13,8 @@ Yo antes solo miraba el MAEC (Ministerio de Asuntos Exteriores) y ya. Pero el a�
 
 Desde entonces uso una herramienta gratuita que agrupa datos de 3 gobiernos (España, EE.UU. y Reino Unido), plus monitoriza noticias y alertas en tiempo real. Te dice el nivel de riesgo, embajadas, requisitos de visado, y tiene un "modo emergencia" con teléfonos locales y consulares.
 
+Lo mejor: te puedes registrar gratis y poner alertas para hasta 3 países. Si sube el riesgo, te avisa. Sin tarjeta de crédito ni trial que se caduca.
+
 La hice para mí y la tengo abierta: viajeinteligencia.com
 
 ¿Vosotros qué consultáis antes de reservar un viaje?

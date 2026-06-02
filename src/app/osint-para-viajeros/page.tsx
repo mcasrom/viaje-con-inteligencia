@@ -120,7 +120,7 @@ Por estas razones, siempre se recomienda contrastar las alertas con fuentes ofic
 
 ¿Puedo confiar en las alertas automáticas? Las alertas son un sistema de aviso temprano, no una verificación forense. Cuando recibes una alerta, se recomienda abrir el feed OSINT, ver las fuentes originales, y contrastar con fuentes oficiales antes de actuar.
 
-¿Cuánto cuesta el acceso al OSINT? El feed OSINT público y las fichas de país son gratuitos. Las alertas personalizadas vía Telegram y el dashboard avanzado requieren suscripción premium.
+¿Cuánto cuesta el acceso al OSINT? El feed OSINT público, las fichas de país y las alertas de hasta 3 países son gratuitos. Las alertas ilimitadas con notificaciones Telegram y el dashboard avanzado requieren suscripción premium.
 
 ¿Cada cuánto se actualizan las fuentes? GDELT y USGS se consultan en cada ciclo del cron (cada 6 horas). Reddit y RSS igualmente. WHO DON se consulta con el mismo ciclo. El master cron completo se ejecuta diariamente a las 06:00 UTC.`,
   },
@@ -197,7 +197,7 @@ export default function OsintParaViajerosPage() {
                     { '@type': 'Question', name: '¿Qué diferencia hay entre OSINT y las noticias tradicionales?', acceptedAnswer: { '@type': 'Answer', text: 'OSINT captura señales en bruto de múltiples fuentes sin edición intermedia. Es más rápido pero requiere validación.' } },
                     { '@type': 'Question', name: '¿El sistema detecta todos los incidentes en un país?', acceptedAnswer: { '@type': 'Answer', text: 'No. Detecta incidentes que generan señales en GDELT, Reddit, RSS, USGS, GDACS, WHO o ReliefWeb. La cobertura mejora con cada fuente añadida.' } },
                     { '@type': 'Question', name: '¿Puedo confiar en las alertas automáticas?', acceptedAnswer: { '@type': 'Answer', text: 'Las alertas son un sistema de aviso temprano, no una verificación forense. Recomendamos contrastar con fuentes oficiales antes de actuar.' } },
-                    { '@type': 'Question', name: '¿Cuánto cuesta el acceso al OSINT?', acceptedAnswer: { '@type': 'Answer', text: 'El feed OSINT público y las fichas de país son gratuitos. Las alertas personalizadas vía Telegram requieren suscripción premium.' } },
+                    { '@type': 'Question', name: '¿Cuánto cuesta el acceso al OSINT?', acceptedAnswer: { '@type': 'Answer', text: 'El feed OSINT público, las fichas de país y las alertas de hasta 3 países son gratuitos. Las alertas ilimitadas con notificaciones Telegram y el dashboard avanzado requieren suscripción premium.' } },
                   ],
                 },
               ],

@@ -17,9 +17,10 @@ I built a free tool that pulls all of this into one place:
 - Embassy/consulate contacts per country
 - Visa requirements
 - Real-time incident monitoring (protests, natural disasters, security threats)
-- Emergency mode with local numbers — works without registration
+- Emergency mode with local numbers
+- Free alerts for up to 3 countries — get notified if risk changes
 
-No account needed for the basics. I made it for myself and kept improving it.
+Register for free, no credit card needed. I made it for myself and kept improving it.
 
 Link: viajeinteligencia.com
 

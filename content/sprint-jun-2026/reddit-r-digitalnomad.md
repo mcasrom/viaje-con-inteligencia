@@ -19,8 +19,9 @@ I built a free aggregator that pulls:
 - Real-time incident monitoring (protests, disasters, security threats)
 - Cost of living data
 - Internet reliability indicators
+- Free alerts for up to 3 countries — get notified if risk changes before you book
 
-No account needed. I use it every time I'm considering a new base.
+Register free, no credit card. I use it every time I'm considering a new base.
 
 Link: viajeinteligencia.com
 

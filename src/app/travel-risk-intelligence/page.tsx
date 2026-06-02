@@ -107,7 +107,7 @@ TRI combina lo mejor de cada enfoque: la autoridad de las fuentes diplomáticas,
     title: 'Preguntas frecuentes',
     content: `¿Con qué frecuencia se actualizan los datos? Los niveles MAEC y US State Dept se actualizan diariamente. Las señales OSINT se procesan cada 6 horas. Los modelos ML se reentrenan cada noche. El TCI y el IST se actualizan cada 24 horas.
 
-¿Travel Risk Intelligence es gratis? Sí, el mapa de riesgos, las fichas de país, el radar de viaje y el feed OSINT público son gratuitos. Las alertas personalizadas vía Telegram y el dashboard de KPIs requieren suscripción premium (4.99€/mes).
+¿Travel Risk Intelligence es gratis? Sí, el mapa de riesgos, las fichas de país, el radar de viaje, el feed OSINT público y las alertas de hasta 3 países son gratuitos. Las alertas ilimitadas con notificaciones Telegram, el dashboard de KPIs y el planificador IA requieren suscripción premium (4.99€/mes).
 
 ¿Puedo integrar los datos en mi propia aplicación? Sí, ofrezco una API REST pública con cuatro endpoints: riesgo por país, TCI, incidentes activos y catálogo de países. Plan gratuito con 3,000 requests/mes y planes de pago para mayor volumen.
 
@@ -190,7 +190,7 @@ export default function TravelRiskIntelligencePage() {
                   '@type': 'FAQPage',
                   mainEntity: [
                     { '@type': 'Question', name: '¿Con qué frecuencia se actualizan los datos?', acceptedAnswer: { '@type': 'Answer', text: 'Los niveles MAEC y US State Dept se actualizan diariamente. Las señales OSINT se procesan cada 6 horas. Los modelos ML se reentrenan cada noche.' } },
-                    { '@type': 'Question', name: '¿Travel Risk Intelligence es gratis?', acceptedAnswer: { '@type': 'Answer', text: 'Sí, el mapa de riesgos, las fichas de país, el radar de viaje y el feed OSINT público son gratuitos. Las alertas personalizadas vía Telegram y el dashboard de KPIs requieren suscripción premium (4.99€/mes).' } },
+                    { '@type': 'Question', name: '¿Travel Risk Intelligence es gratis?', acceptedAnswer: { '@type': 'Answer', text: 'Sí, el mapa de riesgos, las fichas de país, el radar de viaje, el feed OSINT público y las alertas de hasta 3 países son gratuitos. Las alertas ilimitadas con notificaciones Telegram, el dashboard de KPIs y el planificador IA requieren suscripción premium (4.99€/mes).' } },
                     { '@type': 'Question', name: '¿Cubrís todos los países del mundo?', acceptedAnswer: { '@type': 'Answer', text: 'Actualmente se monitorizan 136 países con fichas completas. Se priorizan los destinos más visitados por viajeros españoles y latinoamericanos.' } },
                     { '@type': 'Question', name: '¿Puedo integrar los datos en mi propia aplicación?', acceptedAnswer: { '@type': 'Answer', text: 'Sí, ofrezco una API REST pública con cuatro endpoints: riesgo por país, TCI, incidentes activos y catálogo de países.' } },
                     { '@type': 'Question', name: '¿Las predicciones por IA son fiables?', acceptedAnswer: { '@type': 'Answer', text: 'Los modelos Random Forest tienen un MAE de 0.82 puntos en score de riesgo. Las predicciones a 7 días son más fiables que las de 30 días.' } },

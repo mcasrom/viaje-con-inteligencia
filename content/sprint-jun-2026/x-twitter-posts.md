@@ -18,7 +18,7 @@ Instead of googling and reading 10 outdated blog posts, check official governmen
 
 Plus real-time incident monitoring, embassy contacts, visa info, and emergency mode.
 
-Free. No signup required.
+Register free → get alerts for up to 3 countries. No credit card.
 
 viajeinteligencia.com
 
@@ -32,7 +32,7 @@ Check your flight status in seconds + generate an EU261 compensation claim autom
 
 No forms to fill. No lawyers. Just official references and a ready-to-send document.
 
-Part of viajeinteligencia.com — free travel risk intelligence.
+Free to register → viajeinteligencia.com
 
 #EU261 #FlightDelay #TravelRights
 
@@ -46,8 +46,8 @@ US says "reconsider travel."
 
 Who do you trust?
 
-Check all 3 side by side at viajeinteligencia.com — plus real-time incidents, embassies, and visa requirements.
+Check all 3 side by side + set free alerts for your destinations:
 
-Free tool, built by a traveler.
+viajeinteligencia.com
 
 #TravelRisk #TravelSmart

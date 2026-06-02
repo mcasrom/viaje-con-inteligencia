@@ -16,8 +16,9 @@ Also includes:
 • Visa requirements
 • Emergency mode with local numbers
 • Flight delay checker + EU261 claim generator
+• Free alerts for up to 3 countries — get notified when risk changes
 
-No account needed for basics. Made it for myself, keeping it open for everyone.
+Register free, no credit card. Made it for myself, keeping it open for everyone.
 
 viajeinteligencia.com
 
