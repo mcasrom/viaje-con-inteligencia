@@ -1,17 +1,32 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 import Link from 'next/link';
-import { X, Mail, Loader2, Check, Download } from 'lucide-react';
+import { X, Mail, Loader2, Check, Download, ShieldAlert } from 'lucide-react';
 
 const DISMISS_KEY = 'newsletter-popup-dismissed';
 const DISMISS_DAYS = 7;
 
+const CODE_TO_NAME: Record<string, string> = {
+  mx: 'México', ar: 'Argentina', co: 'Colombia', pe: 'Perú', cl: 'Chile',
+  es: 'España', us: 'Estados Unidos', gb: 'Reino Unido', fr: 'Francia',
+  it: 'Italia', de: 'Alemania', pt: 'Portugal', jp: 'Japón', th: 'Tailandia',
+  do: 'República Dominicana', cr: 'Costa Rica', ec: 'Ecuador', cu: 'Cuba',
+  br: 'Brasil', ma: 'Marruecos', eg: 'Egipto', tr: 'Turquía', in: 'India',
+};
+
 export default function NewsletterPopup() {
+  const pathname = usePathname();
   const [visible, setVisible] = useState(false);
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [message, setMessage] = useState('');
+  
+  // Detectar si estamos en ficha de país
+  const countryMatch = pathname?.match(/^\/pais\/([a-z]{2})$/i);
+  const countryCode = countryMatch ? countryMatch[1].toLowerCase() : null;
+  const countryName = countryCode ? (CODE_TO_NAME[countryCode] || countryCode.toUpperCase()) : null;
 
   useEffect(() => {
     const dismissed = localStorage.getItem(DISMISS_KEY);
@@ -20,9 +35,11 @@ export default function NewsletterPopup() {
       if (elapsed < DISMISS_DAYS * 24 * 60 * 60 * 1000) return;
       localStorage.removeItem(DISMISS_KEY);
     }
-    const timer = setTimeout(() => setVisible(true), 25000);
+    // Show faster on country pages (5s) vs homepage (25s)
+    const delay = countryName ? 5000 : 25000;
+    const timer = setTimeout(() => setVisible(true), delay);
     return () => clearTimeout(timer);
-  }, []);
+  }, [countryName]);
 
   const dismiss = () => {
     setVisible(false);
@@ -37,13 +54,13 @@ export default function NewsletterPopup() {
       const res = await fetch('/api/newsletter/subscribe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, source: 'landing-popup' }),
+        body: JSON.stringify({ email, source: countryName ? `pais-${countryCode}` : 'landing-popup' }),
       });
       const data = await res.json();
       if (res.ok) {
         setStatus('success');
         setTimeout(() => {
-          window.location.href = '/reporte-riesgo';
+          window.location.href = countryName ? `/pais/${countryCode}` : '/reporte-riesgo';
         }, 800);
       } else {
         setStatus('error');
@@ -70,23 +87,29 @@ export default function NewsletterPopup() {
               <Check className="w-6 h-6 text-green-400" />
             </div>
             <p className="text-white font-semibold text-sm">¡Suscrito!</p>
-            <p className="text-slate-400 text-xs mt-1">Te llegará cada lunes a tu email</p>
+            <p className="text-slate-400 text-xs mt-1">
+              {countryName ? `Te avisaremos si cambia el riesgo en ${countryName}` : 'Te llegará cada lunes a tu email'}
+            </p>
             <Link
-              href="/reporte-riesgo"
+              href={countryName ? `/pais/${countryCode}` : '/reporte-riesgo'}
               className="inline-flex items-center gap-2 mt-3 px-4 py-2 bg-amber-600 hover:bg-amber-500 text-white rounded-lg text-xs font-medium transition-colors"
             >
-              <Download className="w-3.5 h-3.5" /> Ver informe ahora
+              <Download className="w-3.5 h-3.5" /> {countryName ? 'Volver a la guía' : 'Ver informe ahora'}
             </Link>
           </div>
         ) : (
           <>
             <div className="flex items-center gap-3 mb-3">
-              <div className="w-10 h-10 bg-amber-500/20 rounded-xl flex items-center justify-center">
-                <Download className="w-5 h-5 text-amber-400" />
+              <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${countryName ? 'bg-blue-500/20' : 'bg-amber-500/20'}`}>
+                {countryName ? <ShieldAlert className="w-5 h-5 text-blue-400" /> : <Download className="w-5 h-5 text-amber-400" />}
               </div>
               <div>
-                <p className="text-white font-semibold text-sm">Informe Semanal de Riesgo</p>
-                <p className="text-slate-400 text-[11px]">Top 10 países con cambios de riesgo</p>
+                <p className="text-white font-semibold text-sm">
+                  {countryName ? `Guía de Seguridad: ${countryName}` : 'Informe Semanal de Riesgo'}
+                </p>
+                <p className="text-slate-400 text-[11px]">
+                  {countryName ? `Alertas, visados y zonas a evitar en ${countryName}` : 'Top 10 países con cambios de riesgo'}
+                </p>
               </div>
             </div>
 
@@ -109,7 +132,7 @@ export default function NewsletterPopup() {
                 ) : (
                   <>
                     <Mail className="w-4 h-4" />
-                    Recibir informe gratis
+                    {countryName ? 'Recibir guía gratis' : 'Recibir informe gratis'}
                   </>
                 )}
               </button>
