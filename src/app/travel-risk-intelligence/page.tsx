@@ -138,6 +138,7 @@ const QUICK_LINKS = [
   { href: '/predicciones', label: 'Predicciones por país', desc: 'Score y probabilidades de cambio de riesgo' },
   { href: '/ecosistema', label: 'Arquitectura del sistema', desc: 'Diagrama completo del pipeline de datos' },
   { href: '/precio-api', label: 'API para empresas', desc: 'Integra datos de riesgo en tus sistemas' },
+  { href: '/blog', label: 'Blog OSINT', desc: 'Análisis de riesgos, geopolítica y viajes' },
   { href: '/blog/ecosistema-osint-viajero-moderno', label: 'Ecosistema OSINT', desc: 'Cómo encajan todas las piezas (blog)' },
   { href: '/blog/de-plataforma-a-inteligencia', label: 'De plataforma a inteligencia', desc: 'Visión del proyecto (blog)' },
   { href: '/blog/radar-viaje-seguridad-maec-usa', label: 'Radar MAEC+USA', desc: 'Cómo usar el radar de viaje (blog)' },

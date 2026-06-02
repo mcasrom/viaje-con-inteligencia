@@ -125,6 +125,7 @@ const RELATED = [
   { href: '/transparencia', label: 'Centro de transparencia', desc: 'Fuentes y metodología' },
   { href: '/osint-para-viajeros', label: 'OSINT para Viajeros', desc: 'Monitorización de fuentes abiertas' },
   { href: '/travel-risk-intelligence', label: 'Travel Risk Intelligence', desc: 'Visión global de inteligencia de viaje' },
+  { href: '/blog', label: 'Blog OSINT', desc: 'Análisis de riesgos y geopolítica para viajeros' },
   { href: '/blog/crisis-combustible-vuelos-2026', label: 'Crisis combustible (blog)', desc: 'Impacto de la geopolítica en el coste de volar' },
   { href: '/blog/cancelacion-vuelos-oriente-medio', label: 'Cancelaciones Oriente Medio (blog)', desc: 'Cómo los conflictos afectan a los vuelos' },
   { href: '/blog/radar-viaje-seguridad-maec-usa', label: 'Radar MAEC+USA (blog)', desc: 'Cómo usar el radar de viaje' },

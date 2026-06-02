@@ -145,6 +145,7 @@ const RELATED = [
   { href: '/alertas', label: 'Alertas personalizadas', desc: 'Suscríbete a países para recibir notificaciones' },
   { href: '/metodologia', label: 'Metodología de análisis', desc: 'Cómo se procesan y clasifican las señales' },
   { href: '/transparencia', label: 'Limitaciones del sistema', desc: 'Qué puede y no puede detectar el sistema OSINT' },
+  { href: '/blog', label: 'Blog OSINT', desc: 'Análisis y guías de seguridad para viajeros' },
   { href: '/blog/ecosistema-osint-viajero-moderno', label: 'Ecosistema OSINT (blog)', desc: 'Cómo encajan las piezas del sistema' },
   { href: '/travel-risk-intelligence', label: 'Travel Risk Intelligence', desc: 'Visión global de inteligencia de viaje' },
   { href: '/geopolitica-y-viajes', label: 'Geopolítica y Viajes', desc: 'Conflictos, sanciones y espacio aéreo' },

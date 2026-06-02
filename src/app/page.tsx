@@ -1,4 +1,4 @@
-import { Globe, Bell } from 'lucide-react';
+import { Globe, Bell, BookOpen } from 'lucide-react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 
@@ -34,6 +34,13 @@ export default function HomePage() {
             >
               <Bell className="w-4 h-4" />
               Recibir alertas gratis
+            </Link>
+            <Link
+              href="/blog"
+              className="inline-flex items-center gap-2 px-5 py-2.5 bg-white/10 backdrop-blur-sm text-white rounded-xl hover:bg-white/20 transition-all text-sm font-medium border border-white/10"
+            >
+              <BookOpen className="w-4 h-4" />
+              Blog OSINT
             </Link>
           </div>
         </div>

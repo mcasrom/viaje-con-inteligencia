@@ -65,7 +65,7 @@ export default async function Page({ params }: PageProps) {
 
   const schema = {
     '@context': 'https://schema.org',
-    '@type': 'Article',
+    '@type': 'BlogPosting',
     headline: post.title,
     description: post.excerpt || post.description || '',
     author: { '@type': 'Person', name: post.author },

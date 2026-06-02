@@ -31,6 +31,15 @@
 
 ---
 
+## ✅ 02 Jun 2026 — Fix SEO: duplicate h1 en homepage
+
+> **Problema**: 2 etiquetas `<h1>` en la homepage confundían a Googlebot.
+> **Causa**: Header flotante (`HomeBelowFold.tsx:102`) usaba `<h1>` para el nombre del sitio.
+> **Fix**: Cambiado a `<span>`. El único h1 válido ahora es el hero: "¿Es seguro viajar a...?"
+> **Commit**: `aeeda88`
+
+---
+
 ## ✅ 02 Jun 2026 — Posts publicados RRSS (US + UK)
 
 > **Estado:** ✅ Publicados manualmente
