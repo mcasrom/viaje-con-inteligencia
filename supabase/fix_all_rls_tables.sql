@@ -232,3 +232,203 @@ SELECT tablename, rowsecurity
 FROM pg_tables
 WHERE schemaname = 'public'
 ORDER BY tablename;
+
+-- ============================================================
+-- TABLAS CRÍTICAS SIN RLS — newsletter, profiles, trips
+-- ============================================================
+
+-- newsletter_history
+ALTER TABLE newsletter_history ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Service role all newsletter_history" ON newsletter_history;
+CREATE POLICY "Service role all newsletter_history" ON newsletter_history
+  FOR ALL USING (auth.role() = 'service_role');
+
+-- newsletter_subscribers
+ALTER TABLE newsletter_subscribers ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Public insert newsletter_subscribers" ON newsletter_subscribers;
+CREATE POLICY "Public insert newsletter_subscribers" ON newsletter_subscribers
+  FOR INSERT WITH CHECK (true);
+DROP POLICY IF EXISTS "Service role all newsletter_subscribers" ON newsletter_subscribers;
+CREATE POLICY "Service role all newsletter_subscribers" ON newsletter_subscribers
+  FOR ALL USING (auth.role() = 'service_role');
+
+-- profiles (Supabase Auth managed — read public, write own)
+ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Public read profiles" ON profiles;
+CREATE POLICY "Public read profiles" ON profiles
+  FOR SELECT USING (true);
+DROP POLICY IF EXISTS "Users update own profile" ON profiles;
+CREATE POLICY "Users update own profile" ON profiles
+  FOR UPDATE USING (auth.uid() = id);
+
+-- trips (user-owned)
+ALTER TABLE trips ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Users read own trips" ON trips;
+CREATE POLICY "Users read own trips" ON trips
+  FOR SELECT USING (auth.uid() = user_id);
+DROP POLICY IF EXISTS "Users insert own trips" ON trips;
+CREATE POLICY "Users insert own trips" ON trips
+  FOR INSERT WITH CHECK (auth.uid() = user_id);
+DROP POLICY IF EXISTS "Users update own trips" ON trips;
+CREATE POLICY "Users update own trips" ON trips
+  FOR UPDATE USING (auth.uid() = user_id);
+DROP POLICY IF EXISTS "Users delete own trips" ON trips;
+CREATE POLICY "Users delete own trips" ON trips
+  FOR DELETE USING (auth.uid() = user_id);
+-- Public can read trips marked as public
+DROP POLICY IF EXISTS "Public read public trips" ON trips;
+CREATE POLICY "Public read public trips" ON trips
+  FOR SELECT USING (is_public = true);
+
+-- trip_ratings (already has RLS in trip_ratings.sql, but ensure)
+ALTER TABLE trip_ratings ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "trip_ratings_public_read" ON trip_ratings;
+CREATE POLICY "trip_ratings_public_read" ON trip_ratings
+  FOR SELECT USING (true);
+DROP POLICY IF EXISTS "trip_ratings_insert_own" ON trip_ratings;
+CREATE POLICY "trip_ratings_insert_own" ON trip_ratings
+  FOR INSERT WITH CHECK (auth.uid() = user_id);
+DROP POLICY IF EXISTS "trip_ratings_update_own" ON trip_ratings;
+CREATE POLICY "trip_ratings_update_own" ON trip_ratings
+  FOR UPDATE USING (auth.uid() = user_id);
+DROP POLICY IF EXISTS "trip_ratings_delete_own" ON trip_ratings;
+CREATE POLICY "trip_ratings_delete_own" ON trip_ratings
+  FOR DELETE USING (auth.uid() = user_id);
+
+-- ml_features (service role only)
+ALTER TABLE ml_features ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Service role all ml_features" ON ml_features;
+CREATE POLICY "Service role all ml_features" ON ml_features
+  FOR ALL USING (auth.role() = 'service_role');
+
+-- ml_models (service role only)
+ALTER TABLE ml_models ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Service role all ml_models" ON ml_models;
+CREATE POLICY "Service role all ml_models" ON ml_models
+  FOR ALL USING (auth.role() = 'service_role');
+
+-- ml_risk_predictions (service role only)
+ALTER TABLE ml_risk_predictions ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Service role all ml_risk_predictions" ON ml_risk_predictions;
+CREATE POLICY "Service role all ml_risk_predictions" ON ml_risk_predictions
+  FOR ALL USING (auth.role() = 'service_role');
+
+-- pois_cache (service role + public read)
+ALTER TABLE pois_cache ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Public read pois_cache" ON pois_cache;
+CREATE POLICY "Public read pois_cache" ON pois_cache
+  FOR SELECT USING (true);
+DROP POLICY IF EXISTS "Service role all pois_cache" ON pois_cache;
+CREATE POLICY "Service role all pois_cache" ON pois_cache
+  FOR ALL USING (auth.role() = 'service_role');
+
+-- cloudflare_analytics (service role only)
+ALTER TABLE cloudflare_analytics ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Service role all cloudflare_analytics" ON cloudflare_analytics;
+CREATE POLICY "Service role all cloudflare_analytics" ON cloudflare_analytics
+  FOR ALL USING (auth.role() = 'service_role');
+
+-- infografias (public read, service role write)
+ALTER TABLE infografias ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Public read infografias" ON infografias;
+CREATE POLICY "Public read infografias" ON infografias
+  FOR SELECT USING (true);
+DROP POLICY IF EXISTS "Service role all infografias" ON infografias;
+CREATE POLICY "Service role all infografias" ON infografias
+  FOR ALL USING (auth.role() = 'service_role');
+
+-- external_risk (public read, service role write)
+ALTER TABLE external_risk ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Public read external_risk" ON external_risk;
+CREATE POLICY "Public read external_risk" ON external_risk
+  FOR SELECT USING (true);
+DROP POLICY IF EXISTS "Service role all external_risk" ON external_risk;
+CREATE POLICY "Service role all external_risk" ON external_risk
+  FOR ALL USING (auth.role() = 'service_role');
+
+-- osint_signals (public read, service role write)
+ALTER TABLE osint_signals ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Public read osint_signals" ON osint_signals;
+CREATE POLICY "Public read osint_signals" ON osint_signals
+  FOR SELECT USING (true);
+DROP POLICY IF EXISTS "Service role all osint_signals" ON osint_signals;
+CREATE POLICY "Service role all osint_signals" ON osint_signals
+  FOR ALL USING (auth.role() = 'service_role');
+
+-- pulse_keywords (already covered as pulso_keywords, but check both)
+-- user_preferences (user-owned)
+ALTER TABLE user_preferences ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Users read own user_preferences" ON user_preferences;
+CREATE POLICY "Users read own user_preferences" ON user_preferences
+  FOR SELECT USING (auth.uid() = user_id);
+DROP POLICY IF EXISTS "Users insert own user_preferences" ON user_preferences;
+CREATE POLICY "Users insert own user_preferences" ON user_preferences
+  FOR INSERT WITH CHECK (auth.uid() = user_id);
+DROP POLICY IF EXISTS "Users update own user_preferences" ON user_preferences;
+CREATE POLICY "Users update own user_preferences" ON user_preferences
+  FOR UPDATE USING (auth.uid() = user_id);
+
+-- onboarding_queue (admin only — already has RLS but ensure)
+ALTER TABLE onboarding_queue ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Admins pueden ver todo" ON onboarding_queue;
+CREATE POLICY "Admins pueden ver todo" ON onboarding_queue
+  FOR ALL USING (auth.jwt() ->> 'email' = 'mcasrom@gmail.com');
+
+-- afiliados (admin only — already has RLS but ensure)
+ALTER TABLE afiliados ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Admins pueden ver todo" ON afiliados;
+CREATE POLICY "Admins pueden ver todo" ON afiliados
+  FOR ALL USING (auth.jwt() ->> 'email' = 'mcasrom@gmail.com');
+
+-- colaboraciones (admin only)
+ALTER TABLE colaboraciones ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Admins pueden ver todo" ON colaboraciones;
+CREATE POLICY "Admins pueden ver todo" ON colaboraciones
+  FOR ALL USING (auth.jwt() ->> 'email' = 'mcasrom@gmail.com');
+
+-- sentiment_alerts (already has RLS but ensure)
+ALTER TABLE sentiment_alerts ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Public read sentiment_alerts" ON sentiment_alerts;
+CREATE POLICY "Public read sentiment_alerts" ON sentiment_alerts
+  FOR SELECT USING (true);
+
+-- early_bird_digests (already has RLS but ensure)
+ALTER TABLE early_bird_digests ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "service_role_early_bird_all" ON early_bird_digests;
+CREATE POLICY "service_role_early_bird_all" ON early_bird_digests
+  FOR ALL USING (true) WITH CHECK (true);
+DROP POLICY IF EXISTS "authenticated_early_bird_read" ON early_bird_digests;
+CREATE POLICY "authenticated_early_bird_read" ON early_bird_digests
+  FOR SELECT USING (auth.role() = 'authenticated');
+
+-- trend_predictions (already has RLS but ensure)
+ALTER TABLE trend_predictions ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "trend_predictions public read" ON trend_predictions;
+CREATE POLICY "trend_predictions public read" ON trend_predictions
+  FOR SELECT USING (true);
+DROP POLICY IF EXISTS "trend_predictions service write" ON trend_predictions;
+CREATE POLICY "trend_predictions service write" ON trend_predictions
+  FOR ALL USING (auth.role() = 'service_role');
+
+-- trip_ratings (already has RLS but ensure)
+ALTER TABLE trip_ratings ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "trip_ratings_public_read" ON trip_ratings;
+CREATE POLICY "trip_ratings_public_read" ON trip_ratings
+  FOR SELECT USING (true);
+DROP POLICY IF EXISTS "trip_ratings_insert_own" ON trip_ratings;
+CREATE POLICY "trip_ratings_insert_own" ON trip_ratings
+  FOR INSERT WITH CHECK (auth.uid() = user_id);
+DROP POLICY IF EXISTS "trip_ratings_update_own" ON trip_ratings;
+CREATE POLICY "trip_ratings_update_own" ON trip_ratings
+  FOR UPDATE USING (auth.uid() = user_id);
+DROP POLICY IF EXISTS "trip_ratings_delete_own" ON trip_ratings;
+CREATE POLICY "trip_ratings_delete_own" ON trip_ratings
+  FOR DELETE USING (auth.uid() = user_id);
+
+-- ============================================================
+-- VERIFICACIÓN FINAL — tablas sin RLS
+-- ============================================================
+SELECT tablename, rowsecurity
+FROM pg_tables
+WHERE schemaname = 'public' AND rowsecurity = false
+ORDER BY tablename;
