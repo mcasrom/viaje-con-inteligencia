@@ -76,7 +76,22 @@ export async function GET(request: NextRequest) {
         .order('created_at', { ascending: false });
 
       let tgSubs: any[] = [];
-      const { data: profile } = await supabaseAdmin!
+    // Check alert limit for free users (3 countries max)
+    const { count: currentAlerts } = await supabaseAdmin!
+      .from('alert_preferences')
+      .select('*', { count: 'exact', head: true })
+      .eq('user_id', user.id);
+
+    const FREE_ALERT_LIMIT = 3;
+    if ((currentAlerts || 0) >= FREE_ALERT_LIMIT) {
+      return NextResponse.json({
+        error: `Límite de ${FREE_ALERT_LIMIT} alertas gratuitas alcanzado. Actualiza a premium para alertas ilimitadas.`,
+        limit_reached: true,
+        current_count: currentAlerts,
+      }, { status: 403 });
+    }
+
+    const { data: profile } = await supabaseAdmin!
         .from('profiles')
         .select('telegram_id')
         .eq('id', user.id)
