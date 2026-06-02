@@ -99,7 +99,7 @@ function HomeNavBar() {
           <img src="/logo.webp" alt="Viaje con Inteligencia" width="32" height="32" className="w-8 h-8 object-contain" />
           <div className="flex items-center gap-2">
             <div>
-              <h1 className="text-white font-bold text-sm leading-tight">Viaje con Inteligencia</h1>
+              <span className="text-white font-bold text-sm leading-tight">Viaje con Inteligencia</span>
               <div className="flex items-center gap-2">
                 <span className="text-slate-400 text-[10px]">{TOTAL_PAISES} {t('topbar.countries')}</span>
                 <span className="w-1 h-1 rounded-full bg-slate-600" />

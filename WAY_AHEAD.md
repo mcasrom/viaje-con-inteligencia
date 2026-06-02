@@ -31,6 +31,94 @@
 
 ---
 
+## ✅ 02 Jun 2026 — Posts publicados RRSS (US + UK)
+
+> **Estado:** ✅ Publicados manualmente
+>
+> ### 🇺🇸 US Audience — direct, feature-led
+>
+> **X/Twitter** (226/280 chars):
+> ```
+> Built a real-time travel intelligence platform: geopolitical risk, earthquakes, visa rules and cost of living for 136 countries — AI-powered, no ads.
+>
+> Because traveling informed beats traveling blind.
+>
+> 🌍 viajeinteligencia.com
+> ```
+>
+> **Bluesky** (208/300 chars):
+> ```
+> Real-time travel risk radar: geopolitical alerts, earthquakes, visa rules and cost of living for 136 countries. AI-powered, no ads, no fluff.
+>
+> Because smart travelers need real data.
+>
+> 🌍 viajeinteligencia.com
+> ```
+>
+> **Mastodon / Telegram**:
+> ```
+> Most travelers find out about problems after they've already landed.
+>
+> I built viajeinteligencia.com to fix that.
+>
+> It's a real-time travel intelligence platform covering 136 countries:
+> → Official risk alerts (Spain's MAEC + US State Dept advisories)
+> → Seismic and disaster monitoring (USGS + GDACS)
+> → Visa requirements and entry rules
+> → Real cost of living and currency trends
+> → AI-powered geopolitical analysis
+>
+> Free tier covers 3 countries. No ads. No affiliate links. Just data.
+>
+> If you travel independently and make decisions based on actual information, this is for you.
+>
+> 🌍 https://www.viajeinteligencia.com
+>
+> #travel #travelsafety #OSINT #geopolitics #digitalnomad #AI
+> ```
+>
+> ### 🇬🇧 UK Audience — understated, FCO-aware
+>
+> **X/Twitter** (213/280 chars):
+> ```
+> Travel risk intelligence for independent travellers: live geopolitical alerts, visa rules, earthquakes and cost of living across 136 countries. AI-powered, ad-free.
+>
+> Check before you fly.
+>
+> 🌍 viajeinteligencia.com
+> ```
+>
+> **Bluesky** (202/300 chars):
+> ```
+> Travel risk intelligence for independent travellers — live alerts, visa rules, seismic monitoring and cost of living for 136 countries. AI-powered, no ads.
+>
+> Know before you go.
+>
+> 🌍 viajeinteligencia.com
+> ```
+>
+> **Mastodon / Telegram**:
+> ```
+> The FCO travel advisory is a start. It's rarely enough.
+>
+> viajeinteligencia.com goes further: a real-time intelligence platform for independent travellers covering 136 countries.
+>
+> What it tracks:
+> → Live risk alerts (FCDO + MAEC + US State Dept)
+> → Seismic and disaster events (USGS + GDACS)
+> → Visa and entry requirements
+> → Cost of living and currency data
+> → AI geopolitical analysis updated daily
+>
+> Free tier, no ads, no affiliate links. Built by one developer who travels with data, not assumptions.
+>
+> 🌍 https://www.viajeinteligencia.com
+>
+> #travel #travelsafety #OSINT #backpacking #digitalnomad
+> ```
+
+---
+
 ## 🔄 Deploy v2.6 — Leaflet CSS Fix (02 Jun 2026)
 
 > **Estado actual:** ✅ **FUNCIONAL**. Leaflet CSS preload en layout.tsx + cdnjs fallback en loader.
