@@ -136,17 +136,24 @@ export async function collectNewsletterData(): Promise<NewsletterIssue> {
   // Weekly Q&A
   const weeklyQuestion = await generateWeeklyQA(countryAlerts);
 
-  // Recent incidents for Telegram alerts section
+  // Recent incidents for Telegram alerts section — deduplicate by country
   const { data: recentIncidentsRaw } = await supabaseAdmin
     .from('incidents')
     .select('country_code, type, severity, title, detected_at')
     .gte('detected_at', weekAgo)
     .eq('is_active', true)
     .order('detected_at', { ascending: false })
-    .limit(5);
+    .limit(20);
 
+  const seenIncidentCountries = new Set<string>();
   const recentIncidents: RecentIncident[] = (recentIncidentsRaw || [])
     .filter((i: any) => i.country_code && allPaisesData[i.country_code])
+    .filter((i: any) => {
+      if (seenIncidentCountries.has(i.country_code)) return false;
+      seenIncidentCountries.add(i.country_code);
+      return true;
+    })
+    .slice(0, 5)
     .map((i: any) => ({
       country_code: i.country_code,
       type: i.type,
@@ -210,8 +217,10 @@ export async function collectNewsletterData(): Promise<NewsletterIssue> {
 async function buildCountryAlerts(alerts: any[], signals: any[]): Promise<CountryAlert[]> {
   const allPaisesData = await getPaisesData();
   const result: CountryAlert[] = [];
+  const seenCountries = new Set<string>();
 
   for (const alert of alerts.slice(0, 5)) {
+    if (seenCountries.has(alert.country_code)) continue;
     const pais = allPaisesData[alert.country_code];
     if (!pais) continue;
 
@@ -242,17 +251,20 @@ async function buildCountryAlerts(alerts: any[], signals: any[]): Promise<Countr
         ? `Si tienes viaje reservado a ${pais.nombre} en las próximas 2 semanas, consulta tu seguro de viaje y revisa las recomendaciones del MAEC antes de decidir.`
         : `La situación en ${pais.nombre} se mantiene estable. Sin cambios necesarios en tu planificación.`,
     });
+    seenCountries.add(alert.country_code);
   }
 
-  // Add significant OSINT signals as country alerts
-  for (const sig of signals.filter(s => s.urgency === 'critical' || s.urgency === 'high').slice(0, 3)) {
-    if (result.find(r => r.title.includes(sig.title.substring(0, 20)))) continue;
-
+  // Add significant OSINT signals as country alerts — deduplicate by country
+  for (const sig of signals.filter(s => s.urgency === 'critical' || s.urgency === 'high')) {
     const pais = await findCountryFromSignal(sig);
+    const code = pais?.codigo || 'XX';
+    if (seenCountries.has(code)) continue;
+    if (result.length >= 5) break;
+
     const irvBase = pais ? Math.max(40, 100 - (riskLevelNum[pais.nivelRiesgo] || 3) * 10) : 60;
 
     result.push({
-      country_code: pais?.codigo || 'XX',
+      country_code: code,
       country_name: pais?.nombre || sig.location_name || 'Zona',
       type: sig.urgency === 'critical' ? 'alert' : 'monitoring',
       title: sig.summary || sig.title,
@@ -265,6 +277,7 @@ async function buildCountryAlerts(alerts: any[], signals: any[]): Promise<Countr
         ? `Monitorizamos esta situación de cerca. Si viajas a la zona en los próximos 7 días, mantente informado.`
         : `Situación en seguimiento. No justifica cambios de plan por ahora.`,
     });
+    seenCountries.add(code);
   }
 
   return result.slice(0, 5);

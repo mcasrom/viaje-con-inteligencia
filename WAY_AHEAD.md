@@ -1,5 +1,48 @@
 # Way Ahead
 
+## 📊 03 Jun 2026 — Métricas, SIEG fail2ban mapa + deploy fix
+
+### Métricas reales (nginx logs + Supabase)
+- **Tráfico total:** 7,896 req → 3,166 page views reales (56.5%)
+- **Bots:** 20.1% (Google 229, Bing 790, Apple 168, Yandex 123)
+- **Scanners:** 10.5% (/.env, /.git, wp-admin probes)
+- **Visitantes únicos reales:** 1,089 IPs
+- **Bounce rate:** 70.4% (7 de 10 entran y se van)
+- **Avg pages/session:** 2.7
+- **Direct traffic:** 54% (sin referer — nadie linkea)
+- **Google referrals:** solo 21 visitantes
+- **Newsletter reales (no internos):** 5 verificados
+- **Registros orgánicos:** 0
+
+### SIEG Security — fail2ban mapa geográfico
+- **Problema:** Streamlit (`security.viajeinteligencia.com`) no actualizaba DB desde 30 May — solo parsea logs al visitar la página
+- **Solución:** Nueva página estática `status.viajeinteligencia.com/geofail2ban.html`
+  - Script `gen-fail2ban-geo.sh` → lee logs fail2ban → geolocaliza (ip-api.com) → JSON
+  - Cron cada hora (`0 * * * *`) actualiza `/var/www/html/fail2ban-data.json`
+  - HTML usa Leaflet (ya en uso) — mapa con 712 IPs, 2,293 bans
+  - Top países: Netherlands (542), Poland (166), US (163), UK (156)
+  - Nginx config actualizado con location blocks para `.html` y `.json`
+
+### Scripts creados
+- `scripts/metrics.sh` — informe completo tráfico + usuarios + conversión
+- `gen-fail2ban-geo.sh` — genera JSON geo de bans (cron hourly)
+
+### Deploy fix
+- **Problema raíz:** `rsync --delete` mezclaba chunks JS viejos/nuevos → mapa Leaflet roto (hotspots difusos, tiles no cargan)
+- **Fix:** `deploy.sh` ahora hace `rm -rf .next` en servidor ANTES de rsync
+- **Regla:** NUNCA mezclar builds — limpiar siempre antes de subir
+
+### Commits
+- `ea67f24` ← **ÚLTIMO FUNCIONAL** (estado estable)
+- Intentos revertidos: NewsletterPopup dynamic, CountryLeadMagnet, layout changes → todos revertidos por romper mapa Leaflet
+
+### Decisiones
+- CRO/Lead Magnet: **PAUSADO** — romper mapa > ganar popup
+- Prioridad: outreach manual (Reddit, FB) sin tocar código
+- SIEG Streamlit: seguir funcionando pero datos desactualizados si nadie visita
+
+---
+
 ## 🎯 Sprint Semana 02-08 Jun 2026 — CAPTACIÓN DE USUARIOS
 
 > **Prioridad**: Menos código, más usuarios. Plataforma estable y funcional.
