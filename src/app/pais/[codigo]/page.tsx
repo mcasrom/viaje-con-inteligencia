@@ -99,6 +99,17 @@ export default async function PaisPage({ params }: { params: Promise<{ codigo: s
             <p className="text-slate-500 text-xs">Datos MAEC: {pais.ultimoInforme}</p>
           </div>
 
+          <div className="max-w-3xl mx-auto my-6 bg-slate-800/50 border border-slate-700/50 rounded-xl p-4 flex flex-col sm:flex-row items-center gap-4">
+            <div className="flex-1">
+              <p className="text-white font-semibold text-sm">🔔 Recibe alertas si cambia el nivel de riesgo</p>
+              <p className="text-slate-400 text-xs mt-1">Monitorización continua con fuentes MAEC y OSINT</p>
+            </div>
+            <div className="flex gap-3 shrink-0">
+              <a href="/alertas" className="text-sm px-4 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 text-white transition-colors">Newsletter gratis</a>
+              <a href="/free-trial" className="text-sm px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-semibold transition-colors">7 días gratis →</a>
+            </div>
+          </div>
+
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
             {pais.idioma && <div className="bg-slate-800/50 rounded-xl p-4"><p className="text-xs text-slate-500 mb-1">Idioma</p><p className="text-white font-medium">{pais.idioma}</p></div>}
             {pais.moneda && <div className="bg-slate-800/50 rounded-xl p-4"><p className="text-xs text-slate-500 mb-1">Moneda</p><p className="text-white font-medium">{pais.moneda}</p></div>}
