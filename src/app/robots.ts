@@ -21,10 +21,33 @@ export default function robots(): MetadataRoute.Robots {
           '/stats',
           '/precio-api',
           '/viaje-compartido',
+          '/chat',
+          '/alertas',
+          '/comparar',
         ],
       },
       {
+        userAgent: 'SemrushBot',
+        disallow: '/',
+      },
+      {
+        userAgent: 'AhrefsBot',
+        disallow: '/',
+      },
+      {
+        userAgent: 'MJ12bot',
+        disallow: '/',
+      },
+      {
+        userAgent: 'DotBot',
+        disallow: '/',
+      },
+      {
         userAgent: 'GPTBot',
+        disallow: '/',
+      },
+      {
+        userAgent: 'Google-Extended',
         disallow: '/',
       },
     ],
