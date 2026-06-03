@@ -33,13 +33,20 @@
 - **Regla:** NUNCA mezclar builds — limpiar siempre antes de subir
 
 ### Commits
+- `d5d5423` feat: CTA banner on country pages — newsletter + free trial after risk level
+- `70e5876` fix: newsletter deduplication — one alert per country max
 - `ea67f24` ← **ÚLTIMO FUNCIONAL** (estado estable)
-- Intentos revertidos: NewsletterPopup dynamic, CountryLeadMagnet, layout changes → todos revertidos por romper mapa Leaflet
 
-### Decisiones
-- CRO/Lead Magnet: **PAUSADO** — romper mapa > ganar popup
-- Prioridad: outreach manual (Reddit, FB) sin tocar código
-- SIEG Streamlit: seguir funcionando pero datos desactualizados si nadie visita
+### Soluciones implementadas
+- **CTA estático en fichas de país** (`page.tsx`): Banner con "Newsletter gratis" + "7 días gratis" justo después del nivel de riesgo. No toca CSS, mapa ni layout. Solución simple sin componentes dinámicos que rompan el build.
+
+### ML — Estado del aprendizaje (03 Jun 2026)
+- **Modelo**: v3 (Random Forest), 26 features
+- **Datos**: 109 países con features computadas (cron diario 06:00 UTC)
+- **Features**: risk_score, gpi, gti, hdi, ipc, tci, events_30d, seasonality, signal_count, airspace_closure, avg_tone_7d, tone_trend_7d, negative_ratio_7d, us_risk_score, uk_risk_score, etc.
+- **API predict**: Funcionando — ejemplo MX: risk bajo (2), trend estable, prob_up 33%, prob_down 57%, confidence media
+- **Problema**: Sin histórico temporal suficiente para validación CV. Las 26 features se recalculan daily pero no hay series temporales largas (solo ~2 meses desde inicio scraping)
+- **Pendiente**: Esperar ~25 días más para validación temporal. Afinar pesos con datos reales de predicción vs realidad
 
 ---
 
