@@ -56,8 +56,14 @@ function mapPrefsToDb(body: z.infer<typeof UserPreferencesSchema>) {
 export async function GET(request: NextRequest) {
   try {
     const supabase = await createSupabaseServerClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return apiError('No autenticado', undefined, 401);
+    let user;
+    try {
+      const { data, error } = await supabase.auth.getUser();
+      if (error || !data.user) return apiError('No autenticado', undefined, 401);
+      user = data.user;
+    } catch {
+      return apiError('No autenticado', undefined, 401);
+    }
 
     const { searchParams } = new URL(request.url);
     const rawTraveler = searchParams.get('viajero_tipo');
@@ -113,8 +119,14 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const supabase = await createSupabaseServerClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return apiError('No autenticado', undefined, 401);
+    let user;
+    try {
+      const { data, error } = await supabase.auth.getUser();
+      if (error || !data.user) return apiError('No autenticado', undefined, 401);
+      user = data.user;
+    } catch {
+      return apiError('No autenticado', undefined, 401);
+    }
 
     const bodyRaw = await request.json();
     const normalized = normalizeIncomingBody(bodyRaw);

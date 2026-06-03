@@ -33,9 +33,17 @@
 - **Regla:** NUNCA mezclar builds — limpiar siempre antes de subir
 
 ### Commits
+- `05aef35` seo: update robots.txt — block aggressive bots + add /chat /alertas /comparar
 - `d5d5423` feat: CTA banner on country pages — newsletter + free trial after risk level
 - `70e5876` fix: newsletter deduplication — one alert per country max
 - `ea67f24` ← **ÚLTIMO FUNCIONAL** (estado estable)
+
+### robots.txt (04 Jun 2026)
+- **Backup**: `src/app/robots.ts.backup-2026-06-03`
+- **Bloqueados**: SemrushBot, AhrefsBot, MJ12bot, DotBot, GPTBot, Google-Extended (antes solo GPTBot)
+- **Disallow añadidas**: `/chat`, `/alertas`, `/comparar`
+- **Impacto**: ~17% tráfico era bots SEO — ahora 0 consumo de estos bots
+- **Sitemap**: mantenido `https://www.viajeinteligencia.com/sitemap.xml`
 
 ### Soluciones implementadas
 - **CTA estático en fichas de país** (`page.tsx`): Banner con "Newsletter gratis" + "7 días gratis" justo después del nivel de riesgo. No toca CSS, mapa ni layout. Solución simple sin componentes dinámicos que rompan el build.
