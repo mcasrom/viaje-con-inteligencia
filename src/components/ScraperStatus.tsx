@@ -19,7 +19,7 @@ export default function ScraperStatusDisplay({ compact = false }: ScraperStatusD
 
   useEffect(() => {
     fetchAllStatus();
-    const interval = setInterval(fetchAllStatus, 60000);
+    const interval = setInterval(fetchAllStatus, 300000);
     const timeInterval = setInterval(() => setCurrentTime(new Date()), 60000);
     return () => {
       clearInterval(interval);
