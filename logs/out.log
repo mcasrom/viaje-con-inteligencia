@@ -75,3 +75,15 @@
 2026-06-04 21:31:25: ✓ Ready in 525ms
 2026-06-04 21:31:47: [IndexNow] 485 URLs enviadas → HTTP 200
 2026-06-04 21:32:30: [paises-init] 137 countries loaded from Supabase
+2026-06-04 22:24:37: ▲ Next.js 16.2.6
+2026-06-04 22:24:37: - Local:         http://localhost:3000
+2026-06-04 22:24:37: - Network:       http://178.105.80.193:3000
+2026-06-04 22:24:37: ✓ Ready in 318ms
+2026-06-04 22:25:00: [IndexNow] 485 URLs enviadas → HTTP 200
+2026-06-04 22:25:37: [paises-init] 137 countries loaded from Supabase
+2026-06-04 22:26:44: ▲ Next.js 16.2.6
+2026-06-04 22:26:44: - Local:         http://localhost:3000
+2026-06-04 22:26:44: - Network:       http://178.105.80.193:3000
+2026-06-04 22:26:44: ✓ Ready in 276ms
+2026-06-04 22:26:57: [paises-init] 137 countries loaded from Supabase
+2026-06-04 22:27:05: [IndexNow] 485 URLs enviadas → HTTP 200
