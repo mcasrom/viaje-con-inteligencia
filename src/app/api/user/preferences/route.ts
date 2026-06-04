@@ -59,7 +59,7 @@ export async function GET(request: NextRequest) {
     let user;
     try {
       const { data, error } = await supabase.auth.getUser();
-      if (error || !data.user) return apiError('No autenticado', undefined, 401);
+      if (error || !data?.user) return apiError('No autenticado', undefined, 401);
       user = data.user;
     } catch {
       return apiError('No autenticado', undefined, 401);
@@ -122,19 +122,25 @@ export async function POST(request: NextRequest) {
     let user;
     try {
       const { data, error } = await supabase.auth.getUser();
-      if (error || !data.user) return apiError('No autenticado', undefined, 401);
+      if (error || !data?.user) return apiError('No autenticado', undefined, 401);
       user = data.user;
     } catch {
       return apiError('No autenticado', undefined, 401);
     }
 
-    const bodyRaw = await request.json();
+    let bodyRaw;
+    try {
+      bodyRaw = await request.json();
+    } catch {
+      return apiError('Cuerpo de la solicitud invalido', undefined, 400);
+    }
+
     const normalized = normalizeIncomingBody(bodyRaw);
 
     const parsed = UserPreferencesSchema.safeParse(normalized);
     if (!parsed.success) {
       log.error('Invalid preferences body:', parsed.error);
-      return apiError('Datos de preferencias inválidos');
+      return apiError('Datos de preferencias invalidos');
     }
 
     const dbFields = mapPrefsToDb(parsed.data);
@@ -154,7 +160,10 @@ export async function POST(request: NextRequest) {
 
     if (error) {
       log.error('Error upserting preferences:', error);
-      return apiError(error.message, undefined, 500);
+      if (error.code === '23505') {
+        return apiError('Preferencias ya existentes', undefined, 409);
+      }
+      return apiError('Error al guardar preferencias', undefined, 500);
     }
 
     log.info('Preferences saved for user:', user.id);
