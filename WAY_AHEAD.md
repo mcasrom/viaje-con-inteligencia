@@ -2,6 +2,35 @@
 
 ## 🚀 05 Jun 2026 — Sprint Conversión (Día 1)
 
+## 05 Jun 2026 — Sprint Server Errors Fix
+
+> **Último deploy verificado:** ✅ (commit `25edd56`)
+>
+> **Logros día:**
+>
+> ### Diagnóstico de errores 500
+> - ✅ **Errores descritos NO existen**: RangeError column indices, Server Action stale, fetch timeouts 300s, AVIASTACK — 0 ocurrencias en logs actuales ni rotados
+> - ✅ **Errores reales identificados**: React Client Manifest bugs (Next.js 16), /infografias manifest missing, Invalid OpenGraph type: place, missing /500.html, Recharts width -1
+>
+> ### Fixes aplicados (3 fixes, 0 roturas)
+> - ✅ **Fix OG Place → TouristDestination**: `DetallePaisClient.tsx:1161` — JSON-LD `@type: 'Place'` cambiado a `'TouristDestination'` (válido schema.org). Elimina error "Invalid OpenGraph type: place" (9 ocurrencias en logs)
+> - ✅ **Fix staleTimes**: `next.config.ts` — añadido `experimental: { staleTimes: { dynamic: 0 } }`. Mitiga React Client Manifest bugs post-deploy (ViewportBoundary, MetadataBoundary, IconMark)
+> - ✅ **Fix Events timeout**: `cron/master/route.ts:991` — reducido de 300s → 30s. Events fetch no necesita 5 minutos
+>
+> ### ML status
+> - ✅ **ML ya tiene try/catch** en `ml-compare.ts:106-112` — RF prediction failures loggeadas como warn, no crash
+> - ✅ **Modelos en Supabase** (`ml_models` table), no en disco. No hay .pkl/.joblib en servidor
+> - ✅ **ModelTrainer** tiene 4 fases con try/catch en cada una. Comparison phase también protegida
+>
+> ### status.viajeinteligencia.com
+> - ✅ **Auth_basic funciona**: usuario `status`, contraseña configurada en `/etc/nginx/.htpasswd`
+> - ✅ **Dashboards operativos**: trafico.html (833KB), diagnostico.html, resumen.html, geofail2ban.html, fail2ban-data.json
+> - ❌ **Uptime Kuma NO instalado** — no hay proceso PM2 ni archivos. Se recomienda no instalar para no romper sistema
+>
+> ### Commits
+> - `25edd56` fix: server errors — OG Place→TouristDestination, staleTimes dynamic:0, events timeout 300s→30s
+
+
 ### Tareas para mañana
 1. **CTA overlay en mapa**: Añadir mensaje "Regístrate para ver alertas en tiempo real" al hacer zoom en países nivel 3-4
 2. **Social proof en hero**: Contador "X viajeros activos" (aunque sean 5)
