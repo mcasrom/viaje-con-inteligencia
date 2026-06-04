@@ -1,5 +1,55 @@
 # Way Ahead
 
+## 🚀 05 Jun 2026 — Sprint Conversión (Día 1)
+
+### Tareas para mañana
+1. **CTA overlay en mapa**: Añadir mensaje "Regístrate para ver alertas en tiempo real" al hacer zoom en países nivel 3-4
+2. **Social proof en hero**: Contador "X viajeros activos" (aunque sean 5)
+3. **Revisar métricas WAF**: Ver si bajaron 4xx tras regla WordPress
+4. **Outreach Reddit**: Publicar post Marruecos en r/travel + r/solotravel
+
+### Métricas a verificar al final del día
+- Registros nuevos (Supabase `profiles`)
+- Newsletter subs reales (excluyendo internos)
+- 4xx rate en Cloudflare Analytics
+- Bounce rate
+
+---
+
+## 🎯 05 Jun 2026 — Conversión Sprint (30 días)
+
+### Objetivo
+- **Meta**: +10 registros orgánicos en 30 días (de 0 a 10)
+- **Tráfico humano real**: ~2.000 visitas/día → ~60.000/mes
+- **Tasa actual**: 0% conversión → **Objetivo**: 0.02% (10/60k)
+
+### Plan de acción — 2 sprints de 15 días
+
+#### Sprint 1 (05-19 Jun) — Capturar intención
+1. **CTA en el mapa**: Overlay "Regístrate para ver alertas en tiempo real" al hacer zoom en países de riesgo
+2. **Social proof**: "X viajeros ya usan la plataforma" en el hero
+3. **Simplificar registro**: Email + magic link (quitar password)
+4. **Fix /api/user/preferences 500**: Deployado 04 Jun — JSON malformado → 400 en vez de 500
+5. **WAF WordPress scanners**: Regla añadida 04 Jun — bloquea wp-includes, xmlrpc.php, etc.
+
+#### Sprint 2 (20 Jun - 04 Jul) — Contenido + conversión
+6. **Lead magnet contextual**: "Descarga guía de seguridad para [País]" en páginas de riesgo alto
+7. **Contenido exclusivo teaser**: "3 incidentes más en [País]" borroso → login para ver
+8. **Mejorar hero**: Añadir valor "Alertas personalizadas + IA + datos oficiales"
+9. **Newsletter visible**: Banner estático en footer/sidebar (reemplazar popup agresivo)
+10. **Testimonios**: 2-3 quotes de usuarios actuales
+
+### ¿Positivo en 30 días?
+**Sí, realista si:**
+- WAF reduce 4xx de 27.8% a <15% → métricas más limpias
+- CTA en mapa captura intención (donde está el 70% del tiempo)
+- 1 post SEO/semana (Marruecos fue el primero) → indexación Google empieza a traer tráfico cualificado
+- Outreach Reddit/FB continuo → tráfico con intención de viaje
+
+**Métrica de éxito mínima**: 10 registros orgánicos + 50 suscriptores newsletter reales (ahora 5)
+
+---
+
 ## 📊 04 Jun 2026 — WAF cleanup + Marruecos SEO post + Traffic analysis
 
 ### Cloudflare WAF — Regla actualizada

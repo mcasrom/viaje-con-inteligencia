@@ -365,6 +365,19 @@ export async function buildFeatureVector(code: string): Promise<number[] | null>
   const seasonalMult = getSeasonalRiskMultiplier(code);
   const features = await getFeaturesByCountry(code.toLowerCase()).catch(() => null);
 
+  // Fetch UK FCDO risk score (matches training features)
+  let ukRiskLevel = 0;
+  try {
+    const { supabaseAdmin } = await import('./supabase-admin');
+    const { data: ukData } = await supabaseAdmin
+      .from('external_risk')
+      .select('risk_level')
+      .eq('source', 'uk_fcdo')
+      .eq('country_code', code.toLowerCase())
+      .maybeSingle();
+    ukRiskLevel = (ukData as { risk_level: number } | null)?.risk_level ?? 0;
+  } catch {}
+
   return [
     riskNum,
     signals.criticalCount,
@@ -384,6 +397,7 @@ export async function buildFeatureVector(code: string): Promise<number[] | null>
     features?.events_30d ?? 0,
     features?.high_impact_events_30d ?? 0,
     features?.us_risk_score ?? 0,
+    ukRiskLevel,
     features?.risk_trend_7d ?? 0,
     features?.risk_trend_30d ?? 0,
     features?.avg_tone_7d ?? 0,
