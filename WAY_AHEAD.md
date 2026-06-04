@@ -1,6 +1,51 @@
 # Way Ahead
 
-## 📊 03 Jun 2026 — Métricas, SIEG fail2ban mapa + deploy fix
+## 📊 04 Jun 2026 — WAF cleanup + Marruecos SEO post + Traffic analysis
+
+### Cloudflare WAF — Regla actualizada
+- **Regla**: "Bloqueo bots scraping y Streamlit"
+- **Expresión final**:
+  ```
+  (http.user_agent contains "TLM-Audit-Scanner") or
+  (http.user_agent contains "l9scan") or
+  (http.request.uri.path contains "/_stcore/") or
+  (http.user_agent contains "SemrushBot") or
+  (http.user_agent contains "AhrefsBot") or
+  (http.user_agent contains "MJ12bot") or
+  (http.user_agent contains "DotBot") or
+  (http.request.uri.path contains "/api/cron/status") or
+  (http.user_agent contains "Auditor") or
+  (http.user_agent contains "ClaudeBot") or
+  (http.user_agent contains "Curl") or
+  (http.request.uri.path contains "/socket.io/")
+  ```
+- **Impacto estimado**: -3.000+ req/mes bloqueados en Cloudflare (0 llegan al servidor)
+- **Bots bloqueados**: SemrushBot (481), AhrefsBot (481), MJ12bot (217), DotBot, Auditor (719), ClaudeBot (233), Curl (59)
+- **Rutas protegidas**: `/api/cron/status` (1.37k req), `/_stcore/` (Streamlit), `/socket.io/` (276 req)
+
+### Post Marruecos — SEO + CTA
+- **Post reemplazado**: `content/posts/es-seguro-viajar-marruecos.md`
+- **SEO**: H1 con keyword, tabla indicadores, zonas 🟢🟡🔴, keywords long-tail, tags `pais:ma`
+- **CTA**: Enlace a `/pais/ma` + `/alertas` al final del post
+- **IndexNow**: Enviado para indexación inmediata en Google/Bing/Yandex
+- **URL**: `https://www.viajeinteligencia.com/blog/es-seguro-viajar-marruecos` (200 OK)
+
+### Análisis tráfico Cloudflare (últimos 7 días)
+- **Total**: 11.41k req, 2.01k visits
+- **Top países**: 🇳🇱 3.25k, 🇦🇺 2.76k, 🇺🇸 2.01k, 🇩🇪 1.35k, 🇯🇵 647, 🇪🇸 296 (2.6%)
+- **Bots**: 35% del tráfico (Semrush, Auditor, TLM-Scanner, ClaudeBot, Curl)
+- **Errores 4xx**: 27.8% (3.18k) — 733× 404, 213× 401
+- **Cache hit rate**: 25.43% (bajó 31.5%) — solo 1 de 4 requests servido desde CF
+- **Mobile**: 7.3% (831 de 11.41k) — tráfico mayoritariamente desktop/bots
+- **Top paths**: `/api/cron/status` (1.37k), `/` (676), `/blog` (296), `/socket.io/` (276)
+
+### Commits
+- `7295f31` content: replace Marruecos post — SEO optimized with CTA, zones, risks, and IRV link
+- `94d2f0c` docs: register robots.txt update in WAY_AHEAD
+- `05aef35` seo: update robots.txt — block aggressive bots + add /chat /alertas /comparar
+- `d5d5423` feat: CTA banner on country pages — newsletter + free trial after risk level
+- `70e5876` fix: newsletter deduplication — one alert per country max
+- `ea67f24` ← **ÚLTIMO FUNCIONAL** (estado estable)
 
 ### Métricas reales (nginx logs + Supabase)
 - **Tráfico total:** 7,896 req → 3,166 page views reales (56.5%)
