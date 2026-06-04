@@ -100,6 +100,7 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  experimental: { staleTimes: { dynamic: 0 } },
   poweredByHeader: false,
 };
 

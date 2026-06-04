@@ -1158,7 +1158,7 @@ export default function DetallePaisClient({ pais, relatedPosts = [], serverRende
           dangerouslySetInnerHTML={{
             __html: JSON.stringify({
               '@context': 'https://schema.org',
-              '@type': 'Place',
+              '@type': 'TouristDestination',
               name: pais.nombre,
               description: `Guía de viaje para ${pais.nombre}: requisitos de entrada, nivel de riesgo ${pais.nivelRiesgo}, embajadas, moneda y consejos.`,
               address: {

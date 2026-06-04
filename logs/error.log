@@ -760,3 +760,6 @@
 2026-05-27 02:30:25:     at ignore-listed frames {
 2026-05-27 02:30:25:   digest: '1720759795@E237'
 2026-05-27 02:30:25: }
+2026-06-04 22:17:01: Error: Failed to find Server Action "x". This request might be from an older or newer deployment.
+2026-06-04 22:17:01: Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+2026-06-04 22:17:01:     at ignore-listed frames

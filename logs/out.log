@@ -64,3 +64,14 @@
 2026-05-27 02:30:20: ✓ Ready in 515ms
 2026-05-27 02:30:25: [paises-init] 137 countries loaded from Supabase
 2026-05-27 02:34:06: 2026-05-27 02:34:06 [INFO] [Posts] GET /posts/rate - slug: ebola-turismo-internacional-crisis-sanitaria-africa, count: 1, average: 5
+2026-06-04 21:30:37: ▲ Next.js 16.2.6
+2026-06-04 21:30:37: - Local:         http://localhost:3000
+2026-06-04 21:30:37: - Network:       http://178.105.80.193:3000
+2026-06-04 21:30:37: ✓ Ready in 381ms
+2026-06-04 21:30:55: [paises-init] 137 countries loaded from Supabase
+2026-06-04 21:31:25: ▲ Next.js 16.2.6
+2026-06-04 21:31:25: - Local:         http://localhost:3000
+2026-06-04 21:31:25: - Network:       http://178.105.80.193:3000
+2026-06-04 21:31:25: ✓ Ready in 525ms
+2026-06-04 21:31:47: [IndexNow] 485 URLs enviadas → HTTP 200
+2026-06-04 21:32:30: [paises-init] 137 countries loaded from Supabase

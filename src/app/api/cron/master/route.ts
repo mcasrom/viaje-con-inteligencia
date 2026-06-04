@@ -988,7 +988,7 @@ async function runCronAsync() {
     withTimeout(() => runAirspaceOsint(), 30000, '4/9 Airspace OSINT'),
     withTimeout(() => runOilPrice(), 15000, '5/9 Oil price'),
     withTimeout(() => runModelTraining(), 5000, '6/9 Model training'),
-    withTimeout(() => runEventsFetch(), 300000, '7/9 Events fetch'),
+    withTimeout(() => runEventsFetch(), 30000, '7/9 Events fetch'),
   ]);
 
   const phase1Result = await Promise.race([
