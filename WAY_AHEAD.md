@@ -26,6 +26,7 @@
 > - ✅ **Auth_basic funciona**: usuario `status`, contraseña configurada en `/etc/nginx/.htpasswd`
 > - ✅ **Dashboards operativos**: trafico.html (833KB), diagnostico.html, resumen.html, geofail2ban.html, fail2ban-data.json
 > - ❌ **Uptime Kuma NO instalado** — no hay proceso PM2 ni archivos. Se recomienda no instalar para no romper sistema
+> - ✅ **status.viajeinteligencia.com FIXED**: nginx `default_server` + htpasswd reset (user: `status`, pass: `status2026`). 5 dashboards 200 OK: trafico, diagnostico, resumen, geofail2ban, fail2ban-data
 >
 > ### Commits
 > - `25edd56` fix: server errors — OG Place→TouristDestination, staleTimes dynamic:0, events timeout 300s→30s
