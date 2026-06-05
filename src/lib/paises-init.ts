@@ -15,7 +15,7 @@ export async function initPaisesData(): Promise<void> {
     for (const [code, pais] of Object.entries(paises)) {
       const existing = paisesData[code];
       if (existing) {
-        paisesData[code] = { ...existing, ...pais };
+        paisesData[code] = { ...pais, ...existing };
       } else {
         paisesData[code] = pais;
       }
