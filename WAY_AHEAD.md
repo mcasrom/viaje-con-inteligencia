@@ -10,10 +10,10 @@
 - ✅ **Schema.org** `TouristDestination.description` usa `descripcionSEO`
 - ✅ **Deploy** `902dcb4` — build OK, PM2 restart, Cloudflare purge
 
-### Status pages fix — todo público
+### Status pages fix — HTML publicos, Kuma protegido
 - ✅ **`status.viajeinteligencia.com`** — eliminado `auth_basic` global que bloqueaba todo (401 en todas las páginas)
 - ✅ **HTML estáticos públicos**: `index.html`, `trafico.html` (GoAccess), `diagnostico.html`, `resumen.html`, `geofail2ban.html`
-- ✅ **Uptime Kuma** (`/dashboard/`) — público, sin password
+- ✅ **Uptime Kuma** (`/dashboard/`) — puerto corregido 3002→3001, WebSocket `/socket.io/` añadido, **auth_basic restaurado** (`status` / `ViajeIntel2026!Monitor`)
 - ✅ **`security.viajeinteligencia.com`** — mantiene auth htpasswd (`status` / `ViajeIntel2026!Monitor`)
 
 ### Server status
