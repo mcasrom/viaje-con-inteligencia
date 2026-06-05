@@ -15,7 +15,9 @@ export async function generateMetadata({ params }: { params: Promise<{ codigo: s
   const pais = getTodosLosPaises().find(p => p.codigo === codigo);
   return {
     title: `${pais?.nombre || codigo} — Riesgo, Visado y Consejos | Viaje Inteligencia`,
-    description: `Ficha completa de ${pais?.nombre}: nivel de riesgo MAEC, visado, clima, transporte, POIs y recomendaciones IA.`,
+    description: pais?.descripcionSEO
+      ? pais.descripcionSEO.substring(0, 155) + '...'
+      : `Ficha completa de ${pais?.nombre}: nivel de riesgo MAEC, visado, clima, transporte, POIs y recomendaciones IA.`,
     keywords: `viajar a ${pais?.nombre}, riesgo ${pais?.nombre}, visado ${pais?.nombre}, consejos viaje ${pais?.nombre}, seguridad ${pais?.nombre}, embajada ${pais?.nombre}, turismo ${pais?.nombre}`,
     alternates: {
       canonical: `https://www.viajeinteligencia.com/pais/${codigo}`,
@@ -27,7 +29,9 @@ export async function generateMetadata({ params }: { params: Promise<{ codigo: s
     openGraph: {
     images: [{ url: '/preview_favicon.jpg', width: 1200, height: 630 }],
       title: `${pais?.nombre} — Riesgo, Visado y Consejos`,
-      description: `Ficha completa de ${pais?.nombre}: nivel de riesgo MAEC, visado, clima y recomendaciones.`,
+      description: pais?.descripcionSEO
+        ? pais.descripcionSEO.substring(0, 155) + '...'
+        : `Ficha completa de ${pais?.nombre}: nivel de riesgo MAEC, visado, clima y recomendaciones.`,
       url: `https://www.viajeinteligencia.com/pais/${codigo}`,
       type: 'website',
     },
@@ -69,7 +73,7 @@ export default async function PaisPage({ params }: { params: Promise<{ codigo: s
     '@context': 'https://schema.org',
     '@type': 'TouristDestination',
     name: pais.nombre,
-    description: `Guía completa de viaje a ${pais.nombre}: nivel de riesgo MAEC ${pais.nivelRiesgo}, visado, clima, transporte, POIs y recomendaciones IA para viajeros.`,
+    description: pais.descripcionSEO || `Guía completa de viaje a ${pais.nombre}: nivel de riesgo MAEC ${pais.nivelRiesgo}, visado, clima, transporte, POIs y recomendaciones IA para viajeros.`,
     url: `https://www.viajeinteligencia.com/pais/${codigo}`,
     ...(pais.bandera ? { photo: pais.bandera } : {}),
   };
@@ -98,6 +102,15 @@ export default async function PaisPage({ params }: { params: Promise<{ codigo: s
             <p className="text-slate-300 text-sm mb-4">{config.description}</p>
             <p className="text-slate-500 text-xs">Datos MAEC: {pais.ultimoInforme}</p>
           </div>
+
+          {pais.descripcionSEO && (
+            <article className="bg-slate-800/30 border border-slate-700/30 rounded-xl p-6 mb-8">
+              <h2 className="text-lg font-semibold text-white mb-3">Guía de viaje a {pais.nombre} — Seguridad y consejos 2026</h2>
+              <div className="prose prose-invert prose-sm max-w-none">
+                <p className="text-slate-300 leading-relaxed">{pais.descripcionSEO}</p>
+              </div>
+            </article>
+          )}
 
           <div className="max-w-3xl mx-auto my-6 bg-slate-800/50 border border-slate-700/50 rounded-xl p-4 flex flex-col sm:flex-row items-center gap-4">
             <div className="flex-1">

@@ -93,6 +93,7 @@ export interface DatoPais {
   economicos?: DatosEconomicos;
   visible?: boolean;
   contextoGeopolitico?: string;
+  descripcionSEO?: string;
 }
 
 export interface EmergenciasPais {
