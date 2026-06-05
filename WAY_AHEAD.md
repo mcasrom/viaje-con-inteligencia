@@ -21,6 +21,23 @@
 - Docker: uptime-kuma (healthy, 4 days)
 - Nginx: 6 sites-enabled, SSL via Let's Encrypt
 
+### Server maintenance — apt upgrade (05 Jun 2026)
+- ✅ **4 paquetes actualizados**: apparmor 4.0.1-6→7, libapparmor1 4.0.1-6→7, cloud-init 25.3→26.1, nodejs 22.22.2→22.22.3
+- ✅ **0 impacto**: sin kernel reload, sin restart de servicios, PM2 viajeinteligencia online tras upgrade
+- ⚠️ **Kernel pendiente**: 6.8.0-117 → 6.8.0-124 disponible (reboot no urgente, planificar en ventana de mantenimiento)
+
+### Cloudflare Security — Anti-bot + API protection (05 Jun 2026)
+- **Tráfico analizado**: 8.85k requests, 648 visits, 51% tráfico bot/scraper. Top países: US 51.6%, AU 24.4%, DE 16.6%, ES solo 0.35%
+- **Bots identificados**: Auditor/1.0 (718 req), ChromeHeadless (344), Curl (64), Unknown/Others (2.78k)
+- **IPs atacantes**: Hetzner `2a01:4f8:1c1e:92d2::1` (1.4k), bloque Hetzner `2001:8004:1180:353b:*` (1.9k), Google Cloud (245+220), AWS (119)
+- ✅ **4 reglas firewall activas**:
+  1. `JS_CHALLENGE` — `/api/*` sin Mozilla/5.0 + no bot verificado → challenge JS (frena scrapers de API)
+  2. `BLOCK` — Auditor, Curl, HeadlessChrome, SemrushBot, AhrefsBot, MJ12bot, DotBot, ClaudeBot, SEO Audit Bot, TLM-Audit-Scanner, l9scan, /_stcore/, /socket.io/
+  3. `BLOCK` — WordPress scanners (wp-admin, wp-login, xmlrpc, wp-content/plugins, wp-json/wp/v2)
+  4. `BLOCK` — Acceso externo a `/api/cron/*` excepto `/cron/master` (GitHub Actions)
+- ⚠️ **Limitaciones plan Free**: Rate limit solo 1 regla (usada para credential check), regex no disponible, bloqueo por ASN requiere Pro ($20/mes)
+- 📊 **Esperado 24h**: Requests de 8.85k → ~4-5k, cache hit rate sube, visits humanas estables
+
 ---
 
 ## Última sesión: 05 Jun 2026 — POIs 502 Fix + User Preferences + Tráfico Analysis

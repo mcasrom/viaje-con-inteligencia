@@ -484,11 +484,23 @@ export async function classifySignal(post: RawPost): Promise<ClassifiedSignal> {
     const raw = response.choices[0]?.message?.content || '{}';
     const parsed = JSON.parse(raw);
 
+    // Fix: LLM sometimes returns multiple categories separated by |
+    // Only take the first valid category
+    let category = parsed.category || 'otro';
+    if (category.includes('|')) {
+      category = category.split('|')[0].trim();
+    }
+    // Validate against allowed values
+    const allowed = ['salud', 'seguridad', 'clima', 'logistico', 'geopolitico', 'irrelevant', 'otro'];
+    if (!allowed.includes(category)) {
+      category = 'otro';
+    }
+
     const country_code = parsed.country_code && typeof parsed.country_code === 'string' && parsed.country_code.length === 2
       ? parsed.country_code.toLowerCase() : null;
 
     return {
-      category: parsed.category || 'otro',
+      category,
       confidence: parsed.confidence || 0.5,
       isFirstResponder: parsed.isFirstResponder || detectFirstPerson(text),
       urgency: parsed.urgency || 'low',
