@@ -7,6 +7,10 @@ const OSM_OVERPASS = 'https://overpass-api.de/api/interpreter';
 
 export const maxDuration = 60;
 
+// In-memory cache (per-process, survives between requests)
+const MEMORY_CACHE = new Map<string, { data: any; ts: number }>();
+const MEMORY_TTL = 6 * 60 * 60 * 1000; // 6 hours
+
 const FETCH_HEADERS = {
   'User-Agent': 'ViajeConInteligencia/1.0 (travel intelligence platform; admin@viajeinteligencia.com)',
   'Accept': '*/*',
@@ -22,7 +26,6 @@ const POI_TYPES: Record<string, { osm: string; label: string; icon: string }> = 
   viewpoint:     { osm: 'tourism=viewpoint',         label: 'Miradores',        icon: '👁️' },
   castle:        { osm: 'historic=castle',           label: 'Castillos',        icon: '🏯' },
   archaeological:{ osm: 'historic=archaeological_site', label: 'Yacimientos',  icon: '🔍' },
-  // Tourism-disruptive POIs
   airport:       { osm: 'aeroway=aerodrome',         label: 'Aeropuertos',      icon: '✈️' },
   border:        { osm: 'barrier=border_control',    label: 'Fronteras',        icon: '🛂' },
   police:        { osm: 'amenity=police',            label: 'Comisaría',        icon: '👮' },
@@ -32,11 +35,7 @@ const POI_TYPES: Record<string, { osm: string; label: string; icon: string }> = 
 };
 
 const COUNTRY_ISO_OVERRIDES: Record<string, string> = {
-  gb: 'GB',
-  gr: 'GR',
-  kr: 'KR',
-  us: 'US',
-  ae: 'AE',
+  gb: 'GB', gr: 'GR', kr: 'KR', us: 'US', ae: 'AE',
 };
 
 function toOSMCountry(cc: string): string {
@@ -47,40 +46,21 @@ function buildOverpassQuery(country: string, types: string[], limit: number): st
   const iso = toOSMCountry(country);
   const filters = types.map(t => POI_TYPES[t]).filter(Boolean);
   if (filters.length === 0) return '';
-
   const queries = filters.map(f => {
     const [key, val] = f.osm.split('=');
-    return `
-  node["${key}"="${val}"](area.searchArea);
-  way["${key}"="${val}"](area.searchArea);`;
+    return `\n  node["${key}"="${val}"](area.searchArea);\n  way["${key}"="${val}"](area.searchArea);`;
   }).join('');
-
-  return `[out:json][timeout:25];
-area["ISO3166-1"="${iso}"]->.searchArea;
-(
-${queries}
-);
-out center ${limit};
-`;
+  return `[out:json][timeout:15];\narea["ISO3166-1"="${iso}"]->.searchArea;\n(\n${queries}\n);\nout center ${limit};\n`;
 }
 
 function buildOverpassRadiusQuery(lat: number, lon: number, radius: number, types: string[], limit: number): string {
   const filters = types.map(t => POI_TYPES[t]).filter(Boolean);
   if (filters.length === 0) return '';
-
   const queries = filters.map(f => {
     const [key, val] = f.osm.split('=');
-    return `
-  node["${key}"="${val}"](around:${radius},${lat},${lon});
-  way["${key}"="${val}"](around:${radius},${lat},${lon});`;
+    return `\n  node["${key}"="${val}"](around:${radius},${lat},${lon});\n  way["${key}"="${val}"](around:${radius},${lat},${lon});`;
   }).join('');
-
-  return `[out:json][timeout:25];
-(
-${queries}
-);
-out center ${limit};
-`;
+  return `[out:json][timeout:15];\n(\n${queries}\n);\nout center ${limit};\n`;
 }
 
 function parseCoord(el: any): { lat: number; lon: number } | null {
@@ -98,6 +78,79 @@ const PROFILE_WEIGHTS: Record<string, Record<string, number>> = {
   negocios:   { museum: 0.3, heritage: 0.3, beach: 0.2, lighthouse: 0.1, nature: 0.2, viewpoint: 0.2, castle: 0.2, archaeological: 0.2, airport: 1.0, border: 0.4, police: 0.5, hospital: 0.3, pharmacy: 0.2, fuel: 0.3 },
 };
 
+// Static fallback POIs for key countries (used when Overpass fails)
+const FALLBACK_POIS: Record<string, Array<{ name: string; type: string; lat: number; lon: number; icon: string; typeName: string }>> = {
+  es: [
+    { name: 'Museo del Prado', type: 'museum', lat: 40.4138, lon: -3.6921, icon: '🏛️', typeName: 'Museos' },
+    { name: 'Sagrada Familia', type: 'heritage', lat: 41.4036, lon: 2.1744, icon: '🏰', typeName: 'Patrimonio' },
+    { name: 'Playa de la Concha', type: 'beach', lat: 43.3183, lon: -2.0015, icon: '🏖️', typeName: 'Playas' },
+    { name: 'Alhambra', type: 'castle', lat: 37.1769, lon: -3.5892, icon: '🏯', typeName: 'Castillos' },
+    { name: 'Aeropuerto Madrid-Barajas', type: 'airport', lat: 40.4719, lon: -3.5626, icon: '✈️', typeName: 'Aeropuertos' },
+    { name: 'Hospital Clínico San Carlos', type: 'hospital', lat: 40.4382, lon: -3.7245, icon: '🏥', typeName: 'Hospital' },
+  ],
+  fr: [
+    { name: 'Musée du Louvre', type: 'museum', lat: 48.8606, lon: 2.3376, icon: '🏛️', typeName: 'Museos' },
+    { name: 'Tour Eiffel', type: 'heritage', lat: 48.8584, lon: 2.2945, icon: '🏰', typeName: 'Patrimonio' },
+    { name: 'Plage de Nice', type: 'beach', lat: 43.6961, lon: 7.2656, icon: '🏖️', typeName: 'Playas' },
+    { name: 'Aéroport CDG', type: 'airport', lat: 49.0097, lon: 2.5479, icon: '✈️', typeName: 'Aeropuertos' },
+    { name: 'Hôpital Pitié-Salpêtrière', type: 'hospital', lat: 48.8423, lon: 2.3619, icon: '🏥', typeName: 'Hospital' },
+  ],
+  it: [
+    { name: 'Coliseo', type: 'heritage', lat: 41.8902, lon: 12.4922, icon: '🏰', typeName: 'Patrimonio' },
+    { name: 'Museos Vaticanos', type: 'museum', lat: 41.9065, lon: 12.4536, icon: '🏛️', typeName: 'Museos' },
+    { name: 'Playa de Amalfi', type: 'beach', lat: 40.6340, lon: 14.6027, icon: '🏖️', typeName: 'Playas' },
+    { name: 'Aeropuerto Fiumicino', type: 'airport', lat: 41.8003, lon: 12.2389, icon: '✈️', typeName: 'Aeropuertos' },
+  ],
+  pt: [
+    { name: 'Torre de Belém', type: 'heritage', lat: 38.6977, lon: -9.2156, icon: '🏰', typeName: 'Patrimonio' },
+    { name: 'Museo Nacional de Arte Antiguo', type: 'museum', lat: 38.7047, lon: -9.1606, icon: '🏛️', typeName: 'Museos' },
+    { name: 'Playa de Algarve', type: 'beach', lat: 37.0896, lon: -8.6740, icon: '🏖️', typeName: 'Playas' },
+    { name: 'Aeropuerto Lisboa', type: 'airport', lat: 38.7742, lon: -9.1342, icon: '✈️', typeName: 'Aeropuertos' },
+  ],
+  mx: [
+    { name: 'Chichén Itzá', type: 'archaeological', lat: 20.6843, lon: -88.5678, icon: '🔍', typeName: 'Yacimientos' },
+    { name: 'Museo Nacional de Antropología', type: 'museum', lat: 19.4260, lon: -99.1863, icon: '🏛️', typeName: 'Museos' },
+    { name: 'Playa del Carmen', type: 'beach', lat: 20.6274, lon: -87.0799, icon: '🏖️', typeName: 'Playas' },
+    { name: 'Aeropuerto CDMX', type: 'airport', lat: 19.4363, lon: -99.0721, icon: '✈️', typeName: 'Aeropuertos' },
+  ],
+};
+
+function getFallbackPOIs(country: string, typeList: string[], limit: number, profile: string) {
+  const fallback = FALLBACK_POIS[country] || [];
+  const filtered = typeList === 'all' || typeList.length > 8
+    ? fallback
+    : fallback.filter(p => typeList.includes(p.type));
+  const weights = PROFILE_WEIGHTS[profile];
+  const scored = filtered.map(p => ({
+    ...p,
+    relevance: weights ? Math.round((weights[p.type] ?? 0.5) * 100) : 50,
+    id: `fallback-${p.name}`,
+    description: null,
+    website: null,
+    opening_hours: null,
+    phone: null,
+  }));
+  if (weights) scored.sort((a, b) => b.relevance - a.relevance);
+  return scored.slice(0, limit);
+}
+
+function buildFallbackResponse(country: string, typeList: string[], limit: number, profile: string, isRadiusMode: boolean) {
+  const pois = getFallbackPOIs(country, typeList, limit, profile);
+  return {
+    source: 'fallback-static',
+    url: 'https://overpass-api.de',
+    license: 'ODbL',
+    query: { country, profile: profile || 'none', types: typeList, limit },
+    count: pois.length,
+    radius_mode: isRadiusMode,
+    types_available: Object.keys(POI_TYPES).map(k => ({ type: k, ...POI_TYPES[k] })),
+    pois,
+    timestamp: new Date().toISOString(),
+    cached: false,
+    fallback: true,
+  };
+}
+
 export async function GET(request: NextRequest) {
   const params = request.nextUrl.searchParams;
   const country = (params.get('country') || 'es').toLowerCase();
@@ -109,10 +162,6 @@ export async function GET(request: NextRequest) {
   const radius = Math.min(parseInt(params.get('radius') || '5000', 10), 50000);
 
   const isRadiusMode = lat !== null && lon !== null && !isNaN(lat) && !isNaN(lon);
-
-  // Timeout controller (AbortSignal.timeout no disponible en todas las versiones)
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 30000);
 
   let typeList: string[];
   if (type === 'all') {
@@ -129,8 +178,14 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: `Tipo no válido. Válidos: ${Object.keys(POI_TYPES).join(', ')}` }, { status: 400 });
   }
 
-  // Check cache first
-  const cacheKey = isRadiusMode ? `${lat}_${lon}_${radius}_${type}_${profile}` : `${country}_${type}_${profile}`;
+  // 1️⃣ Check in-memory cache (fastest)
+  const cacheKey = `${country}_${type}_${profile}`;
+  const memCached = MEMORY_CACHE.get(cacheKey);
+  if (memCached && Date.now() - memCached.ts < MEMORY_TTL) {
+    return NextResponse.json({ ...memCached.data, cached: true, cacheAge: Math.round((Date.now() - memCached.ts) / 60000) + 'm', source: 'memory-cache' });
+  }
+
+  // 2️⃣ Check Supabase cache
   try {
     if (supabaseAdmin && !isRadiusMode) {
       const { data: cached } = await supabaseAdmin
@@ -143,18 +198,24 @@ export async function GET(request: NextRequest) {
 
       if (cached && cached.updated_at) {
         const age = Date.now() - new Date(cached.updated_at).getTime();
-        if (age < 6 * 60 * 60 * 1000) {
+        if (age < MEMORY_TTL) {
+          MEMORY_CACHE.set(cacheKey, { data: cached.data, ts: Date.now() });
           return NextResponse.json({ ...cached.data, cached: true, cacheAge: Math.round(age / 60000) + 'm' });
         }
       }
     }
   } catch {}
 
+  // 3️⃣ Try Overpass API with reduced timeout
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 15000); // 15s instead of 30s
+
   const query = isRadiusMode
     ? buildOverpassRadiusQuery(lat!, lon!, radius, typeList, limit)
     : buildOverpassQuery(country, typeList, limit);
+
   if (!query) {
-    return NextResponse.json({ error: 'Error construyendo query' }, { status: 500 });
+    return NextResponse.json(buildFallbackResponse(country, typeList, limit, profile, isRadiusMode));
   }
 
   try {
@@ -167,12 +228,10 @@ export async function GET(request: NextRequest) {
     clearTimeout(timeoutId);
 
     if (!res.ok) {
-      return NextResponse.json({
-        source: 'error',
-        error: 'OSM Overpass error',
-        count: 0,
-        pois: [],
-      });
+      // Overpass returned error → use fallback
+      const fallback = buildFallbackResponse(country, typeList, limit, profile, isRadiusMode);
+      MEMORY_CACHE.set(cacheKey, { data: fallback, ts: Date.now() });
+      return NextResponse.json(fallback);
     }
 
     const data = await res.json();
@@ -224,6 +283,13 @@ export async function GET(request: NextRequest) {
     });
     if (weights) scored.sort((a: any, b: any) => b.relevance - a.relevance);
 
+    // If Overpass returns 0 results, use fallback
+    if (scored.length === 0) {
+      const fallback = buildFallbackResponse(country, typeList, limit, profile, isRadiusMode);
+      MEMORY_CACHE.set(cacheKey, { data: fallback, ts: Date.now() });
+      return NextResponse.json(fallback);
+    }
+
     const response = {
       source: 'openstreetmap-overpass',
       url: 'https://overpass-api.de',
@@ -236,7 +302,8 @@ export async function GET(request: NextRequest) {
       timestamp: new Date().toISOString(),
     };
 
-    // Save to cache (only country mode, radius queries are ephemeral)
+    // Save to both caches
+    MEMORY_CACHE.set(cacheKey, { data: response, ts: Date.now() });
     try {
       if (supabaseAdmin && !isRadiusMode) {
         await supabaseAdmin.from('pois_cache').upsert({
@@ -252,11 +319,9 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(response);
   } catch (err: any) {
     clearTimeout(timeoutId);
-    return NextResponse.json({
-      source: 'error',
-      error: err.message,
-      count: 0,
-      pois: [],
-    });
+    // Overpass timeout/error → use fallback
+    const fallback = buildFallbackResponse(country, typeList, limit, profile, isRadiusMode);
+    MEMORY_CACHE.set(cacheKey, { data: fallback, ts: Date.now() });
+    return NextResponse.json(fallback);
   }
 }
