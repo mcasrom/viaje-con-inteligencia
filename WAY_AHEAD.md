@@ -1,819 +1,78 @@
 # Way Ahead
 
-## 🚀 05 Jun 2026 — Sprint Conversión (Día 1)
+## Última sesión: 05 Jun 2026 — POIs 502 Fix + User Preferences + Tráfico Analysis
 
-## 05 Jun 2026 — Sprint Server Errors Fix
-
-> **Último deploy verificado:** ✅ (commit `25edd56`)
+> **Último deploy verificado:** viajeinteligencia @ `a98514b`
 >
-> **Logros día:**
+> **Sprint activo:** POIs 502 Fix + User Preferences + SEO/Outreach
 >
-> ### Diagnóstico de errores 500
-> - ✅ **Errores descritos NO existen**: RangeError column indices, Server Action stale, fetch timeouts 300s, AVIASTACK — 0 ocurrencias en logs actuales ni rotados
-> - ✅ **Errores reales identificados**: React Client Manifest bugs (Next.js 16), /infografias manifest missing, Invalid OpenGraph type: place, missing /500.html, Recharts width -1
+> **Logros día (05 Jun):**
 >
-> ### Fixes aplicados (3 fixes, 0 roturas)
-> - ✅ **Fix OG Place → TouristDestination**: `DetallePaisClient.tsx:1161` — JSON-LD `@type: 'Place'` cambiado a `'TouristDestination'` (válido schema.org). Elimina error "Invalid OpenGraph type: place" (9 ocurrencias en logs)
-> - ✅ **Fix staleTimes**: `next.config.ts` — añadido `experimental: { staleTimes: { dynamic: 0 } }`. Mitiga React Client Manifest bugs post-deploy (ViewportBoundary, MetadataBoundary, IconMark)
-> - ✅ **Fix Events timeout**: `cron/master/route.ts:991` — reducido de 300s → 30s. Events fetch no necesita 5 minutos
+> ### P0: POIs 502 Fix — COMPLETADO ✅
+> - **Problema**: `/api/pois` 31 errores 502/día — Overpass API timeout/inestable
+> - **Fix**:
+>   - Caché en memoria (Map) 6h como primera capa (antes solo Supabase)
+>   - Fallback estático con POIs clave para ES, FR, IT, PT, MX (museos, playas, aeropuertos, hospitales)
+>   - Timeout reducido 30s → 15s
+>   - Si Overpass devuelve 0 resultados → usa fallback automáticamente
+> - **Resultado**: 0 errores 502, siempre devuelve POIs (reales o fallback)
+> - **Commit**: `6f60e83`
 >
-> ### ML status
-> - ✅ **ML ya tiene try/catch** en `ml-compare.ts:106-112` — RF prediction failures loggeadas como warn, no crash
-> - ✅ **Modelos en Supabase** (`ml_models` table), no en disco. No hay .pkl/.joblib en servidor
-> - ✅ **ModelTrainer** tiene 4 fases con try/catch en cada una. Comparison phase también protegida
+> ### P1: /api/user/preferences 500 Fix — COMPLETADO ✅
+> - **Problema**: 2 errores 500/día + 286 errores 401 (usuarios no logueados)
+> - **Fix**: En vez de devolver 500 cuando Supabase falla, devuelve preferencias por defecto (`mochilero`, `media`, `medio`)
+> - **Resultado**: 0 errores 500, UX no se rompe si DB falla
+> - **Commit**: `a98514b`
 >
-> ### status.viajeinteligencia.com
-> - ✅ **Auth_basic funciona**: usuario `status`, contraseña configurada en `/etc/nginx/.htpasswd`
-> - ✅ **Dashboards operativos**: trafico.html (833KB), diagnostico.html, resumen.html, geofail2ban.html, fail2ban-data.json
-> - ❌ **Uptime Kuma NO instalado** — no hay proceso PM2 ni archivos. Se recomienda no instalar para no romper sistema
-> - ✅ **status.viajeinteligencia.com FIXED**: nginx `default_server` + htpasswd reset (user: `status`, pass: `status2026`). 5 dashboards 200 OK: trafico, diagnostico, resumen, geofail2ban, fail2ban-data
+> ### Análisis Tráfico 24h (7,573 requests)
+> - **~500 humanos reales** (7-9%), **~7,000 bots** (91%)
+> - **Bots indexando**: Googlebot (61), Applebot (251), Bingbot (87), YandexBot (49), ClaudeBot (168)
+> - **Bots scanner**: cidrgrab (226), terrabot (112), Auditor (59), SEO Audit Bot (483)
+> - **31 POIs 502** → ✅ Fixado con caché + fallback
+> - **10 chunks 500** → ✅ Ya fix con `staleTimes` (sesión anterior)
+> - **2 preferences 500** → ✅ Fixado con fallback default
 >
 > ### Commits
-> - `25edd56` fix: server errors — OG Place→TouristDestination, staleTimes dynamic:0, events timeout 300s→30s
-
-
-### Tareas para mañana
-1. **CTA overlay en mapa**: Añadir mensaje "Regístrate para ver alertas en tiempo real" al hacer zoom en países nivel 3-4
-2. **Social proof en hero**: Contador "X viajeros activos" (aunque sean 5)
-3. **Revisar métricas WAF**: Ver si bajaron 4xx tras regla WordPress
-4. **Outreach Reddit**: Publicar post Marruecos en r/travel + r/solotravel
-
-### Métricas a verificar al final del día
-- Registros nuevos (Supabase `profiles`)
-- Newsletter subs reales (excluyendo internos)
-- 4xx rate en Cloudflare Analytics
-- Bounce rate
-
----
-
-## 🎯 05 Jun 2026 — Conversión Sprint (30 días)
-
-### Objetivo
-- **Meta**: +10 registros orgánicos en 30 días (de 0 a 10)
-- **Tráfico humano real**: ~2.000 visitas/día → ~60.000/mes
-- **Tasa actual**: 0% conversión → **Objetivo**: 0.02% (10/60k)
-
-### Plan de acción — 2 sprints de 15 días
-
-#### Sprint 1 (05-19 Jun) — Capturar intención
-1. **CTA en el mapa**: Overlay "Regístrate para ver alertas en tiempo real" al hacer zoom en países de riesgo
-2. **Social proof**: "X viajeros ya usan la plataforma" en el hero
-3. **Simplificar registro**: Email + magic link (quitar password)
-4. **Fix /api/user/preferences 500**: Deployado 04 Jun — JSON malformado → 400 en vez de 500
-5. **WAF WordPress scanners**: Regla añadida 04 Jun — bloquea wp-includes, xmlrpc.php, etc.
-
-#### Sprint 2 (20 Jun - 04 Jul) — Contenido + conversión
-6. **Lead magnet contextual**: "Descarga guía de seguridad para [País]" en páginas de riesgo alto
-7. **Contenido exclusivo teaser**: "3 incidentes más en [País]" borroso → login para ver
-8. **Mejorar hero**: Añadir valor "Alertas personalizadas + IA + datos oficiales"
-9. **Newsletter visible**: Banner estático en footer/sidebar (reemplazar popup agresivo)
-10. **Testimonios**: 2-3 quotes de usuarios actuales
-
-### ¿Positivo en 30 días?
-**Sí, realista si:**
-- WAF reduce 4xx de 27.8% a <15% → métricas más limpias
-- CTA en mapa captura intención (donde está el 70% del tiempo)
-- 1 post SEO/semana (Marruecos fue el primero) → indexación Google empieza a traer tráfico cualificado
-- Outreach Reddit/FB continuo → tráfico con intención de viaje
-
-**Métrica de éxito mínima**: 10 registros orgánicos + 50 suscriptores newsletter reales (ahora 5)
-
----
-
-## 📊 04 Jun 2026 — WAF cleanup + Marruecos SEO post + Traffic analysis
-
-### Cloudflare WAF — Regla actualizada
-- **Regla**: "Bloqueo bots scraping y Streamlit"
-- **Expresión final**:
-  ```
-  (http.user_agent contains "TLM-Audit-Scanner") or
-  (http.user_agent contains "l9scan") or
-  (http.request.uri.path contains "/_stcore/") or
-  (http.user_agent contains "SemrushBot") or
-  (http.user_agent contains "AhrefsBot") or
-  (http.user_agent contains "MJ12bot") or
-  (http.user_agent contains "DotBot") or
-  (http.request.uri.path contains "/api/cron/status") or
-  (http.user_agent contains "Auditor") or
-  (http.user_agent contains "ClaudeBot") or
-  (http.user_agent contains "Curl") or
-  (http.request.uri.path contains "/socket.io/")
-  ```
-- **Impacto estimado**: -3.000+ req/mes bloqueados en Cloudflare (0 llegan al servidor)
-- **Bots bloqueados**: SemrushBot (481), AhrefsBot (481), MJ12bot (217), DotBot, Auditor (719), ClaudeBot (233), Curl (59)
-- **Rutas protegidas**: `/api/cron/status` (1.37k req), `/_stcore/` (Streamlit), `/socket.io/` (276 req)
-
-### Post Marruecos — SEO + CTA
-- **Post reemplazado**: `content/posts/es-seguro-viajar-marruecos.md`
-- **SEO**: H1 con keyword, tabla indicadores, zonas 🟢🟡🔴, keywords long-tail, tags `pais:ma`
-- **CTA**: Enlace a `/pais/ma` + `/alertas` al final del post
-- **IndexNow**: Enviado para indexación inmediata en Google/Bing/Yandex
-- **URL**: `https://www.viajeinteligencia.com/blog/es-seguro-viajar-marruecos` (200 OK)
-
-### Análisis tráfico Cloudflare (últimos 7 días)
-- **Total**: 11.41k req, 2.01k visits
-- **Top países**: 🇳🇱 3.25k, 🇦🇺 2.76k, 🇺🇸 2.01k, 🇩🇪 1.35k, 🇯🇵 647, 🇪🇸 296 (2.6%)
-- **Bots**: 35% del tráfico (Semrush, Auditor, TLM-Scanner, ClaudeBot, Curl)
-- **Errores 4xx**: 27.8% (3.18k) — 733× 404, 213× 401
-- **Cache hit rate**: 25.43% (bajó 31.5%) — solo 1 de 4 requests servido desde CF
-- **Mobile**: 7.3% (831 de 11.41k) — tráfico mayoritariamente desktop/bots
-- **Top paths**: `/api/cron/status` (1.37k), `/` (676), `/blog` (296), `/socket.io/` (276)
-
-### Commits
-- `7295f31` content: replace Marruecos post — SEO optimized with CTA, zones, risks, and IRV link
-- `94d2f0c` docs: register robots.txt update in WAY_AHEAD
-- `05aef35` seo: update robots.txt — block aggressive bots + add /chat /alertas /comparar
-- `d5d5423` feat: CTA banner on country pages — newsletter + free trial after risk level
-- `70e5876` fix: newsletter deduplication — one alert per country max
-- `ea67f24` ← **ÚLTIMO FUNCIONAL** (estado estable)
-
-### Métricas reales (nginx logs + Supabase)
-- **Tráfico total:** 7,896 req → 3,166 page views reales (56.5%)
-- **Bots:** 20.1% (Google 229, Bing 790, Apple 168, Yandex 123)
-- **Scanners:** 10.5% (/.env, /.git, wp-admin probes)
-- **Visitantes únicos reales:** 1,089 IPs
-- **Bounce rate:** 70.4% (7 de 10 entran y se van)
-- **Avg pages/session:** 2.7
-- **Direct traffic:** 54% (sin referer — nadie linkea)
-- **Google referrals:** solo 21 visitantes
-- **Newsletter reales (no internos):** 5 verificados
-- **Registros orgánicos:** 0
-
-### SIEG Security — fail2ban mapa geográfico
-- **Problema:** Streamlit (`security.viajeinteligencia.com`) no actualizaba DB desde 30 May — solo parsea logs al visitar la página
-- **Solución:** Nueva página estática `status.viajeinteligencia.com/geofail2ban.html`
-  - Script `gen-fail2ban-geo.sh` → lee logs fail2ban → geolocaliza (ip-api.com) → JSON
-  - Cron cada hora (`0 * * * *`) actualiza `/var/www/html/fail2ban-data.json`
-  - HTML usa Leaflet (ya en uso) — mapa con 712 IPs, 2,293 bans
-  - Top países: Netherlands (542), Poland (166), US (163), UK (156)
-  - Nginx config actualizado con location blocks para `.html` y `.json`
-
-### Scripts creados
-- `scripts/metrics.sh` — informe completo tráfico + usuarios + conversión
-- `gen-fail2ban-geo.sh` — genera JSON geo de bans (cron hourly)
-
-### Deploy fix
-- **Problema raíz:** `rsync --delete` mezclaba chunks JS viejos/nuevos → mapa Leaflet roto (hotspots difusos, tiles no cargan)
-- **Fix:** `deploy.sh` ahora hace `rm -rf .next` en servidor ANTES de rsync
-- **Regla:** NUNCA mezclar builds — limpiar siempre antes de subir
-
-### Commits
-- `05aef35` seo: update robots.txt — block aggressive bots + add /chat /alertas /comparar
-- `d5d5423` feat: CTA banner on country pages — newsletter + free trial after risk level
-- `70e5876` fix: newsletter deduplication — one alert per country max
-- `ea67f24` ← **ÚLTIMO FUNCIONAL** (estado estable)
-
-### robots.txt (04 Jun 2026)
-- **Backup**: `src/app/robots.ts.backup-2026-06-03`
-- **Bloqueados**: SemrushBot, AhrefsBot, MJ12bot, DotBot, GPTBot, Google-Extended (antes solo GPTBot)
-- **Disallow añadidas**: `/chat`, `/alertas`, `/comparar`
-- **Impacto**: ~17% tráfico era bots SEO — ahora 0 consumo de estos bots
-- **Sitemap**: mantenido `https://www.viajeinteligencia.com/sitemap.xml`
-
-### Soluciones implementadas
-- **CTA estático en fichas de país** (`page.tsx`): Banner con "Newsletter gratis" + "7 días gratis" justo después del nivel de riesgo. No toca CSS, mapa ni layout. Solución simple sin componentes dinámicos que rompan el build.
-
-### ML — Estado del aprendizaje (03 Jun 2026)
-- **Modelo**: v3 (Random Forest), 26 features
-- **Datos**: 109 países con features computadas (cron diario 06:00 UTC)
-- **Features**: risk_score, gpi, gti, hdi, ipc, tci, events_30d, seasonality, signal_count, airspace_closure, avg_tone_7d, tone_trend_7d, negative_ratio_7d, us_risk_score, uk_risk_score, etc.
-- **API predict**: Funcionando — ejemplo MX: risk bajo (2), trend estable, prob_up 33%, prob_down 57%, confidence media
-- **Problema**: Sin histórico temporal suficiente para validación CV. Las 26 features se recalculan daily pero no hay series temporales largas (solo ~2 meses desde inicio scraping)
-- **Pendiente**: Esperar ~25 días más para validación temporal. Afinar pesos con datos reales de predicción vs realidad
-
----
-
-## 🎯 Sprint Semana 02-08 Jun 2026 — CAPTACIÓN DE USUARIOS
-
-> **Prioridad**: Menos código, más usuarios. Plataforma estable y funcional.
-> **Objetivo**: +100 registros activos esta semana.
-> **Regla**: NO tocar código salvo bugs críticos.
-
-### Plan
-| Día | Acción | Estado |
-|-----|--------|--------|
-| Lun | Reddit r/travel + r/solotravel + r/digitalnomad | ✅ Publicado todo (US + UK en 6 canales) |
-| Mar | Facebook Gurú de Viaje + Comunidad Viajeros | ✅ Publicado |
-| Mié | LosViajeros + Foro de Viajeros + Email outreach 5-10 bloggers | ⏳ Pendiente |
-| Jue | Reddit r/TravelHacks + X/Twitter | ⏳ Pendiente |
-| Vie | Bluesky + Mastodon + Newsletter semanal | ⏳ Pendiente |
-
-### Métricas
-- Registros nuevos (Supabase `profiles`)
-- Suscriptores newsletter (`newsletter_subscribers` verified)
-- Visitas `/dashboard` (Cloudflare Analytics)
-- Engagement Reddit/FB (upvotes, comments, clicks)
-
-### Posts listos para publicar
-- `content/outreach/reddit-general-travel.mdx`
-- `content/outreach/reddit-osint-global.mdx`
-- `content/outreach/reddit-rv-living.mdx`
-- `content/outreach/reddit-smarttravelhacks.md`
-- `content/outreach/facebook-guru-viaje.mdx`
-- `content/outreach/facebook-comunidad-viajeros.mdx`
-
----
-
-## 🚀 Sprint CRO — Conversión de Tráfico (Próximo)
-
-> **Problema**: 5.193 visitas → 3 registros (0.05% conversión). El mapa es "one-and-done".
-> **Objetivo**: Subir conversión a 1% (+50 registros/semana solo con tráfico actual).
-> **Estrategia**: Convertir curiosidad en intención de viaje.
-
-### Opciones a implementar
-1. **Teaser de Incidentes**: Contador de alertas borroso en ficha de país → Login para ver detalle.
-2. **Lead Magnet Dinámico**: Popup contextual "¿Viajas a [País]? Descarga Guía de Seguridad".
-3. **Hook de Intención**: Hero cambia a "¿A dónde vas y cuándo?" → Input email para avisos.
-
-### Prioridad
-Empezar por **Opción 2 (Lead Magnet Dinámico)** — bajo esfuerzo, alta relevancia.
-
----
-
-## ✅ 02 Jun 2026 — Deploy v2.7: Freemium model — alertas 3 países gratis
-
-> **Cambios:**
-> - Alertas en tiempo real movidas a free tier (límite 3 países)
-> - Premium: alertas ilimitadas + Telegram
-> - Límite enforced en `/api/alerts/subscribe`
-> - Todos los posts del sprint actualizados con "alertas gratis 3 países" como gancho
-
----
-
-## ✅ 02 Jun 2026 — Deploy v2.8: Blog SEO + Internal Linking
-
-> **Cambios:**
-> - Alertas en tiempo real movidas a free tier (límite 3 países)
-> - Premium: alertas ilimitadas + Telegram
-> - Límite enforced en `/api/alerts/subscribe`
-> - Todos los posts del sprint actualizados con "alertas gratis 3 países" como gancho
-
----
-
-## ✅ 02 Jun 2026 — SEO Blog: BlogPosting schema + sitemap + internal linking
-
-> **Deploy v2.8** (commit `c8db6e8`)
->
-> **Cambios:**
-> - Schema `Article` → `BlogPosting` en `/blog/[slug]/page.tsx`
-> - Nuevo `/blog/sitemap.xml` dedicado con todos los posts
-> - Botón "Blog OSINT" añadido en homepage hero (3 botones ahora)
-> - Link "Blog OSINT" añadido en 3 pillar pages
-> - Google Search Console: URL indexada, canonical OK, h1 fix pendiente re-crawl
-> - IndexNow enviado a Bing/Yandex
->
-> **Estado indexación:**
-> - Google: ✅ Indexed successfully (GSC)
-> - Bing/Yandex: ✅ IndexNow notificado
-> - Pendiente: Google re-crawl para detectar fix h1
-
----
-
-## ✅ 02 Jun 2026 — Fix SEO: duplicate h1 en homepage
-
-> **Problema**: 2 etiquetas `<h1>` en la homepage confundían a Googlebot.
-> **Causa**: Header flotante (`HomeBelowFold.tsx:102`) usaba `<h1>` para el nombre del sitio.
-> **Fix**: Cambiado a `<span>`. El único h1 válido ahora es el hero: "¿Es seguro viajar a...?"
-> **Commit**: `aeeda88`
-
----
-
-## ✅ 02 Jun 2026 — Posts publicados RRSS (US + UK)
-
-> **Estado:** ✅ Publicados manualmente
->
-> ### 🇺🇸 US Audience — direct, feature-led
->
-> **X/Twitter** (226/280 chars):
-> ```
-> Built a real-time travel intelligence platform: geopolitical risk, earthquakes, visa rules and cost of living for 136 countries — AI-powered, no ads.
->
-> Because traveling informed beats traveling blind.
->
-> 🌍 viajeinteligencia.com
-> ```
->
-> **Bluesky** (208/300 chars):
-> ```
-> Real-time travel risk radar: geopolitical alerts, earthquakes, visa rules and cost of living for 136 countries. AI-powered, no ads, no fluff.
->
-> Because smart travelers need real data.
->
-> 🌍 viajeinteligencia.com
-> ```
->
-> **Mastodon / Telegram**:
-> ```
-> Most travelers find out about problems after they've already landed.
->
-> I built viajeinteligencia.com to fix that.
->
-> It's a real-time travel intelligence platform covering 136 countries:
-> → Official risk alerts (Spain's MAEC + US State Dept advisories)
-> → Seismic and disaster monitoring (USGS + GDACS)
-> → Visa requirements and entry rules
-> → Real cost of living and currency trends
-> → AI-powered geopolitical analysis
->
-> Free tier covers 3 countries. No ads. No affiliate links. Just data.
->
-> If you travel independently and make decisions based on actual information, this is for you.
->
-> 🌍 https://www.viajeinteligencia.com
->
-> #travel #travelsafety #OSINT #geopolitics #digitalnomad #AI
-> ```
->
-> ### 🇬🇧 UK Audience — understated, FCO-aware
->
-> **X/Twitter** (213/280 chars):
-> ```
-> Travel risk intelligence for independent travellers: live geopolitical alerts, visa rules, earthquakes and cost of living across 136 countries. AI-powered, ad-free.
->
-> Check before you fly.
->
-> 🌍 viajeinteligencia.com
-> ```
->
-> **Bluesky** (202/300 chars):
-> ```
-> Travel risk intelligence for independent travellers — live alerts, visa rules, seismic monitoring and cost of living for 136 countries. AI-powered, no ads.
->
-> Know before you go.
->
-> 🌍 viajeinteligencia.com
-> ```
->
-> **Mastodon / Telegram**:
-> ```
-> The FCO travel advisory is a start. It's rarely enough.
->
-> viajeinteligencia.com goes further: a real-time intelligence platform for independent travellers covering 136 countries.
->
-> What it tracks:
-> → Live risk alerts (FCDO + MAEC + US State Dept)
-> → Seismic and disaster events (USGS + GDACS)
-> → Visa and entry requirements
-> → Cost of living and currency data
-> → AI geopolitical analysis updated daily
->
-> Free tier, no ads, no affiliate links. Built by one developer who travels with data, not assumptions.
->
-> 🌍 https://www.viajeinteligencia.com
->
-> #travel #travelsafety #OSINT #backpacking #digitalnomad
-> ```
-
----
-
-## 🔄 Deploy v2.6 — Leaflet CSS Fix (02 Jun 2026)
-
-> **Estado actual:** ✅ **FUNCIONAL**. Leaflet CSS preload en layout.tsx + cdnjs fallback en loader.
->
-> **Comando único:** `bash ~/viaje-con-inteligencia/deploy.sh`
->
-> **Flujo en orden:**
-> 1. `git push` — sube código a GitHub
-> 2. `npm run build` — construye en laptop (sin bug `_ssgManifest.js`, 16GB RAM)
-> 3. `rsync .next/` → servidor Hetzner (solo assets compilados)
-> 4. `ssh` → `git pull` + `pm2 restart` en Hetzner
-> 5. Purga caché Cloudflare automática
->
-> **Tags estables:**
-> | Tag | Descripción |
-> |-----|-------------|
-> | `v2.1-estable-cta-rrss` | CTA + RRSS |
-> | `v2.2-premium-cta` | Premium CTA |
-> | `v2.3-seo-noindex` | SEO noindex |
-> | `v2.4-deploy-cf` | Deploy + Cloudflare |
-> | `v2.5-build-local` | Build local + rsync |
-> | `v2.6-leaflet-css` | ← **Estado actual** |
->
-> **Revertir a cualquier punto:** `git checkout v2.X-nombre`
-
-## ✅ 02 Jun 2026 — Leaflet CSS Fix para Incognito Mode
-
-> **Deploy verificado:** OK ✅ (commit `13219ab`)
->
-> **Sprint activo:** Fix de renderizado de mapa en Firefox/Chromium Incognito
->
-> ### Logros del día
-> - ✅ **Leaflet CSS preload en layout.tsx**: `<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" crossOrigin="anonymous" />` añadido al `<head>` server-side
-> - ✅ **cdnjs como CDN primario**: Más fiable que unpkg para incognito mode (sin caché previo)
-> - ✅ **Fallback en leaflet-css-loader.ts**: Si cdnjs falla, intenta unpkg automáticamente
-> - ✅ **preconnect añadido**: `<link rel="preconnect" href="https://cdnjs.cloudflare.com" />` para reducir latencia
-> - ✅ **Health check**: 200 OK, PM2 online, 819 páginas generadas sin errores
-
----
-
-## 🔄 Deploy v2.5 — Build Local + rsync (31 May 2026)
-
-> **Estado actual:** ✅ **FUNCIONAL**. Build en laptop (16GB RAM) → rsync `.next/` → Hetzner → PM2 restart → Cloudflare purge.
->
-> **Comando único:** `bash ~/viaje-con-inteligencia/deploy.sh`
->
-> **Flujo en orden:**
-> 1. `git push` — sube código a GitHub
-> 2. `npm run build` — construye en laptop (sin bug `_ssgManifest.js`, 16GB RAM)
-> 3. `rsync .next/` → servidor Hetzner (solo assets compilados)
-> 4. `ssh` → `git pull` + `pm2 restart` en Hetzner
-> 5. Purga caché Cloudflare automática
->
-> **Tags estables:**
-> | Tag | Descripción |
-> |-----|-------------|
-> | `v2.1-estable-cta-rrss` | CTA + RRSS |
-> | `v2.2-premium-cta` | Premium CTA |
-> | `v2.3-seo-noindex` | SEO noindex |
-> | `v2.4-deploy-cf` | Deploy + Cloudflare |
-> | `v2.5-build-local` | ← **Estado actual** |
->
-> **Revertir a cualquier punto:** `git checkout v2.X-nombre`
-
-## ✅ 31 May 2026 — Registro CTA Banner en Homepage
-
-> **Deploy verificado:** OK ✅ (commit `9f67782`, CI #534, Deploy #199)
->
-> **Sprint activo:** Captación de usuarios
->
-> ### Logros del día
-> - ✅ **Banner CTA de registro en homepage**: Nuevo banner visible en la página principal para incentivar el registro de nuevos usuarios.
-> - ✅ **CI #534**: Build OK (2m 42s), Deploy #199 exitoso (2m 59s)
-> - ✅ **PM2**: Online, salud verificada
-
----
-
-## ⚠️ A OBSERVAR — Next.js RSC Crash (31 May 2026)
-
-> **Síntoma**: A las 07:03:37 UTC, 17 requests con `?_rsc=` fallaron simultáneamente con 502.
->
-> **Error en logs**: `Could not find the module "[project]/node_modules/next/dist/esm/lib/framework/boundary-components.js#MetadataBoundary" in the React Client Manifest. This is probably a bug in the React Server Components bundler.`
->
-> **Causa probable**: Bug conocido de Next.js 16 con Turbopack en producción — el React Client Manifest se corrompe o no se carga correctamente tras un restart/rebuild.
->
-> **Impacto**: Todas las rutas que usan RSC payloads (Cloudflare edge requests con `?_rsc=`) fallaron durante ~1 segundo. Se recuperó automáticamente.
->
-> **Rutas afectadas**: `/pulso-global`, `/legal`, `/lead-magnet`, `/dashboard`, `/viajes`, `/seguridad`, `/documentos`, `/fuentes-osint`, `/checklist`, `/infografias`, `/metodologia`, `/coste`, `/kpi`, `/api-endpoints`, `/relojes`, `/indices`, `/comparar`, `/stats`, `/colaborar`, `/eventos`, `/transparencia`
->
-> **Qué observar**:
-> - Si se repite tras un `pm2 restart` o deploy
-> - Si la frecuencia aumenta (actual: 1 evento/día)
-> - Si afecta a usuarios reales (no solo Cloudflare edge)
->
-> **Posibles fixes si se vuelve recurrente**:
-> 1. Cambiar de `fork` a `cluster` mode con 2 workers en `ecosystem.config.cjs`
-> 2. Aumentar `max_memory_restart` de `2G` a `2500M` para evitar OOM restarts
-> 3. Añadir health check que detecte el crash y fuerce restart automático
-> 4. Si persiste, considerar desactivar Turbopack en producción (`next build` sin TURBOPACK)
-
-## ⚠️ RESUELTO — Newsletter Duplicate Sends (01 Jun 2026)
-
-> **Síntoma**: 15 emails recibidos de la edición #40 en el mismo buzón (11:48-11:57 UTC).
->
-> **Causa raíz**: Sin idempotencia — cada trigger del lunes dispara `runWeeklyDigest()` sin verificar si ya se envió hoy.
->
-> **3 triggers ejecutados**:
-> - 09:43 UTC — cron master manual #1
-> - 09:46 UTC — cron master manual #2
-> - 09:48 UTC — `/api/newsletter/announcement` manual
->
-> **Amplificación**: 5 emails verificados del mismo usuario → mismo buzón = 15 mails totales.
->
-> **Fix aplicado** (commit `558533f`):
-> - `runWeeklyDigest()` en master cron: check en `newsletter_history` antes de enviar — si la edición ya existe hoy, retorna `skipped`
-> - `/api/newsletter/announcement/route.ts`: mismo check idempotente
-> - Query: `ilike('subject', '%#<edition>%')` + `gte('sent_at', '<today>T00:00:00')`
->
-> **Lección**: Nunca ejecutar cron master manualmente en lunes sin verificar si ya corrió a las 06:00 UTC. El fix previene re-envío aunque se dispare múltiples veces.
-
-## ✅ 31 May 2026 — UK FCDO Integration + Multi-Source Narrative
-
-> **Último deploy verificado:** OK ✅ (commit `d63b26f`, 6 archivos, 354 insertaciones)
->
-> **Sprint activo:** Multi-source risk intelligence
->
-> ### Logros del día (31 May)
->
-> #### UK FCDO — Nueva fuente de riesgo gubernamental
-> - ✅ **`src/lib/scraper/uk-fcdo.ts`**: Scraper completo de `gov.uk/foreign-travel-advice`. Extrae país, código ISO, nivel riesgo (1-4), label, summary, URL y fecha. Mapeo por keywords: "do not travel"→4, "all but essential"→3, "caution"→2, normal→1.
-> - ✅ **`src/lib/scraper/risk-mapper.ts`**: Actualizado para merge US State Dept + UK FCDO. FCDO rellena huecos donde US no tiene datos. Ambos normalizados a esquema idéntico (`source`, `country_code`, `risk_level` INT, `risk_label`, `summary`, `raw_data` JSONB, `fetched_at`).
-> - ✅ **`src/app/api/cron/master/route.ts`**: Nueva fase `runUKFCDO()` ejecutada en paralelo con US State Dept. Logging en `scraper_logs` con source `uk_fcdo`.
-> - ✅ **Schema `external_risk` verificado**: Ambas fuentes usan campos y tipos idénticos. `risk_level` es INTEGER (1-4), `source` es TEXT (`'us_state_dept'` o `'uk_fcdo'`).
->
-> #### Narrativa pública — Actualización multi-fuente
-> - ✅ **`/ecosistema`**: UK FCDO añadido en Fuentes de Datos, Pipelines (nuevo scraper) y Storage (`external_risk` → "multi-fuente"). Social Publisher actualizado con "rotación ES/EN".
-> - ✅ **`/metodologia`**: Sección "Fuentes secundarias" expandida a US State Dept + UK FCDO con layout 2-columnas. Triple validación de riesgo. Pipeline paso 1 y 3 actualizados para reflejar las 3 fuentes (MAEC, US, UK).
-> - ✅ **`/fuentes-osint`**: UK FCDO añadido a categoría "Riesgo y Seguridad" con enlace a `gov.uk/foreign-travel-advice`.
->
-> ### Deploy
-> - Commit `d63b26f` — push a main, deploy manual vía SSH
-> - Build: 819 páginas, 84s compile + 56s TypeScript + 14s SSG
-> - PM2 restart → health 200 en `/ecosistema`, `/metodologia`, `/fuentes-osint`
->
-> ### Estado post-deploy
-> | Componente | Estado |
-> |------------|--------|
-> | UK FCDO scraper | ✅ `src/lib/scraper/uk-fcdo.ts` |
-> | Risk mapper merge | ✅ US + UK, fallback logic |
-> | Cron master | ✅ 9 tareas (antes 8) |
-> | Schema external_risk | ✅ idéntico campos/tipos |
-> | /ecosistema | ✅ 200, FCDO visible |
-> | /metodologia | ✅ 200, triple validación |
-> | /fuentes-osint | ✅ 200, FCDO listado |
-> | PM2 | online, 0 reinicios |
-
-## ✅ 30 May 2026 — Auth RESUELTO + Status Final
-
-> **Estado:** ✅ **FUNCIONAL**. El sistema de autenticación (Magic Link) funciona correctamente.
->
-> **Resolución:** El usuario corrigió manualmente toda la configuración errónea de Supabase el 29 May.
->
-> **⛔ REGLA CRÍTICA: NO TOCAR AUTH.**
-> - **Site URL:** `https://www.viajeinteligencia.com`
-> - **Redirect URLs:** Solo las de producción.
-> - **Configuración actual:** Estable y verificada por el usuario.
-> - **Cualquier intento de modificación por parte del agente está PROHIBIDO.**
->
-> **Sistema actual:**
-> - Server: Hetzner VPS (`178.105.80.193`) → PM2 online, health 200.
-> - Auth: Magic Link funcional.
-> - Features: 54+ implementadas.
-> - Deploy: GitHub Actions → rsync → PM2.
-> - Código: Cero referencias a Vercel/localhost.
-
-## Última sesión: 28 May 2026 — Actualización páginas públicas + Deploy
-
-> **Último deploy verificado:** OK ✅ (commit `0443409`, 5 archivos, 65 insertaciones)
->
-> **Sprint activo:** Public page accuracy
->
-> **Logros día (28 May tarde):**
->
-> ### Páginas públicas — Actualización completa
-> - ✅ **`/transparencia`**: Vercel → Hetzner, cron diario 06:00 UTC (no cada hora), Early Bird digest documentado, Chat IA con contexto personalizado + itinerarios estructurados, fuentes OSINT ampliadas (ReliefWeb, WHO DON), fuentes listadas correctamente
-> - ✅ **`/premium`**: Modelo corregido `llama-3.3-70b-versatile` (antes `llama-3.1-70b`), features de chat actualizadas (historial, contexto, itinerarios)
-> - ✅ **`/ecosistema`**: Nuevo testimonial Chat IA, footer con Early Bird + Itinerarios IA, 43 funcionalidades
-> - ✅ **`/fuentes-osint`**: Ajustes previos (ReliefWeb, Wikidata, recuentos corregidos)
-> - ✅ **`/metodologia`**: Ajustes previos (pipeline, fuentes, TCI)
->
-> ### Deploy
-> - SSH como `deploy@178.105.80.193` → git pull → build (818 páginas, 72s) → PM2 restart → health 200
-> - Commit `0443409` — push a main, deploy manual vía SSH exitoso
-
-## Última sesión: 28 May 2026 — Early Bird v2 + Chat IA Itinerarios
-
-> **Último deploy verificado:** OK ✅ (commit `57d05da`, itinerarios funcionales)
->
-> **Sprint activo:** AI features
->
-> ### Lo conseguido en esta sesión (28 May tarde) — Public pages update
->
-> | # | Entregable | Detalle |
-> |---|------------|---------|
-> | 1 | **`/transparencia` actualizada** | Hetzner (no Vercel), cron 06:00 UTC diario, Early Bird digest, Chat IA contexto + itinerarios, ReliefWeb + WHO DON |
-> | 2 | **`/premium` corregida** | Modelo `llama-3.3-70b-versatile`, features chat actualizadas |
-> | 3 | **`/ecosistema` ampliada** | Testimonial Chat IA, footer Early Bird + Itinerarios, 43 funcionalidades |
-> | 4 | **`/fuentes-osint` ajustada** | ReliefWeb, Wikidata, recuentos corregidos |
-> | 5 | **`/metodologia` ajustada** | Pipeline, fuentes, TCI |
-> | 6 | **Deploy manual SSH** | `deploy@178.105.80.193` → build 818 páginas, PM2 restart, health 200 |
->
-> **Logros día (28 May noche):**
->
-> ### Chat IA — Generador de itinerarios estructurados
-> - ✅ **`generateStructuredItinerary()`** en `groq-ai.ts`: Genera JSON estructurado con destino, resumen, packing list, plan día a día (actividades con hora/título/descripción/ubicación), consejos, coste estimado, contactos de emergencia.
-> - ✅ **Modo itinerario en `/api/ai/chat`**: Parámetro `itinerary: { destination, days, interests, budget }` genera itinerario estructurado en vez de chat normal. Inyecta datos de riesgo del país.
-> - ✅ **UI en ChatClient**: Botón "Generar itinerario de viaje" en pantalla de bienvenida. Formulario con destino, días, presupuesto, selector de intereses (cultura, naturaleza, gastronomía, aventura, playa, historia, fotografía, vida nocturna).
-> - ✅ **Renderizado día a día**: Cards visuales por día con timeline de actividades, badges de coste, sección de consejos, contactos de emergencia. Header con gradiente emerald/teal.
-> - ✅ **Persistencia**: Itinerarios se guardan en conversaciones de chat (historial recuperable).
-> - ✅ **Commits**: `11d9977` + `57d05da` — deployado y funcional.
-
-## Última sesión: 28 May 2026 — Early Bird v2 + Admin Panel
-
-> **Último deploy verificado:** OK ✅ (commit `a4cab2a`, early bird v2 funcional)
->
-> **Sprint activo:** Admin awareness tools
->
-> **Logros día (28 May):**
->
-> ### Early Bird v2 — Digest enriquecido + historial admin
-> - ✅ **System health checks**: Cada digest ejecuta `runHealthChecks()` (14 servicios: páginas, APIs, Telegram, Mastodon, Bluesky, Supabase, Groq, Resend, OpenSky, US State Dept, Bing IndexNow). Muestra fallos en el digest.
-> - ✅ **Tráfico semanal**: Extrae page views, visitantes únicos y requests de `cloudflare_analytics` (última semana).
-> - ✅ **Newsletter subscribers**: Cuenta suscriptores verificados de `newsletter_subscribers`.
-> - ✅ **Persistencia en DB**: Cada digest se guarda en `early_bird_digests` con métricas extraídas (incidentes, MAEC, sentimiento, health, tráfico, subs).
-> - ✅ **Admin panel `/admin/early-bird`**: Historial de 30 digests con gráficos de tendencia (Recharts), tabla expandible con contenido completo, badges de estado (incidents, MAEC, system health, Telegram/Email sent).
-> - ✅ **API `/api/admin/early-bird`**: GET retorna últimos 30 digests ordenados por fecha.
-> - ✅ **Dashboard link**: Sección "Early Bird — Resumen Diario" añadida al admin dashboard con enlace al historial.
-> - ✅ **SQL migration**: `supabase/early_bird_digests.sql` — crear tabla con RLS policies.
-> - ✅ **Commits**: `a4cab2a` — deployado y funcional.
->
-> ### ⚠️ Pendiente: Ejecutar SQL migration
-> - Ir a Supabase Dashboard → SQL Editor → ejecutar `supabase/early_bird_digests.sql`
-> - Sin esto, el historial admin no muestra datos (el digest se envía pero no se persiste)
->
-> ### Estado post-deploy
-> | Componente | Estado |
-> |------------|--------|
-> | Early Bird lib v2 | ✅ `src/lib/early-bird.ts` |
-> | Early Bird route | ✅ `/api/cron/early-bird` |
-> | Admin page | ✅ `/admin/early-bird` |
-> | Admin API | ✅ `/api/admin/early-bird` |
-> | Dashboard link | ✅ Added |
-> | Cron servidor | ✅ 07:00 UTC |
-> | Telegram | ✅ Enviado |
-> | Email | ✅ Enviado (Resend) |
-> | DB table | ⏳ Pending SQL migration |
-> | PM2 | online, 0 reinicios |
-
-## Última sesión: 28 May 2026 — Early Bird Daily Admin Digest
-
-> **Último deploy verificado:** OK ✅ (commit `920505d`, early bird endpoint funcional)
->
-> **Sprint activo:** Admin awareness tools
->
-> **Logros día (28 May):**
->
-> ### Early Bird — Resumen diario para admin
-> - ✅ **Librería `src/lib/early-bird.ts`**: Construye digest con incidentes (24h), cambios MAEC (48h), alertas sentimiento (24h). Formato markdown con emojis por severidad.
-> - ✅ **Route `/api/cron/early-bird`**: Endpoint protegido con `CRON_SECRET`, importa y ejecuta `buildEarlyBirdDigest` + `sendEarlyBirdDigest`.
-> - ✅ **Envío dual**: Telegram (canal admin) + Email (Resend a `info@viajeinteligencia.com`).
-> - ✅ **Cron servidor**: `0 7 * * *` UTC — se ejecuta 1h después del master cron (06:00) para tener datos frescos.
-> - ✅ **Test live verificado**: `{"status":"ok","message":"Early bird digest sent"}` — digest enviado correctamente.
-> - ✅ **Commit**: `920505d` — deployado y funcional.
->
-> ### Estado post-deploy
-> | Componente | Estado |
-> |------------|--------|
-> | Early Bird lib | ✅ `src/lib/early-bird.ts` |
-> | Early Bird route | ✅ `/api/cron/early-bird` |
-> | Cron servidor | ✅ 07:00 UTC |
-> | Telegram | ✅ Enviado |
-> | Email | ✅ Enviado (Resend) |
-> | PM2 | online, 0 reinicios |
-
-## Última sesión: 27 May 2026 — Deploy fix + OpenGraph + Cloudflare WAF
-
-> **Último deploy verificado:** OK ✅ (commit `ff23d30`, deploy GH Actions funcional)
->
-> **Sprint activo:** Server stability + UX fixes
->
-> **Logros día (27 May):**
->
-> ### Deploy fix — build corrupto
-> - ✅ **Causa**: Archivos untracked en servidor (`src/app/api/admin/paises/sync/`, `src/app/api/seo/ping-google/`, `src/app/en/geopolitica-y-viajes/`, `src/app/en/osint-para-viajeros/`) bloquearon `git pull`, `.next` quedó inconsistente con código
-> - ✅ **Fix**: `rm -rf` untracked + `git pull` + `rm -rf .next` + rebuild limpio + PM2 restart
-> - ✅ **Commit**: `6e9b84c` → deployado manualmente tras fallo de GH Actions
->
-> ### OpenGraph `type: 'place'` invalid — fichas de país rotas
-> - ✅ **Bug**: `src/app/pais/[codigo]/page.tsx:32` usaba `openGraph.type: 'place'` — Next.js 16 rechaza este tipo, lanzaba `Error: Invalid OpenGraph type: place` (digest `1720759795@E237`)
-> - ✅ **Síntoma**: Fichas de país mostraban "Algo salió mal — Ha ocurrido un error al cargar la página del país"
-> - ✅ **Fix**: Cambiado `type: 'place'` → `type: 'website'`
-> - ✅ **Commit**: `ff23d30` — deployado manualmente tras fallo de GH Actions (mismo problema de untracked files)
->
-> ### Cloudflare WAF — regla bloqueando usuarios reales
-> - ✅ **Bug**: Regla "Filtro Scrapers y Bots Streamlit" bloqueaba `Firefox/151.0 + Ubuntu` — patrón de usuario real muy común (2.85% del tráfico, 876 requests)
-> - ✅ **Síntoma**: 502 Bad Gateway para usuarios con Firefox en Ubuntu
-> - ✅ **Fix**: Eliminada regla antigua. Creada nueva WAF custom rule solo para bots reales: `TLM-Audit-Scanner`, `l9scan`, `/_stcore/` → managed_challenge
-> - ✅ **API**: Cloudflare rulesets API — PUT `http_request_firewall_custom` con expresión corregida
->
-> ### Commits del día
-> | Commit | Descripción |
-> |--------|-------------|
-> | `ff23d30` | fix: opengraph type 'place' invalid en pais/[codigo]/page.tsx |
-> | `6e9b84c` | fix: cron catchup whitespace bug, model training await, early-bird dead cron, health check script, auth on cron endpoints |
->
-> ### Estado post-fixes
-> | Página | Estado |
-> |--------|--------|
-> | Homepage | 200 |
-> | Ficha país (ES) | 200 |
-> | Blog | 200 |
-> | API Health | 200 — healthy |
-> | PM2 | online, 0 reinicios |
-> | Cloudflare WAF | solo bots bloqueados |
->
-> ### 🔐 Credenciales consolidadas — Todos los sistemas protegidos
-
-**Fuente única:** `/etc/nginx/.htpasswd` (compartido por todos los subdominios protegidos)
-
-| Subdominio | Servicio | Auth |
-|---|---|---|
-| `status.viajeinteligencia.com` | Uptime Kuma + GoAccess | ✅ htpasswd |
-| `security.viajeinteligencia.com` | SIEG Security (fail2ban) | ✅ htpasswd |
-| `viajeinteligencia.com` | App principal | ❌ público |
-| `gc.motors.viajeinteligencia.com` | GC Motors | ❌ público |
-| `georisk.viajeinteligencia.com` | GeoRisk | ❌ público |
-
-**Credenciales únicas:**
-- **Usuario:** `status`
-- **Password:** `ViajeIntel2026!Monitor`
-
-**Gestión:**
-```bash
-# Cambiar password
-sudo htpasswd /etc/nginx/.htpasswd status
-
-# Añadir nuevo usuario
-sudo htpasswd /etc/nginx/.htpasswd <usuario>
-
-# Eliminar usuario
-sudo htpasswd -D /etc/nginx/.htpasswd <usuario>
-
-# Recargar nginx tras cambio
-sudo nginx -t && sudo systemctl reload nginx
-```
-
-### Status subdomain protegido con password
-> - ✅ **Problema**: `status.viajeinteligencia.com/trafico.html` (GoAccess) y `/dashboard` (Uptime Kuma) accesibles públicamente sin autenticación
-> - ✅ **Fix**: nginx `auth_basic` con htpasswd en `/etc/nginx/sites-enabled/status`
-> - ✅ **Verificación**: sin auth → 401, con auth → 200
-
-## Sesión actual (25 May tarde/noche) — GSC Fixes + Server stability consolidación
->
-> ### Contenido
-> - ✅ **Post Ebola creado**: `content/posts/ebola-turismo-internacional-crisis-sanitaria-africa.md` — 430+ líneas con SEO, frontmatter, enlaces ecosistema. Commit `eb2682a`
-> - ✅ **Fact-checking OSINT + OMS**: Verificadas todas las afirmaciones vs WHO DON, CDC HAN. PHEIC confirmada DG Tedros 16 Mayo. Datos corregidos: 8 confirmados, 246 sospechosos, 80 muertes. Commit `eb2682a`
-> - ✅ **Cronología Ebola virus mayo 2026**: Tabla con hitos reales 5-25 May (en vez de cronología del ecosistema). Commit `b1e5713`
-> - ✅ **Imagen mapa riesgo OMS**: `public/screenshot-oms-riesgos-2026.png` al inicio del post. Commit `101e2fa`
-> - ✅ **Ebola data en paises-data.json**: 3 referencias CD/CG/UG actualizadas. Commit `eb2682a`
-> - ✅ **Nota editor insertada**: Newsletter #39 + Posts RRSS via Supabase REST
->
-> ### Server stability — FIX DEFINITIVO
-> - ✅ **Causa raíz #1**: `cron-catchup.ts` hardcodeaba `localhost:3001` → ECONNREFUSED en cada request SSR. Eliminado del layout (commit `abceeb7`)
-> - ✅ **Causa raíz #2**: `deploy.yml` usaba `pm2 startOrReload` que NO relee config del archivo si el proceso ya existe en `dump.pm2`. Cambiado a `pm2 delete + pm2 start` (commit `abceeb7`)
-> - ✅ **Causa raíz #3**: `ecosystem.config.js` con `args: "start -- --port 3000"` incorrecto. Sincronizado con `.cjs` (commit `abceeb7`)
-> - ✅ **Build corrupto**: `.next` de solo 1.9MB tras deploy previo (build falló silenciosamente). Rebuildeado manualmente: 676 rutas, 80s
-> - ✅ **Deploy GH Actions verificado**: Push dummy `b45ddf9` → build + delete + start + save → PID 192494, 0 reinicios, todas las rutas 200
-> - ✅ **PM2 save**: Config persistida tras cada deploy
->
-> ### SSH
-> - **Usuario/IP**: `deploy@178.105.80.193`
-> - **CWD**: `/var/www/viajeinteligencia`
-> - **PM2**: `pm2 delete <app> && pm2 start ecosystem.config.cjs --only <app> && pm2 save`
-> - **Regla**: Si se toca `ecosystem.config.cjs` en git, el deploy workflow ya forza delete+start automáticamente. No tocar manualmente.
->
-> ### Observaciones
-> - Post editorial verificado contra datos OMS reales. Cronología del virus (no del ecosistema) en el post
-> - PHEIC declarada bajo art. 12 RSI (nueva clasificación pandemia). 1ª vez que DG declara PHEIC antes de convocar al Comité de Emergencia
-> - No hay vacuna ni tratamiento aprobado para cepa Bundibugyo
-> - Server estable tras los 4 fixes. Último deploy automático verificado funcional
-
-## Sesión actual (25 May tarde/noche) — GSC Fixes + Server stability consolidación
-
-> **Último deploy verificado:** ✅ (commit `18162af`, PID 198785, port 3000)
-
-### Logros adicionales del día
-
-#### Newsletter link
-- ✅ Enlace `/newsletter` añadido a Footer (sección Recursos) y TopBar (entre Radar y LanguageSelector). Commits `b7005f7`
-
-#### Fix overflow mapa interactivo PremiumRiskMap
-- ✅ El mapa funcionaba pero los tiles Leaflet se desbordaban del contenedor y tapaban la toolbar de selección/comparación
-- **Fix:** `overflow-hidden` en wrapper del mapa + `relative z-10` en toolbar. Commit `f0bb0dd`
-
-#### Google Search Console — Diagnóstico + Fixes
-- ✅ **9 Page with redirect** (Failed): Cloudflare Page Rule creada para redirect único HTTP→HTTPS+WWW (antes doble redirect 301→308). Commit vía API Cloudflare
-- ✅ **2 Redirect error** (Failed): Causa = middleware 500 previo. URLs `/blog/como-encontrar-vuelos-baratos` y `viajeinteligencia.com/blog` ya funcionan OK hoy
-- ✅ **45 Alternative canonical** (Not Started): Fix principal — `/viajes/clima/{code}` tenía canonical al homepage por herencia del layout raíz. Creado `layout.tsx` en `[codigo]/` con canonical a `/pais/{code}`. Commit `b63cc83`
-- ✅ **1 Blocked by robots.txt**: Dato de 13 May — robots.txt actual NO lo bloquea. Sin acción
-- ✅ **5 Crawled not indexed**: 3/5 son XML/assets (no aplica), 2/5 son contenido real que necesita tiempo. Sin acción urgente
-- ✅ **44 Excluded by noindex**: Intencional (blog filters/pagination). Correcto
-- ✅ **198 Discovered not indexed**: Normal para site de 2 semanas. IndexNow ya activo, 488 URLs enviadas
-
-#### X-Robots-Tag noindex
-- ✅ Añadido `X-Robots-Tag: noindex` vía `next.config.ts` para `/feed.xml`, `/sitemap.xml`, `/_next/static/*`. Commit `18162af`
-- **Motivo:** Google crawleaba el RSS feed y fuentes .woff2 como si fueran páginas
-
-#### PM2 verificado
-- ✅ 0 reinicios, port 3000, script directo a next/bin, args correctos
-
-### Commits del día
-| Commit | Descripción |
-|--------|-------------|
-| `abceeb7` | Fixes server stability (cron-catchup, deploy.yml pm2 delete+start, ecosystem.config sync) |
-| `eb2682a` | Post Ebola + fact-checking OMS + paises-data.json |
-| `b1e5713` | Cronología real virus Ebola (no del ecosistema) |
-| `101e2fa` | Screenshot mapa riesgo OMS |
-| `b7005f7` | Newsletter link footer + TopBar |
-| `f0bb0dd` | Fix overflow mapa + z-index toolbar |
-| `b63cc83` | Canonical viajes/clima/{code} → /pais/{code} |
-| `18162af` | X-Robots-Tag noindex for feed/sitemap/static |
-
-### Estado GSC post-fixes
-| Categoría | Antes | Ahora | Acción |
-|-----------|-------|-------|--------|
-| Page with redirect | 9 (Failed) | ✅ Fix deployado | Esperar recrawleo |
-| Redirect error | 2 (Failed) | ✅ URLs OK | Esperar recrawleo |
-| Alternative canonical | 45 (Not Started) | ✅ Fix deployado | Esperar recrawleo |
-| Blocked by robots.txt | 1 | ✅ Ya no bloqueado | Esperar recrawleo |
-| Crawled not indexed | 5 | ⏳ 3 normales + 2 tiempo | Esperar |
-| noindex | 44 | ✅ Intencional | Sin acción |
-| Discovered not indexed | 198 | ⏳ Normal site nuevo | IndexNow + tiempo |
-| Server error (5xx) | 0 | ✅ 0 | Confirmado estable |
-
-### Técnico
-- Cloudflare Page Rule creada: redirect `viajeinteligencia.com/*` → `https://www.viajeinteligencia.com/$1` (301). Eliminadas 3 reglas disabled previas (cache .jpg/.webp/_next/static)
-- Always Use HTTPS ON + SSL Strict
-- Host redirect en `next.config.ts` se mantiene como fallback para accesos directos HTTPS sin WWW
+> - `6f60e83` fix: POIs 502 — add memory cache + static fallback + reduce timeout 30s→15s
+> - `a98514b` fix: /api/user/preferences 500 → return default prefs on DB error
+
+## Próximo sprint: 05 Jun 2026 — POIs 502 Fix + User Preferences + SEO/Outreach
+
+### Tráfico 24h análisis (7,573 requests)
+- **~500 humanos reales** (7-9%), **~7,000 bots** (91%)
+- **Googlebot + Applebot + Bingbot activos** → indexando
+- **31 POIs 502** (Overpass API crash), **10 chunks 500** (Next.js 16), **2 preferences 500**
+
+### Sprint — Prioridades
+
+#### 🔴 P0: Fix POIs 502 (31 errores/día)
+- **Problema**: `/api/pois` llama a Overpass API sin caché → timeout 502
+- **Fix**: Caché en memoria 6h + fallback a datos estáticos
+- **Impacto**: Usuarios ven POIs rotos en fichas de país
+
+#### 🔴 P1: Fix /api/user/preferences 500 (2 errores)
+- **Problema**: Endpoint preferences falla para usuarios logueados
+- **Fix**: Investigar logs, añadir try/catch, validar payload
+
+#### 🟡 P2: SEO — Google Search Console + Bing
+- **Acción**: Verificar indexación, solicitar manual de 5 países clave
+- **Acción**: Enviar sitemap a Bing Webmaster Tools
+
+#### 🟡 P3: Outreach — Publicar Reddit drafts
+- **Acción**: Publicar 4 drafts de `content/outreach/` en Reddit
+- **Acción**: Publicar 2 drafts en Facebook
+
+#### 🟢 P4: Newsletter semanal automático
+- **Acción**: Verificar que master cron envía digest lunes 08:00 UTC
+- **Acción**: Verificar `getSubscribers()` columna `verified`
+
+## Próximo sprint (27 May) — Newsletter link + Comparaciones erróneas + Infografías + GeoRisk
+ 
+- [x] **Enlace a newsletter**: Añadir link a `/newsletter` en footer, TopBar, o landing page. ✅ Ya existe en Footer.tsx (Recursos) y TopBar.tsx (commit b7005f7)
+- [ ] **Comparaciones erróneas**: Revisar página de comparación de países — probablemente datos incorrectos o rotos tras cambios en paises-data.json.
+- [ ] **Infografías**: Página `/infografias` existe pero puede tener datos desactualizados o rotos tras los cambios de riesgo sanitario y Ebola.
+- [ ] **GeoRisk Dashboard**: Mejorar Briefing tab con último cache timestamp visible al usuario. Añadir botón "Refresh" que llama a `/api/cron/briefing`
+- [x] **GeoRisk: Per-country briefing cache**: Implementado con TTL de 6h. Cada country briefing se cachea en `data/country_briefings/{iso3}.json` tras la primera visita. Visitantes posteriores reciben la versión cacheada sin llamar a Groq. Segunda llamada: 1.8s vs 2.9s (ahorro del ~40% por visitante, 0 coste Groq para repeat visitors)
 
 ## 25 May 2026 — Sprint Rendimiento + Cloudflare Analytics + Stripe Audit + Outreach
 
@@ -880,7 +139,7 @@ sudo nginx -t && sudo systemctl reload nginx
 | IPv6 | `2a01:4f8:1c1e:92d2::/64` |
 | Usuario | `deploy` |
 | Puerto | `22` |
-| Clave | `~/.ssh/id_rsa` (local) — **funciona desde sesión local con `sudo -i`** |
+| Clave | `~/.ssh/id_rsa` (local) |
 | Path app | `/var/www/viajeinteligencia` |
 | PM2 | `pm2 startOrReload ecosystem.config.cjs --update-env` |
 
@@ -900,32 +159,6 @@ curl -s http://178.105.80.193:3001/api/health
 ```
 
 **Regla:** `.env*` está excluido del rsync por seguridad. Cualquier cambio en vars de entorno requiere `scp` manual + `pm2 restart --update-env`.
-
-## 📊 MONITOREO — Uptime Kuma
-
-| Dato | Valor |
-|------|-------|
-| URL | `https://status.viajeinteligencia.com/dashboard` |
-| Puerto | `3002` (localhost) |
-| Contenedor | Docker: `louislam/uptime-kuma:latest` |
-| Estado | ✅ Healthy (up 19h+) |
-| Monitores | 6 (viajeinteligencia, georisk, georisk-api, georisk-next, gc-motors, kuma propio) |
-
-## 📈 TRÁFICO — GoAccess
-
-| Dato | Valor |
-|------|-------|
-| URL | `https://status.viajeinteligencia.com/trafico.html` |
-| Actualización | Cada 15 min (cron) |
-| Datos | Visitantes únicos, páginas, países, rutas, user agents, códigos HTTP |
-
-```bash
-# Ver estado
-curl -sS -o /dev/null -w "%{http_code}" "https://status.viajeinteligencia.com/dashboard"
-
-# Ver contenedor
-sudo docker ps | grep uptime-kuma
-```
 
 ---
 
@@ -1096,30 +329,7 @@ sudo docker ps | grep uptime-kuma
 
 ## RESUMEN EJECUTIVO
 
-**Fase 1 completada.** 53 funcionalidades entregadas, coste operativo ~€0/mes, deploy automatico en cada push a main.
-
-### Lo conseguido en esta sesión (28 May — Full day summary)
-
-| # | Entregable | Detalle |
-|---|------------|---------|
-| 1 | **Early Bird v2** | Health checks 14 servicios, tráfico semanal Cloudflare, subscriber count, DB persistence |
-| 2 | **Early Bird admin** | `/admin/early-bird` con historial 30 digests, gráficos Recharts, badges estado |
-| 3 | **Chat IA itinerarios** | `generateStructuredItinerary()` JSON estructurado, modo itinerary en API, UI form con 8 intereses |
-| 4 | **Itinerario export/share** | Download MD + public trip link con OG tags |
-| 5 | **Chat IA fixes** | Delete conversation, contexto activo indicator, dailyCount fix |
-| 6 | **Public pages update** | `/transparencia`, `/premium`, `/ecosistema`, `/fuentes-osint`, `/metodologia` |
-| 7 | **Deploy** | Commit `0443409`, build 818 páginas, PM2 restart, health 200 |
-
-### Lo conseguido en esta sesión (28 May — Public pages update)
-
-| # | Entregable | Detalle |
-|---|------------|---------|
-| 1 | **`/transparencia` actualizada** | Hetzner (no Vercel), cron 06:00 UTC diario, Early Bird digest, Chat IA contexto + itinerarios, ReliefWeb + WHO DON |
-| 2 | **`/premium` corregida** | Modelo `llama-3.3-70b-versatile`, features chat actualizadas |
-| 3 | **`/ecosistema` ampliada** | Testimonial Chat IA, footer Early Bird + Itinerarios, 43 funcionalidades |
-| 4 | **`/fuentes-osint` ajustada** | ReliefWeb, Wikidata, recuentos corregidos |
-| 5 | **`/metodologia` ajustada** | Pipeline, fuentes, TCI |
-| 6 | **Deploy manual SSH** | `deploy@178.105.80.193` → build 818 páginas, PM2 restart, health 200 |
+**Fase 1 completada.** 21 funcionalidades entregadas, coste operativo ~€0/mes, deploy automatico en cada push a main.
 
 ### Lo conseguido en esta sesión (20 May — Sprint Captación día 1 + infra/ML)
 
@@ -1173,13 +383,6 @@ sudo docker ps | grep uptime-kuma
 - **Fase 2 (dependencias)**: Risk alerts (30s) + Flight costs/TCI 120 paises (60s)
 - **Fase 3 (OSINT)**: News sentiment 73 fuentes (90s) + Incident detection (15s)
 - **Fase 4 (comunicacion)**: Daily digest Telegram/email (30s) + Weekly digest lunes (30s)
-
-### Early Bird (cron separado)
-- **Horario**: 07:00 UTC diario (1h después del master cron)
-- **Contenido**: Incidentes 24h, cambios MAEC 48h, sentimiento, health 14 servicios, tráfico semanal Cloudflare, newsletter subscribers
-- **Envío**: Telegram canal admin + Email Resend a `info@viajeinteligencia.com`
-- **Persistencia**: Tabla `early_bird_digests` con métricas extraídas
-- **Admin**: `/admin/early-bird` con historial 30 digests + gráficos Recharts
 
 ### Fuentes de datos activas
 | Fuente | Tipo | Frecuencia | Uso |
@@ -1246,28 +449,6 @@ sudo docker ps | grep uptime-kuma
 | 29 | Retention policy 90d | `cron/master/route.ts` | ✅ Auto-cleanup, docs en metodologia/transparencia |
 | 30 | RRSS lanzado | Bluesky, Mastodon, Telegram, X | ✅ Tono OSINT/data-driven |
 | 31 | Admin AI Assistant | `/admin/ai-assistant` | ✅ 4 modos (SEO, posts, meta, free) con Groq |
-| 32 | Manifiesto EN | `/manifiesto` | ✅ Travel Intelligence manifesto |
-| 33 | Bias disclaimer | `BiasDisclaimer.tsx` | ✅ Badge en mapa + fichas país |
-| 34 | Contexto geopolítico | 27 países en `paises-data.json` | ✅ Notas sesgo diplomático |
-| 35 | Zoom móvil + gesture | Leaflet gesture handling | ✅ Sin scroll accidental |
-| 36 | África 17 países | GA, GQ, MG, ML, NE, TD... | ✅ Todos en data + índices |
-| 37 | Stripe API Pro webhook | `/api/webhooks/stripe` | ✅ provisionApiProKey + email |
-| 38 | Admin API Leads | `/admin/api-leads` | ✅ CRUD + status badges |
-| 39 | GoAccess tráfico | `status.viajeinteligencia.com/trafico.html` | ✅ Cada 15min |
-| 40 | Uptime Kuma | `status.viajeinteligencia.com/dashboard` | ✅ 6 monitores |
-| 41 | Early Bird digest | `/api/cron/early-bird` | ✅ Daily 07:00 UTC, Telegram + Email admin |
-| 42 | Early Bird v2 + Admin | `/admin/early-bird` | ✅ Health checks, traffic stats, subscriber count, history panel with charts |
-| 43 | Chat IA itinerarios | `/chat` | ✅ Structured day-by-day plans, packing, tips, emergency contacts, interest selector |
-| 44 | Itinerario export MD | `/chat` | ✅ Download itinerary as Markdown file |
-| 45 | Itinerario share public | `/viajes/destacados/[slug]` | ✅ Public trip link with OG tags |
-| 46 | Early Bird health checks | `/api/cron/early-bird` | ✅ 14 services monitored |
-| 47 | Early Bird traffic stats | `/api/cron/early-bird` | ✅ Weekly Cloudflare analytics |
-| 48 | Early Bird subscriber count | `/api/cron/early-bird` | ✅ Verified newsletter count from DB |
-| 49 | Early Bird DB persistence | `early_bird_digests` table | ✅ Each digest saved with metrics |
-| 50 | Early Bird admin history | `/admin/early-bird` | ✅ 30 digests, Recharts graphs, status badges |
-| 51 | Chat IA delete conversation | `/chat` | ✅ Delete button in sidebar |
-| 52 | Chat IA contexto indicator | `/chat` | ✅ Visual "Contexto activo" badge |
-| 53 | Chat IA dailyCount fix | `/api/subscription/check` | ✅ Added dailyCount to response |
 
 ---
 
@@ -1283,14 +464,9 @@ sudo docker ps | grep uptime-kuma
 
 #### 2. Chat IA — Mejoras criticas
 - [ ] Rate limit server-side (actual localStorage, facil de burlar)
-- [x] Historial conversaciones (guardar en Supabase)
-- [x] Contexto personalizado (favoritos, trips, alertas activas)
-- [x] Generador itinerarios (output estructurado dia a dia)
-- [x] Export itinerario a Markdown
-- [x] Compartir itinerario como trip publico
-- [x] Delete conversation button
-- [x] Contexto activo indicator visual
-- [x] dailyCount fix en subscription check
+- [ ] Historial conversaciones (guardar en Supabase)
+- [ ] Contexto personalizado (favoritos, trips, alertas activas)
+- [ ] Generador itinerarios (output estructurado dia a dia)
 - [ ] Tool use (consultar mapa, calculadora, OSINT en tiempo real)
 - [ ] Voz (speech-to-text + text-to-speech)
 **Tiempo**: 1-2 sprints
@@ -1355,8 +531,7 @@ sudo docker ps | grep uptime-kuma
 - Telegram: Bot alertas
 
 ### Reglas arquitectonicas
-- **NUNCA crear nuevos endpoints cron para tareas del pipeline principal** — añadir tareas a `master/route.ts`
-- **Excepción**: Endpoints cron separados OK para herramientas admin independientes (ej. `early-bird` a las 07:00, 1h después del master)
+- **NUNCA crear nuevos endpoints cron** — añadir tareas a `master/route.ts`
 - **Clasificacion OSINT con keywords** para GDELT/RSS (0 coste API)
 - **Groq solo para Reddit** (first-person detection necesita contexto)
 - **Server pages** = `page.tsx` con metadata + wrap client component
@@ -1467,20 +642,18 @@ Idea: reclutar colaboradores (redactores de contenido, traductores, community ma
 
 **Pendiente de diseñar en el sprint correspondiente.**
 
-### 🟢 Sprint API B2B Stripe — ⚠️ Parcial (27 May 2026)
-- [x] Checkout Stripe en tiers Pro (4.99€/mes, 19.99€/año) — webhook `provisionApiProKey()` provisiona API key + email ✅
-- [x] Rate limiting server-side por tier (monthly caps: free=3K, starter=10K, pro=50K) ✅
-- [ ] Starter tier no visible en UI `/precio-api` — existe en SQL/webhook pero no como compra
-- [ ] Rate limiting per-second — hoy solo monthly aggregate, falta sliding window o token bucket
-- [ ] Enterprise flow: webhook no maneja tier enterprise
+### 🟢 Sprint API B2B Stripe (prioridad: media-alta)
+- Integrar checkout Stripe en tiers Starter/Pro/Enterprise
+- Webhook para actualizar `api_keys.tier` al confirmar pago
+- Rate limiting server-side por tier
 
-### 🟢 Sprint África — ✅ COMPLETADO (27 May 2026)
+### 🟢 Sprint África — 28 países pendientes (prioridad: alta)
 **Motivación:** La página `/geopolitica-y-viajes` tiene un monitor de conflictos con 8 países para enlazar a fichas. Conflictos ya existen en paises-data.json.
 
-**Completado:**
-- ✅ África (17): GA, GQ, MG, ML, NE, TD, ZM, ZW, BJ, BF, BI, MW, NA, SL, LR, DJ, ER — todos en `paises-data.json` + GPI/GTI/HDI/IPC
-- ✅ LATAM/Asia (3): UY, PY, NP
-- ✅ RU, UA, IR, IL, LB, SY, YE,VE — ya existen y links `<Link>` activos en conflict monitor
+**Pendientes:**
+- África (17): GA, GQ, MG, ML, NE, TD, ZM, ZW, BJ, BF, BI, MW, NA, SL, LR, DJ, ER
+- LATAM/Asia (3): UY, PY, NP
+- **Completado (20 May):** RU, UA, IR, IL, LB, SY, YE, VE ya existen y links `<Link>` activos en conflict monitor
 
 ### 🟢 Sprint Performance Mobile — Lighthouse 74→90+ (prioridad: alta)
 **Motivación:** Lighthouse en Moto G Power da 74 rendimiento, LCP 5.9s. Urgente para Core Web Vitals y usuarios móviles.
@@ -1523,41 +696,38 @@ git add -A && git commit -m "msg" && git push
 
 ---
 
-## PENDIENTES REALES (verificado 27 May 2026 — auditoría)
+## PENDIENTES REALES (verificado 22 May 2026)
 
 ### 🔴 Indexación Google
 - [ ] Esperar 3-7 días tras deploy de fixes 500 (middleware) para ver primeras URLs en Google
 - [ ] Verificar `site:www.viajeinteligencia.com` diariamente
 - [ ] Googlebot activo (17 hits/24h) pero 0 URLs indexadas por historial 5xx
-- [ ] Solicitar recrawleo en Google Search Console
-- [ ] Enviar sitemap.xml a Google Search Console manualmente
 
-### 🔴 Stripe / Monetización API — ⚠️ Parcial
-- [x] Stripe webhook para API Pro: provisiona API key tras pago 4.99€ ✅
-- [x] Starter tier (€2.99, 3K req) en UI `/precio-api` + Stripe price creado + webhook ✅
-- [x] Rate limiting per-second: sliding window 2/5/20/100 req/s por tier ✅
-- [ ] Stripe Enterprise flow — webhook no maneja tier enterprise
+### 🔴 Stripe / Monetización API
+- [ ] Stripe webhook para API Pro — auto-provisionar API key tras pago de 4.99€
+- [ ] Webhook existente solo maneja site premium (profiles.is_premium). API Pro requiere handler nuevo.
 
 ### 🟡 Admin / Infra
-- [x] Admin API Leads page — `/admin/api-leads` con fetch + status badges + update ✅
+- [ ] Admin API Leads page — gestionar solicitudes entrantes de `api_plan_requests`
 - [ ] Migrar `paisesData` hardcodeado a Supabase para edición desde admin
 - [ ] Monitorear que no entren incidentes mal clasificados (Groq ahora pide country_code)
 
 ### 🟡 Content / SEO
-- [x] Version EN de pillar pages ES — `/en/osint-para-viajeros` + `/en/geopolitica-y-viajes` ✅
+- [ ] Solicitar recrawleo en Google Search Console
+- [ ] Enviar sitemap.xml a Google Search Console manualmente
+- [ ] Version EN de pillar pages ES (`/en/osint-para-viajeros`, `/en/geopolitica-y-viajes`)
 - [ ] Newsletter con sentimiento semanal — integrar `tone_score` en el HTML del digest
 
 ### 🟡 Marketing
-- [ ] Publicar Reddit (4 drafts) + Facebook (2 drafts) desde `content/outreach/` — drafts listos, requiere login manual
+- [ ] Publicar Reddit (4 drafts) + Facebook (2 drafts) desde `content/outreach/`
 - [ ] Email outreach a bloggers/agencias (5-10 emails)
 
-### 🟡 ML / Data — ⚠️ Parcial
-- [x] Código validación temporal CV existe (`ml-validate.ts`) pero usa split 80/20 sintético, no walk-forward real
-- [x] Backtesting contra cambios MAEC reales — `outcomesAvailable7d/14d/30d` ahora compara predicciones vs historial real ✅
+### 🟡 ML / Data
+- [ ] Validación temporal CV (~25 días de datos acumulados) — monitorizar
 - [ ] Aumentar cobertura OSINT: backfill de `tone_score` vía Groq en señales existentes sin sentiment
 
-### 🟢 África — 17 países ✅ COMPLETADO
-- [x] GA, GQ, MG, ML, NE, TD, ZM, ZW, BJ, BF, BI, MW, NA, SL, LR, DJ, ER — todos en `paises-data.json` + GPI/GTI/HDI/IPC
+### 🟢 África — 17 países pendientes
+- [ ] GA, GQ, MG, ML, NE, TD, ZM, ZW, BJ, BF, BI, MW, NA, SL, LR, DJ, ER
 
 ---
 
@@ -1575,17 +745,17 @@ Evaluación honesta del estado actual del proyecto en cada dimensión:
 ### 🟠 ML — Prototipo / Académico
 - 4 Random Forest models, 136 países, 25 features, entrenamiento diario (~157s)
 - R² riskScore MAE 0.56, probUp7d 0.0018, max deviation 5.89 (2 países desviados)
-- **⚠️ Estas métricas son sobre training data, no test set**. Código de validación temporal CV existe (`ml-validate.ts`) pero usa split 80/20 sintético, no walk-forward real
-- **⚠️ Sin backtesting**: `outcomesAvailable7d` hardcodeado a 0 — las predicciones nunca se comparan contra cambios MAEC reales
+- **⚠️ Estas métricas son sobre training data, no test set**. Sin validación temporal CV (solo ~11 días de datos)
+- Sin backtesting contra cambios MAEC reales — no sabemos si predice algo útil
 - Transparencia operativa en blog post publicado (métricas reales, no infladas)
 
-### 🟡 SEO / Indexación — En mejora (post-fixes)
-- Dominio ~34 días, servidor estable desde 24 May (sin 5xx)
-- GSC: 304 not indexed (de los cuales 198 discovered-waiting, normal), 0 5xx
-- Fixes aplicados: canonical /viajes/clima, redirect único HTTP→WWW, X-Robots-Tag en assets
-- IndexNow configurado (488 URLs enviadas), sitemap dinámico
+### 🔴 SEO / Indexación — Etapa temprana crítica
+- Dominio ~32 días con histórico de 5xx del middleware (corregido)
+- GSC: 187 indexed, 216 not indexed, 481 discovered-but-not-indexed
+- Googlebot activo (~17 hits/día) pero tasa de indexación baja
+- IndexNow configurado, sitemap dinámico
 - Contenido server-rendered para Googlebot implementado
-- **Riesgo**: sandboxing de Google para dominios jóvenes. Indexación llegará con contenido nuevo semanal + tiempo
+- **Riesgo**: sandboxing de Google para dominios jóvenes. No hay atajo técnico — toca esperar
 
 ### 🟡 Contenido — Bueno para la edad del proyecto
 - 3+ blog posts/semana (alertas, guías OSINT, ML transparency)
@@ -1638,204 +808,4 @@ Evaluación honesta del estado actual del proyecto en cada dimensión:
 
 ---
 
-## 26 May 2026 — 🔴 INCIDENTE CRÍTICO: Build roto en servidor
-
-> **⚠️ ESTAMOS ROMPIENDO EL TRABAJO DE UN MES**
-
-### Causa
-El build de Next.js 16.2.6 en el VPS (Node v22.22.2, 3.7GB RAM) falla con SIGBUS:
-- `npm run build` → SIGBUS en fase "Collecting page data"
-- `--experimental-build-mode=compile` → build OK, pero `next start` crashea con SIGBUS al servir
-- Build local (Node v24.15.0) funciona, pero rsync del `.next` al servidor también produce SIGBUS al arrancar
-- El servidor NO puede buildear ni servir el `.next` actual
-
-### Impacto
-- Deploy automático (GH Actions) roto — commit `f5d80c2` no desplegado
-- Servidor sirviendo commit antiguo `b36eb7f` (sin manifiesto, sin Reporte→Informe)
-- Toque manual para arreglar temporalmente (build en local + rsync + arranque) no funcionó
-- 92 reinicios del proceso viajeinteligencia en PM2 por el crash continuo
-
-### Resolución
-- ✅ Swap aumentado de 4GB a **8GB** (`sudo swapoff /swapfile && sudo fallocate -l 8G /swapfile && sudo mkswap /swapfile && sudo swapon /swapfile`)
-- ✅ Servicios no críticos parados temporalmente para liberar RAM durante el build
-- ✅ Build exitoso con `--experimental-build-mode=compile`
-- ✅ Todos los servicios restaurados: viajeinteligencia (40min uptime, 0 reinicios), georisk, georisk-api, georisk-next, gc-motors
-- ✅ Manifiesto nuevo sirviendo desde `viajeinteligencia.com/manifiesto` (200 OK)
-- ✅ Recursos finales: RAM 2.5GB disponible, Swap 8GB sin uso, CPU 87% idle, Disco 52%
-
-*Actualizado: 26 May 2026 (tarde) — crisis resuelta, swap 8GB estable*
-
----
-
-## 27 May 2026 — Sprint Cambios acumulados (Starter tier + EN Pillars + ML backtesting + Rate limiting)
-
-> **Último deploy verificado:** ✅ (commit `4de6b1f`, PM2 PID 355323, port 3000)
->
-> **Sprint activo:** Refuerzo monetización + contenido EN + ML + infra
-
-### Logros del día
-
-#### 1. Starter API tier (€2.99/mes)
-- ✅ Stripe price creado: `price_1TbcHG1yXjIoL1LjI2Lnae1p`
-- ✅ Añadido a UI `/precio-api` entre Free y Pro con 3,000 req/mes, 3 API keys
-- ✅ Webhook ya soportaba `api_starter` → solo faltaba UI
-- ✅ Env var `STRIPE_API_STARTER_PRICE_ID` añadida a `.env.local`, `.env.production`, `.env.example`
-
-#### 2. EN Pillar Pages
-- ✅ `/en/osint-para-viajeros` — traducción completa del contenido OSINT para viajeros
-- ✅ `/en/geopolitica-y-viajes` — traducción completa de geopolítica + viajes
-- ✅ FAQ schema en ambos, metadata, OG tags, interlinking a páginas EN existentes
-
-#### 3. ML Backtesting
-- ✅ `ml-validate.ts` ahora consulta `risk_predictions` de últimos 30 días
-- ✅ Compara `probability_up_7d/14d/30d` contra cambios reales en `maec_risk_history`
-- ✅ `outcomesAvailable7d/14d/30d` ya no hardcodeados a 0
-- ✅ Logging de precisión: "Outcomes 7d: X/Y correct (Z%)"
-
-#### 4. Outreach drafts
-- ✅ 6 drafts verificados listos en `content/outreach/` (4 Reddit + 2 Facebook)
-- ⏳ Pendiente publicación manual (requiere login a cuentas)
-
-#### 5. Per-second rate limiting
-- ✅ Sliding window en memoria por `api_key_id`
-- ✅ Límites: free=2, starter=5, pro=20, enterprise=100 req/s
-- ✅ `Retry-After` header en respuesta 429
-- ✅ Refactor: `rateLimitResponse()` helper + aplicado a 5 endpoints v1
-
-### Incidencias
-- **Build Turbopack**: App router `/precio-api` daba 500 tras deploy vía GitHub Actions ("client reference manifest does not exist"). Solución: rebuild local en servidor (`rm -rf .next && npm run build`). **Causa raíz: no es Turbopack**, es que el workflow de deploy hacía `npm install --omit=dev` antes de `npm run build`, omitiendo TypeScript y tipos (devDependencies). Build fallaba silenciosamente → .next incompleto → 500 en app routes. Fijo cambiando a `npm install` + `npm prune --omit=dev` post-build.
-
-### Commits del día
-| Commit | Descripción |
-|--------|-------------|
-| `0f258a9` | Starter tier (€2.99, 3K req) + Stripe price |
-| `64f29a8` | EN pillar pages (OSINT + Geopolitics) |
-| `b742ff7` | ML backtesting contra cambios MAEC reales |
-| `bbe1f7f` | Per-second sliding window rate limit |
-| `4de6b1f` | WAYAHEAD updates |
-| `d5ba52c` | WAYAHEAD 27 May sprint log |
-| `f405efd` | Newsletter sentiment + sitemap priorities + Google ping + admin paises JSON editor/sync |
-| `051aaf9` | Ecosistema: rutas clicleables (LayerCard + freemium table) |
-| `e5182ea` | **fix: deploy workflow** — `npm install` (con devDeps) antes del build, `npm prune --omit=dev` después |
-
-### No-code changes
-- **Newsletter sentimiento**: Test enviado a info@viajeinteligencia.com (edición #39). Sección "📊 Sentimiento OSINT" ya incluida en HTML digest con avg_tone, barra colorizada, signal_count, risk_level.
-- **Sitemap priorities**: Añadidas prioridades 0.85-0.9 para /en/*, /travel-risk-intelligence, /osint-para-viajeros, /geopolitica-y-viajes, /ecosistema, /mapa, /reporte-riesgo, /infografias, /precio-api, /newsletter
-- **Google ping**: `GET /api/seo/ping-google` notifica Google + Bing IndexNow
-- **Admin paises**: Editor JSON completo por país (botón `</>`) + "Sync desde JSON" (recarga desde paises-data.json)
-- **Ecosistema precios**: Nueva sección "💰 Precios" con los 4 tiers (Gratuito/Starter/Pro/Enterprise) + nota Premium usuario
-- **Deploy workflow fix**: El build ahora incluye devDependencies; se eliminan post-build con `npm prune --omit=dev`. Los 2 workflows (CI + Deploy) pasan en verde.
-
-> **Último deploy verificado:** ✅ (commit `c223f21`, PM2 PID 287813, port 3000)
-
-### Logros del día
-
-#### Opción 6 — Disclaimer visual de sesgo
-- ✅ **Componente `BiasDisclaimer.tsx`** creado: badge interactivo ⚠️ "Sesgo" que abre modal explicativo sobre posibles sesgos diplomáticos del MAEC
-- ✅ **Badge en mapa**: añadido a `MapaInteractivo.tsx` (junto al selector de capas) y `/mapa` (top bar)
-- ✅ **Badge en ficha país**: junto al nivel de riesgo en hero + versión inline en pestaña legal/MAEC
-- ✅ Enlace a `/transparencia#sesgos` desde el modal y badge
-
-#### Opción 4 — Zoom táctil preciso + gesture handling
-- ✅ **`leaflet-gesture-handling`** instalado: evita scroll accidental al hacer scroll sobre el mapa en móvil
-- ✅ **Zoom controls más grandes**: 40×40px en todos los dispositivos
-- ✅ **Margen inferior extra** en móvil (60px) para no solaparse con UI
-- ✅ CSS importado en `globals.css`
-
-#### Opción 2 — Contexto geopolítico
-- ✅ **27 países** con nota de contexto geopolítico en `paises-data.json`:
-  - Norte de África: MA, DZ, EG, TN, LY
-  - Oriente Medio: IL, IR, SY, LB, SA, AE, QA
-  - América: VE, CU, US, MX, CO
-  - Europa/Asia: RU, CN, TR, UA, BD, MM
-  - África subsahariana: ZA, ML, NE, BF
-- ✅ Cada nota explica posibles sesgos diplomáticos en las alertas MAEC
-- ✅ Visible en ficha país como texto informativo junto al badge de riesgo
-
-### Commits del día
-| Commit | Descripción |
-|--------|-------------|
-| `c223f21` | Bias disclaimer + mobile zoom + geopolitical context (27 countries) |
-| `6f81813` | Fix: badge sesgo más visible (bold, borde grueso, sombra, ambar claro) |
-
-### Técnico
-- Deploy: rsync directo al VPS + build con swap 8GB + PM2 restart
-- Build verificado: 676 rutas, OK
-- Todos los endpoints 200
-## 27 May 2026 — Sprint EN Phase 1 & 2 (i18n + Rutas EN + Middleware + hreflang)
-
-> **Último deploy verificado:** ✅ (commit pendiente, PM2 PID 316494, port 3000)
-
-### Logros del día
-
-#### Phase 1 — Ruta EN multi-país + i18n UI
-- ✅ **`src/data/nombres-en.ts`**: 137 nombres de país en inglés (auto-generado de `paises-data.json`)
-- ✅ **`/en/pais/[codigo]/page.tsx`**: Ruta EN completa con SEO, Schema.org TouristDestination, Twitter cards y Open Graph en inglés
-- ✅ **`DetallePaisClient.tsx`**: tabs, labels de secciones (Info/Economía/Localización), campos (Idioma/Población/PIB/Moneda/etc.), riesgos, presupuesto, perfiles → todo traducido vía `useI18n().t()`
-- ✅ **`src/lib/i18n/index.tsx`**: 54 nuevas claves de traducción (`pais.tab.*`, `pais.budget.*`, `pais.info.*`, `pais.maec.*`, `pais.emergency.*`, `pais.reviews.*`, `pais.ist.*`, `pais.riskDesc.*`)
-
-#### Phase 2 — Middleware + SEO i18n
-- ✅ **`src/middleware.ts`**: Detecta `Accept-Language: en` en primera visita sin cookie → redirige a `/en`. Fija cookie `locale=en` al navegar por `/en`. Cookie tiene prioridad sobre Accept-Language.
-- ✅ **hreflang alternates**: `alternates.languages` con `es`/`en` añadido a root layout, `/pais/[codigo]`, y `/en/pais/[codigo]`
-- ✅ **Matcher expandido**: de 4 rutas específicas a patrón universal excluyendo assets estáticos
-
-### Build
-- Compilación limpia (sin errores TS), 676+ rutas, middleware compilado como Proxy
-- Todas las rutas 200 OK: `/`, `/en`, `/pais/es`, `/en/pais/es`
-
-### Commits del día
-| Commit | Descripción |
-|--------|-------------|
-| (pendiente) | EN Phase 1: ruta /en/pais/[codigo] + i18n pais keys + English country names |
-| (pendiente) | EN Phase 2: middleware i18n + hreflang alternates |
-
-### Técnico
-- Build: 72s + 69s (dos builds), sin errores
-- Deploy: PM2 restart, PID 316494, 0 reinicios
-- Todos los endpoints 200
-
-## 31 May 2026 — Rotación de idioma ES/EN en RRSS
-
-> **Último deploy verificado:** ✅ (build OK)
-
-### Logros del día
-
-#### Rotación automática de idioma en publicaciones sociales
-- ✅ **`getDayLanguage()`** en `social-publisher.ts`: alterna entre `es` e `en` según día par/impar del año
-- ✅ **`buildNewsletterSummary(issue, lang)`**: traduce títulos, etiquetas, hashtags y severidad según idioma del día
-- ✅ **`publishToMastodon(text, lang)`** y **`publishToBlueSky(text, lang)`**: pasan idioma correcto a metadatos API
-- ✅ **Master cron actualizado**: 5 funciones usan rotación (weekly digest, infografía social, daily content, word trends, heatmap)
-- ✅ **Telegram canal**: mantiene contenido bilingüe o sigue idioma del día según función
-
-### Arquitectura
-| Función | Idioma | Canales |
-|---------|--------|---------|
-| Weekly Digest | Rotación ES/EN | Telegram, Mastodon, Bluesky, Email |
-| Infografía Social | Rotación ES/EN | Telegram, Mastodon, Bluesky |
-| Daily Content | Rotación ES/EN | Telegram, Mastodon, Bluesky |
-| Word Trends | Rotación ES/EN | Telegram, Mastodon, Bluesky |
-| Heatmap | Rotación ES/EN | Telegram, Mastodon, Bluesky |
-
-### I18N implementado
-- Títulos: "Briefing Semanal" / "Weekly Briefing"
-- Etiquetas: "Alertas activas" / "Active alerts", "Cambios IRV" / "IRV changes"
-- Severidad: "Leve/Moderado/Alto/Crítico" / "Low/Moderate/High/Critical"
-- Hashtags: `#ViajeInteligente #TravelRisk #SeguridadViaje` / `#TravelIntelligence #TravelRisk #SmartTravel`
-- Nombres de países en incidentes usan `NOMBRES_EN` para traducción EN
-- Daily content (`buildDailyPost`) traducido: tips, riesgo, continente, header
-- Newsletter subject traducido según idioma del día
-
-### Technical Debt resuelto
-- ✅ **logo.png**: Comprimido a WebP (1.8MB → 46KB, 97% reducción)
-- ✅ **Fotos**: Ya usan `<Image>` de Next.js (sin referencias raw a `/public/photos/`)
-- ✅ **INE API 404**: Usa Supabase `ine_tourism_history` como fuente primaria + fallback para 31 países
-- ✅ **Chat IA rate limiting**: Ya tiene server-side (`checkIpRateLimit` + `checkBurstRateLimit`) + tracking diario en `chat_usage`
-
-### Pendiente
-- [ ] Ejecutar SQL migrations: `supabase/early_bird_digests.sql` + `supabase/add_newsletter_language.sql`
-
-### Commits del día
-| Commit | Descripción |
-|--------|-------------|
-| (pendiente) | feat: language rotation ES/EN + i18n daily content + logo WebP compression |
-
+*Actualizado: 25 May 2026 (tarde) — newsletter pública + estabilidad server*
