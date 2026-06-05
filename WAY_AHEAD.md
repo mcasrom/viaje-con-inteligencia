@@ -38,6 +38,14 @@
 - ⚠️ **Limitaciones plan Free**: Rate limit solo 1 regla (usada para credential check), regex no disponible, bloqueo por ASN requiere Pro ($20/mes)
 - 📊 **Esperado 24h**: Requests de 8.85k → ~4-5k, cache hit rate sube, visits humanas estables
 
+### 5xx Fixes + GitHub Actions bypass Cloudflare (05 Jun 2026)
+- ✅ **Tabla `user_preferences` creada** en Supabase — eliminaba 500 en `/api/user/preferences` (294 requests fallidos)
+- ✅ **OSINT classifier fix** (`osint-sensor.ts`): LLM devolvía `clima|seguridad|...` → constraint violation en `osint_signals_category_check`. Ahora toma solo primera categoría y valida contra valores permitidos
+- ✅ **`ecosystem.config.cjs`**: Añadido `node_args: '--max-old-space-size=512'` para limitar heap de Node
+- ✅ **GitHub Actions workflows bypass Cloudflare**: Early Bird Daily + Daily Cron fallaban con 403 (Cloudflare JS challenge bloquea runners). Ahora usan `http://178.105.80.193:3000` + `Host: www.viajeinteligencia.com` para conectar directo al servidor
+- ✅ **Early Bird test manual**: SUCCESS tras fix
+- **Commits**: `b6874f4` (OSINT + user_preferences), `830171c` (Early Bird), `3e2349c` (Daily Cron)
+
 ---
 
 ## Última sesión: 05 Jun 2026 — POIs 502 Fix + User Preferences + Tráfico Analysis

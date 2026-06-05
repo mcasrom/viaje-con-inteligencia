@@ -86,7 +86,7 @@ export async function GET(request: NextRequest) {
     }
 
     let query = supabase
-      .from('user_preferences')
+      .from('alert_preferences')
       .select('*')
       .eq('user_id', user.id) as any;
 
@@ -155,7 +155,7 @@ export async function POST(request: NextRequest) {
     const dbFields = mapPrefsToDb(parsed.data);
 
     const { data, error } = await supabase
-      .from('user_preferences')
+      .from('alert_preferences')
       .upsert({
         user_id: user.id,
         traveler_type: dbFields.traveler_type || 'mochilero',
