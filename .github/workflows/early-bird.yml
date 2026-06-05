@@ -14,7 +14,8 @@ jobs:
         run: |
           status=$(curl -sS -o /tmp/earlybird_response.txt -w "%{http_code}" \
             -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
-            "https://www.viajeinteligencia.com/api/cron/early-bird")
+            -H "Host: www.viajeinteligencia.com" \
+            "http://178.105.80.193:3000/api/cron/early-bird")
           echo "HTTP $status"
           cat /tmp/earlybird_response.txt | head -c 500
           echo ""
