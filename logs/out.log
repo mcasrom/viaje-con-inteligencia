@@ -107,3 +107,8 @@
 2026-06-05 00:14:09: - Local:         http://localhost:3000
 2026-06-05 00:14:09: - Network:       http://178.105.80.193:3000
 2026-06-05 00:14:09: ✓ Ready in 266ms
+2026-06-05 00:17:45: ▲ Next.js 16.2.6
+2026-06-05 00:17:45: - Local:         http://localhost:3000
+2026-06-05 00:17:45: - Network:       http://178.105.80.193:3000
+2026-06-05 00:17:45: ✓ Ready in 540ms
+2026-06-05 00:18:28: [paises-init] 137 countries loaded from Supabase

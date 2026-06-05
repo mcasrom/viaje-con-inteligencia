@@ -99,7 +99,16 @@ export async function GET(request: NextRequest) {
 
     if (error && error.code !== 'PGRST116') {
       log.error('Error fetching preferences:', error);
-      return apiError(error.message, undefined, 500);
+      // Return default prefs instead of 500 — DB error should not break UX
+      return NextResponse.json({
+        preferences: {
+          traveler_type: 'mochilero',
+          risk_tolerance: 'media',
+          budget_range: 'medio',
+          preferred_categories: [],
+        },
+        db_error: true,
+      });
     }
 
     return NextResponse.json({
