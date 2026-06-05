@@ -1,5 +1,28 @@
 # Way Ahead
 
+## Última sesión: 05 Jun 2026 — SEO 21 países + Status pages fix + Deploy v2.7
+
+### SEO Sprint — 21 países con ~200 palabras server-rendered
+- ✅ **`descripcionSEO`** añadido a `DatoPais` interface (`paises.ts`)
+- ✅ **21 países** con texto SEO (~1100-1370 chars cada uno): AE, AR, BR, CN, CO, CU, DE, DO, EG, ES, FR, GB, IT, JP, MA, MX, PT, RU, TH, TR, US
+- ✅ **`page.tsx`** renderiza `<article>` con H2 + texto SEO server-side (visible para Googlebot)
+- ✅ **Metadata** actualizada: description, OG description usan `descripcionSEO` (truncado 155 chars)
+- ✅ **Schema.org** `TouristDestination.description` usa `descripcionSEO`
+- ✅ **Deploy** `902dcb4` — build OK, PM2 restart, Cloudflare purge
+
+### Status pages fix — todo público
+- ✅ **`status.viajeinteligencia.com`** — eliminado `auth_basic` global que bloqueaba todo (401 en todas las páginas)
+- ✅ **HTML estáticos públicos**: `index.html`, `trafico.html` (GoAccess), `diagnostico.html`, `resumen.html`, `geofail2ban.html`
+- ✅ **Uptime Kuma** (`/dashboard/`) — público, sin password
+- ✅ **`security.viajeinteligencia.com`** — mantiene auth htpasswd (`status` / `ViajeIntel2026!Monitor`)
+
+### Server status
+- PM2: 6 procesos online (viajeinteligencia, georisk, georisk-api, georisk-next, gc-motors, sieg-security)
+- Docker: uptime-kuma (healthy, 4 days)
+- Nginx: 6 sites-enabled, SSL via Let's Encrypt
+
+---
+
 ## Última sesión: 05 Jun 2026 — POIs 502 Fix + User Preferences + Tráfico Analysis
 
 > **Último deploy verificado:** viajeinteligencia @ `a98514b`
