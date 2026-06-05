@@ -13,7 +13,8 @@ jobs:
         run: |
           status=$(curl -sS -o /tmp/cron_response.txt -w "%{http_code}" \
             -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
-            "https://www.viajeinteligencia.com/api/cron/master")
+            -H "Host: www.viajeinteligencia.com" \
+            "http://178.105.80.193:3000/api/cron/master")
           echo "HTTP $status"
           cat /tmp/cron_response.txt | head -c 500
           echo ""
