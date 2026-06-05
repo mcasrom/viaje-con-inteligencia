@@ -117,7 +117,7 @@ const FALLBACK_POIS: Record<string, Array<{ name: string; type: string; lat: num
 
 function getFallbackPOIs(country: string, typeList: string[], limit: number, profile: string) {
   const fallback = FALLBACK_POIS[country] || [];
-  const filtered = typeList === 'all' || typeList.length > 8
+  const filtered = typeList.length >= 14 || typeList.length > 8
     ? fallback
     : fallback.filter(p => typeList.includes(p.type));
   const weights = PROFILE_WEIGHTS[profile];
