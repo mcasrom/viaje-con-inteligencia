@@ -59,7 +59,7 @@ export async function GET(request: NextRequest) {
     let user;
     try {
       const { data, error } = await supabase.auth.getUser();
-      if (error || !data?.user) return apiError('No autenticado', undefined, 401);
+      if (error || !data?.user) return NextResponse.json({ preferences: { traveler_type: 'mochilero', risk_tolerance: 'media', budget_range: 'medio', preferred_categories: [] } });
       user = data.user;
     } catch {
       return apiError('No autenticado', undefined, 401);
