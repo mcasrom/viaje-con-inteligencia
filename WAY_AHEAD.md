@@ -38,6 +38,19 @@
 - ⚠️ **Limitaciones plan Free**: Rate limit solo 1 regla (usada para credential check), regex no disponible, bloqueo por ASN requiere Pro ($20/mes)
 - 📊 **Esperado 24h**: Requests de 8.85k → ~4-5k, cache hit rate sube, visits humanas estables
 
+### Tráfico real — contexto geográfico (05 Jun 2026)
+- **AU (1.63k)**: Tráfico de test desde Brisbane (desarrollo local)
+- **DE (1.46k)**: Servidor Hetzner + cron jobs internos
+- **US (2.03k)**: Bots datacenter (GCP/AWS) — tráfico real a filtrar
+- **ES (20)**: Tráfico orgánico real — el que importa para conversión
+- **Prioridad #1**: ✅ **Google Search Console** — 21 URLs `/pais/*` enviadas a indexación manual (05 Jun 2026)
+- **Prioridad #2**: Ejecutar plan outreach de AGENTS.md (Reddit r/travel, foros españoles, X)
+- **NO bloquear Hetzner ASN**: El servidor corre ahí + Uptime Kuma local
+- 📅 **Monitorizar (semanal)**:
+  - GSC: Páginas indexadas, impresiones ES, queries "seguro viajar a [país]"
+  - Cloudflare: Requests ES vs bots, 4xx/5xx trends
+  - Supabase: Registros nuevos, suscriptores newsletter
+
 ### 5xx Fixes + GitHub Actions bypass Cloudflare (05 Jun 2026)
 - ✅ **Tabla `user_preferences` creada** en Supabase — eliminaba 500 en `/api/user/preferences` (294 requests fallidos)
 - ✅ **OSINT classifier fix** (`osint-sensor.ts`): LLM devolvía `clima|seguridad|...` → constraint violation en `osint_signals_category_check`. Ahora toma solo primera categoría y valida contra valores permitidos
@@ -857,3 +870,28 @@ Evaluación honesta del estado actual del proyecto en cada dimensión:
 ---
 
 *Actualizado: 25 May 2026 (tarde) — newsletter pública + estabilidad server*
+
+---
+
+## Última sesión: 06 Jun 2026 — SEO noindex fixes + 4xx reduction
+
+### Fixes aplicados
+
+- ✅ `blog/page.tsx` — eliminado `noindex` en páginas filtradas (?tag=, ?category=, ?page=) — 54 URLs desbloqueadas para Google
+- ✅ `en/blog/page.tsx` — eliminado `noindex` en blog inglés
+- ✅ `legal/page.tsx` — eliminado `noindex` (señal de confianza para Google)
+- ✅ `api/user/preferences` GET — devuelve defaults en vez de 401 para usuarios no autenticados (~290 errores/día eliminados)
+- ✅ IndexNow — 485 URLs enviadas a Bing/Yandex (HTTP 200)
+- ✅ GSC — validación de corrección solicitada para 54 URLs con noindex
+
+### Análisis Cloudflare 06 Jun
+- Tráfico humano real estimado: ~150-200 únicos/día
+- Bots bloqueados correctamente por reglas WAF existentes (Auditor 719, CF los bloquea)
+- 4xx: 1.94k/día — principal causa era /api/user/preferences (290 401s) → fixado
+- Cache hit rate: 25% — pendiente mejorar con CF Cache Rules
+
+### Commits
+- `0dc1e4d` fix: remove noindex on filtered blog pages
+- `4768293` fix: remove noindex on /en/blog
+- `1d8de01` fix: index legal page for trust signals
+- `fb82508` fix: return default prefs for unauthenticated GET instead of 401
