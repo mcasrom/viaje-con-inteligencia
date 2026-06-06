@@ -29,10 +29,9 @@ export default function ScraperStatusDisplay({ compact = false }: ScraperStatusD
 
   const fetchAllStatus = async () => {
     try {
-      const [scraperRes, conflictsRes, cronRes] = await Promise.all([
+      const [scraperRes, conflictsRes] = await Promise.all([
         fetch('/api/scraper-status'),
         fetch('/api/conflicts?limit=1'),
-        fetch('/api/cron/status'),
       ]);
       
       const scraperData = await scraperRes.json();
@@ -45,8 +44,7 @@ export default function ScraperStatusDisplay({ compact = false }: ScraperStatusD
       setConflictsStatus(conflictsData.status || 'live');
       setConflictsTimestamp(conflictsData.lastRealUpdate || conflictsData.updated || null);
       
-      const cronData = await cronRes.json();
-      setCronStatus(cronData);
+
     } catch {
       setStatus('error');
     } finally {
