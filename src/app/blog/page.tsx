@@ -47,7 +47,7 @@ export async function generateMetadata({ searchParams }: BlogPageProps): Promise
     alternates: {
       canonical: 'https://www.viajeinteligencia.com/blog',
     },
-    robots: isFiltered ? { index: false, follow: true } : undefined,
+    robots: { index: true, follow: true },
     openGraph: {
       title: 'Blog OSINT | Análisis de Viajes y Seguridad - Viaje con Inteligencia',
       description: 'Análisis geopolíticos, guías de seguridad y tendencias de viaje basadas en datos OSINT e inteligencia artificial.',
