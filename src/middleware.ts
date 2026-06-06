@@ -39,13 +39,7 @@ if (typeof setInterval !== 'undefined') {
   }, 60_000);
 }
 
-function getPreferredLocale(request: NextRequest): string | null {
-  const cookie = request.cookies.get('locale')?.value;
-  if (cookie === 'en' || cookie === 'es') return null; // explicit choice, respect it
-  const acceptLang = request.headers.get('accept-language') || '';
-  if (acceptLang.startsWith('en')) return 'en';
-  return null;
-}
+
 
 export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
@@ -71,33 +65,11 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  // /en/* catch-all: redirect missing English pages to Spanish version
-  if (pathname.startsWith('/en/')) {
-    const enSlug = pathname.replace(/^\/en/, '');
-    const knownEnPages = ['/blog', '/geopolitica-y-viajes', '/osint-para-viajeros', '/pais/'];
-    const isKnown = knownEnPages.some(p => enSlug.startsWith(p));
-    if (!isKnown) {
-      return NextResponse.redirect(new URL(enSlug, request.url));
-    }
-  }
 
-  // i18n: redirect first-time visitors based on Accept-Language (no locale cookie yet)
-  if (!pathname.startsWith('/en') && !pathname.startsWith('/api/') && !pathname.startsWith('/_next/') && !pathname.startsWith('/admin')) {
-    const preferred = getPreferredLocale(request);
-    if (preferred === 'en') {
-      const enUrl = new URL(`/en${pathname === '/' ? '' : pathname}${request.nextUrl.search}`, request.url);
-      const res = NextResponse.redirect(enUrl);
-      res.cookies.set('locale', 'en', { path: '/', maxAge: 60 * 60 * 24 * 365, sameSite: 'lax' });
-      return res;
-    }
-  }
 
-  // Set locale cookie for /en routes to reinforce choice
-  if (pathname.startsWith('/en')) {
-    const res = NextResponse.next({ request });
-    res.cookies.set('locale', 'en', { path: '/', maxAge: 60 * 60 * 24 * 365, sameSite: 'lax' });
-    return res;
-  }
+
+
+
 
   // Protect admin page routes (skip in dev, skip API routes — they handle auth themselves)
   const IS_DEV = process.env.NODE_ENV !== 'production';
