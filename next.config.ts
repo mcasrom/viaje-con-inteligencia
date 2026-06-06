@@ -80,12 +80,7 @@ const nextConfig: NextConfig = {
           { key: 'X-Robots-Tag', value: 'noindex' },
         ],
       },
-      {
-        source: '/sitemap.xml',
-        headers: [
-          { key: 'X-Robots-Tag', value: 'noindex' },
-        ],
-      },
+
       {
         source: '/api/:path*',
         headers: [
