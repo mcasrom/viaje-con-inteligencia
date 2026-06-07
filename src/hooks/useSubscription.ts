@@ -72,7 +72,7 @@ export function useSubscription(): SubscriptionInfo {
         }
       } catch (err: any) {
         if (!cancelled) {
-          setInfo(prev => ({ ...prev, loading: false, error: err.message }));
+          setInfo(prev => ({ ...prev, loading: false, error: err.message, status: 'no_session' as any }));
         }
       }
     }
