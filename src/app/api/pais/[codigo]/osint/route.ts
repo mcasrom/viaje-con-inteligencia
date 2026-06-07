@@ -51,10 +51,14 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 
   // Deduplicar por source_url para evitar noticias repetidas
   const seen = new Set<string>();
+  const seenTitles = new Set<string>();
   const deduped = (signals || []).filter(s => {
-    const key = s.source_url || s.title;
-    if (seen.has(key)) return false;
-    seen.add(key);
+    const urlKey = s.source_url || '';
+    const titleKey = (s.title || '').substring(0, 60).toLowerCase().trim();
+    if (urlKey && seen.has(urlKey)) return false;
+    if (titleKey && seenTitles.has(titleKey)) return false;
+    if (urlKey) seen.add(urlKey);
+    if (titleKey) seenTitles.add(titleKey);
     return true;
   });
   const enriched = deduped.map(s => ({
