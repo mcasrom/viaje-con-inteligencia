@@ -103,7 +103,7 @@ export default function NoticiasFeed({ countryCode, countryName }: Props) {
 
           <div className="space-y-3">
             {filtered.map((item) => (
-              
+              <a
                 key={item.id}
                 href={item.source_url || '#'}
                 target="_blank"
