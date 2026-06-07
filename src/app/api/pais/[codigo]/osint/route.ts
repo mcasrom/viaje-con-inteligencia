@@ -49,7 +49,15 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  const enriched = (signals || []).map(s => ({
+  // Deduplicar por source_url para evitar noticias repetidas
+  const seen = new Set<string>();
+  const deduped = (signals || []).filter(s => {
+    const key = s.source_url || s.title;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+  const enriched = deduped.map(s => ({
     ...s,
     sourceIcon: sourceIcon(s.source),
     timeAgo: timeAgo(s.created_at),
