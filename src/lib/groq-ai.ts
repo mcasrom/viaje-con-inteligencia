@@ -523,7 +523,12 @@ Responde en español, de forma clara y útil. Sugiere consultar la web del MAEC 
     log.error('API streaming error:', error);
     recordFailure(CB_NAME);
     trackFailure(CB_NAME, 'chatWithAIStream failed');
-    const errorMsg = `Error de conexión: ${error?.message || 'verifica GROQ_API_KEY'}`;
+    let errorMsg = '';
+    if (error?.message?.includes('rate_limit_exceeded') || error?.message?.includes('429')) {
+      errorMsg = 'El asistente está temporalmente saturado. Por favor, intenta de nuevo en unos minutos.';
+    } else {
+      errorMsg = 'Error de conexión con el asistente. Intenta de nuevo.';
+    }
     yield errorMsg;
     return errorMsg;
   }
