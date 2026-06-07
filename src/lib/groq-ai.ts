@@ -85,13 +85,19 @@ DATOS ENRIQUECIDOS DEL PAÍS:
 `.trim();
 }
 
-async function buildCountryDataBlock(): Promise<string> {
+async function buildCountryDataBlock(countryCode?: string): Promise<string> {
   const allPaises = await getPaisesData();
-  const entries = Object.entries(allPaises)
-    .filter(([code]) => code !== 'cu')
-    .map(([code, p]) => `${code.toUpperCase()}: ${p.nombre} | Riesgo: ${p.nivelRiesgo} | Continente: ${p.continente}`)
-    .join('\n');
-  return `DATOS COMPLETOS DE RIESGO POR PAÍS (actualizados):\n${entries}`;
+  // Si hay un país específico, solo devolver ese
+  if (countryCode && allPaises[countryCode]) {
+    const p = allPaises[countryCode];
+    return `DATOS DE RIESGO: ${countryCode.toUpperCase()}: ${p.nombre} | Riesgo: ${p.nivelRiesgo} | Continente: ${p.continente}`;
+  }
+  // Resumen compacto: solo países alto/muy-alto riesgo
+  const altoRiesgo = Object.entries(allPaises)
+    .filter(([code, p]) => code !== 'cu' && (p.nivelRiesgo === 'alto' || p.nivelRiesgo === 'muy-alto'))
+    .map(([code, p]) => `${code.toUpperCase()}: ${p.nombre} (${p.nivelRiesgo})`)
+    .join(', ');
+  return `PAÍSES ALTO/MUY ALTO RIESGO MAEC: ${altoRiesgo}`;
 }
 
 export async function generateItinerary(
@@ -431,12 +437,12 @@ export async function* chatWithAIStream(
     : '';
 
   const history = context.previousMessages
-    ?.slice(-15)
+    ?.slice(-6)
     ?.map((msg, i) => (i % 2 === 0 ? `Usuario: ${msg}` : `Asistente: ${msg}`))
     .join('\n');
 
   const selectedModel = context.model || 'llama-3.1-8b-instant';
-  const countryDataBlock = await buildCountryDataBlock();
+  const countryDataBlock = await buildCountryDataBlock(countryCode);
 
   if (isCircuitOpen(CB_NAME)) {
     const msg = 'Servicio de IA temporalmente no disponible. Intenta de nuevo mas tarde.';
@@ -538,7 +544,7 @@ export async function chatWithAI(
     : '';
 
   const history = context.previousMessages
-    ?.slice(-15)
+    ?.slice(-6)
     ?.map((msg, i) => (i % 2 === 0 ? `Usuario: ${msg}` : `Asistente: ${msg}`))
     .join('\n');
 
@@ -552,7 +558,7 @@ export async function chatWithAI(
   const groqLimitMsg = checkGlobalGroq();
   if (groqLimitMsg) return groqLimitMsg;
 
-  const countryDataBlock = await buildCountryDataBlock();
+  const countryDataBlock = await buildCountryDataBlock(countryCode);
 
   try {
     const chatCompletion = await groqClient.chat.completions.create({
