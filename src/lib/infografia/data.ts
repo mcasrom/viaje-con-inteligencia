@@ -111,9 +111,33 @@ export async function collectInfografiaData(edition?: number): Promise<Infografi
     riskScore: riskLevelToScore(p.nivelRiesgo),
   }));
 
-  const topRiskCountries = [...countries]
-    .sort((a, b) => b.riskScore - a.riskScore || a.name.localeCompare(b.name))
-    .slice(0, 10);
+  // Intentar obtener top países por incidents reales esta semana
+  let topRiskCountries: RiskCountry[] = [];
+  try {
+    const { data: incidentsByCountry } = await supabaseAdmin
+      .from('incidents')
+      .select('country_code')
+      .gte('detected_at', weekStart)
+      .lte('detected_at', weekEnd + 'T23:59:59Z')
+      .not('country_code', 'is', null);
+    if (incidentsByCountry && incidentsByCountry.length >= 5) {
+      const countMap = new Map<string, number>();
+      for (const row of incidentsByCountry) {
+        const code = (row.country_code || '').toLowerCase();
+        countMap.set(code, (countMap.get(code) || 0) + 1);
+      }
+      const sorted = [...countMap.entries()].sort((a, b) => b[1] - a[1]).slice(0, 10);
+      topRiskCountries = sorted
+        .map(([code]) => countries.find(c => c.code.toLowerCase() === code))
+        .filter(Boolean) as RiskCountry[];
+    }
+  } catch {}
+  // Fallback al ranking estático si no hay datos dinámicos suficientes
+  if (topRiskCountries.length < 5) {
+    topRiskCountries = [...countries]
+      .sort((a, b) => b.riskScore - a.riskScore || a.name.localeCompare(b.name))
+      .slice(0, 10);
+  }
 
   const topSafeCountries = [...countries]
     .sort((a, b) => a.riskScore - b.riskScore || a.name.localeCompare(b.name))
