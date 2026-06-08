@@ -114,11 +114,11 @@ export async function collectInfografiaData(edition?: number): Promise<Infografi
   // Intentar obtener top países por incidents reales esta semana
   let topRiskCountries: RiskCountry[] = [];
   try {
+    const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
     const { data: incidentsByCountry } = await supabaseAdmin
       .from('incidents')
       .select('country_code')
-      .gte('detected_at', weekStart)
-      .lte('detected_at', weekEnd + 'T23:59:59Z')
+      .gte('detected_at', sevenDaysAgo)
       .not('country_code', 'is', null);
     if (incidentsByCountry && incidentsByCountry.length >= 5) {
       const countMap = new Map<string, number>();
