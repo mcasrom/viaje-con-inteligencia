@@ -895,3 +895,25 @@ Evaluación honesta del estado actual del proyecto en cada dimensión:
 - `4768293` fix: remove noindex on /en/blog
 - `1d8de01` fix: index legal page for trust signals
 - `fb82508` fix: return default prefs for unauthenticated GET instead of 401
+
+---
+
+## Sesión 08 Jun 2026
+
+### Completado
+- ✅ Chat IA arreglado — funciona con sesión, mensaje amigable rate limit, tokens compactos
+- ✅ Infografías TOP RIESGO dinámico — usa incidents reales (US, IL, LB, IR, UA)
+- ✅ NoticiasFeed usa OSINT real en fichas de país
+- ✅ OSINT deduplicación por URL + título (60 chars)
+- ✅ CF caché purgado — chunks corruptos eliminados
+- ✅ /home/deploy/viajeinteligencia eliminada (209MB liberados)
+- ✅ node_args --max-old-space-size=768 commiteado en ecosystem
+- ✅ Kuma + status.viajeinteligencia.com protegidos con auth
+
+### Pendientes próxima sesión
+1. Imágenes SVG infografías 21-22-23 idénticas — decidir SVG vs página web
+2. US State Dept "No disponible" en fichas de país
+3. Kernel reboot Hetzner 6.8.0-124
+4. Estrategia captación usuarios (~150-200 humanos/día)
+5. GSC validar 54 URLs noindex
+6. CF Cache hit rate 24% → mejorar
