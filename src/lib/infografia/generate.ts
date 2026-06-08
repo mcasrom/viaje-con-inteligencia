@@ -106,7 +106,23 @@ export async function generateInfografia(edition?: number): Promise<GenResult> {
       gwi_score: data.gwi.total,
       gwi_trend: data.gwiTrend,
       country_count: data.stats.totalPaises,
-      top_risk_countries: data.topRiskCountries.map(c => c.name),
+      top_risk_countries: await (async () => {
+        try {
+          const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+          const { data: inc } = await supabaseAdmin
+            .from('incidents')
+            .select('country_code')
+            .gte('detected_at', sevenDaysAgo)
+            .not('country_code', 'is', null);
+          if (inc && inc.length >= 5) {
+            const countMap = new Map<string, number>();
+            for (const r of inc) countMap.set(r.country_code, (countMap.get(r.country_code) || 0) + 1);
+            const topCodes = [...countMap.entries()].sort((a, b) => b[1] - a[1]).slice(0, 5).map(([code]) => code);
+            return topCodes.map(code => data.topRiskCountries.find(c => c.code.toLowerCase() === code)?.name || code.toUpperCase());
+          }
+        } catch {}
+        return data.topRiskCountries.slice(0, 5).map(c => c.name);
+      })(),
       risk_distribution: data.riskDistribution as any,
       is_published: true,
       published_at: new Date().toISOString(),
