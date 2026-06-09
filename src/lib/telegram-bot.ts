@@ -423,7 +423,7 @@ export function getPremiumInfo(): string {
    TRAVEL ALERTS
  ========================= */
 
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.viajeinteligencia.com';
+const BASE_URL = process.env.INTERNAL_API_URL || 'http://localhost:3000';
 
 export async function getTravelAlertsSummary(): Promise<any> {
   try {

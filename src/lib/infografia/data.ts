@@ -70,11 +70,19 @@ function riskLevelToScore(level: string): number {
 
 export async function collectInfografiaData(edition?: number): Promise<InfografiaData> {
   const now = new Date();
-  const day = now.getDay();
-  const diffToMonday = day === 0 ? -6 : 1 - day;
-  const monday = new Date(now);
-  monday.setDate(now.getDate() + diffToMonday);
-  monday.setHours(0, 0, 0, 0);
+  const BASE_DATE = new Date('2026-01-05');
+  let monday: Date;
+  if (edition && edition > 0) {
+    monday = new Date(BASE_DATE);
+    monday.setDate(BASE_DATE.getDate() + (edition - 1) * 7);
+    monday.setHours(0, 0, 0, 0);
+  } else {
+    const day = now.getDay();
+    const diffToMonday = day === 0 ? -6 : 1 - day;
+    monday = new Date(now);
+    monday.setDate(now.getDate() + diffToMonday);
+    monday.setHours(0, 0, 0, 0);
+  }
   const sunday = new Date(monday);
   sunday.setDate(monday.getDate() + 6);
   sunday.setHours(23, 59, 59, 999);
@@ -114,11 +122,11 @@ export async function collectInfografiaData(edition?: number): Promise<Infografi
   // Intentar obtener top países por incidents reales esta semana
   let topRiskCountries: RiskCountry[] = [];
   try {
-    const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
     const { data: incidentsByCountry } = await supabaseAdmin
       .from('incidents')
       .select('country_code')
-      .gte('detected_at', sevenDaysAgo)
+      .gte('detected_at', weekStart)
+      .lte('detected_at', weekEnd)
       .not('country_code', 'is', null);
     if (incidentsByCountry && incidentsByCountry.length >= 5) {
       const countMap = new Map<string, number>();
