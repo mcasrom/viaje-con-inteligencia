@@ -3,7 +3,7 @@ import type { NextConfig } from "next";
 const CSP = [
   "default-src 'self'",
   "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://challenges.cloudflare.com https://www.googletagmanager.com",
-  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com",
+  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com https://cdnjs.cloudflare.com",
   "img-src 'self' data: blob: https://images.unsplash.com https://flagcdn.com https://*.tile.openstreetmap.org https://*.basemaps.cartocdn.com https://cartocdn.com https://unpkg.com https://*.supabase.co",
   "font-src 'self' https://fonts.gstatic.com",
   "connect-src 'self' https://nczkvsnuafkwtmgokiuo.supabase.co https://api.groq.com https://api.resend.com https://api.stripe.com https://earthquake.usgs.gov https://api.open-meteo.com wss://*.pusher.com",
