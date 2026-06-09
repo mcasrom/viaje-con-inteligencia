@@ -3,7 +3,7 @@ import Link from 'next/link';
 import dynamic from 'next/dynamic';
 
 const HeroSearch = dynamic(() => import('@/components/HeroSearch'), { ssr: true });
-const HomeBelowFold = dynamic(() => import('@/components/HomeBelowFold'), { ssr: false });
+const HomeBelowFold = dynamic(() => import('@/components/HomeBelowFold'), { ssr: true });
 
 export default function HomePage() {
   return (
