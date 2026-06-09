@@ -2,6 +2,24 @@
 set -e
 source ~/.cf_env
 cd ~/viaje-con-inteligencia
+
+# Comprobar que no hay cambios sin commitear
+if ! git diff --quiet || ! git diff --cached --quiet; then
+  echo "❌ ERROR: Hay cambios sin commitear. Haz git add + git commit + git push antes de deployar."
+  git status --short
+  exit 1
+fi
+
+# Comprobar que el local está sincronizado con origin
+git fetch origin main --quiet
+LOCAL=$(git rev-parse HEAD)
+REMOTE=$(git rev-parse origin/main)
+if [ "$LOCAL" != "$REMOTE" ]; then
+  echo "❌ ERROR: Hay commits locales sin pushear a GitHub. Haz git push antes de deployar."
+  exit 1
+fi
+
+echo "✅ Git limpio y sincronizado con GitHub"
 echo ">>> Build local..."
 npm run build
 echo ">>> Subiendo .next al servidor..."
