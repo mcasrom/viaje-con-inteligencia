@@ -3,6 +3,7 @@ import SkeletonPage from '@/components/SkeletonPage';
 
 export const metadata: Metadata = {
   robots: { index: false, follow: false },
+  alternates: { canonical: 'https://www.viajeinteligencia.com/viajes/clima' },
 };
 
 export default function Page() {
