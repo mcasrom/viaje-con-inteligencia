@@ -254,12 +254,17 @@ async function buildCountryAlerts(alerts: any[], signals: any[]): Promise<Countr
     seenCountries.add(alert.country_code);
   }
 
-  // Add significant OSINT signals as country alerts — deduplicate by country
+  // Add significant OSINT signals as country alerts — deduplicate by country and title
+  const seenSignalTitles = new Set<string>();
   for (const sig of signals.filter(s => s.urgency === 'critical' || s.urgency === 'high')) {
-    const pais = await findCountryFromSignal(sig);
-    const code = pais?.codigo || 'XX';
-    if (seenCountries.has(code)) continue;
+    const found = await findCountryFromSignal(sig);
+    const pais = found?.pais || null;
+    const code = found?.code || 'XX';
+    const titleKey = (sig.title || '').substring(0, 60).toLowerCase();
+    if (seenCountries.has(code) && code !== 'XX') continue;
+    if (seenSignalTitles.has(titleKey)) continue;
     if (result.length >= 5) break;
+    seenSignalTitles.add(titleKey);
 
     const irvBase = pais ? Math.max(40, 100 - (riskLevelNum[pais.nivelRiesgo] || 3) * 10) : 60;
 
@@ -283,19 +288,19 @@ async function buildCountryAlerts(alerts: any[], signals: any[]): Promise<Countr
   return result.slice(0, 5);
 }
 
-async function findCountryFromSignal(sig: any) {
+async function findCountryFromSignal(sig: any): Promise<{ pais: any; code: string } | null> {
   const allPaisesData = await getPaisesData();
   const text = `${sig.title} ${sig.content} ${sig.location_name || ''}`.toLowerCase();
   for (const [code, pais] of Object.entries(allPaisesData)) {
-    if (text.includes(pais.nombre.toLowerCase())) return pais;
+    if (text.includes((pais as any).nombre.toLowerCase())) return { pais, code };
   }
   // Fallback: match ISO code as whole word to avoid false positives (e.g. "us" in "focus")
   const codeMatch = text.match(/\b(us|mx|fr|de|it|es|pt|gb|uk|cn|jp|kr|in|br|ar|ru|au|nz|ca|za|eg|ma|ng|ke|et|tz|ug|cd|cg|gh|sn|ci|ml|ne|bf|td|so|ss|sd|rw|ao|cm|zm|zw|mz|mg|mu|sc|mw|bw|na|sz|ls|gm|sl|lr|gn|gw|tg|bj|mr|cv|st|km|dj|er|ga|gq|cf)\b/g);
-    if (codeMatch) {
-      for (const match of codeMatch) {
-        if (allPaisesData[match]) return allPaisesData[match];
-      }
+  if (codeMatch) {
+    for (const match of codeMatch) {
+      if (allPaisesData[match]) return { pais: allPaisesData[match], code: match };
     }
+  }
   return null;
 }
 
