@@ -53,7 +53,7 @@ export async function runHealthChecks(): Promise<HealthResult[]> {
   await check('/api routes smoke', async () => {
     const routes = ['/api/v1/countries/search?q=es', '/api/indices', '/api/flights/delays'];
     for (const r of routes) {
-      const res = await fetch(`${SITE_URL}${r}`, { signal: AbortSignal.timeout(8000) });
+      const res = await fetch(`http://localhost:3000${r}`, { signal: AbortSignal.timeout(8000) });
       if (!res.ok) return false;
     }
     return true;
