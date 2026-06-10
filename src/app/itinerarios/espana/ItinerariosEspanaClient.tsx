@@ -46,23 +46,11 @@ export default function ItinerariosEspanaClient() {
   const [itinerary, setItinerary] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [meta, setMeta] = useState<any>(null);
 
   if (premiumLoading) return (
     <div className="min-h-screen bg-slate-950 flex items-center justify-center">
       <Loader2 className="w-8 h-8 text-blue-500 animate-spin" />
-    </div>
-  );
-
-  if (!isPremium) return (
-    <div className="min-h-screen bg-slate-950 flex items-center justify-center p-6">
-      <div className="text-center max-w-md">
-        <Crown className="w-16 h-16 text-yellow-400 mx-auto mb-4" />
-        <h2 className="text-2xl font-bold text-white mb-2">Itinerarios España con IA</h2>
-        <p className="text-slate-400 mb-6">Genera tu itinerario personalizado por España con analisis de seguridad, mejor epoca y coste real.</p>
-        <Link href="/free-trial" className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl transition-all">
-          Probar gratis 7 dias
-        </Link>
-      </div>
     </div>
   );
 
@@ -75,11 +63,11 @@ export default function ItinerariosEspanaClient() {
     if (!region) { setError('Selecciona una region'); return; }
     setLoading(true); setError(''); setItinerary('');
     try {
-      const res = await fetch('/api/itinerario', {
+      const res = await fetch('/api/itinerarios/espana', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          destination: region + ', España',
+          region,
           days,
           interests: selectedInterests,
           budget,
@@ -113,6 +101,7 @@ export default function ItinerariosEspanaClient() {
         }
       }
       setItinerary(data.itinerary);
+      if (data.meta) setMeta(data.meta);
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -187,10 +176,32 @@ export default function ItinerariosEspanaClient() {
             {loading ? <><Loader2 className="w-5 h-5 animate-spin" />Generando...</> : <><Sparkles className="w-5 h-5" />Generar itinerario con IA</>}
           </button>
         </form>
+        {meta && (
+          <div className="mt-10 grid grid-cols-3 gap-3">
+            <div className="bg-slate-900 border border-green-500/20 rounded-xl p-4 text-center">
+              <p className="text-xs text-slate-400 mb-1">Riesgo MAEC</p>
+              <p className="text-green-400 font-bold">{meta.riesgoMAEC}</p>
+            </div>
+            <div className="bg-slate-900 border border-blue-500/20 rounded-xl p-4 text-center">
+              <p className="text-xs text-slate-400 mb-1">Coste estimado</p>
+              <p className="text-blue-400 font-bold">{meta.costes}€/día</p>
+            </div>
+            <div className="bg-slate-900 border border-amber-500/20 rounded-xl p-4 text-center">
+              <p className="text-xs text-slate-400 mb-1">Mejor época</p>
+              <p className="text-amber-400 font-bold text-xs">{meta.mejorEpoca?.slice(0,2).join(', ')}</p>
+            </div>
+          </div>
+        )}
         {itinerary && (
-          <div className="mt-10 bg-slate-900 border border-slate-700 rounded-2xl p-6">
+          <div className="mt-4 bg-slate-900 border border-slate-700 rounded-2xl p-6">
             <h2 className="text-lg font-bold text-white mb-4">Tu itinerario por {region}</h2>
             <div className="text-slate-300 whitespace-pre-wrap text-sm">{itinerary}</div>
+            <div className="mt-6 pt-4 border-t border-slate-700 text-center">
+              <p className="text-slate-400 text-sm mb-3">Guarda y gestiona este itinerario con cuenta Premium</p>
+              <a href="/free-trial" className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold rounded-xl transition-all">
+                Activar Premium gratis 7 dias
+              </a>
+            </div>
           </div>
         )}
       </div>
