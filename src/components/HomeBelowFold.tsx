@@ -143,6 +143,10 @@ function HomeNavBar() {
               <FileText className="w-4 h-4 text-green-400 group-hover:scale-110 transition-transform" />
               <span className="text-[10px] font-medium">Destacados</span>
             </Link>
+            <Link href="/itinerarios/espana" className="group flex flex-col items-center gap-0.5 px-4 py-1.5 text-amber-400 hover:text-amber-300 rounded-xl hover:bg-amber-500/10 transition-all">
+              <span className="text-lg">🇪🇸</span>
+              <span className="text-[10px] font-medium">España</span>
+            </Link>
             <div className="w-px h-5 bg-slate-700" />
             <Link href="/rutas/planificar" className="group flex flex-col items-center gap-0.5 px-4 py-1.5 text-slate-400 hover:text-white rounded-xl hover:bg-slate-800/80 transition-all">
               <ArrowRight className="w-4 h-4 text-rose-400 group-hover:scale-110 transition-transform" />
