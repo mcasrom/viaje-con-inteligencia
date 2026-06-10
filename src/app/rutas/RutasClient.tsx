@@ -807,6 +807,14 @@ function RouteDetail({ route, onBack }: { route: any; onBack: () => void }) {
           </div>
         </div>
       </div>
+      {/* Enlace itinerarios España */}
+      <div className="max-w-4xl mx-auto px-4 pb-12">
+        <a href="/itinerarios/espana" className="flex items-center justify-between bg-slate-900 border border-blue-500/20 hover:border-blue-500/40 rounded-2xl p-6 transition-all group">
+          <div>
+            <p className="text-xs text-blue-400 font-medium mb-1">¿Viajas por España?</p>
+            <h3 className="text-white font-bold text-lg group-hover:text-blue-300 transition-colors">Ver itinerarios por España con análisis de seguridad →</h3>
+            <p className="text-slate-400 text-sm mt-1">Camino de Santiago, Andalucía, Picos de Europa y más — con datos de riesgo en tiempo real.</p>
+          </div>
+        </a>
+      </div>
     </div>
-  );
-}
