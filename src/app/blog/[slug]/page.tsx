@@ -36,6 +36,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     alternates: {
       canonical: `https://www.viajeinteligencia.com/blog/${post.slug}`,
     },
+    ...(post.noindex ? { robots: { index: false, follow: false } } : {}),
     openGraph: {
       title: post.title,
       description: post.excerpt || post.description || '',

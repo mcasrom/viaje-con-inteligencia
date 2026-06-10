@@ -1,4 +1,5 @@
 ---
+noindex: true
 title: "¿Es SEGURO viajar a Malasia en 2026? | Guía COMPLETA"
 description: "Análisis completo de seguridad en Malasia 2026. Capital: Kuala Lumpur. Nivel de riesgo MAEC: BAJO. Consejos prácticos para viajar seguro a Malasia."
 slug: "es-seguro-viajar-malasia"

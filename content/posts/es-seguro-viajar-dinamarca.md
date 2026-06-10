@@ -1,4 +1,5 @@
 ---
+noindex: true
 title: "¿Es SEGURO viajar a Dinamarca en 2026? | Guía COMPLETA"
 description: "Análisis completo de seguridad en Dinamarca 2026. Capital: Copenhague. Nivel de riesgo MAEC: MUY BAJO. Consejos prácticos para viajar seguro a Dinamarca."
 slug: "es-seguro-viajar-dinamarca"

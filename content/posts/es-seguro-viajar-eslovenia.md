@@ -1,4 +1,5 @@
 ---
+noindex: true
 title: "¿Es SEGURO viajar a Eslovenia en 2026? | Guía COMPLETA"
 description: "Análisis completo de seguridad en Eslovenia 2026. Capital: Liubliana. Nivel de riesgo MAEC: MUY BAJO. Consejos prácticos para viajar seguro a Eslovenia."
 slug: "es-seguro-viajar-eslovenia"

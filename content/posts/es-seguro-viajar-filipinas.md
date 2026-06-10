@@ -1,4 +1,5 @@
 ---
+noindex: true
 title: "¿Es SEGURO viajar a Filipinas en 2026? | Guía COMPLETA"
 description: "Análisis completo de seguridad en Filipinas 2026. Capital: Manila. Nivel de riesgo MAEC: BAJO. Consejos prácticos para viajar seguro a Filipinas."
 slug: "es-seguro-viajar-filipinas"

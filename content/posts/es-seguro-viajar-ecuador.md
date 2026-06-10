@@ -1,4 +1,5 @@
 ---
+noindex: true
 title: "¿Es SEGURO viajar a Ecuador en 2026? | Guía COMPLETA"
 description: "Análisis completo de seguridad en Ecuador 2026. Capital: Quito. Nivel de riesgo MAEC: BAJO. Consejos prácticos para viajar seguro a Ecuador."
 slug: "es-seguro-viajar-ecuador"

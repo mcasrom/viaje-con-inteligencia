@@ -1,4 +1,5 @@
 ---
+noindex: true
 title: "¿Es SEGURO viajar a COLOMBIA en 2026? | Guía COMPLETA"
 description: "Análisis completo de seguridad en Colombia 2026. Nivel de riesgo real MAEC, zonas seguras para turistas y consejos prácticos para viajar seguro."
 slug: "es-seguro-viajar-colombia"

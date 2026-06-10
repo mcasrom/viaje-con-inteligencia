@@ -1,4 +1,5 @@
 ---
+noindex: true
 title: "¿Es SEGURO viajar a Mauricio en 2026? | Guía COMPLETA"
 description: "Análisis completo de seguridad en Mauricio 2026. Capital: Port Louis. Nivel de riesgo MAEC: MUY BAJO. Consejos prácticos para viajar seguro a Mauricio."
 slug: "es-seguro-viajar-mauricio"

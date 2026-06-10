@@ -1,4 +1,5 @@
 ---
+noindex: true
 title: "¿Es SEGURO viajar a Túnez en 2026? | Guía COMPLETA"
 description: "Análisis completo de seguridad en Túnez 2026. Capital: Túnez. Nivel de riesgo MAEC: MUY BAJO. Consejos prácticos para viajar seguro a Túnez."
 slug: "es-seguro-viajar-tunez"

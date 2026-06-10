@@ -1,4 +1,5 @@
 ---
+noindex: true
 title: "¿Es SEGURO viajar a Botsuana en 2026? | Guía COMPLETA"
 description: "Análisis completo de seguridad en Botsuana 2026. Capital: Gaborone. Nivel de riesgo MAEC: BAJO. Consejos prácticos para viajar seguro a Botsuana."
 slug: "es-seguro-viajar-botsuana"

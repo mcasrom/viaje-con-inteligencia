@@ -1,4 +1,5 @@
 ---
+noindex: true
 title: "¿Es SEGURO viajar a Líbano en 2026? | Guía COMPLETA"
 description: "Análisis completo de seguridad en Líbano 2026. Capital: Beirut. Nivel de riesgo MAEC: MEDIO. Consejos prácticos para viajar seguro a Líbano."
 slug: "es-seguro-viajar-libano"

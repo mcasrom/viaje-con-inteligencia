@@ -1,4 +1,5 @@
 ---
+noindex: true
 title: "¿Es SEGURO viajar a BRASIL en 2026? | Guía COMPLETA"
 description: "Análisis completo de seguridad en Brasil 2026. Nivel de riesgo real MAEC, zonas a evitar y consejos prácticos para viajar seguro a Brasil."
 slug: "es-seguro-viajar-brasil"

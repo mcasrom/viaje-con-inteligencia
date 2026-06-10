@@ -1,4 +1,5 @@
 ---
+noindex: true
 title: "¿Es SEGURO viajar a Bolivia en 2026? | Guía COMPLETA"
 description: "Análisis completo de seguridad en Bolivia 2026. Capital: Sucre (constitucional), La Paz (administrativa). Nivel de riesgo MAEC: BAJO. Consejos prácticos para viajar seguro a Bolivia."
 slug: "es-seguro-viajar-bolivia"

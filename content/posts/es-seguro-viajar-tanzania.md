@@ -1,4 +1,5 @@
 ---
+noindex: true
 title: "¿Es SEGURO viajar a Tanzania en 2026? | Guía COMPLETA"
 description: "Análisis completo de seguridad en Tanzania 2026. Capital: Dodoma. Nivel de riesgo MAEC: BAJO. Consejos prácticos para viajar seguro a Tanzania."
 slug: "es-seguro-viajar-tanzania"

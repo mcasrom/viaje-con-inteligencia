@@ -1,4 +1,5 @@
 ---
+noindex: true
 title: "¿Es SEGURO viajar a Siria en 2026? | Guía COMPLETA"
 description: "Análisis completo de seguridad en Siria 2026. Capital: Damasco. Nivel de riesgo MAEC: MUY ALTO. Consejos prácticos para viajar seguro a Siria."
 slug: "es-seguro-viajar-siria"

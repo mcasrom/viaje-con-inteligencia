@@ -1,4 +1,5 @@
 ---
+noindex: true
 title: "¿Es SEGURO viajar a Senegal en 2026? | Guía COMPLETA"
 description: "Análisis completo de seguridad en Senegal 2026. Capital: Dakar. Nivel de riesgo MAEC: BAJO. Consejos prácticos para viajar seguro a Senegal."
 slug: "es-seguro-viajar-senegal"

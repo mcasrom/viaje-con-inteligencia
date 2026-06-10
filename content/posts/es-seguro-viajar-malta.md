@@ -1,4 +1,5 @@
 ---
+noindex: true
 title: "¿Es SEGURO viajar a Malta en 2026? | Guía COMPLETA"
 description: "Análisis completo de seguridad en Malta 2026. Capital: La Valeta. Nivel de riesgo MAEC: MUY BAJO. Consejos prácticos para viajar seguro a Malta."
 slug: "es-seguro-viajar-malta"

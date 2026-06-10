@@ -1,4 +1,5 @@
 ---
+noindex: true
 title: "¿Es SEGURO viajar a Uzbekistán en 2026? | Guía COMPLETA"
 description: "Análisis completo de seguridad en Uzbekistán 2026. Capital: Tashkent. Nivel de riesgo MAEC: BAJO. Consejos prácticos para viajar seguro a Uzbekistán."
 slug: "es-seguro-viajar-uzbekistan"

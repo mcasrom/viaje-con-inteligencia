@@ -1,4 +1,5 @@
 ---
+noindex: true
 title: "¿Es SEGURO viajar a Irán en 2026? | Guía COMPLETA"
 description: "Análisis completo de seguridad en Irán 2026. Capital: Teherán. Nivel de riesgo MAEC: MUY ALTO. Consejos prácticos para viajar seguro a Irán."
 slug: "es-seguro-viajar-iran"

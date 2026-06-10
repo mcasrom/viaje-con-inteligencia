@@ -1,4 +1,5 @@
 ---
+noindex: true
 title: "¿Es SEGURO viajar a Turquía en 2026? | Guía COMPLETA"
 description: "Análisis completo de seguridad en Turquía 2026. Capital: Ankara. Nivel de riesgo MAEC: BAJO. Consejos prácticos para viajar seguro a Turquía."
 slug: "es-seguro-viajar-turquia"

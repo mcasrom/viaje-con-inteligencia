@@ -1,4 +1,5 @@
 ---
+noindex: true
 title: "¿Es SEGURO viajar a Uruguay en 2026? | Guía COMPLETA"
 description: "Análisis completo de seguridad en Uruguay 2026. Capital: Montevideo. Nivel de riesgo MAEC: MUY BAJO. Consejos prácticos para viajar seguro a Uruguay."
 slug: "es-seguro-viajar-uruguay"

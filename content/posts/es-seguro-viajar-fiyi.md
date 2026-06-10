@@ -1,4 +1,5 @@
 ---
+noindex: true
 title: "¿Es SEGURO viajar a Fiyi en 2026? | Guía COMPLETA"
 description: "Análisis completo de seguridad en Fiyi 2026. Capital: Suva. Nivel de riesgo MAEC: MUY BAJO. Consejos prácticos para viajar seguro a Fiyi."
 slug: "es-seguro-viajar-fiyi"

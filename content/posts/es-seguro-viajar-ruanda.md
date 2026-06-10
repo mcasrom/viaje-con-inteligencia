@@ -1,4 +1,5 @@
 ---
+noindex: true
 title: "¿Es SEGURO viajar a Ruanda en 2026? | Guía COMPLETA"
 description: "Análisis completo de seguridad en Ruanda 2026. Capital: Kigali. Nivel de riesgo MAEC: BAJO. Consejos prácticos para viajar seguro a Ruanda."
 slug: "es-seguro-viajar-ruanda"

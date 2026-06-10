@@ -1,4 +1,5 @@
 ---
+noindex: true
 title: "¿Es SEGURO viajar a Azerbaiyán en 2026? | Guía COMPLETA"
 description: "Análisis completo de seguridad en Azerbaiyán 2026. Capital: Bakú. Nivel de riesgo MAEC: BAJO. Consejos prácticos para viajar seguro a Azerbaiyán."
 slug: "es-seguro-viajar-azerbaiyan"

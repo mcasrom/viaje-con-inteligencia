@@ -1,4 +1,5 @@
 ---
+noindex: true
 title: "¿Es SEGURO viajar a Sudáfrica en 2026? | Guía COMPLETA"
 description: "Análisis completo de seguridad en Sudáfrica 2026. Capital: Pretoria. Nivel de riesgo MAEC: BAJO. Consejos prácticos para viajar seguro a Sudáfrica."
 slug: "es-seguro-viajar-sudafrica"

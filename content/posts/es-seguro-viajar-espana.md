@@ -1,4 +1,5 @@
 ---
+noindex: true
 title: "¿Es SEGURO viajar a España en 2026? | Guía COMPLETA"
 description: "Análisis completo de seguridad en España 2026. Capital: Madrid. Nivel de riesgo MAEC: MUY BAJO. Consejos prácticos para viajar seguro a España."
 slug: "es-seguro-viajar-espana"

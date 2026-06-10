@@ -1,4 +1,5 @@
 ---
+noindex: true
 title: "¿Es SEGURO viajar a Indonesia (Bali) en 2026? | Guía COMPLETA"
 description: "Análisis completo de seguridad en Indonesia (Bali) 2026. Capital: Yakarta. Nivel de riesgo MAEC: BAJO. Consejos prácticos para viajar seguro a Indonesia (Bali)."
 slug: "es-seguro-viajar-indonesia-bali"

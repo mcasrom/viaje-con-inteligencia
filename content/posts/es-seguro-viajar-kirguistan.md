@@ -1,4 +1,5 @@
 ---
+noindex: true
 title: "¿Es SEGURO viajar a Kirguistán en 2026? | Guía COMPLETA"
 description: "Análisis completo de seguridad en Kirguistán 2026. Capital: Bishkek. Nivel de riesgo MAEC: BAJO. Consejos prácticos para viajar seguro a Kirguistán."
 slug: "es-seguro-viajar-kirguistan"

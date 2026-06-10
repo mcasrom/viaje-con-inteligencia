@@ -1,4 +1,5 @@
 ---
+noindex: true
 title: "¿Es SEGURO viajar a Groenlandia en 2026? | Guía COMPLETA"
 description: "Análisis completo de seguridad en Groenlandia 2026. Capital: Nuuk. Nivel de riesgo MAEC: MUY BAJO. Consejos prácticos para viajar seguro a Groenlandia."
 slug: "es-seguro-viajar-groenlandia"

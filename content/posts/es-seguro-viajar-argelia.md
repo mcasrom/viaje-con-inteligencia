@@ -1,4 +1,5 @@
 ---
+noindex: true
 title: "¿Es SEGURO viajar a Argelia en 2026? | Guía COMPLETA"
 description: "Análisis completo de seguridad en Argelia 2026. Capital: Argel. Nivel de riesgo MAEC: BAJO. Consejos prácticos para viajar seguro a Argelia."
 slug: "es-seguro-viajar-argelia"

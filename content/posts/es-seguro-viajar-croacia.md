@@ -1,4 +1,5 @@
 ---
+noindex: true
 title: "¿Es SEGURO viajar a Croacia en 2026? | Guía COMPLETA"
 description: "Análisis completo de seguridad en Croacia 2026. Capital: Zagreb. Nivel de riesgo MAEC: MUY BAJO. Consejos prácticos para viajar seguro a Croacia."
 slug: "es-seguro-viajar-croacia"

@@ -1,4 +1,5 @@
 ---
+noindex: true
 title: "¿Es SEGURO viajar a Omán en 2026? | Guía COMPLETA"
 description: "Análisis completo de seguridad en Omán 2026. Capital: Muscat. Nivel de riesgo MAEC: MUY BAJO. Consejos prácticos para viajar seguro a Omán."
 slug: "es-seguro-viajar-oman"

@@ -1,4 +1,5 @@
 ---
+noindex: true
 title: "¿Es SEGURO viajar a Camboya en 2026? | Guía COMPLETA"
 description: "Análisis completo de seguridad en Camboya 2026. Capital: Phnom Penh. Nivel de riesgo MAEC: MEDIO. Consejos prácticos para viajar seguro a Camboya."
 slug: "es-seguro-viajar-camboya"

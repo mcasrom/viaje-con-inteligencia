@@ -1,4 +1,5 @@
 ---
+noindex: true
 title: "¿Es SEGURO viajar a Mozambique en 2026? | Guía COMPLETA"
 description: "Análisis completo de seguridad en Mozambique 2026. Capital: Maputo. Nivel de riesgo MAEC: BAJO. Consejos prácticos para viajar seguro a Mozambique."
 slug: "es-seguro-viajar-mozambique"

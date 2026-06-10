@@ -1,4 +1,5 @@
 ---
+noindex: true
 title: "¿Es Seguro Viajar a Marruecos en 2026? Análisis OSINT + Guía Real"
 description: "Análisis de seguridad en Marruecos 2026 basado en fuentes oficiales: MAEC, GDACS y datos OSINT. Nivel de riesgo BAJO. Qué zonas evitar, consejos reales y qué dice el Ministerio de Exteriores español."
 slug: "es-seguro-viajar-marruecos"

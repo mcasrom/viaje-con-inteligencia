@@ -1,4 +1,5 @@
 ---
+noindex: true
 title: "¿Es SEGURO viajar a Israel en 2026? | Guía COMPLETA"
 description: "Análisis completo de seguridad en Israel 2026. Capital: Jerusalén. Nivel de riesgo MAEC: MEDIO. Consejos prácticos para viajar seguro a Israel."
 slug: "es-seguro-viajar-israel"

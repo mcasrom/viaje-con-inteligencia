@@ -1,4 +1,5 @@
 ---
+noindex: true
 title: "¿Es SEGURO viajar a Singapur en 2026? | Guía COMPLETA"
 description: "Análisis completo de seguridad en Singapur 2026. Capital: Singapur. Nivel de riesgo MAEC: MUY BAJO. Consejos prácticos para viajar seguro a Singapur."
 slug: "es-seguro-viajar-singapur"

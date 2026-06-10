@@ -1,4 +1,5 @@
 ---
+noindex: true
 title: "¿Es SEGURO viajar a Estonia en 2026? | Guía COMPLETA"
 description: "Análisis completo de seguridad en Estonia 2026. Capital: Tallin. Nivel de riesgo MAEC: MUY BAJO. Consejos prácticos para viajar seguro a Estonia."
 slug: "es-seguro-viajar-estonia"

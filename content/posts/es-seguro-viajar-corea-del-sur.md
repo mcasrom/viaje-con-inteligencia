@@ -1,4 +1,5 @@
 ---
+noindex: true
 title: "¿Es SEGURO viajar a Corea del Sur en 2026? | Guía COMPLETA"
 description: "Análisis completo de seguridad en Corea del Sur 2026. Capital: Seúl. Nivel de riesgo MAEC: MUY BAJO. Consejos prácticos para viajar seguro a Corea del Sur."
 slug: "es-seguro-viajar-corea-del-sur"

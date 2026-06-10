@@ -1,4 +1,5 @@
 ---
+noindex: true
 title: "¿Es SEGURO viajar a Etiopía en 2026? | Guía COMPLETA"
 description: "Análisis completo de seguridad en Etiopía 2026. Capital: Adís Abeba. Nivel de riesgo MAEC: BAJO. Consejos prácticos para viajar seguro a Etiopía."
 slug: "es-seguro-viajar-etiopia"

@@ -1,4 +1,5 @@
 ---
+noindex: true
 title: "¿Es SEGURO viajar a Emiratos Árabes Unidos en 2026? | Guía COMPLETA"
 description: "Análisis completo de seguridad en Emiratos Árabes Unidos 2026. Capital: Abu Dhabi. Nivel de riesgo MAEC: MUY BAJO. Consejos prácticos para viajar seguro a Emiratos Árabes Unidos."
 slug: "es-seguro-viajar-emiratos-arabes-unidos"

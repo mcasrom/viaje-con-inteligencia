@@ -1,4 +1,5 @@
 ---
+noindex: true
 title: "¿Es SEGURO viajar a Haití en 2026? | Guía COMPLETA"
 description: "Análisis completo de seguridad en Haití 2026. Capital: Puerto Príncipe. Nivel de riesgo MAEC: MUY ALTO. Consejos prácticos para viajar seguro a Haití."
 slug: "es-seguro-viajar-haiti"

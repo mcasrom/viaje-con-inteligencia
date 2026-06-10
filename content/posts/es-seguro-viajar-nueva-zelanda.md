@@ -1,4 +1,5 @@
 ---
+noindex: true
 title: "¿Es SEGURO viajar a Nueva Zelanda en 2026? | Guía COMPLETA"
 description: "Análisis completo de seguridad en Nueva Zelanda 2026. Capital: Wellington. Nivel de riesgo MAEC: MUY BAJO. Consejos prácticos para viajar seguro a Nueva Zelanda."
 slug: "es-seguro-viajar-nueva-zelanda"

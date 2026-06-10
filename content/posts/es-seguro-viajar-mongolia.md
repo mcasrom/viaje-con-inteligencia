@@ -1,4 +1,5 @@
 ---
+noindex: true
 title: "¿Es SEGURO viajar a Mongolia en 2026? | Guía COMPLETA"
 description: "Análisis completo de seguridad en Mongolia 2026. Capital: Ulan Bator. Nivel de riesgo MAEC: BAJO. Consejos prácticos para viajar seguro a Mongolia."
 slug: "es-seguro-viajar-mongolia"

@@ -1,4 +1,5 @@
 ---
+noindex: true
 title: "¿Es SEGURO viajar a ITALIA en 2026? | Guía COMPLETA"
 description: "Análisis completo de seguridad en Italia 2026. Nivel de riesgo real MAEC, zonas seguras y consejos prácticos para viajar seguro a Italia."
 slug: "es-seguro-viajar-italia"

@@ -1,4 +1,5 @@
 ---
+noindex: true
 title: "¿Es SEGURO viajar a VIETNAM en 2026? | Guía COMPLETA"
 description: "Análisis completo de seguridad en Vietnam 2026. Nivel de riesgo real, zonas seguras y consejos prácticos para viajar seguro a Vietnam."
 slug: "es-seguro-viajar-vietnam"

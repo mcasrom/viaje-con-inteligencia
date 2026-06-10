@@ -8,6 +8,7 @@ export interface PostMeta {
   slug: string;
   title: string;
   date: string;
+  noindex?: boolean;
   author: string;
   category: string;
   readTime: string;
@@ -97,6 +98,7 @@ export function getPostBySlug(slug: string): Post | null {
       excerpt: data.excerpt || data.description || '',
       description: data.description || '',
       tags: Array.isArray(data.tags) ? data.tags.filter(Boolean) : [],
+      noindex: data.noindex === true,
       featured: data.featured || false,
     };
   } catch {

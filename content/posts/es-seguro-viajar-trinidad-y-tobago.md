@@ -1,4 +1,5 @@
 ---
+noindex: true
 title: "¿Es SEGURO viajar a Trinidad y Tobago en 2026? | Guía COMPLETA"
 description: "Análisis completo de seguridad en Trinidad y Tobago 2026. Capital: Puerto España. Nivel de riesgo MAEC: MUY BAJO. Consejos prácticos para viajar seguro a Trinidad y Tobago."
 slug: "es-seguro-viajar-trinidad-y-tobago"

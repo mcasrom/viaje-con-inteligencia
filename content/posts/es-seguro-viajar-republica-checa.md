@@ -1,4 +1,5 @@
 ---
+noindex: true
 title: "¿Es SEGURO viajar a REPÚBLICA CHECA en 2026? | Guía COMPLETA"
 description: "Análisis completo de seguridad en República Checa 2026. Nivel de riesgo real, zonas seguras y consejos prácticos para viajar seguro a Praga."
 slug: "es-seguro-viajar-republica-checa"

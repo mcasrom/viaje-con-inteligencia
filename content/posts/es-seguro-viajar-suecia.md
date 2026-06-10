@@ -1,4 +1,5 @@
 ---
+noindex: true
 title: "¿Es SEGURO viajar a Suecia en 2026? | Guía COMPLETA"
 description: "Análisis completo de seguridad en Suecia 2026. Capital: Estocolmo. Nivel de riesgo MAEC: MUY BAJO. Consejos prácticos para viajar seguro a Suecia."
 slug: "es-seguro-viajar-suecia"

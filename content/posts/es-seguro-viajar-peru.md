@@ -1,4 +1,5 @@
 ---
+noindex: true
 title: "¿Es SEGURO viajar a Perú en 2026? | Guía COMPLETA"
 description: "Análisis completo de seguridad en Perú 2026. Capital: Lima. Nivel de riesgo MAEC: BAJO. Consejos prácticos para viajar seguro a Perú."
 slug: "es-seguro-viajar-peru"

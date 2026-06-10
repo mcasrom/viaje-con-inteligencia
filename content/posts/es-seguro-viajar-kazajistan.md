@@ -1,4 +1,5 @@
 ---
+noindex: true
 title: "¿Es SEGURO viajar a Kazajistán en 2026? | Guía COMPLETA"
 description: "Análisis completo de seguridad en Kazajistán 2026. Capital: Astaná. Nivel de riesgo MAEC: BAJO. Consejos prácticos para viajar seguro a Kazajistán."
 slug: "es-seguro-viajar-kazajistan"

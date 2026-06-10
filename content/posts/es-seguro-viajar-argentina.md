@@ -1,4 +1,5 @@
 ---
+noindex: true
 title: "¿Es SEGURO viajar a ARGENTINA en 2026? | Guía COMPLETA"
 description: "Análisis completo de seguridad en Argentina 2026. Nivel de riesgo real MAEC, zonas seguras y consejos prácticos para viajar seguro a Argentina."
 slug: "es-seguro-viajar-argentina"

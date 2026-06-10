@@ -1,4 +1,5 @@
 ---
+noindex: true
 title: "¿Es SEGURO viajar a Nepal en 2026? | Guía COMPLETA"
 description: "Análisis completo de seguridad en Nepal 2026. Capital: Katmandú. Nivel de riesgo MAEC: BAJO. Consejos prácticos para viajar seguro a Nepal."
 slug: "es-seguro-viajar-nepal"

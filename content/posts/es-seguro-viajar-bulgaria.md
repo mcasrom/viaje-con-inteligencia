@@ -1,4 +1,5 @@
 ---
+noindex: true
 title: "¿Es SEGURO viajar a Bulgaria en 2026? | Guía COMPLETA"
 description: "Análisis completo de seguridad en Bulgaria 2026. Capital: Sofía. Nivel de riesgo MAEC: MUY BAJO. Consejos prácticos para viajar seguro a Bulgaria."
 slug: "es-seguro-viajar-bulgaria"
