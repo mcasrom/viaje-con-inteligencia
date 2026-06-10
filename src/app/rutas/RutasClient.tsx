@@ -559,6 +559,21 @@ export default function RutasClient({ routes: _routes }: RutasClientProps) {
             <div className="text-slate-400 text-sm">Optimización IA</div>
           </div>
         </div>
+
+        {/* Generador itinerarios España */}
+        <div className="mt-8 bg-slate-900 border border-blue-500/20 hover:border-blue-500/40 rounded-2xl p-6 transition-all">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-xs text-blue-400 font-medium mb-1">Viajas por Espana?</p>
+              <h3 className="text-white font-bold text-lg">Crea tu itinerario personalizado con IA</h3>
+              <p className="text-slate-400 text-sm mt-1">Region, dias, perfil, presupuesto — analisis de seguridad smart traveller incluido.</p>
+            </div>
+            <a href="/itinerarios/espana" className="shrink-0 ml-6 px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold rounded-xl transition-all">
+              Crear itinerario
+            </a>
+          </div>
+        </div>
+
       </div>
     </div>
   );
