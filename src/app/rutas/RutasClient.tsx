@@ -818,3 +818,5 @@ function RouteDetail({ route, onBack }: { route: any; onBack: () => void }) {
         </a>
       </div>
     </div>
+);
+}
