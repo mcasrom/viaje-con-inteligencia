@@ -5,7 +5,8 @@ import { ArrowLeft, Globe, Shield, AlertTriangle, TrendingUp, Map, Users, Plane,
 export const metadata: Metadata = {
   title: 'Geopolitics and Travel | How Conflicts Affect Tourism',
   description: 'Analysis of geopolitical impact on travel: active conflicts, airspace closures, sanctions, GPI, GTI and how they affect the safety and cost of your destinations. 136 countries monitored.',
-  openGraph: {
+  robots: { index: false, follow: false },
+    openGraph: {
     title: 'Geopolitics and Travel | Travel Intelligence',
     description: 'GPI, GTI, HDI indicators, active conflicts, airspace closures and OSINT alerts combined in a geopolitical analysis for travelers. 136 countries monitored.',
     url: 'https://www.viajeinteligencia.com/en/geopolitica-y-viajes',

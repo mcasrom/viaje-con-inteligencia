@@ -5,7 +5,8 @@ import { ArrowLeft, Globe, Newspaper, Shield, AlertTriangle, Database, TrendingU
 export const metadata: Metadata = {
   title: 'OSINT for Travelers | Open Source Intelligence for Safe Travel',
   description: 'Complete guide to OSINT applied to travel: how to monitor geopolitical risks, natural disasters, health outbreaks and safety using open sources and AI analysis. 136 countries, 14 sources.',
-  openGraph: {
+  robots: { index: false, follow: false },
+    openGraph: {
     title: 'OSINT for Travelers | Travel Intelligence',
     description: 'Learn to use open sources to monitor risks, incidents and safety in your travel destinations. 14 OSINT sources, alerts and predictive analysis.',
     url: 'https://www.viajeinteligencia.com/en/osint-para-viajeros',

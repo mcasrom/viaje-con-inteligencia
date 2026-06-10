@@ -26,6 +26,7 @@ export async function generateMetadata({ params }: { params: Promise<{ codigo: s
         'en': 'https://www.viajeinteligencia.com/en/pais/' + codigo,
       },
     },
+    robots: { index: false, follow: false },
     openGraph: {
       images: [{ url: '/preview_favicon.jpg', width: 1200, height: 630 }],
       title: `${nombreEn} — Travel Risk, Visa & Tips`,
