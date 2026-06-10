@@ -33,6 +33,7 @@ export async function GET() {
   return new Response(rss, {
     headers: {
       'Content-Type': 'application/xml',
+      'X-Robots-Tag': 'noindex',
       'Cache-Control': 's-maxage=3600, stale-while-revalidate',
     },
   });
