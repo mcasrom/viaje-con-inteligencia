@@ -42,6 +42,27 @@ if (typeof setInterval !== 'undefined') {
 
 
 export async function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+  if (pathname.startsWith('/api/ml/')) {
+    const origin = request.headers.get('origin') || '';
+    if (origin === 'https://tools.viajeinteligencia.com') {
+      if (request.method === 'OPTIONS') {
+        return new NextResponse(null, {
+          status: 204,
+          headers: {
+            'Access-Control-Allow-Origin': origin,
+            'Access-Control-Allow-Methods': 'GET, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type',
+          },
+        });
+      }
+      const response = NextResponse.next();
+      response.headers.set('Access-Control-Allow-Origin', origin);
+      response.headers.set('Access-Control-Allow-Methods', 'GET, OPTIONS');
+      response.headers.set('Access-Control-Allow-Headers', 'Content-Type');
+      return response;
+    }
+  }
   const pathname = request.nextUrl.pathname;
 
   // Rate limiting para API (excepto cron/health)
