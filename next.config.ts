@@ -82,6 +82,14 @@ const nextConfig: NextConfig = {
       },
 
       {
+        source: '/api/ml/:path*',
+        headers: [
+          { key: 'Access-Control-Allow-Origin', value: 'https://tools.viajeinteligencia.com' },
+          { key: 'Access-Control-Allow-Methods', value: 'GET, OPTIONS' },
+          { key: 'Access-Control-Allow-Headers', value: 'Content-Type' },
+        ],
+      },
+      {
         source: '/api/:path*',
         headers: [
           { key: 'Cache-Control', value: 'public, max-age=300, stale-while-revalidate=600' },
