@@ -454,7 +454,6 @@ export default function HomeBelowFold() {
 
   return (
     <>
-      <HomeNavBar />
       <HomeSidePanel />
 
       <div id="mapa-global" className="relative w-full h-[70vh]">
