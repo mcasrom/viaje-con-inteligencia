@@ -1,7 +1,6 @@
 import { Bell } from 'lucide-react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
-import HomeStats from '@/components/HomeStats';
 
 const HeroSearch = dynamic(() => import('@/components/HeroSearch'), { ssr: true });
 const HomeBelowFold = dynamic(() => import('@/components/HomeBelowFold'), { ssr: true });
@@ -9,10 +8,8 @@ const HomeBelowFold = dynamic(() => import('@/components/HomeBelowFold'), { ssr:
 export default function HomePage() {
   return (
     <div className="min-h-screen bg-slate-950">
-      {/* Stats bar */}
-      <div className="pt-14"><HomeStats /></div>
       {/* Hero section — server-rendered for instant LCP */}
-      <div className="flex flex-col items-center justify-center pt-6 pb-4 px-4">
+      <div className="flex flex-col items-center justify-center pt-32 pb-6 px-4">
         <div className="w-full max-w-2xl mx-auto">
           <h1 className="text-3xl md:text-5xl font-bold text-white text-center mb-2 leading-tight">
             ¿Es seguro viajar a...?
