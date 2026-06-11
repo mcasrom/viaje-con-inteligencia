@@ -87,7 +87,7 @@ const items: Record<LayerKey, { name: string; desc: string; color: string }[]> =
     { name: '/api/pais/[codigo]', desc: 'Datos completos país', color: 'slate' },
     { name: '/api/trips/*', desc: 'CRUD viajes + comparador', color: 'cyan' },
     { name: '/api/user/*', desc: 'Preferencias + watchlist', color: 'sky' },
-    { name: '/ai/chat', desc: 'Chat IA + itinerarios + contexto personalizado', color: 'emerald' },
+    { name: '/chat', desc: 'Chat IA + itinerarios + contexto personalizado', color: 'emerald' },
     { name: '/api/admin/*', desc: 'Health, cron, trends, paises', color: 'orange' },
     { name: '/api/aviation/*', desc: 'Airspace + estado vuelos', color: 'pink' },
     { name: '/api/alternatives', desc: 'Destinos alternativos ML', color: 'yellow' },
