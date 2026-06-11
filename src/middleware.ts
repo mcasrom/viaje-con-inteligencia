@@ -42,8 +42,7 @@ if (typeof setInterval !== 'undefined') {
 
 
 export async function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl;
-  if (pathname.startsWith('/api/ml/')) {
+  if (request.nextUrl.pathname.startsWith('/api/ml/')) {
     const origin = request.headers.get('origin') || '';
     if (origin === 'https://tools.viajeinteligencia.com') {
       if (request.method === 'OPTIONS') {
