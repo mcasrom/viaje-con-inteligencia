@@ -6,7 +6,7 @@ date: "2026-06-12"
 author: "M. Castillo"
 category: "IA & Producto"
 readTime: "6 min"
-image: /photos/tools-viajeinteligencia-ai.jpg
+image: /photos/tools-viajeinteligencia-hero.jpg
 keywords: "viaje inteligencia ai, travel decision engine, travel risk ml, herramientas viaje ia, cuando viajar mejor, travel intelligence system, riesgo pais viajes, planificacion viaje inteligente"
 tags: ["IA", "Producto", "Machine Learning", "Travel Intelligence", "SaaS"]
 excerpt: "tools.viajeinteligencia.com evoluciona hacia un sistema de decisión de viajes basado en IA y machine learning que optimiza riesgo, coste y el mejor momento para viajar."
