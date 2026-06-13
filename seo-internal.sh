@@ -1,3 +1,8 @@
+#!/bin/bash
+
+FILE="src/app/dashboard/page.tsx"
+
+cat << 'EOF' > $FILE
 export default function Dashboard() {
   return (
     <div>
@@ -15,3 +20,6 @@ export default function Dashboard() {
     </div>
   );
 }
+EOF
+
+echo "OK dashboard actualizado"
