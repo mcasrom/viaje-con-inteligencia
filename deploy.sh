@@ -1,49 +1,73 @@
 #!/bin/bash
 set -e
+
 source ~/.cf_env
 cd ~/viaje-con-inteligencia
 
-# Comprobar que no hay cambios sin commitear
+# =========================
+# 1. CHECK GIT LOCAL
+# =========================
 if ! git diff --quiet || ! git diff --cached --quiet; then
-  echo "❌ ERROR: Hay cambios sin commitear. Haz git add + git commit + git push antes de deployar."
+  echo "❌ ERROR: Hay cambios sin commitear"
   git status --short
   exit 1
 fi
 
-# Comprobar que el local está sincronizado con origin
 git fetch origin main --quiet
+
 LOCAL=$(git rev-parse HEAD)
 REMOTE=$(git rev-parse origin/main)
+
 if [ "$LOCAL" != "$REMOTE" ]; then
-  echo "❌ ERROR: Hay commits locales sin pushear a GitHub. Haz git push antes de deployar."
+  echo "❌ ERROR: Falta git push a GitHub"
   exit 1
 fi
 
-echo "✅ Git limpio y sincronizado con GitHub"
-echo ">>> Build local..."
+echo "✅ Git OK"
 
-# 🔥 BUILD LIMPIO
+# =========================
+# 2. BUILD LIMPIO
+# =========================
+echo ">>> Build local..."
 rm -rf .next
 npm run build
 
+# =========================
+# 3. RSYNC BUILD
+# =========================
 echo ">>> Subiendo build al servidor..."
 
-# 🔥 FIX RSYNC (evita turbopack cache basura)
 rsync -az --delete \
   --exclude="cache" \
   --exclude="dev" \
-  -e "ssh -p 22" .next/ deploy@178.105.80.193:/var/www/viajeinteligencia/.next/
+  -e "ssh -p 22" \
+  .next/ deploy@178.105.80.193:/var/www/viajeinteligencia/.next/
 
-rsync -az -e "ssh -p 22" public/ deploy@178.105.80.193:/var/www/viajeinteligencia/public/
+rsync -az -e "ssh -p 22" \
+  public/ deploy@178.105.80.193:/var/www/viajeinteligencia/public/
 
+# =========================
+# 4. RESTART SERVER (FIX REAL)
+# =========================
 echo ">>> Reiniciando PM2..."
-ssh deploy@178.105.80.193 "cd /var/www/viajeinteligencia && git stash && git pull && git stash drop && pm2 restart viajeinteligencia"
 
+ssh deploy@178.105.80.193 "
+cd /var/www/viajeinteligencia &&
+git fetch origin main &&
+git reset --hard origin/main &&
+git clean -fd &&
+pm2 restart viajeinteligencia
+"
+
+# =========================
+# 5. PURGA CLOUDFLARE
+# =========================
 echo ">>> Purgando Cloudflare..."
+
 curl -s -X POST "https://api.cloudflare.com/client/v4/zones/${CF_ZONE_ID}/purge_cache" \
   -H "X-Auth-Email: ${CF_EMAIL}" \
   -H "X-Auth-Key: ${CF_API_KEY}" \
   -H "Content-Type: application/json" \
-  --data '{"purge_everything":true}' && echo "Cache purgado OK"
+  --data '{"purge_everything":true}' && echo "Cache OK"
 
-echo ">>> Deploy completado OK"
+echo ">>> DEPLOY COMPLETADO OK"
