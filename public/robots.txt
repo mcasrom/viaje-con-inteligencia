@@ -1,0 +1,47 @@
+User-agent: *
+Allow: /
+
+# ===== BLOQUEO DE ZONAS TÉCNICAS =====
+Disallow: /api/
+Disallow: /api-endpoints/
+Disallow: /dashboard/
+Disallow: /admin/
+Disallow: /test-leaflet
+Disallow: /kpi
+Disallow: /radius
+Disallow: /relojes
+Disallow: /lead-magnet
+Disallow: /diagnostico
+Disallow: /clustering
+Disallow: /stats
+Disallow: /precio-api
+Disallow: /viaje-compartido
+Disallow: /chat
+Disallow: /alertas
+Disallow: /comparar
+
+# ===== BLOQUEO IDIOMAS NO SEO (si no usas /en) =====
+Disallow: /en/
+
+# ===== BOTS DE SCRAPING / SEO HERRAMIENTAS =====
+User-agent: SemrushBot
+Disallow: /
+
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: DotBot
+Disallow: /
+
+# ===== IA SCRAPING CONTROL =====
+User-agent: GPTBot
+Disallow: /
+
+User-agent: Google-Extended
+Disallow: /
+
+# ===== SITEMAP =====
+Sitemap: https://www.viajeinteligencia.com/sitemap.xml
