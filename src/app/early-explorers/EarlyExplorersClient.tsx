@@ -40,7 +40,7 @@ export default function EarlyExplorersClient() {
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [showForm, setShowForm] = useState(false);
-  const [form, setForm] = useState({ name: '', country_code: '', city: '', message: '', website: '' });
+  const [form, setForm] = useState({ name: '', country_code: '', city: '', message: '', website: '', consent: false });
   const [error, setError] = useState('');
 
   useEffect(() => {
@@ -58,6 +58,10 @@ export default function EarlyExplorersClient() {
 
   async function handleSubmit() {
     setError('');
+    if (!form.consent) {
+      setError('Debes aceptar el consentimiento para continuar.');
+      return;
+    }
     if (!form.name.trim() || !form.country_code.trim()) {
       setError('Nombre y país son obligatorios.');
       return;
@@ -129,7 +133,7 @@ export default function EarlyExplorersClient() {
         </h1>
         <p className="text-slate-400 text-lg leading-relaxed mb-6">
           Los primeros 100 viajeros que apostaron por la inteligencia de viaje.<br/>
-          Su marca permanece aquí para siempre.
+          Su marca en la historia del proyecto.
         </p>
 
         {/* Spots counter */}
@@ -205,6 +209,17 @@ export default function EarlyExplorersClient() {
                   onChange={e => setForm(f => ({...f, website: e.target.value}))}
                 />
                 {error && <p className="text-red-400 text-xs font-mono">{error}</p>}
+                <label className="flex items-start gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={form.consent}
+                    onChange={e => setForm(f => ({...f, consent: e.target.checked}))}
+                    className="mt-1 accent-emerald-400"
+                  />
+                  <span className="text-xs text-slate-400 leading-relaxed">
+                    Acepto que mi nombre y ubicación aparezcan públicamente en el mapa. Puedo solicitar mi baja en cualquier momento escribiendo a <a href="mailto:gestion@viajeinteligencia.com" className="text-emerald-400">gestion@viajeinteligencia.com</a>. Ver <a href="/legal" className="text-emerald-400">política de privacidad</a>.
+                  </span>
+                </label>
                 <div className="flex gap-2">
                   <button
                     onClick={handleSubmit}
@@ -227,7 +242,7 @@ export default function EarlyExplorersClient() {
           <div className="bg-emerald-400/10 border border-emerald-400/20 rounded-xl p-6 max-w-md mx-auto">
             <div className="text-3xl mb-2">🌍</div>
             <p className="text-emerald-400 font-mono font-bold text-sm tracking-widest uppercase">¡Estás en el mapa!</p>
-            <p className="text-slate-400 text-sm mt-2">Tu marca permanece aquí para siempre.</p>
+            <p className="text-slate-400 text-sm mt-2">Tu marca forma parte de la historia del proyecto.</p>
           </div>
         )}
       </div>
