@@ -15,6 +15,7 @@ interface Explorer {
   country_code: string;
   message: string;
   website?: string;
+  city?: string;
   founding: boolean;
   explorer_number: number;
   created_at: string;
@@ -39,7 +40,7 @@ export default function EarlyExplorersClient() {
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [showForm, setShowForm] = useState(false);
-  const [form, setForm] = useState({ name: '', country_code: '', message: '', website: '' });
+  const [form, setForm] = useState({ name: '', country_code: '', city: '', message: '', website: '' });
   const [error, setError] = useState('');
 
   useEffect(() => {
@@ -71,6 +72,7 @@ export default function EarlyExplorersClient() {
       country_code: form.country_code.toUpperCase().trim(),
       message: form.message.trim() || 'Smart travelers make better decisions.',
       website: form.website.trim() || null,
+      city: form.city.trim() || null,
     }]);
     if (err) {
       setError('Error al unirte. Inténtalo de nuevo.');
@@ -84,9 +86,34 @@ export default function EarlyExplorersClient() {
 
   const foundingCount = explorers.filter(e => e.founding).length;
   const spotsLeft = Math.max(0, 100 - foundingCount);
+  const [resolvedCoords, setResolvedCoords] = useState<Record<string, [number, number]>>({});
+
+  useEffect(() => {
+    async function geocodeExplorers() {
+      const updates: Record<string, [number, number]> = {};
+      for (const e of explorers) {
+        if ((e as any).city) {
+          try {
+            const res = await fetch(
+              `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent((e as any).city)}&format=json&limit=1`,
+              { headers: { 'User-Agent': 'viajeinteligencia.com' } }
+            );
+            const data = await res.json();
+            if (data[0]) updates[e.id] = [parseFloat(data[0].lat), parseFloat(data[0].lon)];
+          } catch {}
+        }
+      }
+      setResolvedCoords(updates);
+    }
+    if (explorers.length > 0) geocodeExplorers();
+  }, [explorers]);
+
   const mapExplorers = explorers
-    .filter(e => COUNTRY_COORDS[e.country_code])
-    .map(e => ({ ...e, coords: COUNTRY_COORDS[e.country_code] }));
+    .filter(e => resolvedCoords[e.id] || COUNTRY_COORDS[e.country_code])
+    .map(e => ({
+      ...e,
+      coords: resolvedCoords[e.id] ?? COUNTRY_COORDS[e.country_code],
+    }));
 
   return (
     <div className="min-h-screen bg-[#020817] text-slate-100">
@@ -155,6 +182,13 @@ export default function EarlyExplorersClient() {
                   value={form.country_code}
                   onChange={e => setForm(f => ({...f, country_code: e.target.value.toUpperCase().replace(/[^A-Z]/g,'')}))}
                   maxLength={2}
+                />
+                <input
+                  className="w-full bg-slate-800 border border-white/8 rounded-lg px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-400"
+                  placeholder="Tu ciudad (opcional, mejora precisión del mapa)"
+                  value={form.city}
+                  onChange={e => setForm(f => ({...f, city: e.target.value}))}
+                  maxLength={60}
                 />
                 <textarea
                   className="w-full bg-slate-800 border border-white/8 rounded-lg px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-400 resize-none"

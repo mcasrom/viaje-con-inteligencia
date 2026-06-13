@@ -129,6 +129,11 @@ export default function Footer() {
                 </a>
               </li>
               <li>
+                <Link href="/early-explorers" className="text-slate-400 hover:text-white transition-colors">
+                  🌍 Early Explorers
+                </Link>
+              </li>
+              <li>
                 <Link href="/colaborar" className="text-slate-400 hover:text-white transition-colors">
                   Colabora
                 </Link>
