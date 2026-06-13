@@ -96,10 +96,10 @@ export default function EarlyExplorersClient() {
     async function geocodeExplorers() {
       const updates: Record<string, [number, number]> = {};
       for (const e of explorers) {
-        if ((e as any).city) {
+        if (e.city) {
           try {
             const res = await fetch(
-              `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent((e as any).city)}&format=json&limit=1`,
+              `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(e.city)}&countrycodes=${e.country_code.toLowerCase()}&format=json&limit=1`,
               { headers: { 'User-Agent': 'viajeinteligencia.com' } }
             );
             const data = await res.json();
@@ -119,6 +119,18 @@ export default function EarlyExplorersClient() {
       coords: resolvedCoords[e.id] ?? COUNTRY_COORDS[e.country_code],
     }));
 
+  function handleShare(explorerNumber?: number) {
+    const url = 'https://viajeinteligencia.com/early-explorers';
+    const text = explorerNumber
+      ? `Soy el Explorer #${String(explorerNumber).padStart(3,'0')} en Viaje Inteligencia 🌍 ¿Te unes al mapa?`
+      : `Descubre el mapa de Early Explorers de Viaje Inteligencia 🌍`;
+    if (navigator.share) {
+      navigator.share({ title: 'Early Explorers – Viaje Inteligencia', text, url }).catch(() => {});
+    } else {
+      window.open(`https://x.com/intent/tweet?text=${encodeURIComponent(text + '\n' + url)}`, '_blank');
+    }
+  }
+
   return (
     <div className="min-h-screen bg-[#020817] text-slate-100">
       {/* Hero */}
@@ -137,7 +149,7 @@ export default function EarlyExplorersClient() {
         </p>
 
         {/* Spots counter */}
-        <div className="inline-flex items-center gap-3 bg-emerald-400/10 border border-emerald-400/20 rounded-xl px-6 py-3 mb-6">
+        <div className="inline-flex items-center gap-3 bg-emerald-400/10 border border-emerald-400/20 rounded-xl px-6 py-3 mb-4">
           <div className="text-center">
             <div className="font-mono text-2xl text-emerald-400 font-bold">{foundingCount}</div>
             <div className="font-mono text-xs text-slate-500 tracking-widest">UNIDOS</div>
@@ -154,6 +166,16 @@ export default function EarlyExplorersClient() {
           </div>
         </div>
 
+        {/* Share link */}
+        <div className="mb-6">
+          <button
+            onClick={() => handleShare()}
+            className="text-xs font-mono text-slate-500 hover:text-emerald-400 transition underline underline-offset-4"
+          >
+            ↗ Compartir esta página
+          </button>
+        </div>
+
         {!submitted ? (
           !showForm ? (
             <div>
@@ -165,7 +187,7 @@ export default function EarlyExplorersClient() {
               </button>
               {spotsLeft <= 10 && spotsLeft > 0 && (
                 <p className="text-amber-400 font-mono text-xs mt-3 animate-pulse">
-                  ⚠️ Solo quedan {spotsLeft} spots founding
+                  ⚠ Solo quedan {spotsLeft} spots founding
                 </p>
               )}
             </div>
@@ -242,7 +264,13 @@ export default function EarlyExplorersClient() {
           <div className="bg-emerald-400/10 border border-emerald-400/20 rounded-xl p-6 max-w-md mx-auto">
             <div className="text-3xl mb-2">🌍</div>
             <p className="text-emerald-400 font-mono font-bold text-sm tracking-widest uppercase">¡Estás en el mapa!</p>
-            <p className="text-slate-400 text-sm mt-2">Tu marca forma parte de la historia del proyecto.</p>
+            <p className="text-slate-400 text-sm mt-2 mb-4">Tu marca forma parte de la historia del proyecto.</p>
+            <button
+              onClick={() => handleShare(foundingCount)}
+              className="inline-flex items-center gap-2 bg-slate-800 border border-white/10 text-slate-300 text-sm font-mono px-5 py-2 rounded-lg hover:border-emerald-400/40 hover:text-emerald-400 transition"
+            >
+              ↗ COMPARTIR MI SPOT
+            </button>
           </div>
         )}
       </div>
