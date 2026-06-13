@@ -64,6 +64,13 @@ export async function middleware(request: NextRequest) {
   }
   const pathname = request.nextUrl.pathname;
 
+// SEO FIX: normalize URL casing
+if (pathname !== pathname.toLowerCase()) {
+  const url = request.nextUrl.clone();
+  url.pathname = pathname.toLowerCase();
+  return NextResponse.redirect(url, 301);
+}
+
   // Rate limiting para API (excepto cron/health)
   if (pathname.startsWith('/api/') && !pathname.startsWith('/api/cron') && pathname !== '/api/health') {
     if (!checkRateLimit(request)) {
