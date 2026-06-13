@@ -24,6 +24,7 @@ echo ">>> Build local..."
 npm run build
 echo ">>> Subiendo .next al servidor..."
 rsync -az --delete -e "ssh -p 22" .next/ deploy@178.105.80.193:/var/www/viajeinteligencia/.next/
+rsync -az -e "ssh -p 22" public/ deploy@178.105.80.193:/var/www/viajeinteligencia/public/
 echo ">>> Reiniciando PM2..."
 ssh deploy@178.105.80.193 "cd /var/www/viajeinteligencia && git stash && git pull && git stash drop && pm2 restart viajeinteligencia"
 echo ">>> Purgando Cloudflare..."
