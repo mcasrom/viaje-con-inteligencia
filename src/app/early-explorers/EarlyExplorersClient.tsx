@@ -127,7 +127,7 @@ export default function EarlyExplorersClient() {
     if (navigator.share) {
       navigator.share({ title: 'Early Explorers – Viaje Inteligencia', text, url }).catch(() => {});
     } else {
-      window.open(`https://x.com/intent/tweet?text=${encodeURIComponent(text + '\n' + url)}`, '_blank');
+      navigator.clipboard.writeText(url).then(() => alert('¡Link copiado!')).catch(() => {});
     }
   }
 
