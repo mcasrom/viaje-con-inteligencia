@@ -12,13 +12,23 @@ if (!BASE) {
 }
 
 const visited = new Set();
+const MAX_PAGES = 50;
+
+// 🔥 FIX: headers tipo navegador (evita 403 Cloudflare/WAF)
+const httpClient = axios.create({
+  timeout: 10000,
+  validateStatus: () => true,
+  headers: {
+    "User-Agent":
+      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36",
+    "Accept":
+      "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+  },
+});
 
 async function checkUrl(url) {
   try {
-    const res = await axios.get(url, {
-      timeout: 10000,
-      validateStatus: () => true,
-    });
+    const res = await httpClient.get(url);
 
     const status = res.status;
     const html = res.data || "";
@@ -46,7 +56,7 @@ async function checkUrl(url) {
       console.log(chalk.green(`[${status}] ${url}`));
     }
 
-    return { url, status, isSoft404, length };
+    return { url, status, isSoft404 };
   } catch (e) {
     console.log(chalk.red(`[ERROR] ${url}`));
     return { url, status: "ERR", error: true };
@@ -54,34 +64,43 @@ async function checkUrl(url) {
 }
 
 async function crawl(url, depth = 2) {
-  if (visited.has(url) || depth === 0) return;
+  if (visited.has(url) || visited.size >= MAX_PAGES || depth === 0) return;
+
   visited.add(url);
 
-  const res = await axios.get(url, {
-    timeout: 10000,
-    validateStatus: () => true,
-  });
+  console.log(chalk.blue(`→ Crawling: ${url}`));
 
-  const html = res.data;
+  try {
+    const res = await httpClient.get(url);
 
-  if (typeof html !== "string") return;
+    const html = res.data;
+    if (typeof html !== "string") return;
 
-  const $ = cheerio.load(html);
+    const $ = cheerio.load(html);
 
-  const links = $("a")
-    .map((_, el) => $(el).attr("href"))
-    .get()
-    .filter(Boolean)
-    .map((l) => new URL(l, BASE).href)
-    .filter((l) => l.startsWith(BASE));
+    const links = $("a")
+      .map((_, el) => $(el).attr("href"))
+      .get()
+      .filter(Boolean)
+      .map((l) => new URL(l, BASE).href)
+      .filter((l) => l.startsWith(BASE));
 
-  for (const link of links) {
-    await checkUrl(link);
-    await crawl(link, depth - 1);
+    for (const link of links) {
+      await checkUrl(link);
+      await crawl(link, depth - 1);
+    }
+  } catch (e) {
+    console.log(chalk.red(`[CRAWL ERROR] ${url}`));
   }
 }
 
 (async () => {
-  console.log("Starting audit:", BASE);
+  console.log(chalk.blue("Starting audit:"), BASE);
+
+  await checkUrl(BASE);
+
   await crawl(BASE, 2);
+
+  console.log(chalk.magenta("\nDONE"));
+  console.log("Pages scanned:", visited.size);
 })();
