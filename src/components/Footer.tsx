@@ -60,6 +60,7 @@ export default function Footer() {
               <li><Link href="/comparar" className="text-slate-400 hover:text-white transition-colors">Comparar</Link></li>
               <li><Link href="/rutas" className="text-slate-400 hover:text-white transition-colors">Rutas</Link></li>
               <li><Link href="/rutas/planificar" className="text-slate-400 hover:text-white transition-colors">Planificar Ruta</Link></li>
+              <li><Link href="/radius" className="text-slate-400 hover:text-white transition-colors">Radius</Link></li>
               <li><Link href="/relojes" className="text-slate-400 hover:text-white transition-colors">Horario Global</Link></li>
               <li><Link href="/eventos" className="text-slate-400 hover:text-white transition-colors">Eventos</Link></li>
               <li><Link href="/precio-api" className="text-slate-400 hover:text-white transition-colors">API B2B</Link></li>

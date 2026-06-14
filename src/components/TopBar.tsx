@@ -1,8 +1,7 @@
 'use client';
 import Link from 'next/link';
 import LanguageSelector from './LanguageSelector';
-import { Globe, Newspaper, Bell, Sparkles } from 'lucide-react';
-
+import { Globe, Newspaper, Bell, Sparkles, Radio } from 'lucide-react';
 export default function TopBar() {
   return (
     <div className="fixed top-0 left-0 right-0 z-50 bg-slate-900/95 backdrop-blur-sm border-b border-slate-800">
@@ -24,6 +23,9 @@ export default function TopBar() {
           <Link href="/alertas" className="flex items-center gap-1 px-3 py-1.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-all text-xs font-medium relative">
             <Bell className="w-3.5 h-3.5 text-amber-400" />Alertas
             <span className="absolute top-1 right-1 w-1.5 h-1.5 bg-red-500 rounded-full" />
+          </Link>
+          <Link href="/radius" className="flex items-center gap-1 px-3 py-1.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-all text-xs font-medium">
+            <Radio className="w-3.5 h-3.5 text-blue-400" />Radius
           </Link>
           <Link href="/itinerarios/espana" className="flex items-center gap-1 px-3 py-1.5 text-amber-400 hover:text-amber-300 hover:bg-amber-500/10 rounded-lg transition-all text-xs font-medium">
             🇪🇸 España
