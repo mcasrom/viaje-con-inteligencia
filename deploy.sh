@@ -26,41 +26,26 @@ fi
 echo "✅ Git OK"
 
 # =========================
-# 2. BUILD LIMPIO
+# 2. DEPLOY EN SERVIDOR (BUILD ALL REMOTO)
 # =========================
-echo ">>> Build local..."
-rm -rf .next
-npm run build
-
-# =========================
-# 3. RSYNC BUILD
-# =========================
-echo ">>> Subiendo build al servidor..."
-
-rsync -az --delete \
-  --exclude="cache" \
-  --exclude="dev" \
-  -e "ssh -p 22" \
-  .next/ deploy@178.105.80.193:/var/www/viajeinteligencia/.next/
-
-rsync -az -e "ssh -p 22" \
-  public/ deploy@178.105.80.193:/var/www/viajeinteligencia/public/
-
-# =========================
-# 4. RESTART SERVER (FIX REAL)
-# =========================
-echo ">>> Reiniciando PM2..."
+echo ">>> Deploy en servidor..."
 
 ssh deploy@178.105.80.193 "
-cd /var/www/viajeinteligencia &&
-git fetch origin main &&
-git reset --hard origin/main &&
-git clean -fd &&
+set -e
+cd /var/www/viajeinteligencia
+
+git fetch origin main
+git reset --hard origin/main
+git clean -fd
+
+npm install
+npm run build
+
 pm2 restart viajeinteligencia
 "
 
 # =========================
-# 5. PURGA CLOUDFLARE
+# 3. PURGA CLOUDFLARE
 # =========================
 echo ">>> Purgando Cloudflare..."
 
