@@ -272,7 +272,7 @@ export default function AdminAnalyticsPage() {
                         { name: 'Mobile',  value: latestNginx.mobile_hits },
                         { name: 'Desktop', value: latestNginx.desktop_hits },
                       ]}
-                      cx="50%" cy="50%" outerRadius={70} dataKey="value" label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                      cx="50%" cy="50%" outerRadius={70} dataKey="value" label={({ name, percent }) => `${name} ${((percent ?? 0) * 100).toFixed(0)}%`}
                     >
                       <Cell fill="#3b82f6" />
                       <Cell fill="#64748b" />
