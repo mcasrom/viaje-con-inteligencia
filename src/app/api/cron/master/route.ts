@@ -660,6 +660,22 @@ async function runWeeklyDigest(): Promise<any> {
     results.bluesky = await publishToBlueSky(short, lang);
     results.telegram_subscribers = await publishToTelegramSubscribers(full);
 
+    // 3. Nginx traffic email via Resend (solo lunes)
+    try {
+      const { data: nx } = await supabaseAdmin.from('nginx_traffic_stats').select('*').order('week_start', { ascending: false }).limit(1).single();
+      if (nx && resend) {
+        const tp = (nx.top_pages||[]).slice(0,8).map((p:any,i:number)=>`<tr><td>${i+1}</td><td style="font-family:monospace">${p.label||p.path}</td><td><b>${p.hits}</b></td></tr>`).join('');
+        const tc = (nx.top_pais||[]).slice(0,8).map((p:any)=>`<tr><td><b>${p.code}</b></td><td>${p.hits}</td></tr>`).join('');
+        await resend.emails.send({
+          from: 'Viaje con Inteligencia <notificaciones@viajeinteligencia.com>',
+          to: 'gestion@viajeinteligencia.com',
+          subject: `📊 Nginx Traffic — semana ${nx.week_start}`,
+          html: `<div style="font-family:system-ui;background:#0f172a;color:#e2e8f0;padding:24px;border-radius:10px;max-width:600px"><h2 style="color:#10b981;margin-top:0">📊 Nginx — Tráfico Humano Real</h2><p>Semana <b>${nx.week_start}</b> · Hits: <b>${nx.human_hits}</b> · Bots: <b>${nx.bot_ratio_pct}%</b> · Mobile: <b>${nx.mobile_ratio_pct}%</b></p><h3 style="color:#10b981">Top páginas</h3><table style="border-collapse:collapse;width:100%">${tp}</table><h3 style="color:#10b981">Top países</h3><table>${tc}</table><p style="color:#64748b;font-size:12px">Dashboard: https://viajeinteligencia.com/admin/analytics</p></div>`,
+        });
+        results.nginx_email = { sent: true, week: nx.week_start };
+      } else { results.nginx_email = { skipped: 'no data' }; }
+    } catch(e: any) { results.nginx_email = { error: e.message }; }
+
     return { status: 'ok', ...results };
   } catch (e: any) {
     return { status: 'error', error: e.message };
