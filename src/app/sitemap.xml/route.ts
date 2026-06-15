@@ -7,6 +7,13 @@ import path from 'path';
 
 export const dynamic = 'force-dynamic';
 
+// 🔥 ECOSISTEMA (NUEVO)
+const ECOSYSTEM = [
+  'https://tools.viajeinteligencia.com',
+  'https://georisk.viajeinteligencia.com',
+  'https://gc.motors.viajeinteligencia.com'
+];
+
 // Páginas a excluir del sitemap (privadas, dev, internas)
 const EXCLUIR = new Set([
   '/dashboard',
@@ -29,15 +36,14 @@ const EXCLUIR = new Set([
   '/feed',
   '/viajes/clima',
   '/viaje-compartido',
-  '/alertas',     // Privada - requiere rastreo selectivo
-  '/chat',        // Privada - sesión de usuario
-  '/comparar',    // Privada - sesión de usuario
+  '/alertas',
+  '/chat',
+  '/comparar',
 ]);
 
-// Cache en memoria para el sitemap (se regenera cada 6h)
 let cachedXml: string | null = null;
 let cacheTimestamp = 0;
-const CACHE_TTL = 6 * 60 * 60 * 1000; // 6 horas
+const CACHE_TTL = 6 * 60 * 60 * 1000;
 
 // Prioridad por ruta
 function getPriority(ruta: string): string {
@@ -60,10 +66,15 @@ function getChangefreq(ruta: string): string {
 }
 
 function buildUrl(loc: string, priority: string, changefreq: string, lastmod: string) {
-  return `  <url>\n    <loc>${loc}</loc>\n    <lastmod>${lastmod}</lastmod>\n    <changefreq>${changefreq}</changefreq>\n    <priority>${priority}</priority>\n  </url>`;
+  return `  <url>
+    <loc>${loc}</loc>
+    <lastmod>${lastmod}</lastmod>
+    <changefreq>${changefreq}</changefreq>
+    <priority>${priority}</priority>
+  </url>`;
 }
 
-// Escanea src/app buscando page.tsx estáticos automáticamente
+// Escanea rutas del proyecto WWW
 function getStaticRoutes(): string[] {
   const appDir = path.join(process.cwd(), 'src/app');
   const routes: string[] = [];
@@ -72,23 +83,25 @@ function getStaticRoutes(): string[] {
     const entries = fs.readdirSync(dir, { withFileTypes: true });
     for (const entry of entries) {
       if (!entry.isDirectory()) continue;
+
       const name = entry.name;
-      // Saltar rutas dinámicas, api, privadas
       if (name.startsWith('[') || name.startsWith('(') || name === 'api' || name === 'admin') continue;
+
       const ruta = `${base}/${name}`;
       const pageFile = path.join(dir, name, 'page.tsx');
+
       if (fs.existsSync(pageFile) && !EXCLUIR.has(ruta)) {
         routes.push(ruta);
       }
-      // Recursivo para subrutas
+
       scan(path.join(dir, name), ruta);
     }
   }
 
-  // Raíz
   if (fs.existsSync(path.join(appDir, 'page.tsx'))) {
     routes.push('');
   }
+
   scan(appDir, '');
   return routes;
 }
@@ -96,7 +109,6 @@ function getStaticRoutes(): string[] {
 export async function GET() {
   const now = Date.now();
 
-  // Servir cache si está fresco
   if (cachedXml && (now - cacheTimestamp) < CACHE_TTL) {
     return new NextResponse(cachedXml, {
       status: 200,
@@ -112,29 +124,34 @@ export async function GET() {
   try {
     let urls = '';
 
-    // 1. Rutas estáticas — escaneadas automáticamente del filesystem
+    // 1. WWW rutas
     const staticRoutes = getStaticRoutes();
     for (const ruta of staticRoutes) {
-      const loc = `${BASE_URL}${ruta}`;
-      urls += buildUrl(loc, getPriority(ruta), getChangefreq(ruta), today) + '\n';
+      urls += buildUrl(`${BASE_URL}${ruta}`, getPriority(ruta), getChangefreq(ruta), today) + '\n';
     }
 
-    // 2. Páginas de países /pais/[codigo] y /coste/[codigo]
+    // 2. Países
     const paises = getTodosLosPaises();
     for (const pais of paises) {
       urls += buildUrl(`${BASE_URL}/pais/${pais.codigo}`, '0.8', 'weekly', today) + '\n';
       urls += buildUrl(`${BASE_URL}/coste/${pais.codigo}`, '0.85', 'weekly', today) + '\n';
     }
 
-    // 3. Posts del blog /blog/[slug]
+    // 3. Blog
     const blogSlugs = getPostSlugs();
     for (const slug of blogSlugs) {
       urls += buildUrl(`${BASE_URL}/blog/${slug}`, '0.7', 'monthly', today) + '\n';
     }
 
-    const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}</urlset>`;
+    // 🔥 4. ECOSISTEMA (NUEVO)
+    for (const url of ECOSYSTEM) {
+      urls += buildUrl(url, '0.95', 'daily', today) + '\n';
+    }
 
-    // Guardar en cache
+    const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${urls}</urlset>`;
+
     cachedXml = xml;
     cacheTimestamp = now;
 
@@ -145,11 +162,21 @@ export async function GET() {
         'Cache-Control': 'public, max-age=86400, stale-while-revalidate=604800',
       },
     });
+
   } catch (error) {
     console.error('Sitemap error:', error);
+
     return new NextResponse(
-      `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n  <url>\n    <loc>${BASE_URL}</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>[...]`,
-      { status: 200, headers: { 'Content-Type': 'application/xml', 'Cache-Control': 'public, max-age=3600' } }
+      `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>${BASE_URL}</loc>
+  </url>
+</urlset>`,
+      {
+        status: 200,
+        headers: { 'Content-Type': 'application/xml' }
+      }
     );
   }
 }
