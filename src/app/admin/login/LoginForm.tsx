@@ -45,7 +45,7 @@ export default function LoginForm({ from }: { from: string }) {
       const data = await res.json();
 
       if (data.success) {
-        window.location.href = data.redirect;
+        window.location.href = from || data.redirect;
       } else {
         setError(data.error || 'Error desconocido');
       }
