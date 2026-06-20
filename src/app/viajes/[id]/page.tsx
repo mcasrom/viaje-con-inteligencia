@@ -10,6 +10,7 @@ import PDFExportButton from '@/components/PDFExportButton';
 import { ShareTrip } from '@/components/ShareTrip';
 import { trackActivity } from '@/components/UserLevel';
 import { generateIcs } from '@/lib/ics';
+import ShareItineraryPhoto from '@/components/ShareItineraryPhoto';
 
 const statusOptions: { value: Trip['status']; label: string }[] = [
   { value: 'draft', label: 'Borrador' },
@@ -265,6 +266,9 @@ export default function ViajeDetallePage() {
             </button>
             {trip && trip.itinerary_raw && (
               <PDFExportButton trip={trip} />
+            )}
+            {trip && (
+              <ShareItineraryPhoto trip={trip} riskScore={riskScore} />
             )}
             <ShareTrip tripId={tripId} tripName={trip.name} />
             <button
