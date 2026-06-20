@@ -171,7 +171,7 @@ async function saveToHistory(
 
   try {
     if (records[0]) {
-      const { error } = await supabaseAdmin.from('ine_tourism_history').upsert(records[0], { onConflict: 'date' });
+      const { error } = await supabaseAdmin.from('ine_tourism_history').upsert(records[0] as any, { onConflict: 'date' });
       if (!error) insertedRecords.tourism++;
     }
   } catch (e) {
