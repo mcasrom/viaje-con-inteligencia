@@ -33,7 +33,7 @@ async function loadModels(): Promise<ModelsMap | null> {
     const { data } = await supabaseAdmin
       .from('ml_models')
       .select('model_type, model_data')
-      .eq('model_version', 'v1');
+      .eq('model_version', 'v5');  // debe coincidir con MODEL_VERSION en model-trainer.ts
     if (!data || data.length === 0) return null;
     const RF = await import('ml-random-forest');
     const models: Partial<ModelsMap> = {};
