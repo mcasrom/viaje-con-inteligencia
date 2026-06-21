@@ -77,6 +77,23 @@ export default function ShareItineraryPhoto({ trip, riskScore }: ShareItineraryP
       canvas.height = H;
       const ctx = canvas.getContext('2d')!;
 
+      // Polyfill roundRect para Firefox/Safari
+      if (!ctx.roundRect) {
+        (ctx as any).roundRect = function(x: number, y: number, w: number, h: number, r: number) {
+          this.beginPath();
+          this.moveTo(x + r, y);
+          this.lineTo(x + w - r, y);
+          this.quadraticCurveTo(x + w, y, x + w, y + r);
+          this.lineTo(x + w, y + h - r);
+          this.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+          this.lineTo(x + r, y + h);
+          this.quadraticCurveTo(x, y + h, x, y + h - r);
+          this.lineTo(x, y + r);
+          this.quadraticCurveTo(x, y, x + r, y);
+          this.closePath();
+        };
+      };
+
       // ── Fondo: foto del usuario redimensionada ──────────────────────────
       const scale = Math.max(W / userPhoto.width, H / userPhoto.height);
       const sw = userPhoto.width * scale;

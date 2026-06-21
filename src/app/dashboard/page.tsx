@@ -178,9 +178,18 @@ export default function DashboardPage() {
     }
   };
 
+  const getToken = async (): Promise<string> => {
+    if (!supabaseClient) return '';
+    const { data } = await supabaseClient.auth.getSession();
+    return data.session?.access_token || '';
+  };
+
   const loadFavorites = async () => {
     try {
-      const response = await fetch('/api/auth/favorites');
+      const token = await getToken();
+      const response = await fetch('/api/auth/favorites', {
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      });
       if (response.ok) {
         const data = await response.json();
         setFavorites(data.favorites || []);
@@ -216,9 +225,13 @@ export default function DashboardPage() {
 
   const addFavorite = async (countryCode: string) => {
     try {
+      const token = await getToken();
       const response = await fetch('/api/auth/favorites', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
         body: JSON.stringify({ countryCode }),
       });
 
@@ -244,10 +257,10 @@ export default function DashboardPage() {
 
   const removeFavorite = async (countryCode: string) => {
     try {
-      
+      const token = await getToken();
       const response = await fetch(`/api/auth/favorites?countryCode=${countryCode}`, {
         method: 'DELETE',
-        
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
 
       const data = await response.json();

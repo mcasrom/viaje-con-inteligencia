@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Calendar, Plane, Plus, Trash2, Loader2, MapPin, ChevronRight, Clock, CheckCircle, XCircle } from 'lucide-react';
 import { paisesData } from '@/data/paises';
+import { getBrowserClient } from '@/lib/supabase-browser';
 
 interface Trip {
   id: string;
@@ -28,6 +29,13 @@ const STATUS_LABELS: Record<string, string> = {
   draft: 'Borrador', planned: 'Planificado', completed: 'Completado', cancelled: 'Cancelado',
 };
 
+async function getToken(): Promise<string> {
+  const client = getBrowserClient();
+  if (!client) return '';
+  const { data } = await client.auth.getSession();
+  return data.session?.access_token || '';
+}
+
 export default function TripTracker() {
   const [trips, setTrips] = useState<Trip[]>([]);
   const [loading, setLoading] = useState(true);
@@ -40,7 +48,10 @@ export default function TripTracker() {
 
   const loadTrips = async () => {
     try {
-      const res = await fetch('/api/trips');
+      const token = await getToken();
+      const res = await fetch('/api/trips', {
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      });
       if (res.ok) {
         const data = await res.json();
         setTrips(data.trips || []);
@@ -57,10 +68,14 @@ export default function TripTracker() {
     if (!name || !countryCode) return;
     setSaving(true);
     try {
+      const token = await getToken();
       const pais = paisesData[countryCode as keyof typeof paisesData];
       const res = await fetch('/api/trips', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
         body: JSON.stringify({
           name,
           destination: pais?.nombre || countryCode,
@@ -76,10 +91,7 @@ export default function TripTracker() {
       if (res.ok) {
         await loadTrips();
         setShowForm(false);
-        setName('');
-        setCountryCode('');
-        setStartDate('');
-        setEndDate('');
+        setName(''); setCountryCode(''); setStartDate(''); setEndDate('');
       }
     } catch {} finally {
       setSaving(false);
@@ -88,17 +100,13 @@ export default function TripTracker() {
 
   const handleDelete = async (id: string) => {
     try {
-      const res = await fetch(`/api/trips/${id}`, { method: 'DELETE' });
+      const token = await getToken();
+      const res = await fetch(`/api/trips/${id}`, {
+        method: 'DELETE',
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      });
       if (res.ok) setTrips(trips.filter(t => t.id !== id));
     } catch {}
-  };
-
-  const daysUntil = (date: string) => {
-    const diff = Math.ceil((new Date(date).getTime() - Date.now()) / 86400000);
-    if (diff < 0) return 'Pasado';
-    if (diff === 0) return '¡Hoy!';
-    if (diff === 1) return 'Mañana';
-    return `En ${diff} días`;
   };
 
   const upcoming = trips.filter(t => t.status === 'planned' && t.start_date && new Date(t.start_date).getTime() >= Date.now() - 86400000)
@@ -124,19 +132,15 @@ export default function TripTracker() {
 
         {showForm && (
           <form onSubmit={handleCreate} className="mt-4 p-4 bg-slate-700/50 rounded-xl border border-slate-600 space-y-3">
-            <div>
-              <input value={name} onChange={e => setName(e.target.value)} placeholder="Nombre del viaje" required
-                className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-sm text-white placeholder-slate-500 focus:border-blue-500 focus:outline-none" />
-            </div>
-            <div>
-              <select value={countryCode} onChange={e => setCountryCode(e.target.value)} required
-                className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-sm text-white focus:border-blue-500 focus:outline-none">
-                <option value="">Seleccionar país...</option>
-                {Object.values(paisesData).filter((p: any) => p.codigo !== 'cu').sort((a: any, b: any) => a.nombre.localeCompare(b.nombre)).map((p: any) => (
-                  <option key={p.codigo} value={p.codigo}>{p.bandera} {p.nombre}</option>
-                ))}
-              </select>
-            </div>
+            <input value={name} onChange={e => setName(e.target.value)} placeholder="Nombre del viaje" required
+              className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-sm text-white placeholder-slate-500 focus:border-blue-500 focus:outline-none" />
+            <select value={countryCode} onChange={e => setCountryCode(e.target.value)} required
+              className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-sm text-white focus:border-blue-500 focus:outline-none">
+              <option value="">Seleccionar país...</option>
+              {Object.values(paisesData).filter((p: any) => p.codigo !== 'cu').sort((a: any, b: any) => a.nombre.localeCompare(b.nombre)).map((p: any) => (
+                <option key={p.codigo} value={p.codigo}>{p.bandera} {p.nombre}</option>
+              ))}
+            </select>
             <div className="grid grid-cols-2 gap-2">
               <div>
                 <label className="text-[10px] text-slate-500 font-medium">Salida</label>
@@ -171,33 +175,26 @@ export default function TripTracker() {
           <div className="text-center py-6">
             <Plane className="w-8 h-8 text-slate-600 mx-auto mb-2" />
             <p className="text-slate-400 text-sm">No tienes viajes planificados</p>
-            <button onClick={() => setShowForm(true)}
-              className="mt-2 text-xs text-blue-400 hover:text-blue-300">Crear tu primer viaje</button>
+            <button onClick={() => setShowForm(true)} className="mt-2 text-xs text-blue-400 hover:text-blue-300">Crear tu primer viaje</button>
           </div>
         ) : (
           <div className="space-y-2">
             {upcoming.length > 0 && (
               <>
                 <p className="text-[10px] text-slate-500 font-medium uppercase tracking-wider">Próximos</p>
-                {upcoming.map(trip => (
-                  <TripRow key={trip.id} trip={trip} onDelete={handleDelete} />
-                ))}
+                {upcoming.map(trip => <TripRow key={trip.id} trip={trip} onDelete={handleDelete} />)}
               </>
             )}
             {drafts.length > 0 && (
               <>
                 <p className="text-[10px] text-slate-500 font-medium uppercase tracking-wider mt-3">Borradores</p>
-                {drafts.map(trip => (
-                  <TripRow key={trip.id} trip={trip} onDelete={handleDelete} />
-                ))}
+                {drafts.map(trip => <TripRow key={trip.id} trip={trip} onDelete={handleDelete} />)}
               </>
             )}
             {past.length > 0 && (
               <>
                 <p className="text-[10px] text-slate-500 font-medium uppercase tracking-wider mt-3">Historial</p>
-                {past.slice(0, 3).map(trip => (
-                  <TripRow key={trip.id} trip={trip} onDelete={handleDelete} compact />
-                ))}
+                {past.slice(0, 3).map(trip => <TripRow key={trip.id} trip={trip} onDelete={handleDelete} compact />)}
               </>
             )}
           </div>
@@ -209,8 +206,7 @@ export default function TripTracker() {
 
 function TripRow({ trip, onDelete, compact }: { trip: Trip; onDelete: (id: string) => void; compact?: boolean }) {
   const pais = trip.country_code ? paisesData[trip.country_code as keyof typeof paisesData] : null;
-  const [now] = useState(() => Date.now());
-  const isUpcoming = trip.start_date && new Date(trip.start_date) >= new Date(now - 86400000);
+  const isUpcoming = trip.start_date && new Date(trip.start_date) >= new Date(Date.now() - 86400000);
 
   return (
     <div className="flex items-center gap-3 bg-slate-700/30 hover:bg-slate-700/50 rounded-xl p-3 transition-colors group">
@@ -229,9 +225,7 @@ function TripRow({ trip, onDelete, compact }: { trip: Trip; onDelete: (id: strin
                 {new Date(trip.start_date).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' })}
                 {trip.end_date && ` - ${new Date(trip.end_date).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' })}`}
               </span>
-              {isUpcoming && (
-                <span className="text-[10px] text-blue-400 font-medium">{daysUntil(trip.start_date)}</span>
-              )}
+              {isUpcoming && <span className="text-[10px] text-blue-400 font-medium">{daysUntil(trip.start_date)}</span>}
             </>
           )}
         </div>
@@ -240,7 +234,7 @@ function TripRow({ trip, onDelete, compact }: { trip: Trip; onDelete: (id: strin
         <Link href={`/viajes/${trip.id}`} className="p-1.5 text-slate-500 hover:text-white rounded-lg hover:bg-slate-700 transition-colors">
           <ChevronRight className="w-4 h-4" />
         </Link>
-        {compact ? null : (
+        {!compact && (
           <button onClick={() => onDelete(trip.id)} className="p-1.5 text-slate-500 hover:text-red-400 rounded-lg hover:bg-slate-700 transition-colors opacity-0 group-hover:opacity-100">
             <Trash2 className="w-3.5 h-3.5" />
           </button>
