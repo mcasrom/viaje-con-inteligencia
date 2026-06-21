@@ -179,8 +179,10 @@ export default function DashboardPage() {
   };
 
   const getToken = async (): Promise<string> => {
-    if (!supabaseClient) return '';
-    const { data } = await supabaseClient.auth.getSession();
+    const { getBrowserClient } = await import('@/lib/supabase-browser');
+    const client = getBrowserClient();
+    if (!client) return '';
+    const { data } = await client.auth.getSession();
     return data.session?.access_token || '';
   };
 

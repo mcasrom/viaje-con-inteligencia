@@ -1,4 +1,4 @@
-const CACHE_NAME = 'viaje-ia-v7';
+const CACHE_NAME = 'viaje-ia-v8';
 const STATIC_CACHE = CACHE_NAME + '-static';
 const PAGE_CACHE = CACHE_NAME + '-pages';
 const ASSET_CACHE = CACHE_NAME + '-assets';
