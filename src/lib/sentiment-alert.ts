@@ -1,4 +1,4 @@
-import { supabase } from '@/lib/supabase';
+import { supabaseAdmin as supabase } from '@/lib/supabase';
 import { createLogger } from '@/lib/logger';
 import { extractCountryCodes, getCountryName } from '@/lib/country-name-map';
 import { publishToTelegramChannel } from '@/lib/social-publisher';

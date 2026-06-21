@@ -206,3 +206,11 @@ export async function deleteTrip(userId: string, tripId: string) {
     .eq('id', tripId);
   return { error };
 }
+
+// Admin client — bypasses RLS, solo usar en server-side (API routes, crons)
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
+export const supabaseAdmin = supabaseUrl && supabaseServiceKey
+  ? createClient(supabaseUrl, supabaseServiceKey, {
+      auth: { autoRefreshToken: false, persistSession: false }
+    })
+  : null!;
