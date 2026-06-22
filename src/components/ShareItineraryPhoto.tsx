@@ -309,33 +309,22 @@ export default function ShareItineraryPhoto({ trip, riskScore }: ShareItineraryP
                   alt="Imagen generada"
                   className="w-full rounded-xl border border-slate-600 shadow-lg"
                 />
-                <div className="grid grid-cols-2 gap-2">
+                <div className="space-y-2">
+                  <button
+                    onClick={handleNativeShare}
+                    className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold rounded-xl transition-colors"
+                  >
+                    <Share2 className="w-4 h-4" /> Compartir imagen
+                  </button>
                   <button
                     onClick={handleDownload}
-                    className="flex items-center justify-center gap-2 px-4 py-2.5 bg-slate-700 hover:bg-slate-600 text-white text-sm font-semibold rounded-xl transition-colors"
+                    className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-slate-700 hover:bg-slate-600 text-white text-sm font-semibold rounded-xl transition-colors"
                   >
-                    <Download className="w-4 h-4" /> Descargar
+                    <Download className="w-4 h-4" /> Descargar imagen
                   </button>
-                  {canShareFiles ? (
-                    <button
-                      onClick={handleNativeShare}
-                      className="flex items-center justify-center gap-2 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold rounded-xl transition-colors"
-                    >
-                      <Share2 className="w-4 h-4" /> Compartir
-                    </button>
-                  ) : (
-                    <button
-                      onClick={handleDownload}
-                      className="flex items-center justify-center gap-2 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold rounded-xl transition-colors"
-                    >
-                      <Download className="w-4 h-4" /> Guardar imagen
-                    </button>
-                  )}
                 </div>
                 <p className="text-xs text-slate-500 text-center">
-                  {canShareFiles
-                    ? 'En móvil puedes compartir directamente a WhatsApp, Instagram o Telegram'
-                    : 'Descarga la imagen y adjúntala manualmente en tus redes sociales'}
+                  Descarga la imagen y adjúntala en WhatsApp, Instagram o Telegram
                 </p>
                 {/* Regenerar con otra foto */}
                 <button
