@@ -5,7 +5,6 @@ import { supabaseAdmin, isSupabaseAdminConfigured } from '@/lib/supabase-admin';
 import { ArrowLeft, MapPin, Clock, DollarSign, Sparkles, Calendar } from 'lucide-react';
 import TripStarRating from '@/components/TripStarRating';
 import ShareDestacadoPhoto from '@/components/ShareDestacadoPhoto';
-import ShareDestacadoPhoto from '@/components/ShareDestacadoPhoto';
 
 export const dynamic = 'force-dynamic';
 
