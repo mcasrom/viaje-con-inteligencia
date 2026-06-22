@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter, useParams } from 'next/navigation';
 import { ArrowLeft, MapPin, Calendar, DollarSign, Sparkles, Loader2, Send, Plane, Clock, Pencil, X, Check, FileDown, Download, Globe, GlobeOff, Shield, Info } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
+import { getBrowserClient } from '@/lib/supabase-browser';
 import type { Trip } from '@/lib/supabase';
 import PDFExportButton from '@/components/PDFExportButton';
 import { ShareTrip } from '@/components/ShareTrip';
@@ -52,6 +53,13 @@ export default function ViajeDetallePage() {
   } | null>(null);
   const [riskLoading, setRiskLoading] = useState(false);
 
+  const getToken = async (): Promise<string> => {
+    const client = getBrowserClient();
+    if (!client) return '';
+    const { data } = await client.auth.getSession();
+    return data.session?.access_token || '';
+  };
+
   useEffect(() => {
     if (!authLoading && !user) {
       router.push('/');
@@ -65,9 +73,10 @@ export default function ViajeDetallePage() {
       try {
         
         
-        const res = await fetch(`/api/trips/${tripId}`, { 
+        const token = await getToken();
+        const res = await fetch(`/api/trips/${tripId}`, {
           cache: 'no-store',
-          
+          headers: token ? { Authorization: `Bearer ${token}` } : {},
         });
         if (res.ok) {
           const data = await res.json();
@@ -90,7 +99,10 @@ export default function ViajeDetallePage() {
   useEffect(() => {
     if (!trip || !trip.country_code) return;
     setRiskLoading(true);
-    fetch(`/api/trips/${tripId}/risk-score`)
+    getToken().then(token =>
+    fetch(`/api/trips/${tripId}/risk-score`, {
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+    }))
       .then(r => r.ok ? r.json() : null)
       .then(data => setRiskScore(data))
       .finally(() => setRiskLoading(false));
@@ -116,9 +128,13 @@ export default function ViajeDetallePage() {
         setTrip(prev => prev ? { ...prev, itinerary_raw: data.itinerary } : null);
         
         
+        const patchToken = await getToken();
         await fetch(`/api/trips/${tripId}`, {
           method: 'PATCH',
-          
+          headers: {
+            'Content-Type': 'application/json',
+            ...(patchToken ? { Authorization: `Bearer ${patchToken}` } : {}),
+          },
           body: JSON.stringify({
             itinerary_raw: data.itinerary,
             updated_at: new Date().toISOString(),
@@ -141,9 +157,13 @@ export default function ViajeDetallePage() {
     try {
       
 
+      const saveToken = await getToken();
       const res = await fetch(`/api/trips/${tripId}`, {
         method: 'PATCH',
-        
+        headers: {
+          'Content-Type': 'application/json',
+          ...(saveToken ? { Authorization: `Bearer ${saveToken}` } : {}),
+        },
         body: JSON.stringify({
           name: editName,
           status: editStatus,
@@ -172,8 +192,13 @@ export default function ViajeDetallePage() {
     const newValue = !trip.is_public;
 
     try {
+      const pubToken = await getToken();
       const res = await fetch(`/api/trips/${tripId}`, {
         method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(pubToken ? { Authorization: `Bearer ${pubToken}` } : {}),
+        },
         body: JSON.stringify({ is_public: newValue }),
       });
 
