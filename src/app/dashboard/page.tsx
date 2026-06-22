@@ -260,12 +260,14 @@ export default function DashboardPage() {
     try {
       const token = await getToken();
       console.log('[removeFavorite] token:', token ? token.slice(0,20)+'...' : 'VACIO');
+      console.log('[removeFavorite] url:', `/api/auth/favorites?countryCode=${countryCode}`);
       const response = await fetch(`/api/auth/favorites?countryCode=${countryCode}`, {
         method: 'DELETE',
         headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
 
       const data = await response.json();
+      console.log('[removeFavorite] status:', response.status, 'data:', JSON.stringify(data));
 
       if (response.ok) {
         await loadFavorites();
