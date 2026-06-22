@@ -192,14 +192,26 @@ export default function ShareItineraryPhoto({ trip, riskScore }: ShareItineraryP
   const handleNativeShare = async () => {
     if (!canvasUrl) return;
     try {
-      const res = await fetch(canvasUrl);
-      const blob = await res.blob();
-      const file = new File([blob], `viaje-${trip.destination}.jpg`, { type: 'image/jpeg' });
-      await navigator.share({
-        title: `Mi viaje a ${trip.destination}`,
-        text: `${trip.days} días en ${trip.destination} — viajeinteligencia.com`,
-        files: [file],
-      });
+      const byteString = atob(canvasUrl.split(',')[1]);
+      const ab = new ArrayBuffer(byteString.length);
+      const ia = new Uint8Array(ab);
+      for (let i = 0; i < byteString.length; i++) ia[i] = byteString.charCodeAt(i);
+      const blob = new Blob([ab], { type: 'image/jpeg' });
+      const file = new File([blob], `viaje-${trip.destination.replace(/\s+/g,'-')}.jpg`, { type: 'image/jpeg' });
+
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        await navigator.share({
+          title: `Mi viaje a ${trip.destination}`,
+          text: `${trip.days} días en ${trip.destination} — viajeinteligencia.com`,
+          files: [file],
+        });
+      } else {
+        await navigator.share({
+          title: `Mi viaje a ${trip.destination}`,
+          text: `${trip.days} días en ${trip.destination} — viajeinteligencia.com`,
+          url: `https://www.viajeinteligencia.com`,
+        });
+      }
     } catch (e: any) {
       if (e.name !== 'AbortError') handleDownload();
     }

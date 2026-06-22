@@ -179,14 +179,28 @@ export default function ShareDestacadoPhoto({ trip }: ShareDestacadoPhotoProps) 
   const handleNativeShare = async () => {
     if (!canvasUrl) return;
     try {
-      const res = await fetch(canvasUrl);
-      const blob = await res.blob();
-      const file = new File([blob], `itinerario-${trip.destination}.jpg`, { type: 'image/jpeg' });
-      await navigator.share({
-        title: `Itinerario: ${trip.name}`,
-        text: `${trip.days} días en ${trip.destination} — viajeinteligencia.com/viajes/destacados/${trip.slug}`,
-        files: [file],
-      });
+      // Convertir data URL a blob sin fetch (más compatible)
+      const byteString = atob(canvasUrl.split(',')[1]);
+      const ab = new ArrayBuffer(byteString.length);
+      const ia = new Uint8Array(ab);
+      for (let i = 0; i < byteString.length; i++) ia[i] = byteString.charCodeAt(i);
+      const blob = new Blob([ab], { type: 'image/jpeg' });
+      const file = new File([blob], `itinerario-${trip.destination.replace(/\s+/g,'-')}.jpg`, { type: 'image/jpeg' });
+
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        await navigator.share({
+          title: `Itinerario: ${trip.name}`,
+          text: `${trip.days} días en ${trip.destination} — viajeinteligencia.com/viajes/destacados/${trip.slug}`,
+          files: [file],
+        });
+      } else {
+        // Fallback: compartir solo enlace
+        await navigator.share({
+          title: `Itinerario: ${trip.name}`,
+          text: `${trip.days} días en ${trip.destination}`,
+          url: `https://www.viajeinteligencia.com/viajes/destacados/${trip.slug}`,
+        });
+      }
     } catch (e: any) {
       if (e.name !== 'AbortError') handleDownload();
     }
