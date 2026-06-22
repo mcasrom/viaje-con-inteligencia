@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { supabaseBrowserClient as supabaseClient } from '@/lib/supabase-browser';
+import { supabaseBrowserClient as supabaseClient, getBrowserClient } from '@/lib/supabase-browser';
 import { 
   ArrowLeft, Heart, MapPin, AlertTriangle, Trash2, 
   Plus, Mail, LogOut, Crown, Bell, Loader2, Calendar,
@@ -179,7 +179,6 @@ export default function DashboardPage() {
   };
 
   const getToken = async (): Promise<string> => {
-    const { getBrowserClient } = await import('@/lib/supabase-browser');
     const client = getBrowserClient();
     if (!client) return '';
     const { data } = await client.auth.getSession();
