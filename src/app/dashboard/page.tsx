@@ -257,30 +257,25 @@ export default function DashboardPage() {
   };
 
   const removeFavorite = async (countryCode: string) => {
+    if (loading) return;
+    setLoading(true);
     try {
       const token = await getToken();
-      console.log('[removeFavorite] token:', token ? token.slice(0,20)+'...' : 'VACIO');
-      console.log('[removeFavorite] url:', `/api/auth/favorites?countryCode=${countryCode}`);
       const response = await fetch(`/api/auth/favorites?countryCode=${countryCode}`, {
         method: 'DELETE',
         headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
-
       const data = await response.json();
-      console.log('[removeFavorite] status:', response.status, 'data:', JSON.stringify(data));
-
       if (response.ok) {
-        await loadFavorites();
+        setFavorites(prev => prev.filter(f => f.country_code !== countryCode));
         setNotification({ type: 'success', message: 'País eliminado de favoritos' });
       } else {
-        setNotification({ 
-          type: 'error', 
-          message: data.error || `Error (${response.status}) al eliminar favorito` 
-        });
+        setNotification({ type: 'error', message: data.error || `Error (${response.status}) al eliminar favorito` });
       }
     } catch (err) {
-      console.error('Remove favorite error:', err);
       setNotification({ type: 'error', message: 'Error al eliminar favorito' });
+    } finally {
+      setLoading(false);
     }
   };
 
