@@ -32,7 +32,7 @@ echo "✅ Build OK"
 # =========================
 echo ">>> Sincronizando .next con servidor..."
 ssh deploy@178.105.80.193 "rm -rf /var/www/viajeinteligencia/.next"
-rsync -az --delete --exclude="node_modules" --exclude=".git" .next/ deploy@178.105.80.193:/var/www/viajeinteligencia/.next/
+rsync -az --delete --exclude="node_modules" --exclude=".git" --safe-links .next/ deploy@178.105.80.193:/var/www/viajeinteligencia/.next/
 echo "✅ Rsync OK"
 
 # =========================
