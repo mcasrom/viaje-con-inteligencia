@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { supabaseAdmin, isSupabaseAdminConfigured } from '@/lib/supabase-admin';
 import { ArrowLeft, MapPin, Clock, DollarSign, Sparkles, Calendar } from 'lucide-react';
 import TripStarRating from '@/components/TripStarRating';
+import ShareDestacadoPhoto from '@/components/ShareDestacadoPhoto';
 
 export const dynamic = 'force-dynamic';
 
@@ -78,6 +79,15 @@ export default async function DestacadoSlugPage({ params }: PageProps) {
             <ArrowLeft className="w-5 h-5" />
             <span>Destacados</span>
           </Link>
+          <div className="ml-auto">
+            <ShareDestacadoPhoto trip={{
+              name: trip.name,
+              destination: trip.destination,
+              days: trip.days,
+              budget: trip.budget,
+              slug: trip.slug,
+            }} />
+          </div>
         </div>
       </header>
 
