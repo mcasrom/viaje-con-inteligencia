@@ -259,6 +259,7 @@ export default function DashboardPage() {
   const removeFavorite = async (countryCode: string) => {
     try {
       const token = await getToken();
+      console.log('[removeFavorite] token:', token ? token.slice(0,20)+'...' : 'VACIO');
       const response = await fetch(`/api/auth/favorites?countryCode=${countryCode}`, {
         method: 'DELETE',
         headers: token ? { Authorization: `Bearer ${token}` } : {},
